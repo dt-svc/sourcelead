@@ -201,7 +201,7 @@ $(document).ready(function(){
 				</li> 
 		    
 		  <li class="" id="assetSearch" style="display: block;"><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
-		  <li class="" id="assignAssetSearch" style="display: none;"><input type="text" class="repSearchBar" placeholder='Search' id='assignAssetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssetList();"></span></li>
+		  <li class="" id="assignAssetSearch" style="display: none;"><input type="text" class="repSearchBar" placeholder='Search' id='assignAssetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicAssignedList();"></span></li>
 		  
         </ul>
       </div> 
@@ -1031,14 +1031,13 @@ function assignAssetPagination(url){
     } );
     $("assignAssetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#assignAssetDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   getDynamicAssignedList();
-    	   }
-    	});
 }
  
- 
+$("#assignAssetDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   getDynamicAssignedList();
+	   }
+	});
 </script>
 
 
