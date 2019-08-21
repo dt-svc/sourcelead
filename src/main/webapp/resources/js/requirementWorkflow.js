@@ -697,6 +697,7 @@ function RequirementWorkflow(){
 					
 					 if ($('#addStageForm').validate(false, validationSettings)) {
 						 if ($('#stagesForm').validate(false, validationSettings)) {
+							 if ($('#columnsForm').validate(false, validationSettings)) {
 						  var formData = getFormData("addStageForm");
 						   $("#saveStageButton").attr("disabled", "disabled");
 				        $("#saveStageButton").addClass('button').val('Processing..'); 
@@ -725,7 +726,7 @@ function RequirementWorkflow(){
 									
 						}
 						});
-					 }}
+					 }}}
 				}
 
 				this.getNextWorkflowStage = function(select, worflowUuid, formId){
@@ -1114,6 +1115,8 @@ function RequirementWorkflow(){
 					$("#applicantname").prop("checked", true);
 					$("#applicantmailid").prop("checked", true);
 					$("#applicantphonenumber").prop("checked", true);
+					$("#location").prop("checked", true);
+					$("#Status").prop("checked", true);
 				 }
 				 
 				 this.prepareChosenColumnList = function(chosenColumns){

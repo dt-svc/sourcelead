@@ -217,11 +217,12 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			  <div class="form-group">
 				<label class="col-md-3">Add Comment</label>
 				
+				
 				<div class="col-md-9">
 				  <label class="switch">
 					<c:choose>
 					<c:when test = "${commentRequired == 'Y'}">
-					<input id = "commentRequired" type="checkbox" checked="" value = "Y">
+					<input id = "commentRequired" type="checkbox" checked="" value = "Y" >
 					</c:when>
 					<c:otherwise>
 					<input id = "commentRequired" type="checkbox" value = "N">
@@ -236,15 +237,16 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		</div>
 		<div class="clearfix mb">
 		  
+		  <form id="columnsForm" name="columnsForm">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <div class="clearfix">
               <div class="checkbox-new">
               <c:choose>
   				<c:when test = "${requiredList == 'Y'}">
-                <input id="columnsCHkbx" class="checkbox-custom" name="list_required" type="checkbox" checked>
+                <input id="columnsCHkbx" class="checkbox-custom form-control" value="" name="list_required" type="checkbox" data-validation = "required" field-name= "Required Stats" checked>
                 </c:when>
                 <c:otherwise>
-                <input id="columnsCHkbx" class="checkbox-custom" name="list_required" type="checkbox">
+                <input id="columnsCHkbx" class="checkbox-custom form-control" value="" name="list_required" type="checkbox" data-validation = "required" field-name= "Required Stats">
                 </c:otherwise>
                 </c:choose>
                 <label for="columnsCHkbx" class="checkbox-custom-label"></label>
@@ -252,6 +254,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
               </div>
       </div>
       </div>
+     </form>
       
       <c:choose>
   	<c:when test = "${requiredList == 'Y'}">
@@ -265,21 +268,21 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <ul class="list-unstyled" id = "chosenColumnList">
                   <li>
                     <div class="checkbox-new clearfix">
-                        <input id="applicantname" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Name" disabled = "disabled" checked>
+                        <input id="applicantname" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Name" disabled = "disabled"  checked>
                         <label for="applicantName" class="checkbox-custom-label"></label>
                         <span class="ml10">Applicant Name *</span>
                       </div>
                     </li>
                     <li>
                         <div class="checkbox-new clearfix">
-                            <input id="applicantmailid" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Mail Id" disabled = "disabled" checked>
+                            <input id="applicantmailid" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Mail Id" disabled = "disabled"  checked>
                             <label for="applicantmailid" class="checkbox-custom-label"></label>
                             <span class="ml10">Applicant Mail Id *</span>
                           </div>
                         </li>
                         <li>
                             <div class="checkbox-new clearfix">
-                                <input id="applicantphonenumber" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Phone Number" disabled = "disabled" checked>
+                                <input id="applicantphonenumber" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Phone Number" disabled = "disabled"  checked>
                                 <label for="applicantphonenumber" class="checkbox-custom-label"></label>
                                 <span class="ml10">Phone Number *</span>
                               </div>
@@ -293,9 +296,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                 </li>
                                 <li>
                                     <div class="checkbox-new clearfix">
-                                        <input id="location" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "location">
+                                        <input id="location" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "location" disabled = "disabled" checked>
                                         <label for="location" class="checkbox-custom-label"></label>
-                                        <span class="ml10">Location</span>
+                                        <span class="ml10">Location *</span>
                                       </div>
                                     </li>
                                     <li>
@@ -354,6 +357,15 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                                 <span class="ml10">Source</span>
                                               </div>
                                         </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="Status" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Status" disabled = "disabled" checked>
+                                                <label for="Status" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Status *</span>
+                                              </div>
+                                        </li>
+                                        </ul>
+                                        
       </div>
 <div class="clearfix"></div>
 <div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -393,8 +405,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			  <div class="col-md-9" id = "nextStages">		
 			  	
 			  	 <!-- dynamic stage content starts here -->
-			 	<select class="sel form-control" >
-				  <option selected>Select</option>
+			 	<select class="sel form-control" id = 'workflowStageUuid' data-validation = "required" field-name= "Next Stage">
+				  <option selected="" value="">Select</option>
 				 
 				</select>				
 			  <!-- dynamic stage content ends here -->
@@ -502,6 +514,12 @@ requirementWorkflow.prepareChosenColumnList(chosenColumns);
 <script>
 $("#columnsCHkbx").click(function(){
   $("#chosecolumnsID").toggle();
+  if($(this).is(':checked')){
+	  $("#columnsCHkbx").val("on");
+  }
+  else{
+	  $("#columnsCHkbx").val("");
+  }
 })
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
