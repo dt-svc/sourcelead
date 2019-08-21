@@ -2699,7 +2699,7 @@ function cancelShareCandidate(){
 	$(".project_inn_mask").fadeOut(); 
 }
 function closejobpop() {
-	shareCandidates = {};
+	//shareCandidates = {};
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
