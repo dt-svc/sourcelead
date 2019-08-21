@@ -27,17 +27,7 @@
 	</a>
 
     <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-    <a href="${appPath}/daywiseTimeSheetReports">
-	<div class="repDashCta">
-		<span><i class="fa fa-calendar"></i></span>
-		<div class="repDashCtaWrap">
-		<h2>Daywise Timesheet Report</h2><b>View</b>
-		</div>
-	</div>
-	</a>
-	</sec:authorize>
-	
-	<a href="${appPath}/projectTimeEntriesReport">
+    <a href="${appPath}/projectTimeEntriesReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar"></i></span>
 		<div class="repDashCtaWrap">
@@ -54,6 +44,7 @@
 		</div>
 	</div>
 	</a>
+	</sec:authorize>
 	
 	<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
 		<a href="${appPath}/timeSheetReports">
