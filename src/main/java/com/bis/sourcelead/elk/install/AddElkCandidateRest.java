@@ -26,13 +26,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CandidateIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKRestClient;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddElkCandidateRest {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidateRest.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private SourceleadELKRestClient<CandidateIndex> client;
+	private SourceleadELKBaseIndexer<CandidateIndex> client;
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
@@ -357,9 +357,9 @@ public class AddElkCandidateRest {
 		System.out.println("entered main() in AddELKCandidate.java");
 		AddElkCandidateRest addElkCandidate = new AddElkCandidateRest();
 		try {
-			addElkCandidate.client = new SourceleadELKRestClient();
+			addElkCandidate.client = new SourceleadELKBaseIndexer<>();
 			addElkCandidate.addElkCandidate();
-			addElkCandidate.client.shutdown();
+//			addElkCandidate.client.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

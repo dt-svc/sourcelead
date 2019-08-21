@@ -113,7 +113,8 @@ $("#applicantDeclineReportsTableSearch").keydown(function(e) {
 	});
 
 function getDeclineApplicants(){
-	  var flag = true;
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}'; 
+	var flag = true;
 	  var jobIds = $("#jobIds").val();
 	  if(jobIds == null){
 		  jobIds = '';
@@ -219,6 +220,7 @@ function getDeclineApplicants(){
 <script type="text/javascript">
 
 function getDeclineApplicantList(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var searchValue = $("#applicantDeclineReportsTableSearch").val();
 	searchValue = searchValue ? searchValue : "";
 	 var flag = true;
