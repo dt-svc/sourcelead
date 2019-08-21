@@ -2,7 +2,6 @@ package com.bis.sourcelead.elk.install;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -24,17 +22,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.ProjectsIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 public class AddProjectsELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddProjectsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC<ProjectsIndex> client;
+	 private SourceleadELKBaseIndexer<ProjectsIndex> client;
 	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
@@ -222,9 +216,9 @@ public class AddProjectsELK {
 			
 		try {
 			   AddProjectsELK addProjectsELK = new AddProjectsELK();
-			   addProjectsELK.client = new SourceleadELKTC();
+			   addProjectsELK.client = new SourceleadELKBaseIndexer<>();
 			   addProjectsELK.addProjectsELK();
-			   addProjectsELK.client.shutdown();
+//			   addProjectsELK.client.shutdown();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

@@ -201,10 +201,25 @@ public class ResourcesRestController {
 	}
 
 	@RequestMapping(value = { "/blogCategoryList", "rest/blogCategoryList" }, method = RequestMethod.POST)
-	public ResponseList<BlogCategoryDTO> blogCategoryList(BlogCategoryDTO blogCategoryDTO) throws Exception {
+	public ResponseList<BlogCategoryDTO> blogCategoryList(BlogCategoryDTO blogCategoryDTO,HttpServletRequest request) throws Exception  {
 
 		ResponseList<BlogCategoryDTO> responseList = new ResponseList<>();
+		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		try {
+			
+			 
+	   	   String[] tableColumns = {"categoryName", "description", "blogCount", "createdBy"};
+			int sortColumnIndex = 5; //by default sorting using updated date
+			String sortColumnOrder = "asc"; //by default descending order
+			
+			if(blogCategoryDTO.getOrder() != null && !blogCategoryDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(blogCategoryDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = blogCategoryDTO.getOrder().get(0).get("dir");
+			}
+			blogCategoryDTO.setSortColumn(tableColumns[sortColumnIndex]);
+			blogCategoryDTO.setSortOrder(sortColumnOrder);
+			blogCategoryDTO.setOrgLocationDateFormate(orgLocations.getDateFormat());
+			
 			responseList = blogCategoryService.getAllBlogCategoryByStatus(blogCategoryDTO);
 			responseList.setResponse(Result.SUCCESS.name());
 			responseList.setResponseMessage(Result.SUCCESS.getValue());
