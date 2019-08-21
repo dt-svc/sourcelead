@@ -117,7 +117,7 @@ function addOffer(requirementId){
 				result= result + '</div>                                                                           ';
 				result= result + '</div>                                                                           ';
 				result= result + '</div>                                                                           ';
-
+				result= result + '<div class="clearfix"></div>							   ';
 				result= result + '<div class="col-md-6 clearfix mt10">';
 				result= result + '<label class="clearfix">Employment Type</label>';
 				result= result + '<div class="clearfix">                                                           ';
