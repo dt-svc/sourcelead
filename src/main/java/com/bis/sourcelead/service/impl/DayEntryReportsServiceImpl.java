@@ -129,7 +129,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 
 				writeRow.createCell(columnCount++).setCellValue(weekDayName != null ? weekDayName : "");
 				
-				writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeId() != null ? dayEntries.getEmployeeId() : "");
+				writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeId() != null && dayEntries.getEmployeeId() != "null" ? dayEntries.getEmployeeId() : "");
 				
 				writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeName() != null ? dayEntries.getEmployeeName() : "");
 				
@@ -369,7 +369,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 
 				dayArray[columnCount++] = weekDayName != null && !"".equalsIgnoreCase(weekDayName) ? weekDayName : "";
 				
-				dayArray[columnCount++] =  dayEntries.getEmployeeId() != null ? dayEntries.getEmployeeId() : "";
+				dayArray[columnCount++] =  dayEntries.getEmployeeId() != null && dayEntries.getEmployeeId() != "null" ? dayEntries.getEmployeeId() : "";
 				
 				dayArray[columnCount++] = dayEntries.getEmployeeName()!=null ? dayEntries.getEmployeeName() : "";
 
