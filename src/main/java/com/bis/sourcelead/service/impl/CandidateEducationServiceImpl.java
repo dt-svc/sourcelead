@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +18,17 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
-import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -60,6 +60,12 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	 
 	 @Autowired
 	 private OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 CandidateIndexHelper candidateIndexHelper;
+	 
+	 @Autowired
+	 CandidateDao candidateDao;
 	
 	/**
 	 * @author ajith kumar
@@ -378,8 +384,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
     @Async
 	public void saveOrUpdateCandidateElkDocumentWithEducationDetails(Candidate candidate,Long locationId) throws Exception {
 		if(null != candidate && null != candidate.getId()){
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
+			// some data may me missed so getting from table.
+			Candidate savedCandidate = candidateDao.getCandidateByCandidateId(candidate.getId());
+			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(savedCandidate);
 			ArrayList<CandidateEducation> educationList =(ArrayList<CandidateEducation>) getCandidateEducationListByCandidateIdAndOrgLocationID(candidate.getId(),locationId);
 			if(null != educationList && !educationList.isEmpty()){
 				ArrayList<String> eduList = new ArrayList<>();
