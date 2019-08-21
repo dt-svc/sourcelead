@@ -2954,6 +2954,7 @@ function resetCandidateFilter(){
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
+	$("#mySkillsInput").val('');
 	
 	
 	$("#dataTableSearch").val('');
@@ -2962,6 +2963,7 @@ function resetCandidateFilter(){
 	document.getElementById("candidateCheck").checked = true;
 	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
+	mySkillsFunction();
 }
 </script>		
 
