@@ -192,7 +192,7 @@ function getTableDataTimeSheetReports(pageNo){
 	    	searchValue = '';
 	      }
 		  $.ajax({
-	            url: sourceleadUrl+"/dayEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+	            url: sourceleadUrl+"/projectTimeEntriesReportList?&startDate="+startDate+"&endDate="+endDate+"&projectIds="+projectIds+"&employmentType="+employmentType+"&projectMemberListId="+projectMemberList+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
 	            type: "POST",
 	            success: function (data) {
 	            	 $("#dayEntryformData").hide();

@@ -33,7 +33,6 @@ $( document ).ready(function() {
               <label class="clearfix">Type of Project</label>
               <div class="clearfix">
                 <select class="form-control sel" onchange="getSelectedProjectDetailsList();" id="projectType">
-                  <option>Select</option>
                   <option value="all" selected>All</option>
                   <option value="client">Client</option>
                   <option value="internal">Internal</option>
@@ -132,7 +131,7 @@ $( document ).ready(function() {
 
 
 <div id="expensesExportListDiv" style="display: none;">
-	 <jsp:include page="dayEntriesReportList.jsp"></jsp:include> 
+	 <jsp:include page="projectEntriesReportList.jsp"></jsp:include> 
 </div>
 
 <script>
@@ -141,13 +140,24 @@ function validateProjectTimeEntriesReport(){
 	var projectMemberList = $('#projectMemberList').val();
 	var templateType = "";
 	
-	if((projectIds == null || projectIds =='' || projectIds=='undefined') && (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
+	/* if((projectIds == null || projectIds =='' || projectIds=='undefined') && (projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined')){
 
-		//projectIds = $("#projectList option[name='all']").val();
 		 projectIds = $('#projectList option').map(function() { return $(this).val(); });
-
+		 $('#projectList').val(projectIds);
+	} */
+	
+	
+	if(projectIds == null || projectIds =='' || projectIds=='undefined'){
+		 projectIds = $('#projectList option').map(function() { return $(this).val(); });
 		$('#projectList').val(projectIds);
+		
 	}
+	
+	if(projectMemberList == null || projectMemberList =='' || projectMemberList=='undefined'){
+		 projectMemberListId = $('#projectMemberList option').map(function() { return $(this).val(); }); 
+		 $('#projectMemberList').val(projectMemberListId);
+	}
+	
 	var startDate = $('#fromDate').val();
 	var endDate = $('#toDate').val();
 	var exportType = $('#exportType').val();
@@ -254,6 +264,8 @@ function getProjectListBasedOnStartAndEndDate(){
 	if(projectType != null && projectType != '' && projectType !='undefined'){
 		typeOfProject = projectType;
 	}
+	
+	$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
             url: sourceleadUrl + "/getProjectListForProjectTimeEntriesReportBasedOnStartAndEndDate?startDate=" + startDate +"&endDate="+ endDate+"&typeOfProject="+typeOfProject,
             type: "POST",
@@ -269,6 +281,7 @@ function getProjectListBasedOnStartAndEndDate(){
 				}
             	$("#allProjectIds").val('');
             	$("#allProjectIds").val(allProjectId);
+            	$("#loadingId").removeAttr('style');
             	getProjectMemberFromProjectId();
             	$("#projectList").empty();
                 $("#projectList").append(output);
@@ -321,7 +334,7 @@ function getProjectMemberFromProjectId(){
 </script>
 
 
-<script>
+<!-- <script>
 function runExport(){
 	var projectIds  = $('#projectList').val();
 	var projectMemberList = $('#projectMemberList').val();
@@ -350,7 +363,7 @@ function runExport(){
 
 
 
-</script>
+</script> -->
 
 <script>
 var validationSettings = {

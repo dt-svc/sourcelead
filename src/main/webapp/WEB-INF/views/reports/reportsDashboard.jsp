@@ -192,6 +192,7 @@
 				</sec:authorize>
 				
 				<li><a href="${appPath}/projectTimeEntriesReport">Project Time Entries Report</a></li>
+				<li><a href="${appPath}/resourceTimeEntriesReport">Resource Time Entries Report</a></li>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
 				  <li><a href="${appPath}/timeSheetReports">Timesheet Monthly Report</a></li>

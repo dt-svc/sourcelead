@@ -37,6 +37,24 @@
 	</a>
 	</sec:authorize>
 	
+	<a href="${appPath}/projectTimeEntriesReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-calendar"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Project Time Entries Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	
+	<a href="${appPath}/resourceTimeEntriesReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-calendar"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Resource Time Entries Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	
 	<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
 		<a href="${appPath}/timeSheetReports">
 	<div class="repDashCta">

@@ -1850,4 +1850,71 @@ public HashSet<User> getAllUserTimeSheetSubmissionStatusCurrentWeek() {
 	
 	}
 
+	@Override
+	@Transactional
+	public List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		
+		List<ProjectsDTO> projectsDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		String subQuery = "";
+		String projectTypesubQuery = "";
+		
+		String userRoleQuery = "";
+		
+		List<Long> userHierarchyIds =  userDao.getUserHierarchyIdList(userId);
+		if(userHierarchyIds == null || userHierarchyIds.isEmpty()) {
+			userHierarchyIds.add(0l);
+		}
+		if(StringUtils.isNotBlank(isGlobalManager) && isGlobalManager.equalsIgnoreCase(Constants.YES)) {
+			subQuery = " ORG.ID = :orgId ";
+		}else {
+			subQuery = " PC.ORG_LOCATIONS_ID = :orgLocationsId ";
+		}
+		
+		if(type.equalsIgnoreCase("internal")) {
+			projectTypesubQuery = " AND PC.ORG_RELATION_ID IS NULL ";
+		}else if(type.equalsIgnoreCase("client")) {
+			projectTypesubQuery = " AND PC.ORG_RELATION_ID IS NOT NULL ";
+		}
+		
+		
+			userRoleQuery = " AND ((CAND.CONSULTANT_USER_ID IS NOT NULL"
+					 +" AND CAND.CONSULTANT_USER_ID IN (SELECT UR.USER_ID FROM USER_ROLE UR WHERE (UR.REPORTING_MANAGER_ID = :userId OR UR.RESOURCE_MANAGER_ID = :userId)))"
+					 +" OR"
+					 + "(:userId IN (SELECT UR.USER_ID FROM USER_ROLE UR LEFT JOIN  ROLES R  ON R.ID = UR.ROLE_ID   WHERE R.ROLE_NAME = 'ROLE_ADMIN' AND UR.USER_STATE = 'ACTIVE' AND UR.ORG_LOCATIONS_ID = :orgLocationsId)) "
+					 +" ) ";
+	
+		
+		 query ="SELECT "
+				 +" PROJ.ID AS projId, "
+				 +" PROJ.PROJECT_NAME AS projectName "
+				 +" FROM "
+			     +" PROJECT_CLIENTS PC"
+			     +" LEFT JOIN PROJECTS PROJ ON PROJ.ID = PC.PROJECT_ID"
+			     +" INNER JOIN PROJECT_MEMBERS PM ON PM.PROJECT_ID = PC.PROJECT_ID"
+				 +" LEFT JOIN CANDIDATE CAND ON CAND.ID = PM.CANDIDATE_ID"
+				 +" LEFT JOIN ORG_LOCATIONS ORL ON ORL.ID = PC.ORG_LOCATIONS_ID"
+				 +" LEFT JOIN ORG ORG ON ORG.ID = ORL.ORG_ID"
+			     +" WHERE "+subQuery
+				 +userRoleQuery
+				 +projectTypesubQuery
+				 +" AND PROJ.PROJECT_MODE = 'Finished' "
+				 +" GROUP BY PROJ.ID";
+		 
+            Query queryObj = session.createSQLQuery(query);
+            if(StringUtils.isNotBlank(isGlobalManager) && isGlobalManager.equalsIgnoreCase(Constants.YES)) {
+            	queryObj.setLong("orgId", orgId);
+            }
+            
+            queryObj.setLong("orgLocationsId", orgLocationsId);
+            queryObj.setLong("userId", userId);
+            
+			queryObj.setResultTransformer(Transformers.aliasToBean(ProjectsDTO.class));
+			projectsDTOList = queryObj.list();
+			return projectsDTOList;
+	
+	}
+
 }
