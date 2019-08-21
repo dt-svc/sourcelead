@@ -107,9 +107,10 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
-public class RequirementRestController {
+@RequestMapping("/app")
+public class RequirementRestControllerAdmin {
 
-	private static final Logger logger = LoggerFactory.getLogger(RequirementRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(RequirementRestControllerAdmin.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
