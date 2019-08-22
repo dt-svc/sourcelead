@@ -116,5 +116,5 @@ public interface RequirementWorkFlowService {
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
 	
-	void saveDefaultRequirementWorkflowAndStages()throws Exception;
+	String saveDefaultRequirementWorkflowAndStages()throws Exception;
 }
