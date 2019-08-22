@@ -2625,7 +2625,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
 				errorSet.put("email", "Email field is missing");
 			}else {
-				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim());
+				User userEmail = userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("email").toString().trim(), orgLocation.getId());
 				if (userEmail != null) {
 					errorSet.put("email", "Associate already exist.!");
 				}
