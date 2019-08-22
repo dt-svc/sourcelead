@@ -929,14 +929,12 @@ public class RequirementWorkflowController {
 	   }
 	 
 	 @RequestMapping(value = "/ws/saveDefaultRequirementWorkflowAndStages", method = RequestMethod.GET)
-		public void saveDefaultRequirementWorkflowAndStages() {
+	 @ResponseBody
+		public String saveDefaultRequirementWorkflowAndStages() throws Exception{
 			System.out.println("Started Saving Workflow..");
-		try {
-			requirementWorkFlowService.saveDefaultRequirementWorkflowAndStages();
+			String result = requirementWorkFlowService.saveDefaultRequirementWorkflowAndStages();
 			System.out.println("Finished Saving Workflow..");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			return result;
 	}
 	@RequestMapping(value = "/getQuestionnaireAssignedToStage", method = RequestMethod.GET)
 	 @ResponseBody
