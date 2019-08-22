@@ -2,8 +2,12 @@ package com.bis.sourcelead.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,8 +21,18 @@ import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.util.XCloseable;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+
+import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import ooo.connector.BootstrapSocketConnector;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 @Component
 public class PdfConversionUtil {
@@ -88,5 +102,70 @@ public class PdfConversionUtil {
 				e.printStackTrace();
 			}
 	    }
+
+	 /**
+	  * Convert Doc File to Pdf Bytes
+	  * @param docFile
+	  * @return byte[]
+	  */
+	public byte[] convertDocFileToPdf(File docFile)
+	{
+		
+		  POIFSFileSystem fs = null;  
+	        Document pdfDoc = new Document();
+
+	         try {  
+	             System.out.println("Starting the test");  
+	             fs = new POIFSFileSystem(docFile);  
+
+	             HWPFDocument doc = new HWPFDocument(fs);  
+	             WordExtractor we = new WordExtractor(doc);  
+
+//	             OutputStream file = new FileOutputStream(new File("C:\\Users\\BISD06\\Desktop\\opt\\prasanna.pdf")); 
+	             ByteArrayOutputStream file = new ByteArrayOutputStream();
+
+	             PdfWriter writer = PdfWriter.getInstance(pdfDoc, file);  
+
+	             Range range = doc.getRange();
+	             pdfDoc.open();  
+	             writer.setPageEmpty(true);  
+	             pdfDoc.newPage();  
+	             writer.setPageEmpty(true);  
+
+	             String[] paragraphs = we.getParagraphText();  
+	             for (int i = 0; i < paragraphs.length; i++) {  
+	                 org.apache.poi.hwpf.usermodel.Paragraph pr = range.getParagraph(i);
+	                 paragraphs[i] = paragraphs[i].replaceAll("\\cM?\r?\n", "");  
+	                pdfDoc.add(new Paragraph(paragraphs[i]));  
+	             }  
+	             pdfDoc.close();
+	             return  file.toByteArray();
+	         } catch (Exception e) {  
+	             e.printStackTrace();  
+	         } 
+		
+		return null;
+	}
+
+	/**
+	 * convert Docx file to Pdf byte
+	 * @param file
+	 * @return byte[]
+	 */
+	/*public byte[] convertDocxFileToPdf(File file)
+	{
+		try {
+			InputStream doc = new FileInputStream(file);
+			XWPFDocument document = new XWPFDocument(doc);
+			PdfOptions options = PdfOptions.create();
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			PdfConverter.getInstance().convert(document, out, options);
+			document.close();
+			return out.toByteArray();
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
+		}
+		return null;
+	}*/
 	
 }

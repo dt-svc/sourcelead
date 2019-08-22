@@ -5,6 +5,7 @@ public enum Result {
     FAILED("Operation failed, please try again"),
     AWKWARD("Something went wrong"),
     INVALID_DATA("Invalid data"),
+    Data_exists("Data Already Exists"),
     INVALID_CREDENTIALS("Invalid UserName Or Password"),
     NOT_REGISTERED("User Not Registered"),
     INACTIVE_USER("In-Active User"),

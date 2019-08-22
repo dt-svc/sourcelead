@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
@@ -52,7 +54,12 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 @Autowired
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
 
-	
+	 @Autowired
+	 CandidateDao candidateDao;
+	 
+	 @Autowired
+	 CandidateIndexHelper candidateIndexHelper;
+
 	/**
 	 * 
 	 * @author Shivayogi
@@ -267,8 +274,9 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
     @Async
 	public void saveOrUpdateCandidateElkDocumentWithCertificationDetails(Long candidateId,Long locationId) throws Exception {
 		if(null != candidateId){
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidateId);
+
+			 Candidate candidate = candidateDao.getCandidateByCandidateId(candidateId);
+		    CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 			ArrayList<CandidateCertifications> certificationList =(ArrayList<CandidateCertifications>) getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId,locationId);
 			if(null != certificationList && !certificationList.isEmpty()){
 				ArrayList<String> certList = new ArrayList<>();
