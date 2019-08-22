@@ -117,7 +117,7 @@ public interface RequirementWorkFlowService {
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
 	
-	void saveDefaultRequirementWorkflowAndStages()throws Exception;
-
 	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
+	
+	String saveDefaultRequirementWorkflowAndStages()throws Exception;
 }

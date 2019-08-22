@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -1371,7 +1372,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	
 	@Override
-	public void saveDefaultRequirementWorkflowAndStages(){
+	public String saveDefaultRequirementWorkflowAndStages(){
 		try {
 			List<RequirementWorkFlow> wf= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(null);
 			if(wf != null && wf.size() == 0) {
@@ -1408,8 +1409,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlow.setWorkflowStages(requirementWorkFlowSet);
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, null);
 			}
+			return Result.SUCCESS.getValue();
 		} catch (Exception e) {		
 			e.printStackTrace();
+			return Result.FAILED.getValue();
 		}
 	}
 
