@@ -1005,8 +1005,8 @@ public class PerformanceReportRestController {
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 					List<Long> jobIdList = new ArrayList<>();
 					DecimalFormat df = new DecimalFormat("#.00");
 					
@@ -1438,8 +1438,8 @@ public class PerformanceReportRestController {
 			try{
 				User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				if(loginUser != null){
-					
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 					List<Long> jobIdList = new ArrayList<>();
 					if(StringUtils.isNotBlank(jobFilterDTO.getJobIds())) {
 						String[] jobIds = jobFilterDTO.getJobIds().split(",");
@@ -2677,7 +2677,8 @@ public class PerformanceReportRestController {
 		try{
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null){
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				List<Long> jobIdList = new ArrayList<>();
 				Date[] searchDates = null;

@@ -998,48 +998,48 @@ function cancelOrgImg(){
           <div class="col-md-6 minHe">
            <label class="noPad">Account Type <b class="valStar">*</b></label>
            <div class="clearfix">
-                <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
+                <select onchange="showOrHidePaymentFormFields($(this).val()); changefunction();" id="paymentAccountType" name="accountType" class="form-control" data-validation="required">
                     <option value="0">--Select Location--</option>
                     <option value="SAVINGS" data-type="1">Savings</option>
                     <option value="CHECKING" data-type="2">Checking</option>
-                    <option value="WEPAY" data-type="3">WePay</option>
+                      <option value="WEPAY" data-type="3">WePay</option>
                 </select>
            </div>
           </div>
            
          <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
            <label class="noPad">Location <b class="valStar">*</b></label>
-           <div class="clearfix">
-                <select id="paymentAccountLocation" name="paymentAccountLocation" class="form-control" data-required="required">
-                    <option>Select Location</option>
+           <div class="clearfix" id = "acclocationErr">
+                <select id="paymentAccountLocation" name="orgLocationId" class="form-control" field-name="Select Acc Location" data-validation="required">
+               <option value="">select location</option>
                 </select>
            </div>
          </div>
            
         <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
            <label class="noPad">Bank Name <b class="valStar">*</b></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
+           <div class="clearfix" id = "bankNameErr">
+                <input type="text" id="paymentAccountBankName" name="bankName" field-name="Bank Name" placeholder="Bank Name" class="form-control" data-validation="required validate_length length1-50"/>
            </div>
            </div>
           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
            <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
+           <div class="clearfix" id ="accnoErr">
+                <input type="text" id="paymentAccountNumber" placeholder="Account Number" field-name="Account Number"  name="accountNumber" class="form-control" data-validation="required validate_int validate_length length9-15"/>
            </div>
            </div>
           <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}"> 
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
-	           <div class="clearfix">
-	                <input type="text" id="paymentBSRNumber" data-min='4' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control" data-required="required validate_int"/>
+	           <div class="clearfix" id="BSRErr">
+	                <input type="text" id="paymentBSRNumber" placeholder="BSR Number"  name="bsrNumber" field-name="BSR Number"  class="form-control" data-validation="required validate_int validate_length length2-9"/>
 	           </div>
            </div>
            
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-6 minHe">
               <label class="noPad">MICR Code <b class="valStar">*</b></label>
-	           <div class="clearfix">
-	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-required="required validate_int"/>
+	           <div class="clearfix" id="MICRErr">
+	                <input type="text" id="paymentMICRCode" placeholder="MICR Code" name="micrCode" field-name="MICR Code"  class="form-control" data-validation="required validate_int validate_length length9-9"/>
 	           </div>
            </div>
            </c:if>
@@ -1047,35 +1047,35 @@ function cancelOrgImg(){
         <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-6 minHe">
            <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}">
               <label class="noPad">Routing Number <b class="valStar">*</b></label>
-              <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+              <div class="clearfix" id="routing">
+                <input type="text" id="paymentAccountRoutingNumber" placeholder="Routing Number" field-name="Routing Number" name="routingNumber" class="form-control" data-validation="required validate_length length9-9"/>
            </div>
            </c:if>
            <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
               <label class="noPad">IFSC Code <b class="valStar">*</b></label>
-              <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFSC Code" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+              <div class="clearfix" id="ifsc">
+                <input type="text" id="paymentAccountRoutingNumber" placeholder="IFSC Code" field-name="IFSC Code" name="paymentAccountRoutingNumber" class="form-control" data-validation="required validate_length length11-11"/>
            </div>
            </c:if>
            
            </div>
            <div data-fieldtype="account" data-fieldfor="3" class="col-md-6 minHe">
            <label class="noPad">Email <b class="valStar">*</b></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
+           <div class="clearfix" id="emailErr">
+                <input type="text" id="paymentAccountEmail" name="email" placeholder="Email" field-name="Email" class="form-control" data-validation="required"/>
            </div>
            </div>
         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
            <label class="noPad">First Name <b class="valStar">*</b></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
+           <div class="clearfix" id="firstnameErr">
+                <input type="text" id="paymentAccountFirstName" name="firstName" placeholder="First Name" field-name="First Name" class="form-control" data-validation="required validate_length length1-25"/>
            </div>
            </div>
         
         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-6 minHe">
            <label class="noPad">Last Name <b class="valStar">*</b></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
+           <div class="clearfix" id="lastnameErr">
+                <input type="text" id="paymentAccountLastName" name="lastName" placeholder="Last Name" field-name="Last Name" class="form-control" data-validation="required validate_length length1-25"/>
            </div>
            </div>
         
@@ -1085,7 +1085,7 @@ function cancelOrgImg(){
         </div>
         
         <div class="popupFoot text-right">
-          <button type="button" class="slBtn md colorBtn" id="savePaymentButton" onclick="savePaymentAccount();" >Save</button>
+          <button type="button" class="slBtn md colorBtn" id="savePaymentButton" onclick="savePaymentAccountTestRun();" >Save</button>
           <button type="button" class="slBtn md popClose" onClick="closePaymentAccountPopup();">Cancel</button>
         </div>
   </div>
@@ -1125,6 +1125,27 @@ $("#faxId").keyup(function () {
     this.value = this.value.replace(/ /g, "-");
 });
 </script>
+<script> 
+// function myFunction(){
+// var abc = $("#paymentAccountNumber").val();
+// if(abc.match(/\D+/)){
+// 	alert("enter numbers only")
+// }
+// }
+// function myFunction1(){
+// 	var abc = $("#paymentBSRNumber").val();
+// 	if(abc.match(/\D+/)){
+// 		alert("enter numbers only")
+// 	}
+// 	}
+// function myFunction2(){
+// 	var abc = $("#paymentMICRCode").val();
+// 	if(abc.match(/\D+/)){
+// 		alert("enter numbers only")
+// 	}
+// 	}
+</script>
+
 
 <script>
 function validateProfilePercentage(){
@@ -1353,7 +1374,7 @@ function saveWhiteListIps(){
 			        	}
 			    		else if(result.response === "SUCCESS"){
 			    	   $("#fromIpAddress").val("");
-			    	   $("#toIpAddress").val("");
+			    	   $("#toIpAddresavePaymentAccountTestRunss").val("");
 			    	   $("#addipPopup").fadeOut(100);
 			    	   $(".mask").hide();
 			    	   closeWhiteListIp();
@@ -1384,7 +1405,127 @@ function saveWhiteListIps(){
 	}
 }
 </script>
+<script>
+function changefunction(){
+	var paymentAccountType = $("#paymentAccountType").val();
+	if(paymentAccountType == "SAVINGS" || paymentAccountType == "CHECKING"){
+	$('#emailErr').find('p.jquery_form_error_message').remove(); 
+	$("#paymentAccountEmail").val('');
+	$('#paymentAccountEmail').removeAttr('data-validation');
 
+	$('#paymentAccountBankName').attr('data-validation',"required validate_length length1-25");
+	$('#paymentAccountNumber').attr('data-validation', "required validate_int validate_length length9-15");
+	$('#paymentBSRNumber').attr('data-validation', "validate_int validate_length length2-9");
+	$('#paymentMICRCode').attr('data-validation', "validate_int validate_length length9-9");
+	$('#paymentAccountRoutingNumber').attr('data-validation', "required validate_Space validate_Alphanumeric fixed_length length11");
+	$("#firstName").attr('data-validation',"required validate_Alphanumeric validate_length length1-25");
+	$("#lastName").attr('data-validation',"required validate_Alphanumeric validate_length length1-25");
+	}else if(paymentAccountType == "WEPAY"){
+	$('#paymentAccountEmail').attr('data-validation', "required validate_length length2-100 validate_email");
+	$("#paymentAccountBankName").val('');
+	$("#paymentAccountNumber").val('');
+	$("#paymentBSRNumber").val('');
+	$("#paymentMICRCode").val('');
+	$("#paymentAccountRoutingNumber").val('');
+	$('#paymentAccountBankName').removeAttr('data-validation');
+	$('#paymentAccountNumber').removeAttr('data-validation');
+	$('#paymentBSRNumber').removeAttr('data-validation');
+	$('#paymentMICRCode').removeAttr('data-validation');
+	$('#paymentAccountRoutingNumber').removeAttr('data-validation');
+
+	}
+	}
+</script>
+<script>
+function savePaymentAccountTestRun(){
+	 if ($('#paymentaccount_form').validate(false, validationSettings)){
+		 var data =  {};
+		 var val = $("#paymentAccountType").val();
+		 data["email"] = $("#paymentAccountEmail").val();
+		 data["micrCode"] = $("#paymentMICRCode").val().trim();
+		 data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
+         data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+         data["bankName"] = $("#paymentAccountBankName").val().trim();
+         data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+         data["firstName"] = $("#paymentAccountFirstName").val().trim();	
+         data["lastName"] = $("#paymentAccountLastName").val().trim();
+         data["orgLocationId"] = $("#paymentAccountLocation").val();
+         data["accountType"] = val;
+         data["id"] = $("#paymentAccountId").val();
+         $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
+        	   showError(data.responseMessage);
+             if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
+            	 closePaymentAccountPopup(val);
+            	 $("#savePaymentButton").removeAttr("disabled", "disabled");
+             }
+             getPaymentAccounts();
+         });
+         return true;
+	 }else{
+		 return false;
+	 }
+}
+$('body').on('blur', '#paymentaccount_form', function() {
+	$("#paymentaccount_form").showHelpOnFocus();
+	$("#paymentaccount_form").validateOnBlur(false, validationSettings);  
+});
+
+</script>
+<script>
+function savePaymentAccountTest(){
+      				 if ($('#paymentaccount_form').validate(false, validationSettings)){
+		    var formData = getFormData("paymentaccount_form");
+		    var paymentAccountType = $("#paymentAccountType").val();
+		  var email =  $("#paymentAccountEmail").val();
+		  var lastName =  $("#paymentAccountLastName").val();
+		  var firstName =  $("#paymentAccountFirstName").val();
+		  var bankName =  $("#paymentAccountBankName").val();
+		  var accountNumber =  $("#paymentAccountNumber").val();
+		  var bsrNumber =  $("#paymentBSRNumber").val();
+		  var micrCode =  $("#paymentMICRCode").val();
+		  var routingNumber =  $("#paymentAccountRoutingNumber").val();
+		  var accountType =  $("#paymentAccountType").val();
+		  var orgLocationId =  $("#paymentAccountLocation").val();
+		  if(orgLocationId>0){
+       //	$("#savePaymentButton").attr("disabled", "disabled");
+       	$.ajax({
+   			type : "POST",
+       	    data: formData,
+       	    processData: false, 
+   	 		contentType: false,
+   	 		
+   			url : sourceleadUrl+"/save-payment-account?${_csrf.parameterName}=${_csrf.token}&email="+email+"&lastName="+lastName+"&firstName="+firstName+"&bankName="+bankName+"&accountNumber="+accountNumber+"&bsrNumber="+bsrNumber+"&micrCode="+micrCode+"&routingNumber="+routingNumber+"&accountType="+accountType+"&orgLocationId="+orgLocationId,
+   			success : function(data) {
+   			if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
+                   closePaymentAccountPopup(accountType);
+                   $("#savePaymentButton").removeAttr("disabled", "disabled");
+                   location.reload();
+               }
+               getPaymentAccounts(true);
+   			},
+       	});
+           return true;
+ 	  }else{
+ 		  alert("enter location ")
+ 	  }
+      }else{
+ 		return false;
+ 	  } 
+}
+   
+   $('body').on('blur', '#paymentaccount_form', function() {
+		$("#paymentaccount_form").showHelpOnFocus();
+		$("#paymentaccount_form").validateOnBlur(false, validationSettings);  
+  });
+   
+   var validationSettings = {
+           errorMessagePosition : 'element',
+           borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+           };
+
+</script>
 <script>
     function savePaymentAccount() {
     	var countryName = '${SourceLeadWeb_country}';
@@ -1394,8 +1535,8 @@ function saveWhiteListIps(){
         if(validateSelect('paymentAccountType', 'Account Type')) {
             if(val === "WEPAY") {
                 if(validateEmail('paymentAccountEmail')
-                        && validate('paymentAccountFirstName', "First Name")
-                        && validate('paymentAccountLastName', "Last Name")
+                        && validateFirstName('paymentAccountFirstName', "First Name")
+                        && validateLastName('paymentAccountLastName', "Last Name")
                         && validateSelect("paymentAccountLocation", 'Location')) {
                     data["email"] = $("#paymentAccountEmail").val();
                     flag = true;
@@ -1403,12 +1544,12 @@ function saveWhiteListIps(){
             } else {
             	if( countryName =="India"){
             		if(validate('paymentAccountBankName', "Bank Name")
-                            && validate('paymentAccountNumber', "Account Number")
-                            && validate('paymentBSRNumber', "BSR Number")
-                            && validate('paymentMICRCode', "MICR Code")
+                            && validatepaymentAccountNumber('paymentAccountNumber', "Account Number")
+                            && validateBISRNumber('paymentBSRNumber', "BSR Number")
+                            && validatepaymentMICRcode('paymentMICRCode', "MICR Code")
                             && validate('paymentAccountRoutingNumber', "IFSC Code")
-                            && validate('paymentAccountFirstName', "First Name")
-                            && validate('paymentAccountLastName', "Last Name")
+                            && validateFirstName('paymentAccountFirstName', "First Name")
+                            && validateLastName('paymentAccountLastName', "Last Name")
                             && validateSelect("paymentAccountLocation", 'Location')) {
                     	data["micrCode"] = $("#paymentMICRCode").val().trim();
                     	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
@@ -1419,10 +1560,10 @@ function saveWhiteListIps(){
                     }
             	}else{
             		if(validate('paymentAccountBankName', "Bank Name")
-                            && validate('paymentAccountNumber', "Account Number")
+                            && validatepaymentAccountNumber('paymentAccountNumber', "Account Number")
                             && validate('paymentAccountRoutingNumber', "Routing Number")
-                            && validate('paymentAccountFirstName', "First Name")
-                            && validate('paymentAccountLastName', "Last Name")
+                            && validateFirstName('paymentAccountFirstName', "First Name")
+                            && validateLastName('paymentAccountLastName', "Last Name")
                             && validateSelect("paymentAccountLocation", 'Location')) {
                         data["accountNumber"] = $("#paymentAccountNumber").val().trim();
                         data["bankName"] = $("#paymentAccountBankName").val().trim();
@@ -1430,7 +1571,6 @@ function saveWhiteListIps(){
                         flag = true;
                     }
             	}
-                
             }
             data["firstName"] = $("#paymentAccountFirstName").val().trim();
             data["lastName"] = $("#paymentAccountLastName").val().trim();
@@ -1454,7 +1594,7 @@ function getPaymentAccounts(flag) {
     if(!flag) {
         var idd = ${SourceLeadWeb_orgLocationId};
         $("#paymentAccountLocation").empty();
-        $("#paymentAccountLocation").append("<option value='0'>Select Location</option>");
+        $("#paymentAccountLocation").append("<option value=''>Select Location</option>");
         $.post(sourceleadUrl+"/org-location-list", {}, function(data) {
             if(data && data.response === "SUCCESS") {
                 for (var e in data.data) {
@@ -1467,6 +1607,7 @@ function getPaymentAccounts(flag) {
     $.post(sourceleadUrl+"/payment-account-list", {}, function(data) {
         if(data && data.response === "SUCCESS") {
             $("#payemntAccountsDiv").empty();
+            var country = '${SourceLeadWeb_orgLocations.country}'
             var result = '';
             result = result + '<table id="payemntAccountsTable" class="display" cellspacing="0" width="100%" >';
             result = result + ' <thead>';
@@ -1475,7 +1616,13 @@ function getPaymentAccounts(flag) {
             result = result + '    <th>Email</th>';
             result = result + '    <th>Bank Name</th>';
             result = result + '    <th>Account Number</th>';
-            result = result + '    <th>Routing Number</th>';
+            if(country == "India"){
+            	 result = result + '    <th>IFSC Code</th>';
+            }
+            else{
+            	result = result + '    <th>Routing Number</th>';
+            }
+            
             result = result + '    <th>First Name</th>';
             result = result + '    <th>Last Name</th>';
             result = result + '    <th>Location</th>';
@@ -1573,6 +1720,7 @@ function changeDefaultPaymentAccount(ele, id) {
 function changeActivePaymentAccount(id){
 	 $.post(sourceleadUrl+"/change-active-payment-account", {id: id}, function(data) {
 	        showError(data.responseMessage);
+	        
 	        getPaymentAccounts();
 	    });
 }
@@ -1603,7 +1751,7 @@ function showPaymentAccountPopup() {
     $('#paymentaccount_form')[0].reset();
 }
 function showOrHidePaymentFormFields(type) {
-    $("#paymentAccountLocation").val('0');
+    $("#paymentAccountLocation").val('');
     $("#paymentAccountLocation option").removeProp('disabled');
     if(type === "WEPAY") {
         $("#paymentAccountLocation option").prop('disabled', 'disabled');
@@ -1632,10 +1780,22 @@ function showOrHidePaymentFormFields(type) {
     });
 }
 function closePaymentAccountPopup(type) {
-    $("#paymentAccountPopup").fadeOut(100);
-    $(".mask").hide();
+    $("#savePaymentButton").removeAttr("disabled", false);
+    $('#bankNameErr').find('p.jquery_form_error_message').remove();
+	 $('#accnoErr').find('p.jquery_form_error_message').remove();
+	 $('#BSRErr').find('p.jquery_form_error_message').remove();
+	 $('#MICRErr').find('p.jquery_form_error_message').remove();
+	 $('#routing').find('p.jquery_form_error_message').remove();
+	 $('#ifsc').find('p.jquery_form_error_message').remove();
+	 $('#firstnameErr').find('p.jquery_form_error_message').remove();
+	 $('#lastnameErr').find('p.jquery_form_error_message').remove();
+	 $('#emailErr').find('p.jquery_form_error_message').remove();
+	// $('#acclocationErr').find('p.jquery_form_error_message').remove();
+	    $("#paymentAccountPopup").fadeOut(100);
+	    $(".mask").hide();
+
     if(type) {
-        showOrHidePaymentFormFields('0');
+    	paymentAccountLocation('0');
         showOrHidePaymentFormFields(type);
         $("input[id*=paymentAccount]").val("");
     }

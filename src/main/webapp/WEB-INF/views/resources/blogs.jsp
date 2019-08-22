@@ -230,14 +230,6 @@ function deleteBlog(blogId) {
 
 </script>
 
-
-<script type="text/javascript">
-    $(function () {
-        $('#datetimepicker3').datetimepicker({
-            format: 'LT'
-        });
-    });
-</script> 
 <script type="text/javascript">
 			var config = {
 			  '.chosen-select'           : {},
