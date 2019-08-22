@@ -35,6 +35,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 </script>
 <script>
 function validateWorkflowEditable(requirementId){
+	if(requirementId){ // dont need to validate for adding new job. Becuase we dont have any requirementid for that before save.
 	$.ajax({
     	type: "GET",
         url: sourceleadUrl+"/validateWorkflowEditable?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
@@ -45,7 +46,8 @@ function validateWorkflowEditable(requirementId){
         	   $("#workflowId").trigger("chosen:updated");
            }
         }
-    });
+     });
+	}
 }
 </script>
 <script>
