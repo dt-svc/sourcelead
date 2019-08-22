@@ -814,7 +814,7 @@ public class RequirementWorkflowController {
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/sendEmailQuestionniareAndTasks")
+		@RequestMapping(value = "/sendEmailQuestionniareAndCopyTasks")
 		@ResponseBody
 		public String sendEmailToCandidateWithQuestionnaireTemplate(HttpServletRequest request)throws Exception {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
