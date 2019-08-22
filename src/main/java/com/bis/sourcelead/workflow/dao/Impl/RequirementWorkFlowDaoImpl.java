@@ -34,6 +34,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
@@ -1004,6 +1005,42 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId) {
+		RequirementQuestionnaireTasksDTO questionnaireTasksDTO= null;
+		try {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "SELECT  question.id AS questionnaireId, question.NAME AS questionnaireName, "+
+				       "          stages.ID AS stageId, stages.STAGE_NAME AS stageName, COUNT(tasks.id) AS tasksCount " + 
+		
+						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages, " + 
+						"                  REQUIREMENT_QUESTIONNAIRE_TEMPLATE question, "+
+						"                  REQUIREMENT_WORKFLOW_TASKS tasks " + 
+						
+						"		   WHERE  stages.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID=question.ID" + 
+						"                 AND  tasks.REQUIREMENT_WORKFLOW_STAGES_ID=stages.ID "+
+						"                 AND  stages.STAGE_SHORT_CODE =:stageName" + 
+						"                 AND  stages.REQUIREMENT_WORKFLOW_ID =:workflowId" + 
+						"                 AND  stages.ORG_LOCATION_ID =:orgLocationId " +
+						
+				        "                          GROUP BY stages.STAGE_SHORT_CODE";
+		questionnaireTasksDTO = (RequirementQuestionnaireTasksDTO) session.createSQLQuery(query)
+										.addScalar("questionnaireId", StandardBasicTypes.STRING)
+										.addScalar("questionnaireName", StandardBasicTypes.STRING)
+										.addScalar("stageId", StandardBasicTypes.STRING)
+										.addScalar("stageName", StandardBasicTypes.STRING)
+										.addScalar("tasksCount", StandardBasicTypes.STRING)
+										.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireTasksDTO.class))
+										.setString("stageName", stageName).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getQuestionnaireIdAssignedToStage DAO");
+			e.printStackTrace();
+			return null;
+		}
+	  return questionnaireTasksDTO;
 	}
 }
 	
