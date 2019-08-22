@@ -1047,7 +1047,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     var reqId = requirementId;
     var subType = submissionType;
     var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
-    if(selectBox == "backout"){
+    if(selectBox == "BACKOUT"){
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
         result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
@@ -1081,7 +1081,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         $("#popUp").append(result);
         $("#backOutApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
-    }else if(selectBox == "Reject"){
+    }else if(selectBox == "REJECTED"){
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
         result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
@@ -1115,7 +1115,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         $("#popUp").append(result);
         $("#rejectApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
-    }else if(selectBox == "Joined"){
+    }else if(selectBox == "JOINED"){
     	$.ajax({
     	      type : "POST",
     	      url: atsUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
@@ -1188,7 +1188,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   	    	},
 		  });
     	
-    }else if(selectBox == "shortlist"){
+    }else if(selectBox == "SHORTLIST"){
     	$.ajax({
     	      type : "POST",
     	      url: atsUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
