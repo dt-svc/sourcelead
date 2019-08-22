@@ -1046,6 +1046,8 @@ public class DashboardRestController {
 									requirement.setUpdatedDate(commonUtil.currentDate());
 									requirementService.addRequirement(requirement);
 									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+									String approverArray[] = new String[list1.size()];
+									int i = 0;
 									for (RequirementApproverHierarchy rah : list1) {
 										if (status.equalsIgnoreCase("APPROVED")) {
 											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
@@ -1057,8 +1059,10 @@ public class DashboardRestController {
 										}
 										rah.setUpdatedBy(loginUser.getUserCode());
 										rah.setUpdatedDate(commonUtil.currentDate());
+										approverArray[i++] = rah.getApproverUserId().getId() + "";
 										requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 									}
+									requirement.setLevel1ApproverUserId(approverArray);
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
 									requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement,location, orgLocation);
@@ -1080,7 +1084,21 @@ public class DashboardRestController {
 					    		}
 								
 						}else{
-		
+							List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+							if(list1 != null && !list1.isEmpty()) {
+								for (RequirementApproverHierarchy rah : list1) {
+									if(rah.getLevel() == 1) {
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = rah.getApproverUserId().getId() + "";
+										requirement.setLevel1ApproverUserId(levelUserIds);
+									}
+									if(rah.getLevel() == 2) {
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = rah.getApproverUserId().getId() + "";
+										requirement.setLevel2ApproverUserId(levelUserIds);
+									}
+								}
+							}
 							    RequirementApproverHierarchy level1approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
 								User approverUser = userService.getUserById(level1approver.getApproverUserId().getId());
 								if (status.equalsIgnoreCase("APPROVED")) {
