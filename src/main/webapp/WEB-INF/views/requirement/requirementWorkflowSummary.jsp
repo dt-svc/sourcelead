@@ -1270,7 +1270,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
    function sendQuestionaireToCandidate(responseData, submissionId) {
 	   $.ajax({
 		      type : "GET",
-		      url: sourceleadUrl+"/sendEmailQuestionniareAndTasks?", 
+		      url: sourceleadUrl+"/sendEmailQuestionniareAndCopyTasks?", 
 		    	success :function(respone) {
 		    		if (respone=="success") {
 		    			alert("Mail Sent Successfully !!!!");
