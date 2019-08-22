@@ -19,11 +19,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -59,6 +61,12 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 
 	 @Autowired
 	 CandidateActivityCommonUtil candidateActivityCommonUtil;
+	 
+	 @Autowired
+	 CandidateDao candidateDao;
+	 
+	 @Autowired
+	 CandidateIndexHelper candidateIndexHelper;
 	
 	
 	/**
@@ -334,8 +342,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     @Async
 	public void saveOrUpdateCandidateElkDocumentWithEmployerDetails(Long candidateId,Long locationId) throws Exception {
 		if(null != candidateId){
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidateId);
+			Candidate candidate = candidateDao.getCandidateByCandidateId(candidateId);
+			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+			
 			ArrayList<CandidateEmployers> employerList =(ArrayList<CandidateEmployers>) getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateId,locationId);
 			if(null != employerList && !employerList.isEmpty()){
 				ArrayList<String> empList = new ArrayList<>();
