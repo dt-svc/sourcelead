@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -602,9 +603,8 @@ public class ImmigrationRestController {
 		}
 		
 		@RequestMapping(value = { "/saveImmigrationEmployerDetails" }, method = RequestMethod.POST)
-		public Response<String> saveImmigrationEmployerDetails(CandidateEmployerDTO candidateEmployerDTO,
-				HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-				@RequestParam(value = "immigrationId", required = false) String immigrationId) throws Exception {
+		public @ResponseBody  Response<String> saveImmigrationEmployerDetails(@RequestBody CandidateEmployerDTO candidateEmployerDTO,
+				HttpServletRequest request) throws Exception {
 
 			Response<String> response = new Response<>();
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -617,10 +617,9 @@ public class ImmigrationRestController {
 			try {
 				if (user != null && Validator.validate(candidateEmployerDTO)) {
 					candidateEmployerDTO.setStaticPath(staticPath);
-					candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-					immigration = immigrationCommonService.getImmigrationById(Long.parseLong(immigrationId));
-					candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrglocation,
-							Long.parseLong(candidateId));
+					candidate = candidateService.getCandidateByCandidateId(candidateEmployerDTO.getCandidateId());
+					immigration = immigrationCommonService.getImmigrationById(candidateEmployerDTO.getId());
+					candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrglocation,candidateEmployerDTO.getCandidateId());
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 					StringBuilder actionDesc = new StringBuilder();
