@@ -136,18 +136,16 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		//stage saving..
 		Set<RequirementWorkFlowStages> requirementWorkFlow = new HashSet<RequirementWorkFlowStages>();
-		Integer count = 0;
-		reqWorkFlow.setNoOfStages(Constants.DEFAULT_WORKFLOW_STAGES.length);
-		for (int i = 0; i < Constants.DEFAULT_WORKFLOW_STAGES.length; i++) {
-			count = i;
-			count++;
+		Integer seqOrder = 1;
+		reqWorkFlow.setNoOfStages(Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.size());
+		for(Map.Entry<String, String> defaultWorkflowMap: Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.entrySet()) {
 			RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 			requirementWorkFlowStages.setRequirementWorkFlowId(reqWorkFlow);
 			requirementWorkFlowStages.setOrgLocationId(orgLocations);
-			requirementWorkFlowStages.setStageName(Constants.DEFAULT_WORKFLOW_STAGES[i]);
-			requirementWorkFlowStages.setStageShortCode(Constants.WORKFLOW_STAGE_SHORTCODES[i]);
-			requirementWorkFlowStages.setDescription(Constants.DEFAULT_WORKFLOW_STAGES[i]);
-			requirementWorkFlowStages.setSeqOrder(count);
+			requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
+			requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setSeqOrder(seqOrder);
 			requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 			requirementWorkFlowStages.setEditable(Constants.NO);
@@ -159,6 +157,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setUpdatedDate(new Date());
 			requirementWorkFlowStages.setUpdatedBy(user);
 			requirementWorkFlow.add(requirementWorkFlowStages);
+			seqOrder++;
 		}
 		reqWorkFlow.setWorkflowStages(requirementWorkFlow);
 		logger.debug("Finished saveRequirementWorkFlowDetailsInfo Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
@@ -1375,11 +1374,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		try {
 			List<RequirementWorkFlow> wf= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(null);
 			if(wf != null && wf.size() == 0) {
-			Integer count = 0;
+			Integer seqOrder = 1;
 			RequirementWorkFlow requirementWorkFlow = new RequirementWorkFlow();
 			requirementWorkFlow.setWorkFlowName(Constants.DEFAULT_JOB_WORKFLOW);
 			requirementWorkFlow.setDescription(Constants.DEFAULT_JOB_WORKFLOW);
-			requirementWorkFlow.setNoOfStages(Constants.DEFAULT_WORKFLOW_STAGES.length);
+			requirementWorkFlow.setNoOfStages(Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.size());
 			requirementWorkFlow.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			requirementWorkFlow.setStatus(Constants.RECORD_ACTIVE);
 			requirementWorkFlow.setConfigureType(Constants.DEFAULT);
@@ -1387,25 +1386,24 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlow.setUpdatedDate(new Date());
 			
 			Set<RequirementWorkFlowStages> requirementWorkFlowSet = new HashSet<RequirementWorkFlowStages>();
-				for (int i = 0; i < Constants.DEFAULT_WORKFLOW_STAGES.length; i++) {
-					count = i;
-					count++;
-					RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
-					requirementWorkFlowStages.setRequirementWorkFlowId(requirementWorkFlow);
-					requirementWorkFlowStages.setStageName(Constants.DEFAULT_WORKFLOW_STAGES[i]);
-					requirementWorkFlowStages.setStageShortCode(Constants.WORKFLOW_STAGE_SHORTCODES[i]);
-					requirementWorkFlowStages.setDescription(Constants.DEFAULT_WORKFLOW_STAGES[i]);
-					requirementWorkFlowStages.setSeqOrder(count);
-					requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-					requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
-					requirementWorkFlowStages.setEditable(Constants.NO);
-					requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
-					requirementWorkFlowStages.setCommentRequired(Constants.YES);
-					requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
-					requirementWorkFlowStages.setCreatedDate(new Date());
-					requirementWorkFlowStages.setUpdatedDate(new Date());
-					requirementWorkFlowSet.add(requirementWorkFlowStages);
-				}
+			for(Map.Entry<String, String> defaultWorkflowMap: Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.entrySet()) {
+				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
+				requirementWorkFlowStages.setRequirementWorkFlowId(requirementWorkFlow);
+				requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
+				requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setSeqOrder(seqOrder);
+				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
+				requirementWorkFlowStages.setEditable(Constants.NO);
+				requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
+				requirementWorkFlowStages.setCommentRequired(Constants.YES);
+				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				requirementWorkFlowStages.setCreatedDate(new Date());
+				requirementWorkFlowStages.setUpdatedDate(new Date());
+				requirementWorkFlowSet.add(requirementWorkFlowStages);
+				seqOrder++;
+			}
 			requirementWorkFlow.setWorkflowStages(requirementWorkFlowSet);
 			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, null);
 			}

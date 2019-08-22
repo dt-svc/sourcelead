@@ -2,6 +2,7 @@
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.TimeZone;
 
 
@@ -646,9 +647,15 @@ public class Constants {
 	//workflow
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final String CUSTOMIZE = "Customize";
-	public static final String[] DEFAULT_WORKFLOW_STAGES = {"Submission", "Short List", "Submit to Client", "Interview", "Offer", "Reject", "Joined", "Backout", "On-hold", "No Response"};
-	public static final String[] WORKFLOW_STAGE_SHORTCODES = {"SUBMISSION", "SHORTLIST", "SUBMIT_TO_CLIENT", "INTERVIEW", "OFFERMADE", "REJECTED", "JOINED", "BACKOUT", "ONHOLD", "NORESPONSE"};
-	
+	public static final LinkedHashMap<String, String> DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String> (){
+		{
+			put("Submission", "SUBMISSION"); 	put("Short List", "SHORTLIST"); 
+			put("Submit to Client", "SUBMIT_TO_CLIENT"); put("Interview","INTERVIEW"); 
+			put("Offer", "OFFERMADE"); 	put("No Response", "NORESPONSE"); 
+			put("On-hold","ONHOLD"); put("Joined", "JOINED"); 
+			put("Reject", "REJECTED"); put("Backout","BACKOUT");
+		}
+	};
 	
 	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",

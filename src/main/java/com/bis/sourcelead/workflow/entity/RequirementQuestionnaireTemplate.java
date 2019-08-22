@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.OrgLocations;
@@ -29,6 +30,10 @@ import com.bis.sourcelead.entity.User;
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE_ID")
+	private RequirementQuestionnaireFeedbackTemplate RequirementQuestionnaireFeedbackTemplateId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
