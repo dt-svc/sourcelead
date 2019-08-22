@@ -627,6 +627,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			  .append("clk.CLOCK_IN_DATE as clockInDate, ")
 			  .append("clk.CLOCK_OUT_DATE as clockOutDate, ")
 			  .append("clk.TOTAL_TIME as totalTime, ")
+			  .append("clk.GEO_LOCATION_DATA as geoLocationData, ")
 			  .append("task.TASK_NAME as projectTaskName, ")
 			  .append("DATE_FORMAT(clk.CLOCK_IN_DATE, '%Y-%m') as yearMonth, ")
 			  .append("clk.COMMENTS as comments ")

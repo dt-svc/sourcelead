@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -38,6 +40,8 @@ import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetRepotDTO;
 import com.bis.sourcelead.reportsDTO.MissingTimesheetResultRepotDTO;
 import com.bis.sourcelead.reportsDTO.PendingForExpenseApprovalReportDTO;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ExpensesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
@@ -104,9 +108,14 @@ public class MissingTimesheetsReoprtsRestController {
 	@Autowired
 	private DynamicReport dynamicReport;
 
-
     @Autowired
     ExpenseProjectApproverHierarchyService expenseProjectApproverHierarchyService;
+    
+    @Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@RequestMapping(value = "/getMissingTimesheetReoportsList", method = RequestMethod.POST)
 	public  @ResponseBody List<MissingTimesheetResultRepotDTO> getMissingTimesheetReoportsList(MissingTimesheetRepotDTO missingTimesheetRepotDTO,HttpServletRequest request) throws Exception {
@@ -341,6 +350,16 @@ public class MissingTimesheetsReoprtsRestController {
 						            	mtr.setProjectFrequency(pm.getProjects().getTimesheetFrequency());
 						            	if(pm.getEmployee() != null) {
 						            		mtr.setEmpId(pm.getEmployee().getEmployeeId());
+						            	}else {
+						            		if(pm.getProjectMemberCandidteId().getParentCandidateId() != null && 
+						            				StringUtils.isNotBlank(pm.getProjectMemberCandidteId().getDesignationType()) && 
+						            				pm.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("Offshore C2C")) {
+						            			Candidate candidate = candidateService.getCandidateByCandidateId(pm.getProjectMemberCandidteId().getParentCandidateId().getId());
+						            			Employees employees = employeesService.getEmployeeByUserAndOrgLocationId(candidate.getConsultantUser().getId(), candidate.getOrgLocationId().getId());
+						            			if(StringUtils.isNotBlank(employees.getEmployeeId())) {
+						            				mtr.setEmpId(employees.getEmployeeId());
+						            			}
+						            		}
 						            	}
 						            	missingTimesheetResultRepotList.add(mtr);
 						            	finalTFMap.put(key, value);

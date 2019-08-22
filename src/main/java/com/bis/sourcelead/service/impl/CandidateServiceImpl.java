@@ -3576,6 +3576,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		return candidateDao.getConsultantUserByCandidateIdOrMasterCandidateId(candidateId, masterCandidateId);
 	}
 
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
+	}
+
 	
 	
 }

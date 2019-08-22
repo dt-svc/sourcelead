@@ -135,6 +135,7 @@ function pagination(){
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
+     		"sSearchPlaceholder": "Search",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
