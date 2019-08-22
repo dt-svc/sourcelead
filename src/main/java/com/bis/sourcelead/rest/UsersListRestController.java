@@ -765,9 +765,8 @@ public class UsersListRestController {
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 OrgLocations orgLocations =  orgLocationService.getOrgLocationById(orgLocationId);
 		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 
@@ -1428,7 +1427,7 @@ public class UsersListRestController {
 					for(OrgLocations orgLoc : orgLocationsList) {
 						Candidate candidate = candidateService.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLoc.getId());
 						
-						if(StringUtils.isNotBlank(candidate.getDesignationType()) && candidate.getDesignationType().equalsIgnoreCase("Offshore C2C") 
+						if(candidate != null && StringUtils.isNotBlank(candidate.getDesignationType()) && candidate.getDesignationType().equalsIgnoreCase("Offshore C2C") 
 								&& StringUtils.isNotBlank(candidate.getIsAssociate()) && candidate.getIsAssociate().equalsIgnoreCase(Constants.NO)) {
 							List<ProjectMembers> pmList = projectMembersService
 									.getAllProjectsAssigendToCandidateIdAndStatus(candidate.getId(), Constants.MEMBER_ACTIVE);
