@@ -1314,7 +1314,7 @@ function editClientProjectDetails(projectId){
 
 <script>
 function preapareCustomFieldDetails(projectId,sectionId){
-	var sourceleadUrl = '${sourceleadUrl}';
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
         type : "POST",
          url: sourceleadUrl+"/getAllASectionCustomFields?&projectId="+projectId+"&requestFrom=project"+"&sectionId="+sectionId,        
