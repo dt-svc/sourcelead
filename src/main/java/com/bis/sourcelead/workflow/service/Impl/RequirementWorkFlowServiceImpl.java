@@ -1421,4 +1421,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId) {
 		return requirementWorkFlowDao.getQuestionnaireIdAssignedToStage(workflowId, stageName, orgLocationId);
 	}
+
+
+	@Override
+	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
+		StringBuilder responseBuilder = new StringBuilder("");
+		Integer updatedRequirementCount = requirementWorkFlowDao.updateDefaultWorkflowInRequirementProcedure();
+		responseBuilder.append("Workflow Id Is Updated For "+updatedRequirementCount+" Requirements.");
+		return responseBuilder.toString();
+	}
 }

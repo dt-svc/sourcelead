@@ -120,4 +120,6 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
 	
 	String saveDefaultRequirementWorkflowAndStages()throws Exception;
+	
+	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
 }

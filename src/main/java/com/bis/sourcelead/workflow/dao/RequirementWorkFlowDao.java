@@ -118,4 +118,6 @@ public interface RequirementWorkFlowDao {
 	List<RequirementWorkFlowStages> getDefaultWorkFlowStages()throws Exception;
 
 	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
+	
+	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
 }
