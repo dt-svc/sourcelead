@@ -121,4 +121,6 @@ public interface RequirementWorkFlowDao {
 	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
 
 	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	
+	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
 }

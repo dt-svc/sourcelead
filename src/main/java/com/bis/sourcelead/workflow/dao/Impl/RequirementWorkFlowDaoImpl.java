@@ -1059,5 +1059,17 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		}
 		return candidate;
 	}
+	public Integer updateDefaultWorkflowInRequirementProcedure(){
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "call UPDATE_DEFAULT_WORKFLOW_IN_REQUIREMENT_PROC()";
+			Integer updatedRequirementCount = Integer.parseInt(session.createSQLQuery(query).uniqueResult().toString());
+			return updatedRequirementCount;
+		} catch (Exception e) {
+			logger.error(e +" in updateDefaultWorkflowInRequirementProcedure DAO");
+			e.printStackTrace();
+			return 0;
+		}
+	}
 }
 	

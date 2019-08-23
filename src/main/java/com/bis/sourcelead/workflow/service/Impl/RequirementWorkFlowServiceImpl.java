@@ -1434,4 +1434,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
 		return requirementWorkFlowDao.getCandidateByRequirementSubmissionId(submissionId);
 	}
+	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
+		StringBuilder responseBuilder = new StringBuilder("");
+		Integer updatedRequirementCount = requirementWorkFlowDao.updateDefaultWorkflowInRequirementProcedure();
+		responseBuilder.append("Workflow Id Is Updated For "+updatedRequirementCount+" Requirements.");
+		return responseBuilder.toString();
+	}
 }

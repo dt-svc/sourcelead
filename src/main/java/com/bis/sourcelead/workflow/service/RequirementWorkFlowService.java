@@ -123,4 +123,6 @@ public interface RequirementWorkFlowService {
 	String saveDefaultRequirementWorkflowAndStages()throws Exception;
 
 	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	
+	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
 }
