@@ -1218,6 +1218,8 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    		location.href = "/errorPage";
   		    	} else if (data.response === "SUCCESS") {
   		    		$("tr").removeClass("row-success");
+  		    		// below funtion is used to check whether the questinniare is assigned to stage or not.
+  		    		 getQuestionnaireIdAssignedToStage(selectBox, submissionId);  
   		    		 requirementPipeline(requirementId,submissionType);
   		    	}else if (data.indexOf('Sign In') !== -1) {
   		    		location.replace(sourceleadUrl);
@@ -1226,9 +1228,59 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    	}
     	    	},
   		  });
-    }
-      
+    } 
+	 // Here need to test any questionnaire is assigned to stage if the initiator confirms need to send the questionnaire to canditate.
+	   
 }
+ function getQuestionnaireIdAssignedToStage(stageName, submissionId){
+	 var workflowId ='${workflowId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/getQuestionnaireAssignedToStage?workflowId="+workflowId+"&stageName="+stageName, 
+	    	success :function(responseData) {
+	    		if (responseData==null) {
+	    			return;
+		    	} else if (responseData.questionnaireId ) {
+		    		$("tr").removeClass("row-success");
+		    		var userText = "Do you want to assign "+responseData.questionnaireName;
+		    		if(responseData.tasksCount!= null && responseData.tasksCount!='0' ){
+		    			userText = userText+" and "+responseData.tasksCount +" task(s) ";
+		    		}
+		    		userText =userText+"for the "+responseData.stageName;
+		    		
+		    		var response = confirm(userText);
+		    		if(response == true){
+		    			sendQuestionaireToCandidate(responseData, submissionId);
+		    		}else if(response == false){
+		    			return;
+		    		}
+		    		
+		    	}else if (questionaireId.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+	    	},
+		  });
+    
+ }
+    
+</script>
+<script>
+   function sendQuestionaireToCandidate(responseData, submissionId) {
+	   $.ajax({
+		      type : "GET",
+		      url: sourceleadUrl+"/sendEmailQuestionniareAndCopyTasks?", 
+		    	success :function(respone) {
+		    		if (respone=="success") {
+		    			alert("Mail Sent Successfully !!!!");
+		    		}else{
+		    			alert("Mail Not Sent !!!!!!");
+		    		  }
+		    	  }
+		    	 
+			  });
+   }
 </script>
 <script>
    function reqRemoveSpacesForRejectReason() {
