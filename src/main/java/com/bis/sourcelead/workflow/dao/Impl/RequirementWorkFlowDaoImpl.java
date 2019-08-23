@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -1014,7 +1015,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT  question.id AS questionnaireId, question.NAME AS questionnaireName, "+
-				       "          stages.ID AS stageId, stages.STAGE_NAME AS stageName, COUNT(tasks.id) AS tasksCount " + 
+				       "          question.UUID AS questionnaireUuid, stages.ID AS stageId, stages.STAGE_NAME AS stageName, COUNT(tasks.id) AS tasksCount " + 
 		
 						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages, " + 
 						"                  REQUIREMENT_QUESTIONNAIRE_TEMPLATE question, "+
@@ -1030,6 +1031,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		questionnaireTasksDTO = (RequirementQuestionnaireTasksDTO) session.createSQLQuery(query)
 										.addScalar("questionnaireId", StandardBasicTypes.STRING)
 										.addScalar("questionnaireName", StandardBasicTypes.STRING)
+										.addScalar("questionnaireUuid", StandardBasicTypes.STRING)
 										.addScalar("stageId", StandardBasicTypes.STRING)
 										.addScalar("stageName", StandardBasicTypes.STRING)
 										.addScalar("tasksCount", StandardBasicTypes.STRING)
@@ -1044,6 +1046,19 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	}
 
 	@Override
+	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
+		Candidate candidate = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select submission.candidate from RequirementSubmission submission where submission.id=:submissionId";
+			candidate =  (Candidate) session.createQuery(query).setLong("submissionId", submissionId).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getQuestionnaireIdAssignedToStage DAO");
+			e.printStackTrace();
+			return null;
+		}
+		return candidate;
+	}
 	public Integer updateDefaultWorkflowInRequirementProcedure(){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();

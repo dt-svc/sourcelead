@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -118,6 +119,8 @@ public interface RequirementWorkFlowDao {
 	List<RequirementWorkFlowStages> getDefaultWorkFlowStages()throws Exception;
 
 	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
+
+	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
 	
 	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
 }

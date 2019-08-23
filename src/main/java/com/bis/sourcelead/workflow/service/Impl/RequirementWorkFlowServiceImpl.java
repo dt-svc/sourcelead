@@ -1181,6 +1181,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
+		
+		try {
 		User candidate = (User) paramList.get("candidate");
 		User loginUser = (User) paramList.get("loginUser");
 		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
@@ -1242,7 +1244,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			 noificationEmailScenario.setBody(notificationbody);
 			 emailScenerioUtil.sendNotification(actionLink, loginUser, candidate, orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
-		return "success";
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception while sending email questionnnaire to canidate "+e.getMessage());
+			return Constants.FAILED ;
+	   }
+		return Constants.SUCCESS;
 	}
 
 	public StringBuilder buildCandidateQuestionnaireTable(String templateId, String templateUuid) throws Exception {
@@ -1424,6 +1431,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
+	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
+		return requirementWorkFlowDao.getCandidateByRequirementSubmissionId(submissionId);
+	}
 	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
 		StringBuilder responseBuilder = new StringBuilder("");
 		Integer updatedRequirementCount = requirementWorkFlowDao.updateDefaultWorkflowInRequirementProcedure();
