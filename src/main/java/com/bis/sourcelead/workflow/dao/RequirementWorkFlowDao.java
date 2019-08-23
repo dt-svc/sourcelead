@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
@@ -108,4 +109,8 @@ public interface RequirementWorkFlowDao {
 	RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplate qemplate)throws Exception;
 	
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
+
+	void copyWorkflowStagesAndTasks(Tasks tasks);
+
+	List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long stageId)throws Exception;
 }
