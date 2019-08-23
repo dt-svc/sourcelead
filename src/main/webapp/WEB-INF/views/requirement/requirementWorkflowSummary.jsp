@@ -1026,7 +1026,7 @@ function viewOfferDocument(offerID,title){
 
 
 <!-- <div class='project_inn_mask projectMask-zindex'></div> -->
-<div id="popUp"></div>
+<div id="popUp" class="remove_user_pop remove_user_pop_a"></div>
 <div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
@@ -1230,7 +1230,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		  });
     } 
 	 // Here need to test any questionnaire is assigned to stage if the initiator confirms need to send the questionnaire to canditate.
-	   
+   // getQuestionnaireIdAssignedToStage(selectBox, submissionId);
 }
  function getQuestionnaireIdAssignedToStage(stageName, submissionId){
 	 var workflowId ='${workflowId}';
@@ -1242,18 +1242,21 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 	    			return;
 		    	} else if (responseData.questionnaireId ) {
 		    		$("tr").removeClass("row-success");
-		    		var userText = "Do you want to assign "+responseData.questionnaireName;
+		    		var result = "";
+		    		$("#popUp").empty();
+					result = result +" <div class='project_inn_mask'></div>"; 
+					result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		    		result = result +"<div class='padding15 textBold'> Do you want to assign "+responseData.questionnaireName;
 		    		if(responseData.tasksCount!= null && responseData.tasksCount!='0' ){
-		    			userText = userText+" and "+responseData.tasksCount +" task(s) ";
+		    			result = result+" and "+responseData.tasksCount +" task(s) ";
 		    		}
-		    		userText =userText+"for the "+responseData.stageName;
-		    		
-		    		var response = confirm(userText);
-		    		if(response == true){
-		    			sendQuestionaireToCandidate(responseData, submissionId);
-		    		}else if(response == false){
-		    			return;
-		    		}
+		    		result =result+"for the "+responseData.stageName +"</div>";
+		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+		    		result = result +" </div>";
+					$("#popUp").append(result);
+					$("#popUp").show();
+					$("#remove_user_pop").slideDown(200);
+					$(".project_inn_mask").fadeIn(200);
 		    		
 		    	}else if (questionaireId.indexOf('Sign In') !== -1) {
 		    		location.replace(sourceleadUrl);
@@ -1264,23 +1267,39 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		  });
     
  }
-    
+ function cancelTermination(){
+	 $("#popUp").empty();
+     $(".project_inn_mask").fadeOut(200);
+     $("#popUp").hide();
+}    
 </script>
+
 <script>
-   function sendQuestionaireToCandidate(responseData, submissionId) {
+function showSuccessMsg(msg){
+	$('#selector11').show();
+	if(msg == 'Failed'){
+		msg= "Mail Sent Failed."
+		$('#selector11').css("background-color","#a21e23");
+	}else if(msg == 'Success'){
+		msg= "Mail Sent Successfully."
+	}
+	$('#msgDiv').text(msg)
+	setTimeout(function(){ $('#selector11').hide();$('#msgDiv').text("") }, 1000);
+}
+
+   function sendEmailQuestionaireAndCopyTasksToCandidate(questionnaireId, submissionId, stageName, stageId, questionnaireUuid) {
+	   $("#popUp").hide(); $(".project_inn_mask").fadeOut(200);
+	  var jobTitle =  $('#id1').text().trim(); // for the rquirement name .
 	   $.ajax({
 		      type : "GET",
-		      url: sourceleadUrl+"/sendEmailQuestionniareAndCopyTasks?", 
+		      url: sourceleadUrl+"/sendEmailQuestionniareAndCopyTasks?quesionnaireId="+questionnaireId+"&submissionId="
+		    		            +submissionId+"&stageName="+stageName+"&stageId="+stageId+"&questionnaireUuid="+questionnaireUuid+"&jobTitle="+jobTitle, 
 		    	success :function(respone) {
-		    		if (respone=="success") {
-		    			alert("Mail Sent Successfully !!!!");
-		    		}else{
-		    			alert("Mail Not Sent !!!!!!");
-		    		  }
+		    		showSuccessMsg(respone);
 		    	  }
-		    	 
 			  });
    }
+   
 </script>
 <script>
    function reqRemoveSpacesForRejectReason() {
