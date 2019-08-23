@@ -128,6 +128,7 @@ public class SecurityConfig  {
     			.antMatchers("/ats/getDemoTimezonesList/**").permitAll()
     			.antMatchers("/ats/getDemoModulesList/**").permitAll()
     			.antMatchers("/ats/getActionHistoryList/**").permitAll()
+    			.antMatchers("/ats/getRequirementProfessionalProfileDetails/**").permitAll()
     			.anyRequest().authenticated()                                                   
     			.and()
     			.formLogin().loginPage("/login")
