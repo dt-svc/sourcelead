@@ -3069,6 +3069,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					
 				}
 				
+				
+				if (dataMigrationDTOJsonCopy.get("expectedRate") != null && dataMigrationDTOJsonCopy.get("expectedRatePer") == null) {
+					errorSet.put("expectedRate", "Expected Rate Per is required");
+				}
+				
 				if (dataMigrationDTOJsonCopy.get("currentRate") != null) {
 					boolean flag = false;
 					String currentRate = dataMigrationDTOJsonCopy.get("currentRate").toString();
@@ -3079,6 +3084,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
 					}
 					
+				}
+				
+				if (dataMigrationDTOJsonCopy.get("currentRate") != null && dataMigrationDTOJsonCopy.get("currentRatePer") == null) {
+					errorSet.put("currentRate", "Current Rate Per is required");
 				}
 				
 				//pan,aadhar number validation
