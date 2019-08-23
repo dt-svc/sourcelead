@@ -1023,12 +1023,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFirstName(user.getFullName());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setCreatedBy("sladmin");
 		 if (environment.equalsIgnoreCase("prod")) {
-			 emailMessage.setFromName("info@sourcelead.com");
+			 emailMessage.setFromEmail("info@sourcelead.com");
 		 }else{
-			 emailMessage.setFromName("qa@sourcelead.com");	 
+			 emailMessage.setFromEmail("qa@sourcelead.com");	 
 		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
