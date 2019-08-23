@@ -2625,7 +2625,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
 				errorSet.put("email", "Email field is missing");
 			}else {
-				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim());
+				User userEmail = userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("email").toString().trim(), orgLocation.getId());
 				if (userEmail != null) {
 					errorSet.put("email", "Associate already exist.!");
 				}
@@ -2878,9 +2878,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				String sendEmailtype = dataMigrationDTOJsonCopy.getString("isMailSent").trim();
 				
 				if(Arrays.asList(Constants.YES_NO).contains(sendEmailtype)) {
-					dataMigrationDTOJsonCopy.put("isMailSent", sendEmailtype);
+					dataMigrationDTOJsonCopy.put("isMailChecked", sendEmailtype);
 				}else {
-					errorSet.put("isMailSent"," Invalid Is Mail Sent Type");
+					errorSet.put("isMailChecked"," Invalid Is Mail Sent Type");
 				}
 				
 			}

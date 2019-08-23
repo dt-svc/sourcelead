@@ -165,6 +165,9 @@ public interface ProjectsService {
 
 		File availableAssociatereportReportListOfExcel(Map<String, List<AvailableAssociatesDTO>> object, User user,OrgLocations orgLocations);
 		
-//		public String getProjectId(OrgLocations orgLocations);
+		List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+		
+		List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+		
 		
 }
