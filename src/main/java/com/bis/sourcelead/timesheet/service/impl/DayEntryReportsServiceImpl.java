@@ -93,7 +93,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 											}
 										}
 				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
-				file = File.createTempFile(orgloc.getOrg().getOrgName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				file = File.createTempFile(orgloc.getOrgLocationName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
 				FileOutputStream fos = new FileOutputStream(file);
 				try {
 					createExcelworkbook.write(fos);
@@ -511,7 +511,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 											}
 										}
 				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
-				file = File.createTempFile(orgloc.getOrg().getOrgName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				file = File.createTempFile(orgloc.getOrgLocationName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
 				FileOutputStream fos = new FileOutputStream(file);
 				try {
 					createExcelworkbook.write(fos);
@@ -649,7 +649,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 											}
 										}
 				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
-				file = File.createTempFile(orgloc.getOrg().getOrgName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				file = File.createTempFile(orgloc.getOrgLocationName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
 				FileOutputStream fos = new FileOutputStream(file);
 				try {
 					createExcelworkbook.write(fos);
