@@ -50,6 +50,7 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
@@ -1413,5 +1414,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			e.printStackTrace();
 			return Result.FAILED.getValue();
 		}
+	}
+
+
+	@Override
+	public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId) {
+		return requirementWorkFlowDao.getQuestionnaireIdAssignedToStage(workflowId, stageName, orgLocationId);
 	}
 }
