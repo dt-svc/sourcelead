@@ -2878,9 +2878,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				String sendEmailtype = dataMigrationDTOJsonCopy.getString("isMailSent").trim();
 				
 				if(Arrays.asList(Constants.YES_NO).contains(sendEmailtype)) {
-					dataMigrationDTOJsonCopy.put("isMailSent", sendEmailtype);
+					dataMigrationDTOJsonCopy.put("isMailChecked", sendEmailtype);
 				}else {
-					errorSet.put("isMailSent"," Invalid Is Mail Sent Type");
+					errorSet.put("isMailChecked"," Invalid Is Mail Sent Type");
 				}
 				
 			}
