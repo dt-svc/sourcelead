@@ -182,7 +182,8 @@ function getBankDetails(){
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
-			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
+               <!-- 			This functionality properly not implemented so commented the code by Laxman   -->
+<!-- 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li> -->
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
 			<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
