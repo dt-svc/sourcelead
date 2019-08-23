@@ -8,11 +8,21 @@ public class RequirementQuestionnaireTasksDTO{
 	private String stageId;
 	
 	private String questionnaireName;
+	
+	private String questionnaireUuid;;
 
 	private String tasksCount;
 
 	private String stageName;
 	
+
+	public String getQuestionnaireUuid() {
+		return questionnaireUuid;
+	}
+
+	public void setQuestionnaireUuid(String questionnaireUuid) {
+		this.questionnaireUuid = questionnaireUuid;
+	}
 
 	public String getQuestionnaireId() {
 		return questionnaireId;
