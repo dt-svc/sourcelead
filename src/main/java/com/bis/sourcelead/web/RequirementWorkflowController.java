@@ -40,6 +40,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
@@ -813,7 +814,7 @@ public class RequirementWorkflowController {
 		 * @return
 		 * @throws Exception
 		 */
-		@RequestMapping(value = "/sendEmailToCandidateQuestionnaire")
+		@RequestMapping(value = "/sendEmailQuestionniareAndCopyTasks")
 		@ResponseBody
 		public String sendEmailToCandidateWithQuestionnaireTemplate(HttpServletRequest request)throws Exception {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
@@ -821,9 +822,10 @@ public class RequirementWorkflowController {
 			System.out.println("inside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
 			HashMap<String , Object> paramsMap = new HashMap<String , Object>();
 		   // here creating a dummy candidate for testing email functionality.
-		    User candidate = new User();
-		    candidate.setId(Long.valueOf("4193"));
-		    candidate.setFirstName("Reagan");
+		    User candidate = new User();// these are the details of the candidate to whom to need to send email.
+		    // below are the dummy details used to developer testing. should be replaced with dynamic values.
+		    candidate.setId(Long.valueOf("4193")); 
+		    candidate.setFirstName("Reagan"); 
 		    candidate.setLastName("Shann");
 		    candidate.setEmail("sivakrishna@businessintelli.com");
 		    
@@ -831,9 +833,9 @@ public class RequirementWorkflowController {
 			paramsMap.put("orgLocations" , orgLocations);
 			paramsMap.put("loginUser" , loginUser);
 			paramsMap.put("templateId" , "1");
-			paramsMap.put("templateUuid" , "q5PbSYhx");
+			paramsMap.put("templateUuid" , "hU6c06FU");
 			paramsMap.put("stageName" , "Screening");
-			paramsMap.put("jobTitle" , "SAP ABAP Developer");
+			paramsMap.put("jobTitle" , "Kcr");
 			
 			String status= requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
 			
@@ -933,5 +935,20 @@ public class RequirementWorkflowController {
 			String result = requirementWorkFlowService.saveDefaultRequirementWorkflowAndStages();
 			System.out.println("Finished Saving Workflow..");
 			return result;
+	}
+	@RequestMapping(value = "/getQuestionnaireAssignedToStage", method = RequestMethod.GET)
+	 @ResponseBody
+		public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(@RequestParam(value="workflowId", required=false) Long workflowId, @RequestParam(value="stageName", required=false) String stageName,HttpServletRequest request) throws Exception{
+			System.out.println("getQuestionnaireIdAssignedToStage..");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			RequirementQuestionnaireTasksDTO questionnaireTasksDTO = null;
+		try {
+			questionnaireTasksDTO = requirementWorkFlowService.getQuestionnaireIdAssignedToStage(workflowId, stageName, orgLocationId);
+			System.out.println("Finished getQuestionnaireIdAssignedToStage..");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return questionnaireTasksDTO;
 	}
 }
