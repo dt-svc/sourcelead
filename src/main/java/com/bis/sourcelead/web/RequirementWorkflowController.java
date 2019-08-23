@@ -928,14 +928,27 @@ public class RequirementWorkflowController {
 		 return timeLimit.toString();
 	   }
 	 
+	 // This Public URL Method Saves Default Workflow And Default Workflow Stages.
+	 // After Saving Workflow, All Requirements Are Updated By Default Workflow Id.
 	 @RequestMapping(value = "/ws/saveDefaultRequirementWorkflowAndStages", method = RequestMethod.GET)
 	 @ResponseBody
 		public String saveDefaultRequirementWorkflowAndStages() throws Exception{
-			System.out.println("Started Saving Workflow..");
+			System.out.println("Started saveDefaultRequirementWorkflowAndStages..");
+			StringBuilder responseBuilder = new StringBuilder("");
 			String result = requirementWorkFlowService.saveDefaultRequirementWorkflowAndStages();
-			System.out.println("Finished Saving Workflow..");
-			return result;
-	}
+			String date = new Date().toString();
+			responseBuilder.append(result+". ");
+			if(StringUtils.equalsIgnoreCase(result, Result.SUCCESS.getValue())) {
+				responseBuilder.append("Default Workflow And Default Workflow Stages Are Saved & ");
+				result = requirementWorkFlowService.updateDefaultWorkflowInRequirementProcedure();
+				if(StringUtils.isNotBlank(result)) {
+					responseBuilder.append(result);
+				}
+			}
+			System.out.println("Finished saveDefaultRequirementWorkflowAndStages..");
+			return date + " - "+responseBuilder.toString();
+		 }
+	 
 	@RequestMapping(value = "/getQuestionnaireAssignedToStage", method = RequestMethod.GET)
 	 @ResponseBody
 		public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(@RequestParam(value="workflowId", required=false) Long workflowId, @RequestParam(value="stageName", required=false) String stageName,HttpServletRequest request) throws Exception{
