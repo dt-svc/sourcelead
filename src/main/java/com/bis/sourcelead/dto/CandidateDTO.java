@@ -107,6 +107,10 @@ public class CandidateDTO extends SearchDTO{
 	private String currentRateCurrency;
 
 	private String expectedRate;
+	
+	private String expectedRatePer;
+	
+	private String currentRatePer;
 
 	private String rateType;
 
@@ -1350,6 +1354,22 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setCandidateSource(String candidateSource) {
 		this.candidateSource = candidateSource;
+	}
+
+	public String getExpectedRatePer() {
+		return expectedRatePer;
+	}
+
+	public void setExpectedRatePer(String expectedRatePer) {
+		this.expectedRatePer = expectedRatePer;
+	}
+
+	public String getCurrentRatePer() {
+		return currentRatePer;
+	}
+
+	public void setCurrentRatePer(String currentRatePer) {
+		this.currentRatePer = currentRatePer;
 	}
 
 
