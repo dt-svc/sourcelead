@@ -61,6 +61,7 @@ window.onload = function () {
 <script>
 function interviewTemplateForm(){
 	var templateUuid = '${templateUuid}';
+	
 	var sourceleadUrl ='${sourceleadUrl}';
 	$("#interviewTemplateFormDiv").show();
 		generateInterviewFeedbackForm1(sourceleadUrl, templateUuid)
@@ -124,6 +125,8 @@ function getTimeLimit(){
 var qfeedbackUuid="";
 var submissionsCount = 1;
 function saveInterviewTemplate(){
+	var workflowStageId = '${workflowStageId}';
+	var requirementSubmissionId = '${requirementSubmissionId}';
 	if ($('#interviewTemplate_form').validate(false, validationSettings)){ 
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 		var qTemplateUuid = '${templateUuid}'; 
@@ -271,7 +274,8 @@ function saveInterviewTemplate(){
 			        processData: false,
 			        contentType:false,
 	      	    	dataType : 'json',
-	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+qfeedbackUuid+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount, 
+	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+qfeedbackUuid+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
+	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
 	      	        success: function(result) {
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
