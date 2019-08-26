@@ -383,14 +383,10 @@ public class ExpensesApprovalRestController {
 	 	 
 	 	 StringBuilder userNameSB = new StringBuilder();
 	 	 emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-	 	emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+	 	 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 //setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<>();
 		
-		// globalVarsMap.put("loginUserFirstName",loginUser.getFirstName());
-		// globalVarsMap.put("loginUserLastName",loginUser.getLastName());
-		 
-		 
 		 if(null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())){
 			 StringBuilder manager =new StringBuilder();
 			 globalVarsMap.put("managerUser", manager.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
@@ -404,12 +400,7 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
 		 globalVarsMap.put("startDate",startDate);
 		 globalVarsMap.put("endDate", endDate);
-		 
-		/* StringBuilder amountCurrencyType = new StringBuilder();
-		 BigDecimal amountCurrencyType1 = new BigDecimal((expenses.getTotalAmount()));*/
-		// BigDecimal amountCurrencyType2 = new BigDecimal((expenses.getExpensesEntries()));
-		// amountCurrencyType1 = amountCurrencyType1.setScale(2,BigDecimal.ROUND_HALF_UP );
-		 
+		
 		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
 		 for(ExpensesEntries expList: expensesEntriesList) {
 			 
@@ -418,32 +409,28 @@ public class ExpensesApprovalRestController {
 			 
 			
 		 }
-		/* amountCurrencyType.append(amountCurrencyType1).append(" ").append(currencyCode);
-		 globalVarsMap.put("amount",amountCurrencyType1.toString());
-		 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
-*/
-		 
+
 		Date todayDate = new Date();
 		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
 		
-		// globalVarsMap.put("employeeFirstName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
-		// globalVarsMap.put("employeeLastName",sah.getExpenseId().getProjectMembers().getEmployee().getUser().getLastName());
-		
 		 globalVarsMap.put("loginOrg",loginOrgLocation.getOrgLocationName());
-		 
-		 
 		 StringBuilder timeFrequencySB = new StringBuilder();
 		 globalVarsMap.put("timeFrequency",timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
-		 
 		 globalVarsMap.put("managerFirstName", loginUser.getFirstName());
 		 globalVarsMap.put("managerLastName", loginUser.getLastName());
 		 
 		 if("REJECTED".equalsIgnoreCase(status)){
-			 globalVarsMap.put("rejectedReason",rejectedReason);
+			 globalVarsMap.put("RejecttedReason",rejectedReason);
 		 }
 		 
-		 StringBuilder loginURLSB = new StringBuilder();
-		 globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		
+		    String redirectURL = "/expenses/";
+			Long redirectOrgLocationId = loginOrgLocation.getId();
+
+			StringBuilder stringBuildforLink = new StringBuilder();
+			globalVarsMap.put("LoginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			
+		 
 		 
 		 if("REJECTED".equalsIgnoreCase(status)){
 			 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>());

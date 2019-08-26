@@ -355,32 +355,34 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
 	
 }
 
-private void storeExpenseApprovers(String status, Expenses expenses, ArrayList<User> managers, User loginUser,
-		OrgLocations orgLoc, String currencyCode, String isGlobalUser, String loginUserType) throws Exception {
 
-	 if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
-		 if(managers != null && !managers.isEmpty()){
-			 
-				expenses.setProjectManagerUserList(managers);
-	     }
-		 expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc,isGlobalUser);
-	 }
-	 
-	 
-	 if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
-		//managers.remove(2);
-		 if(managers != null && !managers.isEmpty()){
-				expenses.setProjectManagerUserList(managers);
-		 }
-		 if(loginUserType.equalsIgnoreCase("Employee")){
-		 expensesEmailsUtil.sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
-	 }
-		 if(loginUserType.equalsIgnoreCase("Manager")||loginUserType.equalsIgnoreCase("Admin")){
-		 expensesEmailsUtil.sendExpenseMailToEmployee(loginUser,expenses,orgLoc,currencyCode);
-		 expensesEmailsUtil.sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
-		 }
-		 }
+private void storeExpenseApprovers(String status, Expenses expenses, ArrayList<User> managers, User loginUser,
+        OrgLocations orgLoc, String currencyCode, String isGlobalUser, String loginUserType) throws Exception {
+
+     if(status.equalsIgnoreCase(Submission_Status.APPROVED.getValue())){
+         if(managers != null && !managers.isEmpty()){
+             
+                expenses.setProjectManagerUserList(managers);
+         }
+         expensesApprovalService.updateApprovalStatusByApproverForExpense(expenses.getId(), loginUser.getId(),"APPROVED", "",orgLoc,isGlobalUser);
+     }
+     
+     
+     if(status.equalsIgnoreCase(Submission_Status.SUBMITTED.getValue())){
+        //managers.remove(2);
+         if(managers != null && !managers.isEmpty()){
+                expenses.setProjectManagerUserList(managers);
+         }
+         if(loginUserType.equalsIgnoreCase("Employee")){
+         expensesEmailsUtil.sendExpensesEmailToManager(loginUser,expenses,orgLoc,currencyCode);
+     }
+         if(loginUserType.equalsIgnoreCase("Manager")||loginUserType.equalsIgnoreCase("Admin")){
+         expensesEmailsUtil.sendExpenseMailToEmployee(loginUser,expenses,orgLoc,currencyCode);
+         expensesEmailsUtil.sendExpensesEmailToManagerWhenManagerSubmitsExpenseBehalfofEmployee(loginUser,expenses,orgLoc,currencyCode);
+         }
+         }
 }
+
 
 
 @Override

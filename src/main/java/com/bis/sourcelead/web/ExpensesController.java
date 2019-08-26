@@ -223,7 +223,6 @@ public class ExpensesController {
 		 	model.addObject("submissionStatus", submissionStatus);
 		 	model.addObject("eah", eah);
 		 	
-		 	
 		 	 Boolean isExpenseTotallyApproved = expensesApprovalService.isTheExpenseTotallyApproved(expensesDTO.getId());
 			 model.addObject("isExpenseTotallyApproved", isExpenseTotallyApproved);	
 			 
