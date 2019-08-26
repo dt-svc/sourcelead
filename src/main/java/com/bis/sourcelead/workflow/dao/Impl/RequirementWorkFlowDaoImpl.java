@@ -24,13 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
@@ -930,6 +931,37 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		}
 	}
 
+
+
+@Override
+public void copyWorkflowStagesAndTasks(Tasks tasks) {
+	Session session = this.sessionFactory.getCurrentSession();
+	try {
+		if (tasks != null) {
+				session.save(tasks);
+		}
+	} catch (Exception exception) {
+		logger.error("Exception caught while coping workflow information " + exception.getMessage());
+		exception.printStackTrace();
+	}
+}
+
+@Override
+public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long stageId) {
+	List<RequirementWorkFlowTasks> requirementWorkFlowTasks = new ArrayList<RequirementWorkFlowTasks>();
+	try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.requirementWorkFlowStagesId.id =:stageId";
+		requirementWorkFlowTasks = session.createQuery(query).setLong("stageId", stageId).list();
+		return requirementWorkFlowTasks;
+	} catch (Exception e) {
+		logger.error(e + " in getRequirementListByWorkflowIdAndOrgLocationId DAO");
+		e.printStackTrace();
+		return null;
+	}
+}
+
+
 	@Override
 	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId) {
 		List<RequirementSubmission> subList = null;
@@ -1072,4 +1104,3 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		}
 	}
 }
-	

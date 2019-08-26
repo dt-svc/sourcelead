@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -23,6 +25,7 @@ import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTempla
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 
 public interface RequirementWorkFlowService {
 	RequirementWorkFlow saveRequirementWorkFlowDetails(RequirementWorkFlowDTO requirementWorkFlowDTO, User user, OrgLocations orgLocations) throws Exception;
@@ -115,6 +118,11 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO, OrgLocations orgLocations, User user)throws Exception;
 
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
+
+	void copyWorkflowStagesAndTask(String uuid, User user, OrgLocations orgLocations,
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO);
+
+	List<RequirementWorkFlowTasks> getRequirementworkflowTaskListById(Long id, OrgLocations orgLocations, User user) throws Exception;
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
 	

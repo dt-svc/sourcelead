@@ -101,14 +101,12 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 		if(StringUtils.isNotBlank(blogCategoryDTO.getSortColumn())) {
 				sortingQry = " order by bc."+ blogCategoryDTO.getSortColumn() +" "+blogCategoryDTO.getSortOrder();
 		}
-		
-
-		String query = "from BlogCategory bc where bc.status = 1 " + query1 + " ORDER BY bc.id DESC ";
+		String query = "from BlogCategory bc where bc.status = 1 ";
 		List<BlogCategory> blogCategoryList = session.createQuery(query.toString()+" "+ query1+sortingQry)
 				.setFirstResult(blogCategoryDTO.getStart()).setMaxResults(blogCategoryDTO.getLength()).list();
 
 		String countQuery = "select count (*) from BlogCategory bc where bc.status = 1 " + query1 + "";
-		Query listCountQuery = session.createQuery(countQuery+sortingQry);
+		Query listCountQuery = session.createQuery(countQuery);
 		countlist = listCountQuery.list();
 
 		int totalCount = 0;
