@@ -182,7 +182,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
 					
 					<ul class="list-inline list-unstyled pull-right mb0">
-						<c:if test = "${requirementWorkFlowStages.editable == 'Y' && isWorkflowEditable == true}">
+						<c:if test = "${requirementWorkFlowStages.configureType == 'Client'}">
 						    <sec:authorize access="hasRole('ROLE_EDIT_VIEW_WORKFLOW')">
 						<li>
 							<a title="Edit" 
@@ -195,7 +195,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                              <sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
                         
                         <c:choose>
-                        <c:when test="${requirementWorkFlowStages.configureType != 'Customize'}">
+                        <c:when test="${requirementWorkFlowStages.configureType == 'Client' && isWorkflowEditable == true}">
                         <li>
 							<a title="Delete" 
 							onclick = 'requirementWorkflow.deletepopup("${requirementWorkFlowStages.uuid}",
