@@ -128,7 +128,6 @@ public class SecurityConfig  {
     			.antMatchers("/guestApplyToJob/**").permitAll()
     			.antMatchers("/validateRequirementGuestCandidateEmail/**").permitAll()
     			.antMatchers("/getGuestUserRequirmentOrgSubmissionTemplate/**").permitAll()
-    			.antMatchers("/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/addBlogSubscription/**").permitAll()
     			.antMatchers("/downloadReleaseNote/**").permitAll()
     			.antMatchers("/validateBlogSubscriptionEmail/**").permitAll()
