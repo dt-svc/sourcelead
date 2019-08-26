@@ -350,6 +350,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                                 <span class="ml10">Applied on</span>
                                               </div>
                                         </li>
+                                         <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="SubmittedQuestionnaire" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "SubmittedQuestionnaire" disabled = "disabled" checked>
+                                                <label for="SubmittedQuestionnaire" class="checkbox-custom-label"></label>
+                                                <span class="ml10">SubmittedQuestionnaire *</span>
+                                              </div>
+                                        </li>
                                         <li>
                                             <div class="checkbox-new clearfix">
                                                 <input id="source" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Source">
