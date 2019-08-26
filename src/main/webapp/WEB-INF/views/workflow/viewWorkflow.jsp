@@ -50,8 +50,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
          <input value="+ Stage" id="stageButton" onclick="requirementWorkflow.alertStageCount();" class="btn btn-primary" type="button">
          </c:when>
          <c:otherwise>
-        	<input value="+ Stage" id="stageButton" 
-        	onclick="requirementWorkflow.saveRequirementAndAddAStage('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>','${requirementWorkFlowStages.stageName}','<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />');" class="btn btn-primary" type="button">
+           <c:if test ="${isWorkflowEditable == true}">
+              <input value="+ Stage" id="stageButton" 
+        	       onclick="requirementWorkflow.saveRequirementAndAddAStage('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>','${requirementWorkFlowStages.stageName}','<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />');" class="btn btn-primary" type="button">
+            </c:if>
          </c:otherwise>
          </c:choose>
 
@@ -180,7 +182,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
 					
 					<ul class="list-inline list-unstyled pull-right mb0">
-						<c:if test = "${requirementWorkFlowStages.editable == 'Y'}">
+						<c:if test = "${requirementWorkFlowStages.editable == 'Y' && isWorkflowEditable == true}">
 						    <sec:authorize access="hasRole('ROLE_EDIT_VIEW_WORKFLOW')">
 						<li>
 							<a title="Edit" 
@@ -231,7 +233,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<div class="clearfix">
 						<div class="pull-right">
 						<c:choose>
-							<c:when test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
+							<c:when test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow' && isWorkflowEditable == true}">
 									<input value="Save" id="saveReqWorkFlow"
 										onclick="requirementWorkflow.saveRequirementViewWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+','${requirementWorkFlowStages.stageName}');"
 										class="btn btn-primary" type="button"> <input

@@ -15,7 +15,7 @@ function RequirementWorkflow(){
 		this.getDefaultWorkflowStages = function() {
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/createRequirementDefaultWorkFlowStages",
+				url : sourceleadUrl + "/getDefaultWorkFlowStages",
 				success : function(dataList) {
 					var result = "";
 					if(dataList != null && dataList.length > 0){
@@ -697,6 +697,7 @@ function RequirementWorkflow(){
 					
 					 if ($('#addStageForm').validate(false, validationSettings)) {
 						 if ($('#stagesForm').validate(false, validationSettings)) {
+							 if ($('#columnsForm').validate(false, validationSettings)) {
 						  var formData = getFormData("addStageForm");
 						   $("#saveStageButton").attr("disabled", "disabled");
 				        $("#saveStageButton").addClass('button').val('Processing..'); 
@@ -725,7 +726,7 @@ function RequirementWorkflow(){
 									
 						}
 						});
-					 }}
+					 }}}
 				}
 
 				this.getNextWorkflowStage = function(select, worflowUuid, formId){
@@ -1114,6 +1115,8 @@ function RequirementWorkflow(){
 					$("#applicantname").prop("checked", true);
 					$("#applicantmailid").prop("checked", true);
 					$("#applicantphonenumber").prop("checked", true);
+					$("#location").prop("checked", true);
+					$("#Status").prop("checked", true);
 				 }
 				 
 				 this.prepareChosenColumnList = function(chosenColumns){
@@ -1184,7 +1187,7 @@ function RequirementWorkflow(){
 									if(jobsArray.length == 1){
 										result = result + "&nbsp"+jobsArray[i]+".";
 									}else{
-										result = result + "&nbsp"+jobsArray[i]+", ";
+										result = result + "&nbsp"+jobsArray[i]+" ";
 									}
 								}
 								if(allJobsArray.length > 1){
