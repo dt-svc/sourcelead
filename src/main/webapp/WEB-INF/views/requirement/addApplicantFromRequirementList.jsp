@@ -69,7 +69,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	result = result + '</div>';	
 	
 	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
-	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
+	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block width100percnt">';
 	result = result + '</select>';
 	result = result + '</div>';
 	
