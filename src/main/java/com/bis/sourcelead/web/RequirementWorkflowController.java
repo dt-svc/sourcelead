@@ -23,14 +23,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
@@ -681,6 +682,8 @@ public class RequirementWorkflowController {
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
 					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
+					requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
+					
 					response.setResponse(Uuid);
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else if (user == null) {
@@ -699,7 +702,6 @@ public class RequirementWorkflowController {
 			return response;
 			
 		}
-		
 		@RequestMapping(value = "/editStage")
 		public ModelAndView editStage(HttpServletRequest request,
 				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
@@ -816,30 +818,36 @@ public class RequirementWorkflowController {
 		 */
 		@RequestMapping(value = "/sendEmailQuestionniareAndCopyTasks")
 		@ResponseBody
-		public String sendEmailToCandidateWithQuestionnaireTemplate(HttpServletRequest request)throws Exception {
+		public String sendEmailQuestionniareAndCopyTasks(
+				@RequestParam(value = "quesionnaireId", required = true)Long quesionnaireId, @RequestParam(value = "submissionId", required = true)Long submissionId,
+				@RequestParam(value = "stageName", required = true) String stageName, @RequestParam(value = "stageId", required = true) Long stageId,
+				@RequestParam(value = "questionnaireUuid", required = true) String questionnaireUuid,
+				@RequestParam(value = "jobTitle", required = true) String jobTitle,
+				HttpServletRequest request)throws Exception {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			User loginUser  =    (User) SourceLeadSessionManager.getSessionAttribute(request,	"user");
 			System.out.println("inside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
-			HashMap<String , Object> paramsMap = new HashMap<String , Object>();
-		   // here creating a dummy candidate for testing email functionality.
-		    User candidate = new User();// these are the details of the candidate to whom to need to send email.
-		    // below are the dummy details used to developer testing. should be replaced with dynamic values.
-		    candidate.setId(Long.valueOf("4193")); 
-		    candidate.setFirstName("Reagan"); 
-		    candidate.setLastName("Shann");
-		    candidate.setEmail("sivakrishna@businessintelli.com");
-		    
-			paramsMap.put("candidate" , candidate); 
-			paramsMap.put("orgLocations" , orgLocations);
-			paramsMap.put("loginUser" , loginUser);
-			paramsMap.put("templateId" , "1");
-			paramsMap.put("templateUuid" , "hU6c06FU");
-			paramsMap.put("stageName" , "Screening");
-			paramsMap.put("jobTitle" , "Kcr");
-			
-			String status= requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
-			
-			System.out.println("Email sent successfully  "+status);
+		   
+			// Write the code for copying tasks to user which are assigned to Stage level start here.
+		   
+		    //copy Tasks end here.
+			 Candidate candidate = new Candidate();// these are the details of the candidate to whom to need to send email.
+		    candidate = requirementWorkFlowService.getCandidateByRequirementSubmissionId(submissionId);
+		    String status=Constants.FAILED;
+			if (candidate != null) {
+				HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+	
+				paramsMap.put("candidate", candidate);
+				paramsMap.put("orgLocations", orgLocations);
+				paramsMap.put("loginUser", loginUser);
+				paramsMap.put("templateId", quesionnaireId);
+				paramsMap.put("templateUuid", questionnaireUuid);
+				paramsMap.put("stageName", stageName);
+				paramsMap.put("jobTitle", jobTitle);
+				//status = Constants.SUCCESS;
+				status	=  requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
+			}
+			System.out.println("Email Sent Status :  "+status);
 			return status;
 		}
 		
@@ -910,7 +918,7 @@ public class RequirementWorkflowController {
 		 RequirementQuestionnaireFeedbackTemplateDTO templateDTO  = requirementWorkFlowService.getQuestionnaireTemplateFeedbackList(templateUuid);
 		 return templateDTO;
 	   }
-	 
+
 	 @RequestMapping(value = "/getQuestionnaireTimeLimit" , method = RequestMethod.GET)
 	 @ResponseBody
 	   public String getQuestionnaireTimeLimit(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {

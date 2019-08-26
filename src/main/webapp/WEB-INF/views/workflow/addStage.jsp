@@ -424,11 +424,11 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		  </div>
     </div>
     </form>
-    
-    <div class="clearfix">
+    <!-- functionality is not implemented commented as of now for calrification -->
+    <!-- <div class="clearfix">
         <h4 class="col-md-2">Email</h4>
         <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="">Add Email</a> </div>
-    </div>
+    </div> -->
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
