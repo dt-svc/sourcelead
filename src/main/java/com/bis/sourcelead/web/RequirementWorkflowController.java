@@ -119,7 +119,7 @@ public class RequirementWorkflowController {
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		logger.debug("before calling deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId >>> "+orgLocations.getId());
 		requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
-		List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowId(),	orgLocations.getId());
+		List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowId(),null, orgLocations.getId());
 		modelandview.addObject("isWorkflowEditable", true);
 		if(requirementSubLst != null && requirementSubLst.size()>0) {
 			modelandview.addObject("isWorkflowEditable", false);
@@ -717,6 +717,11 @@ public class RequirementWorkflowController {
 			List<RequirementWorkFlowStagesDTO> stagesDTO = requirementWorkFlowService.getNextRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 			if(StringUtils.isNotBlank(workflowName)) {
 				modelandview.addObject("workFlowName", workflowName);
+			}
+			List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(null,requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid(), orgLocations.getId());
+			modelandview.addObject("onlyQuestAndTasksEditable", false);
+			if(requirementSubLst != null && requirementSubLst.size()>0) {
+				modelandview.addObject("onlyQuestAndTasksEditable", true);
 			}
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
