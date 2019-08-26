@@ -1481,13 +1481,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 
 	
-
-}	
 	
-	
-	
-	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId) {
-		return  requirementWorkFlowDao.validateWorkflowUpdate(workflowId, orgLocationId);
+	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId) {
+		return  requirementWorkFlowDao.validateWorkflowUpdate(workflowId, workflowUuid, orgLocationId);
 	}
 	
 	@Override
