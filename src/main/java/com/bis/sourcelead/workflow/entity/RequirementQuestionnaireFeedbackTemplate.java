@@ -3,6 +3,7 @@ package com.bis.sourcelead.workflow.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 
 @Entity
@@ -36,12 +38,16 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 	private OrgLocations orgLocationId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
+	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID", nullable = false)
+	private RequirementSubmission requirementSubmissionId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_WORKFLOW_ID",  nullable = false)
-	private RequirementWorkFlow workflowId;
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_WORKFLOW_STAGES_ID",  nullable = false)
+	private RequirementWorkFlowStages requirementWorkFlowStagesId;
+	
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID")
+	private RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId;
 	
 	@Column(name = "JSON_STRING", columnDefinition = "LONGTEXT default NULL")
 	private String jsonString ;
@@ -95,20 +101,28 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 		this.orgLocationId = orgLocationId;
 	}
 
-	public Candidate getCandidateId() {
-		return candidateId;
+	public RequirementSubmission getRequirementSubmissionId() {
+		return requirementSubmissionId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
-		this.candidateId = candidateId;
+	public void setRequirementSubmissionId(RequirementSubmission requirementSubmissionId) {
+		this.requirementSubmissionId = requirementSubmissionId;
 	}
 
-	public RequirementWorkFlow getWorkflowId() {
-		return workflowId;
+	public RequirementWorkFlowStages getRequirementWorkFlowStagesId() {
+		return requirementWorkFlowStagesId;
 	}
 
-	public void setWorkflowId(RequirementWorkFlow workflowId) {
-		this.workflowId = workflowId;
+	public void setRequirementWorkFlowStagesId(RequirementWorkFlowStages requirementWorkFlowStagesId) {
+		this.requirementWorkFlowStagesId = requirementWorkFlowStagesId;
+	}
+
+	public RequirementQuestionnaireTemplate getRequirementQuestionnaireTemplateId() {
+		return requirementQuestionnaireTemplateId;
+	}
+
+	public void setRequirementQuestionnaireTemplateId(RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId) {
+		this.requirementQuestionnaireTemplateId = requirementQuestionnaireTemplateId;
 	}
 
 	public String getJsonString() {

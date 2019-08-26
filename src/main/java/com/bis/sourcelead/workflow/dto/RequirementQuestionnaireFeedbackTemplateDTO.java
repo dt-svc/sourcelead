@@ -38,6 +38,10 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 	private Integer submissionsCount;
 	
 	private Integer totalPoints;
+	
+	private Long workflowStageId;
+	
+	private Long requirementSubmissionId;
 
 	public Long getId() {
 		return id;
@@ -159,5 +163,20 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 		this.totalPoints = totalPoints;
 	}
 
-	
+	public Long getWorkflowStageId() {
+		return workflowStageId;
+	}
+
+	public void setWorkflowStageId(Long workflowStageId) {
+		this.workflowStageId = workflowStageId;
+	}
+
+	public Long getRequirementSubmissionId() {
+		return requirementSubmissionId;
+	}
+
+	public void setRequirementSubmissionId(Long requirementSubmissionId) {
+		this.requirementSubmissionId = requirementSubmissionId;
+	}
+
 }
