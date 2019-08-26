@@ -4,7 +4,9 @@ package com.bis.sourcelead.workflow.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,8 +15,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -30,10 +36,6 @@ import com.bis.sourcelead.entity.User;
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", nullable = false)
 	private Long id;
-	
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE_ID")
-	private RequirementQuestionnaireFeedbackTemplate RequirementQuestionnaireFeedbackTemplateId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
@@ -74,6 +76,10 @@ import com.bis.sourcelead.entity.User;
 	@ManyToOne
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementQuestionnaireTemplateId")
+	private Set<RequirementQuestionnaireFeedbackTemplate> requirementQuestionnaireFeedbackTemplate;
 
 	public Long getId() {
 		return id;
@@ -179,6 +185,15 @@ import com.bis.sourcelead.entity.User;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public Set<RequirementQuestionnaireFeedbackTemplate> getRequirementQuestionnaireFeedbackTemplate() {
+		return requirementQuestionnaireFeedbackTemplate;
+	}
+
+	public void setRequirementQuestionnaireFeedbackTemplate(
+			Set<RequirementQuestionnaireFeedbackTemplate> requirementQuestionnaireFeedbackTemplate) {
+		this.requirementQuestionnaireFeedbackTemplate = requirementQuestionnaireFeedbackTemplate;
 	}
 
 	

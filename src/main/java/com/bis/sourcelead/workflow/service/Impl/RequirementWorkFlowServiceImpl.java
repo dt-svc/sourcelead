@@ -1200,6 +1200,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		String stageName = (String) paramList.get("stageName");
 		String jobTitle = (String) paramList.get("jobTitle");
 		
+		Long stageId = (Long) paramList.get("stageId");
+		Long submissionId = (Long) paramList.get("submissionId");
+		
 		EmailMessage emailMessage = new EmailMessage();
 		if(candidate.getFirstName()!=null){
 			 emailMessage.setFirstName(candidate.getFirstName());
@@ -1225,7 +1228,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 	
-		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateId, templateUuid);
+		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageId, submissionId);
 		 StringBuilder linkBuild = new StringBuilder();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1261,7 +1264,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return Constants.SUCCESS;
 	}
 
-	public StringBuilder buildCandidateQuestionnaireTable(String templateId, String templateUuid) throws Exception {
+	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, Long stageId, Long submissionId)
+			throws Exception {
 		StringBuilder tempHTML = new StringBuilder();
 		tempHTML.append(
 				"<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
@@ -1271,7 +1275,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		int i = 0;
 		if (null != templateUuid && !"".equalsIgnoreCase(templateUuid)) {
 			tempHTML.append("<td>").append("<a href='").append(sourceleadUrl)
-					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid)
+					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
+					.append(stageId).append("&submissionId=").append(submissionId)
 					.append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Click Here</div></a>")
 					.append("</td>");
 		}
@@ -1289,86 +1294,103 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	
 	@Override
 	public RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(
-			RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO, OrgLocations orgLocations, User user)  {
+			RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO, OrgLocations orgLocations, User user) {
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = null;
-		Candidate candi = new Candidate();
-		candi.setId(1l);
-		RequirementWorkFlow work = new RequirementWorkFlow();
-		work.setId(2l);
+		RequirementSubmission reqSub = new RequirementSubmission();
+		RequirementWorkFlowStages stage = new RequirementWorkFlowStages();
 		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
 		try {
-			if(qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
+			if (qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
 				qtemplate = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackByUuid(qemplateDTO.getUuid());
 				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
-				
-				if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
+
+				if (qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
 					qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
-					 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
-						 if(fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
-							 FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo, "QuestionnaireFeedbackAttachments");
-						 }
-							
+					for (FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()) {
+						if (fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
+							FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo,
+									"QuestionnaireFeedbackAttachments");
 						}
+
+					}
 				}
-				
-				if(qemplateDTO.getTotalPoints() != null) {
+
+				if (qemplateDTO.getTotalPoints() != null) {
 					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
 				}
-				if(qemplateDTO.getSubmissionsCount() != null) {
+				if (qemplateDTO.getSubmissionsCount() != null) {
 					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
 				}
 				qtemplate.setUpdatedBy(user);
 				qtemplate.setUpdatedDate(new Date());
-			}else {
-			
-		qtemplate =  new RequirementQuestionnaireFeedbackTemplate();
-		qtemplate.setOrgLocationId(orgLocations);
-		qtemplate.setCandidateId(candi);
-		qtemplate.setWorkflowId(work);
-		qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
-		qtemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-		qtemplate.setCreatedBy(user);
-		qtemplate.setCreatedDate(new Date());
-		qtemplate.setUpdatedBy(user);
-		qtemplate.setUpdatedDate(new Date());
+			} else {
+				Set<RequirementQuestionnaireFeedbackTemplate> requirementQuestionnaireFeedbackTemplate = new HashSet<RequirementQuestionnaireFeedbackTemplate>();
+				qtemplate = new RequirementQuestionnaireFeedbackTemplate();
+				qtemplate.setOrgLocationId(orgLocations);
+				qtemplate.setRequirementSubmissionId(reqSub);
 
-			
-		if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
-			qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
-			 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
-				 if(fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
-					 FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo, "QuestionnaireFeedbackAttachments");
-				 }
-					
+				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
+				qtemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				qtemplate.setCreatedBy(user);
+				qtemplate.setCreatedDate(new Date());
+				qtemplate.setUpdatedBy(user);
+				qtemplate.setUpdatedDate(new Date());
+
+				if (qemplateDTO.getWorkflowStageId() != null
+						&& StringUtils.isNotBlank(qemplateDTO.getWorkflowStageId().toString())) {
+					stage.setId(qemplateDTO.getWorkflowStageId());
+					qtemplate.setRequirementWorkFlowStagesId(stage);
 				}
-		}
-		
-		if(qemplateDTO.getQuestionnaireTemplateUuid() != null && StringUtils.isNotBlank(qemplateDTO.getQuestionnaireTemplateUuid())){
-			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(qemplateDTO.getQuestionnaireTemplateUuid());
-		}
-		
-		if(requirementQuestionnaireTemplate!= null) {
-			if(requirementQuestionnaireTemplate.getJsonString() != null) {
-				qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+
+				if (qemplateDTO.getRequirementSubmissionId() != null
+						&& StringUtils.isNotBlank(qemplateDTO.getRequirementSubmissionId().toString())) {
+					reqSub.setId(qemplateDTO.getRequirementSubmissionId());
+					qtemplate.setRequirementSubmissionId(reqSub);
+				}
+
+				if (qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
+					qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
+					for (FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()) {
+						if (fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
+							FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo,
+									"QuestionnaireFeedbackAttachments");
+						}
+
+					}
+				}
+
+				if (qemplateDTO.getQuestionnaireTemplateUuid() != null
+						&& StringUtils.isNotBlank(qemplateDTO.getQuestionnaireTemplateUuid())) {
+					requirementQuestionnaireTemplate = requirementWorkFlowDao
+							.getQuestionnaireTemplateById(qemplateDTO.getQuestionnaireTemplateUuid());
+				}
+
+				if (requirementQuestionnaireTemplate != null) {
+					if (requirementQuestionnaireTemplate.getJsonString() != null) {
+						qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+					}
+					if (requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
+						qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+					}
+					if (requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
+						qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+					}
+					qtemplate.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
+				}
+
+				if (qemplateDTO.getTotalPoints() != null) {
+					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
+				}
+				if (qemplateDTO.getSubmissionsCount() != null) {
+					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+				}
+				requirementQuestionnaireFeedbackTemplate.add(qtemplate);
+				requirementQuestionnaireTemplate
+						.setRequirementQuestionnaireFeedbackTemplate(requirementQuestionnaireFeedbackTemplate);
+				requirementWorkFlowDao.saveQuestionnaireTemplate(requirementQuestionnaireTemplate);
 			}
-			if(requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
-				qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
-			}
-			if(requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
-				qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
-			}
-		}
-		
-		if(qemplateDTO.getTotalPoints() != null) {
-			qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
-		}
-		if(qemplateDTO.getSubmissionsCount() != null) {
-			qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
-		}
-		
-			}
-		return requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
-		}catch(Exception e) {
+			return qtemplate;
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
