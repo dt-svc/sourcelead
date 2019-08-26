@@ -9,6 +9,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
@@ -111,6 +112,10 @@ public interface RequirementWorkFlowDao {
 	
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
 
+	void copyWorkflowStagesAndTasks(Tasks tasks);
+
+	List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long stageId)throws Exception;
+
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
 	
 	RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid) throws Exception;
@@ -123,4 +128,5 @@ public interface RequirementWorkFlowDao {
 	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
 	
 	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
+
 }

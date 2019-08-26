@@ -20,6 +20,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
@@ -41,6 +45,7 @@ import com.bis.sourcelead.entity.RequirementInterview;
 import com.bis.sourcelead.entity.RequirementInterviewer;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -48,6 +53,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
@@ -79,6 +85,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Autowired
 	EmailScenerioUtil emailScenerioUtil;
 
+	@Autowired
+	UserDao userDao;
+	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 	
@@ -702,8 +711,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return null;
 	}
 	}
-
-
+		
+	
 	@Override
 	public ResponseList<RequirementWorkFlowTasksDTO> getRequirementWorkFlowTaskList(
 			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO, OrgLocations orgLocations, User user) {
@@ -1012,7 +1021,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public String validateWorkflowStageName(Long id, String name, String uuid, String stageUuid) throws Exception {
 		logger.debug("Started validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
-		String nonSpecialChars = "[a-zA-Z]{2,}|^[a-zA-Z]{2,}[_]|^[a-zA-Z]{2,}[_]{1}[0-9]{1,}$";
+		String nonSpecialChars = "^[A-Za-z]{3,}[ A-Za-z0-9_]*$";
 		String flag = null;
 		Boolean nonSpecialFlag = false;
 		Long workflowId = null;
@@ -1087,7 +1096,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Started validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
 		List<RequirementWorkFlowStages> workflowStages = new ArrayList<RequirementWorkFlowStages>();
 		String flag = null;
-		String nonSpecialChars = "[a-zA-Z]{2,}|^[a-zA-Z]{2,}[_]|^[a-zA-Z]{2,}[_]{1}[0-9]{1,}$";
+		String nonSpecialChars = "^[A-Za-z]{3,}[A-Za-z0-9_]*$";
 		Boolean nonSpecialFlag = false;
 		try {
 			if(shortCode != null && !StringUtils.isBlank(shortCode)) {
@@ -1374,6 +1383,109 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
+	public void copyWorkflowStagesAndTask(String uuid, User user, OrgLocations orgLocations,
+			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO) {
+		User user1 = new User();
+				Tasks tasks = new Tasks();
+				tasks.setOwnerOrglocationId(orgLocations);
+				tasks.setAssignedOrglocationId(orgLocations);
+				tasks.setTaskOwnerId(user);
+				user1.setId(Long.parseLong(requirementWorkFlowTasksDTO.getAssignToUserId()));
+				tasks.setAssignedUserId(user1);
+				tasks.setPriority(requirementWorkFlowTasksDTO.getPriority());
+				tasks.setDescription(requirementWorkFlowTasksDTO.getWorkFlowTaskDescription());
+				tasks.setSubject(requirementWorkFlowTasksDTO.getWorkFlowTaskName());
+				tasks.setStatus(requirementWorkFlowTasksDTO.getStatus());
+				tasks.setTaskDate(new Date());
+				SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
+				//tasks.setworkflow(requirementWorkFlowTasksDTO.getTaskName());
+				tasks.setAlertType(Constants.ENTITY_TYPE_EMAIL + "," + Constants.ENTITY_TYPE_NOTIFICATION);
+				//tasks.setTaskRepeat(templateTasks.getTaskRepeat());
+				//tasks.setDescription(templateTasks.getDescription());
+				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
+				tasks.setStatus(Constants.RECORD_ACTIVE);
+				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+				tasks.setCreatedDate(currentDate);
+				tasks.setCreatedBy(user.getUserUUID());
+				tasks.setUpdatedDate(currentDate);
+				tasks.setUpdatedBy(user.getUserUUID());
+				requirementWorkFlowDao.copyWorkflowStagesAndTasks(tasks);		
+	}
+
+
+	public  List<RequirementWorkFlowTasks> getRequirementworkflowTaskListById
+	               ( Long StageId, OrgLocations orgLocations, User user) throws Exception {
+		
+		 List<RequirementWorkFlowTasks> requirementWorkFlowTasksList = requirementWorkFlowDao.getRequirementWorkFlowTaskListById(StageId);
+		 for(RequirementWorkFlowTasks task : requirementWorkFlowTasksList) {
+	        	User assignUser = userDao.getUserById(task.getAssignTo().getId());	
+	        
+		
+		   //This code is display for Current Date and time 
+		   Date date = new Date();
+		   SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+	       String dateAndTime= formatter.format(date);
+			
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFirstName(user.getFirstName());
+			emailMessage.setLastName(user.getLastName());
+			emailMessage.setToEmail(assignUser.getEmail());
+			emailMessage.setFromEmail(user.getEmail());
+			emailMessage.setCreatedBy(user.getUserCode());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+			InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			globalVarsMap.put("taskDescription", task.getDescription());
+			globalVarsMap.put("taskTitle", task.getWorkFlowTaskName());
+			globalVarsMap.put("assignedUser", assignUser.getFirstName());
+			globalVarsMap.put("loginUser", emailMessage.getFromName());
+			globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
+
+			//Login link for string builder
+			 StringBuilder linkBuild = new StringBuilder();
+	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+	      
+	         
+			EmailScenario emailScenario = null;
+			if (orgLocations != null)
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(
+						Constants.WORKFLOW_TASK_MAIL, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+			if (emailScenario == null) {
+				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WORKFLOW_TASK_MAIL,Constants.ENTITY_TYPE_EMAIL);
+			}
+			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WORKFLOW_TASK_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+
+			// covert subject,body and signature
+			String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(), globalVarsMap,emailScenario);
+			String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(), globalVarsMap, emailScenario);
+			
+			String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(), globalVarsMap,emailScenario);
+			String url = sourceleadUrl;
+
+			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
+			notificationScenario.setBody(notificationbody);
+
+			// construct HTML template using required data
+			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(), orgLocations);
+			emailMessage.setSubject(subject);
+			emailMessage.setMessageBody(emailTemplate);
+			
+			emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario, new HashMap<String, String>());
+		}
+		 
+		return null;
+	}
+
+	
+
+}	
+	
+	
+	
 	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId) {
 		return  requirementWorkFlowDao.validateWorkflowUpdate(workflowId, orgLocationId);
 	}
