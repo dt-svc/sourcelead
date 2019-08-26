@@ -849,6 +849,9 @@ public class RequirementWorkflowController {
 				paramsMap.put("templateUuid", questionnaireUuid);
 				paramsMap.put("stageName", stageName);
 				paramsMap.put("jobTitle", jobTitle);
+				
+				paramsMap.put("submissionId", submissionId);
+				paramsMap.put("stageId", stageId);
 				//status = Constants.SUCCESS;
 				status	=  requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
 			}
@@ -857,16 +860,20 @@ public class RequirementWorkflowController {
 		}
 		
 		
-		 @RequestMapping(value = {"/ws/publicQuestionnaireTemplate", "/viewQuestionnaireTemplate"})
-			public ModelAndView publicQuestionnaireTemplate(@RequestParam(value = "templateUuid", required = true) String templateUuid) throws Exception {
-				ModelAndView model = new ModelAndView();
-				model.addObject("sourceleadUrl", sourceleadUrl);
-				//RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
-				model.setViewName("workflow/publicQuestionnaireTemplate");
-				model.addObject("templateUuid", templateUuid);
-				return model;
+	@RequestMapping(value = { "/ws/publicQuestionnaireTemplate", "/viewQuestionnaireTemplate" })
+	public ModelAndView publicQuestionnaireTemplate(
+			@RequestParam(value = "templateUuid", required = true) String templateUuid,
+			@RequestParam(value = "stageId", required = true) String stageId,
+			@RequestParam(value = "submissionId", required = true) String submissionId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("workflow/publicQuestionnaireTemplate");
+		model.addObject("templateUuid", templateUuid);
+		model.addObject("workflowStageId", stageId);
+		model.addObject("requirementSubmissionId", submissionId);
+		return model;
 
-			}
+	}
 		 
 		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
 		 @ResponseBody
