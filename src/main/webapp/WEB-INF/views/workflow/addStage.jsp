@@ -350,6 +350,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                                 <span class="ml10">Applied on</span>
                                               </div>
                                         </li>
+                                         <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="SubmittedQuestionnaire" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "SubmittedQuestionnaire" disabled = "disabled" checked>
+                                                <label for="SubmittedQuestionnaire" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Submitted Questionnaire *</span>
+                                              </div>
+                                        </li>
                                         <li>
                                             <div class="checkbox-new clearfix">
                                                 <input id="source" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Source">
@@ -376,7 +383,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </div>
 
     </div>
-    
+    <c:if test ="${onlyQuestAndTasksEditable == false}">
     <form id="stagesForm" name="stagesForm">
 		<div class="clearfix row">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -417,11 +424,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		  </div>
     </div>
     </form>
-    
-    <div class="clearfix">
+    </c:if>
+   
+    <!-- functionality is not implemented commented as of now for calrification -->
+    <!-- <div class="clearfix">
         <h4 class="col-md-2">Email</h4>
         <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="">Add Email</a> </div>
-    </div>
+    </div> -->
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
@@ -476,7 +485,17 @@ $(document).ready(function() {
 	})
 	
 	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+	checkValidEditableFields('${onlyQuestAndTasksEditable}')
 });
+// below function disabled the fileds if workflow initiated any requirement for the job.
+function checkValidEditableFields(checkValidEditableFields){
+	if(checkValidEditableFields){
+		  $("#columnsCHkbx").val("on");
+		  $("#stageName").attr("disabled", "disabled");
+		  $("#shortCode").attr("disabled", "disabled");
+		
+	 }
+}
 
 
   var stagename = $('#stageName').val();

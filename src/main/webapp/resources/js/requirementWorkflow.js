@@ -1117,6 +1117,7 @@ function RequirementWorkflow(){
 					$("#applicantphonenumber").prop("checked", true);
 					$("#location").prop("checked", true);
 					$("#Status").prop("checked", true);
+					$("#SubmittedQuestionnaire").prop("checked", true);
 				 }
 				 
 				 this.prepareChosenColumnList = function(chosenColumns){
