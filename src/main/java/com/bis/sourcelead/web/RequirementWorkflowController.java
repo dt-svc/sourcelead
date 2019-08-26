@@ -141,7 +141,7 @@ public class RequirementWorkflowController {
 		user.setId(userId);
 		logger.debug("inside add stage for the workflow >>> "+orgLocations.getId());
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
-		
+		modelandview.addObject("onlyQuestAndTasksEditable", false);// setting false because adding new stage.
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workFlowName", requirementWorkFlowDTO.getWorkFlowName());
