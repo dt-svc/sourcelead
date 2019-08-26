@@ -1109,4 +1109,20 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			return 0;
 		}
 	}
+
+	@Override
+	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId) {
+		RequirementQuestionnaireFeedbackTemplate feedbackTemp = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = " from RequirementQuestionnaireFeedbackTemplate feedbackTemp where  feedbackTemp.stageId=:stageId"
+					    + "feedbackTemp.submissionId=:submissionId and feedbackTemp.orgLocationId.id=:orgLocationId";
+			feedbackTemp = (RequirementQuestionnaireFeedbackTemplate) session.createQuery(query).setLong("stageId", stageId).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getSubmittedQuestionnaireUuidByWorkflowStage DAO");
+			e.printStackTrace();
+			return null;
+		}
+		 return feedbackTemp;
+	}
 }

@@ -129,4 +129,6 @@ public interface RequirementWorkFlowDao {
 	
 	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
 
+	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId);
+
 }

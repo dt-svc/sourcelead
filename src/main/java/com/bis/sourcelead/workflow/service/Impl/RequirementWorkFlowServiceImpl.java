@@ -826,7 +826,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	if(orgLocations != null){
 		workFlow.setOrgLocationId(orgLocations);
 		}
-	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName());
+	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName()+"Copy"); // appending "Copy" post fix to identify cloned work flow.
 	workFlow.setDescription(requirementWorkFlowDTO.getDescription());
 	
 	
@@ -1413,8 +1413,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 
 
-	public  List<RequirementWorkFlowTasks> getRequirementworkflowTaskListById
+	public  String getRequirementworkflowTaskListById
 	               ( Long StageId, OrgLocations orgLocations, User user) throws Exception {
+		try {
 		
 		 List<RequirementWorkFlowTasks> requirementWorkFlowTasksList = requirementWorkFlowDao.getRequirementWorkFlowTaskListById(StageId);
 		 for(RequirementWorkFlowTasks task : requirementWorkFlowTasksList) {
@@ -1476,8 +1477,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			String actionLink = "";
 			emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario, new HashMap<String, String>());
 		}
-		 
-		return null;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while send task email in service "+e.getLocalizedMessage());
+			return Constants.FAILED;
+		}
+		return Constants.SUCCESS;
 	}
 
 	
@@ -1547,5 +1553,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		Integer updatedRequirementCount = requirementWorkFlowDao.updateDefaultWorkflowInRequirementProcedure();
 		responseBuilder.append("Workflow Id Is Updated For "+updatedRequirementCount+" Requirements.");
 		return responseBuilder.toString();
+	}
+
+
+	@Override
+	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId)
+			throws Exception {
+		return requirementWorkFlowDao.getSubmittedQuestionnaireUuidByWorkflowStage(stageId,submissionId,orgLocationId);
 	}
 }
