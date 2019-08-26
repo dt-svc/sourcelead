@@ -26,6 +26,7 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
@@ -80,6 +81,9 @@ public class CandidateDocumentsRestController {
 
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
 
 	/**
 	 * @author Prasad K
@@ -337,7 +341,7 @@ public class CandidateDocumentsRestController {
 				}
 				Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
 				if (null != candidate && null != candidate.getId()) {
-					CandidateIndex candidateIndex = new CandidateIndex();
+					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					candidateIndex.setCandidateId(candidate.getId());
 					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
