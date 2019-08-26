@@ -124,7 +124,7 @@ public interface RequirementWorkFlowService {
 
 	List<RequirementWorkFlowTasks> getRequirementworkflowTaskListById(Long id, OrgLocations orgLocations, User user) throws Exception;
 
-	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
+	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId);
 	
 	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
 	

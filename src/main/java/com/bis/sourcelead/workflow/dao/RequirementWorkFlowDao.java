@@ -116,7 +116,7 @@ public interface RequirementWorkFlowDao {
 
 	List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long stageId)throws Exception;
 
-	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
+	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId);
 	
 	RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid) throws Exception;
 	
