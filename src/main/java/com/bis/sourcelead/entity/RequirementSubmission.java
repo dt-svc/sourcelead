@@ -253,6 +253,9 @@ public class RequirementSubmission implements Serializable{
     @JsonProperty
 	private HashMap<String, String> workflowStagesMap;
 	
+    @Transient
+    @JsonProperty
+	private String submittedQuestionrUuid;
     
     // END  WORKFLOW related columns added by SRINIVAS 
     
@@ -1851,6 +1854,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setWorkflowStagesMap(HashMap<String, String> workflowStagesMap) {
 		this.workflowStagesMap = workflowStagesMap;
+	}
+
+	public String getSubmittedQuestionrUuid() {
+		return submittedQuestionrUuid;
+	}
+
+	public void setSubmittedQuestionrUuid(String submittedQuestionrUuid) {
+		this.submittedQuestionrUuid = submittedQuestionrUuid;
 	}
 
 }
