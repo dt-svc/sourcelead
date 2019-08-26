@@ -5,17 +5,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
-import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
@@ -31,7 +32,6 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(Long orgLocationId)throws Exception;
 	
-	List<RequirementDefaultWorkFlowStages> getRequirementDefaultWorkFlowStages()throws Exception;
 	
 	RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
 	
@@ -96,6 +96,8 @@ public interface RequirementWorkFlowDao {
 
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId, OrgLocations orgLocations);
 	
+	List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId, String stageName, OrgLocations orgLocations);
+	
 	List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
 	
 	List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid)throws Exception;
@@ -113,4 +115,18 @@ public interface RequirementWorkFlowDao {
 	void copyWorkflowStagesAndTasks(Tasks tasks);
 
 	List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long stageId)throws Exception;
+
+	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
+	
+	RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid) throws Exception;
+	
+	
+	List<RequirementWorkFlowStages> getDefaultWorkFlowStages()throws Exception;
+
+	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
+
+	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	
+	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
+
 }

@@ -10,11 +10,13 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
@@ -107,7 +109,7 @@ public interface RequirementWorkFlowService {
 	
 	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
 	
-	List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId, OrgLocations orgLocation, String submissionType)throws Exception;
+	LinkedHashMap<String , String> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId, OrgLocations orgLocation, String submissionType)throws Exception;
 	
 	String  sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception;
 
@@ -122,6 +124,13 @@ public interface RequirementWorkFlowService {
 
 	List<RequirementWorkFlowTasks> getRequirementworkflowTaskListById(Long id, OrgLocations orgLocations, User user) throws Exception;
 
-
+	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId);
 	
+	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
+	
+	String saveDefaultRequirementWorkflowAndStages()throws Exception;
+
+	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	
+	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
 }

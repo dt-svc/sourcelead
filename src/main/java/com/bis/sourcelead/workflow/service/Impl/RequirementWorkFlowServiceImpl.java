@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -55,11 +56,11 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
-import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
@@ -146,35 +147,28 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		//stage saving..
 		Set<RequirementWorkFlowStages> requirementWorkFlow = new HashSet<RequirementWorkFlowStages>();
-		List<RequirementDefaultWorkFlowStages> requirementDefaultWorkFlowStages = requirementWorkFlowDao.getRequirementDefaultWorkFlowStages();
-		reqWorkFlow.setNoOfStages(requirementDefaultWorkFlowStages.size());
-		if(requirementDefaultWorkFlowStages != null && requirementDefaultWorkFlowStages.size() > 0) {
-			for (int i = 0; i < requirementDefaultWorkFlowStages.size(); i++) {
-				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
-				requirementWorkFlowStages.setRequirementWorkFlowId(reqWorkFlow);
-				requirementWorkFlowStages.setOrgLocationId(orgLocations);
-				requirementWorkFlowStages.setStageName(requirementDefaultWorkFlowStages.get(i).getStageName());
-				requirementWorkFlowStages.setDescription(requirementDefaultWorkFlowStages.get(i).getDescription());
-				requirementWorkFlowStages.setSeqOrder(requirementDefaultWorkFlowStages.get(i).getSeqOrder());
-				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
-				
-				if(requirementDefaultWorkFlowStages.get(i).getEditable().equalsIgnoreCase(Constants.YES)) {
-					requirementWorkFlowStages.setConfigureType(Constants.CUSTOMIZE);
-				}else {
-					requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
-				}
-				
-				requirementWorkFlowStages.setEditable(requirementDefaultWorkFlowStages.get(i).getEditable());
-				requirementWorkFlowStages.setStatus(requirementDefaultWorkFlowStages.get(i).getStatus());
-				requirementWorkFlowStages.setCommentRequired(Constants.YES);
-				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
-				requirementWorkFlowStages.setStageShortCode(requirementDefaultWorkFlowStages.get(i).getStageShortCode());
-				requirementWorkFlowStages.setCreatedDate(new Date());
-				requirementWorkFlowStages.setCreatedBy(user);
-				requirementWorkFlowStages.setUpdatedDate(new Date());
-				requirementWorkFlowStages.setUpdatedBy(user);
-				requirementWorkFlow.add(requirementWorkFlowStages);
-			}
+		Integer seqOrder = 1;
+		reqWorkFlow.setNoOfStages(Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.size());
+		for(Map.Entry<String, String> defaultWorkflowMap: Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.entrySet()) {
+			RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
+			requirementWorkFlowStages.setRequirementWorkFlowId(reqWorkFlow);
+			requirementWorkFlowStages.setOrgLocationId(orgLocations);
+			requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
+			requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setSeqOrder(seqOrder);
+			requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
+			requirementWorkFlowStages.setEditable(Constants.NO);
+			requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
+			requirementWorkFlowStages.setCommentRequired(Constants.YES);
+			requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+			requirementWorkFlowStages.setCreatedDate(new Date());
+			requirementWorkFlowStages.setCreatedBy(user);
+			requirementWorkFlowStages.setUpdatedDate(new Date());
+			requirementWorkFlowStages.setUpdatedBy(user);
+			requirementWorkFlow.add(requirementWorkFlowStages);
+			seqOrder++;
 		}
 		reqWorkFlow.setWorkflowStages(requirementWorkFlow);
 		logger.debug("Finished saveRequirementWorkFlowDetailsInfo Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
@@ -207,7 +201,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlow workFlow = null;
 		try {
 		List<RequirementWorkFlow> requirementWorkFlow= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
-		if (requirementWorkFlow.size() == 0) {
+		/*if (requirementWorkFlow.size() == 0) {
 			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
 			
 			StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
@@ -218,7 +212,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			workFlow.setConfigureType(Constants.DEFAULT);
 			workFlow = requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
 			
-		}
+		}*/
 		}catch(Exception e) {
 			logger.error(e+" in saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 			e.printStackTrace();
@@ -229,7 +223,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 
 
-	@Override
+	/*@Override
 	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations){
 		logger.debug("Started getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
 		try {
@@ -237,6 +231,40 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		List<RequirementWorkFlowStagesDTO> newDefaultStages = getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		logger.debug("Finished getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
 		return newDefaultStages;
+		}catch(Exception e) {
+			logger.error(e+" in getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
+			e.printStackTrace();
+			return null;
+		}
+		}*/
+	
+	@Override
+	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations){
+		logger.debug("Started getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
+		try {
+			RequirementWorkFlowDTO requirementWorkFlow = getRequirementDefaultWorkflow(orgLocations);
+			List<RequirementWorkFlowStages> requirementWorkFlowStages= requirementWorkFlowDao.getDefaultWorkFlowStages();
+		
+			List<RequirementWorkFlowStagesDTO> workFlowStagesDTO = new ArrayList<>();
+			RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO = null;
+			
+			if(requirementWorkFlow != null) {
+			for(RequirementWorkFlowStages workFlowStages : requirementWorkFlowStages) {
+				requirementWorkFlowStagesDTO = new RequirementWorkFlowStagesDTO();
+				requirementWorkFlowStagesDTO.setWorkFlowName(requirementWorkFlow.getWorkFlowName());
+				requirementWorkFlowStagesDTO.setWorkflowDescription(requirementWorkFlow.getDescription());
+				requirementWorkFlowStagesDTO.setRequirementWorkFlowUuid(requirementWorkFlow.getUuid());
+				requirementWorkFlowStagesDTO.setStageName(workFlowStages.getStageName());
+				requirementWorkFlowStagesDTO.setEditable(workFlowStages.getEditable());
+				requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
+				requirementWorkFlowStagesDTO.setConfigureType(workFlowStages.getConfigureType());
+				requirementWorkFlowStagesDTO.setStageCount(Integer.parseInt(requirementWorkFlow.getNoOfStages()));
+				workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
+			}	
+			}
+			
+		logger.debug("Finished getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
+		return workFlowStagesDTO;
 		}catch(Exception e) {
 			logger.error(e+" in getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
 			e.printStackTrace();
@@ -324,6 +352,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStagesDTO.setUuid(workFlowStages.getUuid());
 			requirementWorkFlowStagesDTO.setConfigureType(workFlowStages.getConfigureType());
 			requirementWorkFlowStagesDTO.setStageCount(requirementWorkFlow.getNoOfStages());
+			requirementWorkFlowStagesDTO.setRequirementWorkFlowId(requirementWorkFlow.getId());
 			workFlowStagesDTO.add(requirementWorkFlowStagesDTO);
 		}	
 		}
@@ -360,6 +389,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		requirementWorkFlowDTO.setDescription(defaultWorkflow.getDescription());
 		requirementWorkFlowDTO.setUuid(defaultWorkflow.getUuid());
 		requirementWorkFlowDTO.setConfigureType(defaultWorkflow.getConfigureType());
+		requirementWorkFlowDTO.setNoOfStages(defaultWorkflow.getNoOfStages().toString());
 		logger.debug("Finished getRequirementDefaultWorkflow Service for "+orgLocations.getId()+" orgLocation");
 		return requirementWorkFlowDTO;
 	}catch(Exception e) {
@@ -701,33 +731,38 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	}
 	
-
+   /** comments added by SRINIVAS SABBU.
+    *  Below method is used reset the sequence order which are greater than the deleted stage.
+    */
 	@Override
 	public Boolean saveRequirementWorkFlowStagesBySeqOrder(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
 			OrgLocations orgLocations, User user) {
 		logger.debug("Started saveRequirementWorkFlowStagesBySeqOrder Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 		try {
 		List<RequirementWorkFlowStages> workFlowStages = null;
+		// load the deleted stage here.
 		RequirementWorkFlowStages requirementWorkFlowStages = requirementWorkFlowDao.getRequirementWorkFlowStageByUuidAndWorkflowUuid(requirementWorkFlowStagesDTO.getUuid(), requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
+		// load the associated work flow to be deleted.
 		RequirementWorkFlow workflow = requirementWorkFlowDao.getRequirementWorkFlowByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
-		if(requirementWorkFlowStages != null && !requirementWorkFlowStagesDTO.getUuid().equalsIgnoreCase("Select")) {
+		
+		if(requirementWorkFlowStages != null) {
 			
 			requirementWorkFlowStagesDTO.setSeqOrder(requirementWorkFlowStages.getSeqOrder());
-			
+			// load the all the stage which are greater than current deleted work flow id.
 			List<RequirementWorkFlowStages> workFlowStagesbySeqOrder = requirementWorkFlowDao.getRequirementWorkflowStagesBySeqOrderAndWorkflowUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), requirementWorkFlowStagesDTO.getSeqOrder(), orgLocations.getId());
-			
+			// if  there are stages greater than sequence order of the deleted stage then decrement the sequence order of the all the stages.
 			if(workFlowStagesbySeqOrder.size() > 1) {
 			for(RequirementWorkFlowStages stages : workFlowStagesbySeqOrder) {
 				int stageSeqorder = stages.getSeqOrder();
 				stageSeqorder--;
 				stages.setSeqOrder(stageSeqorder);
-				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages);
+				requirementWorkFlowDao.saveRequirementWorkFlowStages(stages); // update and save the stage with updated sequence order.
 			}
-			}
+			}// finally deleted the current stage once all stage are saved with updated sequence order.
 			deleteRequirementWorkFlowStagesByuuid(requirementWorkFlowStagesDTO.getUuid(), orgLocations);
 	}
 		 workFlowStages = requirementWorkFlowDao.getRequirementWorkflowStagesListByUuid(requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid().trim(), orgLocations.getId());
-		 workflow.setNoOfStages(workFlowStages.size());
+		 workflow.setNoOfStages(workFlowStages.size()); // updated the no of stages count for the work flow and saves the work flow.
 		 requirementWorkFlowDao.saveRequirementWorkFlowDetails(workflow, orgLocations);
 		 logger.debug("Finished saveRequirementWorkFlowStagesBySeqOrder Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
 		 return true;
@@ -873,6 +908,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workflowtasks.get(0).setPriority(requirementWorkFlowTasksDTO.getPriority());
 		workflowtasks.get(0).setWorkFlowTaskDescription(requirementWorkFlowTasksDTO.getWorkFlowTaskDescription());
 		
+		if(StringUtils.isBlank(requirementWorkFlowStagesDTO.getStageShortCode())) {
+			requirementWorkFlowStagesDTO.setStageShortCode(Constants.DEFAULT);
+		}
 		requirementWorkFlowStagesDTO.setRequirementWorkFlowUuid(requirementWorkFlowTasksDTO.getRequirementWorkFlowUuid().trim());
 		requirementWorkFlowStagesDTO.setCurrentStageUuid(requirementWorkFlowTasksDTO.getCurrentStageUuid());
 		requirementWorkFlowStagesDTO.setStageName(requirementWorkFlowTasksDTO.getStageName());
@@ -1123,38 +1161,24 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public List<String> getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(Long workflowId,
+	public LinkedHashMap<String , String> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId,
 			OrgLocations orgLocation, String submissionType) throws Exception {
 		logger.debug("Started getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
 				+ orgLocation.getId() + " orgLocation");
 		try {
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao
-					.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(workflowId, orgLocation);
-			List<String> stageShortCodeList = new ArrayList<String>();
-			List<String> stageShortCodes = new ArrayList<String>();
-			List<String> stages = new ArrayList<String>();
-			LinkedHashMap<String, String> linkedMap = new LinkedHashMap<String, String>();
+					.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(workflowId, submissionType, orgLocation);
+			
+			LinkedHashMap<String , String> stagesMap = new LinkedHashMap<String , String>();
+			
 			if (requirementWorkFlowStages != null && requirementWorkFlowStages.size() > 0) {
 				for (RequirementWorkFlowStages stage : requirementWorkFlowStages) {
-					stageShortCodeList.add(stage.getStageShortCode());
-					linkedMap.put(stage.getStageShortCode(), stage.getStageName());
-				}
-				for (int i = 0; i < requirementWorkFlowStages.size();) {
-					while (stageShortCodeList.indexOf(submissionType) < i) {
-						if (!stageShortCodeList.get(i).equals(submissionType)) {
-							stageShortCodes.add(stageShortCodeList.get(i));
-						}
-						break;
-					}
-					i++;
-				}
-				for (String shortCode : stageShortCodes) {
-					stages.add(linkedMap.get(shortCode));
+					stagesMap.put(stage.getStageShortCode(), stage.getStageName());
 				}
 			}
 			logger.debug("Finished getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
 					+ orgLocation.getId() + " orgLocation");
-			return stages;
+			return stagesMap;
 		} catch (Exception e) {
 			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrgLocationId Service for "
 					+ orgLocation.getId() + " orgLocation");
@@ -1166,6 +1190,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Override
 	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
+		
+		try {
 		User candidate = (User) paramList.get("candidate");
 		User loginUser = (User) paramList.get("loginUser");
 		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
@@ -1227,7 +1253,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			 noificationEmailScenario.setBody(notificationbody);
 			 emailScenerioUtil.sendNotification(actionLink, loginUser, candidate, orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
-		return "success";
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception while sending email questionnnaire to canidate "+e.getMessage());
+			return Constants.FAILED ;
+	   }
+		return Constants.SUCCESS;
 	}
 
 	public StringBuilder buildCandidateQuestionnaireTable(String templateId, String templateUuid) throws Exception {
@@ -1264,8 +1295,33 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		candi.setId(1l);
 		RequirementWorkFlow work = new RequirementWorkFlow();
 		work.setId(2l);
+		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
 		try {
-		RequirementQuestionnaireFeedbackTemplate qtemplate =  new RequirementQuestionnaireFeedbackTemplate();
+			if(qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
+				qtemplate = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackByUuid(qemplateDTO.getUuid());
+				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
+				
+				if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
+					qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
+					 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
+						 if(fileInfo.getFileURL() != null && fileInfo.getStatus() == 0) {
+							 FileUploadUtil.moveFile(qemplateDTO.getStaticPath(), fileInfo, "QuestionnaireFeedbackAttachments");
+						 }
+							
+						}
+				}
+				
+				if(qemplateDTO.getTotalPoints() != null) {
+					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
+				}
+				if(qemplateDTO.getSubmissionsCount() != null) {
+					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+				}
+				qtemplate.setUpdatedBy(user);
+				qtemplate.setUpdatedDate(new Date());
+			}else {
+			
+		qtemplate =  new RequirementQuestionnaireFeedbackTemplate();
 		qtemplate.setOrgLocationId(orgLocations);
 		qtemplate.setCandidateId(candi);
 		qtemplate.setWorkflowId(work);
@@ -1276,6 +1332,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		qtemplate.setUpdatedBy(user);
 		qtemplate.setUpdatedDate(new Date());
 
+			
 		if(qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
 			qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
 			 for(FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()){
@@ -1290,10 +1347,26 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(qemplateDTO.getQuestionnaireTemplateUuid());
 		}
 		
-		if(requirementQuestionnaireTemplate!= null && requirementQuestionnaireTemplate.getJsonString() != null) {
-			qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+		if(requirementQuestionnaireTemplate!= null) {
+			if(requirementQuestionnaireTemplate.getJsonString() != null) {
+				qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+			}
+			if(requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
+				qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+			}
+			if(requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
+				qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+			}
 		}
 		
+		if(qemplateDTO.getTotalPoints() != null) {
+			qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
+		}
+		if(qemplateDTO.getSubmissionsCount() != null) {
+			qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+		}
+		
+			}
 		return requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -1413,3 +1486,70 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	
 	
 	
+	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, Long orgLocationId) {
+		return  requirementWorkFlowDao.validateWorkflowUpdate(workflowId, orgLocationId);
+	}
+	
+	@Override
+	public String saveDefaultRequirementWorkflowAndStages(){
+		try {
+			List<RequirementWorkFlow> wf= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(null);
+			if(wf != null && wf.size() == 0) {
+			Integer seqOrder = 1;
+			RequirementWorkFlow requirementWorkFlow = new RequirementWorkFlow();
+			requirementWorkFlow.setWorkFlowName(Constants.DEFAULT_JOB_WORKFLOW);
+			requirementWorkFlow.setDescription(Constants.DEFAULT_JOB_WORKFLOW);
+			requirementWorkFlow.setNoOfStages(Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.size());
+			requirementWorkFlow.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+			requirementWorkFlow.setStatus(Constants.RECORD_ACTIVE);
+			requirementWorkFlow.setConfigureType(Constants.DEFAULT);
+			requirementWorkFlow.setCreatedDate(new Date());
+			requirementWorkFlow.setUpdatedDate(new Date());
+			
+			Set<RequirementWorkFlowStages> requirementWorkFlowSet = new HashSet<RequirementWorkFlowStages>();
+			for(Map.Entry<String, String> defaultWorkflowMap: Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.entrySet()) {
+				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
+				requirementWorkFlowStages.setRequirementWorkFlowId(requirementWorkFlow);
+				requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
+				requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setSeqOrder(seqOrder);
+				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
+				requirementWorkFlowStages.setEditable(Constants.NO);
+				requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
+				requirementWorkFlowStages.setCommentRequired(Constants.YES);
+				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				requirementWorkFlowStages.setCreatedDate(new Date());
+				requirementWorkFlowStages.setUpdatedDate(new Date());
+				requirementWorkFlowSet.add(requirementWorkFlowStages);
+				seqOrder++;
+			}
+			requirementWorkFlow.setWorkflowStages(requirementWorkFlowSet);
+			requirementWorkFlowDao.saveRequirementWorkFlowDetails(requirementWorkFlow, null);
+			}
+			return Result.SUCCESS.getValue();
+		} catch (Exception e) {		
+			e.printStackTrace();
+			return Result.FAILED.getValue();
+		}
+	}
+
+
+	@Override
+	public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId) {
+		return requirementWorkFlowDao.getQuestionnaireIdAssignedToStage(workflowId, stageName, orgLocationId);
+	}
+
+
+	@Override
+	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
+		return requirementWorkFlowDao.getCandidateByRequirementSubmissionId(submissionId);
+	}
+	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
+		StringBuilder responseBuilder = new StringBuilder("");
+		Integer updatedRequirementCount = requirementWorkFlowDao.updateDefaultWorkflowInRequirementProcedure();
+		responseBuilder.append("Workflow Id Is Updated For "+updatedRequirementCount+" Requirements.");
+		return responseBuilder.toString();
+	}
+}

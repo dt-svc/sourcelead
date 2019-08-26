@@ -2,6 +2,7 @@
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.TimeZone;
 
 
@@ -641,9 +642,20 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
+	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	
+	//workflow
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final String CUSTOMIZE = "Customize";
-	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	public static final LinkedHashMap<String, String> DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String> (){
+		{
+			put("Submission", "SUBMISSION"); 	put("Short List", "SHORTLIST"); 
+			put("Submit to Client", "SUBMIT_TO_CLIENT"); put("Interview","INTERVIEW"); 
+			put("Offer", "OFFERMADE"); 	put("No Response", "NORESPONSE"); 
+			put("On-hold","ONHOLD"); put("Joined", "JOINED"); 
+			put("Reject", "REJECTED"); put("Backout","BACKOUT");
+		}
+	};
 	
 	public static final String WORKFLOW_TASK_MAIL = "workflowTaskMail";
 	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowTaskNotification";
