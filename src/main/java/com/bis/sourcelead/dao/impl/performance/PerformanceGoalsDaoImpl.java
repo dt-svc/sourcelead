@@ -643,7 +643,7 @@ public class PerformanceGoalsDaoImpl implements PerformanceGoalsDao{
 				        "GA.ASSIGNED_USER_ID, "+
 				        "U.FIRST_NAME, "+
 						"U.LAST_NAME, "+
-				        "U.FILE_URL,ga.CREATED_DATE "+
+				        "U.FILE_URL,GA.CREATED_DATE "+
 				        "FROM "+
 				  		"PERFORMANCE_GOALS PG, "+ 
 				  		"USER U,"+
