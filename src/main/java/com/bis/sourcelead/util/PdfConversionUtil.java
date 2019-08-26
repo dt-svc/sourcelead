@@ -33,6 +33,9 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import ooo.connector.BootstrapSocketConnector;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 @Component
 public class PdfConversionUtil {
@@ -115,13 +118,11 @@ public class PdfConversionUtil {
 	        Document pdfDoc = new Document();
 
 	         try {  
-	             System.out.println("Starting the test");  
 	             fs = new POIFSFileSystem(docFile);  
 
 	             HWPFDocument doc = new HWPFDocument(fs);  
 	             WordExtractor we = new WordExtractor(doc);  
 
-//	             OutputStream file = new FileOutputStream(new File("C:\\Users\\BISD06\\Desktop\\opt\\prasanna.pdf")); 
 	             ByteArrayOutputStream file = new ByteArrayOutputStream();
 
 	             PdfWriter writer = PdfWriter.getInstance(pdfDoc, file);  
@@ -152,7 +153,7 @@ public class PdfConversionUtil {
 	 * @param file
 	 * @return byte[]
 	 */
-	/*public byte[] convertDocxFileToPdf(File file)
+	public byte[] convertDocxFileToPdf(File file)
 	{
 		try {
 			InputStream doc = new FileInputStream(file);
@@ -166,6 +167,6 @@ public class PdfConversionUtil {
 			System.out.println(ex.getMessage());
 		}
 		return null;
-	}*/
+	}
 	
 }
