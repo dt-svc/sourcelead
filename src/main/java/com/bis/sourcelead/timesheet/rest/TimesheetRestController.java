@@ -3708,9 +3708,28 @@ public class TimesheetRestController {
 					fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 
 				timesheetEntryDetailsDTO.setProfileImageFileUrl(fileUrl);
-				timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
-				timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
-				timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+				
+				
+				if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
+					timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getConsultantUser().getFullName());
+					timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getConsultantUser().getEmail());
+				}else {
+					timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
+					timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
+				}
+				
+				
+				if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getMobilePhone())) {
+					timesheetEntryDetailsDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+				}else {
+					if(pm.getProjectMemberCandidteId().getParentCandidateId() != null) {
+						Candidate parentCandidate = candidateService.getCandidateByCandidateId(pm.getProjectMemberCandidteId().getParentCandidateId().getId());
+						if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+							timesheetEntryDetailsDTO.setEmployeePhoneNo(parentCandidate.getMobilePhone());
+						}
+					}
+				}
+			
 				timesheetEntryDetailsDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
 				timesheetEntryDetailsDTO.setEmploymentTypeForSubmissionPageDisplay(pm.getProjectMemberCandidteId().getDesignationType());
 						
@@ -5310,7 +5329,18 @@ public class TimesheetRestController {
 			tedDTO.setProfileImageFileUrl(fileUrl);
 			tedDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
 			tedDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
-			tedDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+			
+			if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getMobilePhone())) {
+				tedDTO.setEmployeePhoneNo(pm.getProjectMemberCandidteId().getMobilePhone());
+			}else {
+				if(pm.getProjectMemberCandidteId().getParentCandidateId() != null) {
+					Candidate parentCandidate = candidateService.getCandidateByCandidateId(pm.getProjectMemberCandidteId().getParentCandidateId().getId());
+					if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+						tedDTO.setEmployeePhoneNo(parentCandidate.getMobilePhone());
+					}
+				}
+			}
+			
 			tedDTO.setProjectNameForSubmissionPageDisplay(pm.getProjects().getProjectName());
 			tedDTO.setEmploymentTypeForSubmissionPageDisplay(
 			pm.getProjectMemberCandidteId().getDesignationType());
@@ -5419,7 +5449,18 @@ public class TimesheetRestController {
 			projectMember = projectMembersService.getProjectMemberById(tedDTO.getProjectMemberId());
 			tedDTO.setEmployeeEmail(projectMember.getProjectMemberCandidteId().getEmail());
 			tedDTO.setEmployeeName(projectMember.getProjectMemberCandidteId().getFullName());
-			tedDTO.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
+			
+			if(StringUtils.isNotEmpty(projectMember.getProjectMemberCandidteId().getMobilePhone())) {
+				tedDTO.setEmployeePhoneNo(projectMember.getProjectMemberCandidteId().getMobilePhone());
+			}else {
+				if(projectMember.getProjectMemberCandidteId().getParentCandidateId() != null) {
+					Candidate parentCandidate = candidateService.getCandidateByCandidateId(projectMember.getProjectMemberCandidteId().getParentCandidateId().getId());
+					if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+						tedDTO.setEmployeePhoneNo(parentCandidate.getMobilePhone());
+					}
+				}
+			}
+			
 		}
 		Date frequencyStartDate = null;
 		Date frequencyEndDate = null;
@@ -5629,7 +5670,7 @@ public class TimesheetRestController {
 			if (tsDTO.getFileInfo() != null) {
 				for (FileInfo file : tsDTO.getFileInfo()) {
 					FileInfo freshFile = file;
-					if (StringUtils.isEmpty(file.getFileDbId())) {
+					if (StringUtils.isEmpty(file.getFileDbId()) && StringUtils.isNotEmpty(file.getFileURL())) {
 						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 						TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 						tsd.setTimesheetSubmissions(timesheetSubmissions);
@@ -5643,8 +5684,9 @@ public class TimesheetRestController {
 						tsd.setUpdatedBy(loginUser.getUserCode());
 						tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
 						freshFile.setFileDbId(tsd.getId().toString());
+						fileInfoList.add(freshFile);
 					}
-					fileInfoList.add(freshFile);
+					
 				}
 			}
 			tsDTO.setFileInfo(fileInfoList);

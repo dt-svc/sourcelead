@@ -1785,7 +1785,8 @@ public class LeaveManagementRestController {
 		Response<LeaveType> response = new Response<>();
 		try {
 
-			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+			OrgLocations loginOrgLocation = orgLocationService.getOrgLocationById(orgLocationId);
 			if (loginOrgLocation != null) {
 				LeaveType leaveType = new LeaveType();
 				leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveTypeDTO.getLeaveTypeUUID());
@@ -3105,7 +3106,8 @@ public class LeaveManagementRestController {
 	public Response<Float> calculateLeaveDuration(LeaveDTO leaveDTO,HttpServletRequest request) throws Exception {
 		Response<Float> response = new Response<>();
 	    float noOfDays = 0f; 
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	    Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request,"orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocationId);
 	    Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		orgLocations.setOrg(org);
 		LeaveType leaveType =  leaveTypeService.getLeaveTypeByUUID(leaveDTO.getLeaveType());

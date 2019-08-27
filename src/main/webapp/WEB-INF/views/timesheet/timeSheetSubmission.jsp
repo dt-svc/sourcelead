@@ -259,7 +259,7 @@
 												      </td>
 										              <td>
 										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
-													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
+													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
 													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <c:if test="${!empty entry.ticketNumber}">
@@ -1931,26 +1931,29 @@ function validateUploadFile(rowId,attNumber,item)
 {
 	  $('#'+rowId+'uploadFile'+attNumber).val(item.value.replace(/C:\\fakepath\\/i, ''));
 	  var selectedFile = $('#'+rowId+'docFile'+attNumber).val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+rowId+'docFile'+attNumber)[0].files[0].size;
-	      /*  $("#attachmentInnerDiv"+rowId+"Id").find('p.jquery_form_error_message').remove(); */
-	      if(docSize > 2097152){
-	    	  $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
-	    	  $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
-	    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('#timesheetAttValidationInput'+rowId).removeAttr( "record-exist record-exist-errormsg");
-	    	 $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
-	    	 $('#timesheetAttValidationInput'+rowId).val('1');
-	    	 fileUpload(''+rowId+'docFile'+attNumber, "timesheetDocuments", "timesheet_form","timsheetAttachments["+rowId+"].fileInfo","","");
-	      }
-	  }
-	  else{
-		      $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
-		      $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message' >Invalid Format</p>");  
-		      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
-		      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Invalid Format'); 
+	  if(selectedFile){
+		  if(validate_fileupload(selectedFile)){
+			   var docSize = $('#'+rowId+'docFile'+attNumber)[0].files[0].size;
+		      if(docSize > 2097152){
+		    	  $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+		    	  $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
+		    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
+		    	  $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
+		      }else{
+		    	 $('#timesheetAttValidationInput'+rowId).removeAttr( "record-exist record-exist-errormsg");
+		    	 $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+		    	 $('#timesheetAttValidationInput'+rowId).val('1');
+		    	 fileUpload(''+rowId+'docFile'+attNumber, "timesheetDocuments", "timesheet_form","timsheetAttachments["+rowId+"].fileInfo","","");
+		      }
+		  }
+		  else{
+			      $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
+			      $('#'+rowId+'uploadFile'+attNumber).after("<p class='jquery_form_error_message' >Invalid Format</p>");  
+			      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist','yes');
+			      $('#'+rowId+'uploadFile'+attNumber).attr('record-exist-errorMsg','Invalid Format'); 
+		  }
+	  }else{
+		  $("#"+rowId+"AttchmentDiv"+attNumber+"Id").find('p.jquery_form_error_message').remove();
 	  }
 }
 </script>

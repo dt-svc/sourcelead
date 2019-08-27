@@ -26,7 +26,7 @@ $(document).ready(function(){
       <div class="clearfix mt mb">
         <div class="col-md-2 padding_right">
           <ul class="list-unstyled listStyles">
-            <li><a href="${SourceLeadWeb_pmsUrl}/projtctAttributes">Task Type</a></li>
+            <li><a href="${SourceLeadWeb_pmsUrl}/projectAttributes">Task Type</a></li>
             <li><a href="${SourceLeadWeb_pmsUrl}/projectAttributeStatus">Status</a></li>
             <li class="activeList"><a href="${SourceLeadWeb_pmsUrl}/projectAttributePriority">Priority</a></li>
             <li><a href="${SourceLeadWeb_pmsUrl}/projectAttributeSeverity">Severity</a></li>
