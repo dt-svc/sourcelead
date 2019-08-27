@@ -15,7 +15,7 @@
  </c:if>
  
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead :: Interview Template</title>
+<title>Welcome to Source Lead :: Questionnaire Template</title>
 <!-- Bootstrap -->
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -51,52 +51,54 @@ width: auto !important; padding-right: 15px;
 <script type="text/javascript">
 var labelAndAttemptsMap = new Map();
 window.onload = function () {
-	interviewTemplateForm();
-	getTimeLimit();
-
+/* 	var templateUuid = '${templateUuid}';
+	var workflowStageId = '${workflowStageId}';
+	var requirementSubmissionId = '${requirementSubmissionId}';
+   if(workflowStageId == "" && requirementSubmissionId == ""){
+	   alert("feedback template "+templateUuid);
+		generateQuestionnaireFeedbackTemplateForm(templateUuid);
+	}else{
+		alert("questionnaire template");
+	   questionnaireTemplateForm();
+	} */
+	// commented to be removed after clock is set
+	//getTimeLimit();
+	questionnaireTemplateForm();
  };
 </script>
 
 
 <script>
-function interviewTemplateForm(){
+function questionnaireTemplateForm(){
 	var templateUuid = '${templateUuid}';
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#interviewTemplateFormDiv").show();
-		generateInterviewFeedbackForm1(sourceleadUrl, templateUuid)
+	$("#questionnaireTemplateFormDiv").show();
+		generateQuestionnaireForm1(sourceleadUrl, templateUuid)
 		var result = "";
-		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small></h3>';
+		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
+		// commented to be removed after clock is set
+		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
+		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
 		result = result + "";
-		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
-		result = result + '<div class="sjfb-field sjfb-text">';
-		result = result + '<label>Comment <span class="text-danger">*</span></label>';
-		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
-		result = result + '</div>';
-		result = result + '<div class="sjfb-field sjfb-text">';
-		result = result + '<label>Selected for Interview</label>';
-		result = result + '<span class="radio-inline"><input type="radio" value="Yes" name="feedback">Yes</span>';
-		result = result + '<span class="radio-inline"><input type="radio" value="No" name="feedback">No</span>';
-		result = result + '</div>';
-		result = result + '</div>'; */
+		
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
+		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveInterviewTemplate();">Submit</button>';
+		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		//result = result + '<button type="button"  class="btn btn-sm btn-warning ml">Cancel</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
 		result = result + '</form>';
 		 
-		$("#interviewTemplateFormDiv").empty();
-		$("#interviewTemplateFormDiv").append(result);
+		$("#questionnaireTemplateFormDiv").empty();
+		$("#questionnaireTemplateFormDiv").append(result);
 	
 }
 function getTimeLimit(){
@@ -124,13 +126,13 @@ function getTimeLimit(){
 <script>
 var qfeedbackUuid="";
 var submissionsCount = 1;
-function saveInterviewTemplate(){
+function saveQuestionnaireTemplate(){
 	var workflowStageId = '${workflowStageId}';
 	var requirementSubmissionId = '${requirementSubmissionId}';
-	if ($('#interviewTemplate_form').validate(false, validationSettings)){ 
-	      var frm = $('#interviewTemplate_form').serializeFormJSON();
+	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
+	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
 		var qTemplateUuid = '${templateUuid}'; 
-	      var form = $('#interviewTemplate_form')[0];
+	      var form = $('#questionnaireTemplate_form')[0];
 		    var formData = new FormData(form); 
 		    
 	      var sourceleadUrl ='${sourceleadUrl}';
@@ -297,9 +299,9 @@ function saveInterviewTemplate(){
 	    	return false;	
 	       } 
 }
-$('body').on('blur', '#interviewTemplate_form', function() {
-	$("#interviewTemplate_form").showHelpOnFocus();
-	$("#interviewTemplate_form").validateOnBlur(false, validationSettings);
+$('body').on('blur', '#questionnaireTemplate_form', function() {
+	$("#questionnaireTemplate_form").showHelpOnFocus();
+	$("#questionnaireTemplate_form").validateOnBlur(false, validationSettings);
 });
 
 function calculateTotalPoints(pointsArray){
@@ -352,7 +354,7 @@ function calculateTotalPoints(pointsArray){
     <nav class="header-nav navbar">
     </nav>
    </header>
-   <div id="interviewTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
+   <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
    <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
    <div id="viewInterviewTemplateList" class="container paddingTop55"></div>
    <div id="viewInterviewTemplateNo" class="container paddingTop55"></div>
@@ -369,9 +371,9 @@ function calculateTotalPoints(pointsArray){
 
 
 <script>
-function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
+function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     //empty out the preview area
-    $("#interviewsjfb-fields").empty();
+    $("#questionnairesjfb-fields").empty();
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -396,10 +398,10 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
                      var fieldType = v['type'];
 
                      //Add the field
-                     $('#interviewsjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],sourceleadUrl));
-                    // $('#interviewsjfb-fields').append(addField(fieldType,v['req'],v['label'],v['hint'],sourceleadUrl));
+                     $('#questionnairesjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],sourceleadUrl));
+                    // $('#questionnairesjfb-fields').append(addField(fieldType,v['req'],v['label'],v['hint'],sourceleadUrl));
                      
-                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
+                     var $currentField = $('#questionnairesjfb-fields .sjfb-field').last();
                      
                      var reqSymbol = '';
                 	 if(v['req'] == '1'){
@@ -651,6 +653,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
                          
                     	 
                  }
+                 console.log(labelAndAttemptsMap)
              }
              var d = new Date();
              var year = d.getFullYear() - 10;
@@ -679,6 +682,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
 </script>
 <script>
 function generateQuestionnaireFeedbackTemplateForm(templateUuid){
+	$("#questionnaireTemplateFormDiv").show();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -693,32 +697,35 @@ function generateQuestionnaireFeedbackTemplateForm(templateUuid){
 	
 	 
 		var result = "";
-		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small></h3>';
+		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
+		// commented to be removed after clock is set
+		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
+		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
+		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveInterviewTemplate();">Submit</button>';
+		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
 		result = result + '</form>';
 		 
-		$("#interviewTemplateFormDiv").empty();
-		$("#interviewTemplateFormDiv").append(result);
+		$("#questionnaireTemplateFormDiv").empty();
+		$("#questionnaireTemplateFormDiv").append(result);
 		 generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript);
-		 getTimeLimit();
+		// commented to be removed after clock is set
+		// getTimeLimit();
 }
 
 function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript){
 
     //empty out the preview area
-    $("#interviewsjfb-fields").empty();
+    $("#questionnairesjfb-fields").empty();
     $.ajax({
     	type: "GET",
         url: sourceleadUrl+"/getQuestionnaireTemplateFeedbackList?templateUuid="+templateUuid, 
@@ -741,8 +748,8 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                      var labelTitle = v['label'];
                      var required =  v['req'];
                      //Add the field
-                     $('#interviewsjfb-fields').append(addSavedFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],attachmentCount));
-                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
+                     $('#questionnairesjfb-fields').append(addSavedFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],attachmentCount));
+                     var $currentField = $('#questionnairesjfb-fields .sjfb-field').last();
                      
                      if(fieldType == "file"){
                     	 attachmentCount = attachmentCount+1;
@@ -1225,7 +1232,7 @@ function evaluatePostSlider(label, value){
 </script>
 <script>
 function uploadFeedbackAttachments(id,attachmentCount){
-	questionnaireFeedbackFileUpload("newUploadBtn"+id, "QuestionnaireFeedbackAttachments", "interviewTemplate_form","uploadedFileInfo",attachmentCount);
+	questionnaireFeedbackFileUpload("newUploadBtn"+id, "QuestionnaireFeedbackAttachments", "questionnaireTemplate_form","uploadedFileInfo",attachmentCount);
 	$('#newUploadFile'+id).val($("#newUploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
 	
 }

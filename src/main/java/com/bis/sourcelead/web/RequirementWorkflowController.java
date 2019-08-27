@@ -875,8 +875,8 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = { "/ws/publicQuestionnaireTemplate", "/viewQuestionnaireTemplate" })
 	public ModelAndView publicQuestionnaireTemplate(
 			@RequestParam(value = "templateUuid", required = true) String templateUuid,
-			@RequestParam(value = "stageId", required = true) String stageId,
-			@RequestParam(value = "submissionId", required = true) String submissionId) throws Exception {
+			@RequestParam(value = "stageId", defaultValue = "", required = false) String stageId,
+			@RequestParam(value = "submissionId", defaultValue = "", required = false) String submissionId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("workflow/publicQuestionnaireTemplate");
@@ -887,6 +887,21 @@ public class RequirementWorkflowController {
 
 	}
 		 
+	//viewQuestionnaireFeedBackTemplate
+	@RequestMapping(value =  "/viewQuestionnaireFeedBackTemplate" )
+	public ModelAndView publicQuestionnaireTemplate(
+			@RequestParam(value = "templateUuid", required = true) String templateUuid) throws Exception {
+		String emptyString = "";
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("workflow/publicQuestionnaireFeedBackTemplate");
+		model.addObject("templateUuid", templateUuid);
+		model.addObject("workflowStageId", emptyString);
+		model.addObject("requirementSubmissionId", emptyString);
+		return model;
+	}
+	
+	
 		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
 		 @ResponseBody
 		   public String getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
