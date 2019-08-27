@@ -1304,46 +1304,7 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		String tagsQuery = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and userRole.user.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
 
 		if (userRoleDTO.getEmployeMentType() != null && !userRoleDTO.getEmployeMentType().isEmpty()) {
-			String[] employementType = userRoleDTO.getEmployeMentType().split(",");
-			if (Arrays.asList(employementType).contains("C2C")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2C' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("C2C-1099")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2C-1099' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("W-2")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'W-2' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("C2H")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2H' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("C2H-1099")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'C2H-1099' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("Offshore C2C")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Offshore C2C' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("Part Time")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Part Time' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("Full Time")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Full Time' or ";
-			}
-
-			if (Arrays.asList(employementType).contains("Other")) {
-				subQuery7 = subQuery7 + "emp.userEmploymentType = 'Other' or ";
-			}
-
-			subQuery7 = "and (" + subQuery7.substring(0, subQuery7.length() - 4) + ")";
-			employmentTypeQuery = "and userRole.user.id IN (select emp.user.id from Employees emp where emp.orgLocations.id = :locationId "
-					+ subQuery7 + " )";
+			employmentTypeQuery = "and userRole.user.id IN (select emp.user.id from Employees emp where emp.orgLocations.id = :locationId and emp.userEmploymentType IN('"+userRoleDTO.getEmployeMentType().replace(",", "','")+"') )";
 		}
 
 		String listQuery = "from UserRole userRole where userRole.orgLocations.id = :locationId  and userRole.user.id <> '1'  "
