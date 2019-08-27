@@ -36,8 +36,6 @@ public class ExpensesEmailsUtil {
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
 
-	@Value("${pmsUrl}")
-	private String pmsUrl;
 
 	@Autowired
 	private CommonUtil commonUtil;

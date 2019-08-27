@@ -114,5 +114,9 @@ public interface ProjectsDao {
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orglocationId);
 
 	public List<Object[]> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations);
+	
+	List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+	
+	List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
 
 }

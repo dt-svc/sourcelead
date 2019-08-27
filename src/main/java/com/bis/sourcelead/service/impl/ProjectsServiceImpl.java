@@ -4164,6 +4164,18 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 		return createExcelsheet;
 	}
 
+	@Override
+	public List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		return projectsDao.getProjectListForProjectTimeEntriesReports(orgLocationsId, orgId, isGlobalManager, userId, type, userRole);
+	}
+	
+	@Override
+	public List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		return projectsDao.getProjectListForResourceTimeEntriesReports(orgLocationsId, orgId, isGlobalManager, userId, type, userRole);
+	}
+
 }	
 
 
