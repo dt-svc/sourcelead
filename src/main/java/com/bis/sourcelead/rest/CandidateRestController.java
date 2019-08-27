@@ -11,7 +11,6 @@ import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,29 +39,20 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
-import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
-import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.TicketTypeDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
-import com.bis.sourcelead.entity.LookUpData;
-import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
-import com.bis.sourcelead.entity.MarketplaceSalesOrder;
-import com.bis.sourcelead.entity.CandidateSource;
-import com.bis.sourcelead.entity.Immigration;
-import com.bis.sourcelead.entity.LcaHistory;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
@@ -247,16 +237,20 @@ public class CandidateRestController {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
 				multiFile = request.getFile(itrator.next());
 			}
 			ResumeParserJsonUtil resumeDetails = null;
-			if (null != multiFile) {
-				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				String fileName = multiFile.getOriginalFilename();
+			String fileName = null;
+			if (null != multiFile && orgLocation !=null && country != null ) {
+				
+				 fileName = multiFile.getOriginalFilename();
 				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
+			}else {
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeForPublicPages(multiFile.getBytes(), fileName);
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());
@@ -268,6 +262,8 @@ public class CandidateRestController {
 		}
 		return response;
 	}
+	
+	
 
 	/**
 	 * To validate user email

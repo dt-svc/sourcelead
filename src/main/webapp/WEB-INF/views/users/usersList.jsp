@@ -1223,7 +1223,7 @@ function getDynamciUserList(){
 		orgDepartments.push($(this).val());
      });
 	
-	var searchValue = $("#dynamicUserDataTableSearch").val();
+	var searchValue = $("#dynamicUserDataTableSearch").val().trim();
 	 searchValue = searchValue ? searchValue : "";
 	var url = atsUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags;
     $('#dynamicUserDataTableSearch').removeAttr('disabled');
