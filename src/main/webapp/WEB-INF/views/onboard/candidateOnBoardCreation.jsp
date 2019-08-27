@@ -899,7 +899,7 @@ function validateUploadFile(id)
 			    	} else if (response.response === "SUCCESS") {
 			    		var json = response.object;
 			    		$("#firstName").val(json['firstName']);
-				    	 $("#lastName").val("Laxman");
+				    	 $("#lastName").val(json['lastName']);
 				    	 
 				    	 if(json.defaultOrgProbationPeriod != "" && json.defaultOrgProbationPeriod != null && json.defaultOrgProbationPeriod !="undefined"){
 					    	 $("#probationNotice").val(json.defaultOrgProbationPeriod);
