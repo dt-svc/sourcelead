@@ -27,7 +27,7 @@
 	 <div class="reportHead reportHeadDataTab clearfix">
 	    <ul class="pull-right list-unstyled list-inline">
 		 <sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-		 	<li><a href="<c:url value='${appPath}/addNewOnboardTemplate'/>" class="newAdBtn">+ Template</a></li>
+		 	<li><a href="<c:url value='${SourceLeadWeb_atsUrl}/addNewOnboardTemplate'/>" class="newAdBtn">+ Template</a></li>
 	 	 </sec:authorize>			
 		</ul>
 	</div>	
@@ -54,6 +54,8 @@ $(document).ready(function(){
 <script>
 function onboardingTemplatesList(){  
 	  var sourceleadUrl ='${sourceleadUrl}';
+	  var atsUrl ='${SourceLeadWeb_atsUrl}';
+	  
 	  $("#onboardingLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
@@ -89,7 +91,7 @@ function onboardingTemplatesList(){
 	                   		 result = result +"<td><div><span>"+opt.createdUser+"</span></div></td>";
 	                   		 result = result +"<td><div><span>"+opt.templateStatus+"</span></div></td>";
 	                   		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE\')">'
-			                    	 result = result +"<td><div class='tblicons'><a href='"+sourceleadUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"' title='View' class='mr10'><i class='fa fa-eye'></i></a></div></td>"; 
+			                    	 result = result +"<td><div class='tblicons'><a href='"+atsUrl+"/viewOnboardTemplateByTemplateUUID?templateUUID="+opt.templateUUID+"' title='View' class='mr10'><i class='fa fa-eye'></i></a></div></td>"; 
 			                     '</sec:authorize>';
 		                     result = result +"</tr>";
 		                     result = result +"</tr>";
