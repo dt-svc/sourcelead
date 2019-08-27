@@ -755,6 +755,10 @@
 											+ "<option value='Status'>"
 											+ opt.submissionDisplayStatus
 											+ "</option>";
+										// if not a client requirement remove option from the dropdown options list.
+										if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){
+											delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
+										}
 									     $.each( opt.workflowStagesMap, function(val, name ) {
 										     if(opt.submissionDisplayStatus != name ){
 									    	    result = result+"<option value='"+val+"'>"+name+"</option>";
