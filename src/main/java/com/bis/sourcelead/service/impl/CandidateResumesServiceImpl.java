@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateResumes;
@@ -57,6 +58,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
 	@Autowired
 	CandidateActivityCommonUtil candidateActivityCommonUtil;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
 	
 	/**
 	 * @author Venkat Kesav
@@ -331,8 +335,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	public void saveOrUpdateCandidateElkDocumentWithResumeDetails(Candidate candidate) throws Exception
 	{
 		if (null != candidate && null != candidate.getId()) {
-			CandidateIndex candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
+			
+			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
+			
 			CandidateResumes candidateResumes = getCandidateLatesResumes(candidate.getId(), Constants.CANDIDATE_SKILL_ACTIVE);
 			if (null != candidateResumes) {
 				candidateIndex.setCurrentResumeId(candidateResumes.getId());

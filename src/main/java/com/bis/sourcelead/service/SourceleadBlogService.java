@@ -9,7 +9,7 @@ import com.bis.sourcelead.entity.User;
 
 public interface SourceleadBlogService {
 
-	SourceleadBlogs addBlog(SourceleadBlogDTO sourceleadBlogDTO, User user) throws Exception;
+	SourceleadBlogs addBlog(SourceleadBlogDTO sourceleadBlogDTO, User user,String dateFormat) throws Exception;
 
 	SourceleadBlogs saveOrUpdateBlog(SourceleadBlogs sourceleadBlogs) throws Exception;
 

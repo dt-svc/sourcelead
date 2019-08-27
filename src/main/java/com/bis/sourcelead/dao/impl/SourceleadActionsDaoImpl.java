@@ -90,7 +90,7 @@ public class SourceleadActionsDaoImpl implements SourceleadActionsDao {
 		 rolesList = session.createQuery("from Roles roles where roles.id = :roleId and roles.orgLocations.id = :orgLocationId" ).setLong( "roleId", roleId ).setLong( "orgLocationId", orgLocationId).list();
 		 List<Long> roleActonList = new ArrayList<Long>();
 		 List<SourceleadActions> actionsList = null;
-		 if(rolesList != null) {
+		 if(rolesList != null && !rolesList.isEmpty()) {
 			 for(Roles roles : rolesList){
 				 for (String s : Arrays.stream(roles.getActionId().split(",")).filter(value -> value != null && value.length() > 0).toArray(size -> new String[size])){
 					 roleActonList.add(Long.parseLong(s));

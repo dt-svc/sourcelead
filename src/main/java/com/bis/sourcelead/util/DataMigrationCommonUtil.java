@@ -370,18 +370,7 @@ public class DataMigrationCommonUtil {
 					}
 				}
 				
-				if(!dataMigrationDTOJsonCopy.getString("clientRate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("clientRate"))) {
-					String clientRate = dataMigrationDTOJsonCopy.getString("clientRate");
-					if(NumberUtils.isNumber(clientRate)){
-						if(Long.valueOf(clientRate) <= 99999999){
-							dataMigrationDTOJsonCopy.put("clientRate", clientRate);
-						}else{
-							errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate, should between 1 to 8 digits");
-						}
-					}else{
-						errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate");
-					}
-				}
+				
 				
 				if(!dataMigrationDTOJsonCopy.getString("coolingOff").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("coolingOff"))) {
 					String coolingOff = dataMigrationDTOJsonCopy.getString("coolingOff").toLowerCase();
@@ -482,7 +471,23 @@ public class DataMigrationCommonUtil {
 						errorSet.put("selectClient", dataMigrationDTOJsonCopy.getString("selectClient")+" is invalid Client");
 					}else{
 						dataMigrationDTOJsonCopy.put("selectClient", orgRelations.getId().toString());
+						
+						// when client is not null then client rate will execute
+						if(!dataMigrationDTOJsonCopy.getString("clientRate").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("clientRate"))) {
+							String clientRate = dataMigrationDTOJsonCopy.getString("clientRate");
+							if(NumberUtils.isNumber(clientRate)){
+								if(Long.valueOf(clientRate) <= 99999999){
+									dataMigrationDTOJsonCopy.put("clientRate", clientRate);
+								}else{
+									errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate, should between 1 to 8 digits");
+								}
+							}else{
+								errorSet.put("clientRate", dataMigrationDTOJsonCopy.getString("clientRate")+" is invalid Client Rate");
+							}
+						}
 					}
+					
+					
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("assignedTo").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("assignedTo"))) {
@@ -2620,7 +2625,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
 				errorSet.put("email", "Email field is missing");
 			}else {
-				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("email").toString().trim());
+				User userEmail = userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("email").toString().trim(), orgLocation.getId());
 				if (userEmail != null) {
 					errorSet.put("email", "Associate already exist.!");
 				}
@@ -2873,9 +2878,9 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				String sendEmailtype = dataMigrationDTOJsonCopy.getString("isMailSent").trim();
 				
 				if(Arrays.asList(Constants.YES_NO).contains(sendEmailtype)) {
-					dataMigrationDTOJsonCopy.put("isMailSent", sendEmailtype);
+					dataMigrationDTOJsonCopy.put("isMailChecked", sendEmailtype);
 				}else {
-					errorSet.put("isMailSent"," Invalid Is Mail Sent Type");
+					errorSet.put("isMailChecked"," Invalid Is Mail Sent Type");
 				}
 				
 			}
@@ -3064,6 +3069,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					
 				}
 				
+				
+				if (dataMigrationDTOJsonCopy.get("expectedRate") != null && dataMigrationDTOJsonCopy.get("expectedRatePer") == null) {
+					errorSet.put("expectedRate", "Expected Rate Per is required");
+				}
+				
 				if (dataMigrationDTOJsonCopy.get("currentRate") != null) {
 					boolean flag = false;
 					String currentRate = dataMigrationDTOJsonCopy.get("currentRate").toString();
@@ -3074,6 +3084,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						errorSet.put("currentRate", "Current Rate Allow Only Integers and length 0-8");
 					}
 					
+				}
+				
+				if (dataMigrationDTOJsonCopy.get("currentRate") != null && dataMigrationDTOJsonCopy.get("currentRatePer") == null) {
+					errorSet.put("currentRate", "Current Rate Per is required");
 				}
 				
 				//pan,aadhar number validation
