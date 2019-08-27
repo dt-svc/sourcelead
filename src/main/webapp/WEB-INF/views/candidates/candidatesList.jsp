@@ -2700,6 +2700,7 @@ function cancelShareCandidate(){
 }
 function closejobpop() {
 	shareCandidates = {};
+	 $('input[class="contactscheckbox"]').removeProp('checked');
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
