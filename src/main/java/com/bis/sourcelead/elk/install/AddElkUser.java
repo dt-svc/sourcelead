@@ -23,13 +23,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.UserIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddElkUser {
 	private static final Logger logger = LoggerFactory.getLogger(AddElkUser.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private SourceleadELKTC<UserIndex> client;
+	private SourceleadELKBaseIndexer<UserIndex> client;
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkUser() throws IOException, SQLException {
@@ -202,9 +202,9 @@ public class AddElkUser {
 
 		try {
 			AddElkUser addElkUser = new AddElkUser();
-			addElkUser.client = new SourceleadELKTC();
+			addElkUser.client = new SourceleadELKBaseIndexer<>();
 			addElkUser.addElkUser();
-			addElkUser.client.shutdown();
+//			addElkUser.client.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
