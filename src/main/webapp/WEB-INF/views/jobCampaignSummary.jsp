@@ -160,11 +160,11 @@ window.onload = function () {
 function publicRequirementProfile(requirementUUID){
 	
 	var sourceleadUrl = '${sourceleadUrl}';
+	var atsUrl = '${atsUrl}';
 	var requirementUUID = '${requirementUUID}';
-	
 	$.ajax({
 	   	type: "GET",
-	    url: sourceleadUrl+"/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
+	    url: atsUrl + "/getRequirementProfessionalProfileDetails?requirementUUID="+requirementUUID, 	   
 		    success: function(data) {
 		    	var json = JSON.parse(data);
 		    	var result = "";
