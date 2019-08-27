@@ -12,4 +12,8 @@ public interface DayEntryReportsDao {
 
 	public ResponseList<DayWiseTimesheetReoprtsListDTO> getDayWiseReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate,Date endDate, String searchString, int start, int length, OrgLocations orgloc, User loginUser, String isGlobalUser, List<Long> mastercandidateIds,String dateFormat)  throws Exception;
 	
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate,Date endDate, String searchString, int start, int length, OrgLocations orgloc, User loginUser, String isGlobalUser, List<Long> mastercandidateIds,String dateFormat)  throws Exception;
+	
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(List<Long> projectId,Date startDate,Date endDate, String searchString, int start, int length, OrgLocations orgloc, User loginUser, String isGlobalUser, List<Long> mastercandidateIds,String dateFormat)  throws Exception;
+	
 }
