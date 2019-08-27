@@ -838,7 +838,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 				put("Alternate Number", "alternateNumber"); 	put("location", "location"); put("DOB","dateOfBirthStr");
 				put("Experience", "workExperience"); 	put("Current CTC", "currentCtc"); put("Rate [Expected CTC]","expectedCTC");
 				put("Score", "candidateScore"); 	put("Notice Period", "noticePeriod"); put("Applied on","createdDateStr");
-				put("Source", "createdUser"); 
+				put("Source", "createdUser"); put("Submitted Questionnaire", "submittedQuestionrUuid"); 
 				
 			}
 		};
@@ -847,7 +847,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			String queryString = "select chosenColumns from RequirementWorkFlowStages stage where stage.orgLocationId.id = :orgLocationId and stage.stageShortCode = :shortCode and stage.requirementWorkFlowId.id =:workflowId ";
 			String commaSeparatedColumns = (String) session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setString("shortCode", shortCode).uniqueResult();
 			chosenColumnsArr = commaSeparatedColumns.split(",");
-		   // preparing column headers and entity colmn mappings as map and returns as response.
+		   // preparing column headers and entity column mappings as map and returns as response.
 			if(chosenColumnsArr != null && chosenColumnsArr.length>0) {
 				for(String column: chosenColumnsArr) {
 					stageColumnMap.put(column, allColumnsMap.get(column));
@@ -1108,5 +1108,21 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			e.printStackTrace();
 			return 0;
 		}
+	}
+
+	@Override
+	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId) {
+		RequirementQuestionnaireFeedbackTemplate feedbackTemp = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = " from RequirementQuestionnaireFeedbackTemplate feedbackTemp where  feedbackTemp.requirementWorkFlowStagesId.id=:stageId"
+					    + " and feedbackTemp.requirementSubmissionId.id=:submissionId and feedbackTemp.orgLocationId.id=:orgLocationId";
+			feedbackTemp = (RequirementQuestionnaireFeedbackTemplate) session.createQuery(query).setLong("stageId", stageId).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).uniqueResult();
+		} catch (Exception e) {
+			logger.error(e +" in getSubmittedQuestionnaireUuidByWorkflowStage DAO");
+			e.printStackTrace();
+			return null;
+		}
+		 return feedbackTemp;
 	}
 }
