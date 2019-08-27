@@ -828,6 +828,7 @@ function updateReuqirementStatusReject(status){
 				//alert(columnsMap)
 				var columnsArr=[];
 				$.map( columnsMap, function( colProp, colName ) {
+				//	console.log(colProp);
 					columnsArr.push(colProp);
 	             });
 				//submissionType = 'ONHOLD';
@@ -1026,7 +1027,7 @@ function viewOfferDocument(offerID,title){
 
 
 <!-- <div class='project_inn_mask projectMask-zindex'></div> -->
-<div id="popUp" class="remove_user_pop remove_user_pop_a"></div>
+<div id="popUp"></div>
 <div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
@@ -1047,7 +1048,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     var reqId = requirementId;
     var subType = submissionType;
     var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
-    if(selectBox == "BACKOUT"){
+     if(selectBox == "BACKOUT"){
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
         result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
@@ -1228,7 +1229,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
   		    	}
     	    	},
   		  });
-    } 
+    }  
 	 // Here need to test any questionnaire is assigned to stage if the initiator confirms need to send the questionnaire to canditate.
    // getQuestionnaireIdAssignedToStage(selectBox, submissionId);
 }
