@@ -1064,9 +1064,9 @@ public class RequirementListRestController {
 										RequirementQuestionnaireFeedbackTemplate feedbacTemplate= requirementWorkFlowService.getSubmittedQuestionnaireUuidByWorkflowStage(workflowSatge.getId(), requirementSubmission.getId(), orgLocation.getId());
 										if(feedbacTemplate != null ) {
 											 StringBuilder viewLink = new StringBuilder();
-											 viewLink.append(sourceleadUrl).append("/viewQuestionnaireTemplate?templateUuid=").append(feedbacTemplate.getUuid())
-											                                .append("&stageId=").append(feedbacTemplate.getRequirementWorkFlowStagesId().getId())
-											                                .append("&submissionId=").append(requirementSubmission.getId());
+											 viewLink.append(sourceleadUrl).append("/viewQuestionnaireFeedBackTemplate?templateUuid=").append(feedbacTemplate.getUuid())
+											                                /*.append("&stageId=").append(feedbacTemplate.getRequirementWorkFlowStagesId().getId())
+											                                .append("&submissionId=").append(requirementSubmission.getId())*/;
 											   
 											requirementSubmission.setSubmittedQuestionrUuid(viewLink.toString());
 										}else {
