@@ -1610,7 +1610,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
    	 $("#onboardCandiate").append(result); 
    	 $('#onboardCandiate').trigger("chosen:updated");
    	 getDashboardCandidateDetails();
-//      validateOnbardUserByCandidateId(candidateId,candidateName);
+     validateOnbardUserByCandidateId(candidateId,candidateName);
    	 getOfferDetails();
      addCandidateDetailsForOnboarding(); 	
  }
@@ -2419,7 +2419,7 @@ function addCandidateDetailsForOnboarding(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">First Nameddddd <span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">';
 	 result = result +'</div>';
