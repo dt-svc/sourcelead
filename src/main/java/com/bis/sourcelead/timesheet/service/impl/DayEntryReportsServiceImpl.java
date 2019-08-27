@@ -85,7 +85,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+							 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								    	 writeRow = createExcelsheet.createRow(rowCount+6);
 								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
@@ -311,7 +311,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 		        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+							 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 									 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
 									}
@@ -503,7 +503,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+							 if(dayEntryList != null && dayEntryList.getData() != null &&  !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								    	 writeRow = createExcelsheet.createRow(rowCount+6);
 								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
@@ -577,7 +577,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 			Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 	        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-						 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+						 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 							 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
 								}
@@ -641,7 +641,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+							 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								    	 writeRow = createExcelsheet.createRow(rowCount+6);
 								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
@@ -716,7 +716,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 			Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 	        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-						 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+						 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 							 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
 								}
