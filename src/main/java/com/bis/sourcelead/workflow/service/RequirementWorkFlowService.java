@@ -122,7 +122,7 @@ public interface RequirementWorkFlowService {
 	void copyWorkflowStagesAndTask(String uuid, User user, OrgLocations orgLocations,
 			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO);
 
-	List<RequirementWorkFlowTasks> getRequirementworkflowTaskListById(Long id, OrgLocations orgLocations, User user) throws Exception;
+	String getRequirementworkflowTaskListById(Long stageId, OrgLocations orgLocations, User user) throws Exception;
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId);
 	
@@ -133,4 +133,6 @@ public interface RequirementWorkFlowService {
 	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
 	
 	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
+	
+	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId) throws Exception;
 }

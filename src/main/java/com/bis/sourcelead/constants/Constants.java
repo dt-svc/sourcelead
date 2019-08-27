@@ -657,8 +657,8 @@ public class Constants {
 		}
 	};
 	
-	public static final String WORKFLOW_TASK_MAIL = "workflowTaskMail";
-	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowTaskNotification";
+	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
+	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowStageTaskNotification";
 	
 	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
