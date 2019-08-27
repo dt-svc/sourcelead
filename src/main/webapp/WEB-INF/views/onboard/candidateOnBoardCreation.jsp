@@ -899,7 +899,7 @@ function validateUploadFile(id)
 			    	} else if (response.response === "SUCCESS") {
 			    		var json = response.object;
 			    		$("#firstName").val(json['firstName']);
-				    	 $("#lastName").val(json['lastName']);
+				    	 $("#lastName").val("Laxman");
 				    	 
 				    	 if(json.defaultOrgProbationPeriod != "" && json.defaultOrgProbationPeriod != null && json.defaultOrgProbationPeriod !="undefined"){
 					    	 $("#probationNotice").val(json.defaultOrgProbationPeriod);
@@ -948,8 +948,6 @@ function validateUploadFile(id)
 	  var onboardCandiate = document.getElementById("onboardCandiate").value;
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
-	  
-	  
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
@@ -1003,6 +1001,11 @@ function validateUploadFile(id)
 				    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
 					    	 $("#zipCode").val(json['zipCode']);
 				    	 } 
+				    	 if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
+			   		    		shiftList(json['shift']);
+			   		    	}else{
+			   		    		shiftList();
+			   		    	}
 			    	} else if (response.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
@@ -1607,7 +1610,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
    	 $("#onboardCandiate").append(result); 
    	 $('#onboardCandiate').trigger("chosen:updated");
    	 getDashboardCandidateDetails();
-     validateOnbardUserByCandidateId(candidateId,candidateName);
+//      validateOnbardUserByCandidateId(candidateId,candidateName);
    	 getOfferDetails();
      addCandidateDetailsForOnboarding(); 	
  }
@@ -2416,7 +2419,7 @@ function addCandidateDetailsForOnboarding(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">First Nameddddd <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<input type="text" class="form-control input-sm" id="firstName" name="firstName" filed-name="First Name" readonly="readonly">';
 	 result = result +'</div>';
