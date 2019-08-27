@@ -352,7 +352,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                         </li>
                                          <li>
                                             <div class="checkbox-new clearfix">
-                                                <input id="SubmittedQuestionnaire" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "SubmittedQuestionnaire" disabled = "disabled" checked>
+                                                <input id="SubmittedQuestionnaire" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Submitted Questionnaire" disabled = "disabled" checked>
                                                 <label for="SubmittedQuestionnaire" class="checkbox-custom-label"></label>
                                                 <span class="ml10">Submitted Questionnaire *</span>
                                               </div>
@@ -489,11 +489,17 @@ $(document).ready(function() {
 });
 // below function disabled the fileds if workflow initiated any requirement for the job.
 function checkValidEditableFields(checkValidEditableFields){
-	if(checkValidEditableFields){
+	//console.log("checkValidEditableFields value is :"+checkValidEditableFields);
+	if(checkValidEditableFields == 'true'){
 		  $("#columnsCHkbx").val("on");
 		  $("#stageName").attr("disabled", "disabled");
 		  $("#shortCode").attr("disabled", "disabled");
-		
+	 }else{
+		  if($("#columnsCHkbx").is(':checked')){
+			  $("#columnsCHkbx").val("on");
+		  }else{
+			  $("#columnsCHkbx").val("");
+		  }
 	 }
 }
 
