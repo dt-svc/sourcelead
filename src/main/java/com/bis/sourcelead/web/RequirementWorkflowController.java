@@ -141,7 +141,7 @@ public class RequirementWorkflowController {
 		user.setId(userId);
 		logger.debug("inside add stage for the workflow >>> "+orgLocations.getId());
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
-		
+		modelandview.addObject("onlyQuestAndTasksEditable", false);// setting false because adding new stage.
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workFlowName", requirementWorkFlowDTO.getWorkFlowName());
@@ -832,13 +832,21 @@ public class RequirementWorkflowController {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			User loginUser  =    (User) SourceLeadSessionManager.getSessionAttribute(request,	"user");
 			System.out.println("inside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
-		   
+			logger.debug("nside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
 			// Write the code for copying tasks to user which are assigned to Stage level start here.
-		   
+			 try {
+		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(stageId,orgLocations,loginUser);
+		     	logger.debug("Workflow email tasks and notifications status :::"+taskStatus);
+			 }catch(Exception e) {
+				 e.printStackTrace();
+				 logger.error("Exception caught while sending task emailt to the candidates "+e.getMessage());
+			 }
 		    //copy Tasks end here.
+			 String QuestMailstatus=Constants.FAILED;
+			 try {
 			 Candidate candidate = new Candidate();// these are the details of the candidate to whom to need to send email.
 		    candidate = requirementWorkFlowService.getCandidateByRequirementSubmissionId(submissionId);
-		    String status=Constants.FAILED;
+		    
 			if (candidate != null) {
 				HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 	
@@ -853,10 +861,14 @@ public class RequirementWorkflowController {
 				paramsMap.put("submissionId", submissionId);
 				paramsMap.put("stageId", stageId);
 				//status = Constants.SUCCESS;
-				status	=  requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
+				QuestMailstatus	=  requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
+			 }
+			}catch(Exception e) {
+				e.printStackTrace();
+				logger.error("Exception caught while sending questionniare email to candidates :::>"+e.getMessage());
 			}
-			System.out.println("Email Sent Status :  "+status);
-			return status;
+			System.out.println("Questionaire Email Sent Status :  "+QuestMailstatus);
+			return QuestMailstatus;
 		}
 		
 		

@@ -1,10 +1,10 @@
-#Email for stage task
+#Email for Stage tasks.
 INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`,`ENTITY_TYPE`) VALUES ('workflowTaskMail','Email');
 
 INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`, `CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`,`TAB_ID`,`STATUS`,`DEFAULT_TEMPLATE`) 
-VALUES('workflowTaskMail',
+VALUES('workflowStageTaskMail',
 			'Email', 
-			'workflowTaskMail', 
+			'workflowStageTaskMail', 
 			'NULL', 
 			'TASK_TITLE',
 			'org', 
@@ -22,10 +22,10 @@ INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) V
 
 
 
-#Notification for Questioinnaire template
-INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('workflowTaskNotification','Notification');
+#Notification for Stage tasks.
+INSERT INTO `ENTITY_TYPE` (`ENTITY_NAME`, `ENTITY_TYPE`) VALUES ('workflowStageTaskNotification','Notification');
 
 INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`,`STATUS`,`DEFAULT_TEMPLATE`) VALUES
 
-('workflowTaskNotification','Notification','workflowTaskNotification', 'This notification is to Assign user Notify to take assigned by manager/admin..', 'New task assigned', 'org', '', 'New task assigned','N','SLADMIN', 'slead', 'sleadIN',1,'Y');
+('workflowStageTaskNotification','Notification','workflowStageTaskNotification', 'This notification is to Assign user Notify to take assigned by manager/admin..', 'New workflow task assigned', 'org', '', 'New workflow task assigned','N','SLADMIN', 'slead', 'sleadIN',1,'Y');
 	
