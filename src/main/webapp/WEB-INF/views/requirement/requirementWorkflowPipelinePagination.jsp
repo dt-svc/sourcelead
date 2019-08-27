@@ -235,6 +235,26 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 								return result;
 							}
 						});	
+		 }else if(columnPropArr[i] == "submittedQuestionrUuid" ){
+				 		columnDefs.push({
+								"targets" : colIndex++,
+								"data" : "submittedQuestionrUuid",
+								"render" : function(data, type, opt,
+										meta) {
+									var result = "";
+									if (opt.submittedQuestionrUuid != null
+											&& opt.submittedQuestionrUuid != ''
+											&& opt.submittedQuestionrUuid != 'undefined') {
+										result = result
+												+ '         <td><div><a href ="'+ opt.submittedQuestionrUuid+'" target="_blank">view</a></div></td>';
+												
+									} else {
+										result = result
+												+ '         <td><div><span>--</span></div></td>';
+									}
+									return result;
+								}
+						   });	
 			 }else if(columnPropArr[i] == "dateOfBirthStr" ){
 			 		columnDefs.push({
 						"targets" : colIndex++,

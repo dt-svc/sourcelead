@@ -133,6 +133,8 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 /**
@@ -981,7 +983,7 @@ public class RequirementListRestController {
 	}
 	
 	/**
-	 * load loadSubmissionsListByRequirementId using RequirementId
+	 * load loadWorkflowSubmissionsListByRequirementId using RequirementId
 	 * @param request
 	 * @param response
 	 * @return json
@@ -1049,10 +1051,26 @@ public class RequirementListRestController {
 										//requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
 										requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
 										requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
+										// here loading all the subsequent stage for the the requirement
 										if(requirementSubmissionsDTO.getWorkFlowId() != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkFlowId().toString())){
 										stagesMap = requirementWorkFlowService.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmissionsDTO.getSubmissionType());
 										if(stagesMap!= null && stagesMap.size() >0) {
 											requirementSubmission.setWorkflowStagesMap(stagesMap);
+										}
+										// here setting questionnaire to stage if candidate submitted questionnaire for particular stage otherwise setting empty value.
+										// below service call used to get requirement work flow stage Id.
+										RequirementWorkFlowStages workflowSatge = requirementWorkFlowService.getRequirementWorkFlowStagesDetails(requirementSubmissionsDTO.getSubmissionType(),requirementSubmissionsDTO.getWorkFlowId(), orgLocation.getId());
+										// by using below service getting questionnaire submission template UUID from the RequirementQuestionnaireFeedbackTemplate.
+										RequirementQuestionnaireFeedbackTemplate feedbacTemplate= requirementWorkFlowService.getSubmittedQuestionnaireUuidByWorkflowStage(workflowSatge.getId(), requirementSubmission.getId(), orgLocation.getId());
+										if(feedbacTemplate != null ) {
+											 StringBuilder viewLink = new StringBuilder();
+											 viewLink.append(sourceleadUrl).append("/viewQuestionnaireTemplate?templateUuid=").append(feedbacTemplate.getUuid())
+											                                .append("&stageId=").append(feedbacTemplate.getRequirementWorkFlowStagesId().getId())
+											                                .append("&submissionId=").append(requirementSubmission.getId());
+											   
+											requirementSubmission.setSubmittedQuestionrUuid(viewLink.toString());
+										}else {
+											requirementSubmission.setSubmittedQuestionrUuid(null);
 										}
 									}
 									}
