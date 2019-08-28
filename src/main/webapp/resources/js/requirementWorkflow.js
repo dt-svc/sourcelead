@@ -1091,7 +1091,7 @@ function RequirementWorkflow(){
 				                 if(dataList.response =="true"){
 									 $("#stageName").after("<p class='jquery_form_error_message'>" + stageName + " Already Exists</span>");
 				                 }if(dataList.response =="special"){
-								 $("#stageName").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+								 $("#stageName").after("<p class='jquery_form_error_message'> Invalid format !</span>");
 				                 }
 				                 if(dataList.response =="Minimum"){
 									 $("#stageName").after("<p class='jquery_form_error_message'> Minimum 4 Chars requried</span>");
@@ -1142,7 +1142,7 @@ function RequirementWorkflow(){
 					                 if(dataList.response =="true"){
 										 $("#shortCode").after("<p class='jquery_form_error_message'>" + stageShortCode + " Already Exists</span>");
 					                 }if(dataList.response =="special"){
-									 $("#shortCode").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+									 $("#shortCode").after("<p class='jquery_form_error_message'> Invalid format !</span>");
 					                 }if(dataList.response =="Minimum"){
 										 $("#shortCode").after("<p class='jquery_form_error_message'> Minimum 4 Chars requried</span>");
 						              }
