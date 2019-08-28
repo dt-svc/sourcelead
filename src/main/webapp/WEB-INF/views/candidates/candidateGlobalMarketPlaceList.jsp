@@ -183,8 +183,8 @@
 									<label>Rate</label>
 									 <div class="input-group error-field">
 										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
-										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
-										        <option value="">Currency</option>
+										    <select class="selectpicker" name="currency" id="currency" field-name="Currency" onchange="ratecheck();" >
+										        <option value="0">Currency</option>
 										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
 								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
 								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
@@ -194,16 +194,24 @@
 				                            </select>
 										</div>
 										 <div id="minRateDiv">
-									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
+									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate" onblur="ratecheck();">
 								         </div>
+								         <div class="row" id="rateId">
+											<input type="hidden" name="rateValidation"
+												id="rateValidation">
+										</div>
 								    </div>
 								</div> 
 							<div class="col-md-6 payrate_p">
 								<label>&nbsp;</label> 
 								<div class="input-group error-field">
 								 <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate" onblur = "ratevalidation();" data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
 								</div>
+								<div class="row" id="ratecheckId">
+											<input type="hidden" name="ratecheckValidation"
+												id="ratecheckValidation">
+										</div>
 								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
 									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
 									            <option value="">Rate Type</option>
@@ -321,7 +329,7 @@
 					  	<div class="col-md-4">
 							  <label>Education</label>
 							  <div class="clearfix"> 
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education">
+								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education" onchange="EducationValidation();">
                                        <c:forEach var="edu" items="${educationsList}">
 							                     <option value="${edu.name}">${edu.name}</option>
 						                </c:forEach>
@@ -331,11 +339,15 @@
 						  <div class="col-md-4">
 							  <label>Exclude Education</label>
 							  <div class="clearfix">
-								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
+								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation" onchange="EducationValidation();">
                                        <c:forEach var="edu" items="${educationsList}">
 							                     <option value="${edu.name}">${edu.name}</option>
 						                </c:forEach>
                                    </select>
+                                   <div class="row" id="eduId">
+											<input type="hidden" name="eduValidation"
+												id="eduValidation">
+										</div>
 							  </div>
 						  </div>
 						  <div class="col-md-4">
@@ -360,6 +372,10 @@
 								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
                                   </select>
 							  </div>
+							  <div class="row" id="empId">
+											<input type="hidden" name="empValidation"
+												id="empValidation">
+										</div>
 						  </div>
 						  
 						   <!-- <div class="col-md-4">
@@ -819,6 +835,165 @@ function deleteCandidateMarketCart(candidateName, candidateMarketUUID, viewModel
 		}); 
 	}
 </script>
+<script>
+
+function ratecheck(){
+	//Function to validate currency option
+	var a = $("#currency").val();
+	if(a==0){
+		 $('#rateId').find('p.jquery_form_error_message').remove(); 
+			$('input#rateValidation').attr('class','error signin_fild');
+			$("input#rateValidation").after("<p class='jquery_form_error_message'>Select Currency</p>");
+			$('input#rateValidation').attr('record-exist','yes');
+			$('input#rateValidation').attr('record-exist-errorMsg','Currency Selected'); 
+	}else{
+    	$('#rateId').find('p.jquery_form_error_message').remove();
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateId').find('p.jquery_form_error_message').remove();
+		
+	}
+}
+
+function ratevalidation(){
+	//Function to validate if maxrate  value is more the minrate  value
+	var minRate = $('#minRate').val();
+	var maxRate = $('#maxRate').val();
+	if (parseFloat(maxRate) <= parseFloat(minRate)){
+        $('#ratecheckId').find('p.jquery_form_error_message').remove(); 
+		$('input#ratecheckValidation').attr('class','error signin_fild');
+		$("input#ratecheckValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
+		$('input#ratecheckValidation').attr('record-exist','yes');
+		$('input#ratecheckValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+    }  else{
+    	$('#ratecheckId').find('p.jquery_form_error_message').remove(); 
+    	$('input#ratecheckValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#ratecheckId').find('p.jquery_form_error_message').remove();
+    } 
+}
+
+function EducationValidation(){
+	//Function to validate Education and Exclude Education value 
+	var a = [];
+	var b = [];
+	 a =$('#education').val();
+	 b =$('#excludeEducation').val();
+	if(JSON.stringify(a)===JSON.stringify(b)){
+		if(a==null&&b==null){
+			$('#eduId').find('p.jquery_form_error_message').remove();
+		 	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
+				$('#eduId').find('p.jquery_form_error_message').remove();
+		}else{
+		 $('#eduId').find('p.jquery_form_error_message').remove(); 
+			$('input#eduValidation').attr('class','error signin_fild');
+			$("input#eduValidation").after("<p class='jquery_form_error_message'>Education and Exclude Education Should not be same</p>");
+			$('input#eduValidation').attr('record-exist','yes');
+			$('input#eduValidation').attr('record-exist-errorMsg','Education and Exclude Education Should not be Same'); 
+		}}else if(a==null||b==null){
+			 $('#eduId').find('p.jquery_form_error_message').remove();
+		$('input#eduValidation').attr('class','error signin_fild');
+		$("input#eduValidation").after("<p class='jquery_form_error_message'>Enter the value</p>");
+		$('input#eduValidation').attr('record-exist','yes');
+		$('input#eduValidation').attr('record-exist-errorMsg','Enter the value'); 
+	}else{
+ 	$('#eduId').find('p.jquery_form_error_message').remove();
+ 	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#eduId').find('p.jquery_form_error_message').remove();
+	}
+}
+</script>
+<script>
+var selectthree, chosenthree;
+selectthree = $("#excludeEmployers");
+selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosenthree = selectthree.data('chosen');
+chosenthree.search_field.on('keydown keyup', function(e3)
+{
+	var employers = [];
+	var excludeEmployers = [];
+	excludeEmployers = $("#excludeEmployers").val();
+	 employers = $("#employers").val();
+	 if(employers!=null){
+	 employers.sort();
+	 }
+	 if(excludeEmployers!=null){
+	 excludeEmployers.sort();
+
+}
+	 if(JSON.stringify(employers) == JSON.stringify(excludeEmployers)){
+		if(employers==null&&excludeEmployers==null){
+			$('#empId').find('p.jquery_form_error_message').remove();
+		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+				$('#empId').find('p.jquery_form_error_message').remove();
+		}else {
+	 $("#excludeEmployers").val('').trigger("chosen:updated");
+	 $('#empId').find('p.jquery_form_error_message').remove(); 
+		$('input#empValidation').attr('class','error signin_fild');
+		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
+		$('input#empValidation').attr('record-exist','yes');
+		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+	}
+	 }
+	else{
+		$('#empId').find('p.jquery_form_error_message').remove();
+	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+			$('#empId').find('p.jquery_form_error_message').remove();
+	}
+
+	/* var organizations = this.value.replace(",","");
+    if ((e3.which == 13 || e3.which == 188) && (organizations != null  && organizations != '' && organizations != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(organizations).text(organizations);
+        selectthree.append(option);
+        selectthree.find(option).prop('selected', true);
+        $("#organizations option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#organizations").trigger("chosen:updated");
+		
+    } */
+});
+ </script>
+ <script>
+ 
+var selectfour, chosenfour;
+selectfour = $("#employers");
+selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosenfour = selectfour.data('chosen');
+chosenfour.search_field.on('keydown keyup', function(e4)
+{
+	
+	var employers = [];
+	var excludeEmployers = [];
+	excludeEmployers = $("#excludeEmployers").val();
+	 employers = $("#employers").val();
+	 if(employers!=null){
+	 employers.sort();
+	 }
+	 if(excludeEmployers!=null){
+	 excludeEmployers.sort();
+}
+	 if(JSON.stringify(excludeEmployers) == JSON.stringify(employers)){
+		if(employers==null&&excludeEmployers==null){
+			$('#empId').find('p.jquery_form_error_message').remove();
+		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+				$('#empId').find('p.jquery_form_error_message').remove();
+		}else {
+	 $("#employers").val('').trigger("chosen:updated");
+	 $('#empId').find('p.jquery_form_error_message').remove(); 
+		$('input#empValidation').attr('class','error signin_fild');
+		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
+		$('input#empValidation').attr('record-exist','yes');
+		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+	}
+	 }
+	else{
+		$('#empId').find('p.jquery_form_error_message').remove();
+	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+			$('#empId').find('p.jquery_form_error_message').remove();
+	}
+});
+</script>
 
 <script type="text/javascript">
 
@@ -1064,12 +1239,13 @@ $(function() {
 });
 
 function getStates(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: atsUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: sourceleadUrl+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -1097,13 +1273,14 @@ function getStates(){
 }
 
 function getCities(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: atsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#citySearch').empty();
