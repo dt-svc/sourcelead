@@ -1021,7 +1021,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	@Override
 	public String validateWorkflowStageName(Long id, String name, String uuid, String stageUuid) throws Exception {
 		logger.debug("Started validateWorkflowStageName Service for "+id+" orgLocation and "+name+" stage");
-		String nonSpecialChars = "^[A-Za-z]{3,}[ A-Za-z0-9_]*$";
+		String nonSpecialChars = "^[A-Za-z]{4,}[ A-Za-z0-9_]*$";
 		String flag = null;
 		Boolean nonSpecialFlag = false;
 		Long workflowId = null;
@@ -1096,7 +1096,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		logger.debug("Started validateStageShortCode Service for "+id+" orgLocation and "+shortCode+" shortCode");
 		List<RequirementWorkFlowStages> workflowStages = new ArrayList<RequirementWorkFlowStages>();
 		String flag = null;
-		String nonSpecialChars = "^[A-Za-z]{3,}[A-Za-z0-9_]*$";
+		String nonSpecialChars = "^[A-Za-z]{4,}[A-Za-z0-9_]*$";
 		Boolean nonSpecialFlag = false;
 		try {
 			if(shortCode != null && !StringUtils.isBlank(shortCode)) {
@@ -1584,3 +1584,4 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return requirementWorkFlowDao.getSubmittedQuestionnaireUuidByWorkflowStage(stageId,submissionId,orgLocationId);
 	}
 }
+
