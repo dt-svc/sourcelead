@@ -693,6 +693,11 @@ public class CandidateOnBoardRestController {
 			if (candidate.getSpocId() != null) {
 				candidateDTO.setVendorSpocId(candidate.getSpocId().getId().toString());
 			}
+			
+			if (null != candidate.getShift()) {
+				candidateDTO.setShift(candidate.getShift().getId().toString());
+				candidateDTO.setShiftName(candidate.getShift().getShiftName());
+			}
 			response.setObject(candidateDTO);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());

@@ -30,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.EmailAccountSettingsDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
-import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.ContactsGroup;
 import com.bis.sourcelead.entity.EmailAccountSettings;
@@ -40,7 +39,6 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailBox;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContactsGroupService;
@@ -374,95 +372,6 @@ public class MailBoxController {
 	    resultJson = commonUtil.toJSON(clientsList);
 		return resultJson;
 	}
-	
-	@PreAuthorize("hasRole('ROLE_HOTLIST_CAMPAIGN')")
-	@RequestMapping(value = "/app/getCandidatesForCampaign")
-	public @ResponseBody String getCandidatesForCampaign(@RequestParam(value = "candidatesListType", required = false) String candidatesListType,
-			HttpServletRequest request) throws Exception {
-
-	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	    String resultJson;
-	    List<Long> teamIdsList = null;
-	    
-	    List<CandidateIndex> candidateList = new ArrayList<CandidateIndex>();
-	    BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("orgLocationId", orgLocations.getId()));
-		boolQueryBuilder.must(QueryBuilders.matchQuery("status", Constants.RECORD_ACTIVE));
-		Integer maxResults = 0;
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-	    if(!isNullOrEmpty(candidatesListType)){
-	    	if(candidatesListType.equalsIgnoreCase("consultants")){
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavouriteAssociate", Constants.RECORD_INACTIVE));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", Constants.YES));
-	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.ASSOCIATE);
-	    		 
-	    	}else if(candidatesListType.equalsIgnoreCase("candidates")){
-	    		
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_INACTIVE));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", Constants.NO));
-	    		 
-	    		 maxResults = candidateService.getAllActiveCandidatesCountForCampaignByLocation(orgLocations.getId(),Constants.CANDIDATE);
-	    		 
-	    	}
-	    	else if(candidatesListType.equalsIgnoreCase("openHotlist")){
-	    		
-	    		 BoolQueryBuilder anyCandidateTypeBoolQueryBuilder = QueryBuilders.boolQuery();
-	    		 anyCandidateTypeBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavourite", Constants.RECORD_ACTIVE));
-	    		 anyCandidateTypeBoolQueryBuilder.should(QueryBuilders.matchQuery("isFavouriteAssociate", Constants.RECORD_ACTIVE));
-		    	 boolQueryBuilder.must(anyCandidateTypeBoolQueryBuilder);
-	    		 boolQueryBuilder.must(QueryBuilders.matchQuery("teamId", Constants.RECORD_INACTIVE ));
-	    		 maxResults = candidateService.getAllHotlistCandidatesCountNotAssignedToTeamByLocation(orgLocations.getId());
-	    		 
-	    	}
-	    	
-	    	else if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
-	    		UserRole userRole = userRoleService.getUserByUserId(user.getId());
-	    		if(userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_ADMIN") || userRole.getRoles().getRoleName().equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
-	    			teamIdsList = teamService.getTeamIdsListByOrgLocationID(orgLocations.getId());
-	    		}else{
-	    			teamIdsList = teamService.getUserAssignedTeamIdsListByOrgLocationId(user.getId(), orgLocations.getId());
-	    		}
-	    		if(null != teamIdsList && teamIdsList.size() > 0){
-	    			BoolQueryBuilder boolSubQueryBuilder = new BoolQueryBuilder();
-	    			for(Long teamId : teamIdsList){
-	    				boolSubQueryBuilder.should(QueryBuilders.matchQuery("teamId", teamId));
-	    			}
-	    				boolQueryBuilder.must(boolSubQueryBuilder);
-	    			
-	    			if(candidatesListType.equalsIgnoreCase("hotlistConsultants")){
-	    				 boolQueryBuilder.must(QueryBuilders.matchQuery("candidateType", Constants.CANDIDATE));
-	    				 boolQueryBuilder.must(QueryBuilders.matchQuery("isAssociate", Constants.YES));
-	    				 maxResults = candidateService.getAllCandidatesCountForCampaignByTeam(teamIdsList, Constants.ASSOCIATE, orgLocations.getId());
-		    		}
-	    		}
-	    		
-	    		
-	    	}
-	    	
-	    	SearchHit[] searchHits = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,0,maxResults.intValue(),boolQueryBuilder).getHits();
-		    if(null != searchHits && searchHits.length >0){
-		    	ObjectMapper mapper = new ObjectMapper();
-		    	mapper.setDateFormat(df);
-		    	for (SearchHit hit : searchHits) {
-		    		StringBuilder json = new StringBuilder(hit.getSourceAsString());
-		    	    CandidateIndex candidateIndex = mapper.readValue(json.toString(), CandidateIndex.class);
-		    	    candidateList.add(candidateIndex);
-		    	}
-		    	
-		    }
-	    	
-	    }
-	    
-	    resultJson = commonUtil.toJSON(candidateList);
-		return resultJson;
-	}
-	
 	
 	
 	@SuppressWarnings("static-access")

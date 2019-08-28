@@ -36,9 +36,9 @@
 function getCampaignStats(){
 		var searchValue = $("#campaignStatsTableSearch").val();
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		var atsUrl ='${SourceLeadWeb_atsUrl}';
+		var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		searchValue = searchValue ? searchValue : "";
-		var url = atsUrl+"/getCampaignStats?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
+		var url = sourceleadUrl+"/getCampaignStats?searchValue="+searchValue+"&orgLocationId="+orgLocationId;
 	    prepareCampaignStatsList(url);
 }
 </script> 

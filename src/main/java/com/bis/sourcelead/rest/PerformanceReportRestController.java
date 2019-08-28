@@ -2677,7 +2677,8 @@ public class PerformanceReportRestController {
 		try{
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null){
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				List<Long> jobIdList = new ArrayList<>();
 				Date[] searchDates = null;
