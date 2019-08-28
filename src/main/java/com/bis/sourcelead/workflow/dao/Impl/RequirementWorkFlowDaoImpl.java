@@ -909,20 +909,33 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	}
 
 	@Override
-	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)
+	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid, String stageId, String submissionId)
 			throws Exception {
 		RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO = null;
 		List<RequirementQuestionnaireFeedbackTemplateDTO> qTemplateDTOList = null;
+		String query = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid =:uuid";
-			Query obj = session.createSQLQuery(query)
+			if(stageId == null && submissionId == null) {
+				query ="select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid=:uuid";
+			}else {
+				query = "select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID=:uuid"
+						+ " and qtemplate.REQUIREMENT_WORKFLOW_STAGES_ID =:stageId and  qtemplate.REQUIREMENT_SUBMISSION_ID =:submissionId ";
+			}
+				Query obj = session.createSQLQuery(query)
 					.addScalar("jsonString", StandardBasicTypes.STRING)
 					.addScalar("jsonStringValues", StandardBasicTypes.STRING)
 					.addScalar("uuid", StandardBasicTypes.STRING);
 			obj.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireFeedbackTemplateDTO.class));
-			qTemplateDTOList = obj.setString("uuid", uuid).list();
+			if(stageId == null && submissionId == null) {
+				obj.setString("uuid", uuid);
+			}else {
+				obj.setString("uuid", uuid).setString("stageId", stageId).setString("submissionId", submissionId);
+			}
+			qTemplateDTOList = obj.list();
+			if(qTemplateDTOList.size() > 0) {
 			qemplateDTO = qTemplateDTOList.get(0);
+			}
 			return qemplateDTO;
 		} catch (Exception e) {
 			logger.error(e +" in getColumnsMapbyWorkflowStage DAO");

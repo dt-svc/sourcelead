@@ -77,10 +77,6 @@ import com.bis.sourcelead.entity.User;
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementQuestionnaireTemplateId")
-	private Set<RequirementQuestionnaireFeedbackTemplate> requirementQuestionnaireFeedbackTemplate;
-
 	public Long getId() {
 		return id;
 	}
@@ -185,15 +181,6 @@ import com.bis.sourcelead.entity.User;
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
-	}
-
-	public Set<RequirementQuestionnaireFeedbackTemplate> getRequirementQuestionnaireFeedbackTemplate() {
-		return requirementQuestionnaireFeedbackTemplate;
-	}
-
-	public void setRequirementQuestionnaireFeedbackTemplate(
-			Set<RequirementQuestionnaireFeedbackTemplate> requirementQuestionnaireFeedbackTemplate) {
-		this.requirementQuestionnaireFeedbackTemplate = requirementQuestionnaireFeedbackTemplate;
 	}
 
 	
