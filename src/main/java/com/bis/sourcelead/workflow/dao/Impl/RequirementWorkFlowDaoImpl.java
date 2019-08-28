@@ -838,7 +838,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 				put("Alternate Number", "alternateNumber"); 	put("location", "location"); put("DOB","dateOfBirthStr");
 				put("Experience", "workExperience"); 	put("Current CTC", "currentCtc"); put("Rate [Expected CTC]","expectedCTC");
 				put("Score", "candidateScore"); 	put("Notice Period", "noticePeriod"); put("Applied on","createdDateStr");
-				put("Source", "createdUser"); put("Sub.Questionnaire", "submittedQuestionrUuid"); 
+				put("Source", "createdUser"); put("Submitted Questionnaire", "submittedQuestionrUuid"); 
 				
 			}
 		};
