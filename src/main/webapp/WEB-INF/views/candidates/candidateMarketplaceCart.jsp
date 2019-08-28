@@ -47,9 +47,9 @@
 				</li>
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
-				  <a id = "cartCount" class="inlineBlock pull-left mt2 mr10 animated zoomInDown" href="javascript:void(0)">0</a></li>
+				  <div id = "cartCount" class="inlineBlock pull-left mt2 mr10 animated zoomInDown" href="javascript:void(0)">0</div></li>
               <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i>
-				  <a id = "totalPrice" class="animated zoomInDown inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</a></li>
+				  <div id = "totalPrice" class="animated zoomInDown inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</div></li>
 				  </sec:authorize>
               <li> <a href="javascript:void(0)" class="sortSvg mr10" title="Sorting"></a> </li>
 				<li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
