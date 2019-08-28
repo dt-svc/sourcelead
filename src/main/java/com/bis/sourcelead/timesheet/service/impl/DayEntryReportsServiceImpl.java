@@ -499,7 +499,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				String status ="";
 				Row writeRow = null;
 				int rowCount = 0;
-				Sheet createExcelsheet = createExcelworkbook.createSheet("Day wise Project wise Time sheet Report");
+				Sheet createExcelsheet = createExcelworkbook.createSheet("Project Time Entries Report");
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
@@ -511,7 +511,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 											}
 										}
 				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
-				file = File.createTempFile(orgloc.getOrgLocationName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				file = File.createTempFile(orgloc.getOrgLocationName() + "_projectTimeEntriesReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
 				FileOutputStream fos = new FileOutputStream(file);
 				try {
 					createExcelworkbook.write(fos);
@@ -535,7 +535,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	    sbUser.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append("ProjectTimeEntriesReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date())).toString(),".pdf");
 	    file.setReadable(true);
 	    long totalBillable = 0l;
 	    long totalNonbillable = 0l; 
@@ -637,7 +637,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				String status ="";
 				Row writeRow = null;
 				int rowCount = 0;
-				Sheet createExcelsheet = createExcelworkbook.createSheet("Day wise Project wise Time sheet Report");
+				Sheet createExcelsheet = createExcelworkbook.createSheet("Resource Time Entries Report");
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
@@ -649,7 +649,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 											}
 										}
 				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
-				file = File.createTempFile(orgloc.getOrgLocationName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				file = File.createTempFile(orgloc.getOrgLocationName() + "_resourceTimeEntriesReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
 				FileOutputStream fos = new FileOutputStream(file);
 				try {
 					createExcelworkbook.write(fos);
@@ -674,7 +674,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	    sbUser.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date()));
 
 	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date())).toString(),".pdf");
+	    File file = File.createTempFile(fileSB.append("ResourceTimeEntriesReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date())).toString(),".pdf");
 	    file.setReadable(true);
 	    long totalBillable = 0l;
 	    long totalNonbillable = 0l; 
