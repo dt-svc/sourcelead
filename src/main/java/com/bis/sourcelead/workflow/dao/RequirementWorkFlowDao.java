@@ -110,7 +110,7 @@ public interface RequirementWorkFlowDao {
 	
 	RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplate qemplate)throws Exception;
 	
-	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
+	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid, String stageId, String submissionId)throws Exception;
 
 	void copyWorkflowStagesAndTasks(Tasks tasks);
 

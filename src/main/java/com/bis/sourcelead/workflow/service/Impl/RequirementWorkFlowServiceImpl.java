@@ -1302,6 +1302,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlowStages stage = new RequirementWorkFlowStages();
 		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
 		try {
+			
+			if(qemplateDTO.getUuid().equalsIgnoreCase("null")) {
+				qemplateDTO.setUuid(null);
+			}
 			if (qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
 				qtemplate = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackByUuid(qemplateDTO.getUuid());
 				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
@@ -1326,7 +1330,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				qtemplate.setUpdatedBy(user);
 				qtemplate.setUpdatedDate(new Date());
 			} else {
-				Set<RequirementQuestionnaireFeedbackTemplate> requirementQuestionnaireFeedbackTemplate = new HashSet<RequirementQuestionnaireFeedbackTemplate>();
 				qtemplate = new RequirementQuestionnaireFeedbackTemplate();
 				qtemplate.setOrgLocationId(orgLocations);
 				qtemplate.setRequirementSubmissionId(reqSub);
@@ -1377,7 +1380,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					if (requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
 						qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
 					}
-					qtemplate.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
+					qtemplate.setRequirementQuestionnaireTemplateUuid(requirementQuestionnaireTemplate.getUuid());
 				}
 
 				if (qemplateDTO.getTotalPoints() != null) {
@@ -1386,23 +1389,22 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				if (qemplateDTO.getSubmissionsCount() != null) {
 					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
 				}
-				requirementQuestionnaireFeedbackTemplate.add(qtemplate);
-				requirementQuestionnaireTemplate
-						.setRequirementQuestionnaireFeedbackTemplate(requirementQuestionnaireFeedbackTemplate);
-				requirementWorkFlowDao.saveQuestionnaireTemplate(requirementQuestionnaireTemplate);
 			}
+			requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
 			return qtemplate;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
+
 
 
 	@Override
 	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)
 			throws Exception {
-		return requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(uuid);
+		return requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(uuid, null, null);
 	}
 
 
@@ -1584,6 +1586,25 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId)
 			throws Exception {
 		return requirementWorkFlowDao.getSubmittedQuestionnaireUuidByWorkflowStage(stageId,submissionId,orgLocationId);
+	}
+	
+	@Override
+	public RequirementQuestionnaireTemplateDTO getSavedQuestionnaire(String templateUuid, String stageId,
+			String submissionId) throws Exception {
+		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = null;
+		RequirementQuestionnaireTemplateDTO qDto = new RequirementQuestionnaireTemplateDTO();
+		RequirementQuestionnaireFeedbackTemplateDTO feedbackTemplateDto = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(templateUuid, stageId, submissionId);
+		if(feedbackTemplateDto == null || StringUtils.isEmpty(feedbackTemplateDto.getJsonString()) || StringUtils.isEmpty(feedbackTemplateDto.getJsonStringValues())){
+			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+			if(requirementQuestionnaireTemplate != null) {
+				qDto.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+			}
+		}else {
+			qDto.setJsonString(feedbackTemplateDto.getJsonString());
+			qDto.setJsonStringValues(feedbackTemplateDto.getJsonStringValues());
+			qDto.setUuid(feedbackTemplateDto.getUuid());
+		}
+		return qDto;
 	}
 }
 

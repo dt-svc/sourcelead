@@ -17,6 +17,8 @@ public class RequirementQuestionnaireTemplateDTO extends SearchDTO{
 	
 	private String jsonString ;
 	
+	private String jsonStringValues ;
+	
 	private Integer timeLimitMinutes;
 	
 	private Integer timeLimitSeconds;
@@ -77,6 +79,15 @@ public class RequirementQuestionnaireTemplateDTO extends SearchDTO{
 
 	public void setJsonString(String jsonString) {
 		this.jsonString = jsonString;
+	}
+
+	
+	public String getJsonStringValues() {
+		return jsonStringValues;
+	}
+
+	public void setJsonStringValues(String jsonStringValues) {
+		this.jsonStringValues = jsonStringValues;
 	}
 
 	public Integer getTimeLimitMinutes() {
