@@ -130,7 +130,7 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		
 		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
-		saveOrUpdateCandidateElkDocumentWithReferenceDetails(candidateReferences.getCandidateId(),orgLocationId);
+		//saveOrUpdateCandidateElkDocumentWithReferenceDetails(candidateReferences.getCandidateId(),orgLocationId);
 		
 		return candidateReferences;
 	
