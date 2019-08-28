@@ -62,7 +62,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 			  result = result + '<th>'+colName+'<br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 			  columnPropArr.push(colProp);
 		  }else{
-			  result = result + '<th>'+colName+'</th>';
+				  result = result + '<th>'+colName+'</th>';
 			  columnPropArr.push(colProp);
 		  }
 	   });
@@ -246,11 +246,11 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 											&& opt.submittedQuestionrUuid != ''
 											&& opt.submittedQuestionrUuid != 'undefined') {
 										result = result
-												+ '         <td><div><a href ="'+ opt.submittedQuestionrUuid+'" target="_blank">view</a></div></td>';
+												+ '         <td><div><a href ="'+ opt.submittedQuestionrUuid+'" target="_blank">View Submitted</a></div></td>';
 												
 									} else {
 										result = result
-												+ '         <td><div><span>--</span></div></td>';
+												+ '         <td><div>--</div></td>';
 									}
 									return result;
 								}
@@ -760,6 +760,10 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 						+ "<option value='Status'>"
 						+ opt.submissionDisplayStatus
 						+ "</option>";
+				     // if not a client requirement remove option from the dropdown options list.
+						if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){
+							delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
+					 }
 				     $.each( opt.workflowStagesMap, function(val, name ) {
 					     if(opt.submissionDisplayStatus != name ){
 				    	    result = result+"<option value='"+val+"'>"+name+"</option>";
