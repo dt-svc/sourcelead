@@ -400,15 +400,16 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("frequencyType",projectMembers.getProjects().getInvoiceFrequency());
 		 globalVarsMap.put("startDate",startDate);
 		 globalVarsMap.put("endDate", endDate);
-		
-		 Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
+		 globalVarsMap.put("amount",expenses.getTotalAmount().toString());
+		 
+		/* Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
 		 for(ExpensesEntries expList: expensesEntriesList) {
 			 
 			 globalVarsMap.put("amount", expList.getSubmittedamount().toString());
 			 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
 			 
 			
-		 }
+		 }*/
 
 		Date todayDate = new Date();
 		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));
@@ -428,8 +429,15 @@ public class ExpensesApprovalRestController {
 			Long redirectOrgLocationId = loginOrgLocation.getId();
 
 			StringBuilder stringBuildforLink = new StringBuilder();
-			globalVarsMap.put("LoginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
 			
+			 if("REJECTED".equalsIgnoreCase(status)){
+				 globalVarsMap.put("LoginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 }
+			
+			 
+			 if("APPROVED".equalsIgnoreCase(status)){
+			 globalVarsMap.put("LoginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+			 }
 		 
 		 
 		 if("REJECTED".equalsIgnoreCase(status)){
@@ -443,11 +451,11 @@ public class ExpensesApprovalRestController {
 		 String actionLink="";
 		 StringBuilder notificationLink = new StringBuilder();
 		 if("REJECTED".equalsIgnoreCase(status)){
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("expenses?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }
 		 if("APPROVED".equalsIgnoreCase(status)){
-		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("addApprovalExpense?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
+		     actionLink = notificationLink.append(sourceleadUrl).append("/").append("expenses?expenseId="+expenses.getExpenseId()+"&expenseLocationCode="+expenses.getLocationsCode()+"&type=view").toString();
 
 			 notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TEAM_MANAGER_APPROVED_EXPENSE,Constants.ENTITY_TYPE_NOTIFICATION);
 		 }

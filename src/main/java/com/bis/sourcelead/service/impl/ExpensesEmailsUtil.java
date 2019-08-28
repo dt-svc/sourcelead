@@ -118,16 +118,17 @@ public class ExpensesEmailsUtil {
 				}
 				
 				if (null != expenses.getTotalsubmittedAmount()) {
-					globalVarsMap.put("totalSubmittedAmount", expenses.getTotalsubmittedAmount().toString());
+					globalVarsMap.put("totalSubmittedAmount", expenses.getTotalAmount().toString());
 				}
 
-				Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
+			/*	Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
 				for (ExpensesEntries exp : expensesEntries) {
 
 					globalVarsMap.put("totalAmount", exp.getSubmittedamount().toString());
 
-				}
+				}*/
 
+				globalVarsMap.put("totalAmount", expenses.getTotalAmount().toString());
 				String expenseLocationCode = managerUser.getLocationCode();
 
 				Long redirectOrgLocationId = managerUser.getOrgLocationId();
@@ -204,7 +205,7 @@ public class ExpensesEmailsUtil {
 		globalVarsMap.put("loginOrg", orgLoc.getOrgLocationName());
 
 		if (null != expenses.getTotalsubmittedAmount()) {
-			globalVarsMap.put("totalAmount", expenses.getTotalsubmittedAmount().toString());
+			globalVarsMap.put("totalAmount", expenses.getTotalAmount().toString());
 		}
 
 		String redirectURL = "/expenses/";
@@ -273,7 +274,7 @@ public class ExpensesEmailsUtil {
 			globalVarsMap.put("Expense_Id", expenseId.getExpenseId());
 		}
 		
-		globalVarsMap.put("approved_Amount", expenseId.getTotalsubmittedAmount().toString());
+		globalVarsMap.put("approved_Amount", expenseId.getTotalAmount().toString());
 		
 		String startdate = commonUtil.elkDateFormatter(expenseId.getStartDate());
 		String enddate = commonUtil.elkDateFormatter(expenseId.getEndDate());
@@ -585,12 +586,14 @@ public class ExpensesEmailsUtil {
 					globalVarsMap.put("amount", expenses.getTotalsubmittedAmount().toString());
 				}
 
-				Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
+				/*Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
 				for (ExpensesEntries exp : expensesEntries) {
 
 					globalVarsMap.put("amount", exp.getSubmittedamount().toString());
 
-				}
+				}*/
+				globalVarsMap.put("amount", expenses.getTotalAmount().toString());
+				
 				String expenseLocationCode = managerUser.getLocationCode();
 
 				Long redirectOrgLocationId = managerUser.getOrgLocationId();
