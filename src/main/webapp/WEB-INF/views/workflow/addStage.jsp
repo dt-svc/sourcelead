@@ -34,9 +34,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
-            value='<c:out value="${stageName}"/>' data-validation="required validate_length length1-100"
-            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-            onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+            value='<c:out value="${stageName}"/>' data-validation="required validate_length length4-100"
+            onkeyup= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
@@ -47,13 +46,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <c:choose>
           <c:when test="${configureType == 'Customize'}">
            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
-            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
+            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length4-20"
              onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
              style="text-transform:uppercase" disabled>
           </c:when>
           <c:otherwise>
            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
-            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length1-20"
+            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length4-20"
              onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
              style="text-transform:uppercase" >
           </c:otherwise>
@@ -81,9 +80,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
-            data-validation="required validate_length length1-100"
-            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-			onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+            data-validation="required validate_length length4-100"
+            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
@@ -383,7 +381,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </div>
 
     </div>
-    <c:if test ="${onlyQuestAndTasksEditable == false}">
+    <%-- <c:if test ="${onlyQuestAndTasksEditable == false}"> --%>
     <form id="stagesForm" name="stagesForm">
 		<div class="clearfix row">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -424,7 +422,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		  </div>
     </div>
     </form>
-    </c:if>
+  <%--   </c:if> --%>
    
     <!-- functionality is not implemented commented as of now for calrification -->
     <!-- <div class="clearfix">
@@ -471,17 +469,27 @@ $(document).ready(function() {
 		requirementWorkflow.getRequirementQuestionnaireTemplates();
 	
 	
-	if($('#stageName').val().length == 0){
-		$("#saveTaskButton").attr("disabled", true);
+	if($('#stageName').val().length < 4){
+		$("#saveTaskButton").addClass("disabled");
 	}else{
-		$("#saveTaskButton").attr("disabled", false);
+		$("#saveTaskButton").removeClass("disabled");
 	}
 	
 	$('#stageName').keyup(function(){
-	    if($(this).val().length !=0)
-	    	$("#saveTaskButton").attr("disabled", false);           
-	    else
-	    	$("#saveTaskButton").attr("disabled", true);
+	    if($(this).val().length < 4 || $('#shortCode').val().length < 4 ){
+	    	$("#saveTaskButton").addClass("disabled");
+	    }
+	    else{
+	    	$("#saveTaskButton").removeClass("disabled");
+	   }
+	})
+	$('#shortCode').keyup(function(){
+	    if($(this).val().length < 4 ||  $('#stageName').val().length < 4 ){
+	    	$("#saveTaskButton").addClass("disabled");    
+	    }
+	    else{
+	    	$("#saveTaskButton").removeClass("disabled");
+	   }
 	})
 	
 	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
@@ -491,6 +499,7 @@ $(document).ready(function() {
 function checkValidEditableFields(checkValidEditableFields){
 	//console.log("checkValidEditableFields value is :"+checkValidEditableFields);
 	if(checkValidEditableFields == 'true'){
+		  $('#stagesForm').css("display","none");
 		  $("#columnsCHkbx").val("on");
 		  $("#stageName").attr("disabled", "disabled");
 		  $("#shortCode").attr("disabled", "disabled");

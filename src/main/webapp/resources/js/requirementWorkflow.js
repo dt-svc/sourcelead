@@ -1085,15 +1085,17 @@ function RequirementWorkflow(){
 						 type: "GET",
 						 url : sourceleadUrl+"/validateWorkflowStageName?workflowUuid="+workflowUuid+"&stageName="+stageName+"&currentStageUuid="+currentStageUuid,
 						 success:function(dataList){
-							 
-							 if (dataList.response =="true" || dataList.response =="special") {
+							 if (dataList.response =="true" || dataList.response =="special" || dataList.response =="Minimum") {
 								 $('#StageNameDiv').find('p.jquery_form_error_message').remove();
 								 if ($('#StageNameDiv').find('p.jquery_form_error_message').length === 0)
 				                 if(dataList.response =="true"){
 									 $("#stageName").after("<p class='jquery_form_error_message'>" + stageName + " Already Exists</span>");
 				                 }if(dataList.response =="special"){
-								 $("#stageName").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+								 $("#stageName").after("<p class='jquery_form_error_message'> Invalid format !</span>");
 				                 }
+				                 if(dataList.response =="Minimum"){
+									 $("#stageName").after("<p class='jquery_form_error_message'> Minimum 4 Chars requried</span>");
+					              }
 				                    $("#saveStageButton").attr("disabled", "disabled");
 				                    $("#saveTaskButton").attr("disabled", "disabled");
 				                 }else {
@@ -1134,14 +1136,16 @@ function RequirementWorkflow(){
 							 type: "GET",
 							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode+"&currentStageUuid="+currentStageUuid,
 							 success:function(dataList){
-								 if (dataList.response =="true" || dataList.response =="special") {
+								 if (dataList.response =="true" || dataList.response =="special" || dataList.response =="Minimum") {
 									 $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
 									 if ($('#ShortCodeDiv').find('p.jquery_form_error_message').length === 0)
 					                 if(dataList.response =="true"){
 										 $("#shortCode").after("<p class='jquery_form_error_message'>" + stageShortCode + " Already Exists</span>");
 					                 }if(dataList.response =="special"){
-									 $("#shortCode").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
-					                 }
+									 $("#shortCode").after("<p class='jquery_form_error_message'> Invalid format !</span>");
+					                 }if(dataList.response =="Minimum"){
+										 $("#shortCode").after("<p class='jquery_form_error_message'> Minimum 4 Chars requried</span>");
+						              }
 					                    $("#saveStageButton").attr("disabled", "disabled");
 					                 }else {
 					                    $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
