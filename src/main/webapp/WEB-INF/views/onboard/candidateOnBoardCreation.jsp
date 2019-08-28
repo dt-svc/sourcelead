@@ -949,8 +949,6 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  
-	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
@@ -1003,6 +1001,11 @@ function validateUploadFile(id)
 				    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
 					    	 $("#zipCode").val(json['zipCode']);
 				    	 } 
+				    	 if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
+			   		    		shiftList(json['shift']);
+			   		    	}else{
+			   		    		shiftList();
+			   		    	}
 			    	} else if (response.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
