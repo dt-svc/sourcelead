@@ -1692,7 +1692,7 @@ function imageCancel(){
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		candidateList();
+// 		candidateList();
 	}
 </script>
 
@@ -2963,6 +2963,7 @@ function cancelShareCandidate(){
 }
 function closejobpop() {
 	shareCandidates = {};
+	 $('input[class="contactscheckbox"]').removeProp('checked');
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
@@ -3227,6 +3228,7 @@ function resetCandidateFilter(){
 	document.getElementById("candidateCheck").checked = true;
 	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
+	mySkillsFunction();
 }
 </script>
 
