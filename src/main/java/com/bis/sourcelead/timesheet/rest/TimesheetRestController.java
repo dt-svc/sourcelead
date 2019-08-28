@@ -5670,7 +5670,7 @@ public class TimesheetRestController {
 			if (tsDTO.getFileInfo() != null) {
 				for (FileInfo file : tsDTO.getFileInfo()) {
 					FileInfo freshFile = file;
-					if (StringUtils.isEmpty(file.getFileDbId())) {
+					if (StringUtils.isEmpty(file.getFileDbId()) && StringUtils.isNotEmpty(file.getFileURL())) {
 						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 						TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 						tsd.setTimesheetSubmissions(timesheetSubmissions);
@@ -5684,8 +5684,9 @@ public class TimesheetRestController {
 						tsd.setUpdatedBy(loginUser.getUserCode());
 						tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
 						freshFile.setFileDbId(tsd.getId().toString());
+						fileInfoList.add(freshFile);
 					}
-					fileInfoList.add(freshFile);
+					
 				}
 			}
 			tsDTO.setFileInfo(fileInfoList);
