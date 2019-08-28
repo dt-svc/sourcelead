@@ -1029,6 +1029,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		List<RequirementWorkFlowStages> workflowStages= new ArrayList<RequirementWorkFlowStages>();
 		try {
 			if(name != null && !StringUtils.isBlank(name)) {
+				if(name.length() < 4) return "Minimum";
 				nonSpecialFlag = Pattern.matches(nonSpecialChars, name);
 			}
 			if(nonSpecialFlag == true) {
@@ -1100,6 +1101,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		Boolean nonSpecialFlag = false;
 		try {
 			if(shortCode != null && !StringUtils.isBlank(shortCode)) {
+				if(shortCode.length() < 4) return "Minimum";
 				nonSpecialFlag = Pattern.matches(nonSpecialChars, shortCode);
 			}
 			if(nonSpecialFlag == true) {
