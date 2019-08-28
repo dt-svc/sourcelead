@@ -138,6 +138,7 @@ INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) V
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` WHERE `UNIQUE_SCENARIO_NAME` = 'MailToManager1WhenManager2orAdminRejectTheExpense' AND `ENTITY_TYPE`='Notification' AND `ORG_LOCATION_ID` IS NULL), 'employeeName', '[Employee_Name]');
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` WHERE `UNIQUE_SCENARIO_NAME` = 'MailToManager1WhenManager2orAdminRejectTheExpense' AND `ENTITY_TYPE`='Notification' AND `ORG_LOCATION_ID` IS NULL), 'loginUser', '[Login_User]');
 
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT ID FROM `EMAIL_SCENARIO` WHERE `UNIQUE_SCENARIO_NAME` = 'ExpensesApprovalManagerEmailToEmployee' AND `ENTITY_TYPE`='Email' AND `ORG_LOCATION_ID` IS NULL), 'SubmittedAmount', '[Submitted_Amount]');
 #issues 
 
 SET SQL_SAFE_UPDATES=0;
@@ -166,7 +167,7 @@ Expense id : [Expense_Id]
 Project : [Project_Name]
 Start Date :[Start_Date]
 End Date :[End_Date]
-Rejectted Reason : [Rejectted_Reason]
+Rejected Reason : [Rejectted_Reason]
 Amount : [Amount]\nFor brief details click on following link[Login_Link]' WHERE ENTITY_TYPE = 'Email' AND UNIQUE_SCENARIO_NAME = 'ExpensesApprovalRejectedEmailToEmployee';
 
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Employee expense got rejected ' WHERE `UNIQUE_SCENARIO_NAME`='MailToManager1WhenManager2orAdminRejectTheExpense' and `ENTITY_TYPE`='Notification';
@@ -191,7 +192,7 @@ Start Date : [Start_Date]
 End Date : [End_Date]
 Amount : [Amount]
 ExpenseId :[Expense_Id]
-Reject Reason : [Reason]
+Rejected Reason : [Reason]
 For more details, login to the system:
 [Login_Url]' WHERE `ENTITY_TYPE` = 'Email' and `UNIQUE_SCENARIO_NAME` = 'ReopenRejectExpenseEmailToApprovers' ;
 UPDATE `EMAIL_SCENARIO` SET `BODY`='Your re-open request is rejected for the project [Project_Name].' WHERE `UNIQUE_SCENARIO_NAME`='ReopenRejectExpenseEmailToApprovers' and `ENTITY_TYPE`='Notification';
@@ -208,7 +209,20 @@ ExpenseId : [Expense_Id]
 Amount : [Amount]
 Reason for Reopen : [Reason_For_Reopen]
 [Accept][Reject]' WHERE `ENTITY_TYPE` = 'Email' and `UNIQUE_SCENARIO_NAME` = 'ExpensesReopenEmailToSuperAdmin';
-SET SQL_SAFE_UPDATES=1;
+
+#Latest issue regarding approved amount
+
+
+#When manager2 approve expense mail to emplyee
+UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear [Employee_User],
+We are pleased to inform you that your proposal for expenses submitted on [Submit_For_Approval_Date] has been approved.
+Expense id : [Expense_Id]
+Project : [Project_Name]
+Start Date : [Start_Date]
+End Date : [End_Date]
+Subitted Amount : [Submitted_Amount]
+Approved Amount: [Amount]\nFor brief details click on following link[Login_Link]' WHERE `ENTITY_TYPE` = 'Email' and `UNIQUE_SCENARIO_NAME` = 'ExpensesApprovalManagerEmailToEmployee';
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Your expenses got approved ' WHERE `UNIQUE_SCENARIO_NAME`='ExpensesApprovalManagerEmailToEmployee' and `ENTITY_TYPE`='Notification';
 
 
 SET SQL_SAFE_UPDATES=1;

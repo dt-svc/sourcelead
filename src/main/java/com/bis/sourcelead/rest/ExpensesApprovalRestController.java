@@ -401,15 +401,8 @@ public class ExpensesApprovalRestController {
 		 globalVarsMap.put("startDate",startDate);
 		 globalVarsMap.put("endDate", endDate);
 		 globalVarsMap.put("amount",expenses.getTotalAmount().toString());
+		 globalVarsMap.put("SubmittedAmount",expenses.getTotalsubmittedAmount().toString());
 		 
-		/* Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries();
-		 for(ExpensesEntries expList: expensesEntriesList) {
-			 
-			 globalVarsMap.put("amount", expList.getSubmittedamount().toString());
-			 globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString());
-			 
-			
-		 }*/
 
 		Date todayDate = new Date();
 		 globalVarsMap.put("submitForApprovalDate",commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),todayDate));

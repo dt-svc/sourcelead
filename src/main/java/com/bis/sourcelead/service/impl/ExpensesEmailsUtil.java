@@ -205,9 +205,9 @@ public class ExpensesEmailsUtil {
 		globalVarsMap.put("loginOrg", orgLoc.getOrgLocationName());
 
 		if (null != expenses.getTotalsubmittedAmount()) {
-			globalVarsMap.put("totalAmount", expenses.getTotalAmount().toString());
+			globalVarsMap.put("expensesSubmitted", expenses.getTotalsubmittedAmount().toString());
 		}
-
+		globalVarsMap.put("totalAmount", expenses.getTotalAmount().toString());
 		String redirectURL = "/expenses/";
 		Long redirectOrgLocationId = orgLoc.getId();
 
