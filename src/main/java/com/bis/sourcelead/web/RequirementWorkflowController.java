@@ -904,9 +904,11 @@ public class RequirementWorkflowController {
 	
 		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
 		 @ResponseBody
-		   public String getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
-			    RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
-				 return questionnaireTemplate.getJsonString();
+		   public RequirementQuestionnaireTemplateDTO getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid,
+					@RequestParam(value = "stageId", required = false) String stageId,
+					@RequestParam(value = "submissionId", required = false) String submissionId) throws Exception {
+			 RequirementQuestionnaireTemplateDTO questionnaireTemplate = requirementWorkFlowService.getSavedQuestionnaire(templateUuid, stageId, submissionId);
+				 return questionnaireTemplate;
 		   }
 /**
  *  Below method is used to disable work flow name for requirement if any candidate submitted for the requirement
