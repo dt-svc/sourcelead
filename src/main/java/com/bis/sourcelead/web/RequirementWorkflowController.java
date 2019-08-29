@@ -50,6 +50,7 @@ import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTempla
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -996,4 +997,15 @@ public class RequirementWorkflowController {
 		}
 		return questionnaireTasksDTO;
 	}
+
+	@RequestMapping(value = { "/deleteAssignTask" }, method = RequestMethod.POST)
+	public @ResponseBody String deleteTask(@RequestParam(value = "uuid", required = false) String uuid, HttpServletRequest request) throws Exception {
+	
+		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+		String status = requirementWorkFlowService.deleteAssignedTask(uuid, orgLocations.getId());
+		
+		return status;
+	}
+	
+
 }
