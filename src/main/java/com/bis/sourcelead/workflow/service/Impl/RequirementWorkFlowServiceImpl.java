@@ -1606,5 +1606,22 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		return qDto;
 	}
-}
+
+	@Override
+		public String deleteAssignedTask(String uuid, Long id) {
+			logger.debug("Running deleteTaskByuuid Service for "+id+" orgLocation");
+			String status=null;
+			try {
+				RequirementWorkFlowTasks requirementWorkFlowTasks = requirementWorkFlowDao.getRequirementWorkFlowTasksByUuid(uuid);
+		String sucess =	requirementWorkFlowDao.deleteRequirementWorkFlowtasks(requirementWorkFlowTasks.getId());
+		status = Constants.SUCCESS;
+			}catch(Exception e) {
+				logger.error(e+" in deleteByuuid Service for "+id+" orgLocation");
+				e.printStackTrace();
+				status = Constants.FAILED;
+			}
+			return status;
+		}
+	
+	 }
 
