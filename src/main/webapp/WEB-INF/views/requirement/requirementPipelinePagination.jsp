@@ -759,6 +759,9 @@
 										if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){
 											delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
 										}
+										'<sec:authorize access="!hasRole(\'ROLE_SHORTLIST\')">';
+										  delete opt.workflowStagesMap["SHORTLIST"];
+										'</sec:authorize>';
 									     $.each( opt.workflowStagesMap, function(val, name ) {
 										     if(opt.submissionDisplayStatus != name ){
 									    	    result = result+"<option value='"+val+"'>"+name+"</option>";
