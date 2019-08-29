@@ -15,6 +15,8 @@
 .icon1 {
 	right: 15px;
 	}
+.trashbackground{
+    background-color: #ffff !important;
 </style>
 
 <!--success msg -->
@@ -223,7 +225,7 @@ function cancelOrgImg(){
 	                    <i class="fa fa-upload"></i> Upload / Change<input type="file" name="file" id="uploadedImage" data-id='orgLogo'  accept="image/*" onchange="cropImage(this, 'orgImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
 	                  </label>
 	 				  <c:if test="${!empty SourceLeadWeb_fileUrl}">
-		                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+		                  <button type="button" class="btn btn-sm btn-danger trashbackground" onclick="deleteImage()">
 						  <i class="fa fa-trash"></i></button>
 					  </c:if>
 				  </div>
