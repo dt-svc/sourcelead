@@ -47,12 +47,12 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 
          <c:choose>
          <c:when test="${requirementWorkFlowStagesDTO[0].stageCount == 15 || requirementWorkFlowStagesDTO[0].stageCount > 15}">
-         <input value="+ Stage" id="stageButton" onclick="requirementWorkflow.alertStageCount();" class="btn btn-primary" type="button">
+         <input value="+ Stage" id="stageButton" onclick="requirementWorkflow.alertStageCount();" class="btn btn-primary margin-top0" type="button">
          </c:when>
          <c:otherwise>
            <c:if test ="${isWorkflowEditable == true}">
               <input value="+ Stage" id="stageButton" 
-        	       onclick="requirementWorkflow.saveRequirementAndAddAStage('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>','${requirementWorkFlowStages.stageName}','<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />');" class="btn btn-primary" type="button">
+        	       onclick="requirementWorkflow.saveRequirementAndAddAStage('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>','${requirementWorkFlowStages.stageName}','<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />');" class="btn btn-primary margin-top0" type="button">
             </c:if>
          </c:otherwise>
          </c:choose>

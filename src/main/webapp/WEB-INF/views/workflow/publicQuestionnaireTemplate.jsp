@@ -15,7 +15,7 @@
  </c:if>
  
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
-<title>Welcome to Source Lead :: Interview Template</title>
+<title>Welcome to Source Lead :: Questionnaire Template</title>
 <!-- Bootstrap -->
 <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
@@ -51,52 +51,54 @@ width: auto !important; padding-right: 15px;
 <script type="text/javascript">
 var labelAndAttemptsMap = new Map();
 window.onload = function () {
-	interviewTemplateForm();
-	getTimeLimit();
-
+/* 	var templateUuid = '${templateUuid}';
+	var workflowStageId = '${workflowStageId}';
+	var requirementSubmissionId = '${requirementSubmissionId}';
+   if(workflowStageId == "" && requirementSubmissionId == ""){
+	   alert("feedback template "+templateUuid);
+		generateQuestionnaireFeedbackTemplateForm(templateUuid);
+	}else{
+		alert("questionnaire template");
+	   questionnaireTemplateForm();
+	} */
+	// commented to be removed after clock is set
+	//getTimeLimit();
+	questionnaireTemplateForm();
  };
 </script>
 
 
 <script>
-function interviewTemplateForm(){
+function questionnaireTemplateForm(){
 	var templateUuid = '${templateUuid}';
 	
 	var sourceleadUrl ='${sourceleadUrl}';
-	$("#interviewTemplateFormDiv").show();
-		generateInterviewFeedbackForm1(sourceleadUrl, templateUuid)
+	$("#questionnaireTemplateFormDiv").show();
+		generateQuestionnaireForm1(sourceleadUrl, templateUuid)
 		var result = "";
-		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small></h3>';
+		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
+		// commented to be removed after clock is set
+		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
+		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
 		result = result + "";
-		/* result = result + '<div class="viewTemplate feedbackTemplate col-md-12">';
-		result = result + '<div class="sjfb-field sjfb-text">';
-		result = result + '<label>Comment <span class="text-danger">*</span></label>';
-		result = result + '<textarea rows="2" placeholder="Comment" class="form-control" name="interviewComment" field-name="Comment" data-validation="required"></textarea>';
-		result = result + '</div>';
-		result = result + '<div class="sjfb-field sjfb-text">';
-		result = result + '<label>Selected for Interview</label>';
-		result = result + '<span class="radio-inline"><input type="radio" value="Yes" name="feedback">Yes</span>';
-		result = result + '<span class="radio-inline"><input type="radio" value="No" name="feedback">No</span>';
-		result = result + '</div>';
-		result = result + '</div>'; */
+		
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
+		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveInterviewTemplate();">Submit</button>';
+		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		//result = result + '<button type="button"  class="btn btn-sm btn-warning ml">Cancel</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
 		result = result + '</form>';
 		 
-		$("#interviewTemplateFormDiv").empty();
-		$("#interviewTemplateFormDiv").append(result);
+		$("#questionnaireTemplateFormDiv").empty();
+		$("#questionnaireTemplateFormDiv").append(result);
 	
 }
 function getTimeLimit(){
@@ -122,15 +124,15 @@ function getTimeLimit(){
 </script>
 
 <script>
-var qfeedbackUuid="";
+var savedQuestionnaireUuid="";
 var submissionsCount = 1;
-function saveInterviewTemplate(){
+function saveQuestionnaireTemplate(){
 	var workflowStageId = '${workflowStageId}';
 	var requirementSubmissionId = '${requirementSubmissionId}';
-	if ($('#interviewTemplate_form').validate(false, validationSettings)){ 
-	      var frm = $('#interviewTemplate_form').serializeFormJSON();
+	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
+	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
 		var qTemplateUuid = '${templateUuid}'; 
-	      var form = $('#interviewTemplate_form')[0];
+	      var form = $('#questionnaireTemplate_form')[0];
 		    var formData = new FormData(form); 
 		    
 	      var sourceleadUrl ='${sourceleadUrl}';
@@ -234,12 +236,11 @@ function saveInterviewTemplate(){
 		     	  }
 		     	  
 		     	  if(inputValue != null && inputValue != ""){
-		     		 attempts = (labelAndAttemptsMap.get(fieldLabel));
-		     		pointsArray.push(points);
-		     		 if(attempts >= 1){
-		     		 attempts = attempts - 1;
-		     		labelAndAttemptsMap.set(fieldLabel,attempts);
+		     		 attempts = attempts-1;
+		     		 if(attempts <= 0){
+		     			 attempts = 0;
 		     		 }
+		     		pointsArray.push(points);
 		     		 }
 		     	  
 		     		  fields.push({
@@ -263,7 +264,6 @@ function saveInterviewTemplate(){
 	        //Demo doesn't actually save. Download project files for save
 	        var con2 = JSON.stringify(fields);
 	        var jsonStringData = encodeURIComponent(con2);
-	        
 	        if(submitTemplate){
 	         $( "#template_save_button" ).addClass('button').val('Processing..');
 	      	  $.ajax({
@@ -274,7 +274,7 @@ function saveInterviewTemplate(){
 			        processData: false,
 			        contentType:false,
 	      	    	dataType : 'json',
-	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+qfeedbackUuid+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
+	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
 	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
 	      	        success: function(result) {
 	      	           if (result == null) {
@@ -297,9 +297,9 @@ function saveInterviewTemplate(){
 	    	return false;	
 	       } 
 }
-$('body').on('blur', '#interviewTemplate_form', function() {
-	$("#interviewTemplate_form").showHelpOnFocus();
-	$("#interviewTemplate_form").validateOnBlur(false, validationSettings);
+$('body').on('blur', '#questionnaireTemplate_form', function() {
+	$("#questionnaireTemplate_form").showHelpOnFocus();
+	$("#questionnaireTemplate_form").validateOnBlur(false, validationSettings);
 });
 
 function calculateTotalPoints(pointsArray){
@@ -352,7 +352,7 @@ function calculateTotalPoints(pointsArray){
     <nav class="header-nav navbar">
     </nav>
    </header>
-   <div id="interviewTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
+   <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
    <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
    <div id="viewInterviewTemplateList" class="container paddingTop55"></div>
    <div id="viewInterviewTemplateNo" class="container paddingTop55"></div>
@@ -369,9 +369,12 @@ function calculateTotalPoints(pointsArray){
 
 
 <script>
-function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
+function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
+	var workflowStageId = '${workflowStageId}';
+	var requirementSubmissionId = '${requirementSubmissionId}';
+	
     //empty out the preview area
-    $("#interviewsjfb-fields").empty();
+    $("#questionnairesjfb-fields").empty();
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -385,25 +388,49 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
 	  }
     $.ajax({
     	type: "GET",
-        url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid, 
-        success: function(data) {
-        	 var data = eval(data);
-        	 var attachmentCount = 0;
+        url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&stageId="+workflowStageId+"&submissionId="+requirementSubmissionId, 
+        success: function(result) {
+        	var data = null;
+        	if(result.jsonString != null){
+        		data = eval(result.jsonString);
+        	}else{
+        		data = eval(result.jsonString);
+        	}
+        	
+        	//setting values to labelAndAttemptsMap.
+        	var valuesData = null;
+        	if(result.jsonString != null){
+        		valuesData = eval(result.jsonStringValues);
+        	}else{
+        		valuesData = eval(result.jsonStringValues);
+        	}
+        	if(valuesData){
+        		 $.each( valuesData, function( k, v ) {
+        			 labelAndAttemptsMap.set(v['label'], v['attempts']);
+        		 });
+        	}
+        	
+        	savedQuestionnaireUuid = result.uuid;
+        	var attachmentCount = 0;
+        	var fileCount = 0;
         	 if (data) {
                  //go through each saved field object and render the form HTML
                  $.each( data, function( k, v ) {
-
+					
                      var fieldType = v['type'];
-
+                     var labelTitle = v['label'];
+                     var required =  v['req'];
                      //Add the field
-                     $('#interviewsjfb-fields').append(addFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],sourceleadUrl));
-                    // $('#interviewsjfb-fields').append(addField(fieldType,v['req'],v['label'],v['hint'],sourceleadUrl));
+                     $('#questionnairesjfb-fields').append(addSavedFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],attachmentCount));
+                     var $currentField = $('#questionnairesjfb-fields .sjfb-field').last();
                      
-                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
+                     if(fieldType == "file"){
+                    	 attachmentCount = attachmentCount+1;
+                     }
                      
                      var reqSymbol = '';
                 	 if(v['req'] == '1'){
-                		reqSymbol = " *";
+                		reqSymbol = " * ";
                 	 }
                      
                      //Add the label
@@ -411,46 +438,178 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
                     	 $currentField.find('label').text(v['label']+reqSymbol);
                      }
                      
-                     //Any choices?
-                     if (v['choices']) {
+                    
+                     if(result.jsonStringValues != null && result.jsonStringValues != '' && result.jsonStringValues != 'undefined'){
+                    	 if (v['choices']) {
+                    		 var selectChoice = 1;
+                        	 var selectChoiceHTML = '<option value="">----Select-----</option>';
+                             var uniqueID = Math.floor(Math.random()*999999)+1;
+                             $.each( v['choices'], function( k1, v1 ) {
+                            	 var label = v1['label'];
+                                if (fieldType == 'radio') {
+                            	  var details = eval(result.jsonStringValues);
+                              	   $.each(details, function( k2, v2 ) {
+                              		   if(v['label'] == v2['label']){
+                              			   var values = v2['value'].split(",");
+                              			   for(var i=0; i<values.length; i++){
+                              				 var selected = '';
+                              				   if(values[i] == v1['label']){
+                              					 selected = v1['sel'] ? ' checked' : 'checked';
+                              				   }else{
+                              					 selected = v1['sel'] ? ' checked' : '';
+                              				   }
+                                             
+                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+                                             if(required == 1 && flag == 0){
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                             }
+                                             $currentField.find(".choices").append(choiceHTML);
+                              			   }
+                              		   }
+                              	   });
+                                 }
+                                 else if (fieldType == 'checkbox') {
+                                	 var details = eval(result.jsonStringValues);
+                                	 var selected = '';
+                                	 $.each(details, function( k3, v3 ) {
+                                		 if(v['label'] == v3['label']){
+                                			 var values = v3['value'].split(",");
+                                			 for(var i=0; i<values.length; i++){
+                                				 if(values[i] == v1['label']){
+                                  					 selected = "checked";
+                              				     }
+                                			 }
+                                             
+                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+                                             if(required == 1 && flag == 0){
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                             }
+                                             $currentField.find(".choices").append(choiceHTML);
+                                		 }
+                                	 });
+                                 }else if (fieldType == 'select') {
+                                	 var details = eval(result.jsonStringValues);
+                                	 var selected = '';
+                                	 $.each(details, function( k4, v4 ) {
+                                		 if(v['label'] == v4['label']){
+                                				 if(v4['value'] == v1['label']){
+                                  					 selected = "selected";
+                              				     }
+                                				 if(selectChoice > 1){
+                                               		 selectChoiceHTML = '';
+                                               	 }
+                                             
+                                				 var choiceHTML = '<option value="'+v1['label']+'" '+selected+'>' + v1['label'] + '</option>';
+                                                 $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+                                                 selectChoice = selectChoice+1;
+                                		 }
+                                	 });
+                                 }
+                             });
+                         }
                     	 
-                    	 var label = v['label'];
-                         var uniqueID = Math.floor(Math.random()*999999)+1;
+                    	 if(fieldType == 'textarea' || fieldType == 'text' || fieldType == 'calendar' || fieldType == 'scale' || fieldType == 'star' || fieldType == 'file'){
+    	                   	 var details = eval(result.jsonStringValues);
+    	                   	 var label = v['label'];
+    	                	 $.each(details, function( k3, v3 ) {
+    	                		 if(label == v3['label']){
+    	                			 if(fieldType == 'textarea'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 $('#textarea-'+ label.replace(/\s+/g, '')).html(v3['value']);
+    	                				 }
+    	                			 }else if(fieldType == 'text'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 $('#text-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                				 }
+    	                				
+    	                			 }else if(fieldType == 'calendar'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 $('#calendar-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                				 }
+    	                			 }else if(fieldType == 'scale'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 evaluatePostSlider(label.replace(/\s+/g, ''),v3['value'])
+    	                				 }
+    	                			 }
+    	                			 else if(fieldType == 'star'){
+    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+    	                					 fillStarValues(v['dropdown'],label.replace(/\s+/g, ''),v3['value'])
+    	                				 }
+    	                			 }
+    	                			 
+    	                			 else if(fieldType == 'file'){
+    	                					  var fileHtml = '';
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
+    	                					  $("#addFeedbackTemplate_form").append(fileHtml);
+	                					      fileCount = fileCount+1;
+	                					      
+	                					      if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	                					    	  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
+		                					      $("#download-"+label.replace(/\s+/g, '')).attr("href",v3['value']);
+		                					      $("#attachmentTitle-"+label.replace(/\s+/g, '')).html(v3['name']);
+		                					      document.getElementById("download-"+label.replace(/\s+/g, '')).style.display="";
+	                					      }
+    	                			 }
+    	                			
+    	                		 }
+    	                	 });
+    	                  }
+                    	 
+                     }else{
+                    	 
+                    	 //Any choices?
+                         if (v['choices']) {
+                        	 var label = v['label'];
+                             var uniqueID = Math.floor(Math.random()*999999)+1;
+                             var selectChoice = 1;
+                             var flag = 0;
+                             var selectChoiceHTML = '<option value="">----Select-----</option>';
+                             $.each( v['choices'], function( k, v ) {
+                             	
+                            	    if (fieldType == 'select') {
+                                   	 if(selectChoice > 1){
+                                   		 selectChoiceHTML = '';
+                                   	 }
+                                        var choiceHTML = '<option value="'+v['label']+'">' + v['label'] + '</option>';
+                                        $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+                                        selectChoice = selectChoice+1;
+                                    }
 
-                         $.each( v['choices'], function( k, v ) {
+                                 else if (fieldType == 'radio') {
+                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+                                     if(required == 1 && flag == 0){
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                     }
+                                     $currentField.find(".choices").append(choiceHTML);
+                                 }
 
-                             if (fieldType == 'select') {
-                                 var selected = v['sel'] ? ' selected' : '';
-                                 var choiceHTML = '<option' + selected + '>' + v['label'] + '</option>';
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
+                                 else if (fieldType == 'checkbox') {
+                                     var selected = v['sel'] ? ' checked' : 'checked';
+                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+                                     if(required == 1 && flag == 0){
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                     }
+                                     $currentField.find(".choices").append(choiceHTML);
+                                 }
+                                 
+                                 flag = flag+1;
 
-                             else if (fieldType == 'radio') {
-                                 var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="radio" name="'+label+'"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
-
-                             else if (fieldType == 'checkbox') {
-                                 var selected = v['sel'] ? ' checked' : 'checked';
-                                 var choiceHTML = '<label><input type="checkbox" name="'+label+'"' + selected + ' value="' + v['label'] + '">' + v['label'] + '</label>';
-                                 $currentField.find(".choices").append(choiceHTML);
-                             }
-                             
-
-                         });
+                             });
+                         }
                      }
-
+                     
                      //Is it required?
                      if (v['req']) {
-                         if (fieldType == 'text') { $currentField.find("input").addClass('required-choice') }
-                         else if (fieldType == 'calendar') { $currentField.find("calandar").addClass('required-choice') }
-                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").addClass('required-choice') }
-                         else if (fieldType == 'textarea') { $currentField.find("textarea").addClass('required-choice') }
-                         else if (fieldType == 'select') { $currentField.find("select").addClass('required-choice') }
-                         else if (fieldType == 'radio') { $currentField.find("input").addClass('required-choice') }
-                         else if (fieldType == 'star') { $currentField.find("star").prop('required',true).addClass('required-choice') }
+                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'calendar') { $currentField.find("calandar").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
                          else if (fieldType == 'scale') { $currentField.find("scale").prop('required',true).addClass('required-choice') }
+                         else if (fieldType == 'star') { $currentField.find("star").prop('required',true).addClass('required-choice') }
                          else if (fieldType == 'file') { $currentField.find("file").prop('required',true).addClass('required-choice') }
                          $currentField.addClass('required-field');
                      }
@@ -461,48 +620,26 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
         	 
         	 
         	  //HTML templates for rendering frontend form fields
-             function addFieldHTML(fieldType,required,label,hint,dropdown,points,attempt,sourceleadUrl) {
-            	 
+             function addSavedFieldHTML(fieldType,required,label,hint,dropdown,points,attempt,attachmentCount) {
+            	 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 var datavalidation = '';	
-            	 var novalidation = '';
-            	 var onBlurEvent = '';
-            	 var placeHolder = '';
             	 var attachmentDataValidation = '';
             	 var attachmentDataValidationOptional = ''
-        		 if(required == 1){
-        			 
-        			 datavalidation = 'data-validation="required"';
-        		 }else{
-        			
-        			 novalidation = 'data-validation-optional="true"';
-        		 }
-        		 
-        		
-        		 
-            	 if(label == 'location'){
-            		 var reqSymbol = ''
-            		 var datavalidation = '';	 
-            		 if(required == 1){
-            			 reqSymbol = '<span>&nbsp;*</span>'
-            		 }
-            		 
-            		 var countryUniqueID = Math.floor(Math.random()*999999)+1;
-            		 var stateUniqueID = Math.floor(Math.random()*999999)+1;
-            		 var cityUniqueID = Math.floor(Math.random()*999999)+1;
-            	 }
-            	 else{
-            		 var uniqueID = Math.floor(Math.random()*999999)+1;
+            	 if(required == '1'){
+            		 datavalidation = 'data-validation="required"';
             	 }
             	 
-            	 if(fieldType == 'select'){
-            		 options = '<option value="">--Select Rating--</option>';
-        		 }
             	 if(fieldType == "star"){
             		 var StarHtml = '';
-            		 for(var i=1; i<=dropdown; i++){
-            			 //StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+','+uniqueID+')" id="star-select'+i+uniqueID+'"></li>';
-            			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';	
-            		 }
+            		 if(attempt == 0){
+            			 for(var i=1; i<=dropdown; i++){
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+      					}
+                	 }else{
+                		 for(var i=1; i<=dropdown; i++){
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+      					}}
+            		 
             	 }
             	 
             	 if(fieldType == "file"){
@@ -532,84 +669,148 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
             			 }
             		 }
             	 }
-            	 
+                
+				var input = "";	
                  switch (fieldType) {
+
                      case 'text':
-                    	 labelAndAttemptsMap.set(label, attempt);
-                         return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+'  '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                            
-                             
-                     case 'calendar':
-                    	 labelAndAttemptsMap.set(label, attempt);
+                    	 if(attempt == 0){
+                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    	 }else{
+                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' >' ;
+                    	 }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
-                             '<label for="calandar-' + uniqueID + '"></label>' +
-                             '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' +
-                             '</div>'+
+                             '<label for="text-' + uniqueID + '"></label>' +
+                             input +
+                             '</div>' +
                              '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                             
-                             
+
                      case 'textarea':
-                    	 labelAndAttemptsMap.set(label, attempt);
+                    	 if(attempt == 0){
+                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' disabled></textarea>' ;
+                    	 }else{
+                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' ></textarea>' ;
+                    	 }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
+                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="textarea-' + uniqueID + '"></label>' +
-                             '<textarea  rows="2" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' id="textarea-' + uniqueID + '"></textarea>' +
+                             input +
                              '</div>'+
                              '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                             
-                             
 
                      case 'select':
-                    	 labelAndAttemptsMap.set(label, attempt);
-                    	 return '' +
+                    	 if(attempt == 0){
+                    		 input = '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+                    	 }else{
+                    		 input =  '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+                    	 }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
+                         return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
+                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select">'+options+'</select>' +
+                             input +
                              '</div>'+
                              '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                             
-                             
 
                      case 'radio':
-                    	 labelAndAttemptsMap.set(label, attempt);
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
                          return '' +
-                             '<div id="sjfb-' + uniqueID + '"  class="sjfb-field sjfb-radio">' +
-                             '<label for="radio-' + uniqueID + '"></label>' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
+                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+                             '<label></label>' +
+                             '<div class="clearfix mt"></div>'+
                              '<div class="choices choices-radio"></div>' +
                              '</div>'+
                              '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                             
-                             
 
                      case 'checkbox':
-                    	 labelAndAttemptsMap.set(label, attempt);
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
                          return '' +
                              '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
-                             '<label for="checkbox-' + uniqueID + '"></label>' +
+                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+                             '<label class="sjfb-label"></label>' +
+                             '<div class="clearfix mt"></div>'+
                              '<div class="choices choices-checkbox"></div>' +
                              '</div>'+
                              '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                         
+
+                     case 'calendar':
+                    	 if(attempt == 0){
+                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    	 }else{
+                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' ;
+                    	 }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+                             '<label for="calandar-' + uniqueID + '"></label>' +
+                             input +
+                             '</div>'+
+                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
+                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
                      
+                     case 'scale':
+                    	 if(attempt == 0){
+                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider" disabled>' ;
+                    	 }else{
+                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider">' ;
+                    	 }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
+                         return '' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+                             '<label for="text-' + uniqueID + '"></label>' +
+                             '<div class="slidecontainer mt clearfix">' +
+                             '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
+                             input +
+                             '</div>'+
+                             '</div>'+
+                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
+                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                         
                      case 'star':
-                    	 labelAndAttemptsMap.set(label, attempt);
+                    	 if(attempt == 0){
+                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
+                    	 }else{
+                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+                    	 }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' +
+                             input +
                              '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
                              '<div class="clearfix mt"></div>'+
                              StarHtml+
@@ -617,41 +818,34 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
                              '</div>'+
                              '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                              '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                             
-                             
-                      case 'scale':
-                    	  labelAndAttemptsMap.set(label, attempt);
-                         return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
-                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
-                             '<label for="text-' + uniqueID + '"></label>' +
-                             '<div class="slidecontainer mt clearfix">' +
-                             '<span id="demo'+ uniqueID +'" class="col-md-4">0</span>' +
-                             '<input type="hidden" id="scaleValue'+ uniqueID +'"></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" onmouseup="evaluatePreSlider('+uniqueID+');" onclick="evaluatePreSlider('+uniqueID+')"  id="text-' + uniqueID + '" class="rangeslider">' +
-                             '</div>'+
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                             
-                             
+                         
                      case 'file':
-                    	 labelAndAttemptsMap.set(label, attempt);
+                    	 if(attempt == 0){
+                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
+                            }else{
+                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
+                            }
+                    	 if(labelAndAttemptsMap.get(label) != null){
+                    		 attempt = labelAndAttemptsMap.get(label);
+                    	 }
                     	 return '' +
                          '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                          '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
-                         '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+(attachmentCount++)+'\');" class="upload">' +
-                         '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >'+
+                         input +
                          '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
                          '</div>'+
                          '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                          '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-                         
-                    	 
                  }
+                 
              }
+             
+             
+             
              var d = new Date();
              var year = d.getFullYear() - 10;
              d.setFullYear(year);
@@ -671,14 +865,14 @@ function generateInterviewFeedbackForm1(sourceleadUrl, templateUuid) {
                 	 $('p.jquery_form_error_message').remove();
                  }
                  
-             });  
-            
+             });
         },
     });
 }
 </script>
 <script>
-function generateQuestionnaireFeedbackTemplateForm(templateUuid){
+function generateQuestionnaireFeedbackTemplateForm(resultUuid){
+	$("#questionnaireTemplateFormDiv").show();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
 	  if(locationDate.match("yyyy-MM-dd")){
@@ -693,35 +887,38 @@ function generateQuestionnaireFeedbackTemplateForm(templateUuid){
 	
 	 
 		var result = "";
-		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small></h3>';
+		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
+		// commented to be removed after clock is set
+		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
+		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
+		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveInterviewTemplate();">Submit</button>';
+		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
 		result = result + '</form>';
 		 
-		$("#interviewTemplateFormDiv").empty();
-		$("#interviewTemplateFormDiv").append(result);
-		 generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript);
-		 getTimeLimit();
+		$("#questionnaireTemplateFormDiv").empty();
+		$("#questionnaireTemplateFormDiv").append(result);
+		 generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript);
+		// commented to be removed after clock is set
+		// getTimeLimit();
 }
 
-function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript){
+function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript){
 
     //empty out the preview area
-    $("#interviewsjfb-fields").empty();
+    $("#questionnairesjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getQuestionnaireTemplateFeedbackList?templateUuid="+templateUuid, 
+        url: sourceleadUrl+"/getQuestionnaireTemplateFeedbackList?templateUuid="+resultUuid, 
         success: function(result) {
         	var data = null;
         	if(result.jsonString != null){
@@ -729,8 +926,23 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
         	}else{
         		data = eval(result.jsonString);
         	}
-        	 
-        	qfeedbackUuid = result.uuid;
+        	
+        	//setting values to labelAndAttemptsMap.
+        	var valuesData = null;
+        	if(result.jsonString != null){
+        		valuesData = eval(result.jsonStringValues);
+        	}else{
+        		valuesData = eval(result.jsonStringValues);
+        	}
+        	if(valuesData){
+        		 $.each( valuesData, function( k, v ) {
+        			 labelAndAttemptsMap.set(v['label'], v['attempts']);
+        		 });
+        	}
+        	
+        	if(savedQuestionnaireUuid == null){
+        		savedQuestionnaireUuid = resultUuid;
+        	}
         	var attachmentCount = 0;
         	var fileCount = 0;
         	 if (data) {
@@ -741,8 +953,8 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                      var labelTitle = v['label'];
                      var required =  v['req'];
                      //Add the field
-                     $('#interviewsjfb-fields').append(addSavedFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],attachmentCount));
-                     var $currentField = $('#interviewsjfb-fields .sjfb-field').last();
+                     $('#questionnairesjfb-fields').append(addSavedFieldHTML(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],attachmentCount));
+                     var $currentField = $('#questionnairesjfb-fields .sjfb-field').last();
                      
                      if(fieldType == "file"){
                     	 attachmentCount = attachmentCount+1;
@@ -1225,7 +1437,7 @@ function evaluatePostSlider(label, value){
 </script>
 <script>
 function uploadFeedbackAttachments(id,attachmentCount){
-	questionnaireFeedbackFileUpload("newUploadBtn"+id, "QuestionnaireFeedbackAttachments", "interviewTemplate_form","uploadedFileInfo",attachmentCount);
+	questionnaireFeedbackFileUpload("newUploadBtn"+id, "QuestionnaireFeedbackAttachments", "questionnaireTemplate_form","uploadedFileInfo",attachmentCount);
 	$('#newUploadFile'+id).val($("#newUploadBtn"+id).val().replace(/C:\\fakepath\\/i, ''));
 	
 }
