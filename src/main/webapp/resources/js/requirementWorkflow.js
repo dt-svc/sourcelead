@@ -586,7 +586,7 @@ function RequirementWorkflow(){
 					    	  	"render": function(data, type, workflowTask, meta) {
 					    	  		var result = "";
 				              		if(workflowTask.workFlowTaskName != null && workflowTask.workFlowTaskName != '' && workflowTask.workFlowTaskName != "undefined"){
-				              			result = result +"<div class='tbldata-dotdot-verybig'>"+workflowTask.workFlowTaskName+"</div>";
+				              			result = result +"<div class='tbldata-dotdot-sm'>"+workflowTask.workFlowTaskName+"</div>";
 				  	              	}else{
 				  	            	  		result = result +"<div>---</div>";
 				  	             	}
@@ -625,7 +625,7 @@ function RequirementWorkflow(){
 					    	  	"render": function(data, type, workflowTask, meta) {
 					    	  		var result = "";
 					    	  		if(workflowTask.workFlowTaskDescription != null && workflowTask.workFlowTaskDescription !== '' && workflowTask.workFlowTaskDescription != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-vsm'>"+workflowTask.workFlowTaskDescription+"</div>";
+					    	  				result = result +"<div class='tbldata-dotdot-big'>"+workflowTask.workFlowTaskDescription+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -635,9 +635,11 @@ function RequirementWorkflow(){
 					    	  	"targets": colIndex++,
 					    	  	"sortable": false,
 					    	  	"render": function(data, type, workflowTask, meta) {
-					    	  		var result = "";
-					    	  		result = result +"<div class='tbldata-dotdot_80'><a class='glyphicon glyphicon-trash text-danger ml' title='Delete' onclick='requirementWorkflow.deleteAssignTaskpoup(\""+workflowTask.uuid+"\",\""+workflowTask.workFlowTaskName+"\")'></a></div>";
+					    	  		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_WORKFLOW\')">';
+					    	  		 var result = "";
+					    	  		 result = result +"<div class='tbldata-dotdot-vsm'><a class='glyphicon glyphicon-trash text-danger ml' title='Delete' onclick='requirementWorkflow.deleteAssignTaskpoup(\""+workflowTask.uuid+"\",\""+workflowTask.workFlowTaskName+"\")'></a></div>";
 				  	             	 return result;
+				  	             	'</sec:authorize>';
 					    	  	}
 					        }],
 					        "scrollCollapse": false,
@@ -838,13 +840,7 @@ function RequirementWorkflow(){
 							$("#summerNote").val("");
 							$("#saveStageButton").removeAttr("disabled");
 						}
-					 this.deleteAssignTask = function(formId){
-							$("#workFlowTaskName").val("");
-							$("#assignToUserId").val("");
-							$("#priority").val("");
-							$("#workFlowTaskDescription").val("");
-						} 
-
+					
 					 this.saveWorkflowTask = function(worflowUuid){
 						 var validationSettings = {
 						           errorMessagePosition: 'element',
@@ -1271,7 +1267,7 @@ function RequirementWorkflow(){
 								var currentStageUuid = $("#currentStageUuid").val();
 								requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
 								requirementWorkflow.cancelTermination();
-							}if(dataList.response == 'Failed'){
+							}if(response == 'Failed'){
 								showError("Operation failed, please try again");
 							}
 							
