@@ -35,7 +35,13 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 	
 	private Integer timeLimitSeconds;
 	
+	private Integer timeMinutesRemained;
+	
+	private Integer timeSecondsRemained;
+	
 	private Integer submissionsCount;
+	
+	private Integer submittedPoints;
 	
 	private Integer totalPoints;
 	
@@ -146,6 +152,22 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 	public void setTimeLimitSeconds(Integer timeLimitSeconds) {
 		this.timeLimitSeconds = timeLimitSeconds;
 	}
+	
+	public Integer getTimeMinutesRemained() {
+		return timeMinutesRemained;
+	}
+
+	public void setTimeMinutesRemained(Integer timeMinutesRemained) {
+		this.timeMinutesRemained = timeMinutesRemained;
+	}
+
+	public Integer getTimeSecondsRemained() {
+		return timeSecondsRemained;
+	}
+
+	public void setTimeSecondsRemained(Integer timeSecondsRemained) {
+		this.timeSecondsRemained = timeSecondsRemained;
+	}
 
 	public Integer getSubmissionsCount() {
 		return submissionsCount;
@@ -153,6 +175,14 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 
 	public void setSubmissionsCount(Integer submissionsCount) {
 		this.submissionsCount = submissionsCount;
+	}
+	
+	public Integer getSubmittedPoints() {
+		return submittedPoints;
+	}
+
+	public void setSubmittedPoints(Integer submittedPoints) {
+		this.submittedPoints = submittedPoints;
 	}
 
 	public Integer getTotalPoints() {
