@@ -151,6 +151,7 @@ function saveQuestionnaireTemplate(){
 	        var attempts = 0;
 	        var pointsArray = new Array();
 	        var totalPoints = 0;
+	        var submittedPoints = 0;
 	        var myArray = new Array();
 	        $('.sjfb-field').each(function() {
 		    	  var $this = $(this); 
@@ -160,7 +161,6 @@ function saveQuestionnaireTemplate(){
 		    	  var inputtype = null;
 		    	  var flag = 1;
 		    	  
-		    	  attempts = $('#attemptId').html().trim();
 		    	  points = $('#pointId').html().trim();
 		    	 
 		    	  
@@ -235,15 +235,27 @@ function saveQuestionnaireTemplate(){
 		     		 fileCount = fileCount+1;
 		     	  }
 		     	  
-		     	  if(inputValue != null && inputValue != ""){
-		     		 attempts = attempts-1;
-		     		 if(attempts <= 0){
-		     			 attempts = 0;
-		     		 }
-		     		pointsArray.push(points);
-		     		 }
-		     	  
-		     		  fields.push({
+		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
+		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
+		     	 	if(inputValue != null && inputValue != ""){
+			     		 attempts = labelAndAttemptsMap.get(fieldLabel)-1;
+			     		 if(attempts <= 0){
+			     			attempts = 0;
+			     		 }
+			     		pointsArray.push(points);
+			     	  }
+		     	  }else{
+		     		 attempts = $('#attemptId').html().trim();
+			     	  if(inputValue != null && inputValue != ""){
+			     		 attempts = attempts-1;
+			     		 if(attempts <= 0){
+			     			 attempts = 0;
+			     		 }
+			     		pointsArray.push(points);
+			     	  }	
+		     	  } 
+		     	 
+		     		fields.push({
 			              label: fieldLabel,
 			              type : inputtype,
 			              id :id,
@@ -255,7 +267,7 @@ function saveQuestionnaireTemplate(){
 		    	
 		     });
 	        
-	        totalPoints = calculateTotalPoints(pointsArray);
+	        submittedPoints = calculateTotalPoints(pointsArray);
 	      /*  var templateId = document.getElementById("templateId").value;
 	        if(templateId == 'undefined' || templateId == null || templateId == ''){
 	        	templateId = '';
@@ -274,7 +286,7 @@ function saveQuestionnaireTemplate(){
 			        processData: false,
 			        contentType:false,
 	      	    	dataType : 'json',
-	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
+	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
 	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
 	      	        success: function(result) {
 	      	           if (result == null) {
@@ -645,34 +657,33 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
             	 if(fieldType == "file"){
             		 if(dropdown == 'docx'){
             			 if(required == '1'){
-            				 attachmentDataValidation = 'data-validation="required validatedoc"'
+            				 attachmentDataValidation = 'data-validation="required validatedoc"';
             			 }else{
-            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
-            				 attachmentDataValidation = 'data-validation="validatedoc"'
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+            				 attachmentDataValidation = 'data-validation="validatedoc"';
             			 }
             			 
             		 }else if(dropdown == 'xls'){
             			 
             			 if(required == '1'){
-            				 attachmentDataValidation = 'data-validation="required validate_importFile"'
+            				 attachmentDataValidation = 'data-validation="required validate_importFile"';
             			 }else{
-            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
-            				 attachmentDataValidation = 'data-validation="validate_importFile"'
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+            				 attachmentDataValidation = 'data-validation="validate_importFile"';
             			 }
             			 
             		 }else if(dropdown == 'png'){
             			 if(required == '1'){
-            				 attachmentDataValidation = 'data-validation="required validateimage"'
+            				 attachmentDataValidation = 'data-validation="required validateimage"';
             			 }else{
-            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
-            				 attachmentDataValidation = 'data-validation="validateimage"'
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+            				 attachmentDataValidation = 'data-validation="validateimage"';
             			 }
             		 }
             	 }
                 
 				var input = "";	
                  switch (fieldType) {
-
                      case 'text':
                     	 if(attempt == 0){
                     		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' disabled>' ;
@@ -1177,27 +1188,27 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript){
             	 if(fieldType == "file"){
             		 if(dropdown == 'docx'){
             			 if(required == '1'){
-            				 attachmentDataValidation = 'data-validation="required validatedoc"'
+            				 attachmentDataValidation = 'data-validation="required validatedoc"';
             			 }else{
-            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
-            				 attachmentDataValidation = 'data-validation="validatedoc"'
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+            				 attachmentDataValidation = 'data-validation="validatedoc"';
             			 }
             			 
             		 }else if(dropdown == 'xls'){
             			 
             			 if(required == '1'){
-            				 attachmentDataValidation = 'data-validation="required validate_importFile"'
+            				 attachmentDataValidation = 'data-validation="required validate_importFile"';
             			 }else{
-            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
-            				 attachmentDataValidation = 'data-validation="validate_importFile"'
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+            				 attachmentDataValidation = 'data-validation="validate_importFile"';
             			 }
             			 
             		 }else if(dropdown == 'png'){
             			 if(required == '1'){
-            				 attachmentDataValidation = 'data-validation="required validateimage"'
+            				 attachmentDataValidation = 'data-validation="required validateimage"';
             			 }else{
-            				 attachmentDataValidationOptional = 'data-validation-optional="true"'
-            				 attachmentDataValidation = 'data-validation="validateimage"'
+            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+            				 attachmentDataValidation = 'data-validation="validateimage"';
             			 }
             		 }
             	 }
