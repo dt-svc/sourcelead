@@ -597,6 +597,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 					  workFlowTasksDTO = new RequirementWorkFlowTasksDTO();
 					  workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
 					  workFlowTasksDTO.setAssignToUserId(userName.toString());
+					  workFlowTasksDTO.setUuid(workFlow.getUuid());
 					  workFlowTasksDTO.setPriority(workFlow.getPriority());
 					  workFlowTasksDTO.setWorkFlowTaskDescription(workFlow.getDescription());
 					  requirementWorkFlowTasksDTOList.add(workFlowTasksDTO);
@@ -1138,4 +1139,40 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		}
 		 return feedbackTemp;
 	}
-}
+	
+	@Override
+		public RequirementWorkFlowTasks getRequirementWorkFlowTasksByUuid(String uuid) {
+			logger.debug("Running getRequirementWorkFlowTasksBycurrentStageUuid DAO");
+			RequirementWorkFlowTasks requirementWorkFlowTasks = null;
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "from RequirementWorkFlowTasks requirementWorkFlowTasks where requirementWorkFlowTasks.uuid =:uuid ";
+				requirementWorkFlowTasks =  (RequirementWorkFlowTasks) session.createQuery(query).setParameter("uuid", uuid).uniqueResult();
+				return  requirementWorkFlowTasks;
+			} catch (Exception e) {
+				logger.error(e+" in requirementWorkFlowTasksListByUuid DAO");
+				e.printStackTrace();
+				return null;
+			}
+		}
+	
+		@Override
+		public String deleteRequirementWorkFlowtasks(Long id) {
+			logger.debug("Running deleteRequirementWorkFlowtasks DAO");
+			Session session = this.sessionFactory.getCurrentSession();
+			Object workFlowTasks = null;
+			RequirementWorkFlowTasks requirementWorkFlowtasks = null;
+			try {
+				workFlowTasks = session.get(RequirementWorkFlowTasks.class, id);
+				requirementWorkFlowtasks = (RequirementWorkFlowTasks) workFlowTasks;
+				session.delete(requirementWorkFlowtasks);
+			} catch (HibernateException e) {
+				logger.error(e+" in deleteRequirementWorkFlowtasks DAO");
+				e.printStackTrace();
+			}
+			logger.debug("Deleted record id -->" + id);
+			return "status";
+			
+		}
+	 }
+
