@@ -518,7 +518,7 @@ function inlinesaveProjectTaskCustomFieldDetails(){
 
 <script>
 function preapareCustomFieldDetails(projecttaskId,sectionId){
-	var sourcleadUrl = '${sourcleadUrl}';
+	var sourcleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 $.ajax({
         type : "POST",
          url: sourcleadUrl+"/getAllASectionCustomFields?&projectTask="+projecttaskId+"&requestFrom=projectTask"+"&sectionId="+sectionId,        
