@@ -10,8 +10,10 @@
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 
+<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+
 <c:if test="${empty requirement.id}">
-	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+
 </c:if>
 
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -33,8 +35,12 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 <script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
-	//addLocationAuto('addlocation','0');
 	zipcodeMask('${requirement.country}','ReqZipCode');
+	var requirementId = '${requirementId}';
+	if(requirementId != null && requirementId != '' && requirementId != 'undefined'){
+		getAssignedMembersListForEdit(requirementId);
+		$('#assignToPopUpCloseId').submit();
+	}
 });
 </script>
 <script>
@@ -2263,6 +2269,13 @@ $(document).ready(function () {
 														class="badge ml10 showGrid">0</span>
 												</button>
 											</c:if>
+											
+											<c:if test="${!empty requirement.id}">
+												<a href="javascript:void(0)" data-toggle="modal"
+													data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});">Assigned
+													Members</a>
+											</c:if>
+											
 											<span data-target="#addTeam" data-toggle="modal"
 												title="Add Team" class="btn btn-default formic1"
 												onclick="flushStoreTeam();getTeamOwners();"> <i
