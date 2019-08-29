@@ -60,8 +60,17 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 	@Column(name = "TIME_LIMIT_SECONDS")
 	private Integer timeLimitSeconds;
 	
+	@Column(name = "TIME_MINUTES_REMAINED")
+	private Integer timeMinutesRemained;
+	
+	@Column(name = "TIME_SECONDS_REMAINED")
+	private Integer timeSecondsRemained;
+	
 	@Column(name = "NUMBER_OF_SUBMISSIONS")
 	private Integer submissionsCount;
+	
+	@Column(name = "SUBMITTED_POINTS")
+	private Integer submittedPoints;
 	
 	@Column(name = "TOTAL_POINTS")
 	private Integer totalPoints;
@@ -156,12 +165,36 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 		this.timeLimitSeconds = timeLimitSeconds;
 	}
 
+	public Integer getTimeMinutesRemained() {
+		return timeMinutesRemained;
+	}
+
+	public void setTimeMinutesRemained(Integer timeMinutesRemained) {
+		this.timeMinutesRemained = timeMinutesRemained;
+	}
+
+	public Integer getTimeSecondsRemained() {
+		return timeSecondsRemained;
+	}
+
+	public void setTimeSecondsRemained(Integer timeSecondsRemained) {
+		this.timeSecondsRemained = timeSecondsRemained;
+	}
+
 	public Integer getSubmissionsCount() {
 		return submissionsCount;
 	}
 
 	public void setSubmissionsCount(Integer submissionsCount) {
 		this.submissionsCount = submissionsCount;
+	}
+
+	public Integer getSubmittedPoints() {
+		return submittedPoints;
+	}
+
+	public void setSubmittedPoints(Integer submittedPoints) {
+		this.submittedPoints = submittedPoints;
 	}
 
 	public Integer getTotalPoints() {
