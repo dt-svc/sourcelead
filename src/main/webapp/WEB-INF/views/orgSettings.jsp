@@ -7,6 +7,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<link href="/resources/css/bootstrap-colorpicker.min.css" rel="stylesheet">
 
 <style type="text/css">
 .selectChosen .chosen-container {
@@ -158,7 +159,7 @@ function cancelOrgImg(){
       <div class="pull-left">
         <h2>Org Settings</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a>&raquo; Account Settings</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a> &raquo; Account Settings</div>
     </section>
     
     <div class="project_wrap clearfix">
@@ -527,7 +528,7 @@ function cancelOrgImg(){
                                     <div id="restorePopUp"></div>
                                 </div>
                                 <div class="pull-right">
-                                     <button type="reset" id="reset" class="btn btn-default btm-sm" data-toggle="tab" href="#emailSign" onclick="restoreSignature();"><i class="fa fa-refresh"></i>
+                                     <button type="reset" id="restoreButton" class="btn btn-default btm-sm" data-toggle="tab" href="#emailSign" onclick="restoreSignature();"><i class="fa fa-refresh"></i>
                                          &nbsp;&nbsp;Restore</button>
                                          
                                         <button type="reset" class="btn btn-default btm-sm" id="settings"  data-toggle="tab" href="#emailSign" onclick="loadSignature();"><i class="fa fa-gears"></i>
@@ -2085,7 +2086,7 @@ function loadSignature(){
 	
 	$("#campaignSignatrue").empty(); 
 	$("#SignatureHeading").html("Create Default Signature");
-	document.getElementById("reset").style.display="";
+	document.getElementById("restoreButton").style.display="";
 	document.getElementById("settings").style.display="none";
 
 	 var sourceleadUrl ='${sourceleadUrl}';
@@ -2316,7 +2317,7 @@ function loadSignature(){
 					for (var i=0; i<=json.signatureList.length; i++)
  					{
 						var opt = json.signatureList[i];
-						//$('#cp'+opt.id+'').colorpicker();
+						$('#cp'+opt.id+'').colorpicker();
  					}
 					
 					
@@ -2489,7 +2490,7 @@ function getSignaturePreview(){
 				
 				$("#campaignSignatrue").html(result);
 				$("#SignatureHeading").html("Signature Preview");
-				document.getElementById("reset").style.display="none";
+				document.getElementById("restoreButton").style.display="none";
 				document.getElementById("settings").style.display="";
 				
 			},
@@ -2531,7 +2532,7 @@ function restSignature(){
 	
 	   $.ajax({
 			type : "POST",
-			url : atsUrl+"/restoreSignature?${_csrf.parameterName}=${_csrf.token}",
+			url : sourceleadUrl+"/restoreSignature?${_csrf.parameterName}=${_csrf.token}",
 			success : function(result) {
 				
 				if(result == "success"){
@@ -4280,7 +4281,7 @@ function loadEmailConfig(){
 }
 
 </script> -->
-
+<script src="/resources/js/bootstrap-colorpicker.min.js"></script>
 <jsp:include page="masterFooter.jsp" />
 
 </html>
