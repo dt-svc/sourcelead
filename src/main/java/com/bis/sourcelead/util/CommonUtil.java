@@ -79,6 +79,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.ContractsTemplate;
@@ -128,6 +129,7 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeeVerificationTemplateService;
 import com.bis.sourcelead.service.ExpenseProjectApproverHierarchyService;
 import com.bis.sourcelead.service.MasterCandidateService;
+import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.service.PayrollPayheadService;
@@ -284,6 +286,12 @@ public class CommonUtil {
 	
 	@Autowired
 	PayrollPaySlipIndService payrollPaySlipIndService;
+	
+	@Autowired
+	ClientVendorIndexHelper clientVendorIndexHelper;
+	
+	@Autowired
+	OrgRelationsService orgRelationsService;
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
 	 * @author: Naresh Bolisetty
@@ -1532,8 +1540,16 @@ public class CommonUtil {
 		public void updateClientVendorElk(OrgRelations orgRelation, OrgLocations orgLocations, User user, String responderType) {
 			try {
 				  ClientVendorIndex  clientVendorIndex = new ClientVendorIndex();
-				  List<OrgSpoc> orgSpocsList = orgSpocService.getAllSpocsByOrgRelationId(orgRelation.getId(), user.getId(), orgLocations.getId(), responderType);
-				  clientVendorIndex.setNoContacts((long)orgSpocsList.size());
+					OrgLocations responderOrgLocations = null;
+					if(orgRelation.getLocationId().getId().equals(orgLocations.getId())) {
+						responderOrgLocations = orgRelation.getResponderLocationId();
+					}else {
+						responderOrgLocations = orgRelation.getLocationId();
+					}
+				  
+					// Elastic Search Document Saving
+					clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(null,
+							responderOrgLocations, responderType, null, orgRelation, null, user, orgLocations);
 				  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgRelation.getId().toString());
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1763,6 +1779,12 @@ public class CommonUtil {
 			if (null != requirement.getGeneratedId()
 					&& !"".equalsIgnoreCase(requirement.getGeneratedId())) {
 				requirementDTO.setGeneratedId(requirement.getGeneratedId());
+			}
+			if(requirement.getLevel2ApproverUserId() != null) {
+				requirementDTO.setSequentialApprover1(requirement.getLevel1ApproverUserId()[0]);
+				requirementDTO.setSequentialApprover2(requirement.getLevel2ApproverUserId()[0]);
+			} else if(requirement.getLevel1ApproverUserId()!=null){
+				requirementDTO.setParallelApprover(Arrays.asList(requirement.getLevel1ApproverUserId()));
 			}
 			return requirementDTO;
 		}

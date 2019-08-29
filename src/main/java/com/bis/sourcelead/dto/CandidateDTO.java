@@ -107,6 +107,10 @@ public class CandidateDTO extends SearchDTO{
 	private String currentRateCurrency;
 
 	private String expectedRate;
+	
+	private String expectedRatePer;
+	
+	private String currentRatePer;
 
 	private String rateType;
 
@@ -281,7 +285,9 @@ public class CandidateDTO extends SearchDTO{
 	
 	private List<CandidateSource> candidateSourceList;
 	
+	private String shift;
 	
+	private String shiftName;
 
 	public List<CandidateSource> getCandidateSourceList() {
 		return candidateSourceList;
@@ -1352,5 +1358,35 @@ public class CandidateDTO extends SearchDTO{
 		this.candidateSource = candidateSource;
 	}
 
+	public String getExpectedRatePer() {
+		return expectedRatePer;
+	}
 
+	public void setExpectedRatePer(String expectedRatePer) {
+		this.expectedRatePer = expectedRatePer;
+	}
+
+	public String getCurrentRatePer() {
+		return currentRatePer;
+	}
+
+	public void setCurrentRatePer(String currentRatePer) {
+		this.currentRatePer = currentRatePer;
+	}
+
+	public String getShift() {
+		return shift;
+	}
+
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
 }
