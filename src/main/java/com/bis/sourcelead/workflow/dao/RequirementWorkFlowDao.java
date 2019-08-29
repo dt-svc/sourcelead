@@ -131,4 +131,8 @@ public interface RequirementWorkFlowDao {
 
 	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId);
 
+	RequirementWorkFlowTasks getRequirementWorkFlowTasksByUuid(String currentStageUuid);
+	
+	String deleteRequirementWorkFlowtasks(Long id);
+
 }

@@ -137,4 +137,6 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId) throws Exception;
 	
 	RequirementQuestionnaireTemplateDTO getSavedQuestionnaire(String templateUuid, String stageId, String submissionId)throws Exception;
+
+	String deleteAssignedTask(String currentStageUuid, Long id);
 }
