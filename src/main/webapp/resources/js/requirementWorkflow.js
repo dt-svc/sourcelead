@@ -553,6 +553,7 @@ function RequirementWorkflow(){
 				  	result = result +"<th>Assign To</th>";
 				  	result = result +"<th>Prioirity</th>";
 				  	result = result +"<th>Description</th>";  
+					result = result +"<th>Action</th>"; 
 				  	result = result +"</tr>";
 				  	result = result +"</thead>";
 				  	result = result +"</table>";
@@ -628,6 +629,14 @@ function RequirementWorkflow(){
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
+				  	             	 return result;
+					    	  	}
+					        },{
+					    	  	"targets": colIndex++,
+					    	  	"sortable": false,
+					    	  	"render": function(data, type, workflowTask, meta) {
+					    	  		var result = "";
+					    	  		result = result +"<div class='tbldata-dotdot_80'><a class='glyphicon glyphicon-trash text-danger ml' title='Delete' onclick='requirementWorkflow.deleteAssignTaskpoup(\""+workflowTask.uuid+"\",\""+workflowTask.workFlowTaskName+"\")'></a></div>";
 				  	             	 return result;
 					    	  	}
 					        }],
@@ -793,9 +802,9 @@ function RequirementWorkflow(){
 					 
 					 this.createNewtask = function() {
 						 requirementWorkflow.getAllActiveUsersList();
-						 $("#workFlowTaskName").val("");
+						   $("#workFlowTaskName").val("");
 							$("#priority").val("");
-							$("#taskDescription").val("");
+							$("#workFlowTaskDescription").val("");
 							$("#assignToUserId").val("");
 							/*$('#taskDescription').summernote();*/
 							document.getElementById("createNewtask").style.display = "block";
@@ -828,6 +837,12 @@ function RequirementWorkflow(){
 							$("#priority").val("");
 							$("#summerNote").val("");
 							$("#saveStageButton").removeAttr("disabled");
+						}
+					 this.deleteAssignTask = function(formId){
+							$("#workFlowTaskName").val("");
+							$("#assignToUserId").val("");
+							$("#priority").val("");
+							$("#workFlowTaskDescription").val("");
 						} 
 
 					 this.saveWorkflowTask = function(worflowUuid){
@@ -1008,6 +1023,20 @@ function RequirementWorkflow(){
 				 $("#remove_user_pop").slideDown(200);
 				 $(".project_inn_mask").fadeIn(200);
 				 }
+				 
+				 this.deleteAssignTaskpoup = function(uuid,name){
+					 var result = "";
+					 $("#popUp").empty();
+					 result = result +" <div class='project_inn_mask'></div>"; 
+					 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+					 result = result +" <p>Do you want to delete "+name+"?</p>";
+					 result = result + ' <div id="voidInvoiceId"/>';
+					 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteAssignTask(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+					 result = result +" </div>";
+					 $("#popUp").append(result);
+					 $("#remove_user_pop").slideDown(200);
+					 $(".project_inn_mask").fadeIn(200);
+					 }
 				 this.deleteQuestionnaire = function(uuid,name){
 				 	  $.ajax({
 				 	    	type: "POST",
@@ -1231,4 +1260,23 @@ function RequirementWorkflow(){
 						$("#remove_user_pop").slideDown(200);
 						$(".project_inn_mask").fadeIn(200);
 				 }
+				 
+				 this.deleteAssignTask = function(uuid){
+				 $.ajax({
+						type : "POST",
+						url : sourceleadUrl + "/deleteAssignTask?uuid="+uuid,
+						success : function(response){
+							$("#createNewtask").hide();
+							if(response =='Success'){
+								var currentStageUuid = $("#currentStageUuid").val();
+								requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+								requirementWorkflow.cancelTermination();
+							}if(dataList.response == 'Failed'){
+								showError("Operation failed, please try again");
+							}
+							
+						}
+					});
+   }
 }
+				 
