@@ -700,7 +700,7 @@ function generateQuestionnaireFeedbackTemplateForm(templateUuid){
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
 		// commented to be removed after clock is set
 		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
+		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small id = "totalPointsId">Total Points - </small>&nbsp&nbsp&nbsp&nbsp<small id = "submittedPointsId">Submitted Points - </small></h3>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
@@ -955,6 +955,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                      }
 
                  });
+                 //points;
              }
         	 
         	 
@@ -1023,10 +1024,8 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
-                             input +
-                             '</div>' +
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             input ;
+                             '</div>';
 
                      case 'textarea':
                     	 if(workflowStageId == "" && requirementSubmissionId == ""){
@@ -1039,9 +1038,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="textarea-' + uniqueID + '"></label>' +
                              input +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
 
                      case 'select':
                     	 if(workflowStageId == "" && requirementSubmissionId == ""){
@@ -1054,9 +1051,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="select-' + uniqueID + '"></label>' +
                              input +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
 
                      case 'radio':
                     	 
@@ -1066,9 +1061,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<label></label>' +
                              '<div class="clearfix mt"></div>'+
                              '<div class="choices choices-radio"></div>' +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
 
                      case 'checkbox':
                          return '' +
@@ -1077,9 +1070,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<label class="sjfb-label"></label>' +
                              '<div class="clearfix mt"></div>'+
                              '<div class="choices choices-checkbox"></div>' +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
                          
 
                      case 'calendar':
@@ -1093,9 +1084,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="calandar-' + uniqueID + '"></label>' +
                              input +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
                      
                      case 'scale':
                     	 if(workflowStageId == "" && requirementSubmissionId == ""){
@@ -1113,9 +1102,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
                              input +
                              '</div>'+
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
                          
                      case 'star':
                     	 if(workflowStageId == "" && requirementSubmissionId == ""){
@@ -1132,9 +1119,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                              '<div class="clearfix mt"></div>'+
                              StarHtml+
                              '</ul>' +
-                             '</div>'+
-                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                             '</div>';
                          
                      case 'file':
                     	 if(workflowStageId == "" && requirementSubmissionId == ""){
@@ -1151,9 +1136,7 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
                          '<div class="clearfix mt"></div>'+
                          input +
                          '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
-                         '</div>'+
-                         '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-                         '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+                         '</div>';
                  }
                  
              }
