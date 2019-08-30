@@ -1622,6 +1622,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 			return status;
 		}
+
+
+	@Override
+	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+			Integer minutes, Integer seconds) {
+		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
+	}
 	
 	 }
 

@@ -1174,5 +1174,30 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			return "status";
 			
 		}
+
+		@Override
+		public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+				Integer minutes, Integer seconds) {
+			String status = null;
+			logger.debug("Running deleteRequirementWorkFlowtasks DAO");
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "update RequirementQuestionnaireFeedbackTemplate feedtable set feedtable.timeMinutesRemained=:minutes, feedtable.timeSecondsRemained=:seconds "
+					                	+ "where feedtable.requirementQuestionnaireTemplateUuid.uuid=:questTemplUuid and "
+					                	+ "and feedtable.requirementWorkFlowStagesId.id=:stageId "
+					                	+ "and feedtable.requirementSubmissionId.id=:submissionId ";
+				int count = session.createQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setLong("stageId", stageId)
+			                                               .setString("questTemplUuid",questTemplUuid).setLong("submissionId", submissionId).executeUpdate();
+				if(count != 0 ) {
+					status =  Constants.SUCCESS;
+				}
+				status = Constants.FAILED;
+			} catch (Exception e) {
+				logger.error(e+" in requirementWorkFlowTasksListByUuid DAO");
+				e.printStackTrace();
+				return Constants.FAILED;
+			}
+			return status;
+		}
 	 }
 
