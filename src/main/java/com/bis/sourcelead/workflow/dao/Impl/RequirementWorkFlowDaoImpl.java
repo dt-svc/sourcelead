@@ -912,37 +912,36 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	@Override
 	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid, String stageId, String submissionId)
 			throws Exception {
-		RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO = null;
-		List<RequirementQuestionnaireFeedbackTemplateDTO> qTemplateDTOList = null;
+		RequirementQuestionnaireFeedbackTemplateDTO quesFeedtemplateDTO = null;
 		String query = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			if(stageId == null && submissionId == null) {
-				query ="select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid=:uuid";
+				query ="select JSON_STRING AS jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid=:uuid";
 			}else {
-				query = "select JSON_STRING as jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID=:uuid"
-						+ " and qtemplate.REQUIREMENT_WORKFLOW_STAGES_ID =:stageId and  qtemplate.REQUIREMENT_SUBMISSION_ID =:submissionId ";
+				query = "SELECT JSON_STRING AS jsonString, JSON_STRING_VALUES AS jsonStringValues, uuid AS uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID=:uuid"
+						+ " AND qtemplate.REQUIREMENT_WORKFLOW_STAGES_ID =:stageId AND  qtemplate.REQUIREMENT_SUBMISSION_ID =:submissionId ";
 			}
 				Query obj = session.createSQLQuery(query)
 					.addScalar("jsonString", StandardBasicTypes.STRING)
 					.addScalar("jsonStringValues", StandardBasicTypes.STRING)
-					.addScalar("uuid", StandardBasicTypes.STRING);
+					.addScalar("uuid", StandardBasicTypes.STRING)
+					.addScalar("submittedPoints", StandardBasicTypes.INTEGER)
+					.addScalar("totalPoints", StandardBasicTypes.INTEGER);
 			obj.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireFeedbackTemplateDTO.class));
 			if(stageId == null && submissionId == null) {
 				obj.setString("uuid", uuid);
 			}else {
 				obj.setString("uuid", uuid).setString("stageId", stageId).setString("submissionId", submissionId);
 			}
-			qTemplateDTOList = obj.list();
-			if(qTemplateDTOList.size() > 0) {
-			qemplateDTO = qTemplateDTOList.get(0);
-			}
-			return qemplateDTO;
+			quesFeedtemplateDTO = (RequirementQuestionnaireFeedbackTemplateDTO) obj.uniqueResult();
+			
 		} catch (Exception e) {
 			logger.error(e +" in getColumnsMapbyWorkflowStage DAO");
 			e.printStackTrace();
 			return null;
 		}
+		return quesFeedtemplateDTO;
 	}
 
 
