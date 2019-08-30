@@ -214,7 +214,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateBankDataDa
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		if(assSal != null) {
+		if(assSal != null && assSal.size()>0) {
 			return assSal.get(0);
 		}else {
 			return null;

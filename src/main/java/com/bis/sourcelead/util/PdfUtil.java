@@ -610,7 +610,7 @@ public class PdfUtil {
 	        orderedList.add(new ListItem("New :"+requirementSubCount.getNewRequirementCount()));
 	        orderedList.add(new ListItem("Submitted :"+requirementSubCount.getSubmittedRequirementCount()));
 	        orderedList.add(new ListItem("On Hold :"+requirementSubCount.getOnHoldRequirementCount()));
-	        orderedList.add(new ListItem("Closed :"+requirementSubCount.getCancelRequirementCount()));
+	        orderedList.add(new ListItem("Cancel :"+requirementSubCount.getCancelRequirementCount()));
 	        document.add(orderedList);
             PdfPTable table = new PdfPTable(headers.length);
             Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
