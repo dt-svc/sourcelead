@@ -79,7 +79,7 @@ function questionnaireTemplateForm(){
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
 		// commented to be removed after clock is set
 		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
+		result = result + '<h3 class="mt ml">Questionnaire Template </h3> <label id="countdownTimerLbl">Time</label>';
 		result = result + "";
 		
 		
@@ -121,8 +121,70 @@ function getTimeLimit(){
         	}
         });
 }
-</script>
 
+function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,minutes,seconds){
+	//questTemplUuid ='wgtQ2NqD';
+	
+	//stageId='21';
+	//submissionId='13295';
+   // minutes='10';
+	//seconds='10';
+	
+	$.ajax({
+    	type: "POST",
+        url:sourceleadUrl+"/updateFeedbackQuestionnaireTimer?questTemplUuid="+questTemplUuid+"&stageId="+stageId+"&submissionId="+submissionId+"&minutes="+minutes+"&seconds="+seconds, 
+        success: function(response) {
+        	if(response == "Success"){
+        		console.log("Successfully updated time in table..............>");
+        	}
+        	if(response == "Failed"){
+        		console.log("Failed to updated in table......................>");
+        	}
+        }
+      });
+}
+</script>
+<script>
+function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, seconds) {
+	var end = new Date();
+	end.setMinutes(end.getMinutes() + minutes); 
+	end.setSeconds(end.getSeconds() + seconds);
+	var _second = 1000;
+	var _minute = _second * 60;
+	var _hour = _minute * 60;
+	var _day = _hour * 24;
+	var timer;
+	 var timerDisplayText= "";
+	function showRemaining() {
+		var now = new Date();
+		var distance = end - now;
+
+		if (distance < 0) {
+			$('#countdownTimerLbl').text('EXPIRED!');
+			// here need to call submission function for the feed back table.
+			return;
+		}
+		var days = Math.floor(distance / _day);
+		var hours = Math.floor((distance % _day) / _hour);
+		var minutes = Math.floor((distance % _hour) / _minute);
+		var seconds = Math.floor((distance % _minute) / _second);
+		if (minutes == 2 && seconds == 0) //  Two minutes alert
+			console.error("Time Expires in " + minutes);
+		else if (minutes == 1 && seconds == 0) // 1 minutes alert
+			console.error("Time Expires in " + minutes);
+		     // time display label.
+             timerDisplayText=  minutes + 'mins : '+seconds + 'seconds';
+		$('#countdownTimerLbl').text(timerDisplayText);
+		// each second we are updating timer in table
+		
+		// uncomment below function for updating time in back end.
+		                                 //questUUid, stageId, submissionId, minutes,seconds
+		//updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds); 
+	}
+	timer = setInterval(showRemaining, 1000);
+}
+
+</script>
 <script>
 var savedQuestionnaireUuid="";
 var submissionsCount = 1;
@@ -903,7 +965,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid){
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
 		// commented to be removed after clock is set
 		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
+		result = result + '<h3 class="mt ml">Questionnaire Template </h3><label id="countdownTimerLbl">Time</label>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
