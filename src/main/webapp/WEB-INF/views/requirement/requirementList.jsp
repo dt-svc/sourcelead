@@ -1490,6 +1490,12 @@ function resetJobFilter(){
 	$("ul#jobType > li input:checkbox").prop("checked",false);
 	$("ul#priority > li input:checkbox").prop("checked",false);
 	$("ul#assignTo > li input:radio").prop("checked",false);
+	$("#myClientInput").val('');
+	$("#myCityInput").val('');
+	$("#myProjectInput").val('');
+	myClientFunction();
+	myCityFunction();
+	myProjectFunction();
 	
 	requirementList('list','${SourceLeadWeb_atsUrl}');
 }

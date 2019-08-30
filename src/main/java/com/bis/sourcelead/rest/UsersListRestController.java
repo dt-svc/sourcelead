@@ -765,9 +765,8 @@ public class UsersListRestController {
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 OrgLocations orgLocations =  orgLocationService.getOrgLocationById(orgLocationId);
 		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 
