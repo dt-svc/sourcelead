@@ -679,7 +679,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
-			workFlowStage.setConfigureType(Constants.INACTIVE);
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
 				tasks.setRequirementWorkFlowStagesId(workFlowStage);

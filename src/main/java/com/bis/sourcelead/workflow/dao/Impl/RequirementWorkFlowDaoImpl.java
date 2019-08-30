@@ -673,7 +673,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.requirementWorkFlowId.uuid =:uuid "
 					+ "and (requirementWorkFlowStages.orgLocationId.id =:orgLocationId  or requirementWorkFlowStages.orgLocationId.id is NULL) "
-					+ " and requirementWorkFlowStages.status = 0 and requirementWorkFlowStages.configureType='"+Constants.INACTIVE+"'";
+					+ " and requirementWorkFlowStages.status = 0 ";//and requirementWorkFlowStages.configureType='"+Constants.INACTIVE+"'
 			List<RequirementWorkFlowStages> requirementWorkFlowStages = session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", id).list();
 			return requirementWorkFlowStages;
 		} catch (Exception e) {
