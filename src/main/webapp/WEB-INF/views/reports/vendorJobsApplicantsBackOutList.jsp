@@ -73,9 +73,12 @@ function vendorJobsApplicantsBackOutList(){
                	 result  = result + ' <td><div><span title="'+opt.requirement.jobTitle+'">'+opt.requirement.jobTitle+'</span></div></td>';
                	 
                		 result  = result + '<td><div><span title="'+opt.submittedOn+'">'+opt.submittedOn+'</span></div></td>';
-               	 result  = result + '<td><div><span title="'+opt.joinedDateStr+'">'+opt.joinedDateStr+'</span></div></td>';
-               	 
-               	 
+               		 if(opt.joinedDateStr !=null && opt.joinedDateStr !='' && opt.joinedDateStr !='undefined'){
+               	    result  = result + '<td><div><span title="'+opt.joinedDateStr+'">'+opt.joinedDateStr+'</span></div></td>';
+               		 }else{
+               			result  = result + '<td><div><span>---</span></div></td>';	 
+               		 }
+               	               	 
                  result  = result + '<td><div><span title="'+opt.backOutCategoryType+'">'+opt.backOutCategoryType+'</span></div></td>'; 
                	 
                	 result  = result + '</tr>';
