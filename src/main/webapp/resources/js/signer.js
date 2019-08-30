@@ -240,7 +240,6 @@ var Signer = (function() {
 
     //Create signature preview
     let createSignaturePreview = function(type) {
-    	
       	let sourceleadUrl = '';
     	if(url == 'public')
     		{
@@ -255,9 +254,9 @@ var Signer = (function() {
         var userSign = userId.replace('/unsigned.pdf', '');
         let sigText = $('#txtsignname').val();
         let iniText = $('#txtinitialname').val();
+   	 $("#signatoryNameDiv").find('p.jquery_form_error_message').remove();
 
         if(sigText != null && sigText != '' && sigText !='undefined'){
-        	 $("#signatoryNameDiv").find('p.jquery_form_error_message').remove();
         	 let reqParam = {
         	            "fontId": parseInt($('#ddnFontStyle').val(), 10),
         	            "userId": userId,
