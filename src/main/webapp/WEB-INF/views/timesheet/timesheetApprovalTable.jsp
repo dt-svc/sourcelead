@@ -144,6 +144,7 @@ function displayAcceptRejectButtonOnHedder() {
     	  getTableData(1,0);
       }
 	  function getTableData(pageNo,noOfRecords) {
+		  
 		  var pmsUrl ='${SourceLeadWeb_pmsUrl}';
           var locationCode ='${SourceLeadWeb_locationCode}';
           var userId = '${SourceLeadWeb_user.id}';
