@@ -917,9 +917,16 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			if(stageId == null && submissionId == null) {
-				query ="select JSON_STRING AS jsonString, JSON_STRING_VALUES as jsonStringValues, uuid as uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.uuid=:uuid";
+				query ="SELECT JSON_STRING AS jsonString, JSON_STRING_VALUES AS jsonStringValues, UUID AS uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints, "
+						+" TIME_LIMIT_MINUTES AS timeLimitMinutes, TIME_LIMIT_SECONDS AS timeLimitSeconds, "
+						+" TIME_MINUTES_REMAINED AS timeMinutesRemained, TIME_SECONDS_REMAINED AS timeSecondsRemained  "
+						+ " from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate WHERE qtemplate.uuid=:uuid";
 			}else {
-				query = "SELECT JSON_STRING AS jsonString, JSON_STRING_VALUES AS jsonStringValues, uuid AS uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate where qtemplate.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID=:uuid"
+				query = "SELECT JSON_STRING AS jsonString, JSON_STRING_VALUES AS jsonStringValues, UUID AS uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints, "
+						+" TIME_LIMIT_MINUTES AS timeLimitMinutes, TIME_LIMIT_SECONDS AS timeLimitSeconds, "
+						+" TIME_MINUTES_REMAINED AS timeMinutesRemained, TIME_SECONDS_REMAINED AS timeSecondsRemained  "
+						+ " from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate WHERE qtemplate.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID=:uuid"
+						
 						+ " AND qtemplate.REQUIREMENT_WORKFLOW_STAGES_ID =:stageId AND  qtemplate.REQUIREMENT_SUBMISSION_ID =:submissionId ";
 			}
 				Query obj = session.createSQLQuery(query)
@@ -927,7 +934,12 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 					.addScalar("jsonStringValues", StandardBasicTypes.STRING)
 					.addScalar("uuid", StandardBasicTypes.STRING)
 					.addScalar("submittedPoints", StandardBasicTypes.INTEGER)
-					.addScalar("totalPoints", StandardBasicTypes.INTEGER);
+					.addScalar("totalPoints", StandardBasicTypes.INTEGER)
+					.addScalar("timeLimitMinutes", StandardBasicTypes.INTEGER)
+					.addScalar("timeLimitSeconds", StandardBasicTypes.INTEGER)
+					.addScalar("timeMinutesRemained", StandardBasicTypes.INTEGER)
+					.addScalar("timeSecondsRemained", StandardBasicTypes.INTEGER);
+				
 			obj.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireFeedbackTemplateDTO.class));
 			if(stageId == null && submissionId == null) {
 				obj.setString("uuid", uuid);
@@ -1177,26 +1189,22 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		@Override
 		public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
 				Integer minutes, Integer seconds) {
-			String status = null;
 			logger.debug("Running deleteRequirementWorkFlowtasks DAO");
 			try {
 				Session session = this.sessionFactory.getCurrentSession();
-				String query = "update RequirementQuestionnaireFeedbackTemplate feedtable set feedtable.timeMinutesRemained=:minutes, feedtable.timeSecondsRemained=:seconds "
-					                	+ "where feedtable.requirementQuestionnaireTemplateUuid.uuid=:questTemplUuid and "
-					                	+ "and feedtable.requirementWorkFlowStagesId.id=:stageId "
-					                	+ "and feedtable.requirementSubmissionId.id=:submissionId ";
-				int count = session.createQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setLong("stageId", stageId)
-			                                               .setString("questTemplUuid",questTemplUuid).setLong("submissionId", submissionId).executeUpdate();
+				String query = "UPDATE  REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE SET TIME_MINUTES_REMAINED =:minutes , TIME_SECONDS_REMAINED=:seconds"
+						                  + " WHERE REQUIREMENT_SUBMISSION_ID =:submissionId AND REQUIREMENT_WORKFLOW_STAGES_ID =:stageId  AND REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID =:questTemplUuid" ;
+				int count = session.createSQLQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setLong("stageId", stageId)
+			                                               .setString("questTemplUuid",questTemplUuid).executeUpdate();
 				if(count != 0 ) {
-					status =  Constants.SUCCESS;
+					return Constants.SUCCESS;
 				}
-				status = Constants.FAILED;
+				return Constants.FAILED;
 			} catch (Exception e) {
 				logger.error(e+" in requirementWorkFlowTasksListByUuid DAO");
 				e.printStackTrace();
 				return Constants.FAILED;
 			}
-			return status;
 		}
 	 }
 
