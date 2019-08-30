@@ -150,6 +150,7 @@ function saveQuestionnaireTemplate(){
 	        var points = 0;
 	        var attempts = 0;
 	        var pointsArray = new Array();
+	        var totalPointsArray = new Array();
 	        var totalPoints = 0;
 	        var submittedPoints = 0;
 	        var myArray = new Array();
@@ -234,7 +235,7 @@ function saveQuestionnaireTemplate(){
 		     		 name = $("input[name = 'uploadedFileInfo["+fileCount+"].fileName']").val();
 		     		 fileCount = fileCount+1;
 		     	  }
-		     	  
+		     	 totalPointsArray.push(points);
 		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
 		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
 		     	 	if(inputValue != null && inputValue != ""){
@@ -268,6 +269,7 @@ function saveQuestionnaireTemplate(){
 		     });
 	        
 	        submittedPoints = calculateTotalPoints(pointsArray);
+	        totalPoints = calculateTotalPoints(totalPointsArray);
 	      /*  var templateId = document.getElementById("templateId").value;
 	        if(templateId == 'undefined' || templateId == null || templateId == ''){
 	        	templateId = '';
