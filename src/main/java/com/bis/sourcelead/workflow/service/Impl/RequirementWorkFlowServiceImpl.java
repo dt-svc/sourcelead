@@ -1320,12 +1320,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 					}
 				}
-
-				if (qemplateDTO.getTotalPoints() != null) {
-					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
-				}
+				if (qemplateDTO.getSubmittedPoints() != null) {
+					qtemplate.setSubmittedPoints(qemplateDTO.getSubmittedPoints());
+				}	
 				if (qemplateDTO.getSubmissionsCount() != null) {
 					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+				}
+				if (qemplateDTO.getTotalPoints() != null) {
+					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
 				}
 				qtemplate.setUpdatedBy(user);
 				qtemplate.setUpdatedDate(new Date());
@@ -1382,7 +1384,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					}
 					qtemplate.setRequirementQuestionnaireTemplateUuid(requirementQuestionnaireTemplate.getUuid());
 				}
-
+				if (qemplateDTO.getSubmittedPoints() != null) {
+					qtemplate.setSubmittedPoints(qemplateDTO.getSubmittedPoints());
+				}		
 				if (qemplateDTO.getTotalPoints() != null) {
 					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
 				}
