@@ -447,7 +447,7 @@ public class ProjectsController {
 				ModelAndView model = new ModelAndView();
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
-				
+				Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId"); 
 				 SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 					if(sessionData == null)
 					{
@@ -538,7 +538,7 @@ public class ProjectsController {
 						 }
 					 }
 					 if(formFieldId != null && !formFieldId.isEmpty() && projectTask != null && projectTask.getId() != null) {
-					 Map<Long, String[]> projectTaskData = projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,projectTask.getId());
+					 Map<Long, String[]> projectTaskData = projectTaskCustomFieldDataService.getProjectTaskCustomFieldDataByUserId(orgId,formFieldId,projectTask.getId());
 					 Map<Long,String> dataMap = new HashMap<>();
 					 if(projectTaskData!= null && !projectTaskData.isEmpty()) {
 						 for(Entry<Long, String[]> projectTaskCustomData:projectTaskData.entrySet()) {
