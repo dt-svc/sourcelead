@@ -1026,5 +1026,17 @@ public class RequirementWorkflowController {
 		return status;
 	}
 	
+	// below method is used to update remaining minutes and seconds in feedback table when time limit is configured for questionnaire.
+	@RequestMapping(value = { "/updateFeedbackQuestionnaireTimer" }, method = RequestMethod.POST)
+	public @ResponseBody String updateFeedbackQuestionnaireTimer(@RequestParam(value = "questTemplUuid", required = false) String questTemplUuid, 
+			@RequestParam(value = "stageId", required = false) Long stageId, 
+			@RequestParam(value = "submissionId", required = false) Long submissionId, 
+			@RequestParam(value = "minutes", required = false) Integer minutes, 
+			@RequestParam(value = "seconds", required = false) Integer seconds, 
+			HttpServletRequest request) throws Exception {
 
+		   String status = requirementWorkFlowService.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId,
+				                                                                   minutes, seconds);
+		return status;
+	}
 }
