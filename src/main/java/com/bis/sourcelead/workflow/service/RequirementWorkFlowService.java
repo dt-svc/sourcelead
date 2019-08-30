@@ -139,4 +139,7 @@ public interface RequirementWorkFlowService {
 	RequirementQuestionnaireTemplateDTO getSavedQuestionnaire(String templateUuid, String stageId, String submissionId)throws Exception;
 
 	String deleteAssignedTask(String currentStageUuid, Long id);
+
+	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
+			Integer seconds);
 }

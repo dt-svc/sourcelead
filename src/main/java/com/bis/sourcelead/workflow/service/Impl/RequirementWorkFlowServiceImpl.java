@@ -1251,7 +1251,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_QUESTIONNARIE_TEMPLATE,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewQuestionnaire?templateUuid="+templateUuid).toString();	 
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
+					                 .append(stageId).append("&submissionId=").append(submissionId).toString();	 
 		 if(candidate.getFirstName()!=null){
 			 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 			 noificationEmailScenario.setBody(notificationbody);
@@ -1625,6 +1626,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 			return status;
 		}
+
+
+	@Override
+	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+			Integer minutes, Integer seconds) {
+		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
+	}
 	
 	 }
 
