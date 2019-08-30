@@ -750,7 +750,16 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
         		 });
         	}
         	 
+        	if(result.uuid != null){
         	qfeedbackUuid = result.uuid;
+        	}
+        	
+        	if(result.submittedPoints != null){
+        		alert(result.submittedPoints);
+        	}
+        	if(result.totalPoints != null){
+        		alert(result.totalPoints);
+        	}
         	var attachmentCount = 0;
         	var fileCount = 0;
         	 if (data) {

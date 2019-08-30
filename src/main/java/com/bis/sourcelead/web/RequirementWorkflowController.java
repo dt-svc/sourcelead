@@ -943,6 +943,8 @@ public class RequirementWorkflowController {
 			String result = null;
 			RequirementQuestionnaireFeedbackTemplate qemplate = null;
 			try {
+				System.out.println("submitted.."+qemplateDTO.getSubmittedPoints());
+				System.out.println("total.."+qemplateDTO.getTotalPoints());
 				qemplateDTO.setStaticPath(staticPath);
 				qemplate = requirementWorkFlowService.saveQuestionnaireFeedbackTemplate(qemplateDTO, orgLocations, user);
 				result = qemplate.getUuid();
