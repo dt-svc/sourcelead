@@ -700,7 +700,7 @@ function generateQuestionnaireFeedbackTemplateForm(templateUuid){
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
 		// commented to be removed after clock is set
 		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small id = "totalPointsId">Total Points - </small>&nbsp&nbsp&nbsp&nbsp<small id = "submittedPointsId">Submitted Points - </small></h3>';
+		result = result + '<h3 class="mt ml">Questionnaire Template &nbsp&nbsp&nbsp&nbsp <small>Submitted Points - <b id = "submittedPointsId"></b></small> &nbsp&nbsp&nbsp&nbsp <small>Total Points - <b id = "totalPointsId"></b></small></h3>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
@@ -755,10 +755,10 @@ function generateSavedQuestionnaireTemplate(templateUuid, finalDateFormatScript)
         	}
         	
         	if(result.submittedPoints != null){
-        		alert(result.submittedPoints);
+        		$("#submittedPointsId").html(result.submittedPoints);
         	}
         	if(result.totalPoints != null){
-        		alert(result.totalPoints);
+        		$("#totalPointsId").html(result.totalPoints);
         	}
         	var attachmentCount = 0;
         	var fileCount = 0;
