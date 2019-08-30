@@ -845,12 +845,13 @@ function ratecheck(){
 			$('input#rateValidation').attr('class','error signin_fild');
 			$("input#rateValidation").after("<p class='jquery_form_error_message'>Select Currency</p>");
 			$('input#rateValidation').attr('record-exist','yes');
-			$('input#rateValidation').attr('record-exist-errorMsg','Currency Selected'); 
+			$('input#rateValidation').attr('record-exist-errorMsg','Currency Selected');
+			$("#search_candidate").attr("disabled","disabled");
 	}else{
     	$('#rateId').find('p.jquery_form_error_message').remove();
     	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#rateId').find('p.jquery_form_error_message').remove();
-		
+		$("#search_candidate").removeAttr("disabled");
 	}
 }
 
@@ -864,10 +865,12 @@ function ratevalidation(){
 		$("input#ratecheckValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
 		$('input#ratecheckValidation').attr('record-exist','yes');
 		$('input#ratecheckValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+		$("#search_candidate").attr("disabled","disabled");
     }  else{
     	$('#ratecheckId').find('p.jquery_form_error_message').remove(); 
     	$('input#ratecheckValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#ratecheckId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
     } 
 }
 
@@ -877,29 +880,32 @@ function EducationValidation(){
 	var b = [];
 	 a =$('#education').val();
 	 b =$('#excludeEducation').val();
-	if(JSON.stringify(a)===JSON.stringify(b)){
+	 for (var i = 0; i < a.length; ++i) {
+	 if(JSON.stringify(a)==JSON.stringify(b)){
+
 		if(a==null&&b==null){
 			$('#eduId').find('p.jquery_form_error_message').remove();
 		 	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
 				$('#eduId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
 		}else{
 		 $('#eduId').find('p.jquery_form_error_message').remove(); 
 			$('input#eduValidation').attr('class','error signin_fild');
 			$("input#eduValidation").after("<p class='jquery_form_error_message'>Education and Exclude Education Should not be same</p>");
 			$('input#eduValidation').attr('record-exist','yes');
 			$('input#eduValidation').attr('record-exist-errorMsg','Education and Exclude Education Should not be Same'); 
-		}}else if(a==null||b==null){
-			 $('#eduId').find('p.jquery_form_error_message').remove();
-		$('input#eduValidation').attr('class','error signin_fild');
-		$("input#eduValidation").after("<p class='jquery_form_error_message'>Enter the value</p>");
-		$('input#eduValidation').attr('record-exist','yes');
-		$('input#eduValidation').attr('record-exist-errorMsg','Enter the value'); 
-	}else{
+			$("#search_candidate").attr("disabled","disabled");
+		}}
+		else{
  	$('#eduId').find('p.jquery_form_error_message').remove();
  	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#eduId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
 	}
 }
+
+}
+
 </script>
 <script>
 var selectthree, chosenthree;
@@ -924,6 +930,7 @@ chosenthree.search_field.on('keydown keyup', function(e3)
 			$('#empId').find('p.jquery_form_error_message').remove();
 		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
 				$('#empId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
 		}else {
 	 $("#excludeEmployers").val('').trigger("chosen:updated");
 	 $('#empId').find('p.jquery_form_error_message').remove(); 
@@ -931,68 +938,59 @@ chosenthree.search_field.on('keydown keyup', function(e3)
 		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
 		$('input#empValidation').attr('record-exist','yes');
 		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+		$("#search_candidate").attr("disabled","disabled");
 	}
 	 }
 	else{
 		$('#empId').find('p.jquery_form_error_message').remove();
 	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
 			$('#empId').find('p.jquery_form_error_message').remove();
+			$("#search_candidate").removeAttr("disabled");
 	}
-
-	/* var organizations = this.value.replace(",","");
-    if ((e3.which == 13 || e3.which == 188) && (organizations != null  && organizations != '' && organizations != 'undefined'))
-    {
-    	var par = this.parent;
-        var option = $("<option>").val(organizations).text(organizations);
-        selectthree.append(option);
-        selectthree.find(option).prop('selected', true);
-        $("#organizations option").each(function(){
-              $(this).siblings("[value='"+ this.value+"']").remove();
-        });
-		$("#organizations").trigger("chosen:updated");
-		
-    } */
 });
  </script>
  <script>
  
-var selectfour, chosenfour;
-selectfour = $("#employers");
-selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-chosenfour = selectfour.data('chosen');
-chosenfour.search_field.on('keydown keyup', function(e4)
-{
-	
-	var employers = [];
-	var excludeEmployers = [];
-	excludeEmployers = $("#excludeEmployers").val();
-	 employers = $("#employers").val();
-	 if(employers!=null){
-	 employers.sort();
-	 }
-	 if(excludeEmployers!=null){
-	 excludeEmployers.sort();
-}
-	 if(JSON.stringify(excludeEmployers) == JSON.stringify(employers)){
-		if(employers==null&&excludeEmployers==null){
-			$('#empId').find('p.jquery_form_error_message').remove();
-		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
-				$('#empId').find('p.jquery_form_error_message').remove();
-		}else {
-	 $("#employers").val('').trigger("chosen:updated");
-	 $('#empId').find('p.jquery_form_error_message').remove(); 
-		$('input#empValidation').attr('class','error signin_fild');
-		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
-		$('input#empValidation').attr('record-exist','yes');
-		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
-	}
-	 }
-	else{
-		$('#empId').find('p.jquery_form_error_message').remove();
-	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
-			$('#empId').find('p.jquery_form_error_message').remove();
-	}
-});
+ var selectfour, chosenfour;
+ selectfour = $("#employers");
+ selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+ chosenfour = selectfour.data('chosen');
+ chosenfour.search_field.on('keydown keyup', function(e4)
+ {
+ 	
+ 	var employers = [];
+ 	var excludeEmployers = [];
+ 	excludeEmployers = $("#excludeEmployers").val();
+ 	 employers = $("#employers").val();
+ 	 if(employers!=null){
+ 	 employers.sort();
+ 	 }
+ 	 if(excludeEmployers!=null){
+ 	 excludeEmployers.sort();
+ }
+ 	 if(JSON.stringify(excludeEmployers) == JSON.stringify(employers)){
+ 		if(employers==null&&excludeEmployers==null){
+ 			$('#empId').find('p.jquery_form_error_message').remove();
+ 		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+ 				$('#empId').find('p.jquery_form_error_message').remove();
+ 				$("#search_candidate").removeAttr("disabled");
+ 		}else {
+ 	 $("#employers").val('').trigger("chosen:updated");
+ 	 $('#empId').find('p.jquery_form_error_message').remove(); 
+ 		$('input#empValidation').attr('class','error signin_fild');
+ 		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
+ 		$('input#empValidation').attr('record-exist','yes');
+ 		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+ 		$("#search_candidate").attr("disabled","disabled");
+ 	}
+ 	 }
+ 	else{
+ 		$('#empId').find('p.jquery_form_error_message').remove();
+ 	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+ 			$('#empId').find('p.jquery_form_error_message').remove();
+ 			$("#search_candidate").removeAttr("disabled");
+ 	}
+ });
 </script>
 
 <script type="text/javascript">
@@ -1121,14 +1119,16 @@ function filterPop() {
    		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
    		$('input#expValidation').attr('record-exist','yes');
    		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+   		$("#search_candidate").attr("disabled","disabled");
        }  else{
        	$('#expId').find('p.jquery_form_error_message').remove(); 
        	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
    		$('#expId').find('p.jquery_form_error_message').remove();
+   		$("#search_candidate").removeAttr("disabled");
        } 
    }
 function clearCandidateSearchKeys(){
-		
+	$("#search_candidate").removeAttr("disabled");
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
@@ -1136,7 +1136,7 @@ function clearCandidateSearchKeys(){
 	    $("#noticePeriod").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	 /*    $("#country").val('').trigger("chosen:updated"); */
+	    $("#country").val('').trigger("chosen:updated"); 
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#citySearch").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");

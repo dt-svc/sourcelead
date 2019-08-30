@@ -1319,7 +1319,7 @@ function imageCancel(){
 											onblur="minMaxExperience();">
 											<option selected value="">Min Years</option>
 											<c:forEach begin="0" end="24" varStatus="loop">
-												<option value="${loop.index}">${loop.index}Years</option>
+												<option value="${loop.index}">${loop.index} Years</option>
 											</c:forEach>
 										</select>
 									</div>
@@ -1329,7 +1329,7 @@ function imageCancel(){
 											onblur="minMaxExperience();">
 											<option value="">Max Years</option>
 											<c:forEach begin="0" end="25" varStatus="loop">
-												<option value="${loop.index}">${loop.index}Years</option>
+												<option value="${loop.index}">${loop.index} Years</option>
 											</c:forEach>
 										</select>
 									</div>
@@ -1834,6 +1834,7 @@ chosenthree.search_field.on('keydown keyup', function(e3)
 			$('#empId').find('p.jquery_form_error_message').remove();
 		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
 				$('#empId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
 		}else {
 	 $("#excludeEmployers").val('').trigger("chosen:updated");
 	 $('#empId').find('p.jquery_form_error_message').remove(); 
@@ -1841,12 +1842,14 @@ chosenthree.search_field.on('keydown keyup', function(e3)
 		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
 		$('input#empValidation').attr('record-exist','yes');
 		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+		$("#search_candidate").attr("disabled","disabled");
 	}
 	 }
 	else{
 		$('#empId').find('p.jquery_form_error_message').remove();
 	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
 			$('#empId').find('p.jquery_form_error_message').remove();
+			$("#search_candidate").removeAttr("disabled");
 	}
 });
  </script>
@@ -1874,6 +1877,7 @@ chosenfour.search_field.on('keydown keyup', function(e4)
 			$('#empId').find('p.jquery_form_error_message').remove();
 		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
 				$('#empId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
 		}else {
 	 $("#employers").val('').trigger("chosen:updated");
 	 $('#empId').find('p.jquery_form_error_message').remove(); 
@@ -1881,12 +1885,14 @@ chosenfour.search_field.on('keydown keyup', function(e4)
 		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
 		$('input#empValidation').attr('record-exist','yes');
 		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+		$("#search_candidate").attr("disabled","disabled");
 	}
 	 }
 	else{
 		$('#empId').find('p.jquery_form_error_message').remove();
 	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
 			$('#empId').find('p.jquery_form_error_message').remove();
+			$("#search_candidate").removeAttr("disabled");
 	}
 });
 </script>
@@ -1906,24 +1912,23 @@ function EducationValidation(){
 			$('#eduId').find('p.jquery_form_error_message').remove();
 		 	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
 				$('#eduId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
 		}else{
 		 $('#eduId').find('p.jquery_form_error_message').remove(); 
 			$('input#eduValidation').attr('class','error signin_fild');
 			$("input#eduValidation").after("<p class='jquery_form_error_message'>Education and Exclude Education Should not be same</p>");
 			$('input#eduValidation').attr('record-exist','yes');
 			$('input#eduValidation').attr('record-exist-errorMsg','Education and Exclude Education Should not be Same'); 
-		}}else if(a==null||b==null){
-			 $('#eduId').find('p.jquery_form_error_message').remove();
-		$('input#eduValidation').attr('class','error signin_fild');
-		$("input#eduValidation").after("<p class='jquery_form_error_message'>Enter the value</p>");
-		$('input#eduValidation').attr('record-exist','yes');
-		$('input#eduValidation').attr('record-exist-errorMsg','Enter the value'); 
-	}else{
+			$("#search_candidate").attr("disabled","disabled");
+		}}
+		else{
  	$('#eduId').find('p.jquery_form_error_message').remove();
  	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#eduId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
 	}
 }
+
 }
 
 </script>
@@ -2724,11 +2729,12 @@ function ratecheck(){
 			$("input#rateValidation").after("<p class='jquery_form_error_message'>Select Currency</p>");
 			$('input#rateValidation').attr('record-exist','yes');
 			$('input#rateValidation').attr('record-exist-errorMsg','Currency Selected'); 
+			$("#search_candidate").attr("disabled","disabled");
 	}else{
     	$('#rateId').find('p.jquery_form_error_message').remove();
     	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#rateId').find('p.jquery_form_error_message').remove();
-		
+		$("#search_candidate").removeAttr("disabled");
 	}
 }
 </script>
@@ -2745,10 +2751,12 @@ function ratevalidation(){
 		$("input#ratecheckValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
 		$('input#ratecheckValidation').attr('record-exist','yes');
 		$('input#ratecheckValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+		$("#search_candidate").attr("disabled","disabled");
     }  else{
     	$('#ratecheckId').find('p.jquery_form_error_message').remove(); 
     	$('input#ratecheckValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#ratecheckId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
     } 
 }
 </script>
@@ -2766,10 +2774,12 @@ function minMaxExperience(){
 		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
 		$('input#expValidation').attr('record-exist','yes');
 		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
+		$("#search_candidate").attr("disabled","disabled");
     }  else{
     	$('#expId').find('p.jquery_form_error_message').remove(); 
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#expId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
     } 
 }
 
@@ -2778,7 +2788,7 @@ function minMaxExperience(){
 <!-- This  clearCandidateSearchKeys() method for clear search data-->
 <script type="text/javascript">	
 	function clearCandidateSearchKeys(){
-		
+		$("#search_candidate").removeAttr("disabled");
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
