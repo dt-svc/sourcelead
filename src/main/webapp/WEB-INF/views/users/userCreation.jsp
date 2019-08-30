@@ -604,9 +604,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 
 <script>
 function getCustomDependentField(sectionId){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 $.ajax({
 			type : "POST" , 
-				 url: atsUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
+				 url: sourceleadUrl+"/getAllASectionCustomFields?sectionId="+sectionId,
 				 success: function(data) {
 		        	$('#customDiv'+sectionId).empty();
 		        	$('#customDiv'+sectionId).append(data);
@@ -1039,7 +1040,7 @@ function getEmployeementType(designationType){
  
 <script type="text/javascript">
  function validateUserEmail() {
-	 var EmailId = document.getElementById("EmailId").value; 
+	 var EmailId = document.getElementById("EmailId").value.trim();
 	 $('#EmailIdDiv').find('p.jquery_form_error_message').remove();
 	 if(EmailId != null && EmailId != ""){
 		 $("#create_user").attr("disabled", "disabled");
