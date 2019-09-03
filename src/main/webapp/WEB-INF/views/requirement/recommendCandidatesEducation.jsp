@@ -978,6 +978,7 @@ function clearSearchKey() {
 		type: "POST",
 	    url: atsUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
         success: function(response) {
+        	$('#education_form').find('p.jquery_form_error_message').remove();
         	if (response && response.response === "INVALID_DATA") {
         	    showError(response.responseMessage);
         	} else if (response.response === "AWKWARD") {

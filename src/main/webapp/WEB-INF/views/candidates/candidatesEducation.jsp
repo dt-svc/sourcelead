@@ -985,18 +985,18 @@ function clearSearchKeyEducation() {
 <script type="text/javascript">
  function validateEduname(candidateId) {
 	var name = document.getElementById("candEdu").value; 
- 	$('#nameIdDiv').find('p.jquery_form_error_message').remove();
 	$.ajax({
 		type: "POST",
 	    url: atsUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
 	    success: function(response) {
+	    	$('#education_form').find('p.jquery_form_error_message').remove();
         	if (response && response.response === "INVALID_DATA") {
         	    showError(response.responseMessage);
         	} else if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (response.response === "SUCCESS") {
         		if(response.object == true) {
-	        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
+	        		  $('#candEdu').find('p.jquery_form_error_message').remove();
 	        		  /* document.getElementById("name").setAttribute('record-exist','yes');
 					  document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
 					   */
