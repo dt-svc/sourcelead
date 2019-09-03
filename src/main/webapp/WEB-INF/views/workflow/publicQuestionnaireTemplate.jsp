@@ -79,7 +79,7 @@ function questionnaireTemplateForm(){
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
 		// commented to be removed after clock is set
 		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3> <label id="countdownTimerLbl">Time</label>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		result = result + "";
 		
 		
@@ -160,7 +160,7 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		var distance = end - now;
 
 		if (distance < 0) {
-			$('#countdownTimerLbl').text('EXPIRED!');
+			$('#countdownTimerLbl').text(' EXPIRED!');
 			// here need to call submission function for the feed back table.
 			return;
 		}
@@ -170,10 +170,15 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		var seconds = Math.floor((distance % _minute) / _second);
 		if (minutes == 2 && seconds == 0) //  Two minutes alert
 			console.error("Time Expires in " + minutes);
-		else if (minutes == 1 && seconds == 0) // 1 minutes alert
+		else if (minutes == 1 && seconds == 0){ // 1 minutes alert
 			console.error("Time Expires in " + minutes);
+			$('#countdownTimerLbl').toggleClass("textSuccess colorRed");
+		}
 		     // time display label.
-             timerDisplayText=  minutes + 'mins : '+seconds + 'seconds';
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+		timerDisplayText=  minutes + ' mins : '+seconds + ' sec';
 		$('#countdownTimerLbl').text(timerDisplayText);
 		// each second we are updating timer in table
 		
@@ -965,7 +970,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid){
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
 		// commented to be removed after clock is set
 		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3><label id="countdownTimerLbl">Time</label>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
