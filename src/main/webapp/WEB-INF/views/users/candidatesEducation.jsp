@@ -1071,12 +1071,8 @@ function clearSearchKeyEducation() {
         	} else if (response.response === "SUCCESS") {
         		if(response.object == true) {
           			$('#nameIdDiv').find('p.jquery_form_error_message').remove();
-          		  	/* document.getElementById("name").setAttribute('record-exist','yes');
-  				  	document.getElementById("name").setAttribute('record-exist-errorMsg',name+' is Already Existed'); 
-  				   	*/
   				   	$("#candEdu").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
   				  	$("#save_button").attr('disabled','disabled');
-  				 	// return false;
           		} else{
           			$('#nameIdDiv').removeAttr( "record-exist record-exist-errormsg");
           			$('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
