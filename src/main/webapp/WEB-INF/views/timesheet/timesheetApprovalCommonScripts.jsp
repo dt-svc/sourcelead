@@ -329,7 +329,6 @@ function acceptTimeSheetSubmissionBySubmissionId(tableFor){
 		    				 var currentPageNumber =  $("#currentPageNumber").val();
 		    				 getStatusListData(""+currentPageNumber+"",0,"");
 		    				 $('#hedderAcceptRejectButton').attr('style','display:none');
-		    				 alert("hi");
 		    			 }else{
 		    				 var currentPageNumberApprover =  $("#timesheetApproverCurrentPageNumber").val();
 		    				 getTableData(currentPageNumberApprover,0);
@@ -425,7 +424,7 @@ function saveRejectSubmissionByProjectMemberIdDashboard(tableFor){
 		      		   	 
 				   }else{
 						  var currentPageNumberApproverReject =  $("#timesheetApproverCurrentPageNumber").val();
-						  getTableData(currentPageNumberApproverReject);
+						  getTableData(currentPageNumberApproverReject,0);
 		    			  $("#loadingCotentDiv").removeAttr('style');
 			 	    	  $(".mask_time").fadeOut(200);
 		      		      $("#rejectpanel").hide();
