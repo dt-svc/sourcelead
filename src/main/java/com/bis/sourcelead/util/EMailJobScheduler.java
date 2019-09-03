@@ -484,7 +484,7 @@ public class EMailJobScheduler {
 	 *  	   So, commented for now. If needed will open later
 	 **/
 	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
-		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
+	//	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
 		@Async
 		public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																	// Jobs(attachments)in inbox folder.
