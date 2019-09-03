@@ -28,11 +28,20 @@
 	</a>
 
     <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-    <a href="${SourceLeadWeb_sourceleadUrl}/daywiseTimeSheetReports">
+    <a href="${SourceLeadWeb_sourceleadUrl}/projectTimeEntriesReport">
 	<div class="repDashCta">
 		<span><i class="fa fa-calendar"></i></span>
 		<div class="repDashCtaWrap">
-		<h2>Daywise Timesheet Report</h2><b>View</b>
+		<h2>Project Time Entries Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+	
+	<a href="${SourceLeadWeb_sourceleadUrl}/resourceTimeEntriesReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-calendar"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Resource Time Entries Report</h2><b>View</b>
 		</div>
 	</div>
 	</a>
