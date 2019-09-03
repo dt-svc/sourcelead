@@ -1,4 +1,4 @@
-SET GLOBAL sql_mode = '';
+#SET GLOBAL sql_mode = '';
 DROP TABLE IF EXISTS `countries`;
 CREATE TABLE `countries` (
   ID BIGINT NOT NULL AUTO_INCREMENT,
