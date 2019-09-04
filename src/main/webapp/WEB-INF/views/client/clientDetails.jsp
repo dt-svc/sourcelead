@@ -388,14 +388,15 @@ margin-bottom: 15px;
 								
 								result = result + '<div class="user_summary_edit_cta">';
 								result = result + '<label>Country</label>';
-								result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry"  field-name="Country" data-placeholder="Select Country"  data-validation="required" >';
+								result = result + '<input type="text" name="country" readonly="readonly" id="existingCountry" value="'+country+'" data-validation="required"  data-placeholder="Select Country" >';
+								/* result = result + ' <select class="form-control chosen-select" name="country" id="existingCountry"  field-name="Country" data-placeholder="Select Country"  data-validation="required" >';
 								result = result + '<option  '+ (country == "Australia" ? "selected" : '') +'>Australia</option>';
 								result = result + '<option  '+ (country == "France" ? "selected" : '') +'>France</option>';
 								result = result + '<option  '+ (country == "India" ? "selected" : '') +'>India</option>';
 								result = result + '<option  '+ (country == "Singapore" ? "selected" : '') +'>Singapore</option>';
 								result = result + '<option  '+ (country == "United Kingdom" ? "selected" : '') +'>United Kingdom</option>';
 								result = result + '<option  '+ (country == "United States" ? "selected" : '') +'>United States</option>';
-				                result = result + ' </select>';
+				                result = result + ' </select>'; */
 								result = result + '</div>  ';
 								
 								result = result + '<div class="user_summary_edit_cta" id="stateDiv">';
