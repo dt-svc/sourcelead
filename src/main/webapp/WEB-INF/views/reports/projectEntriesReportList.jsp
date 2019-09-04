@@ -145,7 +145,7 @@ function getTableDataByPageSizeEmployee(){
 	  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
 		  projectIds  =  JSON.parse(projectIdDto);  ;
 	  }
-	  if(employmentTypeDto != null && employmentTypeDto !='' && employmentTypeDto	!='undefined'){
+	  if(employmentTypeDto != null && employmentTypeDto !='' && employmentTypeDto	!='undefined' &&  employmentTypeDto	!='[]'){
 		   employmentType  = employmentTypeDto;
 	  }
 	  if(projectMemberListIdDto != null && projectMemberListIdDto !='' && projectMemberListIdDto !='undefined' &&  projectMemberListIdDto!='[]'){
@@ -172,10 +172,10 @@ function getTableDataTimeSheetReports(pageNo){
 		  var startDateDto = $('#startDateDto').val();
 		  var endDateDto = $('#endDateDto').val();
 		  
-		  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined'){
-			  projectIds  =  JSON.parse(projectIdDto);  ;
+		  if(projectIdDto != null && projectIdDto !='' && projectIdDto !='undefined' ){
+			  projectIds  =  JSON.parse(projectIdDto); 
 		  }
-		  if(employmentTypeDto != null && employmentTypeDto !='' && employmentTypeDto	!='undefined'){
+		  if(employmentTypeDto != null && employmentTypeDto !='' && employmentTypeDto	!='undefined' &&  employmentTypeDto	!='[]'){
 			   employmentType  = employmentTypeDto;
 		  }
 		  if(projectMemberListIdDto != null && projectMemberListIdDto !='' && projectMemberListIdDto !='undefined' &&  projectMemberListIdDto!='[]'){
