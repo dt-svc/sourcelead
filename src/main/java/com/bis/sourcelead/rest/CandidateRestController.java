@@ -252,16 +252,19 @@ public class CandidateRestController {
 		Response<ResumeParserJsonUtil> response = new Response<>();
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 			MultipartFile multiFile = null;
 			Iterator<String> itrator = request.getFileNames();
 			if (itrator.hasNext()) {
 				multiFile = request.getFile(itrator.next());
 			}
 			ResumeParserJsonUtil resumeDetails = null;
-			if (null != multiFile) {
-				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				String fileName = multiFile.getOriginalFilename();
+			String fileName = null;
+			if (null != multiFile && orgLocation !=null && country != null) {
+			    fileName = multiFile.getOriginalFilename();
 				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
+			}else {
+				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeForPublicPages(multiFile.getBytes(), fileName);
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());
