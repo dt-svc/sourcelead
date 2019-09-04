@@ -1,8 +1,9 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <meta name="format-detection" content="telephone=no">
 <%-- 
@@ -10,9 +11,9 @@
      this script is for candidate Activation
 --%>
 
-  <div id="shareEmptypopUp"></div>
-  
-  
+<div id="shareEmptypopUp"></div>
+
+
 <script>
   function noAccess(id){ 	
 	 
@@ -42,30 +43,32 @@
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
- <jsp:include page="requirementHistory.jsp"></jsp:include>
- <sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
- <jsp:include page="candidatesCommentsList.jsp"></jsp:include>
- </sec:authorize>
- <jsp:include page="candidatesQuickView.jsp"></jsp:include>
- <jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
- <jsp:include page="requirementListForSubmission.jsp"></jsp:include>
- <%-- <jsp:include page="candidatesAssessment.jsp"></jsp:include> --%>
- <div class="new_side_wrap">
+<jsp:include page="requirementHistory.jsp"></jsp:include>
+<sec:authorize
+	access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">
+	<jsp:include page="candidatesCommentsList.jsp"></jsp:include>
+</sec:authorize>
+<jsp:include page="candidatesQuickView.jsp"></jsp:include>
+<jsp:include page="candidatesTimelineActivity.jsp"></jsp:include>
+<jsp:include page="requirementListForSubmission.jsp"></jsp:include>
+<%-- <jsp:include page="candidatesAssessment.jsp"></jsp:include> --%>
+<div class="new_side_wrap">
 	<div class="new_side_wrap_inn">
 		<div class="new_side_wrap_cta">
-		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
-		    <div id="addApplicantDivLoading"></div>
-			<div id="addApplicantDiv"></div>
+			<div
+				class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+				<div id="addApplicantDivLoading"></div>
+				<div id="addApplicantDiv"></div>
 			</div>
 		</div>
 	</div>
 </div>
 
 
-<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div> 
-<div id="candidateRejectedDiv" class="project_tabs clearfix"></div> 
+<div id="candidateSubmittedJobsDiv" class="project_tabs clearfix"></div>
+<div id="candidateRejectedDiv" class="project_tabs clearfix"></div>
 
-	<script>
+<script>
 	var isAssociate = 'N';
 	var candidateIDsArr=[];
 	var _csrfParam = '${_csrf.parameterName}';
@@ -89,8 +92,8 @@
 			}
 	};
 	</script>
-	
-	
+
+
 <script>
 function closeCandiatesSubmitedList() {
 	$("#candidateRejectedDiv").empty();  
@@ -102,7 +105,8 @@ function closeCandiatesSubmitedList() {
 <script>
   var atsUrl = '${SourceLeadWeb_atsUrl}';
 </script>
-<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
+<script type="text/javascript"
+	src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
 
 <input type="hidden" id="noCandidates" name="noCandidates" />
 
@@ -784,9 +788,9 @@ $(document).ready(function() {
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
 	});	
+   
 }); 
-</script> 
-
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for load predefined image for candidate.
@@ -1069,318 +1073,403 @@ function imageCancel(){
 <!--HTML CONTENT -->
 
 <section class="content-wraper">
-  <section class="content-header clearfix">
-  
-   <div class="success_pop" id="candSelector" style="display: none;"> 
-     <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
-   </div>
-   
-   <c:if test="${!empty msg}">
-	        <div class="success_pop" id="sucesspop"  style="display: block;">
-		         <i class="fa fa-check-circle"></i><span>${msg}</span>
+	<section class="content-header clearfix">
+
+		<div class="success_pop" id="candSelector" style="display: none;">
+			<i class="fa fa-check-circle"></i><span id="candMsgDiv"></span>
+		</div>
+
+		<c:if test="${!empty msg}">
+			<div class="success_pop" id="sucesspop" style="display: block;">
+				<i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
-	     </c:if>
-    <div class="pull-left">
-      <h2 id="headerLbl">Candidate List</h2>
-    </div>
-    
-    <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a> &raquo; <label id="brudCrumLbl">Candidate List </label> </div>
-    </c:if> 
-    
-    <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home </a> &raquo; Candidate List  </div>
-    </c:if> 
-    
-     <%-- <div class=" pull-left reportsH">
+		</c:if>
+		<div class="pull-left">
+			<h2 id="headerLbl">Candidate List</h2>
+		</div>
+
+		<c:if
+			test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+			<div class="pull-right brud-crum">
+				<a
+					href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home
+				</a> &raquo; <label id="brudCrumLbl">Candidate List </label>
+			</div>
+		</c:if>
+
+		<c:if
+			test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+			<div class="pull-right brud-crum">
+				<a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard">Home
+				</a> &raquo; Candidate List
+			</div>
+		</c:if>
+
+		<%-- <div class=" pull-left reportsH">
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Reports</a>
 			<div class="RePop">
 				<ul>
 					<li><a href="${SourceLeadWeb_atsUrl}/candidateListForReports"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
 				</ul>
 			</div>
-		</div>   --%> 
-		
-  </section>
-  <div class="clearfix">
-	<ul class="project-tabs-menu projecttabs-custom clearfix">
-         <li id="" class="current"><a href="javascript:void(0)" onclick="javascript:goToCandidateList();">Candidate List</a></li>
-         <sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
-         <li id=""><a href="javascript:void(0)" onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToGlobalMarketPlaceList();">Global Marketplace</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToCartList();">Cart</a></li>
-           <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
-          <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li>
-         <div class="clearfix"></div>
-         </sec:authorize>
-     </ul>
-</div>	
-  		  <form:form id="candidatelist_form" name="candidatelist_form"  enctype='multipart/form-data' >
-				  <!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
-				  <div class="cand-advsrch-popup advancedsearch-popup">
-					  <h5 class="headerAdsrch">Advanced Search
-					  <a href="javascript:void(0)" class="close-div" onclick="closePop();clearCandidateSearchKeys();"><i class="fa fa-close"></i></a>
-					  </h5>
-					  <div class="addInner">
-					  <!-- <div class="candAdvsrchPop"> -->
-					  <div class="row">
-						  <div class="col-md-4">
-							  <label>Any of Keyword</label>
-							  <div class="clearfix">
-							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
-                                    </select>
-							  	<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>All Keywords</label>
-							  <div class="clearfix">
-							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-                                 </select>
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>Exclude Keyword</label>
-							  <div class="clearfix">
-							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
-                                 </select>
-							  </div>
-						  </div>
-					  </div>
-					  <div class="row">
-					  <div class="clearfix">
-					  
-					  
-					  <div class="col-md-8">
-						<label>Tags</label>
-							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="canTags" name="candidateTags">
-								</select>
-							 </div>
+		</div>   --%>
+
+	</section>
+	<div class="clearfix">
+		<ul class="project-tabs-menu projecttabs-custom clearfix">
+			<li id="" class="current"><a href="javascript:void(0)"
+				onclick="javascript:goToCandidateList();">Candidate List</a></li>
+			<sec:authorize
+				access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
+				<li id=""><a href="javascript:void(0)"
+					onclick="javascript:goToOrgMarketPlaceList();">Marketplace</a></li>
+				<li id=""><a href="javascript:void(0)"
+					onclick="javascript:goToGlobalMarketPlaceList();">Global
+						Marketplace</a></li>
+				<li id=""><a href="javascript:void(0)"
+					onclick="javascript:goToCartList();">Cart</a></li>
+				<li id=""><a href="javascript:void(0)"
+					onclick="javascript:goToPurchaseOrderList();">Purchase
+						Orderlist</a></li>
+				<li id=""><a href="javascript:void(0)"
+					onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
+				<li id=""><a href="javascript:void(0)"
+					onclick="javascript:goToWalletList();">Wallet</a></li>
+				<div class="clearfix"></div>
+			</sec:authorize>
+		</ul>
+	</div>
+	<form:form id="candidatelist_form" name="candidatelist_form"
+		enctype='multipart/form-data'>
+		<!-- <div class="cand-advsrch-popup cand-advsrchPopup"> -->
+		<div class="cand-advsrch-popup advancedsearch-popup">
+			<h5 class="headerAdsrch">
+				Advanced Search <a href="javascript:void(0)" class="close-div"
+					onclick="closePop();clearCandidateSearchKeys();"><i
+					class="fa fa-close"></i></a>
+			</h5>
+			<div class="addInner">
+				<!-- <div class="candAdvsrchPop"> -->
+				<div class="row">
+					<div class="col-md-4">
+						<label>Any of Keyword</label>
+						<div class="clearfix">
+							<select class="chosen-select form-control input-sm" multiple
+								data-placeholder="Any Keyword" id="anyOfKeyword"
+								name="anyOfKeyword">
+							</select>
+							<!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword"> -->
 						</div>
-						
-						
+					</div>
+					<div class="col-md-4">
+						<label>All Keywords</label>
+						<div class="clearfix">
+							<select class="chosen-select form-control input-sm" multiple
+								data-placeholder="All Keywords" id="allKeywords"
+								name="allKeywords">
+							</select>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<label>Exclude Keyword</label>
+						<div class="clearfix">
+							<select class="chosen-select form-control input-sm" multiple
+								data-placeholder="Exclude Keyword" id="excludeKeyWord"
+								name="excludeKeyWord">
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="clearfix">
+
+
 						<div class="col-md-8">
-						<label>Immigration Status</label>
+							<label>Tags</label>
 							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Visa" id="canVisa" name="candidateVisa">
-								<c:forEach var="visa" items="${visaList}">
-								<option value="${visa.name}">${visa.name}</option>
-								</c:forEach>
+								<select class="chosen-select form-control input-sm" multiple
+									data-placeholder="Tags" id="canTags" name="candidateTags">
 								</select>
-							 </div>
+							</div>
 						</div>
-					  
-					  <div class="clearfix">
-						<div class="col-md-8 mt5">
-						<label>Skills</label>
+
+
+						<div class="col-md-8">
+							<label>Immigration Status</label>
 							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Skills" id="canSkills" name="candidateSkills">
-								<c:forEach var="skill" items="${skillsList}">
-								<option value="${skill.name}">${skill.name}</option>
-								</c:forEach>
+								<select class="chosen-select form-control input-sm" multiple
+									data-placeholder="Visa" id="canVisa" name="candidateVisa">
+									<c:forEach var="visa" items="${visaList}">
+										<option value="${visa.name}">${visa.name}</option>
+									</c:forEach>
 								</select>
-							 </div>
+							</div>
 						</div>
-						
-						<div class="col-md-4">
-						<label>Primary Skill</label>
-							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Primary Skill" id="primarySkill" name="primarySkill">
-                                 </select>
-							 </div>
+
+						<div class="clearfix">
+							<div class="col-md-8 mt5">
+								<label>Skills</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Skills" id="canSkills"
+										name="candidateSkills">
+										<c:forEach var="skill" items="${skillsList}">
+											<option value="${skill.name}">${skill.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>Primary Skill</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Primary Skill" id="primarySkill"
+										name="primarySkill">
+									</select>
+								</div>
+							</div>
+
+
 						</div>
-						
-						 
-					 </div>
 						<c:set var="currency" value=""></c:set>
 						<div class="col-md-8">
 							<div class="row">
 								<div class="col-md-6 payrate_p">
 									<label>Rate</label>
-									 <div class="input-group error-field">
-										<div id="currencyDiv" class="input-group-btn selp-custom-min custommin">
-										    <select class="selectpicker" name="currency" id="currency" field-name="Currency"  >
-										        <option value="">Currency</option>
-										         <option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
-								                 <option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
-								                 <option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
-								                 <option ${currency  == 'GBP' ? 'selected' : ''}>GBP</option>
-								                 <option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
-								                 <option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
-				                            </select>
+									<div class="input-group error-field">
+										<div id="currencyDiv"
+											class="input-group-btn selp-custom-min custommin">
+											<select class="selectpicker" name="currency" id="currency"
+												field-name="Currency" onchange="ratecheck();">
+												<option value="0">Currency</option>
+												<option ${currency  == 'INR' ? 'selected' : ''}>INR</option>
+												<option ${currency  == 'AUD' ? 'selected' : ''}>AUD</option>
+												<option ${currency  == 'USD' ? 'selected' : ''}>USD</option>
+												<option ${currency  == 'GBP' ? 'selected' : ''}>GBP</option>
+												<option ${currency  == 'SGD' ? 'selected' : ''}>SGD</option>
+												<option ${currency  == 'EUR' ? 'selected' : ''}>EUR</option>
+											</select>
 										</div>
-										 <div id="minRateDiv">
-									      <input type="text" id="minRate" name="minRate" field-name="Min Rate" data-validation="validate_Space validate_float" data-validation-optional="true"  class="form-control input-sm" placeholder="Min Rate">
-								         </div>
-								    </div>
-								</div> 
-							<div class="col-md-6 payrate_p">
-								<label>&nbsp;</label> 
-								<div class="input-group error-field">
-								 <div id="maxRateDiv">
-									  <input type="text" class="form-control input-sm" id="maxRate"  name="maxRate"  field-name="Max Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Max Rate">
+										<div id="minRateDiv">
+											<input type="text" id="minRate" name="minRate"
+												field-name="Min Rate"
+												data-validation="validate_Space validate_float"
+												data-validation-optional="true" onblur="ratecheck();"
+												class="form-control input-sm" placeholder="Min Rate">
+										</div>
+										<div class="row" id="rateId">
+											<input type="hidden" name="rateValidation"
+												id="rateValidation">
+										</div>
+									</div>
+
 								</div>
-								<div id="rateTypeDiv" class="input-group-btn selp-custom-min custommin">
-									      <select class="selectpicker" name="rateType" id="rateType" field-name="Rate Type"  >
-									            <option value="">Rate Type</option>
-										        <option value="Hourly">Hourly</option>
+								<div class="col-md-6 payrate_p">
+									<label>&nbsp;</label>
+									<div class="input-group error-field">
+										<div id="maxRateDiv">
+											<input type="text" class="form-control input-sm" id="maxRate"
+												name="maxRate" field-name="Max Rate"
+												data-validation="validate_Space validate_float"
+												data-validation-optional="true" placeholder="Max Rate" onblur = "ratevalidation();">
+										</div>
+										<div class="row" id="ratecheckId">
+											<input type="hidden" name="ratecheckValidation"
+												id="ratecheckValidation">
+										</div>
+										<div id="rateTypeDiv"
+											class="input-group-btn selp-custom-min custommin">
+											<select class="selectpicker" name="rateType" id="rateType"
+												field-name="Rate Type">
+												<option value="">Rate Type</option>
+												<option value="Hourly">Hourly</option>
 												<option value="Weekly">Weekly</option>
 												<option value="Bi-weekly">Bi-weekly</option>
 												<option value="Semi-Monthly">Semi-Monthly</option>
 												<option value="Monthly">Monthly</option>
 												<option value="Bi-Monthly">Bi-Monthly</option>
 												<option value="Yearly">Yearly</option>
-				                            </select> 
+											</select>
+										</div>
 									</div>
 								</div>
 							</div>
-						 </div>
-						 </div>
-						 
-						 <div class="clearfix">
-						  <div class="col-md-4">
-						    <label>Designation</label>
-						     <div class="clearfix">
-						             <select class="chosen-select form-control input-sm" multiple data-placeholder="Designation" id="designation" name="designation">
-                                     </select>
-						    </div>
+						</div>
+
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Designation</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Designation" id="designation"
+										name="designation">
+									</select>
+								</div>
 							</div>
-						 </div>
-						 
-						  <div class="clearfix">
-						  <div class="col-md-4">
-							  <label>Experience</label>
-							  <div class="clearfix row">
-							  <div class="col-md-6">
-								  <select class="chosen-select"  id="minExpYears" name="minExpYears" data-placeholder="Years" onblur="minMaxExperience();">
-									  <option  selected value="">Min Years</option>
-									 <c:forEach begin="0" end="24" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-								  </select>
-							  </div>
-							  <div class="col-md-6">
-								  <select class="chosen-select" id="maxExpYears" name="maxExpYears" data-placeholder="Months" onblur="minMaxExperience();">
-									  <option  value="">Max Years</option>
-									  <c:forEach begin="0" end="25" varStatus="loop">
-									    <option value="${loop.index}">${loop.index} Years</option>
-									</c:forEach>
-								  </select>
-							  </div>
-							  </div>
-							  <div class="row" id="expId">
-				                  <input type="hidden" name="expValidation" id="expValidation">
-				              </div>
-						  </div>
-						  
-						  <div class="col-md-4">
-							  <label>Notice Period</label>
-							  <div class="clearfix">
-								 <select class="chosen-select" id="noticePeriod1" name="noticePeriod" data-placeholder="Notice Period" multiple>
-						                 <option value="Immediately available">Immediately available</option>
-						                 <option value="15 Days">15 Days</option>
-						                 <option value="1 Month">1 Month</option>
-						                 <option value="2 Months">2 Months</option>
-						                 <option value="3 Months">3 Months</option>
-				                </select>
-							  </div>
-						  </div>
-						    <div class="col-md-4">
-						    <label>Employment Type</label>
-						     <div class="clearfix">
-						             <select class="chosen-select form-control" id="designationType" name="designationType">
-						                <option value="">--Select--</option>
-						                 <option>C2C</option>
-						                 <option>W-2</option>
-						                 <option>C2H</option>
-						                 <option>Part Time</option>
-						                 <option>Full Time</option>
-						                 <option>Other</option>
-						             </select>
-						    </div>
-						  </div>
-						  </div>
-						  <div class="clearfix">
-						   <div class="col-md-4">
-							  <label>Country</label>
-							  <div class="clearfix">
-								 <select class="chosen-select" name="country" id="country" field-name="Country"  >
-								    <option value="">--Select country--</option>
-								     <c:forEach var="cntry" items="${countryList}">
-							                      <option value="${cntry.name}">${cntry.name}</option>
-						              </c:forEach>
-				                 </select>
-							  </div>
-						  </div>
-						  
-						  <div class="col-md-4"> 
-							  <label>State</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="state" id="state" field-name="State"  >
-								        <option value="">---select state---</option>
-								        <%-- <c:forEach var="state" items="${statesList}">
-							                     <option value="${state.stateName}">${state.stateName}</option>
-						                </c:forEach> --%>
-                                 </select>
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>City</label>
-							  <div class="clearfix">
-								  <select  class="chosen-select" name="city" id="citySearch" field-name="City"  >
-								      <option value="">---select city---</option>
-                                  </select>
-							  </div>
-						  </div>
-						  </div>
-						  <div class="clearfix">
-					  	<div class="col-md-4">
-							  <label>Education</label>
-							  <div class="clearfix"> 
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Education" id="education" name="education">
-                                       <c:forEach var="edu" items="${educationsList}">
-							                     <option value="${edu.name}">${edu.name}</option>
-						                </c:forEach>
-                                  </select>
-							  </div>
-						  </div> 
-						  <div class="col-md-4">
-							  <label>Exclude Education</label>
-							  <div class="clearfix">
-								   <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Education" id="excludeEducation" name="excludeEducation">
-                                       <c:forEach var="edu" items="${educationsList}">
-							                     <option value="${edu.name}">${edu.name}</option>
-						                </c:forEach>
-                                   </select>
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>Certification</label>
-							  <div class="clearfix">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Certification" id="certification" name="certification">
-                                  </select>
-							  </div>
-						  </div>
-						  </div>
-						  <div class="clearfix">
-						  <div class="col-md-4">
-							  <label>Employers</label>
-							  <div class="clearfix">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Employers" id="employers" name="employers">
-                                  </select>
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>Exclude Employers</label>
-							  <div class="clearfix">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Employers" id="excludeEmployers" name="excludeEmployers">
-                                  </select>
-							  </div>
-						  </div>
-						  
-						   <!-- <div class="col-md-4">
+						</div>
+
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Experience</label>
+								<div class="clearfix row">
+									<div class="col-md-6">
+										<select class="chosen-select" id="minExpYears"
+											name="minExpYears" data-placeholder="Years"
+											onblur="minMaxExperience();">
+											<option selected value="">Min Years</option>
+											<c:forEach begin="0" end="24" varStatus="loop">
+												<option value="${loop.index}">${loop.index} Years</option>
+											</c:forEach>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<select class="chosen-select" id="maxExpYears"
+											name="maxExpYears" data-placeholder="Months"
+											onblur="minMaxExperience();">
+											<option value="">Max Years</option>
+											<c:forEach begin="0" end="25" varStatus="loop">
+												<option value="${loop.index}">${loop.index} Years</option>
+											</c:forEach>
+										</select>
+									</div>
+								</div>
+								<div class="row" id="expId">
+									<input type="hidden" name="expValidation" id="expValidation">
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>Notice Period</label>
+								<div class="clearfix">
+									<select class="chosen-select" id="noticePeriod1"
+										name="noticePeriod" data-placeholder="Notice Period" multiple>
+										<option value="Immediately available">Immediately
+											available</option>
+										<option value="15 Days">15 Days</option>
+										<option value="1 Month">1 Month</option>
+										<option value="2 Months">2 Months</option>
+										<option value="3 Months">3 Months</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>Employment Type</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control" id="designationType"
+										name="designationType">
+										<option value="">--Select--</option>
+										<option>C2C</option>
+										<option>W-2</option>
+										<option>C2H</option>
+										<option>Part Time</option>
+										<option>Full Time</option>
+										<option>Other</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Country</label>
+								<div class="clearfix">
+									<select class="chosen-select" name="country" id="country"
+										field-name="Country">
+										<option value="">--Select country--</option>
+										<c:forEach var="cntry" items="${countryList}">
+											<option value="${cntry.name}">${cntry.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+
+							<div class="col-md-4">
+								<label>State</label>
+								<div class="clearfix">
+									<select class="chosen-select" name="state" id="state"
+										field-name="State">
+										<option value="">---select state---</option>
+										<%-- 								        <c:forEach var="state" items="${statesList}"> --%>
+										<%-- 							                     <option value="${state.stateName}">${state.stateName}</option> --%>
+										<%-- 						                </c:forEach> --%>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>City</label>
+								<div class="clearfix">
+									<select class="chosen-select" name="city" id="citySearch"
+										field-name="City">
+										<option value="">---select city---</option>
+										<%-- 								      <c:forEach var="city" items="${citiesList}"> --%>
+										<%-- 							                     <option value="${city.CityName}">${city.CityName}</option> --%>
+										<%-- 						                </c:forEach> --%>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Education</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Education" id="education" name="education" onchange="EducationValidation();">
+										<c:forEach var="edu" items="${educationsList}">
+											<option value="${edu.name}">${edu.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>Exclude Education</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Exclude Education" id="excludeEducation"
+										name="excludeEducation"  onchange="EducationValidation();">
+										<c:forEach var="edu" items="${educationsList}">
+											<option value="${edu.name}">${edu.name}</option>
+										</c:forEach>
+									</select>
+								</div>
+								<div class="row" id="eduId">
+											<input type="hidden" name="eduValidation"
+												id="eduValidation">
+										</div>
+							</div>
+							<div class="col-md-4">
+								<label>Certification</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Certification" id="certification"
+										name="certification">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix">
+							<div class="col-md-4">
+								<label>Employers</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Employers" id="employers" name="employers">
+									</select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<label>Exclude Employers</label>
+								<div class="clearfix">
+									<select class="chosen-select form-control input-sm" multiple
+										data-placeholder="Exclude Employers" id="excludeEmployers"
+										name="excludeEmployers">
+									</select>
+								</div>
+							
+							<div class="row" id="empId">
+											<input type="hidden" name="empValidation"
+												id="empValidation">
+										</div>
+</div>
+							<!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
 								   <select class="chosen-select" name="applicantType" id="applicantType" field-name="Applicant Type"  >
@@ -1390,138 +1479,155 @@ function imageCancel(){
 				                   </select>
 							  </div>
 						  </div> -->
-						  </div>
-					  </div>
-					  </div>
-				  </div>
-				  <div class="clearfix advancedsearch-footer">
-						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
-                               <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
-                               <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
-						  </div>
-					  </div>
-				  </div>
-			  </form:form>
-  
-  <div class="timesheet_out" id="candidatesInfoDiv">
-    
- <div class="positionRelative reportHead clearfix">
-      <span class="pull-left refreIcon" id="advanceSearchDiv">
-      		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
-      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
-      </span>
-      
-      <ul class="pull-right list-unstyled list-inline">
-      
-	  <li class="tableShare" style="display: none;">
-	   	<sec:authorize access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
-	  	<a class="marketplaceIcon mr5" title="Market Place" onclick="callAddToMarket()"></a>
-	  	</sec:authorize>
-	  	<a class="shareIcon mr5" title="Share" href="javascript:void(0)" onclick="shareJob();"></a>
-	  	<a class="sendIcon mr5" title="Submit" href="javascript:void(0)" onclick="submitCandidatesToJob();"></a>
-	  </li>        
- 
-           <sec:authorize access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
-          <!-- <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix advancedsearch-footer">
+				<div class="pull-right mr">
+					<input type="button" value="Search" id="search_candidate"
+						onclick="candidateList(); closePop();minMaxExperience();"
+						class="btn btn-sm btn-success" /> <input type="button"
+						value="Reset" onClick="clearCandidateSearchKeys();"
+						class="btn btn-sm btn-primary" />
+					<!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
+				</div>
+			</div>
+		</div>
+	</form:form>
+
+	<div class="timesheet_out" id="candidatesInfoDiv">
+
+		<div class="positionRelative reportHead clearfix">
+			<span class="pull-left refreIcon" id="advanceSearchDiv"> <a
+				href="javascript:void(0)" class="refeIcon" id="resetVendor"
+				title="Refresh" onclick="resetCandidateFilter();"></a> <a
+				href="javascript:void(0)" class="newAdBtn pull-left"
+				title="Advanced Search" onClick="openPop();getSourceleadTags();">
+					Advanced Search &nbsp; <i class="fa fa-search"></i>
+			</a>
+			</span>
+
+			<ul class="pull-right list-unstyled list-inline">
+
+				<li class="tableShare" style="display: none;"><sec:authorize
+						access="hasAnyRole('ROLE_SHARE_PROFILE','ROLE_ADD_PROFILE')">
+						<a class="marketplaceIcon mr5" title="Market Place"
+							onclick="callAddToMarket()"></a>
+					</sec:authorize> <a class="shareIcon mr5" title="Share" href="javascript:void(0)"
+					onclick="shareJob();"></a> <a class="sendIcon mr5" title="Submit"
+					href="javascript:void(0)" onclick="submitCandidatesToJob();"></a></li>
+
+				<sec:authorize
+					access="hasAnyRole('ROLE_CREATE_CANDIDATE','ROLE_CROWDSOURCING_CANDIDATES')">
+					<!-- <li><b id="addmore"><a onClick="addCandidate();" title="Add Candidate" class="newAdBtn mr5" href="javascript:void(0)">+  Candidate</a></b>
           		<div id="addmorepop" class="approved_pop"></div>
           </li> -->
-          
-          <li>
-				<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Candidate <i class="fa fa-caret-down"></i></a>
-				<div class="action-pop">
-					<span> 
-						<a href="${SourceLeadWeb_atsUrl}/candidate">Parse Resume</a>
-                        <a href="${SourceLeadWeb_atsUrl}/addCandidate">Add Manual</a>
-                        <a href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk Resume Parsing</a>
-                        <a href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import XLS</a>
-					</span>
-				</div>
-			</li>
-          
-          
-          </sec:authorize>
-      
-				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openCandidateFilterPop();"></a></li>
-				
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop">
-						<span>
-         				 <sec:authorize access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
-          					<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
-							<a href="javascript:void(0)" onclick="exportToExcel();" title="Excel">Export Excel</a>
-          				</sec:authorize>		           
-						</span>
-					</div>
-				</li>
-				
-		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearch'/><span class="repSearchIcon" onClick="candidateList();"></span></li>
-        </ul>
-      </div>   
-    
-      <div id="emptyPopup"></div>
-      <div class="candidate_wrap_table datatable_filter">
-        <div id="candidateList"></div>
-      </div>
-    </div>
-    
-    <!-- Compnay details -->
-    <div class="side_mask">
-       <div class="proj_close" onclick="activeTab();"></div>
-    </div>
-    <div class="success_pop" id="statusAlert">
-		<i class="fa fa-check-circle"></i>
-   		<span></span>
-   </div>
-   <div class="success_pop tagStyles" id="addCandidateTagAlert" style="z-index: 99999;">
-		<i class="fa fa-check-circle"></i>
-   		<span></span>
-   </div>
-   <div class="remove_pop tagStyles" id="deleteCandidateTagAlert"  style="z-index: 99999;">
-		<i class="fa fa-times"></i>
-   		<span></span>
-   </div>
-   
- <div class="clients_side_wrap quickviewTabs">
-    
- <ul class="nav nav-tabs">
-    <li class="active" id="candQuickView"><a data-toggle="tab" href="#quickview">Quickview</a></li>
-    <li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed View</a></li>
-    <li id="candTimelineView"></li>
-  </ul>
 
-  <div class="tab-content">
-    <div id="quickview" class="tab-pane fade in active">
-	    <!-- resumeView Starts -->
-	    <div id="candidateQuickViewDiv"></div>
-	    <!-- resumeView -->
-    </div>
-    <div id="detailview" class="tab-pane fade">
-	    <div class="clients_side_wrap_inn">
-	             <div id="candidateSideDiv">
-			     </div>  
-	    </div>
-	     </div>
-				<div id="timelineview" class="tab-pane fade">
-					<div class="clients_side_wrap_inn">
-						<div id="candidateTimelineDiv"></div>
-					</div>
+					<li><a class="action newAdBtn mr5" onclick="getActions();"
+						href="javascript:void(0)">+ Candidate <i
+							class="fa fa-caret-down"></i></a>
+						<div class="action-pop">
+							<span> <a href="${SourceLeadWeb_atsUrl}/candidate">Parse
+									Resume</a> <a href="${SourceLeadWeb_atsUrl}/addCandidate">Add
+									Manual</a> <a
+								href="${SourceLeadWeb_sourceleadUrl}/bulk-resume-import.html">Bulk
+									Resume Parsing</a> <a
+								href="${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm">Import
+									XLS</a>
+							</span>
+						</div></li>
+
+
+				</sec:authorize>
+
+				<li><a href="javascript:void(0)" class="filtIcon"
+					title="Filters" onclick="openCandidateFilterPop();"></a></li>
+
+				<li><a href="javascript:void(0)" class="overIcon"
+					title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span> <sec:authorize
+								access="hasAnyRole('ROLE_EXPORT_CANDIDATES','ROLE_CROWDSOURCING_CANDIDATES')">
+								<a href="javascript:void(0)" onclick="exportToPdf();"
+									title="PDF">Export PDF</a>
+								<a href="javascript:void(0)" onclick="exportToExcel();"
+									title="Excel">Export Excel</a>
+							</sec:authorize>
+						</span>
+					</div></li>
+
+				<li class=""><input type="text" class="repSearchBar"
+					placeholder='Search' id='dataTableSearch' /><span
+					class="repSearchIcon" onClick="candidateList();"></span></li>
+			</ul>
+		</div>
+
+		<div id="emptyPopup"></div>
+		<div class="candidate_wrap_table datatable_filter">
+			<div id="candidateList"></div>
+		</div>
+	</div>
+
+	<!-- Compnay details -->
+	<div class="side_mask">
+		<div class="proj_close" onclick="activeTab();"></div>
+	</div>
+	<div class="success_pop" id="statusAlert">
+		<i class="fa fa-check-circle"></i> <span></span>
+	</div>
+	<div class="success_pop tagStyles" id="addCandidateTagAlert"
+		style="z-index: 99999;">
+		<i class="fa fa-check-circle"></i> <span></span>
+	</div>
+	<div class="remove_pop tagStyles" id="deleteCandidateTagAlert"
+		style="z-index: 99999;">
+		<i class="fa fa-times"></i> <span></span>
+	</div>
+
+	<div class="clients_side_wrap quickviewTabs">
+
+		<ul class="nav nav-tabs">
+			<li class="active" id="candQuickView"><a data-toggle="tab"
+				href="#quickview">Quickview</a></li>
+			<li id="candDetailView"><a data-toggle="tab" href="#detailview">Detailed
+					View</a></li>
+			<li id="candTimelineView"></li>
+		</ul>
+
+		<div class="tab-content">
+			<div id="quickview" class="tab-pane fade in active">
+				<!-- resumeView Starts -->
+				<div id="candidateQuickViewDiv"></div>
+				<!-- resumeView -->
+			</div>
+			<div id="detailview" class="tab-pane fade">
+				<div class="clients_side_wrap_inn">
+					<div id="candidateSideDiv"></div>
 				</div>
-			</div>			     
-    </div>
-    <!-- Compnay details Ends --> 
+			</div>
+			<div id="timelineview" class="tab-pane fade">
+				<div class="clients_side_wrap_inn">
+					<div id="candidateTimelineDiv"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Compnay details Ends -->
 </section>
 
 <!--   Error Message   -->
-  <div class="vendor_wrap_mask"></div>
-  <div class="vendor_error">
-  <p>Delete conformation message....</p>
-  <textarea placeholder="Enter message"></textarea>
-  <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
-<!--   Error Message   --> 
+<div class="vendor_wrap_mask"></div>
+<div class="vendor_error">
+	<p>Delete conformation message....</p>
+	<textarea placeholder="Enter message"></textarea>
+	<a class="close_color" href="javascript:void(0)">Yes</a><a
+		href="javascript:void(0)">No</a>
+</div>
+<!--   Error Message   -->
 
-   
-   <script>
+
+<script>
    var candidateIdsMark = [];
    function appendIdsToMarketPlace(obj){
 	   if($(obj).is(":checked")){
@@ -1564,15 +1670,15 @@ function imageCancel(){
 		    }); 
    }
    </script>
-   
-   
-   <script>
+
+
+<script>
 	   function msgFadein() {
 			$("#candSelector").fadeIn(200);
 		    $('#candSelector').delay(2000).fadeOut('slow');
 		}
    </script>
-   
+
 <script>
 	function activeTab() {
 		$("#candDetailView").removeClass("active");
@@ -1590,13 +1696,14 @@ function imageCancel(){
 	}
 </script>
 
- <script>
+<script>
   $('#selector').delay(2000).fadeOut('slow');
-</script> 
-<!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S --> 
+</script>
+<!-- BELOW SCRIPTS ARE USED TO SHOW / HIDE POPUP'S -->
 <script>
 // Error pop
 $('#sucesspop').delay(2000).fadeOut('slow');
+
 $(document).ready(function() {
     $(".glyphicon-trash").click(function(){
 		$(".vendor_error").slideToggle(200);
@@ -1659,7 +1766,7 @@ $(document).ready(function() {
 
 	
 });
-</script>	
+</script>
 
 <script>
 $(document).ready(function() {
@@ -1704,7 +1811,127 @@ $(document).ready(function() {
 }); 
 
 </script>
+<script>
+var selectthree, chosenthree;
+selectthree = $("#excludeEmployers");
+selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosenthree = selectthree.data('chosen');
+chosenthree.search_field.on('keydown keyup', function(e3)
+{
+	var employers = [];
+	var excludeEmployers = [];
+	excludeEmployers = $("#excludeEmployers").val();
+	 employers = $("#employers").val();
+	 if(employers!=null){
+	 employers.sort();
+	 }
+	 if(excludeEmployers!=null){
+	 excludeEmployers.sort();
 
+}
+	 if(JSON.stringify(employers) == JSON.stringify(excludeEmployers)){
+		if(employers==null&&excludeEmployers==null){
+			$('#empId').find('p.jquery_form_error_message').remove();
+		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+				$('#empId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
+		}else {
+	 $("#excludeEmployers").val('').trigger("chosen:updated");
+	 $('#empId').find('p.jquery_form_error_message').remove(); 
+		$('input#empValidation').attr('class','error signin_fild');
+		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
+		$('input#empValidation').attr('record-exist','yes');
+		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+		$("#search_candidate").attr("disabled","disabled");
+	}
+	 }
+	else{
+		$('#empId').find('p.jquery_form_error_message').remove();
+	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+			$('#empId').find('p.jquery_form_error_message').remove();
+			$("#search_candidate").removeAttr("disabled");
+	}
+});
+ </script>
+ <script>
+ 
+var selectfour, chosenfour;
+selectfour = $("#employers");
+selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosenfour = selectfour.data('chosen');
+chosenfour.search_field.on('keydown keyup', function(e4)
+{
+	
+	var employers = [];
+	var excludeEmployers = [];
+	excludeEmployers = $("#excludeEmployers").val();
+	 employers = $("#employers").val();
+	 if(employers!=null){
+	 employers.sort();
+	 }
+	 if(excludeEmployers!=null){
+	 excludeEmployers.sort();
+}
+	 if(JSON.stringify(excludeEmployers) == JSON.stringify(employers)){
+		if(employers==null&&excludeEmployers==null){
+			$('#empId').find('p.jquery_form_error_message').remove();
+		 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+				$('#empId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
+		}else {
+	 $("#employers").val('').trigger("chosen:updated");
+	 $('#empId').find('p.jquery_form_error_message').remove(); 
+		$('input#empValidation').attr('class','error signin_fild');
+		$("input#empValidation").after("<p class='jquery_form_error_message'>Employer and Exclude Employer Should not be same</p>");
+		$('input#empValidation').attr('record-exist','yes');
+		$('input#empValidation').attr('record-exist-errorMsg','Employer and Exclude Employer Should not be Same'); 
+		$("#search_candidate").attr("disabled","disabled");
+	}
+	 }
+	else{
+		$('#empId').find('p.jquery_form_error_message').remove();
+	 	$('input#empValidation').removeAttr( "class record-exist record-exist-errormsg");
+			$('#empId').find('p.jquery_form_error_message').remove();
+			$("#search_candidate").removeAttr("disabled");
+	}
+});
+</script>
+
+
+<script>
+function EducationValidation(){
+	//Function to validate Education and Exclude Education value 
+	var a = [];
+	var b = [];
+	 a =$('#education').val();
+	 b =$('#excludeEducation').val();
+	 for (var i = 0; i < a.length; ++i) {
+	 if(JSON.stringify(a)==JSON.stringify(b)){
+
+		if(a==null&&b==null){
+			$('#eduId').find('p.jquery_form_error_message').remove();
+		 	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
+				$('#eduId').find('p.jquery_form_error_message').remove();
+				$("#search_candidate").removeAttr("disabled");
+		}else{
+		 $('#eduId').find('p.jquery_form_error_message').remove(); 
+			$('input#eduValidation').attr('class','error signin_fild');
+			$("input#eduValidation").after("<p class='jquery_form_error_message'>Education and Exclude Education Should not be same</p>");
+			$('input#eduValidation').attr('record-exist','yes');
+			$('input#eduValidation').attr('record-exist-errorMsg','Education and Exclude Education Should not be Same'); 
+			$("#search_candidate").attr("disabled","disabled");
+		}}
+		else{
+ 	$('#eduId').find('p.jquery_form_error_message').remove();
+ 	$('input#eduValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#eduId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
+	}
+}
+
+}
+
+</script>
 <script>
 function toggle(source) {
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -1998,7 +2225,7 @@ function savedCommentAndCount(candidateId){
 }
 </script>
 
-    <script>
+<script>
 	// Close Advanced Search
 		function closePop(){
 			 $("div.cand-advsrch-popup").hide();
@@ -2018,12 +2245,13 @@ function savedCommentAndCount(candidateId){
 	</script>
 <script>
 function getStates(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#country").val();
 	if(countryName != null && countryName != "" && countryName !="undefined"){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: atsUrl +"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
+	    	 url: sourceleadUrl +"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#state').empty();
@@ -2049,18 +2277,19 @@ function getStates(){
         $('#citySearch').trigger("chosen:updated");
 	}
 }
-</script> 
+</script>
 
 
 <script>
 function getCities(){
+	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var countryName = $("#country").val();
 	var stateName = $("#state").val();
 	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
 		$.ajax({
 	    	type: "POST",
 	    	dataType: "json",
-	    	 url: atsUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
+	    	 url: sourceleadUrl+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	$('#citySearch').empty();
@@ -2082,7 +2311,7 @@ function getCities(){
 </script>
 
 
-<!-- Country,State,City Script Ends Here -->	
+<!-- Country,State,City Script Ends Here -->
 <script type="text/javascript">	
 	function loadChosenScripts(){
 	    
@@ -2172,13 +2401,12 @@ function getCities(){
 		   tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add Education:', 'tagItBykeyForSkills','skills','Education');
 		   
 		   //Adding Customized Visa list this method is slead-common.js
-		   tagIt("excludeEducation", 'Press Enter-Key Or Comma(,) Or Tab To Add Exclude Education:', 'tagItBykeyForSkills','skills','Exclude Education');
+		   tagIt("excludeEd ucation", 'Press Enter-Key Or Comma(,) Or Tab To Add Exclude Education:', 'tagItBykeyForSkills','skills','Exclude Education');
 		 
-		   
-		   
+		  
   });
   </script>
-	
+
 <script type="text/javascript">
     	   /* var config = {
     				  '.chosen-select'           : {},
@@ -2472,13 +2700,13 @@ function getCities(){
 				var $this = $(this);
 				$this.next().css({'width': '100%'});
 				}) */
-</script> 
-     
-      <div class="pop_mask"></div>
-    
-    <div class="advancedsearch-mask"></div>
-    
-    <script>
+</script>
+
+<div class="pop_mask"></div>
+
+<div class="advancedsearch-mask"></div>
+
+<script>
     //addcandidate-popup script
     function addCandidate(){
         $('.addcandidate-popup').fadeIn(200);
@@ -2491,6 +2719,49 @@ function getCities(){
        }
     </script>
 
+<script type="text/javascript">
+function ratecheck(){
+	//Function to validate currency option
+	var a = $("#currency").val();
+	if(a==0){
+		 $('#rateId').find('p.jquery_form_error_message').remove(); 
+			$('input#rateValidation').attr('class','error signin_fild');
+			$("input#rateValidation").after("<p class='jquery_form_error_message'>Select Currency</p>");
+			$('input#rateValidation').attr('record-exist','yes');
+			$('input#rateValidation').attr('record-exist-errorMsg','Currency Selected'); 
+			$("#search_candidate").attr("disabled","disabled");
+	}else{
+    	$('#rateId').find('p.jquery_form_error_message').remove();
+    	$('input#rateValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#rateId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
+	}
+}
+</script>
+
+
+<script>
+function ratevalidation(){
+	//Function to validate if maxrate  value is more the minrate  value
+	var minRate = $('#minRate').val();
+	var maxRate = $('#maxRate').val();
+	if (parseFloat(maxRate) <= parseFloat(minRate)){
+        $('#ratecheckId').find('p.jquery_form_error_message').remove(); 
+		$('input#ratecheckValidation').attr('class','error signin_fild');
+		$("input#ratecheckValidation").after("<p class='jquery_form_error_message'>Max Rate should be greater than Min Rate</p>");
+		$('input#ratecheckValidation').attr('record-exist','yes');
+		$('input#ratecheckValidation').attr('record-exist-errorMsg','Max Rate should be greater than Min Rate'); 
+		$("#search_candidate").attr("disabled","disabled");
+    }  else{
+    	$('#ratecheckId').find('p.jquery_form_error_message').remove(); 
+    	$('input#ratecheckValidation').removeAttr( "class record-exist record-exist-errormsg");
+		$('#ratecheckId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
+    } 
+}
+</script>
+
+
 <script>
 //Function to validate if maxExpYears  value is more the minExpYears  value
 function minMaxExperience(){
@@ -2500,13 +2771,15 @@ function minMaxExperience(){
     if (parseFloat(maxExpYears) <= parseFloat(minExpYears)){
         $('#expId').find('p.jquery_form_error_message').remove(); 
 		$('input#expValidation').attr('class','error signin_fild');
-		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience is greater than Min Experience</p>");
+		$("input#expValidation").after("<p class='jquery_form_error_message'>Max Experience should be greater than Min Experience</p>");
 		$('input#expValidation').attr('record-exist','yes');
-		$('input#expValidation').attr('record-exist-errorMsg','Max Experience is greater than Min Experience'); 
+		$('input#expValidation').attr('record-exist-errorMsg','Max Experience should be greater than Min Experience'); 
+		$("#search_candidate").attr("disabled","disabled");
     }  else{
     	$('#expId').find('p.jquery_form_error_message').remove(); 
     	$('input#expValidation').removeAttr( "class record-exist record-exist-errormsg");
 		$('#expId').find('p.jquery_form_error_message').remove();
+		$("#search_candidate").removeAttr("disabled");
     } 
 }
 
@@ -2515,7 +2788,7 @@ function minMaxExperience(){
 <!-- This  clearCandidateSearchKeys() method for clear search data-->
 <script type="text/javascript">	
 	function clearCandidateSearchKeys(){
-		
+		$("#search_candidate").removeAttr("disabled");
 	    $("#anyOfKeyword").val('').trigger("chosen:updated");
 	    $("#allKeywords").val('').trigger("chosen:updated");
 	    $("#excludeKeyWord").val('').trigger("chosen:updated");
@@ -2662,8 +2935,8 @@ function checkShareCandidates(elem) {
 
 <!-- Modal share job -->
 <div class="sideMask"></div>
-  <div class="modal sharejob-pop" id="sharejob-pop" style="z-index: 10000 !important;">
-  </div>
+<div class="modal sharejob-pop" id="sharejob-pop"
+	style="z-index: 10000 !important;"></div>
 <script>
 	var candidateIds = new Array();
 function shareJob() {
@@ -2969,148 +3242,221 @@ function resetCandidateFilter(){
 	candidateList();
 	mySkillsFunction();
 }
-</script>		
+</script>
 
 
-  <div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search" id="candidateFilterPopup">
-	<h5 class="headerAdsrch">Filters
-		<a href="javascript:void(0)" class="close-div" onClick="closeCandidateFilterPop()"><i
-			class="fa fa-close"></i></a>
+<div
+	class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search"
+	id="candidateFilterPopup">
+	<h5 class="headerAdsrch">
+		Filters <a href="javascript:void(0)" class="close-div"
+			onClick="closeCandidateFilterPop()"><i class="fa fa-close"></i></a>
 	</h5>
 	<div class="addInner">
 		<div class="row">
 			<div class="col-md-2">
-			<div class="row">
-			
-			<div class="col-md-12 mb">
-				<label><strong>All Candidates</strong></label>
-				 <div class="clearfix">
-					<ul class="list-unstyled" id="AllTypeFilter">
-					    <li class="radioIput positionRelative"><input id="candidateAll" type="radio" name="candidateStatus" checked  value ="2"   ><label for="candidateAll">All</label></li>
-						<li class="radioIput positionRelative"><input id="candidateActive" type="radio" name="candidateStatus" value ="1"  ><label for="candidateActive">Active</label></li>
-						<li class="radioIput positionRelative" ><input id="candidateInActive" name="candidateStatus" type="radio" value ="0" ><label for="candidateInActive">In Active</label></li>
-                    </ul>
-				 </div>
-				 </div> 
-				 
-				 
-			    <div class="col-md-12 mb">
-				<label><strong>Type</strong></label>
-				 <div class="clearfix">
-					<ul class="list-unstyled" id="TypeFilter">
-					     <li class="radioIput positionRelative" ><input id="candidateTypeAll" type="radio" name="candidateType" checked value ="All" ><label for="candidateTypeAll">All</label></li>
-						 <li class="radioIput positionRelative" ><input id="onlycandidate" type="radio" name="candidateType" value ="Favourite" ><label for="onlycandidate">Favourite</label></li>
-                    </ul>
-				 </div>
-				 </div>
-				 
-				 
-				 <div class="col-md-12 mb">
-				<label><strong>Candidate Type</strong></label>
-				 <div class="clearfix">
-					<ul class="list-unstyled" id="candidateTypeFilter">
-					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
-						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
-                   </c:if>
-                    </ul>
-				 </div>
-				 </div>  
-			  </div>
+				<div class="row">
+
+					<div class="col-md-12 mb">
+						<label><strong>All Candidates</strong></label>
+						<div class="clearfix">
+							<ul class="list-unstyled" id="AllTypeFilter">
+								<li class="radioIput positionRelative"><input
+									id="candidateAll" type="radio" name="candidateStatus" checked
+									value="2"><label for="candidateAll">All</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidateActive" type="radio" name="candidateStatus"
+									value="1"><label for="candidateActive">Active</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidateInActive" name="candidateStatus" type="radio"
+									value="0"><label for="candidateInActive">In
+										Active</label></li>
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="col-md-12 mb">
+						<label><strong>Type</strong></label>
+						<div class="clearfix">
+							<ul class="list-unstyled" id="TypeFilter">
+								<li class="radioIput positionRelative"><input
+									id="candidateTypeAll" type="radio" name="candidateType" checked
+									value="All"><label for="candidateTypeAll">All</label></li>
+								<li class="radioIput positionRelative"><input
+									id="onlycandidate" type="radio" name="candidateType"
+									value="Favourite"><label for="onlycandidate">Favourite</label></li>
+							</ul>
+						</div>
+					</div>
+
+
+					<div class="col-md-12 mb">
+						<label><strong>Candidate Type</strong></label>
+						<div class="clearfix">
+							<ul class="list-unstyled" id="candidateTypeFilter">
+								<li class="checkBox positionRelative"><input
+									type="checkbox" id="candidateCheck" name="candidateTypeFilter"
+									checked value="Candidates"><label>Candidates</label></li>
+								<c:if
+									test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
+									<li class="checkBox positionRelative"><input
+										type="checkbox" id="associateCheck" name="candidateTypeFilter"
+										value="Associates"><label>Associates</label></li>
+								</c:if>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
-			
+
 			<div class="col-md-2">
 				<div class="row">
-			       <div class="col-md-12 mb">
-				     <label><strong>Updated</strong></label>
-					 <div class="clearfix">
-						<ul class="list-unstyled" id="UpdatedFilter">
-						<li class="radioIput positionRelative" ><input id="allCandidates" type="radio" name="upcandidateStatus" value ="all" ><label for="allCandidates">All</label></li>
-                        <li class="radioIput positionRelative" ><input id="candidateToDay" type="radio" name="upcandidateStatus" value ="0"  ><label for="candidateDayAgo">Today</label></li>
-                        <li class="radioIput positionRelative" ><input id="candidateDayAgo" type="radio" name="upcandidateStatus" value ="1" ><label for="candidateDayAgo">1 Day ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidate3DayAgo" type="radio" name="upcandidateStatus" value ="3" ><label for="candidate3DayAgo">3 Days ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidate1WeekAgo" name="upcandidateStatus" type="radio" value ="7" ><label for="candidate1WeekAgo">1 Week ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidate3WeekAgo" name="upcandidateStatus" type="radio" value ="14" ><label for="candidate3WeekAgo">2 Weeks ago</label></li>
-						<li class="radioIput positionRelative" ><input id="candidateMonthAgo" name="upcandidateStatus" type="radio" value ="30" ><label for="candidateMonthAgo">1 Month ago</label></li>
-	                    <li class="radioIput positionRelative" ><input id="candidate3Months"  name="upcandidateStatus" type="radio" value ="90"><label for="candidate3Months">3 Months ago</label></li>
-	                    
-                        </ul>
-					 </div>
-				 </div>
-				 
-				 <div class="col-md-12 mb">
-				<label><strong>Created By</strong></label>
-				 <div class="clearfix">
-					<ul class="list-unstyled" id="createdByTypeFilter">
-					    <li class="radioIput positionRelative" ><input  type="radio" id="myCandidatesRadio" name="createdByFilter"  value ="myCandidates" checked ><label>My Candidates</label></li>
-						<li class="radioIput positionRelative" ><input  type="radio" id="allCandidatesRadio"  name="createdByFilter"  value ="allCandidates"  ><label>All Candidates</label></li>
-                    </ul>
-				 </div>
-				 </div>  
-			 </div>
-			</div> 
-			
+					<div class="col-md-12 mb">
+						<label><strong>Updated</strong></label>
+						<div class="clearfix">
+							<ul class="list-unstyled" id="UpdatedFilter">
+								<li class="radioIput positionRelative"><input
+									id="allCandidates" type="radio" name="upcandidateStatus"
+									value="all"><label for="allCandidates">All</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidateToDay" type="radio" name="upcandidateStatus"
+									value="0"><label for="candidateDayAgo">Today</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidateDayAgo" type="radio" name="upcandidateStatus"
+									value="1"><label for="candidateDayAgo">1 Day
+										ago</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidate3DayAgo" type="radio" name="upcandidateStatus"
+									value="3"><label for="candidate3DayAgo">3 Days
+										ago</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidate1WeekAgo" name="upcandidateStatus" type="radio"
+									value="7"><label for="candidate1WeekAgo">1
+										Week ago</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidate3WeekAgo" name="upcandidateStatus" type="radio"
+									value="14"><label for="candidate3WeekAgo">2
+										Weeks ago</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidateMonthAgo" name="upcandidateStatus" type="radio"
+									value="30"><label for="candidateMonthAgo">1
+										Month ago</label></li>
+								<li class="radioIput positionRelative"><input
+									id="candidate3Months" name="upcandidateStatus" type="radio"
+									value="90"><label for="candidate3Months">3
+										Months ago</label></li>
+
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-md-12 mb">
+						<label><strong>Created By</strong></label>
+						<div class="clearfix">
+							<ul class="list-unstyled" id="createdByTypeFilter">
+								<li class="radioIput positionRelative"><input type="radio"
+									id="myCandidatesRadio" name="createdByFilter"
+									value="myCandidates" checked><label>My
+										Candidates</label></li>
+								<li class="radioIput positionRelative"><input type="radio"
+									id="allCandidatesRadio" name="createdByFilter"
+									value="allCandidates"><label>All Candidates</label></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			<div class="col-md-2">
 				<div class="row">
 					<div class="col-md-12 mb">
 						<label><strong>Employment Type</strong></label>
-						 <div class="clearfix">
+						<div class="clearfix">
 							<ul class="list-unstyled" id="employmentFilter">
-	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C"  ><label>C2C</label></li>
-								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2C-1099" ><label>C2C-1099</label></li>
-								<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="W-2" ><label>W-2</label></li>
-	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H"  ><label>C2H</label></li>
-	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="C2H -1099" ><label>C2H -1099</label></li>
-	               			    <li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Part Time" ><label>Part Time</label></li>
-	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="employmentType"  value ="Full Time" ><label>Full Time</label></li>
-	                        </ul>
-						 </div>
-						 </div> 
-				     </div>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="C2C"><label>C2C</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="C2C-1099"><label>C2C-1099</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="W-2"><label>W-2</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="C2H"><label>C2H</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="C2H -1099"><label>C2H
+										-1099</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="Part Time"><label>Part
+										Time</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="employmentType" value="Full Time"><label>Full
+										Time</label></li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</div>
-			
-			
+
+
 			<div class="col-md-2">
 				<div class="row">
 					<div class="col-md-12 mb">
 						<label><strong>Availability</strong></label>
-						 <div class="clearfix">
+						<div class="clearfix">
 							<ul class="list-unstyled" id="availabilityFilter">
-	                    	    <li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="Immediately available"  ><label>Immediately available</label></li>
-								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="15 Days" ><label>15 Days</label></li>
-								<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="1 Month" ><label>1 Month</label></li>
-	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="2 Months"  ><label>2 Months</label></li>
-	               				<li class="checkBox positionRelative" ><input  type="checkbox"  name="availability"  value ="3 Months" ><label>3 Months</label></li>
-	                        </ul>
-						 </div>
-						 </div> 
-				     </div>
-			</div>
-			
-			<div class="col-md-3">
-					<div class="clearfix dynamic_search filterDynamicsearch">
-						<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()" placeholder="Skills" title="Type in a skills">
-						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="availability"
+									value="Immediately available"><label>Immediately
+										available</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="availability" value="15 Days"><label>15
+										Days</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="availability" value="1 Month"><label>1
+										Month</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="availability" value="2 Months"><label>2
+										Months</label></li>
+								<li class="checkBox positionRelative"><input
+									type="checkbox" name="availability" value="3 Months"><label>3
+										Months</label></li>
+							</ul>
+						</div>
 					</div>
-					 <div class="clearfix filterSearch-ul">
-						<ul class="list-unstyled positionRelative filterSearch mt5" id="skillsUL">
-							<c:forEach var="skill" items="${skillsList}">
-							<li class="checkBox positionRelative"><input  type="checkbox" name="candidateFilterSkills" value ="${skill.name}" ><label>${skill.name}</label></li>
-							</c:forEach>
-						</ul>
-					 </div> 
-		 </div> 
-			
-		</div>
-		</div>
-		<div class="clearfix advancedsearch-footer">
-			<div class="pull-right mr">
-				<input type="button" value="Apply" id="search_requiremet" onclick="closeCandidateFilterPop();candidateList();" class="btn btn-sm btn-success" />
-				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
+				</div>
 			</div>
+
+			<div class="col-md-3">
+				<div class="clearfix dynamic_search filterDynamicsearch">
+					<input type="text" id="mySkillsInput" onkeyup="mySkillsFunction()"
+						placeholder="Skills" title="Type in a skills"> <span
+						class="cursorPointer" title="Search"><i
+						class="fa fa-search"></i></span>
+				</div>
+				<div class="clearfix filterSearch-ul">
+					<ul class="list-unstyled positionRelative filterSearch mt5"
+						id="skillsUL">
+						<c:forEach var="skill" items="${skillsList}">
+							<li class="checkBox positionRelative"><input type="checkbox"
+								name="candidateFilterSkills" value="${skill.name}"><label>${skill.name}</label></li>
+						</c:forEach>
+					</ul>
+				</div>
+			</div>
+
 		</div>
+	</div>
+	<div class="clearfix advancedsearch-footer">
+		<div class="pull-right mr">
+			<input type="button" value="Apply" id="search_requiremet"
+				onclick="closeCandidateFilterPop();candidateList();"
+				class="btn btn-sm btn-success" /> <input type="button"
+				value="Reset" id="clear_search" onclick="resetCandidateFilter();"
+				class="btn btn-sm btn-primary" />
+		</div>
+	</div>
 </div>
-	
+
 <script>
 function mySkillsFunction() {
     var input, filter, ul, li, a, i;
@@ -3136,7 +3482,7 @@ $(document).keyup(function(e) {
 	});
 </script>
 
-	
+
 <script>
 function getActions(){
 	$(".action-pop").slideToggle(200);
@@ -3161,7 +3507,7 @@ $(".overIcon, .newActPop").click(function(e){
 });	
 
 </script>
- <script type="text/javascript">
+<script type="text/javascript">
 	/* function goToGlaobalMarketList() {
 		alert("in global function");
 		 $.ajax({
@@ -3198,5 +3544,5 @@ function goToWalletList(){
 	location.href = "${SourceLeadWeb_atsUrl}/walletList";
 }
 
-</script> 
-<jsp:include page="../masterFooter.jsp" /> 
+</script>
+<jsp:include page="../masterFooter.jsp" />
