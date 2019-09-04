@@ -2938,10 +2938,10 @@ function checkShareCandidates(elem) {
 <div class="modal sharejob-pop" id="sharejob-pop"
 	style="z-index: 10000 !important;"></div>
 <script>
+	var candidateIds = new Array();
 function shareJob() {
 	$("#sharejob-pop").fadeIn();
 	$(".sideMask").fadeIn();
-	var candidateIds = new Array();
 	 for(var e in shareCandidates) {
 		 if(!e || !shareCandidates[e] || shareCandidates[e] === "")
 			   continue;
@@ -2972,8 +2972,10 @@ function cancelShareCandidate(){
 	$(".project_inn_mask").fadeOut(); 
 }
 function closejobpop() {
-	shareCandidates = {};
+	if(candidateIds.length < 0){
+	 shareCandidates = {};
 	 $('input[class="contactscheckbox"]').removeProp('checked');
+	}
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
