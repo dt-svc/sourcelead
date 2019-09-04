@@ -212,7 +212,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				sendMessageConfiguredMail(emailMessage, iAdressArray, attachmentList,locationsId);
 			}
 		}
-		updateEmailInfoWithDeliveryStatus(emailNotificationId);
+		
+		if(emailNotificationId != null) {
+			updateEmailInfoWithDeliveryStatus(emailNotificationId);
+		}
+		
 	}
 	
 	private void sendMessage(EmailMessage emailMessage, InternetAddress[] iAdressArray,
@@ -588,7 +592,10 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				}
 			}
 
-			updateEmailInfoWithDeliveryStatus(emailNotificationId);
+			if(emailNotificationId != null) {
+				updateEmailInfoWithDeliveryStatus(emailNotificationId);
+			}
+			
 		}
 
 	}
