@@ -14,6 +14,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style>
+.trashbackground{
+    background-color: #ffff !important;
+}
+</style>
+
  
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     <script type="text/javascript">
@@ -207,7 +213,7 @@ function getBankDetails(){
                     <i class="fa fa-upload"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
                   <c:if test="${!empty SourceLeadWeb_userImgUrl}">
-                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+                  <button type="button" class="btn btn-sm btn-danger trashbackground" onclick="deleteImage()">
 				  <i class="fa fa-trash"></i></button>
 				  </c:if>
 				  </div>

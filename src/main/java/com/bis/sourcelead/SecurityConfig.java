@@ -131,6 +131,8 @@ public class SecurityConfig  {
     			.antMatchers("/addBlogSubscription/**").permitAll()
     			.antMatchers("/downloadReleaseNote/**").permitAll()
     			.antMatchers("/validateBlogSubscriptionEmail/**").permitAll()
+    			.antMatchers("/saveGuestAddApplicant/**").permitAll()
+    			.antMatchers("/ats/saveGuestAddApplicant/**").permitAll()
     			.antMatchers("/app/getRequirementSubmissionsCount/**").permitAll()
     			.antMatchers("/parseResume/**").permitAll()
     			.antMatchers("/app/getDemoTimezonesList/**").permitAll()
