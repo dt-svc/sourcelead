@@ -1877,8 +1877,8 @@ function openJobSearchRequirement(){
 			var con = JSON.stringify(frm);
 			con = con.replace(/[{}]/g, ""); 
 		    var jsonData = encodeURIComponent(con);
-			var form = $('#openJobsAdvancedForm')[0];
-   		    var formData = new FormData(form);
+// 			var form = $('#openJobsAdvancedForm')[0];
+//    		    var formData = new FormData(form);
    		 if(sourceleadUrl.indexOf("/app")!=-1){
 				sourceleadUrl = sourceleadUrl.split("/app")[0];
 			}
@@ -1887,13 +1887,13 @@ function openJobSearchRequirement(){
 			$("#advancedOpenJobsSearch").addClass('button').val('Processing..');
 			$.ajax({
 						type : "GET",
-		        	    data: formData,
+		        	    //data: formData,
 		        	    contentType : 'application/json; charset=utf-8',
 		        	    enctype: 'multipart/form-data',
 		    	        processData: false,
 		    	        contentType:false,
 		        	    dataType : 'json',
-						url : sourceleadUrl + "/app/ws/openJobsRequiremetsAdvancedSearch?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+						url : sourceleadUrl + "/app/ws/openJobsRequiremetsAdvancedSearch?json="+jsonData,
 						success : function(data) {
 							 $("#advancedOpenJobsSearch").addClass('button').val('Search');
 							 $("#advancedOpenJobsSearch").removeAttr("disabled");
