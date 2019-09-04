@@ -1302,8 +1302,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlowStages stage = new RequirementWorkFlowStages();
 		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
 		try {
-			
-			if(qemplateDTO.getUuid().equalsIgnoreCase("null")) {
+			if(qemplateDTO != null) {
+			if(qemplateDTO.getUuid() == null || qemplateDTO.getUuid().equalsIgnoreCase("undefined") || qemplateDTO.getUuid().equalsIgnoreCase("null")) {
 				qemplateDTO.setUuid(null);
 			}
 			if (qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
@@ -1378,9 +1378,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					}
 					if (requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
 						qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+						qtemplate.setTimeMinutesRemained(requirementQuestionnaireTemplate.getTimeLimitMinutes());
 					}
 					if (requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
 						qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+						qtemplate.setTimeSecondsRemained(requirementQuestionnaireTemplate.getTimeLimitSeconds());
 					}
 					qtemplate.setRequirementQuestionnaireTemplateUuid(requirementQuestionnaireTemplate.getUuid());
 				}
@@ -1395,6 +1397,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				}
 			}
 			requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
+			}
 			return qtemplate;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1598,15 +1601,21 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = null;
 		RequirementQuestionnaireTemplateDTO qDto = new RequirementQuestionnaireTemplateDTO();
 		RequirementQuestionnaireFeedbackTemplateDTO feedbackTemplateDto = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(templateUuid, stageId, submissionId);
-		if(feedbackTemplateDto == null || StringUtils.isEmpty(feedbackTemplateDto.getJsonString()) || StringUtils.isEmpty(feedbackTemplateDto.getJsonStringValues())){
+		if(feedbackTemplateDto == null || StringUtils.isEmpty(feedbackTemplateDto.getJsonString())){
 			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
 			if(requirementQuestionnaireTemplate != null) {
 				qDto.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+				qDto.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+				qDto.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
 			}
 		}else {
 			qDto.setJsonString(feedbackTemplateDto.getJsonString());
 			qDto.setJsonStringValues(feedbackTemplateDto.getJsonStringValues());
 			qDto.setUuid(feedbackTemplateDto.getUuid());
+			qDto.setTimeLimitMinutes(feedbackTemplateDto.getTimeLimitMinutes());
+			qDto.setTimeLimitSeconds(feedbackTemplateDto.getTimeLimitSeconds());
+			qDto.setTimeMinutesRemained(feedbackTemplateDto.getTimeMinutesRemained());
+			qDto.setTimeSecondsRemained(feedbackTemplateDto.getTimeSecondsRemained());
 		}
 		return qDto;
 	}
