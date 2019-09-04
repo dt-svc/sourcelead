@@ -884,8 +884,8 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	public RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId) {
 		RequirementSubmission RrequirementSubmission = null;
 				try {
-					Session session = this.sessionFactory.getCurrentSession();
-					String queryString = "from RequirementSubmission req where req.requirement.id=:requirementId and  req.orgLocations.id = :orgLocationId and req.requirement.closedDate is null";
+					Session session = this.sessionFactory.getCurrentSession();       // below query used to enable or disable work flow name in requirement edit section.                                                  
+					String queryString = "from RequirementSubmission req where req.requirement.id=:requirementId and  req.orgLocations.id = :orgLocationId ";
 					RrequirementSubmission =  (RequirementSubmission) session.createQuery(queryString).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setMaxResults(1).uniqueResult();
 				} catch (Exception e) {
 					logger.error(e +" in validateWorkflowEditabele DAO");
@@ -993,7 +993,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 	try {
 		Session session = this.sessionFactory.getCurrentSession();
 		String queryString = null;
-		if(workflowId != null) {                                                       // req.closedDate is null means requirement is not closed yet
+		if(workflowId != null) {                                                       // req.closedDate is null means requirement is not yet closed. if closed allow to edit
 		  queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.id = :workflowId and  req.orgLocationId.id = :orgLocationId and req.closedDate is null )";
 			subList =  session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setMaxResults(1).list();
 		}else {
