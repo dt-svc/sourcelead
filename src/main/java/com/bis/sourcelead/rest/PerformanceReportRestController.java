@@ -838,8 +838,8 @@ public class PerformanceReportRestController {
 		public void exportAllApplicantJoinedList(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 				@RequestParam(value="exportType", required=false) String exportType,
 				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
-			
-		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		      Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			  OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
