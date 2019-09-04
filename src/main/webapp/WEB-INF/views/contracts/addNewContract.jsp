@@ -534,7 +534,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                 	</c:if>
                 
                  
-                  <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml"></div>
+                  <div id="navbar" class="glyphicon glyphicon-info-sign text-info ml" title="Provide Signing Authority Info(parallel or sequential)"></div>
                 </div>
                 <!-- Radio buttons for Sequential or Parallel function -->
            
