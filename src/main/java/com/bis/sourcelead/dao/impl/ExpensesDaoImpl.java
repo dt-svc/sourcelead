@@ -258,7 +258,7 @@ public class ExpensesDaoImpl implements ExpensesDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Expenses getExpenseById(long id) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Expenses expenses where expenses.id =:id";
+		String query = "from Expenses expenses left join fetch expenses.masterCandidateId left join fetch expenses.projectMembers where expenses.id =:id";
 		List<Expenses> expenses = session.createQuery(query).setLong("id", id).list();
 		Expenses expensesList = null;
 		if (expenses != null && expenses.size() > 0) {
