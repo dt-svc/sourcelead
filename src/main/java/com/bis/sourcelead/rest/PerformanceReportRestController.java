@@ -839,7 +839,7 @@ public class PerformanceReportRestController {
 				@RequestParam(value="exportType", required=false) String exportType,
 				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
 		      Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-			  OrgLocations orgLocations = orgLocationService.getOrgLocationById(orgLocId);
+			  OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocId);
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
