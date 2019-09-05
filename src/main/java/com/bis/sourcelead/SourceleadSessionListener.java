@@ -63,7 +63,7 @@ public class SourceleadSessionListener implements HttpSessionListener {
 			userLoginLogoutSessionService.storeUserLoginLogoutSession(userLoginSession);
 		}
 		
-	     if(event.getSession().getAttribute("sessionId") != null) {
+	/*     if(event.getSession().getAttribute("sessionId") != null) {
 	    	 CouchbaseClusterService couchbaseClusterService = (CouchbaseClusterService) ctx
 	 				.getBean("couchbaseClusterService");
 	 	     CouchbaseConnectionConfig couchConfig = ctx.getBean(CouchbaseConnectionConfig.class);
@@ -72,7 +72,7 @@ public class SourceleadSessionListener implements HttpSessionListener {
 	 	    	 bucket.remove(event.getSession().getAttribute("sessionId")+"_SESSION");
 	 	     }
 	    	
-	     }
+	     }*/
 	    
 	     System.out.println("@@@@@ Session is destroyed @@@@@");
 	     logger.debug("@@@@@ Session is Destroyed @@@@@ ");
