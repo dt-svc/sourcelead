@@ -928,7 +928,8 @@ function discordApplicant(){
 	     
 	     $("#candidateId").removeAttr("data-validation");
 	     $('#candidateId').attr("data-validation-optional","true"); 
-	     
+	     document.getElementById("resumesDiv").style.display="none";
+		 document.getElementById("orConditionDiv").style.display="none";
 	     
 	     if(candidateType != null && candidateType != "" && candidateType != 'undefined' && candidateType == 'parseCandidate'){
 	    	 document.getElementById("browseDiv").style.display="";
@@ -964,8 +965,7 @@ function discordApplicant(){
 			 
 			
 	     }
-	     document.getElementById("resumesDiv").style.display="none";
-		 document.getElementById("orConditionDiv").style.display="none";
+	    
 		
 	 }
 	 
