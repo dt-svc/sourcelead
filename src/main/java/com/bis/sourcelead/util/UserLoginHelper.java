@@ -1044,6 +1044,10 @@ public class UserLoginHelper {
 		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		user.setEmail(userRoleJson.get("email").toString());
 		user.setUserName(userSession.get("loginUserName").toString());
+		if(userRoleJson.get("mobilePhone") != null) {
+			user.setMobilePhone(userRoleJson.get("mobilePhone").toString());
+		}
+		
 		
 		if(userRoleJson.get("firstName") != null) {
 			user.setFirstName(userRoleJson.get("firstName").toString());

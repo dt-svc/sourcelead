@@ -295,6 +295,9 @@ public class RequirementHelper {
 				
 			requirementIndex.setTeamOwnerUserId(teamOwnerUserId.toArray(new String[teamOwnerUserId.size()]));
 			requirementIndex.setTeamAssignUserId(teamAssignUserId.toArray(new String[teamAssignUserId.size()]));
+		     }else {
+		    	 requirementIndex.setTeamOwnerUserId(null);
+					requirementIndex.setTeamAssignUserId(null); 
 		     }
 		   
 			// requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());

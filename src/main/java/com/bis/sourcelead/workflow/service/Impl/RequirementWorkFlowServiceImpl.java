@@ -679,7 +679,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
-			workFlowStage.setConfigureType(Constants.INACTIVE);
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
 				tasks.setRequirementWorkFlowStagesId(workFlowStage);
@@ -1252,7 +1251,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_QUESTIONNARIE_TEMPLATE,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("viewQuestionnaire?templateUuid="+templateUuid).toString();	 
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
+					                 .append(stageId).append("&submissionId=").append(submissionId).toString();	 
 		 if(candidate.getFirstName()!=null){
 			 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 			 noificationEmailScenario.setBody(notificationbody);
@@ -1302,8 +1302,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementWorkFlowStages stage = new RequirementWorkFlowStages();
 		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
 		try {
-			
-			if(qemplateDTO.getUuid().equalsIgnoreCase("null")) {
+			if(qemplateDTO != null) {
+			if(qemplateDTO.getUuid() == null || qemplateDTO.getUuid().equalsIgnoreCase("undefined") || qemplateDTO.getUuid().equalsIgnoreCase("null")) {
 				qemplateDTO.setUuid(null);
 			}
 			if (qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
@@ -1320,12 +1320,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 					}
 				}
-
-				if (qemplateDTO.getTotalPoints() != null) {
-					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
-				}
+				if (qemplateDTO.getSubmittedPoints() != null) {
+					qtemplate.setSubmittedPoints(qemplateDTO.getSubmittedPoints());
+				}	
 				if (qemplateDTO.getSubmissionsCount() != null) {
 					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+				}
+				if (qemplateDTO.getTotalPoints() != null) {
+					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
 				}
 				qtemplate.setUpdatedBy(user);
 				qtemplate.setUpdatedDate(new Date());
@@ -1376,13 +1378,17 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					}
 					if (requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
 						qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+						qtemplate.setTimeMinutesRemained(requirementQuestionnaireTemplate.getTimeLimitMinutes());
 					}
 					if (requirementQuestionnaireTemplate.getTimeLimitSeconds() != null) {
 						qtemplate.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+						qtemplate.setTimeSecondsRemained(requirementQuestionnaireTemplate.getTimeLimitSeconds());
 					}
 					qtemplate.setRequirementQuestionnaireTemplateUuid(requirementQuestionnaireTemplate.getUuid());
 				}
-
+				if (qemplateDTO.getSubmittedPoints() != null) {
+					qtemplate.setSubmittedPoints(qemplateDTO.getSubmittedPoints());
+				}		
 				if (qemplateDTO.getTotalPoints() != null) {
 					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
 				}
@@ -1391,6 +1397,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				}
 			}
 			requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
+			}
 			return qtemplate;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1594,15 +1601,21 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = null;
 		RequirementQuestionnaireTemplateDTO qDto = new RequirementQuestionnaireTemplateDTO();
 		RequirementQuestionnaireFeedbackTemplateDTO feedbackTemplateDto = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(templateUuid, stageId, submissionId);
-		if(feedbackTemplateDto == null || StringUtils.isEmpty(feedbackTemplateDto.getJsonString()) || StringUtils.isEmpty(feedbackTemplateDto.getJsonStringValues())){
+		if(feedbackTemplateDto == null || StringUtils.isEmpty(feedbackTemplateDto.getJsonString())){
 			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
 			if(requirementQuestionnaireTemplate != null) {
 				qDto.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+				qDto.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
+				qDto.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
 			}
 		}else {
 			qDto.setJsonString(feedbackTemplateDto.getJsonString());
 			qDto.setJsonStringValues(feedbackTemplateDto.getJsonStringValues());
 			qDto.setUuid(feedbackTemplateDto.getUuid());
+			qDto.setTimeLimitMinutes(feedbackTemplateDto.getTimeLimitMinutes());
+			qDto.setTimeLimitSeconds(feedbackTemplateDto.getTimeLimitSeconds());
+			qDto.setTimeMinutesRemained(feedbackTemplateDto.getTimeMinutesRemained());
+			qDto.setTimeSecondsRemained(feedbackTemplateDto.getTimeSecondsRemained());
 		}
 		return qDto;
 	}
@@ -1622,6 +1635,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 			return status;
 		}
+
+
+	@Override
+	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+			Integer minutes, Integer seconds) {
+		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
+	}
 	
 	 }
 

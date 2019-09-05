@@ -32,6 +32,12 @@ public class RequirementQuestionnaireTemplateDTO extends SearchDTO{
 	private String updatedDate;
 
 	private String updatedBy;
+	
+	private String savedQuestionnaireTemplateUuid;
+	
+	private Integer timeMinutesRemained;
+	
+	private Integer timeSecondsRemained;
 
 	public Long getId() {
 		return id;
@@ -146,6 +152,29 @@ public class RequirementQuestionnaireTemplateDTO extends SearchDTO{
 		this.updatedBy = updatedBy;
 	}
 
-	
+	public String getSavedQuestionnaireTemplateUuid() {
+		return savedQuestionnaireTemplateUuid;
+	}
+
+	public void setSavedQuestionnaireTemplateUuid(String savedQuestionnaireTemplateUuid) {
+		this.savedQuestionnaireTemplateUuid = savedQuestionnaireTemplateUuid;
+	}
+
+	public Integer getTimeMinutesRemained() {
+		return timeMinutesRemained;
+	}
+
+	public void setTimeMinutesRemained(Integer timeMinutesRemained) {
+		this.timeMinutesRemained = timeMinutesRemained;
+	}
+
+	public Integer getTimeSecondsRemained() {
+		return timeSecondsRemained;
+	}
+
+	public void setTimeSecondsRemained(Integer timeSecondsRemained) {
+		this.timeSecondsRemained = timeSecondsRemained;
+	}
+
 
 }

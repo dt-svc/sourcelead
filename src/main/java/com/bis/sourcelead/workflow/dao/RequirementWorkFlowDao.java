@@ -135,4 +135,7 @@ public interface RequirementWorkFlowDao {
 	
 	String deleteRequirementWorkFlowtasks(Long id);
 
+	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
+			Integer seconds);
+
 }

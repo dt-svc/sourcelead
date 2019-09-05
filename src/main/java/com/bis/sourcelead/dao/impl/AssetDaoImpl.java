@@ -585,6 +585,7 @@ public class AssetDaoImpl implements AssetDao{
 		StringBuilder query1 = new StringBuilder("");
 		if(assetDTO.getSearchValue() !=null && !"".equalsIgnoreCase(assetDTO.getSearchValue())) {
 			 query1.append("and ( assetAssign.userRole.user.firstName like '%" + assetDTO.getSearchValue() + "%' ")
+			 	   .append("OR assetAssign.userRole.user.id IN (select employee.user.id from Employees employee where employee.orgLocations.id ="+orgLocationId+" and employee.employeeId like '%"+assetDTO.getSearchValue()+"%' ) ")
 				   .append("OR assetAssign.userRole.user.lastName like '%" + assetDTO.getSearchValue() + "%' ")
 				   .append("OR concat( assetAssign.userRole.user.firstName, assetAssign.userRole.user.lastName) like '%" + assetDTO.getSearchValue().replaceAll("[\\s]+", "").trim() + "%' ")
 				   .append("OR assetAssign.asset.slno like '%" + assetDTO.getSearchValue() + "%' ")
