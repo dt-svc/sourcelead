@@ -59,6 +59,7 @@ window.onload = function () {
  };
 </script>
 <div id ="popUp"></div>
+<div id = "timeOutPopUp"></div>
 <script>
 function questionnaireFillingCheck(minutes, seconds){
 	var result = "";
@@ -68,7 +69,7 @@ function questionnaireFillingCheck(minutes, seconds){
 	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Yes' onclick='saveQuestionnareWithTimeLimit("+minutes+", "+seconds+");' style='background-color:#1ab394'/><input class='u_can_color' type='button' onclick='cancelQuestionnaireFillingCheck();' value='No'></b>";
 	result = result +"</div>";
-	$("#popUp").append(result);
+	$("#popUp").empty().append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 	
@@ -90,6 +91,7 @@ function saveQuestionnareWithTimeLimit(minutes, seconds){
         url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
         success: function(data) {
         	savedQuestionnaireUuid.set("savedQuestionnaireUuid", data.uuid);
+        	$("#questionnaireTemplateFormDiv").show();
         	updateFeedbackTimerPerSecond(templateUuid ,workflowStageId, requirementSubmissionId, data.timeLimitMinutes, data.timeLimitSeconds)
         }
 	});
@@ -104,7 +106,7 @@ function questionnaireTemplateForm(){
 		generateQuestionnaireForm1(sourceleadUrl, templateUuid)
 		var result = "";
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9" id = "timerDiv"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		result = result + "";
 		
 		
@@ -133,10 +135,10 @@ function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,mi
         url:sourceleadUrl+"/updateFeedbackQuestionnaireTimer?questTemplUuid="+questTemplUuid+"&stageId="+stageId+"&submissionId="+submissionId+"&minutes="+minutes+"&seconds="+seconds, 
         success: function(response) {
         	if(response == "Success"){
-        		console.log("Successfully updated time in table..............>");
+        		//console.log("Successfully updated time in table..............>");
         	}
         	if(response == "Failed"){
-        		console.log("Failed to updated in table......................>");
+        		//console.log("Failed to updated in table......................>");
         	}
         }
       });
@@ -158,8 +160,9 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		var distance = end - now;
 		if (distance < 0) {
 			clearInterval(timer);
-			$('#countdownTimerLbl').text(' EXPIRED!');
+			$('#countdownTimerLbl').text('Form Auto Submitted Successfully!');
 			$("#submitButton").addClass("disabled");
+			$('#countdownTimerLbl').toggleClass("textSuccess textBold");
 			saveAutoSubmitQuestionnaireForm();
 			return;
 		}
@@ -167,11 +170,8 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		var hours = Math.floor((distance % _day) / _hour);
 		var minutes = Math.floor((distance % _hour) / _minute);
 		var seconds = Math.floor((distance % _minute) / _second);
-		if (minutes == 2 && seconds == 0) //  Two minutes alert
-			console.error("Time Expires in " + minutes);
-		else if (minutes == 1 && seconds == 0){ // 1 minutes alert
-			console.error("Time Expires in " + minutes);
-			$('#countdownTimerLbl').toggleClass("textSuccess colorRed");
+		if (minutes == 2 && seconds == 0){
+			$('#countdownTimerLbl').toggleClass("textSuccess colorRed");//  Two minutes alert
 		}
 		     // time display label.
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -424,8 +424,8 @@ function calculateTotalPoints(pointsArray){
    </header>
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
    <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
-   <p><h3 class="col-md-3">
-   Thank You !
+   <p><h3 class="col-md-5">
+   You can submit the details later. Thank You!
    </h3></p>
    </div>
    
@@ -461,11 +461,15 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
         url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&stageId="+workflowStageId+"&submissionId="+requirementSubmissionId, 
         success: function(result) {
         	if(result.timeLimitMinutes != null && result.timeLimitSeconds != null){
+        		$("#timerDiv").show();
         		if(result.timeMinutesRemained == null && result.timeSecondsRemained == null){
+        			$("#questionnaireTemplateFormDiv").hide();
         			questionnaireFillingCheck(result.timeLimitMinutes, result.timeLimitSeconds);
             	}else{
             		updateFeedbackTimerPerSecond(templateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
         		}
+        		}else{
+        			$("#timerDiv").hide();
         		}
         	
         	var data = null;
@@ -967,7 +971,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, wo
 	 
 		var result = "";
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9" id = "timerDiv"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
@@ -996,7 +1000,10 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
         url: sourceleadUrl+"/getQuestionnaireTemplateFeedbackList?templateUuid="+resultUuid, 
         success: function(result) {
         	if(result.timeMinutesRemained != null && result.timeSecondsRemained != null){
+        		$("#timerDiv").show();
         		updateFeedbackTimerPerSecond(qTemplateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
+        	}else{
+        		$("#timerDiv").hide();
         	}
         	var data = null;
         	if(result.jsonString != null){
@@ -1752,7 +1759,6 @@ function saveAutoSubmitQuestionnaireForm(){
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
 			        	} else if (result != null) {
-			        		submissionsCount++;
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else {
 			        	    showError("Operation failed, please try again");
