@@ -1329,6 +1329,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				if (qemplateDTO.getTotalPoints() != null) {
 					qtemplate.setTotalPoints(qemplateDTO.getTotalPoints());
 				}
+				if(qemplateDTO.getSubmissionType() != null && StringUtils.isNotBlank(qemplateDTO.getSubmissionType())) {
+					if(StringUtils.equalsIgnoreCase(qemplateDTO.getSubmissionType(), Constants.QUESTIONNAIRE_AUTO_SUBMISSION)) {
+						qtemplate.setSubmissionType(qemplateDTO.getSubmissionType());
+					}else if(StringUtils.equalsIgnoreCase(qemplateDTO.getSubmissionType(), Constants.QUESTIONNAIRE_MANUAL_SUBMISSION)) {
+						qtemplate.setSubmissionType(qemplateDTO.getSubmissionType());
+					}
+				}
 				qtemplate.setUpdatedBy(user);
 				qtemplate.setUpdatedDate(new Date());
 			} else {
@@ -1394,6 +1401,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				}
 				if (qemplateDTO.getSubmissionsCount() != null) {
 					qtemplate.setSubmissionsCount(qemplateDTO.getSubmissionsCount());
+				}
+				if(qemplateDTO.getSubmissionType() != null && StringUtils.isNotBlank(qemplateDTO.getSubmissionType())) {
+					if(StringUtils.equalsIgnoreCase(qemplateDTO.getSubmissionType(), Constants.QUESTIONNAIRE_AUTO_SUBMISSION)) {
+						qtemplate.setSubmissionType(qemplateDTO.getSubmissionType());
+					}else if(StringUtils.equalsIgnoreCase(qemplateDTO.getSubmissionType(), Constants.QUESTIONNAIRE_MANUAL_SUBMISSION)) {
+						qtemplate.setSubmissionType(qemplateDTO.getSubmissionType());
+					}
 				}
 			}
 			requirementWorkFlowDao.saveQuestionnaireFeedbackTemplate(qtemplate);
