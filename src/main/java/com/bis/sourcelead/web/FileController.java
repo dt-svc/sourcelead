@@ -359,11 +359,20 @@ public class FileController {
 		String ac = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
 		File file = new File(ac, documentPath);
 		try (FileInputStream fis = new FileInputStream(file);) {
-
+			String fileExt = file.getName().substring(file.getName().lastIndexOf("."));
 			byte[] pdfBytes = new byte[fis.available()];
 			fis.read(pdfBytes);
 			if (!"application/pdf".equalsIgnoreCase(contentType)) {
-				pdfBytes = pdfConversionUtil.convertDocToPdf(pdfBytes);
+				if(".doc".equalsIgnoreCase(fileExt)) {
+					pdfBytes = pdfConversionUtil.convertDocFileToPdf(file);	
+				}else if(".docx".equalsIgnoreCase(fileExt)) {
+					pdfBytes = pdfConversionUtil.convertDocxFileToPdf(file);
+				}else {
+					// code for .rtf
+				}
+				 /*below line commented for open office code if something goes wrong you
+				 enabel below line for open office*/ 
+				//pdfBytes = pdfConversionUtil.convertDocToPdf(pdfBytes);
 			}
 			response.setHeader("Content-disposition", "inline; filename=document-" + (new Date().getTime()) + ".pdf");
 			response.setContentType("application/pdf");

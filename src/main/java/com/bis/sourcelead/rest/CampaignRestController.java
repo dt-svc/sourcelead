@@ -266,6 +266,7 @@ public class CampaignRestController {
 	@RequestMapping(value = "/getCampaignStats")
 	public ResponseList<CampaignStatsDTO> getCampaignStats(CampaignStatsDTO campaignStatsDTO, @RequestParam(value = "orgLocationId", required = false) Long orgLocationId, HttpServletRequest request) throws Exception
 	{
+		System.out.println("Get CampaignStatus");
 		ResponseList<CampaignStatsDTO> campStats = campaignService.getCampaignStatsListByOrgLocationId(orgLocationId, campaignStatsDTO);
 		return campStats;
 		

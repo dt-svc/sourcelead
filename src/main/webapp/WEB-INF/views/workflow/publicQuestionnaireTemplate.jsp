@@ -50,23 +50,50 @@ width: auto !important; padding-right: 15px;
 
 <script type="text/javascript">
 var labelAndAttemptsMap = new Map();
+var savedQuestionnaireUuid = new Map();
+var templateUuid = '${templateUuid}';
+var workflowStageId = '${workflowStageId}';
+var requirementSubmissionId = '${requirementSubmissionId}';
 window.onload = function () {
-/* 	var templateUuid = '${templateUuid}';
-	var workflowStageId = '${workflowStageId}';
-	var requirementSubmissionId = '${requirementSubmissionId}';
-   if(workflowStageId == "" && requirementSubmissionId == ""){
-	   alert("feedback template "+templateUuid);
-		generateQuestionnaireFeedbackTemplateForm(templateUuid);
-	}else{
-		alert("questionnaire template");
-	   questionnaireTemplateForm();
-	} */
-	// commented to be removed after clock is set
-	//getTimeLimit();
 	questionnaireTemplateForm();
  };
 </script>
+<div id ="popUp"></div>
+<script>
+function questionnaireFillingCheck(minutes, seconds){
+	var result = "";
+	result = result +"<div class='project_inn_mask'></div>";
+	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"<p><strong>Do You Want To Initiate/Continue The Timer And Start Filling The Questionnaire ?</strong></p>";
+	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Yes' onclick='saveQuestionnareWithTimeLimit("+minutes+", "+seconds+");' style='background-color:#1ab394'/><input class='u_can_color' type='button' onclick='cancelQuestionnaireFillingCheck();' value='No'></b>";
+	result = result +"</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+	
+}
 
+function cancelQuestionnaireFillingCheck(){
+	$("#remove_user_pop").slideUp(200);
+	$(".project_inn_mask").hide();
+
+}
+
+function saveQuestionnareWithTimeLimit(minutes, seconds){
+	$("#remove_user_pop").slideUp(200);
+	$(".project_inn_mask").hide();
+	$.ajax({
+    	type: "GET",
+        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
+        success: function(data) {
+        	savedQuestionnaireUuid.set("savedQuestionnaireUuid", data.uuid);
+        	updateFeedbackTimerPerSecond(templateUuid ,workflowStageId, requirementSubmissionId, data.timeLimitMinutes, data.timeLimitSeconds)
+        }
+	});
+
+}
+</script>
 
 <script>
 function questionnaireTemplateForm(){
@@ -77,9 +104,7 @@ function questionnaireTemplateForm(){
 		generateQuestionnaireForm1(sourceleadUrl, templateUuid)
 		var result = "";
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
-		// commented to be removed after clock is set
-		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		result = result + "";
 		
 		
@@ -101,34 +126,78 @@ function questionnaireTemplateForm(){
 		$("#questionnaireTemplateFormDiv").append(result);
 	
 }
-function getTimeLimit(){
-	var templateUuid = '${templateUuid}';
+
+function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,minutes,seconds){
+	//questTemplUuid ='wgtQ2NqD';
+	
+	//stageId='21';
+	//submissionId='13295';
+   // minutes='10';
+	//seconds='10';
+	
 	$.ajax({
-    	type: "GET",
-        url:sourceleadUrl+"/getQuestionnaireTimeLimit?templateUuid="+templateUuid, 
-        success: function(data) {
-        	var n = data.indexOf(':');
-        	var Minutes = data.slice(0, n);
-        	var Seconds = data.slice(n+1, data.length);
-        	if(Minutes != null && Minutes != ""){
-        		$("#minutesId").html("<strong>"+Minutes+"</strong> Minute(s)");
+    	type: "POST",
+        url:sourceleadUrl+"/updateFeedbackQuestionnaireTimer?questTemplUuid="+questTemplUuid+"&stageId="+stageId+"&submissionId="+submissionId+"&minutes="+minutes+"&seconds="+seconds, 
+        success: function(response) {
+        	if(response == "Success"){
+        		console.log("Successfully updated time in table..............>");
         	}
-        	if(Seconds != null && Seconds != ""){
-        		$("#secondsId").html("<strong>"+Seconds+"</strong> Second(s)");
-        	}if(Minutes == 0 && Seconds == 0){
-        		$("#timeId").html("No Time Limit.");
+        	if(response == "Failed"){
+        		console.log("Failed to updated in table......................>");
         	}
-        	}
-        });
+        }
+      });
 }
 </script>
-
 <script>
-var savedQuestionnaireUuid="";
+function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, seconds) {
+	var end = new Date();
+	end.setMinutes(end.getMinutes() + minutes); 
+	end.setSeconds(end.getSeconds() + seconds);
+	var _second = 1000;
+	var _minute = _second * 60;
+	var _hour = _minute * 60;
+	var _day = _hour * 24;
+	var timer;
+	 var timerDisplayText= "";
+	function showRemaining() {
+		var now = new Date();
+		var distance = end - now;
+
+		if (distance < 0) {
+			$('#countdownTimerLbl').text(' EXPIRED!');
+			// here need to call submission function for the feed back table.
+			return;
+		}
+		var days = Math.floor(distance / _day);
+		var hours = Math.floor((distance % _day) / _hour);
+		var minutes = Math.floor((distance % _hour) / _minute);
+		var seconds = Math.floor((distance % _minute) / _second);
+		if (minutes == 2 && seconds == 0) //  Two minutes alert
+			console.error("Time Expires in " + minutes);
+		else if (minutes == 1 && seconds == 0){ // 1 minutes alert
+			console.error("Time Expires in " + minutes);
+			$('#countdownTimerLbl').toggleClass("textSuccess colorRed");
+		}
+		     // time display label.
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+		timerDisplayText=  minutes + ' mins : '+seconds + ' sec';
+		$('#countdownTimerLbl').text(timerDisplayText);
+		// each second we are updating timer in table
+		
+		// uncomment below function for updating time in back end.
+		                                 //questUUid, stageId, submissionId, minutes,seconds
+		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds); 
+	}
+	timer = setInterval(showRemaining, 5000);
+}
+
+</script>
+<script>
 var submissionsCount = 1;
 function saveQuestionnaireTemplate(){
-	var workflowStageId = '${workflowStageId}';
-	var requirementSubmissionId = '${requirementSubmissionId}';
 	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
 	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
 		var qTemplateUuid = '${templateUuid}'; 
@@ -150,6 +219,7 @@ function saveQuestionnaireTemplate(){
 	        var points = 0;
 	        var attempts = 0;
 	        var pointsArray = new Array();
+	        var totalPointsArray = new Array();
 	        var totalPoints = 0;
 	        var submittedPoints = 0;
 	        var myArray = new Array();
@@ -234,7 +304,7 @@ function saveQuestionnaireTemplate(){
 		     		 name = $("input[name = 'uploadedFileInfo["+fileCount+"].fileName']").val();
 		     		 fileCount = fileCount+1;
 		     	  }
-		     	  
+		     	 totalPointsArray.push(points);
 		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
 		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
 		     	 	if(inputValue != null && inputValue != ""){
@@ -268,6 +338,7 @@ function saveQuestionnaireTemplate(){
 		     });
 	        
 	        submittedPoints = calculateTotalPoints(pointsArray);
+	        totalPoints = calculateTotalPoints(totalPointsArray);
 	      /*  var templateId = document.getElementById("templateId").value;
 	        if(templateId == 'undefined' || templateId == null || templateId == ''){
 	        	templateId = '';
@@ -286,14 +357,14 @@ function saveQuestionnaireTemplate(){
 			        processData: false,
 			        contentType:false,
 	      	    	dataType : 'json',
-	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
+	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
 	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
 	      	        success: function(result) {
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
 			        	} else if (result != null) {
 			        		submissionsCount++;
-			        		generateQuestionnaireFeedbackTemplateForm(result);
+			        		generateQuestionnaireFeedbackTemplateForm(result, qTemplateUuid, workflowStageId, requirementSubmissionId);
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else {
 			        	    showError("Operation failed, please try again");
@@ -366,24 +437,20 @@ function calculateTotalPoints(pointsArray){
    </header>
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
    <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
-   <div id="viewInterviewTemplateList" class="container paddingTop55"></div>
-   <div id="viewInterviewTemplateNo" class="container paddingTop55"></div>
    
    
-   <!-- <footer class="clearfix stickyfooterDiv">
+   <footer class="clearfix stickyfooterDiv">
    <div class="container">
     <div class="pull-left"> @ Copyright : Source Lead, All right reserved </div>
     <div class="pull-right"> Powered by: businessintelli.com </div>
     </div>
-  </footer> -->
+  </footer>
 </div>
 
 
 
 <script>
 function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
-	var workflowStageId = '${workflowStageId}';
-	var requirementSubmissionId = '${requirementSubmissionId}';
 	
     //empty out the preview area
     $("#questionnairesjfb-fields").empty();
@@ -402,6 +469,14 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     	type: "GET",
         url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&stageId="+workflowStageId+"&submissionId="+requirementSubmissionId, 
         success: function(result) {
+        	if(result.timeLimitMinutes != null && result.timeLimitSeconds != null){
+        		if(result.timeMinutesRemained == null && result.timeSecondsRemained == null){
+        			questionnaireFillingCheck(result.timeLimitMinutes, result.timeLimitSeconds);
+            	}else{
+            		updateFeedbackTimerPerSecond(templateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
+        		}
+        		}
+        	
         	var data = null;
         	if(result.jsonString != null){
         		data = eval(result.jsonString);
@@ -422,7 +497,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
         		 });
         	}
         	
-        	savedQuestionnaireUuid = result.uuid;
+        	if(result.uuid != null){
+        	savedQuestionnaireUuid.set("savedQuestionnaireUuid", result.uuid);
+        	}
         	var attachmentCount = 0;
         	var fileCount = 0;
         	 if (data) {
@@ -882,7 +959,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 }
 </script>
 <script>
-function generateQuestionnaireFeedbackTemplateForm(resultUuid){
+function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, workflowStageId, requirementSubmissionId){
 	$("#questionnaireTemplateFormDiv").show();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -899,9 +976,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid){
 	 
 		var result = "";
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
-		// commented to be removed after clock is set
-		//&nbsp&nbsp&nbsp&nbsp <small id = "timeId">Time Limit - <time id = "minutesId"></time> : <time id = "secondsId"></time></small>
-		result = result + '<h3 class="mt ml">Questionnaire Template </h3>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
@@ -918,12 +993,10 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid){
 		 
 		$("#questionnaireTemplateFormDiv").empty();
 		$("#questionnaireTemplateFormDiv").append(result);
-		 generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript);
-		// commented to be removed after clock is set
-		// getTimeLimit();
+		 generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageId, requirementSubmissionId);
 }
 
-function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript){
+function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageId, requirementSubmissionId){
 
     //empty out the preview area
     $("#questionnairesjfb-fields").empty();
@@ -931,6 +1004,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript){
     	type: "GET",
         url: sourceleadUrl+"/getQuestionnaireTemplateFeedbackList?templateUuid="+resultUuid, 
         success: function(result) {
+        	if(result.timeMinutesRemained != null && result.timeSecondsRemained != null){
+        		updateFeedbackTimerPerSecond(qTemplateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
+        	}
         	var data = null;
         	if(result.jsonString != null){
         		data = eval(result.jsonString);
@@ -951,8 +1027,8 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript){
         		 });
         	}
         	
-        	if(savedQuestionnaireUuid == null){
-        		savedQuestionnaireUuid = resultUuid;
+        	if(savedQuestionnaireUuid.get("savedQuestionnaireUuid") == null){
+        		savedQuestionnaireUuid.set("savedQuestionnaireUuid", resultUuid);
         	}
         	var attachmentCount = 0;
         	var fileCount = 0;

@@ -961,22 +961,6 @@ public class RequirementWorkflowController {
 		 return templateDTO;
 	   }
 
-	 @RequestMapping(value = "/getQuestionnaireTimeLimit" , method = RequestMethod.GET)
-	 @ResponseBody
-	   public String getQuestionnaireTimeLimit(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
-		 StringBuilder timeLimit = new StringBuilder("");
-		 Integer time = 0;
-		 RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
-		 if(questionnaireTemplate != null) {
-			 if(questionnaireTemplate.getTimeLimitMinutes() == null) {
-				 questionnaireTemplate.setTimeLimitMinutes(time);
-			 }if(questionnaireTemplate.getTimeLimitSeconds() == null) {
-				 questionnaireTemplate.setTimeLimitSeconds(time);
-			 }
-			 timeLimit.append(questionnaireTemplate.getTimeLimitMinutes() +":"+questionnaireTemplate.getTimeLimitSeconds());
-		 }
-		 return timeLimit.toString();
-	   }
 	 
 	 // This Public URL Method Saves Default Workflow And Default Workflow Stages.
 	 // After Saving Workflow, All Requirements Are Updated By Default Workflow Id.
@@ -1024,5 +1008,39 @@ public class RequirementWorkflowController {
 		return status;
 	}
 	
+	// below method is used to update remaining minutes and seconds in feedback table when time limit is configured for questionnaire.
+	@RequestMapping(value = { "/updateFeedbackQuestionnaireTimer" }, method = RequestMethod.POST)
+	public @ResponseBody String updateFeedbackQuestionnaireTimer(@RequestParam(value = "questTemplUuid", required = false) String questTemplUuid, 
+			@RequestParam(value = "stageId", required = false) Long stageId, 
+			@RequestParam(value = "submissionId", required = false) Long submissionId, 
+			@RequestParam(value = "minutes", required = false) Integer minutes, 
+			@RequestParam(value = "seconds", required = false) Integer seconds, 
+			HttpServletRequest request) throws Exception {
 
+		   String status = requirementWorkFlowService.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId,
+				                                                                   minutes, seconds);
+		return status;
+	}
+	
+	@RequestMapping(value = "/saveQuestionnaireTemplateForSubmission", method = RequestMethod.GET)
+	@ResponseBody	
+	public RequirementQuestionnaireFeedbackTemplateDTO saveQuestionnaireTemplateForSubmission(RequirementQuestionnaireFeedbackTemplateDTO templateDTO, HttpServletRequest request)throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		RequirementQuestionnaireFeedbackTemplate qemplate = null;
+		RequirementQuestionnaireFeedbackTemplateDTO dto = new RequirementQuestionnaireFeedbackTemplateDTO();
+		try {
+			qemplate = requirementWorkFlowService.saveQuestionnaireFeedbackTemplate(templateDTO, orgLocations, user);
+			dto.setUuid(qemplate.getUuid());
+			dto.setTimeLimitMinutes(qemplate.getTimeLimitMinutes());
+			dto.setTimeLimitSeconds(qemplate.getTimeLimitSeconds());
+			return dto;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	
+	}
+	
+	
 }
