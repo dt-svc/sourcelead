@@ -75,6 +75,9 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 	@Column(name = "TOTAL_POINTS")
 	private Integer totalPoints;
 	
+	@Column(name = "SUBMISSION_TYPE")
+	private String submissionType;
+	
 	@Column(name = "UUID")
 	private String uuid;
 	
@@ -203,6 +206,14 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 
 	public void setTotalPoints(Integer totalPoints) {
 		this.totalPoints = totalPoints;
+	}
+
+	public String getSubmissionType() {
+		return submissionType;
+	}
+
+	public void setSubmissionType(String submissionType) {
+		this.submissionType = submissionType;
 	}
 
 	public String getUuid() {
