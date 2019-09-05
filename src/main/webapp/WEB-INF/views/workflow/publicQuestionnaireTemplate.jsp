@@ -33,11 +33,6 @@
 <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
-<script type="text/javascript">
-var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-
-var atsUrl = '${SourceLeadWeb_atsUrl}';
-</script>
 <style type="text/css">
 
 .choices label {
@@ -49,11 +44,16 @@ width: auto !important; padding-right: 15px;
 </style>
 
 <script type="text/javascript">
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 var labelAndAttemptsMap = new Map();
 var savedQuestionnaireUuid = new Map();
+var submissionType = new Map();
 var templateUuid = '${templateUuid}';
 var workflowStageId = '${workflowStageId}';
 var requirementSubmissionId = '${requirementSubmissionId}';
+var autoSubmission = '${auto}';
+var manualSubmission = '${manual}';
+var submissionsCount = 1;
 window.onload = function () {
 	questionnaireTemplateForm();
  };
@@ -64,7 +64,7 @@ function questionnaireFillingCheck(minutes, seconds){
 	var result = "";
 	result = result +"<div class='project_inn_mask'></div>";
 	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"<p><strong>Do You Want To Initiate/Continue The Timer And Start Filling The Questionnaire ?</strong></p>";
+	result = result +"<p><strong>Do You Want To Initiate / Continue The Timer And Start Filling The Questionnaire ?</strong></p>";
 	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Yes' onclick='saveQuestionnareWithTimeLimit("+minutes+", "+seconds+");' style='background-color:#1ab394'/><input class='u_can_color' type='button' onclick='cancelQuestionnaireFillingCheck();' value='No'></b>";
 	result = result +"</div>";
@@ -77,15 +77,17 @@ function questionnaireFillingCheck(minutes, seconds){
 function cancelQuestionnaireFillingCheck(){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
-
+	$("#questionnaireTemplateFormDiv").hide();
+	$("#cancelFeedbackDiv").show();
 }
 
 function saveQuestionnareWithTimeLimit(minutes, seconds){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
+	submissionType.set("submissionType", autoSubmission);
 	$.ajax({
     	type: "GET",
-        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
+        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
         success: function(data) {
         	savedQuestionnaireUuid.set("savedQuestionnaireUuid", data.uuid);
         	updateFeedbackTimerPerSecond(templateUuid ,workflowStageId, requirementSubmissionId, data.timeLimitMinutes, data.timeLimitSeconds)
@@ -97,9 +99,7 @@ function saveQuestionnareWithTimeLimit(minutes, seconds){
 
 <script>
 function questionnaireTemplateForm(){
-	var templateUuid = '${templateUuid}';
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	$("#questionnaireTemplateFormDiv").show();
 		generateQuestionnaireForm1(sourceleadUrl, templateUuid)
 		var result = "";
@@ -115,7 +115,7 @@ function questionnaireTemplateForm(){
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
+		result = result + '<button type="button" id = "submitButton" class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		//result = result + '<button type="button"  class="btn btn-sm btn-warning ml">Cancel</button>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -127,14 +127,7 @@ function questionnaireTemplateForm(){
 	
 }
 
-function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,minutes,seconds){
-	//questTemplUuid ='wgtQ2NqD';
-	
-	//stageId='21';
-	//submissionId='13295';
-   // minutes='10';
-	//seconds='10';
-	
+function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,minutes,seconds, distance){
 	$.ajax({
     	type: "POST",
         url:sourceleadUrl+"/updateFeedbackQuestionnaireTimer?questTemplUuid="+questTemplUuid+"&stageId="+stageId+"&submissionId="+submissionId+"&minutes="+minutes+"&seconds="+seconds, 
@@ -163,10 +156,11 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 	function showRemaining() {
 		var now = new Date();
 		var distance = end - now;
-
 		if (distance < 0) {
+			clearInterval(timer);
 			$('#countdownTimerLbl').text(' EXPIRED!');
-			// here need to call submission function for the feed back table.
+			$("#submitButton").addClass("disabled");
+			saveAutoSubmitQuestionnaireForm();
 			return;
 		}
 		var days = Math.floor(distance / _day);
@@ -189,14 +183,13 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		
 		// uncomment below function for updating time in back end.
 		                                 //questUUid, stageId, submissionId, minutes,seconds
-		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds); 
+		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds, distance); 
 	}
-	timer = setInterval(showRemaining, 5000);
+	timer = setInterval(showRemaining, 1000);
 }
 
 </script>
 <script>
-var submissionsCount = 1;
 function saveQuestionnaireTemplate(){
 	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
 	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
@@ -204,7 +197,6 @@ function saveQuestionnaireTemplate(){
 	      var form = $('#questionnaireTemplate_form')[0];
 		    var formData = new FormData(form); 
 		    
-	      var sourceleadUrl ='${sourceleadUrl}';
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
 	        //var jsonData = encodeURIComponent(con);
@@ -336,15 +328,10 @@ function saveQuestionnaireTemplate(){
 			          });  
 		    	
 		     });
-	        
+	       
+	        submissionType.set("submissionType", manualSubmission);
 	        submittedPoints = calculateTotalPoints(pointsArray);
 	        totalPoints = calculateTotalPoints(totalPointsArray);
-	      /*  var templateId = document.getElementById("templateId").value;
-	        if(templateId == 'undefined' || templateId == null || templateId == ''){
-	        	templateId = '';
-	        } */
-	        //Save form to database
-	        //Demo doesn't actually save. Download project files for save
 	        var con2 = JSON.stringify(fields);
 	        var jsonStringData = encodeURIComponent(con2);
 	        if(submitTemplate){
@@ -358,7 +345,7 @@ function saveQuestionnaireTemplate(){
 			        contentType:false,
 	      	    	dataType : 'json',
 	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
-	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
+	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
 	      	        success: function(result) {
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
@@ -436,7 +423,11 @@ function calculateTotalPoints(pointsArray){
     </nav>
    </header>
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
+   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
+   <p><h3 class="col-md-3">
+   Thank You !
+   </h3></p>
+   </div>
    
    
    <footer class="clearfix stickyfooterDiv">
@@ -985,7 +976,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, wo
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
+		result = result + '<button type="button" id = "submitButton" class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
@@ -1599,6 +1590,200 @@ function applyFileData(data, formId, name, id,attachmentCount) {
 	}
 	
 }
+</script>
+<script>
+function saveAutoSubmitQuestionnaireForm(){
+	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
+	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
+		var qTemplateUuid = '${templateUuid}'; 
+	      var form = $('#questionnaireTemplate_form')[0];
+		    var formData = new FormData(form); 
+		    
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        //var jsonData = encodeURIComponent(con);
+	        var isRemoved = '';
+	        //Loop through fields and save field data to array
+	        var fields = [];
+	        var submitTemplate = true;
+	        var fieldLabel = '';
+	        var fieldhint = '';
+	        var fieldDropDown = '';
+	        var fileCount = 0;
+	        var points = 0;
+	        var attempts = 0;
+	        var pointsArray = new Array();
+	        var totalPointsArray = new Array();
+	        var totalPoints = 0;
+	        var submittedPoints = 0;
+	        var myArray = new Array();
+	        $('.sjfb-field').each(function() {
+		    	  var $this = $(this); 
+		    	  var divId = $(this).attr('id');  
+		    	  var fieldLabel = $this.find('label:first').text().replace("*","").trim();
+		    	  var inputValue = $this.find('input[type="radio"]:checked').val();
+		    	  var inputtype = null;
+		    	  var flag = 1;
+		    	  
+		    	  points = $('#pointId').html().trim();
+		    	 
+		    	  
+		    	  inputtype = $(this).find('input').attr('field-type');
+  			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
+  				  inputtype = $(this).find('input').attr('field-type');
+  			  }
+  			  
+  			  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+  				  inputtype = $(this).find('input').attr('type');
+  		    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+  		    		  if($(this).find('select').val() != null){
+  		    			  inputtype = 'select';
+  		    		  }else{
+  		    			  inputtype = 'textarea';
+  		    		  }
+  		    	  }
+  			  }
+		    	 
+		    	  
+		    	  
+		    	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		  		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+		  		   if(inputValue != null){
+		  			   var selected = [];
+		             	$this.find('input[type="checkbox"]:checked').each(function() {
+		    		        selected.push($(this).val()); 
+		    		       });
+		             	inputValue = selected.toString()
+		  		   }
+		  		   
+		    	 }
+		    	 
+		    	
+		    	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		    		  inputValue = $this.find('input').val();
+		    	  }
+		    	  
+		  	  
+		   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	 inputValue = $this.find('select').val();
+		   	      }
+		   	      
+		   	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	 inputValue = $this.find('textarea').val();
+		   	      }
+		   	      
+		   	    
+		   	     
+		   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	inputValue = '';
+		   	      }
+		   	      
+		       	  var name = $this.find('input[type="radio"]:checked').attr('name');
+		       	  var id = $this.find('input[type="radio"]:checked').attr('id');
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		  name = $this.find('input').attr('name');
+		     		  id = $this.find('input').attr('id');
+		     	  }
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('select').attr('name');
+		     		 id = $this.find('select').attr('id');
+	   	          }
+		     	  
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('textarea').attr('name');
+	     	      }
+		     	  
+		     	  if(inputtype == 'file'){
+		     		 inputValue = $("input[name = 'uploadedFileInfo["+fileCount+"].fileURL']").val()
+		     		 name = $("input[name = 'uploadedFileInfo["+fileCount+"].fileName']").val();
+		     		 fileCount = fileCount+1;
+		     	  }
+		     	 totalPointsArray.push(points);
+		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
+		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
+		     	 	if(inputValue != null && inputValue != ""){
+			     		/* attempts = labelAndAttemptsMap.get(fieldLabel)-1;
+			     		 if(attempts <= 0){
+			     			attempts = 0;
+			     		 } */
+			     		pointsArray.push(points);
+			     	  }
+		     	  }else{
+		     		 attempts = $('#attemptId').html().trim();
+			     	  if(inputValue != null && inputValue != ""){
+			     		 /* attempts = attempts-1;
+			     		 if(attempts <= 0){
+			     			 attempts = 0;
+			     		 } */
+			     		pointsArray.push(points);
+			     	  }	
+		     	  } 
+		     	 
+		     		fields.push({
+			              label: fieldLabel,
+			              type : inputtype,
+			              id :id,
+			              name :name,
+			              value: inputValue,
+			              attempts : attempts,
+			              points : points
+			          });  
+		    	
+		     });
+	       
+	        submissionType.set("submissionType", autoSubmission);
+	        submittedPoints = calculateTotalPoints(pointsArray);
+	        totalPoints = calculateTotalPoints(totalPointsArray);
+	        var con2 = JSON.stringify(fields);
+	        var jsonStringData = encodeURIComponent(con2);
+	        if(submitTemplate){
+	         $( "#template_save_button" ).addClass('button').val('Processing..');
+	      	  $.ajax({
+	      	    	type: "POST",
+	      	    	data: formData,
+			        contentType : 'application/json; charset=utf-8',
+			        enctype: 'multipart/form-data',
+			        processData: false,
+			        contentType:false,
+	      	    	dataType : 'json',
+	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints
+	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
+	      	        success: function(result) {
+	      	           if (result == null) {
+			        	    location.href = "/errorPage";
+			        	} else if (result != null) {
+			        		submissionsCount++;
+			        		$(".mask, #modalTasktype").fadeOut();
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+	      	        },
+	      	    });   
+	              return true;
+	        }else{
+	        	alertMessage("Provide choice for "+fieldLabel)
+	        }
+	    }
+	    else{
+	    	return false;	
+	       } 
+}
+$('body').on('blur', '#questionnaireTemplate_form', function() {
+	$("#questionnaireTemplate_form").showHelpOnFocus();
+	$("#questionnaireTemplate_form").validateOnBlur(false, validationSettings);
+});
+
+function calculateTotalPoints(pointsArray){
+	var totalP = 0;
+	var current = 0
+	for(var i = 0; i<pointsArray.length ; i++ )
+	{
+		current = parseInt(pointsArray[i]);
+		totalP += current;
+	}
+	return totalP;
+}
+
 </script>
 </body>
 </html>
