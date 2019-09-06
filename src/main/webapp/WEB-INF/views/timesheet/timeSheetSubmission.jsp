@@ -621,7 +621,7 @@
 		    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
 	   		</div>
 	   		 <div id="divadttTd10" style="display:none;">
-		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name="Ref/TicketNo" data-validation="validate_Space validate_Alphanumeric validate_length length1-100"></div>	
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name="Ref/TicketNo" data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100"></div>	
 	   		</div>
 	   		<div id="divadttTd12" style="display:none;">
 	             <div>
