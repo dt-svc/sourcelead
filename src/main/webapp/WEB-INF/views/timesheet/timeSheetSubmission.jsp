@@ -259,7 +259,7 @@
 												      </td>
 										              <td>
 										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
-													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
+													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"' : 'data-validation-optional="true" data-validation="validate_Space validate_Alphanumeric validate_length length1-100"'}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
 													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <c:if test="${!empty entry.ticketNumber}">
@@ -621,7 +621,7 @@
 		    	   <span id="REPLACEROWIDtask1IdBillableTypeId" name="REPLACEROWIDtask1IdBillableTypeId" ></span>	
 	   		</div>
 	   		 <div id="divadttTd10" style="display:none;">
-		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name=" "></div>	
+		    	  <div><input type="text" id="REPLACEROWIDticketNumber1Id" name="REPLACEROWIDticketNumber1Id" onblur="setTicketNumber('ENTRYINDEX','REPLACEROWIDticketNumber1Id');" class="timeTick" field-name="Ref/TicketNo" data-validation="validate_Space validate_Alphanumeric validate_length length1-100"></div>	
 	   		</div>
 	   		<div id="divadttTd12" style="display:none;">
 	             <div>
@@ -1468,8 +1468,12 @@ function addTimeSheetRow() {
 	      	                   var ticketNumberRequired = '${statusEntry.value.ticketNumberRequired}';
                         	  var end = parseInt(entryIndex)+7;
                         	  $("#"+ticketNumberId).removeAttr("data-validation");
+                        	  $("#"+ticketNumberId).removeAttr("data-validation-optional");
                         	  if(ticketNumberRequired != null && ticketNumberRequired != '' && ticketNumberRequired != 'undefined' && ticketNumberRequired == "true"){
-                        		  $("#"+ticketNumberId).attr("data-validation","required");
+                        		  $("#"+ticketNumberId).attr("data-validation","required validate_Space validate_Alphanumeric validate_length length1-100");
+                        	  }else{
+                        		  $("#"+ticketNumberId).attr("data-validation-optional","true");
+                        		  $("#"+ticketNumberId).attr("data-validation","validate_Space validate_Alphanumeric validate_length length1-100");
                         	  }
                         	  var count = 1;
             	          	  for (i = entryIndex; i < end; i++) {
