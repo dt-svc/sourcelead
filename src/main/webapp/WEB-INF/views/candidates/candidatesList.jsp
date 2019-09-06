@@ -2699,8 +2699,8 @@ function cancelShareCandidate(){
 	$(".project_inn_mask").fadeOut(); 
 }
 function closejobpop() {
-	shareCandidates = {};
-	 $('input[class="contactscheckbox"]').removeProp('checked');
+// 	shareCandidates = {};
+// 	 $('input[class="contactscheckbox"]').removeProp('checked');
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
