@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1301,6 +1302,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementSubmission reqSub = new RequirementSubmission();
 		RequirementWorkFlowStages stage = new RequirementWorkFlowStages();
 		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
+		StringBuilder labelId = new StringBuilder("");
+		StringBuilder labelValue = new StringBuilder("");
+		StringBuilder finalLabelJson = new StringBuilder("");
 		try {
 			if(qemplateDTO != null) {
 			if(qemplateDTO.getUuid() == null || qemplateDTO.getUuid().equalsIgnoreCase("undefined") || qemplateDTO.getUuid().equalsIgnoreCase("null")) {
@@ -1308,8 +1312,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}
 			if (qemplateDTO.getUuid() != null && StringUtils.isNotBlank(qemplateDTO.getUuid())) {
 				qtemplate = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackByUuid(qemplateDTO.getUuid());
+				if(StringUtils.isNotBlank(qemplateDTO.getJsonStringData())) {
 				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
-
+				}
 				if (qemplateDTO.getUploadedFileInfo() != null && !qemplateDTO.getUploadedFileInfo().isEmpty()) {
 					qemplateDTO.setStaticPath(qemplateDTO.getStaticPath());
 					for (FileInfo fileInfo : qemplateDTO.getUploadedFileInfo()) {
@@ -1342,8 +1347,17 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				qtemplate = new RequirementQuestionnaireFeedbackTemplate();
 				qtemplate.setOrgLocationId(orgLocations);
 				qtemplate.setRequirementSubmissionId(reqSub);
-
+				
+				if(StringUtils.isNotBlank(qemplateDTO.getJsonStringData())) {
 				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
+				ArrayList<String> jsonArray1 = new ArrayList<String>(); 
+				for(String json1 : qemplateDTO.getJsonStringData().split(",")) {
+					if(json1.contains("id")) {
+						labelId.append(json1);
+					jsonArray1.add(json1);
+				}
+				}
+				}
 				qtemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				qtemplate.setCreatedBy(user);
 				qtemplate.setCreatedDate(new Date());
@@ -1381,7 +1395,24 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 				if (requirementQuestionnaireTemplate != null) {
 					if (requirementQuestionnaireTemplate.getJsonString() != null) {
-						qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
+						labelValue.append(requirementQuestionnaireTemplate.getJsonString());
+						ArrayList<String> jsonArray = new ArrayList<String>(); 
+						for(String json : labelValue.toString().split(",")) {
+							jsonArray.add(json.replace("[{", "").replace("}]", ""));
+						}
+						jsonArray.add(labelId.toString());
+						String edit = null;
+						for(int j = 0; j < jsonArray.size(); j++) {
+							if(j == 0) {
+								edit = "{";
+								jsonArray.set(j, edit + jsonArray.get(j));
+							}else if(j == jsonArray.size() - 1) {
+								edit = "}";
+								jsonArray.set(j, jsonArray.get(j) + edit);
+							}
+						}
+						finalLabelJson.append(jsonArray);
+						qtemplate.setJsonString(finalLabelJson.toString());
 					}
 					if (requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
 						qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
