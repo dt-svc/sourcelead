@@ -183,7 +183,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<th>Currency</th>
 				<th>Payment Mode</th>
 				<th>Paid By</th>
-				<th>Billable</th>
+				<!-- <th>Billable</th> -->
 			</tr>
 			
 		</thead>	
@@ -227,9 +227,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
-								<c:if test="${entry.billable}">
+								<%-- <c:if test="${entry.billable}">
 								<li><strong>Billable :</strong><span>YES</span><div class="clearfix"></div></li>
-								</c:if>
+								</c:if> --%>
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix">
