@@ -215,6 +215,8 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/searchCandidate", method = RequestMethod.POST)
 	public ResponseList<CandidateIndex> searchCandidate(CandidateSearchDTO search, HttpServletRequest request) throws Exception {
+		ResponseList<CandidateIndex> response = new ResponseList<>();
+		try {
 		/*
 		 * This array is used to enable the sorting feature in data tables. And, these
 		 * names should match the ELK Candidate index field names.
@@ -715,9 +717,9 @@ public class CandidateListRestController {
 		List<CandidateIndex> candidatesList = new ArrayList<CandidateIndex>();
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
-		ResponseList<CandidateIndex> response = new ResponseList<>();
+		
 
-		try {
+		
 			//search.setLength(100);
 			SearchResponse searchResponse = null;
 			if (Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {

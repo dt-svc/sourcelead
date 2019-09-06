@@ -899,7 +899,8 @@ function cancelInterviewPopup(){
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
-				        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+				        		if(opt.createdUser != "null" && opt.createdUser != null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+				        			console.log(opt.candidateName+"("+opt.createdUser+")");
 				        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
 				        		}else{
 				        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
