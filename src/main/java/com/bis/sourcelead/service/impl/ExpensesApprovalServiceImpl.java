@@ -345,223 +345,202 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	}
 
 
-	@Override
-	public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
-		String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;
-	    Document document = new Document(PageSize.LETTER.rotate());
-	    DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-
-	    StringBuilder sbUser =  new StringBuilder();
-	    sbUser.append("ExpensesApproval_").append(dateFormat.format(new Date()));
-
-	    StringBuilder fileSB = new StringBuilder();
-	    File file = File.createTempFile(fileSB.append("_ExpensesApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
-	    file.setReadable(true);
-	    try {
-	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
-	        PdfWriter.getInstance(document, new FileOutputStream(file));
-	        document.open();
-
-	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
-	        BaseColor myColor = WebColors.getRGBColor("#000000");
-	        boldFont.setColor(myColor);
-	        StringBuilder userStyle = new StringBuilder();
-	        userStyle.append(orgLoc.getOrgLocationName()).append(" ").append("- Employee Expenses");
-	       
-	        // Create an instance of PdfPTable. After that we transform the header and
-	        PdfPTable table = new PdfPTable(headers.length);
-	        Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
-	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
-	        cell1.setColspan(18);
-	        headerCellStyle(cell1);
-	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5});
-            table.addCell(cell1);
-	        for (int i = 0; i < headers.length; i++) {
-	            String header = headers[i];
-	            PdfPCell cell = new PdfPCell();
-	            cell.setGrayFill(0.9f);
-	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
-	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
-	            cell.setBackgroundColor(myBorderColor);
-	            table.addCell(cell);
-	        }
-	        table.completeRow();
-	        java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers,orgLoc,loginUser,isGlobalUser);
-	        if(expenseList != null && expenseList.size() >0){
-	        	for (String[] expenseArray: expenseList) {
-	        		for (int i = 0; i < expenseArray.length; i++) {
-	        			String datum = expenseArray[i];
-	        			PdfPCell cell = new PdfPCell();
-	        			cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
-	        			table.addCell(cell);
-	        		}
-	        		table.completeRow();
-	        	}
-	        }
-	        document.addTitle("Expenses Approval Table");
-	        table.setSpacingBefore(15f);
-	        document.add(table);
-	        logger.info("Pdf table created !!");
-	    } catch (DocumentException e) {
-	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-	    } catch (FileNotFoundException e) {
-	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
-	    } finally {
-	        document.close();
+	 @Override
+	    public File getExpensesApproverHierarchyListForPdf(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
+	        String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;
+	     Document document = new Document(PageSize.LETTER.rotate());
+	     DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+	     StringBuilder sbUser = new StringBuilder();
+	     sbUser.append("ExpensesApproval_").append(dateFormat.format(new Date()));
+	     StringBuilder fileSB = new StringBuilder();
+	     File file = File.createTempFile(fileSB.append("_ExpensesApproval_").append(dateFormat.format(new Date())).toString(),".pdf");
+	     file.setReadable(true);
+	     try {
+	     // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	     PdfWriter.getInstance(document, new FileOutputStream(file));
+	     document.open();
+	     Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+	     BaseColor myColor = WebColors.getRGBColor("#000000");
+	     boldFont.setColor(myColor);
+	     StringBuilder userStyle = new StringBuilder();
+	     userStyle.append(orgLoc.getOrgLocationName()).append(" ").append("- Employee Expenses");
+	     // Create an instance of PdfPTable. After that we transform the header and
+	     PdfPTable table = new PdfPTable(headers.length);
+	     Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	     PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	     cell1.setColspan(18);
+	     headerCellStyle(cell1);
+	     table.setWidthPercentage(100);
+	table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5,5,5});
+	table.addCell(cell1);
+	     for (int i = 0; i < headers.length; i++) {
+	     String header = headers[i];
+	     PdfPCell cell = new PdfPCell();
+	     cell.setGrayFill(0.9f);
+	     cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	     BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	     cell.setBackgroundColor(myBorderColor);
+	     table.addCell(cell);
+	     }
+	     table.completeRow();
+	     java.util.List<String[]> expenseList = prepareExpenseApprovalListStringArray(expApperoverHierarchy,headers,orgLoc,loginUser,isGlobalUser);
+	     if(expenseList != null && expenseList.size() >0){
+	         for (String[] expenseArray: expenseList) {
+	             for (int i = 0; i < expenseArray.length; i++) {
+	                 String datum = expenseArray[i];
+	                 PdfPCell cell = new PdfPCell();
+	                 cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                 table.addCell(cell);
+	             }
+	             table.completeRow();
+	         }
+	     }
+	     document.addTitle("Expenses Approval Table");
+	     table.setSpacingBefore(15f);
+	     document.add(table);
+	     logger.info("Pdf table created !!");
+	     } catch (DocumentException e) {
+	         logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	     } catch (FileNotFoundException e) {
+	         logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	     } finally {
+	     document.close();
+	     }
+	        return file;
 	    }
-		return file;
+	private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, String[] headers,OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
+	    List<String[]> arrayList = new ArrayList<>();
+	    for(ExpensesApproverHierarchyDTO ex:expApperoverHierarchy){
+	        String expenseArray[] = new String[headers.length];
+	        if(ex.getExpenseId() !=null){
+	            Expenses expenseId =expensesService.getExpenseById(ex.getExpId());
+	            if(null != expenseId.getProjectMembers()){
+	                if(null != expenseId.getExpenseId()){
+	                    expenseArray[0] = expenseId.getExpenseId();
+	                }else{
+	                    expenseArray[0] = "--";
+	                }
+	                //if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
+	                    if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
+	                        if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
+	                            StringBuffer sb = new StringBuffer();
+	                            expenseArray[1] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
+	                        }else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
+	                            expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName();
+	                        }
+	                        else
+	                        {
+	                            expenseArray[1] = "--";
+	                        }
+	                        if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
+	                            expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
+	                        }else{
+	                            expenseArray[2] = "--";
+	                        }
+	                        if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone())){
+	                            expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getMobilePhone();
+
+	                        }else{
+	                            expenseArray[3] = "--";
+	                        }
+	                    }
+	                    if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType())){
+	                        expenseArray[4] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
+	                    }else{
+	                        expenseArray[4] = "--";
+	                    }
+	                if(ex.getProjectMemberId()!= null) {
+	                ProjectMembers projectMember = projectMembersService.getProjectMemberById(ex.getProjectMemberId());
+	                    if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
+	                        String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
+	                            if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
+	                                OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
+	                                if(orgRelation != null){
+	                                    expenseArray[5] = orgRelation.getResponderLocationId().getOrgLocationName();
+	                                }else{
+	                                    expenseArray[5] = "--";
+	                                }
+	                             }
+	                        }else{
+	                            expenseArray[5] = "--";
+	                        }
+	                    }
+	                //}
+
+	                if(null != expenseId.getProjectMembers().getProjects()){
+
+	                    if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
+	                        expenseArray[6] = expenseId.getProjectMembers().getProjects().getProjectName();
+	                    }
+	                }else{
+	                    expenseArray[6] = "--";
+	                }
+	            }
+	            if(null != expenseId.getClientName()){
+	                expenseArray[7] = expenseId.getClientName();
+	            }else{
+	                expenseArray[7] = "--";
+	            }
+	            if(null != expenseId.getPurpose()){
+	                expenseArray[8] = expenseId.getPurpose();
+	            }else{
+	                expenseArray[8] = "--";
+	            }
+	            if(null != expenseId.getStartDate()){
+	                expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
+	                expenseArray[9] = expenseId.getStartDateStr();
+	            }else{
+	                expenseArray[9] = "--";
+	            }
+	            if(null != expenseId.getEndDate()){
+	                expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
+	                expenseArray[10] = expenseId.getEndDateStr();
+	            }else{
+	                expenseArray[10] = "--";
+	            }
+	            if(null != expenseId.getNoOfExpenses()){
+	                expenseArray[11] = expenseId.getNoOfExpenses();
+	            }else{
+	                expenseArray[11] = "--";
+	            }
+	            if(expenseId.getTotalAmount().intValue() > 0){
+	                StringBuilder str = new StringBuilder();
+	                BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
+	                //bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
+	                expenseArray[12] = str.append(bd).toString();
+	            }else{
+	                expenseArray[12] = "--";
+	            }
+	            if(null != expenseId.getStatus()){
+	                ExpensesApproverHierarchy eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId(),isGlobalUser);
+	             Submission_Status submissionStatus = eah.getExpenseStatus();
+	                 if(submissionStatus != null) {
+	                     expenseArray[13] = submissionStatus.getValue().toUpperCase();
+	                 }else {
+	                     expenseArray[13] = "Rejected";
+	                 }
+	            }else{
+	                expenseArray[13] = "--";
+	            }
+	            if(null != ex.getActionPerformedBy()){
+	                expenseArray[14] = ex.getActionPerformedBy();
+	            }else{
+	                expenseArray[14] = "--";
+	            }
+	            if(null != ex.getBillingStatus()){
+	                expenseArray[15] = ex.getBillingStatus();
+	            }else{
+	                expenseArray[15] = "--";
+	            }
+	        }
+	        arrayList.add(expenseArray);
+	    }
+	    return arrayList;
 	}
-private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy, String[] headers,OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
-	
-	List<String[]> arrayList = new ArrayList<>();
-	for(ExpensesApproverHierarchyDTO ex:expApperoverHierarchy){
-		String expenseArray[] = new String[headers.length];
-		if(ex.getExpenseId() !=null){
-			Expenses expenseId =expensesService.getExpenseById(ex.getExpId());
-			if(null != expenseId.getProjectMembers()){
-				
-				if(null != expenseId.getExpenseId()){
-					expenseArray[0] = expenseId.getExpenseId();
-				}else{
-					expenseArray[0] = "--";
-				}
-				
-				//if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
-					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId()){
-						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
-
-							StringBuffer sb = new StringBuffer();
-							expenseArray[1] = sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString();
-						}else if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()){
-							expenseArray[1] = expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName();
-						}
-						else
-						{
-							expenseArray[1] = "--";
-						}
-						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail()){
-
-							expenseArray[2] = expenseId.getProjectMembers().getProjectMemberCandidteId().getEmail();
-						}else{
-							expenseArray[2] = "--";
-						}
-						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getAlternateMobilePhone() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getAlternateMobilePhone())){
-
-							expenseArray[3] = expenseId.getProjectMembers().getProjectMemberCandidteId().getAlternateMobilePhone();
-						}else{
-							expenseArray[3] = "--";
-						}
-						
-					}
-					if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType())){
-
-						expenseArray[4] = expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType();
-					}else{
-						expenseArray[4] = "--";
-					}
-					
-				if(ex.getProjectMemberId()!= null) {
-				ProjectMembers projectMember = projectMembersService.getProjectMemberById(ex.getProjectMemberId());
-					if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
-						String empType = projectMember.getProjectMemberCandidteId().getDesignationType();
-							if(empType.equalsIgnoreCase("C2C") || empType.equalsIgnoreCase("C2C-1099")){
-								OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-								if(orgRelation != null){
-									expenseArray[5] = orgRelation.getResponderLocationId().getOrgLocationName();
-								}else{
-									expenseArray[5] = "--";
-								}
-							 }
-						}else{
-							expenseArray[5] = "--";
-						}
-					}
-				//}
-				if(null != expenseId.getProjectMembers().getProjects()){
-					if(null != expenseId.getProjectMembers().getProjects().getProjectName()){
-						expenseArray[6] = expenseId.getProjectMembers().getProjects().getProjectName();
-					}
-				}else{
-					expenseArray[6] = "--";
-				}
-				
-			}
-			if(null != expenseId.getClientName()){
-
-				expenseArray[7] = expenseId.getClientName();
-			}else{
-				expenseArray[7] = "--";
-			}
-			if(null != expenseId.getPurpose()){
-
-				expenseArray[8] = expenseId.getPurpose();
-			}else{
-				expenseArray[8] = "--";
-			}
-			
-			/*if(null != expenseId.getStartDate()){
-				expenseId.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getStartDate()));
-				expenseArray[9] = expenseId.getStartDateStr();
-			}else{
-				expenseArray[9] = "--";
-			}
-			
-			if(null != expenseId.getEndDate()){
-				expenseId.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLoc.getDateFormat(),expenseId.getEndDate()));
-				expenseArray[10] = expenseId.getEndDateStr();
-			}else{
-				expenseArray[10] = "--";
-			}*/
-			if(null != expenseId.getNoOfExpenses()){
-
-				expenseArray[9] = expenseId.getNoOfExpenses();
-			}else{
-				expenseArray[9] = "--";
-			}
-			if(expenseId.getTotalAmount().intValue() > 0){
-				StringBuilder str = new StringBuilder();
-				BigDecimal bd = new BigDecimal((expenseId.getTotalAmount()));
-				//bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );
-				expenseArray[10] = str.append(bd).toString();
-			}else{
-				expenseArray[10] = "--";
-			}
-			if(null != expenseId.getStatus()){
-				ExpensesApproverHierarchy  eah = getExpensesApproverHierarchyByApproverUserIdAndExpenseId(loginUser.getId(), expenseId.getId(),orgLoc.getId(),isGlobalUser);
-			    Submission_Status submissionStatus = eah.getExpenseStatus();
-				    if(submissionStatus != null) {
-				    	expenseArray[11] = submissionStatus.getValue().toUpperCase();
-				    }else {
-				    	expenseArray[11] = "Rejected";
-				    }
-			}else{
-				expenseArray[11] = "--";
-			}
-			if(null != ex.getActionPerformedBy()){
-				expenseArray[12] = ex.getActionPerformedBy();
-			}else{
-				expenseArray[12] = "--";
-			}
-			if(null != ex.getBillingStatus()){
-				expenseArray[13] = ex.getBillingStatus();
-			}else{
-				expenseArray[13] = "--";
-			}
-			
-		}
-		arrayList.add(expenseArray);
-	}
-	return arrayList;
-}
-
 	public List<ExpensesApproverHierarchy> getExpensesApproverHierarchyListByExpenseId(Long expenseId)
 			throws Exception {
 		return expensesApprovalDao.getExpensesApproverHierarchyListByExpenseId(expenseId);
 	}
-
-
-
 
 	@Override
 	public ExpensesApproverHierarchy isThereAnyApproverApprovedTheExpense(Long expenseId) {
@@ -576,9 +555,6 @@ private List<String[]> prepareExpenseApprovalListStringArray(List<ExpensesApprov
     cell.setBorder(0);
     cell.setBorderWidthBottom(2f);
     }
-
-
-
 
 @Override
 public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierarchyDTO> expApperoverHierarchy,OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
@@ -609,20 +585,15 @@ public File getExpensesApproverHierarchyListForExcel(List<ExpensesApproverHierar
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
 		return file;
 }
 
 private Sheet getExcelSheetWithHeader(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook, TimeSheetSubmissionCount requirementSubCount) {
-	
 	CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
-
 	String[] headers = Constants.EXPENSES_APPROVAL_lIST_HEADERS;;
 	createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style,headers,0);
-
 	return createExcelsheet;
 }
-
 private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesApproverHierarchyDTO expensesList,OrgLocations orgLoc,User loginUser,String isGlobalUser) throws Exception {
 		if(expensesList.getExpenseId() !=null){
 			Expenses expenseId =expensesService.getExpenseById(expensesList.getExpId());
@@ -633,7 +604,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							writeRow.createCell(0).setCellValue(expenseId.getExpenseId());
 							createExcelsheet.autoSizeColumn(0);
 						}
-						
 						if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							StringBuffer sb = new StringBuffer();
 							writeRow.createCell(1).setCellValue(sb.append(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName()).append(" ").append(expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()).toString());
@@ -642,7 +612,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 							writeRow.createCell(1).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 							createExcelsheet.autoSizeColumn(1);
 						}
-						
 						/*if(null != expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName() && null != expenseId.getProjectMembers().getProjectMemberCandidteId().getLastName()){
 							writeRow.createCell(0).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getFirstName());
 							createExcelsheet.autoSizeColumn(0);
@@ -660,7 +629,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 						writeRow.createCell(4).setCellValue(expenseId.getProjectMembers().getProjectMemberCandidteId().getDesignationType());
 						createExcelsheet.autoSizeColumn(4);
 					}
-					
 					if(expensesList.getProjectMemberId()!= null) {
 					ProjectMembers projectMember = projectMembersService.getProjectMemberById(expensesList.getProjectMemberId());
 						if(projectMember.getProjectMemberCandidteId() != null && null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
@@ -770,21 +738,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 		return expensesApprovalDao.updateExpenseStatusByExpenseIdAndReOpenReason(expenseId, reason, loginUser, type, isSuperUser);
 	}
 
-	
-
 	@Override
 	public ExpensesApproverHierarchy saveExpensesApproverHierarchy(
 			ExpensesApproverHierarchy expensesApproverHierarchy) throws Exception{
 		return expensesApprovalDao.saveExpensesApproverHierarchy(expensesApproverHierarchy);
 	}
 
-
 	@Override
 	public ExpensesApproverHierarchy getApprovedExpenseByExpenseIdAndLocationId(Long expenseId, Long locationsId)
 	{
 		return expensesApprovalDao.getApprovedExpenseByExpenseIdAndLocationId(expenseId, locationsId);
 	}
-
 
 	 @Override
 	    public void sendExpenseReopenAcceptMailToEmployee(Expenses expenses, OrgLocations orgLoc, String type,
@@ -816,16 +780,11 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ExpensesAppro
 
 	        StringBuilder amopuntRate = new StringBuilder();
 	        amopuntRate.append((expenses.getTotalAmount())).append(" ");
-
 	        globalVarsMap.put("amount", amopuntRate.toString());
-
 	        globalVarsMap.put("loginOrg", orgLoc.getOrg().getOrgName());
-
 	        globalVarsMap.put("employeeName", expenses.getProjectMembers().getProjectMemberCandidteId().getFirstName());
-
 	        globalVarsMap.put("approverName",
 	                userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
-
 	        globalVarsMap.put("projectName", expenses.getProjectName());
 	        if (expenses.getClientName() != null) {
 	            globalVarsMap.put("clientName", expenses.getClientName());
