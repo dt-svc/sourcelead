@@ -545,7 +545,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                              
                                              var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                               			   }
@@ -566,7 +566,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                              
                                              var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                                 		 }
@@ -599,16 +599,16 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     	                		 if(label == v3['label']){
     	                			 if(fieldType == 'textarea'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#textarea-'+ label.replace(/\s+/g, '')).html(v3['value']);
+    	                					 $('#textarea-'+ label.replace(/[^A-Z0-9]+/ig, '')).html(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'text'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#text-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#text-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
     	                				 }
     	                				
     	                			 }else if(fieldType == 'calendar'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#calendar-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#calendar-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'scale'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
@@ -623,9 +623,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     	                			 
     	                			 else if(fieldType == 'file'){
     	                					  var fileHtml = '';
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['value']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['name']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='1' />";
     	                					  $("#addFeedbackTemplate_form").append(fileHtml);
 	                					      fileCount = fileCount+1;
 	                					      
@@ -664,7 +664,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                  else if (fieldType == 'radio') {
                                      var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -673,7 +673,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                      var selected = v['sel'] ? ' checked' : 'checked';
                                      var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -717,11 +717,11 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
             		 var StarHtml = '';
             		 if(attempt == 0){
             			 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}
                 	 }else{
                 		 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}}
             		 
             	 }
@@ -758,9 +758,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                  switch (fieldType) {
                      case 'text':
                     	 if(attempt == 0){
-                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -776,9 +776,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 
                      case 'textarea':
                     	 if(attempt == 0){
-                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' disabled></textarea>' ;
+                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled></textarea>' ;
                     	 }else{
-                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' ></textarea>' ;
+                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -841,9 +841,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 
                      case 'calendar':
                     	 if(attempt == 0){
-                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -859,11 +859,11 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                      
                      case 'scale':
                     	 if(attempt == 0){
-                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider" disabled>' ;
+                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider">' ;
+                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -873,7 +873,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
+                             '<span id=\'demo-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="col-md-4">0</span>' +
                              input +
                              '</div>'+
                              '</div>'+
@@ -882,9 +882,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                          
                      case 'star':
                     	 if(attempt == 0){
-                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
+                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -904,11 +904,11 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                          
                      case 'file':
                     	 if(attempt == 0){
-                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
+                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
                             }else{
-                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
+                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
                             }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -919,7 +919,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
                          input +
-                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
+                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/[^A-Z0-9]+/ig, '')+'\'></span></a>'+
                          '</div>'+
                          '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                          '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
@@ -1078,7 +1078,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                              
                                              var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                               			   }
@@ -1099,7 +1099,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                              
                                              var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                                 		 }
@@ -1132,16 +1132,16 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
     	                		 if(label == v3['label']){
     	                			 if(fieldType == 'textarea'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#textarea-'+ label.replace(/\s+/g, '')).html(v3['value']);
+    	                					 $('#textarea-'+ label.replace(/[^A-Z0-9]+/ig, '').replace(/\s+/g, '')).html(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'text'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#text-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#text-'+ label.replace(/[^A-Z0-9]+/ig, '').replace(/\s+/g, '')).val(v3['value']);
     	                				 }
     	                				
     	                			 }else if(fieldType == 'calendar'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#calendar-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#calendar-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'scale'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
@@ -1156,9 +1156,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
     	                			 
     	                			 else if(fieldType == 'file'){
     	                					  var fileHtml = '';
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['value']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['name']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='1' />";
     	                					  $("#addFeedbackTemplate_form").append(fileHtml);
 	                					      fileCount = fileCount+1;
 	                					      
@@ -1197,7 +1197,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                  else if (fieldType == 'radio') {
                                      var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -1206,7 +1206,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                      var selected = v['sel'] ? ' checked' : 'checked';
                                      var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -1250,11 +1250,11 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
             		 var StarHtml = '';
             		 if(labelAndAttemptsMap.get(label) == 0){
             			 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}
                 	 }else{
                 		 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}}
             		 
             	 }
@@ -1292,9 +1292,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'text':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
@@ -1307,9 +1307,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'textarea':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' disabled></textarea>' ;
+                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled></textarea>' ;
                     	 }else{
-                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' ></textarea>' ;
+                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
@@ -1322,9 +1322,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'select':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+                    		 input = '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/[^A-Z0-9]+/ig, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
                     	 }else{
-                    		 input =  '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+                    		 input =  '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/[^A-Z0-9]+/ig, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
@@ -1361,9 +1361,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'calendar':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
@@ -1376,18 +1376,18 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                      
                      case 'scale':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider" disabled>' ;
+                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider">' ;
+                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
+                             '<span id=\'demo-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="col-md-4">0</span>' +
                              input +
                              '</div>'+
                              '</div>'+
@@ -1396,9 +1396,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                          
                      case 'star':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
+                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
@@ -1415,11 +1415,11 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                          
                      case 'file':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
+                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
                             }else{
-                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
+                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
                             }
                     	 return '' +
                          '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
@@ -1427,7 +1427,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
                          input +
-                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
+                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/[^A-Z0-9]+/ig, '')+'\'></span></a>'+
                          '</div>'+
                          '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
                          '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
