@@ -146,8 +146,8 @@
 								<div class="col-md-12">
 									<select multiple class="chosen-select form-control" name="requirementsList" field-name="Job" 
 										id="requirementsList" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
-										
-										<c:forEach items="${requirementString.split(',')}" var="req">
+										<c:if test="${!empty requirementString}">
+										<c:forEach items="${requirementStringrequirementString.split(',')}" var="req">
 											<c:set var="selected" value="false"></c:set>
 											<c:forEach items="${jobFair.jobFairRequirementList}" var="jobFairRequirement">
 												<c:if test="${jobFairRequirement.requirementId == req.split(':')[0]}">
@@ -156,7 +156,7 @@
 											</c:forEach>
 											<option value='${req.split(":")[0]}' ${selected?"selected='selected'":""}>${req.split(":")[1]}</option>
 										</c:forEach>
-
+									</c:if>
 									</select>
 								</div>
 							</div>
