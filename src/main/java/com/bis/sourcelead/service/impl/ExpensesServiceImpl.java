@@ -305,8 +305,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            StringBuilder totalStringBuilder =new StringBuilder();
 			            orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			            if(expenses.getProjects() != null && expenses.getMasterCandidateId() != null){
-			            	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
-			            	
+			            	//ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
+			            	ProjectMembers pm = projectMembersService.getProjectMemberById(expenses.getProjectMembers().getId());
 			            	if(pm.getProjectMemberCandidteId()!= null){
 			            			if(pm.getProjectMemberCandidteId().getLastName()!= null){
 			            				orderedList.add(new ListItem(nameBuilder.append("Employee Name :").
@@ -751,7 +751,8 @@ public class ExpensesServiceImpl implements ExpensesService{
         employeeId.append(expenseDetails.getExpenseId());
         }
         if(expenseDetails.getProjects() != null && expenseDetails.getMasterCandidateId() != null){
-        	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+        	//ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+        	ProjectMembers pm = projectMembersService.getProjectMemberById(expenseDetails.getProjectMembers().getId());
         	if(pm.getProjectMemberCandidteId()!= null){
         			if(pm.getProjectMemberCandidteId().getLastName()!= null){
         				nameBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).
