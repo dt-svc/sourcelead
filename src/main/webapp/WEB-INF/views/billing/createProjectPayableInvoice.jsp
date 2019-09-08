@@ -1750,7 +1750,7 @@ function getVendorContacts(vendorContactId,projectName){
 		$("#vendorContact").append(output);
 		$('#vendorContact').trigger("chosen:updated");
 		if(vendorContactId == null || vendorContactId == '' || vendorContactId == 'undefined'){
-			buildLineItemAndTaxAddRows();
+			/* buildLineItemAndTaxAddRows(); */
 		}
 	},
 	});

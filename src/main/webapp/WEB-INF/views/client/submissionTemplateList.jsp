@@ -448,6 +448,7 @@ function validateTemplateName(clientLocationId){
 	        var con2 = JSON.stringify(fields);
 	        var jsonStringData = encodeURIComponent(con2);
 	        if(submitTemplate){
+	        	$("#save_button").attr("disabled", "disabled");
 	        	 $( "#save_button" ).addClass('button').val('Processing..');
 	        	    $.ajax({
 	     	    	type: "POST",
