@@ -1303,9 +1303,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		RequirementSubmission reqSub = new RequirementSubmission();
 		RequirementWorkFlowStages stage = new RequirementWorkFlowStages();
 		RequirementQuestionnaireFeedbackTemplate qtemplate = null;
-		StringBuilder labelId = new StringBuilder("");
-		StringBuilder labelValue = new StringBuilder("");
-		StringBuilder finalLabelJson = new StringBuilder("");
 		try {
 			if(qemplateDTO != null) {
 			if(qemplateDTO.getUuid() == null || qemplateDTO.getUuid().equalsIgnoreCase("undefined") || qemplateDTO.getUuid().equalsIgnoreCase("null")) {
@@ -1351,13 +1348,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				
 				if(StringUtils.isNotBlank(qemplateDTO.getJsonStringData())) {
 				qtemplate.setJsonStringValues(qemplateDTO.getJsonStringData());
-				ArrayList<String> jsonArray1 = new ArrayList<String>(); 
-				for(String json1 : qemplateDTO.getJsonStringData().split(",")) {
-					if(json1.contains("id")) {
-						labelId.append(json1);
-					jsonArray1.add(json1);
-				}
-				}
 				}
 				qtemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				qtemplate.setCreatedBy(user);
@@ -1396,24 +1386,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 				if (requirementQuestionnaireTemplate != null) {
 					if (requirementQuestionnaireTemplate.getJsonString() != null) {
-						labelValue.append(requirementQuestionnaireTemplate.getJsonString());
-						ArrayList<String> jsonArray = new ArrayList<String>(); 
-						for(String json : labelValue.toString().split(",")) {
-							jsonArray.add(json.replace("[{", "").replace("}]", ""));
-						}
-						jsonArray.add(labelId.toString());
-						String edit = null;
-						for(int j = 0; j < jsonArray.size(); j++) {
-							if(j == 0) {
-								edit = "{";
-								jsonArray.set(j, edit + jsonArray.get(j));
-							}else if(j == jsonArray.size() - 1) {
-								edit = "}";
-								jsonArray.set(j, jsonArray.get(j) + edit);
-							}
-						}
-						finalLabelJson.append(jsonArray);
-						qtemplate.setJsonString(finalLabelJson.toString());
+						qtemplate.setJsonString(requirementQuestionnaireTemplate.getJsonString());
 					}
 					if (requirementQuestionnaireTemplate.getTimeLimitMinutes() != null) {
 						qtemplate.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
