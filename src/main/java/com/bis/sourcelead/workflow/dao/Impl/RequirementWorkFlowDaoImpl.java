@@ -910,13 +910,13 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 	}
 
 	@Override
-	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid, String stageId, String submissionId)
+	public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid, String workflowStageUuid, String submissionId)
 			throws Exception {
 		RequirementQuestionnaireFeedbackTemplateDTO quesFeedtemplateDTO = null;
 		String query = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			if(stageId == null && submissionId == null) {
+			if(workflowStageUuid == null && submissionId == null) {
 				query ="SELECT JSON_STRING AS jsonString, JSON_STRING_VALUES AS jsonStringValues, UUID AS uuid, SUBMITTED_POINTS AS submittedPoints, TOTAL_POINTS AS totalPoints, "
 						+" TIME_LIMIT_MINUTES AS timeLimitMinutes, TIME_LIMIT_SECONDS AS timeLimitSeconds, "
 						+" TIME_MINUTES_REMAINED AS timeMinutesRemained, TIME_SECONDS_REMAINED AS timeSecondsRemained  "
@@ -927,7 +927,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 						+" TIME_MINUTES_REMAINED AS timeMinutesRemained, TIME_SECONDS_REMAINED AS timeSecondsRemained  "
 						+ " from REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE qtemplate WHERE qtemplate.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID=:uuid"
 						
-						+ " AND qtemplate.REQUIREMENT_WORKFLOW_STAGES_ID =:stageId AND  qtemplate.REQUIREMENT_SUBMISSION_ID =:submissionId ";
+						+ " AND qtemplate.REQUIREMENT_WORKFLOW_STAGES_UUID =:workflowStageUuid AND  qtemplate.REQUIREMENT_SUBMISSION_ID =:submissionId ";
 			}
 				Query obj = session.createSQLQuery(query)
 					.addScalar("jsonString", StandardBasicTypes.STRING)
@@ -941,10 +941,10 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 					.addScalar("timeSecondsRemained", StandardBasicTypes.INTEGER);
 				
 			obj.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireFeedbackTemplateDTO.class));
-			if(stageId == null && submissionId == null) {
+			if(workflowStageUuid == null && submissionId == null) {
 				obj.setString("uuid", uuid);
 			}else {
-				obj.setString("uuid", uuid).setString("stageId", stageId).setString("submissionId", submissionId);
+				obj.setString("uuid", uuid).setString("workflowStageUuid", workflowStageUuid).setString("submissionId", submissionId);
 			}
 			quesFeedtemplateDTO = (RequirementQuestionnaireFeedbackTemplateDTO) obj.uniqueResult();
 			
@@ -1078,7 +1078,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT  question.id AS questionnaireId, question.NAME AS questionnaireName, "+
-				       "          question.UUID AS questionnaireUuid, stages.ID AS stageId, stages.STAGE_NAME AS stageName, COUNT(tasks.id) AS tasksCount " + 
+				       "          question.UUID AS questionnaireUuid, stages.ID AS stageId, stages.STAGE_NAME AS stageName, stages.uuid AS stageUuid, COUNT(tasks.id) AS tasksCount " + 
 		
 						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages, " + 
 						"                  REQUIREMENT_QUESTIONNAIRE_TEMPLATE question, "+
@@ -1097,6 +1097,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 										.addScalar("questionnaireUuid", StandardBasicTypes.STRING)
 										.addScalar("stageId", StandardBasicTypes.STRING)
 										.addScalar("stageName", StandardBasicTypes.STRING)
+										.addScalar("stageUuid", StandardBasicTypes.STRING)
 										.addScalar("tasksCount", StandardBasicTypes.STRING)
 										.setResultTransformer(Transformers.aliasToBean(RequirementQuestionnaireTasksDTO.class))
 										.setString("stageName", stageName).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).uniqueResult();
