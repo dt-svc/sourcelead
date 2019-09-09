@@ -645,6 +645,8 @@ public class Constants {
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	//workflow
+	public static final String QUESTIONNAIRE_AUTO_SUBMISSION = "Auto";
+	public static final String QUESTIONNAIRE_MANUAL_SUBMISSION = "Manual";
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final String CUSTOMIZE = "Customize";
 	public static final LinkedHashMap<String, String> DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String> (){

@@ -45,6 +45,8 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 	
 	private Integer totalPoints;
 	
+	private String submissionType;
+	
 	private Long workflowStageId;
 	
 	private Long requirementSubmissionId;
@@ -191,6 +193,14 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 
 	public void setTotalPoints(Integer totalPoints) {
 		this.totalPoints = totalPoints;
+	}
+	
+	public String getSubmissionType() {
+		return submissionType;
+	}
+
+	public void setSubmissionType(String submissionType) {
+		this.submissionType = submissionType;
 	}
 
 	public Long getWorkflowStageId() {
