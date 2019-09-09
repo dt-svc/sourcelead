@@ -392,17 +392,17 @@ public class TimesheetEmailUtil {
 			Map<String, String> globalVarsMap = new HashMap<String, String>();
 			StringBuilder loginName = new StringBuilder();
 			if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
-			globalVarsMap.put("LoginUserFullName", loginName.append(loginUser.getFirstName()).append(" ")
+			globalVarsMap.put("loginUserFullName", loginName.append(loginUser.getFirstName()).append(" ")
 			.append(loginUser.getLastName()).toString());
 			} else {
-			globalVarsMap.put("LoginUserFullName", loginUser.getFirstName());
+			globalVarsMap.put("loginUserFullName", loginUser.getFirstName());
 			}
 			StringBuilder managerName = new StringBuilder();
 			if (null != projectManager.getLastName() && !"".equalsIgnoreCase(projectManager.getLastName())) {
-			globalVarsMap.put("ManagerFullName", managerName.append(projectManager.getFirstName()).append(" ")
+			globalVarsMap.put("managerFullName", managerName.append(projectManager.getFirstName()).append(" ")
 			.append(projectManager.getLastName()).toString());
 			} else {
-			globalVarsMap.put("ManagerFullName", projectManager.getFirstName());
+			globalVarsMap.put("managerFullName", projectManager.getFirstName());
 			}
 			globalVarsMap.put("OrgName", loginOrgLocation.getOrgLocationName());
 			globalVarsMap.put("TimeFrequency", startDateStr + " to " + endDateStr);
