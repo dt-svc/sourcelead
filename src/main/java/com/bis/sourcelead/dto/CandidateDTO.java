@@ -47,6 +47,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String middleName;
 	
+	private String fullName;
+	
 	private String dateofBirth;
 	
 	private String panNumber;
@@ -285,7 +287,9 @@ public class CandidateDTO extends SearchDTO{
 	
 	private List<CandidateSource> candidateSourceList;
 	
+	private String shift;
 	
+	private String shiftName;
 
 	public List<CandidateSource> getCandidateSourceList() {
 		return candidateSourceList;
@@ -1372,5 +1376,27 @@ public class CandidateDTO extends SearchDTO{
 		this.currentRatePer = currentRatePer;
 	}
 
+	public String getShift() {
+		return shift;
+	}
 
+	public void setShift(String shift) {
+		this.shift = shift;
+	}
+
+	public String getShiftName() {
+		return shiftName;
+	}
+
+	public void setShiftName(String shiftName) {
+		this.shiftName = shiftName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 }
