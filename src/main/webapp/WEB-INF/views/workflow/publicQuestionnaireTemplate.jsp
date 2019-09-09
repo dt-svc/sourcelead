@@ -33,11 +33,6 @@
 <script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
 <link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
-<script type="text/javascript">
-var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-
-var atsUrl = '${SourceLeadWeb_atsUrl}';
-</script>
 <style type="text/css">
 
 .choices label {
@@ -49,26 +44,32 @@ width: auto !important; padding-right: 15px;
 </style>
 
 <script type="text/javascript">
+var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 var labelAndAttemptsMap = new Map();
 var savedQuestionnaireUuid = new Map();
+var submissionType = new Map();
 var templateUuid = '${templateUuid}';
 var workflowStageId = '${workflowStageId}';
 var requirementSubmissionId = '${requirementSubmissionId}';
+var autoSubmission = '${auto}';
+var manualSubmission = '${manual}';
+var submissionsCount = 1;
 window.onload = function () {
 	questionnaireTemplateForm();
  };
 </script>
 <div id ="popUp"></div>
+<div id = "timeOutPopUp"></div>
 <script>
 function questionnaireFillingCheck(minutes, seconds){
 	var result = "";
 	result = result +"<div class='project_inn_mask'></div>";
 	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"<p><strong>Do You Want To Initiate/Continue The Timer And Start Filling The Questionnaire ?</strong></p>";
+	result = result +"<p><strong>Do You Want To Initiate / Continue The Timer And Start Filling The Questionnaire ?</strong></p>";
 	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Yes' onclick='saveQuestionnareWithTimeLimit("+minutes+", "+seconds+");' style='background-color:#1ab394'/><input class='u_can_color' type='button' onclick='cancelQuestionnaireFillingCheck();' value='No'></b>";
 	result = result +"</div>";
-	$("#popUp").append(result);
+	$("#popUp").empty().append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 	
@@ -77,17 +78,20 @@ function questionnaireFillingCheck(minutes, seconds){
 function cancelQuestionnaireFillingCheck(){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
-
+	$("#questionnaireTemplateFormDiv").hide();
+	$("#cancelFeedbackDiv").show();
 }
 
 function saveQuestionnareWithTimeLimit(minutes, seconds){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
+	submissionType.set("submissionType", autoSubmission);
 	$.ajax({
     	type: "GET",
-        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
+        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
         success: function(data) {
         	savedQuestionnaireUuid.set("savedQuestionnaireUuid", data.uuid);
+        	$("#questionnaireTemplateFormDiv").show();
         	updateFeedbackTimerPerSecond(templateUuid ,workflowStageId, requirementSubmissionId, data.timeLimitMinutes, data.timeLimitSeconds)
         }
 	});
@@ -97,14 +101,12 @@ function saveQuestionnareWithTimeLimit(minutes, seconds){
 
 <script>
 function questionnaireTemplateForm(){
-	var templateUuid = '${templateUuid}';
 	
-	var sourceleadUrl ='${sourceleadUrl}';
 	$("#questionnaireTemplateFormDiv").show();
 		generateQuestionnaireForm1(sourceleadUrl, templateUuid)
 		var result = "";
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9" id = "timerDiv"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		result = result + "";
 		
 		
@@ -115,7 +117,7 @@ function questionnaireTemplateForm(){
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
+		result = result + '<button type="button" id = "submitButton" class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		//result = result + '<button type="button"  class="btn btn-sm btn-warning ml">Cancel</button>';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -127,23 +129,16 @@ function questionnaireTemplateForm(){
 	
 }
 
-function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,minutes,seconds){
-	//questTemplUuid ='wgtQ2NqD';
-	
-	//stageId='21';
-	//submissionId='13295';
-   // minutes='10';
-	//seconds='10';
-	
+function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,minutes,seconds, distance){
 	$.ajax({
     	type: "POST",
         url:sourceleadUrl+"/updateFeedbackQuestionnaireTimer?questTemplUuid="+questTemplUuid+"&stageId="+stageId+"&submissionId="+submissionId+"&minutes="+minutes+"&seconds="+seconds, 
         success: function(response) {
         	if(response == "Success"){
-        		console.log("Successfully updated time in table..............>");
+        		//console.log("Successfully updated time in table..............>");
         	}
         	if(response == "Failed"){
-        		console.log("Failed to updated in table......................>");
+        		//console.log("Failed to updated in table......................>");
         	}
         }
       });
@@ -163,21 +158,20 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 	function showRemaining() {
 		var now = new Date();
 		var distance = end - now;
-
 		if (distance < 0) {
-			$('#countdownTimerLbl').text(' EXPIRED!');
-			// here need to call submission function for the feed back table.
+			clearInterval(timer);
+			$('#countdownTimerLbl').text('Form Auto Submitted Successfully!');
+			$("#submitButton").addClass("disabled");
+			$('#countdownTimerLbl').toggleClass("textSuccess textBold");
+			saveAutoSubmitQuestionnaireForm();
 			return;
 		}
 		var days = Math.floor(distance / _day);
 		var hours = Math.floor((distance % _day) / _hour);
 		var minutes = Math.floor((distance % _hour) / _minute);
 		var seconds = Math.floor((distance % _minute) / _second);
-		if (minutes == 2 && seconds == 0) //  Two minutes alert
-			console.error("Time Expires in " + minutes);
-		else if (minutes == 1 && seconds == 0){ // 1 minutes alert
-			console.error("Time Expires in " + minutes);
-			$('#countdownTimerLbl').toggleClass("textSuccess colorRed");
+		if (minutes == 2 && seconds == 0){
+			$('#countdownTimerLbl').toggleClass("textSuccess colorRed");//  Two minutes alert
 		}
 		     // time display label.
         minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -189,14 +183,13 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		
 		// uncomment below function for updating time in back end.
 		                                 //questUUid, stageId, submissionId, minutes,seconds
-		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds); 
+		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds, distance); 
 	}
-	timer = setInterval(showRemaining, 5000);
+	timer = setInterval(showRemaining, 1000);
 }
 
 </script>
 <script>
-var submissionsCount = 1;
 function saveQuestionnaireTemplate(){
 	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
 	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
@@ -204,7 +197,6 @@ function saveQuestionnaireTemplate(){
 	      var form = $('#questionnaireTemplate_form')[0];
 		    var formData = new FormData(form); 
 		    
-	      var sourceleadUrl ='${sourceleadUrl}';
 	        var con = JSON.stringify(frm);
 	        con = con.replace(/[{}]/g, "");
 	        //var jsonData = encodeURIComponent(con);
@@ -336,15 +328,10 @@ function saveQuestionnaireTemplate(){
 			          });  
 		    	
 		     });
-	        
+	       
+	        submissionType.set("submissionType", manualSubmission);
 	        submittedPoints = calculateTotalPoints(pointsArray);
 	        totalPoints = calculateTotalPoints(totalPointsArray);
-	      /*  var templateId = document.getElementById("templateId").value;
-	        if(templateId == 'undefined' || templateId == null || templateId == ''){
-	        	templateId = '';
-	        } */
-	        //Save form to database
-	        //Demo doesn't actually save. Download project files for save
 	        var con2 = JSON.stringify(fields);
 	        var jsonStringData = encodeURIComponent(con2);
 	        if(submitTemplate){
@@ -358,7 +345,7 @@ function saveQuestionnaireTemplate(){
 			        contentType:false,
 	      	    	dataType : 'json',
 	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
-	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId, 
+	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
 	      	        success: function(result) {
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
@@ -436,7 +423,11 @@ function calculateTotalPoints(pointsArray){
     </nav>
    </header>
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
+   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
+   <p><h3 class="col-md-5">
+   You can submit the details later. Thank You!
+   </h3></p>
+   </div>
    
    
    <footer class="clearfix stickyfooterDiv">
@@ -470,11 +461,15 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
         url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&stageId="+workflowStageId+"&submissionId="+requirementSubmissionId, 
         success: function(result) {
         	if(result.timeLimitMinutes != null && result.timeLimitSeconds != null){
+        		$("#timerDiv").show();
         		if(result.timeMinutesRemained == null && result.timeSecondsRemained == null){
+        			$("#questionnaireTemplateFormDiv").hide();
         			questionnaireFillingCheck(result.timeLimitMinutes, result.timeLimitSeconds);
             	}else{
             		updateFeedbackTimerPerSecond(templateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
         		}
+        		}else{
+        			$("#timerDiv").hide();
         		}
         	
         	var data = null;
@@ -550,7 +545,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                              
                                              var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                               			   }
@@ -571,7 +566,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                              
                                              var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                                 		 }
@@ -604,16 +599,16 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     	                		 if(label == v3['label']){
     	                			 if(fieldType == 'textarea'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#textarea-'+ label.replace(/\s+/g, '')).html(v3['value']);
+    	                					 $('#textarea-'+ label.replace(/[^A-Z0-9]+/ig, '')).html(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'text'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#text-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#text-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
     	                				 }
     	                				
     	                			 }else if(fieldType == 'calendar'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#calendar-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#calendar-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'scale'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
@@ -628,9 +623,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     	                			 
     	                			 else if(fieldType == 'file'){
     	                					  var fileHtml = '';
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['value']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['name']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='1' />";
     	                					  $("#addFeedbackTemplate_form").append(fileHtml);
 	                					      fileCount = fileCount+1;
 	                					      
@@ -669,7 +664,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                  else if (fieldType == 'radio') {
                                      var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -678,7 +673,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                                      var selected = v['sel'] ? ' checked' : 'checked';
                                      var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -722,11 +717,11 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
             		 var StarHtml = '';
             		 if(attempt == 0){
             			 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}
                 	 }else{
                 		 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}}
             		 
             	 }
@@ -763,9 +758,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                  switch (fieldType) {
                      case 'text':
                     	 if(attempt == 0){
-                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -781,9 +776,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 
                      case 'textarea':
                     	 if(attempt == 0){
-                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' disabled></textarea>' ;
+                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled></textarea>' ;
                     	 }else{
-                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' ></textarea>' ;
+                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -846,9 +841,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 
                      case 'calendar':
                     	 if(attempt == 0){
-                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -864,11 +859,11 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                      
                      case 'scale':
                     	 if(attempt == 0){
-                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider" disabled>' ;
+                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider">' ;
+                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -878,7 +873,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
+                             '<span id=\'demo-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="col-md-4">0</span>' +
                              input +
                              '</div>'+
                              '</div>'+
@@ -887,9 +882,9 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                          
                      case 'star':
                     	 if(attempt == 0){
-                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
+                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
                     	 }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -909,11 +904,11 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                          
                      case 'file':
                     	 if(attempt == 0){
-                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
+                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
                             }else{
-                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
+                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
                             }
                     	 if(labelAndAttemptsMap.get(label) != null){
                     		 attempt = labelAndAttemptsMap.get(label);
@@ -924,7 +919,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
                          input +
-                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
+                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/[^A-Z0-9]+/ig, '')+'\'></span></a>'+
                          '</div>'+
                          '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
                          '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
@@ -976,7 +971,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, wo
 	 
 		var result = "";
 		result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
-		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
+		result = result + '<div class="row"><h3 class="col-md-3">Questionnaire Template</h3> <div class="col-md-9" id = "timerDiv"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
 		
 		result = result + '<div class="form-horizontal clearfix">';
 		result = result + '<div id="questionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
@@ -985,7 +980,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, wo
 		
 		 result = result + '<div class="form-footer clearfix">';
 		result = result + '<div class="pull-right mr">';
-		result = result + '<button type="button"  class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
+		result = result + '<button type="button" id = "submitButton" class="btn btn-sm btn-primary" onclick="saveQuestionnaireTemplate();">Submit</button>';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</div>';  
@@ -1005,7 +1000,10 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
         url: sourceleadUrl+"/getQuestionnaireTemplateFeedbackList?templateUuid="+resultUuid, 
         success: function(result) {
         	if(result.timeMinutesRemained != null && result.timeSecondsRemained != null){
+        		$("#timerDiv").show();
         		updateFeedbackTimerPerSecond(qTemplateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
+        	}else{
+        		$("#timerDiv").hide();
         	}
         	var data = null;
         	if(result.jsonString != null){
@@ -1080,7 +1078,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                              
                                              var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                               			   }
@@ -1101,7 +1099,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                              
                                              var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
                                              if(required == 1 && flag == 0){
-                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                              }
                                              $currentField.find(".choices").append(choiceHTML);
                                 		 }
@@ -1134,16 +1132,16 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
     	                		 if(label == v3['label']){
     	                			 if(fieldType == 'textarea'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#textarea-'+ label.replace(/\s+/g, '')).html(v3['value']);
+    	                					 $('#textarea-'+ label.replace(/[^A-Z0-9]+/ig, '').replace(/\s+/g, '')).html(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'text'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#text-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#text-'+ label.replace(/[^A-Z0-9]+/ig, '').replace(/\s+/g, '')).val(v3['value']);
     	                				 }
     	                				
     	                			 }else if(fieldType == 'calendar'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-    	                					 $('#calendar-'+ label.replace(/\s+/g, '')).val(v3['value']);
+    	                					 $('#calendar-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
     	                				 }
     	                			 }else if(fieldType == 'scale'){
     	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
@@ -1158,9 +1156,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
     	                			 
     	                			 else if(fieldType == 'file'){
     	                					  var fileHtml = '';
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['value']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='"+v3['name']+"' />";
-    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/\s+/g, '')+"' value='1' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['value']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['name']+"' />";
+    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='1' />";
     	                					  $("#addFeedbackTemplate_form").append(fileHtml);
 	                					      fileCount = fileCount+1;
 	                					      
@@ -1199,7 +1197,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                  else if (fieldType == 'radio') {
                                      var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -1208,7 +1206,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                                      var selected = v['sel'] ? ' checked' : 'checked';
                                      var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
                                      if(required == 1 && flag == 0){
-                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/\s+/g, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
                                      }
                                      $currentField.find(".choices").append(choiceHTML);
                                  }
@@ -1252,11 +1250,11 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
             		 var StarHtml = '';
             		 if(labelAndAttemptsMap.get(label) == 0){
             			 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}
                 	 }else{
                 		 for(var i=1; i<=dropdown; i++){
-                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/\s+/g, '')+'"></li>';
+                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
       					}}
             		 
             	 }
@@ -1294,9 +1292,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'text':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
@@ -1309,9 +1307,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'textarea':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' disabled></textarea>' ;
+                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled></textarea>' ;
                     	 }else{
-                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/\s+/g, '')+'\' ></textarea>' ;
+                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
@@ -1324,9 +1322,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'select':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+                    		 input = '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/[^A-Z0-9]+/ig, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
                     	 }else{
-                    		 input =  '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+                    		 input =  '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/[^A-Z0-9]+/ig, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
@@ -1363,9 +1361,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
 
                      case 'calendar':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' disabled>' ;
+                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
                     	 }else{
-                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/\s+/g, '')+'\' >' ;
+                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
@@ -1378,18 +1376,18 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                      
                      case 'scale':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider" disabled>' ;
+                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/\s+/g, '')+'\' ></span>' +
-                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/\s+/g, '')+'\' class="rangeslider">' ;
+                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
                              '<label for="text-' + uniqueID + '"></label>' +
                              '<div class="slidecontainer mt clearfix">' +
-                             '<span id=\'demo-'+label.replace(/\s+/g, '')+'\' class="col-md-4">0</span>' +
+                             '<span id=\'demo-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="col-md-4">0</span>' +
                              input +
                              '</div>'+
                              '</div>'+
@@ -1398,9 +1396,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                          
                      case 'star':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
+                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
                     	 }else{
-                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/\s+/g, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
                     	 }
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
@@ -1417,11 +1415,11 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                          
                      case 'file':
                     	 if(labelAndAttemptsMap.get(label) == 0){
-                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
+                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
                             }else{
-                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/\s+/g, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
-                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/\s+/g, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
+                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
                             }
                     	 return '' +
                          '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
@@ -1429,7 +1427,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
                          '<label for="text-' + uniqueID + '"></label>' +
                          '<div class="clearfix mt"></div>'+
                          input +
-                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/\s+/g, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/\s+/g, '')+'\'></span></a>'+
+                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/[^A-Z0-9]+/ig, '')+'\'></span></a>'+
                          '</div>'+
                          '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
                          '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
@@ -1599,6 +1597,199 @@ function applyFileData(data, formId, name, id,attachmentCount) {
 	}
 	
 }
+</script>
+<script>
+function saveAutoSubmitQuestionnaireForm(){
+	if ($('#questionnaireTemplate_form').validate(false, validationSettings)){ 
+	      var frm = $('#questionnaireTemplate_form').serializeFormJSON();
+		var qTemplateUuid = '${templateUuid}'; 
+	      var form = $('#questionnaireTemplate_form')[0];
+		    var formData = new FormData(form); 
+		    
+	        var con = JSON.stringify(frm);
+	        con = con.replace(/[{}]/g, "");
+	        //var jsonData = encodeURIComponent(con);
+	        var isRemoved = '';
+	        //Loop through fields and save field data to array
+	        var fields = [];
+	        var submitTemplate = true;
+	        var fieldLabel = '';
+	        var fieldhint = '';
+	        var fieldDropDown = '';
+	        var fileCount = 0;
+	        var points = 0;
+	        var attempts = 0;
+	        var pointsArray = new Array();
+	        var totalPointsArray = new Array();
+	        var totalPoints = 0;
+	        var submittedPoints = 0;
+	        var myArray = new Array();
+	        $('.sjfb-field').each(function() {
+		    	  var $this = $(this); 
+		    	  var divId = $(this).attr('id');  
+		    	  var fieldLabel = $this.find('label:first').text().replace("*","").trim();
+		    	  var inputValue = $this.find('input[type="radio"]:checked').val();
+		    	  var inputtype = null;
+		    	  var flag = 1;
+		    	  
+		    	  points = $('#pointId').html().trim();
+		    	 
+		    	  
+		    	  inputtype = $(this).find('input').attr('field-type');
+  			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
+  				  inputtype = $(this).find('input').attr('field-type');
+  			  }
+  			  
+  			  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+  				  inputtype = $(this).find('input').attr('type');
+  		    	  if(inputtype == null || inputtype == '' || inputtype == 'undefined'){
+  		    		  if($(this).find('select').val() != null){
+  		    			  inputtype = 'select';
+  		    		  }else{
+  		    			  inputtype = 'textarea';
+  		    		  }
+  		    	  }
+  			  }
+		    	 
+		    	  
+		    	  
+		    	 if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		  		   inputValue = $this.find('input[type="checkbox"]:checked').val();
+		  		   if(inputValue != null){
+		  			   var selected = [];
+		             	$this.find('input[type="checkbox"]:checked').each(function() {
+		    		        selected.push($(this).val()); 
+		    		       });
+		             	inputValue = selected.toString()
+		  		   }
+		  		   
+		    	 }
+		    	 
+		    	
+		    	  if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		    		  inputValue = $this.find('input').val();
+		    	  }
+		    	  
+		  	  
+		   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	 inputValue = $this.find('select').val();
+		   	      }
+		   	      
+		   	     if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	 inputValue = $this.find('textarea').val();
+		   	      }
+		   	      
+		   	    
+		   	     
+		   	      if(inputValue == null || inputValue == '' || inputValue == 'undefined'){
+		   	    	inputValue = '';
+		   	      }
+		   	      
+		       	  var name = $this.find('input[type="radio"]:checked').attr('name');
+		       	  var id = $this.find('input[type="radio"]:checked').attr('id');
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		  name = $this.find('input').attr('name');
+		     		  id = $this.find('input').attr('id');
+		     	  }
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('select').attr('name');
+		     		 id = $this.find('select').attr('id');
+	   	          }
+		     	  
+		     	  if(name == null || name == '' || name == 'undefined'){
+		     		 name = $this.find('textarea').attr('name');
+	     	      }
+		     	  
+		     	  if(inputtype == 'file'){
+		     		 inputValue = $("input[name = 'uploadedFileInfo["+fileCount+"].fileURL']").val()
+		     		 name = $("input[name = 'uploadedFileInfo["+fileCount+"].fileName']").val();
+		     		 fileCount = fileCount+1;
+		     	  }
+		     	 totalPointsArray.push(points);
+		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
+		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
+		     	 	if(inputValue != null && inputValue != ""){
+			     		/* attempts = labelAndAttemptsMap.get(fieldLabel)-1;
+			     		 if(attempts <= 0){
+			     			attempts = 0;
+			     		 } */
+			     		pointsArray.push(points);
+			     	  }
+		     	  }else{
+		     		 attempts = $('#attemptId').html().trim();
+			     	  if(inputValue != null && inputValue != ""){
+			     		 /* attempts = attempts-1;
+			     		 if(attempts <= 0){
+			     			 attempts = 0;
+			     		 } */
+			     		pointsArray.push(points);
+			     	  }	
+		     	  } 
+		     	 
+		     		fields.push({
+			              label: fieldLabel,
+			              type : inputtype,
+			              id :id,
+			              name :name,
+			              value: inputValue,
+			              attempts : attempts,
+			              points : points
+			          });  
+		    	
+		     });
+	       
+	        submissionType.set("submissionType", autoSubmission);
+	        submittedPoints = calculateTotalPoints(pointsArray);
+	        totalPoints = calculateTotalPoints(totalPointsArray);
+	        var con2 = JSON.stringify(fields);
+	        var jsonStringData = encodeURIComponent(con2);
+	        if(submitTemplate){
+	         $( "#template_save_button" ).addClass('button').val('Processing..');
+	      	  $.ajax({
+	      	    	type: "POST",
+	      	    	data: formData,
+			        contentType : 'application/json; charset=utf-8',
+			        enctype: 'multipart/form-data',
+			        processData: false,
+			        contentType:false,
+	      	    	dataType : 'json',
+	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints
+	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
+	      	        success: function(result) {
+	      	           if (result == null) {
+			        	    location.href = "/errorPage";
+			        	} else if (result != null) {
+			        		$(".mask, #modalTasktype").fadeOut();
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+	      	        },
+	      	    });   
+	              return true;
+	        }else{
+	        	alertMessage("Provide choice for "+fieldLabel)
+	        }
+	    }
+	    else{
+	    	return false;	
+	       } 
+}
+$('body').on('blur', '#questionnaireTemplate_form', function() {
+	$("#questionnaireTemplate_form").showHelpOnFocus();
+	$("#questionnaireTemplate_form").validateOnBlur(false, validationSettings);
+});
+
+function calculateTotalPoints(pointsArray){
+	var totalP = 0;
+	var current = 0
+	for(var i = 0; i<pointsArray.length ; i++ )
+	{
+		current = parseInt(pointsArray[i]);
+		totalP += current;
+	}
+	return totalP;
+}
+
 </script>
 </body>
 </html>

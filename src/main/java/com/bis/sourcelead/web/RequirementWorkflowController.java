@@ -884,6 +884,8 @@ public class RequirementWorkflowController {
 		model.addObject("templateUuid", templateUuid);
 		model.addObject("workflowStageId", stageId);
 		model.addObject("requirementSubmissionId", submissionId);
+		model.addObject("auto", Constants.QUESTIONNAIRE_AUTO_SUBMISSION);
+		model.addObject("manual", Constants.QUESTIONNAIRE_MANUAL_SUBMISSION);
 		return model;
 
 	}
