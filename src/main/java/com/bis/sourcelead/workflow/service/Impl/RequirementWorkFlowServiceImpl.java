@@ -1201,6 +1201,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		String templateId = (String) paramList.get("templateId");
 		String stageName = (String) paramList.get("stageName");
 		String jobTitle = (String) paramList.get("jobTitle");
+		String stageUuid = (String) paramList.get("stageUuid");
 		
 		Long stageId = (Long) paramList.get("stageId");
 		Long submissionId = (Long) paramList.get("submissionId");
@@ -1252,8 +1253,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 		 EmailScenario noificationEmailScenario =  emailScenarioService.getEmailScenarioByUniqueName(Constants.CANDIDATE_QUESTIONNARIE_TEMPLATE,Constants.ENTITY_TYPE_NOTIFICATION); 
 		 StringBuilder actionLinkBuilder = new StringBuilder();
-		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
-					                 .append(stageId).append("&submissionId=").append(submissionId).toString();	 
+		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageUuid=")
+					                 .append(stageUuid).append("&submissionId=").append(submissionId).toString();	 
 		 if(candidate.getFirstName()!=null){
 			 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 			 noificationEmailScenario.setBody(notificationbody);
@@ -1364,10 +1365,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				qtemplate.setUpdatedBy(user);
 				qtemplate.setUpdatedDate(new Date());
 
-				if (qemplateDTO.getWorkflowStageId() != null
-						&& StringUtils.isNotBlank(qemplateDTO.getWorkflowStageId().toString())) {
-					stage.setId(qemplateDTO.getWorkflowStageId());
-					qtemplate.setRequirementWorkFlowStagesId(stage);
+				if (qemplateDTO.getWorkflowStageUuid() != null
+						&& StringUtils.isNotBlank(qemplateDTO.getWorkflowStageUuid().toString())) {
+					stage.setUuid(qemplateDTO.getWorkflowStageUuid());
+					qtemplate.setRequirementWorkFlowStagesUuId(stage.getUuid());
 				}
 
 				if (qemplateDTO.getRequirementSubmissionId() != null
@@ -1641,11 +1642,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	
 	@Override
-	public RequirementQuestionnaireTemplateDTO getSavedQuestionnaire(String templateUuid, String stageId,
+	public RequirementQuestionnaireTemplateDTO getSavedQuestionnaire(String templateUuid, String workflowStageUuid,
 			String submissionId) throws Exception {
 		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = null;
 		RequirementQuestionnaireTemplateDTO qDto = new RequirementQuestionnaireTemplateDTO();
-		RequirementQuestionnaireFeedbackTemplateDTO feedbackTemplateDto = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(templateUuid, stageId, submissionId);
+		RequirementQuestionnaireFeedbackTemplateDTO feedbackTemplateDto = requirementWorkFlowDao.getQuestionnaireTemplateFeedbackList(templateUuid, workflowStageUuid, submissionId);
 		if(feedbackTemplateDto == null || StringUtils.isEmpty(feedbackTemplateDto.getJsonString())){
 			requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
 			if(requirementQuestionnaireTemplate != null) {

@@ -47,7 +47,7 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 	
 	private String submissionType;
 	
-	private Long workflowStageId;
+	private String workflowStageUuid;
 	
 	private Long requirementSubmissionId;
 
@@ -203,12 +203,12 @@ public class RequirementQuestionnaireFeedbackTemplateDTO {
 		this.submissionType = submissionType;
 	}
 
-	public Long getWorkflowStageId() {
-		return workflowStageId;
+	public String getWorkflowStageUuid() {
+		return workflowStageUuid;
 	}
 
-	public void setWorkflowStageId(Long workflowStageId) {
-		this.workflowStageId = workflowStageId;
+	public void setWorkflowStageUuid(String workflowStageUuid) {
+		this.workflowStageUuid = workflowStageUuid;
 	}
 
 	public Long getRequirementSubmissionId() {
