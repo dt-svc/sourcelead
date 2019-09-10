@@ -57,6 +57,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
+import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.ClientCustomFieldData;
 import com.bis.sourcelead.entity.Contracts;
@@ -209,6 +210,9 @@ public class ClientRestController {
 	
 	@Autowired
 	ReferContactsDao referContactsDao;
+	
+	@Autowired
+	ClientVendorIndexHelper clientVendorIndexHelper;
 	
 	/**
 	 * Handles to get Orgs
@@ -618,8 +622,14 @@ public class ClientRestController {
 			 @RequestParam(value="reason", required=false) String reason,
 			 @RequestParam(value="userId", required=false) String userId,
 			 @RequestParam(value="orgLocationId", required=false) String orgLocationId,
-			 @RequestParam(value="responderType", required=false) String responderType) throws Exception{
+			 @RequestParam(value="responderType", required=false) String responderType,
+			 HttpServletRequest request) throws Exception{
 		OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+		Long loginOrgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
+		OrgLocations loginOrgLocation = orgLocationService.getOrgLocationById(loginOrgLocationId);
+		User user = userService.getUserById(loginUserId);
+				
 				if(orgSpoc != null){
 					orgSpoc.setStatus(Constants.MEMBER_IN_ACTIVE);
 					orgSpoc.setTerminateReason(reason);
@@ -638,9 +648,16 @@ public class ClientRestController {
 					referContactsDao.addReferContacts(referContacts);
 				}
 				
-					List<OrgSpoc> orgSpocsList  = orgSpocService.getAllSpocsByOrgRelationId(orgSpoc.getOrgRelations().getId(), Long.parseLong(userId), Long.parseLong(orgLocationId), responderType);
-					ClientVendorIndex clientVendorIndex = new ClientVendorIndex();
-					clientVendorIndex.setNoContacts((long)orgSpocsList.size());
+					OrgRelations orgRelations = orgRelationsService.getOrgRelationById(orgSpoc.getOrgRelations().getId());
+					OrgLocations responderOrgLocations = null;
+					if(orgRelations.getLocationId().getId().equals(loginOrgLocationId)) {
+						responderOrgLocations = orgRelations.getResponderLocationId();
+					}else {
+						responderOrgLocations = orgRelations.getLocationId();
+					}
+					// Elastic Search Document Saving
+					ClientVendorIndex clientVendorIndex = clientVendorIndexHelper.getClientVendorIndexFromCandidate(null,
+							responderOrgLocations, responderType, orgSpoc, orgSpoc.getOrgRelations(), null, user, loginOrgLocation);
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(clientVendorIndex, Constants.ELK_CLIENTVENDOR_INDEX, Constants.ELK_CLIENTVENDOR_TYPE,orgSpoc.getOrgRelations().getId().toString());
 				}
 			
