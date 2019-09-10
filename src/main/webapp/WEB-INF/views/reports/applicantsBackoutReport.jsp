@@ -8,7 +8,6 @@
 <script src="/resources/amcharts/serial.js"></script>
 <script src="/resources/amcharts/plugins/export/export.min.js"></script>
 <link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css" type="text/css" media="all" />
-
 <script>
 $(window).load(function() {
 	getApplicantBackoutReportCount();
@@ -98,7 +97,7 @@ $(window).load(function() {
   
   <script>
   function getApplicantBackoutReportCount(){
-	  
+	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		var flag = true;
 		  var jobIds = $("#jobIds").val();
 		  if(jobIds == null){
@@ -211,6 +210,7 @@ $(window).load(function() {
 	});
  
  function getBackoutApplicantList(){
+	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	 var searchValue = $("#applicantBackoutReportsTableSearch").val();
 		searchValue = searchValue ? searchValue : "";
 		var flag = true;
