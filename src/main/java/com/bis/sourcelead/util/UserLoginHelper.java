@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -165,7 +166,8 @@ public class UserLoginHelper {
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionUUID", userSession.get("actionUUID").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionId", Long.parseLong(userSession.get("actionId").toString()));
 		 SourceLeadSessionManager.setSessionAttribute(req, "sessionId", userSession.get("sessionId").toString());
-		 
+		/* HttpSession httpSession = req.getSession();
+		 httpSession.setAttribute("sessionId", userSession.get("sessionId").toString());*/
 		 try {
 			
 			OrgLocations loginOrgLocations = getLoginOrgLocationDetails(orgLocations);
