@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -95,9 +96,13 @@ public class BlogCategoryDaoImpl implements BlogCategoryDao {
 	          .append("OR bc.categoryName like '%" + blogCategoryDTO.getSearchValue() + "%' ")
 		      .append("OR bc.description like '%" + blogCategoryDTO.getSearchValue() + "%') ) ");
 		}
-
-		String query = "from BlogCategory bc where bc.status = 1 " + query1 + " ORDER BY bc.id DESC ";
-		List<BlogCategory> blogCategoryList = session.createQuery(query.toString())
+		
+		String sortingQry = "";
+		if(StringUtils.isNotBlank(blogCategoryDTO.getSortColumn())) {
+				sortingQry = " order by bc."+ blogCategoryDTO.getSortColumn() +" "+blogCategoryDTO.getSortOrder();
+		}
+		String query = "from BlogCategory bc where bc.status = 1 ";
+		List<BlogCategory> blogCategoryList = session.createQuery(query.toString()+" "+ query1+sortingQry)
 				.setFirstResult(blogCategoryDTO.getStart()).setMaxResults(blogCategoryDTO.getLength()).list();
 
 		String countQuery = "select count (*) from BlogCategory bc where bc.status = 1 " + query1 + "";

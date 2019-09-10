@@ -560,10 +560,7 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	referContactsDao.addReferContacts(referContacts);
 		
-		// resume details update in elk
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
-		}
+	
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
 			if(fileInfo != null){
@@ -2198,14 +2195,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			String rate = getExpectedRate(candidateDTO.getExpectedRate());
 			if (null != rate) {
 				candidateDTO.setExpectedRate(rate);
-				String countryCheck = orgLocations.getCountry();
-				switch (countryCheck) {
-					case "India":
-						candidateDTO.setRateType("Monthly");
-						break;
-					default:
-						candidateDTO.setRateType("Hourly");
+				
+				if(candidateDTO.getExpectedRatePer() != null) {
+					candidateDTO.setRateType(candidateDTO.getExpectedRatePer());
+				}else {
+					String countryCheck = orgLocations.getCountry();
+					switch (countryCheck) {
+						case "India":
+							candidateDTO.setRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setRateType("Hourly");
+					}
 				}
+				
 				
 				if ("India".equals(orgLocations.getCountry())) {
 					
@@ -2258,13 +2261,80 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					
 					candidateDTO.setExpectedRateCurrencey("EUR");
 				}
-				String countryCheck = orgLocations.getCountry();
-				switch (countryCheck) {
-					case "India":
-						candidateDTO.setRateType("Monthly");
-						break;
-					default:
-						candidateDTO.setRateType("Hourly");
+			}
+		}
+		
+		
+		
+		if (null != candidateDTO.getCurrentRate()) {
+			String rate = getCurrentRate(candidateDTO.getCurrentRate());
+			if (null != rate) {
+				candidateDTO.setCurrentRate(rate);
+				
+				if(candidateDTO.getCurrentRatePer() != null) {
+					candidateDTO.setCurrentRateType(candidateDTO.getCurrentRatePer());
+				}else {
+					String countryCheck = orgLocations.getCountry();
+					switch (countryCheck) {
+						case "India":
+							candidateDTO.setCurrentRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setCurrentRateType("Hourly");
+					}
+				}
+				
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("EUR");
+				}
+			}
+			else {
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("EUR");
 				}
 			}
 		}
@@ -2489,6 +2559,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	{
 		
 		String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+		for (String s : Res) {
+			if (isNumeric(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	private String getCurrentRate(String currentRate)
+	{
+		
+		String[] Res = currentRate.split("[\\p{Punct}\\s]+");
 		for (String s : Res) {
 			if (isNumeric(s)) {
 				return s;
@@ -2774,9 +2856,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		
 		 String noticePeriod = null;
 		 candidate.setOtherNoticePeriod(null);
-		if(candidateDto.getNoticePeriod() != null)
+		if(candidateDto.getNoticePeriod() != null) {
 			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
-		
+		}
 		
 	    if(noticePeriod != null) {
 	    	

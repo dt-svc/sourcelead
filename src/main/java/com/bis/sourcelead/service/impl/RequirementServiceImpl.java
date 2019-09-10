@@ -323,6 +323,14 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setId(requirement.getId());
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			
+			if(requirement.getLevel2ApproverUserId() != null) {
+				requirementDTO.setSequentialApprover1(requirement.getLevel1ApproverUserId()[0]);
+				requirementDTO.setSequentialApprover2(requirement.getLevel2ApproverUserId()[0]);
+			} else if(requirement.getLevel1ApproverUserId()!=null){
+				requirementDTO.setParallelApprover(Arrays.asList(requirement.getLevel1ApproverUserId()));
+			}
+			
 		} else {
 			requirement = new Requirement();
 			requirement.setGeneratedId(getRequirementId(orgLocations));
@@ -1245,6 +1253,33 @@ public class RequirementServiceImpl implements RequirementService {
 				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			}
 		}
+		
+		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
+			List<String> parallelApprover = new LinkedList<>();
+			String sequentialApprover1 = "";
+			String sequentialApprover2 = "";
+			
+			List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
+			if (list1 != null && !list1.isEmpty()) {
+				for (RequirementApproverHierarchy rah : list1) {
+					if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+						parallelApprover.add(rah.getApproverUserId().getId() + "");
+					}
+					if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+						if (rah.getLevel() == 1) {
+							sequentialApprover1 = rah.getApproverUserId().getId() + "";
+						}
+						if (rah.getLevel() == 2) {
+							sequentialApprover2 = rah.getApproverUserId().getId() + "";
+						}
+					}
+				}
+			}
+			requirementDTO.setParallelApprover(parallelApprover);
+			requirementDTO.setSequentialApprover1(sequentialApprover1);
+			requirementDTO.setSequentialApprover2(sequentialApprover2);
+		}
+		
 		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);
 		
 		if (requirementDTO.isJobFair()) {
@@ -3255,7 +3290,7 @@ public class RequirementServiceImpl implements RequirementService {
 		createExcelsheet.setColumnWidth(0, 10000);
 		createExcelsheet.setColumnWidth(1, 10000);
 		Cell cell11 = writeRow.createCell(0);
-		cell11.setCellValue("Closed : ");
+		cell11.setCellValue("Cancel : ");
 		cell11.setCellStyle(style);
 		Cell cell12 = writeRow.createCell(1);
 		cell12.setCellValue(requirementSubCount.getCancelRequirementCount());

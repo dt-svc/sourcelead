@@ -42,7 +42,7 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 	private CommonUtil commonUtil;
 
 	@Override
-	public SourceleadBlogs addBlog(SourceleadBlogDTO sourceleadBlogDTO, User user) throws Exception {
+	public SourceleadBlogs addBlog(SourceleadBlogDTO sourceleadBlogDTO, User user,String dateFormat) throws Exception {
 
 		SourceleadBlogs sourceleadBlogs = null;
 		
@@ -78,8 +78,8 @@ public class SourceleadBlogServiceImpl implements SourceleadBlogService{
 		 sourceleadBlogs.setShortDescription(sourceleadBlogDTO.getShortDescription());
 		}
 		
-		if(sourceleadBlogDTO.getPublishOn() != null) {
-			sourceleadBlogs.setPublishOn(sourceleadBlogDTO.getPublishOn());
+		if(StringUtils.isNotBlank(sourceleadBlogDTO.getPublishOn())) {
+			sourceleadBlogs.setPublishOn(commonUtil.orgLocationDateFormat(dateFormat, sourceleadBlogDTO.getPublishOn()));
 		}else {
 			sourceleadBlogs.setPublishOn(new Date());
 		}
