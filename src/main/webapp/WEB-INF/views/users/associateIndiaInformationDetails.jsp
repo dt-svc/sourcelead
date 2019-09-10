@@ -496,6 +496,7 @@ $("#nomineeShow").click(function() {
 
  <script>
  function saveNomineeDetails(){
+	 var atsUrl ='${SourceLeadWeb_atsUrl}';
 	 illnessFunction();
 	 minorFunction();
 	 var userId = $("#associateId").val();
@@ -507,7 +508,7 @@ $("#nomineeShow").click(function() {
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: atsUrl+"/saveNomineeDetails?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&id="+id,
+		    	 url: atsUrl+"/saveNomineeDetails?userId="+userId+"&id="+id,
 		        success: function(response) {
                         //$("#nomineeDetails").hide();
                         $("#nomineeDeta").empty();
@@ -612,6 +613,12 @@ function illnessFunction(){
 	     $('#illnessGuardianRelationName').removeAttr('data-validation', "required");
 	     $('#illnessGuardianPhoneNumber').removeAttr('data-validation-optional', "true");
 		 $('#illnessGuardianPhoneNumber').removeAttr('data-validation', "validate_space validate_length length7-10");
+		 
+		 $('#illnessGuardianName').val('');
+	     $('#illnessGuardianRelationName').val('');
+	     $('#illnessGuardianAddress').val('');
+	     $('#illnessGuardianPhoneNumber').val('');
+	     $('#illnessGuardianEmail').val('');
  }
 	
 }
@@ -633,6 +640,12 @@ function minorFunction(){
 	     $('#minorGuardianRelationName').removeAttr('data-validation', "required");
 	     $('#minorGuardianPhoneNumber').removeAttr('data-validation-optional', "true");
 		 $('#minorGuardianPhoneNumber').removeAttr('data-validation', "validate_space validate_length length7-10");
+		 
+		 $('#minorGuardianName').val('');
+	     $('#minorGuardianRelationName').val('');
+	     $('#minorGuardianAddress').val('');
+	     $('#minorGuardianPhoneNumber').val('');
+	     $('#minorGuardianEmail').val('');
  }
 	
 }
