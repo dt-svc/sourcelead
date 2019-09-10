@@ -1909,8 +1909,9 @@ public class RequirementListRestController {
 							requirementSubmission.setUpDatedStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmission.getUpdatedDate()));
 						}
 						User userVal = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
-						StringBuilder canNameSB = new StringBuilder();
-						requirementSubmission.setUserName(canNameSB.append(userVal.getFirstName()).append(" ").append(userVal.getLastName()).toString());
+						if(userVal != null) {
+							requirementSubmission.setUserName(userVal.getFullName());
+						}
 						requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getPreviousSubmissionStatus());
 						Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
 						List<Candidate> candidateList = new ArrayList<>();
