@@ -2477,7 +2477,7 @@ padding:5px; border:1px solid #ccc; font-size:12px; -webkit-border-radius: 3px; 
 	border-radius: 3px; float:left; position:relative;
 }
 .comments-div .commentsimg .fa-comments {
-	color: #5cb85c; font-size: 20px; left: 35px; position: absolute; top: -4px; z-index: 1000;
+	color: #5cb85c; font-size: 20px; left: 35px; position: absolute; top: -4px; z-index: 1000; /* z-index edited by veda aug 17 2019*/
 }
 /*srinivas nov29*/
 .comments-content {
@@ -10503,13 +10503,14 @@ vertical-align: middle; padding: 20px 15px; clear: both; display: inline-block; 
 /* ul.mspportlet-list { border-bottom:1px solid #eaeaea; } */
 .mspportlet-list li { margin-bottom: 5px; font-size: 13px; }
 .mspportlet-header { background-color: #f6f6f6;}
-.mspportlet-header h4 { padding: 8px 15px}
+.mspportlet-header h4 { padding: 8px 5px 8px 15px; }
 .mspportlet-header .btn { padding: 6px 6px; border-radius: 0 !important; }
-.mspportlet-table .table th, .mspportlet-table .table td { padding: 2.5px 8px; vertical-align: middle; font-size: 13px;}
+.mspportlet-table .table th { padding: 2.5px 8px; vertical-align: middle; font-size: 13px;}
+.mspportlet-table .table td { padding: 2.5px 8px; vertical-align: middle; font-size: 13px; border: 1px solid #e0e0e0;}
 .mspportlet-table .table-bordered > thead > tr > th { border-bottom-width: 0; }
-.mspportlet-table .table .tbldata-dotdot { display: table-cell; }
+.mspportlet-table .table .tbldata-dotdot-200 { margin: 0; }
 .active-mspportlet-table { border: 1px solid #337ab7; padding: 5px;}
-.mspportlet-table { min-height: 50px; max-height: 350px; overflow: auto;}
+.mspportlet-table { min-height: 50px; max-height: 250px; overflow: auto;}
 .morejoblist-popdiv { position: fixed; top: 10%; width: 80%; left: 10%; display: none; background-color: #fff; z-index:99999; border-radius: 3px; 
 	-webkit-box-shadow: 0px 0px 2px #999; -moz-box-shadow: 0px 0px 2px #999; box-shadow: 0px 0px 2px #999;
 }
@@ -10522,9 +10523,18 @@ border-radius: 3px 3px 0px 0px; }
 	border-radius: 3px 3px 0px 0px; }
 .mspportlet-widget-leftborder { border-left: 1px solid #ededed;}
 .mspportlet-list-customcheckbox .checkbox-custom + .checkbox-custom-label::before { width: 16px; height:16px; }
-.jobsearch-search input[type="search"] { border:none; border-bottom:1px solid #cdcdcd; height:30px; padding: 0 5px; width: 210px; background: transparent; }
-.jobsearch-search .searchhere::placeholder {color:red;}
+.jobsearch-search input[type="search"] { border:none; height:30px; padding: 0 10px; width: 165px; background: transparent; display:block !important; }
+.jobsearch-search .searchhere::placeholder {color:#909090;}
 .jobsearch-search .searchSVGIC img { width:30px; height:30px; display: inline-block; cursor:pointer;}
+.jobsearch-search { border: 1px solid #e0e0e0; border-radius: 3px; }
+.mspdashboard-tasli ul li a { padding:8px 25px; color: #303030; border: 1px solid #e0e0e0; border-radius:10px 10px 0 0; list-style-type: none; float: left; }
+.mspdashboard-tasli ul li a.active-mspli { background-color: #458ac9; color: #fff; cursor: pointer; }
+.overrightTooltip .tooltip {
+	position: absolute !important;
+}
+.customLeaves-shadow { box-shadow: 0px 1px 2px #a7a7a7; background-color: #fff; padding: 5px; }
+.customLeaves-shadow .small {font-size: 80%;}
+.customLeaves-shadow .calendar { background-size: 14px; }
 .innershowData { padding-left: 25px; background-color: #fff;}
 #showorgData.col-md-5 { position: absolute; right: 0; z-index:9; transition: 0.5s; }
 #orgArrow-left-right { position: absolute; top: 35%; left: 15px; z-index:9;}
