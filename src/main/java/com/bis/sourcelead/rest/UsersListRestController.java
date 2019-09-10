@@ -2137,8 +2137,16 @@ public class UsersListRestController {
 		User updatedUser = null;
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
-			user.setLastName(addUserDTO.getLastName());
-			user.setMiddelName(addUserDTO.getMiddleName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
+				user.setLastName(addUserDTO.getLastName());
+			}else {
+				user.setLastName(null);
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+				user.setMiddelName(addUserDTO.getMiddleName());
+			}else {
+				user.setMiddelName(null);
+			}
 			user.setGender(addUserDTO.getGender());
 			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
