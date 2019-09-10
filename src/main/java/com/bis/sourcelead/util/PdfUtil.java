@@ -2320,10 +2320,8 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			   AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
 				ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
 				ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
-			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrgId());
-			if(!appliedLeaves.isEmpty()){
+			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrg().getId());
 				   appliedNoofLeaves = (float)associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,lrv.getFromDate(),lrv.getToDate(),leaveType);
-			}
 				totalLeavesCount=totalLeavesCount+appliedNoofLeaves;
 		   }
 		   
