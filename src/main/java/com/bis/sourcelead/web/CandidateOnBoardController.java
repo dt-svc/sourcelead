@@ -136,10 +136,13 @@ public class CandidateOnBoardController {
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("userId", user.getId());
 		 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
-		 model.addObject("candidateId", candidate.getId());
-		 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidate.getId(), false);
-		 model.addObject("paymentList", paymentList);
-		 model.addObject("paymentListSize", paymentList.size());
+		 if(candidate != null) {
+			 model.addObject("candidateId", candidate.getId());
+			 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidate.getId(), false);
+			 model.addObject("paymentList", paymentList);
+			 model.addObject("paymentListSize", paymentList.size());
+		 }
+		
 		 model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
 			 model.setViewName("onboard/onboardingCandidateBankingDetails");
@@ -157,12 +160,14 @@ public class CandidateOnBoardController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
 			 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 if(candidate != null) {
 			 AssociatePfEsiDetails aped = associatePfEsiService.findAssociatePfEsiByCandidateId(candidate.getId(), orgLocations);
 			 if(aped != null) {
 				 if(aped.getEnroleDate() != null) {
 					 model.addObject("enrolledDate",commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), aped.getEnroleDate()));
 				 }
 				 model.addObject("associatePfEsi",aped);
+			   }
 			 }
 			 model.setViewName("onboard/onboardingCandidatePfAndEsiDetails");
 		 }else {
