@@ -9,7 +9,7 @@ import javax.persistence.Enumerated;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 
 @SuppressWarnings("serial")
-public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serializable{
+public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serializable {
 
 	private String candidateName;
 	private String jobTitle;
@@ -65,482 +65,518 @@ public class RequirementSubmissionHistoryDTO extends SearchDTO implements Serial
 	private String incentivizedType;
 	private String applicants;
 	private String interviewOn;
-	
+
 	private int payTerm;
-	
+
 	private String jobRate;
-	
-	@Enumerated(EnumType.STRING)
-	private ApplicantSubmissionStatus finalsSubmissionStatus;
-	
+
+	// @Enumerated(EnumType.STRING)
+	private String finalsSubmissionStatus;
+
 	private String type;
-	
+
 	private String payOutPeriod;
-	
+
 	private String generateInvoice;
-	
+
 	private String offerRateforYearly;
-	
+
 	private String marginRateYearly;
-	
-	public String getCandidateName()
-	{
+
+	public String getCandidateName() {
 		return candidateName;
 	}
-	public void setCandidateName(String candidateName)
-	{
+
+	public void setCandidateName(String candidateName) {
 		this.candidateName = candidateName;
 	}
-	public String getJobTitle()
-	{
+
+	public String getJobTitle() {
 		return jobTitle;
 	}
-	public void setJobTitle(String jobTitle)
-	{
+
+	public void setJobTitle(String jobTitle) {
 		this.jobTitle = jobTitle;
 	}
-	public String getRequirementUUID()
-	{
+
+	public String getRequirementUUID() {
 		return requirementUUID;
 	}
-	public void setRequirementUUID(String requirementUUID)
-	{
+
+	public void setRequirementUUID(String requirementUUID) {
 		this.requirementUUID = requirementUUID;
 	}
-	public String getOrgLocationName()
-	{
+
+	public String getOrgLocationName() {
 		return orgLocationName;
 	}
-	public void setOrgLocationName(String orgLocationName)
-	{
+
+	public void setOrgLocationName(String orgLocationName) {
 		this.orgLocationName = orgLocationName;
 	}
-	public String getEmail()
-	{
+
+	public String getEmail() {
 		return email;
 	}
-	public void setEmail(String email)
-	{
+
+	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getMobilePhone()
-	{
+
+	public String getMobilePhone() {
 		return mobilePhone;
 	}
-	public void setMobilePhone(String mobilePhone)
-	{
+
+	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
 	}
-	public String getResumeUUID()
-	{
+
+	public String getResumeUUID() {
 		return resumeUUID;
 	}
-	public void setResumeUUID(String resumeUUID)
-	{
+
+	public void setResumeUUID(String resumeUUID) {
 		this.resumeUUID = resumeUUID;
 	}
-	public String getFileUrl()
-	{
+
+	public String getFileUrl() {
 		return fileUrl;
 	}
-	public void setFileUrl(String fileUrl)
-	{
+
+	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
 	}
-	public String getPrimarySkill()
-	{
+
+	public String getPrimarySkill() {
 		return primarySkill;
 	}
-	public void setPrimarySkill(String primarySkill)
-	{
+
+	public void setPrimarySkill(String primarySkill) {
 		this.primarySkill = primarySkill;
 	}
-	public String getCreatedUser()
-	{
+
+	public String getCreatedUser() {
 		return createdUser;
 	}
-	public void setCreatedUser(String createdUser)
-	{
+
+	public void setCreatedUser(String createdUser) {
 		this.createdUser = createdUser;
 	}
-	public String getCandidateScore()
-	{
+
+	public String getCandidateScore() {
 		return candidateScore;
 	}
-	public void setCandidateScore(String candidateScore)
-	{
+
+	public void setCandidateScore(String candidateScore) {
 		this.candidateScore = candidateScore;
 	}
-	public String getSubmissionStatus()
-	{
+
+	public String getSubmissionStatus() {
 		return submissionStatus;
 	}
-	public void setSubmissionStatus(String submissionStatus)
-	{
+
+	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
 	}
-	public String getCandidateUUID()
-	{
+
+	public String getCandidateUUID() {
 		return candidateUUID;
 	}
-	public void setCandidateUUID(String candidateUUID)
-	{
+
+	public void setCandidateUUID(String candidateUUID) {
 		this.candidateUUID = candidateUUID;
 	}
-	public Long getSubmissionId()
-	{
+
+	public Long getSubmissionId() {
 		return SubmissionId;
 	}
-	public void setSubmissionId(Long submissionId)
-	{
+
+	public void setSubmissionId(Long submissionId) {
 		SubmissionId = submissionId;
 	}
-	public String getFileName()
-	{
+
+	public String getFileName() {
 		return fileName;
 	}
-	public void setFileName(String fileName)
-	{
+
+	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	public String getContentType()
-	{
+
+	public String getContentType() {
 		return contentType;
 	}
-	public void setContentType(String contentType)
-	{
+
+	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
-	public String getSubmittedOn()
-	{
+
+	public String getSubmittedOn() {
 		return submittedOn;
 	}
-	public void setSubmittedOn(String submittedOn)
-	{
+
+	public void setSubmittedOn(String submittedOn) {
 		this.submittedOn = submittedOn;
 	}
-	public String getExperienceYears()
-	{
+
+	public String getExperienceYears() {
 		return experienceYears;
 	}
-	public void setExperienceYears(String experienceYears)
-	{
+
+	public void setExperienceYears(String experienceYears) {
 		this.experienceYears = experienceYears;
 	}
-	public String getFinalizedRate()
-	{
+
+	public String getFinalizedRate() {
 		return finalizedRate;
 	}
-	public void setFinalizedRate(String finalizedRate)
-	{
+
+	public void setFinalizedRate(String finalizedRate) {
 		this.finalizedRate = finalizedRate;
 	}
-	public String getSubmittedBy()
-	{
+
+	public String getSubmittedBy() {
 		return submittedBy;
 	}
-	public void setSubmittedBy(String submittedBy)
-	{
+
+	public void setSubmittedBy(String submittedBy) {
 		this.submittedBy = submittedBy;
 	}
-	public String getToStage()
-	{
+
+	public String getToStage() {
 		return toStage;
 	}
-	public void setToStage(String toStage)
-	{
+
+	public void setToStage(String toStage) {
 		this.toStage = toStage;
 	}
-	public String getAppliedOn()
-	{
+
+	public String getAppliedOn() {
 		return appliedOn;
 	}
-	public void setAppliedOn(String appliedOn)
-	{
+
+	public void setAppliedOn(String appliedOn) {
 		this.appliedOn = appliedOn;
 	}
-	public int getNumOfInterview()
-	{
+
+	public int getNumOfInterview() {
 		return numOfInterview;
 	}
-	public void setNumOfInterview(int numOfInterview)
-	{
+
+	public void setNumOfInterview(int numOfInterview) {
 		this.numOfInterview = numOfInterview;
 	}
-	public String getOfferJoinDate()
-	{
+
+	public String getOfferJoinDate() {
 		return offerJoinDate;
 	}
-	public void setOfferJoinDate(String offerJoinDate)
-	{
+
+	public void setOfferJoinDate(String offerJoinDate) {
 		this.offerJoinDate = offerJoinDate;
 	}
-	public String getOfferRate()
-	{
+
+	public String getOfferRate() {
 		return offerRate;
 	}
-	public void setOfferRate(String offerRate)
-	{
+
+	public void setOfferRate(String offerRate) {
 		this.offerRate = offerRate;
 	}
-	public String getPositionType()
-	{
+
+	public String getPositionType() {
 		return positionType;
 	}
-	public void setPositionType(String positionType)
-	{
+
+	public void setPositionType(String positionType) {
 		this.positionType = positionType;
 	}
-	public String getAttachment()
-	{
+
+	public String getAttachment() {
 		return attachment;
 	}
-	public void setAttachment(String attachment)
-	{
+
+	public void setAttachment(String attachment) {
 		this.attachment = attachment;
 	}
-	public Long getOfferId()
-	{
+
+	public Long getOfferId() {
 		return offerId;
 	}
-	public void setOfferId(Long offerId)
-	{
+
+	public void setOfferId(Long offerId) {
 		this.offerId = offerId;
 	}
-	public String getPaymentType()
-	{
+
+	public String getPaymentType() {
 		return paymentType;
 	}
-	public void setPaymentType(String paymentType)
-	{
+
+	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
 	}
-	public String getPaymentMode()
-	{
+
+	public String getPaymentMode() {
 		return paymentMode;
 	}
-	public void setPaymentMode(String paymentMode)
-	{
+
+	public void setPaymentMode(String paymentMode) {
 		this.paymentMode = paymentMode;
 	}
-	public String getExperienceMonths()
-	{
+
+	public String getExperienceMonths() {
 		return experienceMonths;
 	}
-	public void setExperienceMonths(String experienceMonths)
-	{
+
+	public void setExperienceMonths(String experienceMonths) {
 		this.experienceMonths = experienceMonths;
 	}
-	public Long getOrgLocationId()
-	{
+
+	public Long getOrgLocationId() {
 		return orgLocationId;
 	}
-	public void setOrgLocationId(Long orgLocationId)
-	{
+
+	public void setOrgLocationId(Long orgLocationId) {
 		this.orgLocationId = orgLocationId;
 	}
-	public String getTabType()
-	{
+
+	public String getTabType() {
 		return tabType;
 	}
-	public void setTabType(String tabType)
-	{
+
+	public void setTabType(String tabType) {
 		this.tabType = tabType;
 	}
-	public String getFrequency()
-	{
+
+	public String getFrequency() {
 		return frequency;
 	}
-	public void setFrequency(String frequency)
-	{
+
+	public void setFrequency(String frequency) {
 		this.frequency = frequency;
 	}
-	public String getFromDate()
-	{
+
+	public String getFromDate() {
 		return fromDate;
 	}
-	public void setFromDate(String fromDate)
-	{
+
+	public void setFromDate(String fromDate) {
 		this.fromDate = fromDate;
 	}
-	public String getToDate()
-	{
+
+	public String getToDate() {
 		return toDate;
 	}
-	public void setToDate(String toDate)
-	{
+
+	public void setToDate(String toDate) {
 		this.toDate = toDate;
 	}
+
 	public String getClientId() {
 		return clientId;
 	}
+
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
 	}
+
 	public String getTeamId() {
 		return teamId;
 	}
+
 	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}
+
 	public String getEmploymentType() {
 		return employmentType;
 	}
+
 	public void setEmploymentType(String employmentType) {
 		this.employmentType = employmentType;
 	}
+
 	public String getExportType() {
 		return exportType;
 	}
+
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
 	}
+
 	public List<String> getLocationsList() {
 		return locationsList;
 	}
+
 	public void setLocationsList(List<String> locationsList) {
 		this.locationsList = locationsList;
 	}
+
 	public String getJobGeneratedId() {
 		return jobGeneratedId;
 	}
+
 	public void setJobGeneratedId(String jobGeneratedId) {
 		this.jobGeneratedId = jobGeneratedId;
 	}
+
 	public String getBackoutType() {
 		return backoutType;
 	}
+
 	public String getBackoutReason() {
 		return backoutReason;
 	}
+
 	public String getIncentivize() {
 		return incentivize;
 	}
-	 
+
 	public void setBackoutType(String backoutType) {
 		this.backoutType = backoutType;
 	}
+
 	public void setBackoutReason(String backoutReason) {
 		this.backoutReason = backoutReason;
 	}
+
 	public void setIncentivize(String incentivize) {
 		this.incentivize = incentivize;
 	}
+
 	public String getSearchType() {
 		return searchType;
 	}
+
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
 	}
+
 	public String getJobRating() {
 		return jobRating;
 	}
+
 	public void setJobRating(String jobRating) {
 		this.jobRating = jobRating;
 	}
+
 	public String getRejectedType() {
 		return rejectedType;
 	}
+
 	public String getRejectedReason() {
 		return rejectedReason;
 	}
+
 	public void setRejectedType(String rejectedType) {
 		this.rejectedType = rejectedType;
 	}
+
 	public void setRejectedReason(String rejectedReason) {
 		this.rejectedReason = rejectedReason;
 	}
+
 	public String getJoinDate() {
 		return joinDate;
 	}
+
 	public void setJoinDate(String joinDate) {
 		this.joinDate = joinDate;
 	}
+
 	public String getIncentivizedType() {
 		return incentivizedType;
 	}
+
 	public void setIncentivizedType(String incentivizedType) {
 		this.incentivizedType = incentivizedType;
 	}
-	public String getPayOutPeriod()
-	{
+
+	public String getPayOutPeriod() {
 		return payOutPeriod;
 	}
-	public void setPayOutPeriod(String payOutPeriod)
-	{
+
+	public void setPayOutPeriod(String payOutPeriod) {
 		this.payOutPeriod = payOutPeriod;
 	}
-	public String getGenerateInvoice()
-	{
+
+	public String getGenerateInvoice() {
 		return generateInvoice;
 	}
-	public void setGenerateInvoice(String generateInvoice)
-	{
+
+	public void setGenerateInvoice(String generateInvoice) {
 		this.generateInvoice = generateInvoice;
 	}
-	public String getType()
-	{
+
+	public String getType() {
 		return type;
 	}
-	public void setType(String type)
-	{
+
+	public void setType(String type) {
 		this.type = type;
 	}
+
 	public String getRequirementId() {
 		return requirementId;
 	}
+
 	public void setRequirementId(String requirementId) {
 		this.requirementId = requirementId;
 	}
-	public ApplicantSubmissionStatus getFinalsSubmissionStatus() {
+
+	public String getFinalsSubmissionStatus() {
 		return finalsSubmissionStatus;
 	}
-	public void setFinalsSubmissionStatus(ApplicantSubmissionStatus finalsSubmissionStatus) {
+
+	public void setFinalsSubmissionStatus(String finalsSubmissionStatus) {
 		this.finalsSubmissionStatus = finalsSubmissionStatus;
 	}
-	public String getApplicants()
-	{
+
+	public String getApplicants() {
 		return applicants;
 	}
-	public void setApplicants(String applicants)
-	{
+
+	public void setApplicants(String applicants) {
 		this.applicants = applicants;
 	}
-	public int getPayTerm()
-	{
+
+	public int getPayTerm() {
 		return payTerm;
 	}
-	public void setPayTerm(int payTerm)
-	{
+
+	public void setPayTerm(int payTerm) {
 		this.payTerm = payTerm;
 	}
-	public String getJobRate()
-	{
+
+	public String getJobRate() {
 		return jobRate;
 	}
-	public void setJobRate(String jobRate)
-	{
+
+	public void setJobRate(String jobRate) {
 		this.jobRate = jobRate;
 	}
+
 	public String getOfferRateforYearly() {
 		return offerRateforYearly;
 	}
+
 	public void setOfferRateforYearly(String offerRateforYearly) {
 		this.offerRateforYearly = offerRateforYearly;
 	}
+
 	public String getMarginRateYearly() {
 		return marginRateYearly;
 	}
+
 	public void setMarginRateYearly(String marginRateYearly) {
 		this.marginRateYearly = marginRateYearly;
 	}
+
 	public String getInterviewOn() {
 		return interviewOn;
 	}
+
 	public void setInterviewOn(String interviewOn) {
 		this.interviewOn = interviewOn;
 	}
-	
-	
-	
+
 }

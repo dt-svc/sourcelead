@@ -23,7 +23,7 @@
     </properties>
 
     <repositories>
-        <repository>
+        <!-- <repository>
             <id>elasticsearch-releases</id>
             <url>https://artifacts.elastic.co/maven</url>
             <releases>
@@ -32,11 +32,30 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
+	    </repository> -->
+		<repository>
+			<id>elastic-lucene-snapshots</id>
+			<name>Elastic Lucene Snapshots</name>
+			<url>http://s3.amazonaws.com/download.elasticsearch.org/lucenesnapshots/00142c9</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+        
     </repositories>
 
     <dependencies>
-    
+				
+		<!-- https://mvnrepository.com/artifact/org.elasticsearch.client/elasticsearch-rest-high-level-client -->
+		<dependency>
+		    <groupId>org.elasticsearch.client</groupId>
+		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
+		    <version>6.4.2</version>
+		</dependency>
+
           <!-- https://mvnrepository.com/artifact/com.monitorjbl/xlsx-streamer --> 
 	  	<dependency>
 		    <groupId>com.monitorjbl</groupId>
@@ -508,7 +527,7 @@
             <version>4.6</version>
         </dependency>
         <!-- to get time zones -->
-        <dependency>
+       <!--  <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>6.1.2</version>
@@ -517,7 +536,7 @@
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>transport</artifactId>
             <version>6.1.2</version>
-        </dependency>
+        </dependency> -->
 
         <!-- below dependencies are belongs to quickbooks OAuth authentication -->
         <dependency>
@@ -719,6 +738,22 @@
 				     <artifactId>httpclient</artifactId> 
 				     <version>4.5.2</version> 
 				     </dependency>
+				     
+				         <!-- Docx to Pdf Conversion -->
+				     <dependency>
+    					<groupId>fr.opensagres.xdocreport</groupId>
+    					<artifactId>org.apache.poi.xwpf.converter.pdf</artifactId>
+    					<version>1.0.6</version>
+					</dependency>
+					
+					<!-- Rtf to Pdf -->
+				<!-- 	<dependency>
+    					<groupId>com.lowagie</groupId>
+    					<artifactId>itext-rtf</artifactId>
+    					<version>2.1.4</version>
+					</dependency>
+					 -->
+					
 	    </dependencies>
     <build>
         <finalName>sourcelead-commons</finalName>

@@ -3114,6 +3114,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
  				orgRelations.setResponderLevel("Tier-5");
  				orgRelations.setStatus("ACTIVE");
  				orgRelations.setGenerateInvoice("Bulk");
+ 				orgRelations.setGenerateBill("Bulk");
  				orgRelations.setCreatedBy(user.getUserCode());
  				orgRelations.setCreatedDate(new Date());
  				orgRelations.setUpdatedBy(user.getUserCode());
@@ -4169,6 +4170,18 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	public ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId)
 	{
 		return projectsDao.isUserAssignedToProject(userId,orgLocationId,projectId);
+	}
+	
+	@Override
+	public List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		return projectsDao.getProjectListForProjectTimeEntriesReports(orgLocationsId, orgId, isGlobalManager, userId, type, userRole);
+	}
+	
+	@Override
+	public List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		return projectsDao.getProjectListForResourceTimeEntriesReports(orgLocationsId, orgId, isGlobalManager, userId, type, userRole);
 	}
 
 	

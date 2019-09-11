@@ -71,7 +71,7 @@ public interface ProjectMembersDao {
 	
 	public Integer updateProjectMemberDeletedReason(Long projectMemberId, String reason);
 
-	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status);
+	public List<ProjectMembers> getAllProjectsByUserIdAndStatus(Long userId, String status, Long orgLocationId);
 
 	public Integer updateEndDateOfProjectMemberId(Date endDate, Long projectMemberId);
 	
@@ -160,5 +160,9 @@ public interface ProjectMembersDao {
 	public List<Object[]> getAllAvailableAssociates( Long orgLocationId);
 	
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId, Long projectClientsId) throws Exception;
+	
+	public List<ProjectMembers> getAllProjectsAssigendToCandidateIdAndStatus(Long candidateId,String status) throws Exception;
+	
+	public List<ProjectMembers> getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception;
 			
 }

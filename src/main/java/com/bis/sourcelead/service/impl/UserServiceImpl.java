@@ -317,6 +317,8 @@ public class UserServiceImpl implements UserService {
 		 
 		  if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
 			  user.setLastName(addUserDTO.getLastName());
+		  }else {
+			  user.setLastName(null);
 		  }
 		
 		  if(StringUtils.isNotBlank(addUserDTO.getPhoneNumber())) {

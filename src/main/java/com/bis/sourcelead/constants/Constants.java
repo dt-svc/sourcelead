@@ -2,6 +2,7 @@
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.TimeZone;
 
 
@@ -25,7 +26,7 @@ public class Constants {
 			"Impace" };
 	public static final String[] AVAILABLE_ASSOCIATES_REPORT_EXPORT_HEADDERS = { "Project Name", "Project Duration","Associate Duration", "Availability %","No.of Hours",};
 	
-	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Duration","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
+	public static final String[] EXPENSE_PENDING_APPROVAL_REPORT_EXPORT_HEADDERS = { "Emp_ID", "Emp_Name","Emp_Type", "Project","Approval Mechanism","Manager1","Manager2","Submitted Amount","Submitted on","Approved By"};
 	
 	public static final String[] FONT_SIZE = { "8px", "9px", "10px", "11px", "12px", "13px", "14px",
 			"15px", "16px", "17px", "18px", "19px", "20px", "21px", "221px", "23px", "24px" };
@@ -641,14 +642,31 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
-	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	
+	//workflow
+	public static final String QUESTIONNAIRE_AUTO_SUBMISSION = "Auto";
+	public static final String QUESTIONNAIRE_MANUAL_SUBMISSION = "Manual";
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
+	public static final String CUSTOMIZE = "Customize";
+	public static final LinkedHashMap<String, String> DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String> (){
+		{
+			put("Submission", "SUBMISSION"); 	put("Short List", "SHORTLIST"); 
+			put("Submit to Client", "SUBMIT_TO_CLIENT"); put("Interview","INTERVIEW"); 
+			put("Offer", "OFFERMADE"); 	put("No Response", "NORESPONSE"); 
+			put("On-hold","ONHOLD"); put("Joined", "JOINED"); 
+			put("Reject", "REJECTED"); put("Backout","BACKOUT");
+		}
+	};
+	
+	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
+	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowStageTaskNotification";
 	
 	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location*", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Workflow","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
@@ -1525,4 +1543,6 @@ public class Constants {
 			                                                "Note-", "Date","Place","SIGNATURE OF THE EMPLOYEE"};
 	
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
+	
+	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
 }

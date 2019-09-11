@@ -23,6 +23,7 @@ import com.bis.sourcelead.SourceleadUserDetailsService;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.UserDetailsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.TokenInfo;
 import com.bis.sourcelead.entity.User;
@@ -122,9 +123,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						if(orgLocations.getTimezone() != null) {
 							orgLocations.setTimeZoneId(orgLocations.getTimezone().getId() + "");
 						}
+						OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+						SourceLeadSessionManager.setSessionAttribute(request, "org", orgLocations.getOrg());
+						SourceLeadSessionManager.setSessionAttribute(request, "orgId", orgLocations.getOrg().getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 						Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), userRole.getOrgLocations().getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+						SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 					} catch (Exception e) {}
 					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 			}
