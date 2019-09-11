@@ -829,6 +829,7 @@ public class RequirementWorkflowController {
 				@RequestParam(value = "stageName", required = true) String stageName, @RequestParam(value = "stageId", required = true) Long stageId,
 				@RequestParam(value = "questionnaireUuid", required = true) String questionnaireUuid,
 				@RequestParam(value = "jobTitle", required = true) String jobTitle,
+				@RequestParam(value = "stageUuid", required = true) String stageUuid,
 				HttpServletRequest request)throws Exception {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			User loginUser  =    (User) SourceLeadSessionManager.getSessionAttribute(request,	"user");
@@ -858,7 +859,7 @@ public class RequirementWorkflowController {
 				paramsMap.put("templateUuid", questionnaireUuid);
 				paramsMap.put("stageName", stageName);
 				paramsMap.put("jobTitle", jobTitle);
-				
+				paramsMap.put("stageUuid", stageUuid);
 				paramsMap.put("submissionId", submissionId);
 				paramsMap.put("stageId", stageId);
 				//status = Constants.SUCCESS;
@@ -876,13 +877,13 @@ public class RequirementWorkflowController {
 	@RequestMapping(value = { "/ws/publicQuestionnaireTemplate", "/viewQuestionnaireTemplate" })
 	public ModelAndView publicQuestionnaireTemplate(
 			@RequestParam(value = "templateUuid", required = true) String templateUuid,
-			@RequestParam(value = "stageId", defaultValue = "", required = false) String stageId,
+			@RequestParam(value = "stageUuid", defaultValue = "", required = false) String stageUuid,
 			@RequestParam(value = "submissionId", defaultValue = "", required = false) String submissionId) throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.setViewName("workflow/publicQuestionnaireTemplate");
 		model.addObject("templateUuid", templateUuid);
-		model.addObject("workflowStageId", stageId);
+		model.addObject("workflowStageUuid", stageUuid);
 		model.addObject("requirementSubmissionId", submissionId);
 		model.addObject("auto", Constants.QUESTIONNAIRE_AUTO_SUBMISSION);
 		model.addObject("manual", Constants.QUESTIONNAIRE_MANUAL_SUBMISSION);
@@ -908,9 +909,9 @@ public class RequirementWorkflowController {
 		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
 		 @ResponseBody
 		   public RequirementQuestionnaireTemplateDTO getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid,
-					@RequestParam(value = "stageId", required = false) String stageId,
+					@RequestParam(value = "workflowStageUuid", required = false) String workflowStageUuid,
 					@RequestParam(value = "submissionId", required = false) String submissionId) throws Exception {
-			 RequirementQuestionnaireTemplateDTO questionnaireTemplate = requirementWorkFlowService.getSavedQuestionnaire(templateUuid, stageId, submissionId);
+			 RequirementQuestionnaireTemplateDTO questionnaireTemplate = requirementWorkFlowService.getSavedQuestionnaire(templateUuid, workflowStageUuid, submissionId);
 				 return questionnaireTemplate;
 		   }
 /**

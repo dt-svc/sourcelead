@@ -49,7 +49,7 @@ var labelAndAttemptsMap = new Map();
 var savedQuestionnaireUuid = new Map();
 var submissionType = new Map();
 var templateUuid = '${templateUuid}';
-var workflowStageId = '${workflowStageId}';
+var workflowStageUuid = '${workflowStageUuid}';
 var requirementSubmissionId = '${requirementSubmissionId}';
 var autoSubmission = '${auto}';
 var manualSubmission = '${manual}';
@@ -88,11 +88,11 @@ function saveQuestionnareWithTimeLimit(minutes, seconds){
 	submissionType.set("submissionType", autoSubmission);
 	$.ajax({
     	type: "GET",
-        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
+        url:sourceleadUrl+"/saveQuestionnaireTemplateForSubmission?questionnaireTemplateUuid="+templateUuid+"&workflowStageUuid="+workflowStageUuid+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
         success: function(data) {
         	savedQuestionnaireUuid.set("savedQuestionnaireUuid", data.uuid);
         	$("#questionnaireTemplateFormDiv").show();
-        	updateFeedbackTimerPerSecond(templateUuid ,workflowStageId, requirementSubmissionId, data.timeLimitMinutes, data.timeLimitSeconds)
+        	updateFeedbackTimerPerSecond(templateUuid ,workflowStageUuid, requirementSubmissionId, data.timeLimitMinutes, data.timeLimitSeconds)
         }
 	});
 
@@ -345,13 +345,13 @@ function saveQuestionnaireTemplate(){
 			        contentType:false,
 	      	    	dataType : 'json',
 	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints+"&submissionsCount="+submissionsCount
-	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
+	      	      			+"&workflowStageUuid="+workflowStageUuid+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
 	      	        success: function(result) {
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
 			        	} else if (result != null) {
 			        		submissionsCount++;
-			        		generateQuestionnaireFeedbackTemplateForm(result, qTemplateUuid, workflowStageId, requirementSubmissionId);
+			        		generateQuestionnaireFeedbackTemplateForm(result, qTemplateUuid, workflowStageUuid, requirementSubmissionId);
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else {
 			        	    showError("Operation failed, please try again");
@@ -458,7 +458,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 	  }
     $.ajax({
     	type: "GET",
-        url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&stageId="+workflowStageId+"&submissionId="+requirementSubmissionId, 
+        url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&workflowStageUuid="+workflowStageUuid+"&submissionId="+requirementSubmissionId, 
         success: function(result) {
         	if(result.timeLimitMinutes != null && result.timeLimitSeconds != null){
         		$("#timerDiv").show();
@@ -466,7 +466,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
         			$("#questionnaireTemplateFormDiv").hide();
         			questionnaireFillingCheck(result.timeLimitMinutes, result.timeLimitSeconds);
             	}else{
-            		updateFeedbackTimerPerSecond(templateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
+            		updateFeedbackTimerPerSecond(templateUuid, workflowStageUuid, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
         		}
         		}else{
         			$("#timerDiv").hide();
@@ -954,7 +954,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
 }
 </script>
 <script>
-function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, workflowStageId, requirementSubmissionId){
+function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, workflowStageUuid, requirementSubmissionId){
 	$("#questionnaireTemplateFormDiv").show();
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
@@ -988,10 +988,10 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, wo
 		 
 		$("#questionnaireTemplateFormDiv").empty();
 		$("#questionnaireTemplateFormDiv").append(result);
-		 generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageId, requirementSubmissionId);
+		 generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageUuid, requirementSubmissionId);
 }
 
-function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageId, requirementSubmissionId){
+function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageUuid, requirementSubmissionId){
 
     //empty out the preview area
     $("#questionnairesjfb-fields").empty();
@@ -1001,7 +1001,7 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
         success: function(result) {
         	if(result.timeMinutesRemained != null && result.timeSecondsRemained != null){
         		$("#timerDiv").show();
-        		updateFeedbackTimerPerSecond(qTemplateUuid, workflowStageId, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
+        		updateFeedbackTimerPerSecond(qTemplateUuid, workflowStageUuid, requirementSubmissionId, result.timeMinutesRemained, result.timeSecondsRemained);
         	}else{
         		$("#timerDiv").hide();
         	}
@@ -1754,7 +1754,7 @@ function saveAutoSubmitQuestionnaireForm(){
 			        contentType:false,
 	      	    	dataType : 'json',
 	      	        url: sourceleadUrl+"/saveQuestionnaireFeedbackTemplate?jsonStringData="+jsonStringData+"&questionnaireTemplateUuid="+qTemplateUuid+"&uuid="+savedQuestionnaireUuid.get("savedQuestionnaireUuid")+"&submittedPoints="+submittedPoints+"&totalPoints="+totalPoints
-	      	      			+"&workflowStageId="+workflowStageId+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
+	      	      			+"&workflowStageUuid="+workflowStageUuid+"&requirementSubmissionId="+requirementSubmissionId+"&submissionType="+submissionType.get("submissionType"), 
 	      	        success: function(result) {
 	      	           if (result == null) {
 			        	    location.href = "/errorPage";
