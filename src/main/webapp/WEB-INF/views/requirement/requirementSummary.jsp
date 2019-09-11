@@ -1206,7 +1206,7 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 		 document.getElementById("backOutOtherCategoryDiv").style.display="none";
 		 $("#backOutCategory").val("");
 	 }
-	pipelineBySubmissionType(requirementId,submissionType);
+	 requirementPipeline(requirementId,submissionType);
 };
 
 function cancelBackOutApplicant(submissionId,requirementId,submissionType){ 
@@ -1216,14 +1216,15 @@ function cancelBackOutApplicant(submissionId,requirementId,submissionType){
 	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
 	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
 	 $("#backOutCategory").val("");
-	 pipelineBySubmissionType(requirementId,submissionType);
+	 requirementPipeline(requirementId,submissionType);
 };
 
 function cancelJoinedRequest(submissionId,requirementId,submissionType){ 
 	 $("#joinedApplicant"+submissionId).fadeOut(200);
 	 $(".project_inn_mask").fadeOut(200);
 	 $("#joinDate"+submissionId+"").val("");
-	 pipelineBySubmissionType(requirementId,submissionType);
+	 //pipelineBySubmissionType(requirementId,submissionType);
+	 requirementPipeline(requirementId,submissionType);
 };
 
 function pipelineBySubmissionType(requirementId,submissionType){
