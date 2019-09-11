@@ -493,7 +493,7 @@ function submitCandidtesToJob(){
 			       			if(submittedlength > 0){
 			       				$("#candMsgDiv").html(submittedlength+" Candidate(s) Submitted Successfully...");
 			       			}
-			       			
+			       			resetCandidateFilter();
 				    	}else if (data.indexOf('Sign In') !== -1) {
 				    		location.replace(sourceleadUrl);
 				    	} else {
