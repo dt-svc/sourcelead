@@ -63,7 +63,7 @@ var uploadflag= true;
 								</div>
 								<div class="btn-group">
 									<input type="reset" class="btn btn-danger" value="Reset"
-										onClick="javascript:window.location.href = '${SourceleadWeb_sourceleadUrl}/uploadForm'">
+										onClick="javascript:window.location.href ='${appPath}/uploadForm'">
 								</div>
 							</div>
 						</div>

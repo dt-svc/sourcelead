@@ -990,7 +990,7 @@ function preventTabkey(e){
 
 </div>
 
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activitiy</a></div> 
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activity</a></div> 
 </div>
 
 <div>
