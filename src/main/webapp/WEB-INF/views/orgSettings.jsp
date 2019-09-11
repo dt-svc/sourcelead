@@ -18,6 +18,7 @@
 	}
 .trashbackground{
     background-color: #ffff !important;
+    }
 </style>
 
 <!--success msg -->
