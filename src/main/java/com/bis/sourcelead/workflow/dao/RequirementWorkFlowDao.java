@@ -129,7 +129,7 @@ public interface RequirementWorkFlowDao {
 	
 	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
 
-	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId);
+	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(String stageUuid, Long submissionId, Long orgLocationId);
 
 	RequirementWorkFlowTasks getRequirementWorkFlowTasksByUuid(String currentStageUuid);
 	

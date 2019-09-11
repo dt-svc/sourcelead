@@ -1609,9 +1609,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId)
+	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(String stageUuid, Long submissionId, Long orgLocationId)
 			throws Exception {
-		return requirementWorkFlowDao.getSubmittedQuestionnaireUuidByWorkflowStage(stageId,submissionId,orgLocationId);
+		return requirementWorkFlowDao.getSubmittedQuestionnaireUuidByWorkflowStage(stageUuid,submissionId,orgLocationId);
 	}
 	
 	@Override
