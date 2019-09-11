@@ -265,7 +265,7 @@ public class RequirementHelper {
 			}
 			// to store approver of the req in elk
 		if(requirementDTO != null) {
-			if (null != requirementDTO.getParallelApprover()) {
+			if (requirementDTO.getParallelApprover() != null && !requirementDTO.getParallelApprover().isEmpty()) {
 				String[] reqApproverUserId = requirementDTO.getParallelApprover().toArray(new String[requirementDTO.getParallelApprover().size()]);
 				requirementIndex.setReqLevel1ApproverUserId(reqApproverUserId);
 			}
@@ -273,7 +273,9 @@ public class RequirementHelper {
 				String sequentialApprovers1 = requirementDTO.getSequentialApprover1();
 				String sequentialApprovers2 = requirementDTO.getSequentialApprover2();
 				requirementIndex.setReqLevel1ApproverUserId(sequentialApprovers1.split(","));
+				requirementIndex.setReqLevel1ApproverStatus(requirementDTO.getReqLevel1ApproverStatus());
 				requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
+				requirementIndex.setReqLevel2ApproverStatus(requirementDTO.getReqLevel2ApproverStatus());
 			}
 		}
 			HashSet<String> teamOwnerUserId = new HashSet<>();
