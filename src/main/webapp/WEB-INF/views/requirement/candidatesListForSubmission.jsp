@@ -567,7 +567,11 @@ function submitApplicantsToJob(){
 				    		$(".side_mask").fadeOut(200);
 				    		$("body").css('overflow-y', 'auto');
 				    		requirementPipeline(jobId,'all');
-				    		requirementStatusBar(jobId);
+				    		if(typeof isWorkflowConfiured != 'undefined' && isWorkflowConfiured){
+				    			requirementWorkflowStatusBar(jobId);
+				    		}else{
+				    			requirementStatusBar(jobId);
+				    		}
 				    		
 				    		var submittedlength = '';
 			       			if(data.responseObject.length > 0){

@@ -57,7 +57,7 @@
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/offboardingTemplatesList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/offboardingTemplatesList'">
                     <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -637,8 +637,7 @@ function createTemplate(saveType) {
 	
 	  if ($('#offboardTemplate_form').validate(false, validationSettings)) { 
 		    
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
+		  var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        
 	    	$("#save_button").attr("disabled", "disabled");
     		$("#save_continue_button").attr("disabled", "disabled");
@@ -647,7 +646,7 @@ function createTemplate(saveType) {
 	        $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/createNewOffBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/createNewOffBoardingTemplate?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	        		    showError(response.responseMessage);
@@ -696,8 +695,7 @@ function createTemplateDocs(saveType){
 			dateFormat : 'yyyy/mm/dd' 
     }; 
 	
-	var sourceleadUrl ='${sourceleadUrl}';
-	  
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	if ($('#templateDocuments_form').validate(false, validationSettings)) {
 		$("#save_doc_button").attr("disabled", "disabled");
 		$("#save_continue_doc_button").attr("disabled", "disabled");
@@ -706,7 +704,7 @@ function createTemplateDocs(saveType){
 		$.ajax({
 	        type : "POST",
 		      data: formData,
-	    	  url: sourceleadUrl+"/saveOffboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: atsUrl+"/saveOffboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(response) {
 		    	  	if (response.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
@@ -751,7 +749,7 @@ function saveOffboardTask(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	  if ($('#addoffboardTask_form').validate(false, validationSettings)){ 
 	        var sourceleadUrl ='${sourceleadUrl}';
 	        var formData = getFormData1("addoffboardTask_form");
@@ -761,7 +759,7 @@ function saveOffboardTask(){
 		    	 data: formData,
 		    	 processData: false,
 			     contentType:false,
-		    	 url: sourceleadUrl+"/saveOffBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/saveOffBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	        		    showError(response.responseMessage);
@@ -836,9 +834,10 @@ function getTemplateDetails(){
 	var templateId = document.getElementById("templateId").value;
 	if(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl ='${SourceLeadWeb_atsUrl}';
         $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getOffboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
+	    	 url: atsUrl+"/getOffboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -862,6 +861,7 @@ function getTemplateDetails(){
 
 <script>
 function getTemplateResignationDocumentsDetails(templateId){
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$("#templateDocuments_form input[name*='resignationFileInfo']").remove();
 	$("#templateDocuments_form input[name*='offboardPackFileInfo']").remove();
 	
@@ -873,7 +873,7 @@ function getTemplateResignationDocumentsDetails(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -913,6 +913,7 @@ function getTemplateResignationDocumentsDetails(templateId){
 
 <script>
 function getTemplateOffboardPackDocumentsDetails(templateId){
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	$("#templateDocuments_form input[name*='resignationFileInfo']").remove();
 	$("#templateDocuments_form input[name*='offboardPackFileInfo']").remove();
 	if(templateId == '' || templateId == null || templateId =='undefined'){
@@ -923,7 +924,7 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getOffboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && response.response === "INVALID_DATA") {
 		        	    showError(response.responseMessage);
@@ -964,10 +965,10 @@ function getTemplateOffboardPackDocumentsDetails(templateId){
 
 <script>
 function deleteOffBoardingDocument(documentUUID,documentId,documentType){
-	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
    	$.ajax({
     	type: "POST",
-    	url: sourceleadUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+    	url: atsUrl+"/deleteOffBoardingDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
         success: function(response) {
         	if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -992,12 +993,12 @@ function deleteOffBoardingDocument(documentUUID,documentId,documentType){
 function validateTemplateName(){
 	var templateId = document.getElementById("templateId").value;
 	var templateName = document.getElementById("templateName").value;
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	if(templateName){
 		
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateOffboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
+	    	url : atsUrl+"/validateOffboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -1031,7 +1032,7 @@ function validateTemplateName(){
 
 <script>
 function getOffboardingTasksList(){
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var offboardTaskDiv = document.getElementById("offboardTaskDiv").value;
 	if(offboardTaskDiv == 'Y'){
 	
@@ -1042,7 +1043,7 @@ function getOffboardingTasksList(){
 		 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+		    url: atsUrl+"/getOffboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 		    success: function(response) {
 		    	if (response.response === "AWKWARD") {
 		    	    location.href = "/errorPage";
@@ -1115,7 +1116,7 @@ function getOffboardingTasksList(){
 	}
 }
 function redirect(){
-	window.location.href = sourceleadUrl +  "/offboardingTemplatesList";
+	window.location.href = atsUrl +  "/offboardingTemplatesList";
 }
 </script>
 
@@ -1151,11 +1152,13 @@ function deleteTask(taskId){
 
 <script>
 function saveAndFinishOffboardTemplate(templateId){
-	$("#finish_task").attr("disabled", "disabled");
+	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
+   $("#finish_task").attr("disabled", "disabled");
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: atsUrl+"/saveAndFinishOffboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
     		    showError(response.responseMessage);
@@ -1164,7 +1167,7 @@ function saveAndFinishOffboardTemplate(templateId){
 	    	} else if (response.response === "SUCCESS") {
 	    		$("#finish_task").removeAttr("disabled");
 		    	$("#loading").removeAttr("style");
-		    	location.replace(sourceleadUrl+"/offboardingTemplatesList"); 
+		    	location.replace(atsUrl+"/offboardingTemplatesList"); 
 	    	} else if (response.indexOf('Sign In') !== -1) {
 	    		location.replace(sourceleadUrl);
 	    	} else {
@@ -1177,8 +1180,7 @@ function saveAndFinishOffboardTemplate(templateId){
 
 <script>
 function getOffboardingCheckList(){
-	
-	
+	var atsUrl ='${SourceLeadWeb_atsUrl}';
 	var result = "";
 	var templateId = document.getElementById("templateId").value;
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -1237,8 +1239,8 @@ function getOffboardingCheckList(){
 	           $("#offboardingCheckList").append(result); 
 	           $("#offboardTasksList").empty();
 	           if(templateId){
-	           		customizeFields(templateId,sourceleadUrl,"template");
-				}     
+	           		customizeFields(templateId,atsUrl,"template");
+				}    
 	
 }
 </script>
@@ -1372,7 +1374,7 @@ function createTemplateCheckList(saveType){
 	        var con2 = JSON.stringify(fields);
 	        var jsonStringData = encodeURIComponent(con2);
 	        var formData = getFormData("offboardTemplate_form");
-	        
+	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        if(submitTemplate){
 	        	var checkListTemplateId = $("#checkListTemplateId").val();
 	    	    $("#save_checkList_button").attr("disabled", "disabled");
@@ -1382,7 +1384,7 @@ function createTemplateCheckList(saveType){
 	        	  $.ajax({
 	      	    	type: "POST",
 	      	    	data: formData,
-	      	        url: sourceleadUrl+"/saveOffboardTemplateCheckList?${_csrf.parameterName}=${_csrf.token}&checkListTemplateId="+checkListTemplateId+"&jsonStringData="+jsonStringData, 
+	      	        url: atsUrl+"/saveOffboardTemplateCheckList?${_csrf.parameterName}=${_csrf.token}&checkListTemplateId="+checkListTemplateId+"&jsonStringData="+jsonStringData, 
 	      	        success: function(response) {
 	      	        	if (response.response === "AWKWARD") {
 	      	        	    location.href = "/errorPage";
