@@ -349,7 +349,8 @@ public class ContractRestController {
 		boolean isContractSaved = false;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO, orgLocation, "", user, org, "");
 		if (null != contracts) {
 			isContractSaved = true;
