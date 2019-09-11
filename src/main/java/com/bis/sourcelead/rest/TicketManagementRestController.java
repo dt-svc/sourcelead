@@ -827,7 +827,7 @@ public class TicketManagementRestController {
 		return responseList;
 	}
 	
-	@RequestMapping(value = "/saveTicketComment", method = RequestMethod.POST)
+	@RequestMapping(value = {"/saveTicketComment", "/rest/saveTicketComment"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> saveTicketComment(HttpServletRequest request, TicketCommentDTO ticketCommentDTO) {
 		Response<Boolean> response = new Response<>();

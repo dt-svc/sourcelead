@@ -27,5 +27,5 @@ UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear [Manager_Name],\n[Login_User] Rejected 
 SET SQL_SAFE_UPDATES = 1;
                           
 
-INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES   ((SELECT `ID` FROM `EMAIL_SCENARIO` WHERE `UNIQUE_SCENARIO_NAME` = 'ExpensesApprovalRejectedEmailToEmployee' AND `ENTITY_TYPE` = 'Email'), 'loginURL', '[Login_Link]');
+INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES   ((SELECT `ID` FROM `EMAIL_SCENARIO` WHERE `UNIQUE_SCENARIO_NAME` = 'ExpensesApprovalRejectedEmailToEmployee' AND `ENTITY_TYPE` = 'Email' AND `PARENT_ID` IS NULL ), 'loginURL', '[Login_Link]');
 
