@@ -839,7 +839,7 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 				put("Alternate Number", "alternateNumber"); 	put("location", "location"); put("DOB","dateOfBirthStr");
 				put("Experience", "workExperience"); 	put("Current CTC", "currentCtc"); put("Rate [Expected CTC]","expectedCTC");
 				put("Score", "candidateScore"); 	put("Notice Period", "noticePeriod"); put("Applied on","createdDateStr");
-				put("Source", "createdUser"); put("Submitted Questionnaire", "submittedQuestionrUuid"); 
+				put("Source", "createdUser"); put("Submitted Questionnaire", "submittedQuestionrUuid");  put("Education", "education"); 
 				
 			}
 		};
@@ -1137,13 +1137,13 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 	}
 
 	@Override
-	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId) {
+	public RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(String stageUuid, Long submissionId, Long orgLocationId) {
 		RequirementQuestionnaireFeedbackTemplate feedbackTemp = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = " from RequirementQuestionnaireFeedbackTemplate feedbackTemp where  feedbackTemp.requirementWorkFlowStagesId.id=:stageId"
+			String query = " from RequirementQuestionnaireFeedbackTemplate feedbackTemp where  feedbackTemp.requirementWorkFlowStagesUuId=:stageUuid"
 					    + " and feedbackTemp.requirementSubmissionId.id=:submissionId and feedbackTemp.orgLocationId.id=:orgLocationId";
-			feedbackTemp = (RequirementQuestionnaireFeedbackTemplate) session.createQuery(query).setLong("stageId", stageId).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).uniqueResult();
+			feedbackTemp = (RequirementQuestionnaireFeedbackTemplate) session.createQuery(query).setString("stageUuid", stageUuid).setLong("submissionId", submissionId).setLong("orgLocationId", orgLocationId).uniqueResult();
 		} catch (Exception e) {
 			logger.error(e +" in getSubmittedQuestionnaireUuidByWorkflowStage DAO");
 			e.printStackTrace();
