@@ -223,8 +223,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			List<EmailAttachment> attachmentList) throws Exception {
 
 		Properties props = new Properties();
-		final String username = emailMessage.getUserName();
-		final String password = emailMessage.getPassword();
+		final String username = emailMessage.getUserName(); // should be from email of the System. SRINIVAS SABBU 
+		final String password = emailMessage.getPassword();// should be password of from email of the System.
 
 		if (environment.equalsIgnoreCase("prod")) {
 			props.put("mail.smtp.host", "secure.emailsrvr.com");

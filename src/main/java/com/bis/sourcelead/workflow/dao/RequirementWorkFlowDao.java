@@ -1,16 +1,23 @@
 package com.bis.sourcelead.workflow.dao;
 
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
-import com.bis.sourcelead.workflow.entity.RequirementDefaultWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -25,7 +32,6 @@ public interface RequirementWorkFlowDao {
 	
 	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(Long orgLocationId)throws Exception;
 	
-	List<RequirementDefaultWorkFlowStages> getRequirementDefaultWorkFlowStages()throws Exception;
 	
 	RequirementWorkFlowStages saveRequirementWorkFlowStagesByOrgLocationId(RequirementWorkFlowStages requirementWorkFlowStages)throws Exception;
 	
@@ -87,4 +93,49 @@ public interface RequirementWorkFlowDao {
 	List<RequirementWorkFlowStages> validateWorkflowStageName(Long id, String name, Long workflowId, String stageUuid)throws Exception;
 	
 	 RequirementWorkFlow getRequirementWorkFlowByOrgLocId(Long orgLocationId) throws Exception;
+
+	List<RequirementWorkFlowStages> getRequirementWorkflowStagesByWorkflowIdAndOrglocations(Long workflowId, OrgLocations orgLocations);
+	
+	List<RequirementWorkFlowStages> getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(Long workflowId, String stageName, OrgLocations orgLocations);
+	
+	List<Requirement> getRequirementListByWorkflowIdAndOrgLocationId(String uuid, Long id)throws Exception;
+	
+	List<RequirementWorkFlowStages> getRequirementWorkflowStagesListByUuidAndOrgLocationId(String uuid, Long id, String stageUuid)throws Exception;
+
+	LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(String shortCode, Long workflowId, Long orgLocationId);
+
+	RequirementWorkFlowStages getRequirementWorkFlowStagesDetails(String shortCode, Long workflowId, Long orgLocationId);
+
+	RequirementSubmission validateWorkflowEditable(Long requirementId, Long orgLocationId);
+	
+	RequirementQuestionnaireFeedbackTemplate saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplate qemplate)throws Exception;
+	
+	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid, String stageId, String submissionId)throws Exception;
+
+	void copyWorkflowStagesAndTasks(Tasks tasks);
+
+	List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long stageId)throws Exception;
+
+	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId);
+	
+	RequirementQuestionnaireFeedbackTemplate getQuestionnaireTemplateFeedbackByUuid(String uuid) throws Exception;
+	
+	
+	List<RequirementWorkFlowStages> getDefaultWorkFlowStages()throws Exception;
+
+	RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(Long workflowId, String stageName, Long orgLocationId);
+
+	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	
+	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
+
+	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId);
+
+	RequirementWorkFlowTasks getRequirementWorkFlowTasksByUuid(String currentStageUuid);
+	
+	String deleteRequirementWorkFlowtasks(Long id);
+
+	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
+			Integer seconds);
+
 }
