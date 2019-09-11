@@ -1257,6 +1257,7 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 			List<String> parallelApprover = new LinkedList<>();
 			String sequentialApprover1 = "";
+			String sequentialApprover1Status = "", sequentialApprover2Status = "";
 			String sequentialApprover2 = "";
 			
 			List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
@@ -1268,16 +1269,20 @@ public class RequirementServiceImpl implements RequirementService {
 					if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
 						if (rah.getLevel() == 1) {
 							sequentialApprover1 = rah.getApproverUserId().getId() + "";
+							sequentialApprover1Status = rah.getRequirementApproverStatus().name();
 						}
 						if (rah.getLevel() == 2) {
 							sequentialApprover2 = rah.getApproverUserId().getId() + "";
+							sequentialApprover2Status = rah.getRequirementApproverStatus().name();
 						}
 					}
 				}
 			}
 			requirementDTO.setParallelApprover(parallelApprover);
 			requirementDTO.setSequentialApprover1(sequentialApprover1);
+			requirementDTO.setReqLevel1ApproverStatus(sequentialApprover1Status);
 			requirementDTO.setSequentialApprover2(sequentialApprover2);
+			requirementDTO.setReqLevel2ApproverStatus(sequentialApprover2Status);
 		}
 		
 		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);

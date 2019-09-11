@@ -52,6 +52,7 @@ import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectBudget;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -76,6 +77,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectBudgetService;
 import com.bis.sourcelead.service.ProjectClientService;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
@@ -160,6 +162,9 @@ public class PdfUtil {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	ProjectMembersHistoryService projectMembersHistoryService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PdfUtil.class);
 	public File createPdfTable(java.util.List<UserRole> activeList,
@@ -1001,7 +1006,7 @@ public class PdfUtil {
 		return contactsArray;
 	}
 	public File getProjectEmployeesExportPdf(java.util.List<ProjectMembers> employeeList, String projectName,
-			Projects project, String projectManager) throws DocumentException, IOException {
+			Projects project, String projectManager) throws Exception {
 		String[] headers = Constants.PROJECT_ASSIGNED_EMPLOYEES;
 	    Document document = new Document(PageSize.LETTER.rotate());
 	    //SimpleDateFormat dateFormat=project.getOrgLocationsId().getLocFullFormDateFormatter();
@@ -1108,7 +1113,7 @@ public class PdfUtil {
 		}
 		return table;
 }
-	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) {
+	private String[] prepareEmployeeArray(ProjectMembers projectMember, String[] headers) throws Exception {
 			if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 				 UserRole userRole;
 				try {
@@ -1122,24 +1127,30 @@ public class PdfUtil {
 			 }else{
 				 projectMember.setUserRoleType("Candidate");
 			 }
-		
+			 
+			 ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
+			 if(pmh == null){
+				 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+			 }
+			 
 		   String empArray[] = new String[headers.length];
 			if (projectMember.getEmpName() != null && !"".equalsIgnoreCase(projectMember.getEmpName())) {
 				empArray[0] = projectMember.getEmpName();
 			}else{
 				empArray[0] = "--";
 			}
-			if (projectMember.getStartDateStr() != null && !"".equalsIgnoreCase(projectMember.getStartDateStr())) {
-				empArray[1] = projectMember.getStartDateStr();
-			}else{
-				empArray[1] = "--";
-			}
-			if (projectMember.getEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getEndDateStr())) {
-				empArray[2] = projectMember.getEndDateStr();
-			}else{
-				empArray[2] = "--";
-			}
 			
+			 if(pmh != null && pmh.getProjectAssignedDate()!=null){
+				 empArray[1] =  commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate());
+            }else {
+            	empArray[1] = "--";
+            }
+	       	 if(pmh != null && pmh.getProjectTerminationDate()!=null){
+	       		empArray[2]  = commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate());
+	       	 }else {
+	       		empArray[2]  = "--";
+	       	 }
+	       	 
 			if (projectMember.getCurrentBillRate() != null && projectMember.getCurrentBillRate() > 0 ) {
 				empArray[3] = projectMember.getBillRateCurrency() +"  "+ projectMember.getCurrentBillRate() +"  "+projectMember.getRateType();
 			}else {
@@ -2309,10 +2320,8 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			   AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
 				ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
 				ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
-			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrgId());
-			if(!appliedLeaves.isEmpty()){
+			   appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocations.getId(), leaveType.getId(), lrv.getFromDate(), lrv.getToDate(), lrv.getUserId().longValue(),orgLocations.getOrg().getId());
 				   appliedNoofLeaves = (float)associateBalanceLeaveService.getExcludeHolidayLeaveCount(appliedLeaves,orgLocations,ablv,lrv.getFromDate(),lrv.getToDate(),leaveType);
-			}
 				totalLeavesCount=totalLeavesCount+appliedNoofLeaves;
 		   }
 		   
