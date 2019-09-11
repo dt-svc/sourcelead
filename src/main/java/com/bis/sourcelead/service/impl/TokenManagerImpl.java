@@ -105,6 +105,9 @@ public class TokenManagerImpl implements TokenManager {
 				SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
 				SourceLeadSessionManager.setSessionAttribute(request, "org", orgLocations.getOrg());
 				SourceLeadSessionManager.setSessionAttribute(request, "orgId", orgLocations.getOrg().getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
+				SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 			} catch (Exception e) {}
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 		//}

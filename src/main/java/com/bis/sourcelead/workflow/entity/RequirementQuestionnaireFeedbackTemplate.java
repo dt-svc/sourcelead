@@ -41,9 +41,8 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID", nullable = false)
 	private RequirementSubmission requirementSubmissionId;
 	
-	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUIREMENT_WORKFLOW_STAGES_ID",  nullable = false)
-	private RequirementWorkFlowStages requirementWorkFlowStagesId;
+	@Column(name = "REQUIREMENT_WORKFLOW_STAGES_UUID")
+	private String requirementWorkFlowStagesUuId;
 	
 	@Column(name = "REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID")
 	private String requirementQuestionnaireTemplateUuid;
@@ -120,12 +119,12 @@ public class RequirementQuestionnaireFeedbackTemplate implements Serializable{
 		this.requirementSubmissionId = requirementSubmissionId;
 	}
 
-	public RequirementWorkFlowStages getRequirementWorkFlowStagesId() {
-		return requirementWorkFlowStagesId;
+	public String getRequirementWorkFlowStagesUuId() {
+		return requirementWorkFlowStagesUuId;
 	}
 
-	public void setRequirementWorkFlowStagesId(RequirementWorkFlowStages requirementWorkFlowStagesId) {
-		this.requirementWorkFlowStagesId = requirementWorkFlowStagesId;
+	public void setRequirementWorkFlowStagesUuId(String requirementWorkFlowStagesUuId) {
+		this.requirementWorkFlowStagesUuId = requirementWorkFlowStagesUuId;
 	}
 
 	public String getRequirementQuestionnaireTemplateUuid() {
