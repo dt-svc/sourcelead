@@ -1279,6 +1279,10 @@ public class RequirementController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("permission",permission);
 		
+		System.out.println("submission status "+requirementOffers.getSubmissionId().getSubmissionStatus());
+		System.out.println("permission "+permission);
+		System.out.println("offerStatus "+offerStatus);
+		
 		if(offerStatus.equalsIgnoreCase("Accepted") && permission.equalsIgnoreCase("YES")){
 			
 		    if(null != requirementOfferHistories && !requirementOfferHistories.isEmpty() ){  
