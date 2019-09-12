@@ -32,17 +32,17 @@ public class SourceleadSessionListener implements HttpSessionListener {
 			return new UserLoginLogoutSessionServiceImpl();
 		}
 		
-		@Bean
+		/*@Bean
 		public CouchbaseClusterService couchbaseClusterService() {
 			return new CouchbaseClusterServiceImpl();
-		}
+		}*/
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadSessionListener.class);
 
 	@Override
 	public void sessionCreated(HttpSessionEvent event) {
-		 System.out.println("@@@@@ Session is created @@@@@");
+		// System.out.println("@@@@@ Session is created @@@@@");
 		logger.debug("@@@@@ Session is created @@@@@ ");
 		event.getSession().setMaxInactiveInterval(30 * 60);
 	}
@@ -74,7 +74,7 @@ public class SourceleadSessionListener implements HttpSessionListener {
 	    	
 	     }*/
 	    
-	     System.out.println("@@@@@ Session is destroyed @@@@@");
+	   //  System.out.println("@@@@@ Session is destroyed @@@@@");
 	     logger.debug("@@@@@ Session is Destroyed @@@@@ ");
 	}
 }
