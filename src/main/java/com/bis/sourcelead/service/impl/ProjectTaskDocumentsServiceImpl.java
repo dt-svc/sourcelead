@@ -1,26 +1,18 @@
 package com.bis.sourcelead.service.impl;
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ProjectTaskDocumentDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ProjectTaskDocumentDTO;
-import com.bis.sourcelead.dto.ProjectTasksDTO;
 import com.bis.sourcelead.entity.ProjectTaskDocuments;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
@@ -31,7 +23,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 
-@Service("projectTaskDocService")
+@Service
 public class ProjectTaskDocumentsServiceImpl implements ProjectTaskDocumentsService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectTaskDocumentsServiceImpl.class);
