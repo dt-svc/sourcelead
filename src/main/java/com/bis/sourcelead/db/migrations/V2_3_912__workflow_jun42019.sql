@@ -1,3 +1,0 @@
---WORKFLOWID added by SRINIVAS SABBU on 24-May-2019. commented on 07-June-2019.
---below lines is commented for to move in next release build.
---INSERT INTO `SOURCELEAD_FORM_FIELDS` (`SECTION_ID`, `LABEL_NAME`, `FIELD_NAME`, `FIELD_TYPE`, `IS_FIELD_REQUIRED`, `STATUS`, `IS_IMPORT_FIELD`) VALUES ('3', 'Workflow', 'Workflow', 'TextBox', '0', '1', '1');
