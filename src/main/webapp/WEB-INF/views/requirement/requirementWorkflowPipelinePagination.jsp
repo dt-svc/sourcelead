@@ -402,6 +402,27 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 					return result;
 				}
 			});	
+ 		}else if(columnPropArr[i] == "education" ){
+	 		columnDefs.push({
+				"targets" : colIndex++,
+				"data" : "education",
+				"render" : function(data, type, opt,
+						meta) {
+					var result = "";
+					if (opt.education != null
+							&& opt.education != ''
+							&& opt.education != 'undefined') {
+						result = result
+								+ '         <td><div><span>'
+								+ opt.education
+								+ '</span></div></td>';
+					} else {
+						result = result
+								+ '         <td><div><span>--</span></div></td>';
+					}
+					return result;
+				}
+			});	
  		}else if(columnPropArr[i] == "createdUser" ){
 	 		columnDefs.push({
 				"targets" : colIndex++,

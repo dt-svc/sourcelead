@@ -1048,7 +1048,7 @@ public class RequirementListRestController {
 										requirementSubmission.setLocation(requirementSubmissionTemplateFields.getLocation());
 										requirementSubmission.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(),requirementSubmissionTemplateFields.getDateOfBirth()));
 										requirementSubmission.setCurrentCtc(requirementSubmissionTemplateFields.getCurrentCTC());
-										//requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
+										requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
 										requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
 										requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
 										// here loading all the subsequent stage for the the requirement
@@ -1061,7 +1061,7 @@ public class RequirementListRestController {
 										// below service call used to get requirement work flow stage Id.
 										RequirementWorkFlowStages workflowSatge = requirementWorkFlowService.getRequirementWorkFlowStagesDetails(requirementSubmissionsDTO.getSubmissionType(),requirementSubmissionsDTO.getWorkFlowId(), orgLocation.getId());
 										// by using below service getting questionnaire submission template UUID from the RequirementQuestionnaireFeedbackTemplate.
-										RequirementQuestionnaireFeedbackTemplate feedbacTemplate= requirementWorkFlowService.getSubmittedQuestionnaireUuidByWorkflowStage(workflowSatge.getId(), requirementSubmission.getId(), orgLocation.getId());
+										RequirementQuestionnaireFeedbackTemplate feedbacTemplate= requirementWorkFlowService.getSubmittedQuestionnaireUuidByWorkflowStage(workflowSatge.getUuid(), requirementSubmission.getId(), orgLocation.getId());
 										if(feedbacTemplate != null ) {
 											 StringBuilder viewLink = new StringBuilder();
 											 viewLink.append(sourceleadUrl).append("/viewQuestionnaireFeedBackTemplate?templateUuid=").append(feedbacTemplate.getUuid())
