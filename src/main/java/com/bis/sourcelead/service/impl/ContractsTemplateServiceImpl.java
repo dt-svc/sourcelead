@@ -269,7 +269,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
-        Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
+        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
@@ -770,10 +770,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		StringBuilder sb = new StringBuilder();
 		if(savedContracts.getParentContractId() == null){
-			for(ContractOwnerHierarchy coh : savedContracts.getOwnerHierarchyList()){
-				sb.append(coh.getOwnerUserId().getId().toString()).append(",");
+			if(savedContracts.getOwnerHierarchyList() != null) {
+				for(ContractOwnerHierarchy coh : savedContracts.getOwnerHierarchyList()){
+					sb.append(coh.getOwnerUserId().getId().toString()).append(",");
+				}
+				contract.setOwnerUserId(sb.toString().replaceAll("\\s*,\\s*$", ""));
 			}
-			contract.setOwnerUserId(sb.toString().replaceAll("\\s*,\\s*$", ""));
 		}else{
 			contract.setOwnerUserId(savedContracts.getOwnerUserId().getId().toString());
 		}
@@ -2108,6 +2110,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	
 	private void sendMailToOwner(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception
 	{
+		if(contracts.getOwnerHierarchyList() != null) {
 		for (ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()) {
 			User owner = coh.getOwnerUserId();
 			EmailMessage emailMessage = new EmailMessage();
@@ -2210,6 +2213,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 //			emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 			// emailScenerioUtil.sendNotification(actionLink,
 			// loginUser,approverUser, orgLocation, notificationScenario);
+		}
 		}
 	}
 

@@ -2734,10 +2734,10 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			
 			// update offer status with out offer accepting and update submission and
 			// history
-			if (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE)) {
+			if (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE.toString())) {
 				RequirementSubmissionHistory requirementSubmissionHistory1 = new RequirementSubmissionHistory();
 				requirementSubmissionHistory1.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 				requirementSubmissionHistory1.setToStage("OFFERACCEPTED");
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
@@ -2764,7 +2764,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 				if(requirementSubmission.getSourceSubmission() != null){
 		        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 			           if(parentSubmission != null){
-			        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+			        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());
 			        	   parentSubmission.setUpdatedDate(currentDate());
 			        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
 			           }
@@ -2776,7 +2776,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
 			// to update Submission status
 			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED.toString());
 			requirementSubmission.setUpdatedBy(user.getUserCode());
 			StringBuilder sb = new StringBuilder();
 			requirementSubmission.setUpdatedUser(sb.append(user.getFullName()).toString());

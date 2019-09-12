@@ -3,9 +3,13 @@ package com.bis.sourcelead.service.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -31,6 +35,8 @@ import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
 @Service
 public class RequirementPipelineExportServiceImpl implements RequirementPipelineExportService {
@@ -53,6 +59,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	@Autowired
 	OrgLocationService orgLocationService;
 
+	@Autowired
+	RequirementWorkFlowService requirementWorkFlowService;
+	
 	/**
 	 * @author Shiva and Rakshith
 	 * prepares excel and pdf and retun it as File
@@ -197,7 +206,51 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		}
 		return file;
 	}
+	
+	@Override
+	public File getWorkflowExportRequirementFile(List<RequirementSubmission> requirementStatusList, OrgLocations loginOrgLocation,
+			String exportType, String requirementId, Long workflowId, String submissionType,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+		File file = null;
+		
+		// submissionType ="SCRNG"; // testing purpose used need to remove after testing. SRINIVA SABBU
+		 HashMap<String, String> stageColumnMap = requirementWorkFlowService.getColumnsMapbyWorkflowStage(submissionType,workflowId, loginOrgLocation.getId());
+		 RequirementWorkFlowStages  workflowSatge =requirementWorkFlowService.getRequirementWorkFlowStagesDetails(submissionType,workflowId, loginOrgLocation.getId());
+		 
+		if (!"pdf".equalsIgnoreCase(exportType)) {
+			Workbook createExcelworkbook = new XSSFWorkbook();
+			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+			
+			//SimpleDateFormat  simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
+			
+			StringBuilder excelStringBuilder=new StringBuilder();
+			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString());
+			Row writeRow = null;
+			// below parameter is hard coded for testing purpose .
+			
+				createExcelsheet = getWorkflowExcelSheetWithStageHeaderApplicants(createExcelsheet, writeRow, createExcelworkbook,
+						requirementId, stageColumnMap, workflowSatge.getStageName(), requirementSubmissionCounts);
+				int column = 0;
+				for (RequirementSubmission requirementsub : requirementStatusList) {
+					writeRow = createExcelsheet.createRow(column + 8);
+					createExcelsheet = createWorkflowXlsSheet(createExcelsheet, writeRow, requirementsub, stageColumnMap);
+					column++;
+				}
+			StringBuilder tempFileBuilder=new StringBuilder();
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file.setReadable(true);
 
+			FileOutputStream fos = new FileOutputStream(file);
+			try {
+				createExcelworkbook.write(fos);
+				fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			file = pdfUtilPipelineHelper.getRequirementWorkflowPipelenePdf(requirementStatusList, loginOrgLocation, requirementId,workflowSatge.getStageName(), stageColumnMap, requirementSubmissionCounts);
+		}
+		return file;
+	}
 	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub,
 			String submissionType,OrgLocations loginOrgLocation, int columnCount) {
 		
@@ -837,5 +890,55 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 		return createExcelsheet;
 	}
+	/**
+	 * @author SRINIVAS SABBU
+	 * @param createExcelsheet
+	 * @param writeRow
+	 * @param requirementsub
+	 * @param submissionType 
+	 * @return
+	 * @throws Exception 
+	 * @description: for stage wise candidate list 
+	 */
+	private Sheet createWorkflowXlsSheet(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub, HashMap<String, String> stageColumnMap ) throws Exception {
+		
+		//OrgLocations orgLocations=orgLocationService.getOrgLocations(requirementsub.getOrgLocations().getId());
+		
+		ArrayList<String> colPropLst =  new ArrayList(stageColumnMap.values());
+		
+		int colIndex = 0;
+		Class mainClass = RequirementSubmission.class;
+		// Here we are using JAVA 8 Reflection API to get dynamic object properties  of an object below.
+		Field field = null;
+		for(String getColumn : colPropLst) {
+			 field= mainClass.getDeclaredField(getColumn);
+			 field.setAccessible(true);
+			 writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
+		}
+		
+		return createExcelsheet;
+		
+	}
+	/**
+	 * @author SRINIVAS SABBU
+	 * @param createExcelsheet
+	 * @param writeRow
+	 * @param requirementsub
+	 * @param submissionType 
+	 * @return
+	 * @throws Exception 
+	 * @description: for stage wise column list by the work flow id and stage.
+	 */
+	private Sheet getWorkflowExcelSheetWithStageHeaderApplicants(Sheet createExcelsheet, Row writeRow, Workbook createExcelworkbook,
+			String requirementId, HashMap<String, String> stageColMap, String submissionType,  RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
 
+		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
+		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
+		
+        prepareHeaders(writeRow, createExcelsheet, style, requirement, submissionType, requirementSubmissionCounts.getWorkflowStageCount());
+		String headers[] = Arrays.copyOf(stageColMap.keySet().toArray(), stageColMap.size(), String[].class); 
+		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
+
+		return createExcelsheet;
+	}
 }
