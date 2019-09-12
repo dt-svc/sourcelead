@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -56,6 +58,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateCommentsService;
@@ -69,6 +72,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -179,6 +183,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private RequirementSubmissionHistoryDao requirementSubmissionHistoryDao;
+	
+	@Autowired
+	RequirementApproverHierarchyService requirementApproverHierarchyService;
 
 	 @RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -400,6 +407,31 @@ public class SubmissionsRestController {
 					
 					// pass dto as parameter
 					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					
+					List<String> parallelApprover = new LinkedList<>();
+					String sequentialApprover1 = "";
+					String sequentialApprover2 = "";
+					
+					List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+					if (list1 != null && !list1.isEmpty()) {
+						for (RequirementApproverHierarchy rah : list1) {
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+								parallelApprover.add(rah.getApproverUserId().getId() + "");
+							}
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+								if (rah.getLevel() == 1) {
+									sequentialApprover1 = rah.getApproverUserId().getId() + "";
+								}
+								if (rah.getLevel() == 2) {
+									sequentialApprover2 = rah.getApproverUserId().getId() + "";
+								}
+							}
+						}
+					}
+					requirementDTO.setParallelApprover(parallelApprover);
+					requirementDTO.setSequentialApprover1(sequentialApprover1);
+					requirementDTO.setSequentialApprover2(sequentialApprover2);
+					
 					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 				}
 				response.setObject("success");
