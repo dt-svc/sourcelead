@@ -157,6 +157,10 @@ function getTicketCommetList(ticketId) {
         			
 		    		$("#ticketCommentListDivId").append(text);
 				}
+			}else{
+				var result = "";
+					result = result + "<div class='dataTables_empty'></div>";
+				$("#ticketCommentListDivId").append(result);
 			}
 		} else if (response.indexOf('Sign In') !== -1) {
 			location.replace(sourceleadUrl);
@@ -176,6 +180,7 @@ function saveTicketComment(ticketId) {
 		// var formData = getFormData("ticketComment_form");
 		var commentVal = $("#ticketComment").html();
 		if(commentVal !=null && commentVal !='' && commentVal !='undefined'){
+			$("#save_ticket_comment").attr("disabled", "disabled");	
 			$("#ticketCommentvalidation").hide();
 			$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : commentVal, mentionedUserIds : selectedUsers.toString()}, function(response) {
 				if (response && response.response === "INVALID_DATA") {
@@ -191,6 +196,7 @@ function saveTicketComment(ticketId) {
 						}, 1000);
 						getTicketCommetList(ticketId);
 						closeTicketComment();
+						$("#save_ticket_comment").removeAttr("disabled");
 					}
 				} else if (response.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
