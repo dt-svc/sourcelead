@@ -10,7 +10,7 @@ public class RequirementSubmissionCounts {
 	private int numOfRejected;
 	private int numOfRequestSent;
 	private int duplicateCount;
-	
+	private int workflowStageCount;
 	
 	
 	public int getSubmittedCount() {
@@ -60,6 +60,12 @@ public class RequirementSubmissionCounts {
 	}
 	public void setDuplicateCount(int duplicateCount) {
 		this.duplicateCount = duplicateCount;
+	}
+	public int getWorkflowStageCount() {
+		return workflowStageCount;
+	}
+	public void setWorkflowStageCount(int workflowStageCount) {
+		this.workflowStageCount = workflowStageCount;
 	}
 	
 }

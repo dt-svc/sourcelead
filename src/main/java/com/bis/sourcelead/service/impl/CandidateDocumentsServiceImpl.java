@@ -92,7 +92,7 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 									.append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateDocumentsDTO.getName())
 									.append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
+						//candidateDocuments.setRequestedDocStatus(Constants.REQUESTED_DOCUMENT_SUBMITTED);
 						candidateDocuments.setDocumentType(candidateDocumentsDTO.getName());
 						if (candidateDocuments != null && candidateDocuments.getDocumentOtherType() != null
 								&& candidateDocuments.getDocumentOtherType() != "" && !candidateDocuments.getDocumentOtherType()
