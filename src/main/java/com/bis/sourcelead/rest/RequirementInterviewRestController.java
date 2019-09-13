@@ -354,7 +354,7 @@ public class RequirementInterviewRestController {
 		     RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 			 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 			 
-			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE);
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_TENTATIVE.toString());
 			 //Applicant to created by interviewer send Email
 			 if(orgLocations != null){
 			requirementInterviewService.applicantInterviewProposeTimeEmailToInterviewInitiator(jsonObj.getString("requirementInterviewId"),orgLocations,loginOrg,user);	 
@@ -446,7 +446,7 @@ public class RequirementInterviewRestController {
 		 
 		 if(requirementSubmission.getSourceSubmission() != null){
       	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
-	        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+	        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW.toString());
 	        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
          }
 		 
@@ -764,7 +764,7 @@ public class RequirementInterviewRestController {
 		submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
 		submission.setRejectedReason("Interview Rejected");
 		submission.setRejectedCategoryType("Interview Rejection");
-		submission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+		submission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 		submission.setUpdatedBy(user.getUserCode());
 		StringBuilder sb = new StringBuilder();
 		submission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -785,7 +785,7 @@ public class RequirementInterviewRestController {
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
 			// to update Submission status
 			submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
-			submission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+			submission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
 			submission.setUpdatedBy(user.getUserCode());
 			StringBuilder sb = new StringBuilder();
 			submission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
