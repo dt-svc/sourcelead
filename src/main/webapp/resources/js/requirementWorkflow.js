@@ -6,13 +6,16 @@ var lastStage = "";
 var commentReq = "";
 var questionnaireId = null;
 var questionnaireName = null;
+var deletedStageUuids = new Array();
+var workflowName = "";
+var configureType = "";
 
 function RequirementWorkflow(){
 	
 		this.getDefaultWorkflowStages = function() {
 			$.ajax({
 				type : "GET",
-				url : sourceleadUrl + "/createRequirementDefaultWorkFlowStages",
+				url : sourceleadUrl + "/getDefaultWorkFlowStages",
 				success : function(dataList) {
 					var result = "";
 					if(dataList != null && dataList.length > 0){
@@ -42,34 +45,34 @@ function RequirementWorkflow(){
 		this.dynamicSpan = function(stageName){
 			if(stageName != null){
 					if(stageName == "Submission"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-check-square-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Short List"){
-						return "<span class='shortlilstedIC pull-left'></span>";
+						return "<i class='fa fa-list-ul fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Submit to Client"){
-						return "<span class='shortlilstedIC pull-left'></span>";
+						return "<i class='fa fa-send fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Interview"){
-						return "<span class='invterviewIC pull-left'></span>";
+						return "<i class='fa fa-handshake-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Offer"){
-						return "<span class='jobOfferIC pull-left'></span>";
+						return "<i class='fa fa-envelope-open-o fa-2x text-muted pull-left'></i>";
 					}
 					if(stageName == "Reject"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-ban pull-left fa-2x text-muted'></i>"
 					}
 					if(stageName == "Joined"){
-						return "<span class='joinedIC pull-left'></span>";
+						return "<i class='fa fa-id-badge pull-left fa-2x text-muted'></i>";
 					}
 					if(stageName == "Backout"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-arrow-circle-left pull-left fa-2x text-muted'></i>"
 					}
 					if(stageName == "On-hold"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-pause-circle-o pull-left fa-2x text-muted'></i>";
 					}
 					if(stageName == "No Response"){
-						return "<span class='submissionShare pull-left'></span>";
+						return "<i class='fa fa-exclamation-circle pull-left fa-2x text-muted'></i>";
 					}
 				}
 			}
@@ -84,6 +87,7 @@ function RequirementWorkflow(){
 	     
 		  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
 			  var formData = getFormData("requirementWorkFlowForm");
+			  workflowName = $('#workFlowName').val();
 			   $("#saveReqWorkFlow").attr("disabled", "disabled");
 	           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
 	           
@@ -101,7 +105,7 @@ function RequirementWorkflow(){
 							showError("Invalid data");
 						}else{
 							
-							location.replace(sourceleadUrl+"/workflowList");	
+							location.replace(sourceleadUrl+"/workflowList?workflowName="+workflowName);	
 							
 						}
 		        	} else if (result.indexOf('Sign In') !== -1) {
@@ -256,7 +260,7 @@ function RequirementWorkflow(){
 
 	this.checkDefaultWorkflow = function(configureType, uuid, workFlowName){
 		var result = "";
-		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title="+workFlowName+">"+workFlowName+"</a></div>";
+		result = result +"<div class='tbldata-dotdot-200'><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")' title='"+workFlowName+"'>"+workFlowName+"</a></div>";
 		return result;
 	}
 
@@ -269,22 +273,36 @@ function RequirementWorkflow(){
 	  		result = result +"<li>";
 	  		result = result +"<label class='switch mr positionRelativeTop10' title='Default'>"
 	  		result = result +"<input type='checkbox' name='' "+ (status == 1 ?'checked':'')+" >";
-	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\");'></div>";
+	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
+	 	  		result = result +"<div class='slider round' onclick = 'requirementWorkflow.changeWorkflowStatus(\""+uuid+"\", \""+status+"\", \""+workFlowName+"\");'></div>";
+				 }
 	  		result = result +"</label></li>";
-	  		result = result +"<li><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.deleteWorkflowEntry(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
-			result = result +"<li><i onclick='requirementWorkflow.cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+	  		 if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
+	 	  		result = result +"<li><a onclick='requirementWorkflow.viewWorkFlow(\""+uuid+"\")'><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
+			 }
+	  		 if(roleActionsArray.indexOf("ROLE_DELETE_WORKFLOW")  > -1){
+	  			result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick='requirementWorkflow.checkWorkflowInRequirements(\""+uuid+"\", \""+workFlowName+"\")'></i></li>";
+				 }
+	  		 if(roleActionsArray.indexOf("ROLE_ADD_WORKFLOW")  > -1){
+	 			result = result +"<li><i onclick='requirementWorkflow.cloneWorkFlow(\""+uuid+"\",\""+workFlowName+"\",\""+description+"\");'class='fa fa fa-clone cursorPointer text-primary' title='Clone'></i></li>";
+					 }
 	  		result = result +"</ul></div>";
 	  		}
 		return result;
 	}
 
-	this.changeWorkflowStatus = function(uuid, status){
+	this.changeWorkflowStatus = function(uuid, status, workFlowName){
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/getWorkflowList?uuid="+uuid+"&status="+status,
 			success : function(dataList) {
 				requirementWorkflow.getDynamicWorkflowList();
+				if(status == 1){
+					status = 'In-Active';
+				}if(status == 0){
+					status = 'Active';
+				}
+				requirementWorkflow.showSuccessMsg(workFlowName+" is "+status);
 			}
 			});
 				
@@ -311,9 +329,9 @@ function RequirementWorkflow(){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Do you want to delete "+workFlowName+"</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
+			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\", \""+workFlowName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
 			result = result +"	</div>";
-			$("#popUp").append(result);
+			$("#popUp").empty().append(result);
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
 		}
@@ -324,7 +342,7 @@ function RequirementWorkflow(){
 			$(".project_inn_mask").fadeOut(200);
 			}	
 
-		this.removeWorkFlowEntry = function(workflowuuid){
+		this.removeWorkFlowEntry = function(workflowuuid, workFlowName){
 			$("#popUp").empty();
 			 $(".project_inn_mask").fadeOut(200);
 			 
@@ -338,13 +356,14 @@ function RequirementWorkflow(){
 			 		success: function(result) {
 	 		  			if(result = "Success"){
 	 		  				requirementWorkflow.getWorkflowList();
+	 		  				requirementWorkflow.showSuccessMsg("Successfully deleted "+workFlowName);
 	 		  			}
 				    }		
 			 	})
 		}
 		
-		 this.editStage = function(stageUuid, workflowUuid){
-			window.location.href = sourceleadUrl + "/editStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid;
+		 this.editStage = function(stageUuid, workflowUuid, workFlowName){
+			window.location.href = sourceleadUrl + "/editStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid+"&workflowName="+workFlowName;
 			
 		} 
 
@@ -352,8 +371,67 @@ function RequirementWorkflow(){
 			window.location.href = sourceleadUrl + "/workflowList";
 		}
 
-
-		this.saveRequirementViewWorkFlow = function(workflowUuid){
+		 this.saveRequirementAndAddAStage = function(workflowUuid, stageName, workflowName){
+		 var validationSettings = {
+		           errorMessagePosition: 'element',
+		           borderColorOnError: '',
+		           scrollToTopOnError: true,
+		           dateFormat: 'yyyy/mm/dd'
+		       };
+		     
+			  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
+				  var formData = getFormData("requirementWorkFlowForm");
+				  workflowName = $('#workFlowName').val();
+				   $("#stageButton").attr("disabled", "disabled");
+		           $("#stageButton").addClass('button').val('Processing..'); 
+			 $.ajax({
+		           type: "POST",
+		           data : formData,
+		           url:sourceleadUrl+"/saveWorkFlowDetails?uuid="+workflowUuid,
+		           success: function (result) {
+						if (result.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (result.response === "SUCCESS") {
+			        		if(result.object === "DataMissing") {
+								$("#stageButton").removeAttr("disabled");
+								$("#stageButton").removeAttr('button').val('Save');	
+								showError("Invalid data");
+							}else{
+								if(deletedStageUuids.length == 0){
+									 window.location.href = sourceleadUrl + "/addStage?uuid="+workflowUuid+"&workFlowName="+workflowName;
+								}
+							}
+			        	} else if (result.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+		           },complete: function (result) {
+		        	    if(deletedStageUuids.length > 0){
+		        	   requirementWorkflow.goTOAddStage(deletedStageUuids, workflowUuid, stageName, workflowName);
+		        	   }
+		            }
+		       });
+		     } 
+		 }
+		 
+		 this.goTOAddStage = function(deletedStageUuids, workflowUuid, stageName, workflowName){
+				$.ajax({
+					type : "GET",
+					url : sourceleadUrl + "/deleteRequirementWorkflowStage?deletedStageUuids="+deletedStageUuids+"&requirementWorkFlowUuid="+workflowUuid,
+					success : function(dataList){
+						if(dataList == "Success"){
+							window.location.href = sourceleadUrl + "/addStage?uuid="+workflowUuid+"&workFlowName="+workflowName;
+						}else{
+							 showError("Operation failed, please try again");
+						}
+						}
+					});
+					
+			}
+		 
+		
+		this.saveRequirementViewWorkFlow = function(workflowUuid, stageName){
 		      var validationSettings = {
 		           errorMessagePosition: 'element',
 		           borderColorOnError: '',
@@ -363,6 +441,7 @@ function RequirementWorkflow(){
 		     
 			  if ($('#requirementWorkFlowForm').validate(false, validationSettings)) {
 				  var formData = getFormData("requirementWorkFlowForm");
+				  workflowName = $('#workFlowName').val();
 				   $("#saveReqWorkFlow").attr("disabled", "disabled");
 		           $("#saveReqWorkFlow").addClass('button').val('Processing..'); 
 			 $.ajax({
@@ -378,27 +457,39 @@ function RequirementWorkflow(){
 								$("#saveReqWorkFlow").removeAttr('button').val('Save');	
 								showError("Invalid data");
 							}else{
-								
-								location.replace(sourceleadUrl+"/workflowList");	
-								
+								if(deletedStageUuids.length == 0){
+									location.replace(sourceleadUrl+"/workflowList?workflowName="+workflowName);	
+								}
 							}
 			        	} else if (result.indexOf('Sign In') !== -1) {
 			        		location.replace(sourceleadUrl);
 			        	} else {
 			        	    showError("Operation failed, please try again");
 			        	}
-		           },
+		           }/*,complete: function (result) {
+		        	    if(deletedStageUuids.length > 0){
+		        	   requirementWorkflow.deleteRequirementWorkflowStages(deletedStageUuids, workflowUuid, stageName, workflowName);
+		        	   }
+		            }*/
 		       });
 		     } 
 		}
 
+		this.deleteDynamicStages = function(stageUuid, workflowUuid, stageName){
+			$("#popUp").empty();
+		     $(".project_inn_mask").fadeOut(200);
+			$("ul#stageList li:contains('"+stageName+"')").remove();
+			requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+			deletedStageUuids.push(stageUuid);
+		}
+		
 		this.deletepopup = function(stageUuid, stageName, workflowUuid){
 			var result = "";
 			$("#popUp").empty();
 			result = result +" <div class='project_inn_mask'></div>"; 
 			result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +" <p>Do you want to delete "+stageName+"?</p>";
-			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteRequirementWorkflowStage(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteRequirementWorkflowStages(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 			result = result +" </div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -422,16 +513,16 @@ function RequirementWorkflow(){
 				}
 			});
 			
-			this.deleteRequirementWorkflowStage = function(stageUuid, workflowUuid, stageName){
-				 $("#popUp").empty();
-			     $(".project_inn_mask").fadeOut(200);
+			this.deleteRequirementWorkflowStages = function(deletedStageUuids, workflowUuid, stageName){
 				$.ajax({
 					type : "GET",
-					url : sourceleadUrl + "/deleteRequirementWorkflowStage?uuid="+stageUuid+"&requirementWorkFlowUuid="+workflowUuid,
+					url : sourceleadUrl + "/deleteRequirementWorkflowStage?deletedStageUuids="+deletedStageUuids+"&requirementWorkFlowUuid="+workflowUuid,
 					success : function(dataList){
 						if(dataList == "Success"){
-						      $("ul#stageList li:contains('"+stageName+"')").remove();
-						      requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+							$("#popUp").empty();
+						     $(".project_inn_mask").fadeOut(200);
+							$("ul#stageList li:contains('"+stageName+"')").remove();
+							requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
 						}else{
 							 showError("Operation failed, please try again");
 						}
@@ -462,6 +553,7 @@ function RequirementWorkflow(){
 				  	result = result +"<th>Assign To</th>";
 				  	result = result +"<th>Prioirity</th>";
 				  	result = result +"<th>Description</th>";  
+					result = result +"<th>Action</th>"; 
 				  	result = result +"</tr>";
 				  	result = result +"</thead>";
 				  	result = result +"</table>";
@@ -494,7 +586,7 @@ function RequirementWorkflow(){
 					    	  	"render": function(data, type, workflowTask, meta) {
 					    	  		var result = "";
 				              		if(workflowTask.workFlowTaskName != null && workflowTask.workFlowTaskName != '' && workflowTask.workFlowTaskName != "undefined"){
-				              			result = result +"<div class='tbldata-dotdot-verybig'>"+workflowTask.workFlowTaskName+"</div>";
+				              			result = result +"<div class='tbldata-dotdot-sm'>"+workflowTask.workFlowTaskName+"</div>";
 				  	              	}else{
 				  	            	  		result = result +"<div>---</div>";
 				  	             	}
@@ -533,11 +625,21 @@ function RequirementWorkflow(){
 					    	  	"render": function(data, type, workflowTask, meta) {
 					    	  		var result = "";
 					    	  		if(workflowTask.workFlowTaskDescription != null && workflowTask.workFlowTaskDescription !== '' && workflowTask.workFlowTaskDescription != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-vsm'>"+workflowTask.workFlowTaskDescription+"</div>";
+					    	  				result = result +"<div class='tbldata-dotdot-big'>"+workflowTask.workFlowTaskDescription+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
 				  	             	 return result;
+					    	  	}
+					        },{
+					    	  	"targets": colIndex++,
+					    	  	"sortable": false,
+					    	  	"render": function(data, type, workflowTask, meta) {
+					    	  		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_WORKFLOW\')">';
+					    	  		 var result = "";
+					    	  		 result = result +"<div class='tbldata-dotdot-vsm'><a class='glyphicon glyphicon-trash text-danger ml' title='Delete' onclick='requirementWorkflow.deleteAssignTaskpoup(\""+workflowTask.uuid+"\",\""+workflowTask.workFlowTaskName+"\")'></a></div>";
+				  	             	 return result;
+				  	             	'</sec:authorize>';
 					    	  	}
 					        }],
 					        "scrollCollapse": false,
@@ -580,8 +682,10 @@ function RequirementWorkflow(){
 						chosenColumns.push($(this).val());
 					});
 					
-					var chosenColumnJson = JSON.stringify(chosenColumns);
+					//var chosenColumnJson = JSON.stringify(chosenColumns.join()).replace(/"/g, '');
 					
+				     var choosenCloumnString = encodeURI(chosenColumns.join().replace(/"/g, '')); // encodeURI function used to escape special characters in header string.
+				     
 					 var previousStageUuid = $("#previousStageUuid").val();
 					
 					
@@ -604,6 +708,7 @@ function RequirementWorkflow(){
 					
 					 if ($('#addStageForm').validate(false, validationSettings)) {
 						 if ($('#stagesForm').validate(false, validationSettings)) {
+							 if ($('#columnsForm').validate(false, validationSettings)) {
 						  var formData = getFormData("addStageForm");
 						   $("#saveStageButton").attr("disabled", "disabled");
 				        $("#saveStageButton").addClass('button').val('Processing..'); 
@@ -612,7 +717,7 @@ function RequirementWorkflow(){
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
 								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
-								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnJson="+chosenColumnJson,
+								"&lastStage="+lastStage+"&commentRequired="+commentReq+"&requiredStatsList="+requiredStatsList+"&chosenColumnStr="+choosenCloumnString+"&configureType="+configureType,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -622,7 +727,7 @@ function RequirementWorkflow(){
 									$("#saveStageButton").removeAttr('button').val('Save');	
 									showError("Invalid data");
 								}else{
-									window.location.replace(sourceleadUrl+"/workflowList");
+									window.location.replace(sourceleadUrl+"/workflowList?workflowName="+workFlowName);	
 								}
 				      	} else if (dataList.indexOf('Sign In') !== -1) {
 				      		location.replace(sourceleadUrl);
@@ -632,7 +737,7 @@ function RequirementWorkflow(){
 									
 						}
 						});
-					 }}
+					 }}}
 				}
 
 				this.getNextWorkflowStage = function(select, worflowUuid, formId){
@@ -696,15 +801,12 @@ function RequirementWorkflow(){
 						});
 				}
 
-					 this.cancelAddStage = function(){
-						 window.location.href = sourceleadUrl+"/workflowList";
-					 }
 					 
 					 this.createNewtask = function() {
 						 requirementWorkflow.getAllActiveUsersList();
-						 $("#workFlowTaskName").val("");
+						   $("#workFlowTaskName").val("");
 							$("#priority").val("");
-							$("#taskDescription").val("");
+							$("#workFlowTaskDescription").val("");
 							$("#assignToUserId").val("");
 							/*$('#taskDescription').summernote();*/
 							document.getElementById("createNewtask").style.display = "block";
@@ -737,8 +839,8 @@ function RequirementWorkflow(){
 							$("#priority").val("");
 							$("#summerNote").val("");
 							$("#saveStageButton").removeAttr("disabled");
-						} 
-
+						}
+					
 					 this.saveWorkflowTask = function(worflowUuid){
 						 var validationSettings = {
 						           errorMessagePosition: 'element',
@@ -871,8 +973,12 @@ function RequirementWorkflow(){
 				 	    	  		var result = "";
 				 	    	    	result = result +"<div class='width90px'>";
 				 	    	  		result = result +"<ul class='list-inline list-unstyled'>";
+				 	    	  		if(roleActionsArray.indexOf("ROLE_EDIT_VIEW_WORKFLOW")  > -1){
 				 	    	  		result = result +"<li><a href= "+sourceleadUrl+"/editQuestionnaire?templateUuid="+workflow.uuid+"><i class='fa fa-pencil cursorPointer' title='Edit'></i></a></li>";
-				 	    	  		result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick=  'requirementWorkflow.deletepoup(\""+workflow.uuid+"\",\""+workflow.name+"\")'></i></li>"
+				 	    	  		}
+				 	    	  		if(roleActionsArray.indexOf("ROLE_DELETE_WORKFLOW")  > -1){
+					 	    	  	result = result +"<li><i class='fa fa-trash cursorPointer' title='Delete' onclick=  'requirementWorkflow.deletepoup(\""+workflow.uuid+"\",\""+workflow.name+"\")'></i></li>"
+					 	    	  	}
 				 	    	  		result = result +"</ul>	";
 				 	    	  		result = result +"</div>";
 				   	             	return result;
@@ -905,24 +1011,38 @@ function RequirementWorkflow(){
 				 $("#popUp").empty();
 				 result = result +" <div class='project_inn_mask'></div>"; 
 				 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-
 				 result = result +" <p>Do you want to delete "+name+"?</p>";
 				 result = result + ' <div id="voidInvoiceId"/>';
-				 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteQuestionnaire(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+				 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteQuestionnaire(\''+uuid+'\',\''+name+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 				 result = result +" </div>";
 				 $("#popUp").append(result);
 				 $("#remove_user_pop").slideDown(200);
 				 $(".project_inn_mask").fadeIn(200);
 				 }
-
-				 this.deleteQuestionnaire = function(uuid){
+				 
+				 this.deleteAssignTaskpoup = function(uuid,name){
+					 var result = "";
+					 $("#popUp").empty();
+					 result = result +" <div class='project_inn_mask'></div>"; 
+					 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+					 result = result +" <p>Do you want to delete "+name+"?</p>";
+					 result = result + ' <div id="voidInvoiceId"/>';
+					 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteAssignTask(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+					 result = result +" </div>";
+					 $("#popUp").append(result);
+					 $("#remove_user_pop").slideDown(200);
+					 $(".project_inn_mask").fadeIn(200);
+					 }
+				 this.deleteQuestionnaire = function(uuid,name){
 				 	  $.ajax({
 				 	    	type: "POST",
 				 	        url: sourceleadUrl+"/deleteQuestionnaireTemplateById?templateUuid="+uuid, 
 				 	       success: function(result) {
 				 	           if (result.response === "AWKWARD") {
 				 	        	    location.href = "/errorPage";
-				 	        	} else if (result.response === "SUCCESS") {
+				 	        	} else if (result.response === "SUCCESS")
+				 	        	{
+				 	        		 requirementWorkflow.showSuccessMsg("Successfully Deleted " +name); 
 				 	        		requirementWorkflow.getWorkflowQuestionnnaireList();
 				 	        		$(".mask, #modalTasktype").fadeOut();
 				 	        	} else {
@@ -990,15 +1110,17 @@ function RequirementWorkflow(){
 						 type: "GET",
 						 url : sourceleadUrl+"/validateWorkflowStageName?workflowUuid="+workflowUuid+"&stageName="+stageName+"&currentStageUuid="+currentStageUuid,
 						 success:function(dataList){
-							 
-							 if (dataList.response =="true" || dataList.response =="special") {
+							 if (dataList.response =="true" || dataList.response =="special" || dataList.response =="Minimum") {
 								 $('#StageNameDiv').find('p.jquery_form_error_message').remove();
 								 if ($('#StageNameDiv').find('p.jquery_form_error_message').length === 0)
 				                 if(dataList.response =="true"){
 									 $("#stageName").after("<p class='jquery_form_error_message'>" + stageName + " Already Exists</span>");
 				                 }if(dataList.response =="special"){
-								 $("#stageName").after("<p class='jquery_form_error_message'> No Special Characters !</span>");
+								 $("#stageName").after("<p class='jquery_form_error_message'> Invalid format !</span>");
 				                 }
+				                 if(dataList.response =="Minimum"){
+									 $("#stageName").after("<p class='jquery_form_error_message'> Minimum 4 Chars requried</span>");
+					              }
 				                    $("#saveStageButton").attr("disabled", "disabled");
 				                    $("#saveTaskButton").attr("disabled", "disabled");
 				                 }else {
@@ -1020,6 +1142,9 @@ function RequirementWorkflow(){
 					$("#applicantname").prop("checked", true);
 					$("#applicantmailid").prop("checked", true);
 					$("#applicantphonenumber").prop("checked", true);
+					$("#location").prop("checked", true);
+					$("#Status").prop("checked", true);
+					$("#SubmittedQuestionnaire").prop("checked", true);
 				 }
 				 
 				 this.prepareChosenColumnList = function(chosenColumns){
@@ -1029,4 +1154,125 @@ function RequirementWorkflow(){
 					 }
 				 }
 				 
+				 this.validateStageShortCode = function(workflowUuid){
+					 var stageShortCode = $("#shortCode").val();
+					 if(stageShortCode != null && stageShortCode.length > 0){
+						 $.ajax({
+							 type: "GET",
+							 url : sourceleadUrl+"/validateStageShortCode?workflowUuid="+workflowUuid+"&stageShortCode="+stageShortCode+"&currentStageUuid="+currentStageUuid,
+							 success:function(dataList){
+								 if (dataList.response =="true" || dataList.response =="special" || dataList.response =="Minimum") {
+									 $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
+									 if ($('#ShortCodeDiv').find('p.jquery_form_error_message').length === 0)
+					                 if(dataList.response =="true"){
+										 $("#shortCode").after("<p class='jquery_form_error_message'>" + stageShortCode + " Already Exists</span>");
+					                 }if(dataList.response =="special"){
+									 $("#shortCode").after("<p class='jquery_form_error_message'> Invalid format !</span>");
+					                 }if(dataList.response =="Minimum"){
+										 $("#shortCode").after("<p class='jquery_form_error_message'> Minimum 4 Chars requried</span>");
+						              }
+					                    $("#saveStageButton").attr("disabled", "disabled");
+					                 }else {
+					                    $('#ShortCodeDiv').find('p.jquery_form_error_message').remove();
+					                    $("#saveStageButton").removeAttr("disabled");
+					                }
+								
+							 }
+						 })
+						 }
+				 }
+				 
+				 this.checkWorkflowInRequirements = function(workflowUuid, workflowName){
+					 var jobId = null; 
+					 var jobTitle = null;
+					 var jobsArray = new Array();
+					 var allJobsArray = new Array();
+					 var txtMessage = "Can't Delete "+workflowName+", Mapped To The Following Jobs !";
+					 $.ajax({
+						 type : "GET",
+						 url : sourceleadUrl + "/checkWorkflowInRequirements?workflowUuid="+workflowUuid,
+						 success : function(dataList){
+							 if(dataList != null){
+								 var obj = JSON.stringify(dataList);
+								 var requirementList = obj.replace(/[{}]/g, "").split(',');
+								 for(var j=0;j< requirementList.length; j++){
+									 var count =j;
+										var n = requirementList[j].indexOf(':');
+										jobId = requirementList[j].slice(1, n-1);
+										jobTitle = requirementList[j].slice(n+2, requirementList[j].length-1);
+										if(j<5){
+											jobsArray.push(++count+'. '+jobTitle);
+										}
+										else{
+											allJobsArray.push(' '+(++count)+'. '+jobTitle);
+										}
+									}
+								$(".project_inn_mask").remove();
+								var result = "";
+								result = result +"<div class='project_inn_mask'></div>";
+								result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+								result = result +"<div class='clearfix'><p id='popupMsg'></p></div>";
+								result = result+"<div class='modal-body'>"	
+								for(var i=0; i< jobsArray.length; i++){
+									if(jobsArray.length == 1){
+										result = result + "&nbsp"+jobsArray[i]+".";
+									}else{
+										result = result + "&nbsp"+jobsArray[i]+" ";
+									}
+								}
+								if(allJobsArray.length > 1){
+								result = result + '<span class="text-success" title="'+allJobsArray+'">more..</span>';
+								}
+								result = result+"</div>"
+								result = result +"<div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
+								result = result +"</div>";
+								$("#popUp").empty().append(result);
+								$("#popupMsg").empty().append('<strong>'+txtMessage+'</strong>');
+								$("#remove_user_pop").slideDown(200);
+								$(".project_inn_mask").fadeIn(200);
+						 }
+							 else{
+								 requirementWorkflow.deleteWorkflowEntry(workflowUuid, workflowName);
+							 }
+						 }
+					 })
+				 }
+				 
+				 this.cancelWorkflowPopup = function(){
+						$("#remove_user_pop").fadeOut(200);
+						$(".project_inn_mask").fadeOut(200);
+					}
+				 
+				 this.alertStageCount = function(){
+					 $(".project_inn_mask").remove();
+						var result = "";
+						result = result +" <div class='project_inn_mask'></div>";
+						result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+						result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+						result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='requirementWorkflow.cancelWorkflowPopup();'></div>";
+						result = result +" </div>";
+						$("#popUp").empty().append(result);
+						$("#popupMsg").empty().append("<strong>Can't Add More Than 15 Stages Per Workflow !</strong>");
+						$("#remove_user_pop").slideDown(200);
+						$(".project_inn_mask").fadeIn(200);
+				 }
+				 
+				 this.deleteAssignTask = function(uuid){
+				 $.ajax({
+						type : "POST",
+						url : sourceleadUrl + "/deleteAssignTask?uuid="+uuid,
+						success : function(response){
+							$("#createNewtask").hide();
+							if(response =='Success'){
+								var currentStageUuid = $("#currentStageUuid").val();
+								requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+								requirementWorkflow.cancelTermination();
+							}if(response == 'Failed'){
+								showError("Operation failed, please try again");
+							}
+							
+						}
+					});
+   }
 }
+				 
