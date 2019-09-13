@@ -58,10 +58,10 @@
 		<p>Manage Your Onboard Templates</p>
 		<span>
 			<sec:authorize access="hasRole('ROLE_CREATE_ON_BOARD_TEMPLATE')"> 
-			<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_sourceleadUrl}/addNewOnboardTemplate">Add</a> 
+			<a class="btn btn-info btn-sm mr10" href="${SourceLeadWeb_atsUrl}/addNewOnboardTemplate">Add</a> 
 			</sec:authorize>
 			<sec:authorize access="hasAnyRole('ROLE_CREATE_ON_BOARD_TEMPLATE','ROLE_VIEW_EDIT_ON_BOARD_TEMPLATE')"> 
-			<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_sourceleadUrl}/onboardingTemplatesList">View</a>
+			<a class="btn btn-primary btn-sm" href="${SourceLeadWeb_atsUrl}/onboardingTemplatesList">View</a>
 			</sec:authorize>
 		</span>
 		</div>
