@@ -561,7 +561,7 @@ public class SubmissionsRateRestController {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT.toString()){
+			if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.REQUEST_SENT.toString())){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 			}
