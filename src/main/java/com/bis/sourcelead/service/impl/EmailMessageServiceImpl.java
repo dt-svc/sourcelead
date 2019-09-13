@@ -223,8 +223,8 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			List<EmailAttachment> attachmentList) throws Exception {
 
 		Properties props = new Properties();
-		final String username = emailMessage.getUserName();
-		final String password = emailMessage.getPassword();
+		final String username = emailMessage.getUserName(); // should be from email of the System. SRINIVAS SABBU 
+		final String password = emailMessage.getPassword();// should be password of from email of the System.
 
 		if (environment.equalsIgnoreCase("prod")) {
 			props.put("mail.smtp.host", "secure.emailsrvr.com");
@@ -241,7 +241,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", "465");
-
 
 		Session session = Session.getDefaultInstance(props, new Authenticator() {
 			@Override
@@ -329,7 +328,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -368,7 +366,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				}
 			});
 		
-
 			try {
 
 				MimeMessage message = new MimeMessage(session);
@@ -445,16 +442,14 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				}
 
 				Transport.send(message);
-			} catch (MessagingException e) {
-				throw new RuntimeException(e);
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
+				logger.info("######## Exception occured inside sendMessageConfiguredMail()###########");
 				e.printStackTrace();
+				sendMessage(emailMessage,iAdressArray,attachmentList);
 			}
-		}else{
+		} else{
 			sendMessage(emailMessage,iAdressArray,attachmentList);
 		}
-
 	}
 	
 	private Long storeEmailInfoInDB(EmailMessage emailMessage, InternetAddress[] iAdressArray) throws Exception {
@@ -487,7 +482,6 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				e.printStackTrace();
 			}
 		}
-		
 
 		emailNotification.setEmailFrom(emailMessage.getFromEmail());
 		emailNotification.setSubject(emailMessage.getSubject());
