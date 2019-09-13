@@ -634,10 +634,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				reqDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), RequirementDTO.class);
 			  
 				// if valid workflow name is not found then setting/creating new WORKFLOW for the JOB. SRINIVAS SABBU.
-	           /* if(StringUtils.isEmpty(reqDTO.getWorkflow())){
+	            if(StringUtils.isEmpty(reqDTO.getWorkflow())){
 	        	   RequirementWorkFlow workflow = requirementWorkflowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocation, user);
 	        	   reqDTO.setWorkflow(workflow.getId().toString());
-	           	}*/
+	           	}
 				// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
 				if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
