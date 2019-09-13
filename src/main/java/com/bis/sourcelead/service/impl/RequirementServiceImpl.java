@@ -360,12 +360,11 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
 		}
 		//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-		// below lines is commented for to move in next release build.
-		/*if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
+		if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
 			RequirementWorkFlow workflow = new RequirementWorkFlow();
 			workflow.setId(Long.parseLong(requirementDTO.getWorkflow()));
 			requirement.setWorkflowId(workflow);
-		}*/
+		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}

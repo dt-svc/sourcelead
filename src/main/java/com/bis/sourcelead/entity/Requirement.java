@@ -336,11 +336,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private ProjectClients projectClientID;
 	
 	//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-	// below lines is commented for to move in next release build.
-	/*@NotFound(action = NotFoundAction.IGNORE)
+	
+	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "WORKFLOW_ID",  nullable=true)
-	private RequirementWorkFlow workflowId;*/
+	private RequirementWorkFlow workflowId;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
@@ -2276,12 +2276,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.releasedDate = releasedDate;
 	}
 
-	/*public RequirementWorkFlow getWorkflowId() {
+	public RequirementWorkFlow getWorkflowId() {
 		return workflowId;
 	}
 
 	public void setWorkflowId(RequirementWorkFlow workflowId) {
 		this.workflowId = workflowId;
-	}*/
+	}
 	
 }
