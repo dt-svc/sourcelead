@@ -38,7 +38,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	 if(contractType != '' && contractType != 'undefined' && contractType != null)
 	 $("#contractType").val(contractType);
 
-	 if(type == "Client MSA" || type == "Vendor MSA" || contractType == "Vendor MSA"){
+	 if(contractType == "Client MSA" || contractType == "Vendor MSA" || contractType == "Vendor SOW"){
 	 	 $("#billingDiv").hide();
 	 	    $('#billingRateType').removeAttr('data-validation');
 	 		$('#billingRateType').attr('data-validation-optional',"true");
@@ -444,7 +444,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			             <div class="input-group er ratetype">
 			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 				                
-				                <select class="selectpicker" id="candiRateType" name="candiRateType" field-name="Rate Per" ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'   ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+				                <select class="selectpicker" id="candiRateType" name="candiRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
 					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
@@ -455,10 +455,10 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				                </select>
 			                </div>
 							  	
-							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" disabled value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'   ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
+							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" disabled value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA' ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
 			                
 			                <div class="input-group-btn tblminwidth-75 ratetype">
-			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer"  field-name="Rate Per" ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'   ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer"  field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
 			                      <option>Rate per</option>
 			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
