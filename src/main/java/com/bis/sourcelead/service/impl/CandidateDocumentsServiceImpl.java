@@ -382,4 +382,9 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId) {
 		return candidateDocumentsDao.getCandidateActiveDocumentsByCandidateId(candidateId);
 	}
+
+	@Override
+	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId) {
+		return candidateDocumentsDao.getCandidateGlobalActiveDocumentsByCandidateId(candidateId);
+	}
 }

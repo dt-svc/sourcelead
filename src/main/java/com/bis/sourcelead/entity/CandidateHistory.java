@@ -38,6 +38,11 @@ public class CandidateHistory implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable = false)
+	private CandidateGlobal candidateGlobalId;
+	
 	@Column(name = "CANDIDATE_TYPE")
 	private String candidateType;
 	@Column(name = "FIRST_NAME")
@@ -1181,4 +1186,14 @@ public class CandidateHistory implements Serializable {
 	{
 		this.candidateResumeFileType = candidateResumeFileType;
 	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
+	}
+	
+	
 }

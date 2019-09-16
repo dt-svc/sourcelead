@@ -40,5 +40,6 @@ public interface CandidateEducationDao {
 	
 	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 
+	Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 
 }

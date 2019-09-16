@@ -51,6 +51,10 @@ public class CandidateResumes implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable = false)
+	private CandidateGlobal candidateGlobalId;
+	
 	@Transient
 	private Long candidateJsonId;
 		
@@ -251,6 +255,14 @@ public class CandidateResumes implements Serializable{
 
 	public void setCandidateResumesHistoryList(Set<CandidateResumesHistory> candidateResumesHistoryList) {
 		this.candidateResumesHistoryList = candidateResumesHistoryList;
+	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
 	}
 
 }

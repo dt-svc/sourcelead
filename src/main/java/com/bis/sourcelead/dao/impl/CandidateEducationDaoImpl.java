@@ -213,4 +213,25 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		resumesCount = filterCount.intValue();
 		return resumesCount;
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer resumesCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(EDU.ID) AS EDU_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_EDUCATION EDU "
+					+ " WHERE EDU.CANDIDATE_GLOBAL_ID = :candidateId AND EDU.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		resumesCount = filterCount.intValue();
+		return resumesCount;
+
+	}
 }

@@ -195,4 +195,25 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		return documentsCount;
 }
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer documentsCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(DOCS.ID) AS DOCS_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_DOCUMENTS DOCS "
+					+ " WHERE DOCS.CANDIDATE_GLOBAL_ID = :candidateId AND DOCS.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		documentsCount = filterCount.intValue();
+		return documentsCount;
+
+	}
+
 }

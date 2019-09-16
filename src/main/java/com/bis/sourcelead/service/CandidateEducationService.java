@@ -85,5 +85,7 @@ public interface CandidateEducationService {
 	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 	
 	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
+	
+	Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 
 }

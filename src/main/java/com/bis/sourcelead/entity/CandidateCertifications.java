@@ -44,6 +44,10 @@ public class CandidateCertifications implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable = false)
+	private CandidateGlobal candidateGlobalId;
 
 	@Column(name = "NAME")
 	private String name;
@@ -245,6 +249,14 @@ public class CandidateCertifications implements Serializable {
 
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
 	}
 
 }

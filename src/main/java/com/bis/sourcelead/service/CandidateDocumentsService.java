@@ -38,4 +38,6 @@ public interface CandidateDocumentsService {
 	void saveOrUpdateCandidateElkDocumentWithDocumentDetails(Long candidateId,Long orgLocationId) throws Exception;
 	
 	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
+	
+	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId);
 }

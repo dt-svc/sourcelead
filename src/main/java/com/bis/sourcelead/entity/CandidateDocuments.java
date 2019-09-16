@@ -66,6 +66,10 @@ public class CandidateDocuments implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
 	private Candidate candidateId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable = false)
+	private CandidateGlobal candidateGlobalId;
 		
 	@Column(name = "DOCUMENT_TYPE ")
 	private String documentType;
@@ -296,6 +300,14 @@ public class CandidateDocuments implements Serializable{
 	public void setFileURL(String fileURL)
 	{
 		this.fileURL = fileURL;
+	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
 	}
 	
 	

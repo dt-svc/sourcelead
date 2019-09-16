@@ -28,4 +28,6 @@ public interface CandidateDocumentsDao {
 	public Boolean validateCandidateDocument(Long candidateId, String candidateDocument) throws Exception;
 	
 	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
+	
+	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId);
 }

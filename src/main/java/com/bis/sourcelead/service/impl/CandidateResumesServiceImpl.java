@@ -394,4 +394,16 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	public CandidateResumesDTO getCandidateLatesResumeDetails(Long candidateId) throws Exception {
 		return candidateResumesDao.getCandidateLatesResumeDetails(candidateId);
 	}
+
+
+	@Override
+	public CandidateResumesDTO getCandidateGlobalLatesResumeDetails(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateGlobalLatesResumeDetails(candidateId);
+	}
+
+
+	@Override
+	public Integer getCandidateGlobalActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+		return candidateResumesDao.getCandidateGlobalActiveResumeCountByCandidateId(candidateId);
+	}
 }

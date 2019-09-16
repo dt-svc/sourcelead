@@ -36,6 +36,10 @@ public class CandidateTimelineActivity implements Serializable {
 	private Candidate candidate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable = false)
+	private CandidateGlobal candidateGlobalId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	@Column(name = "ACTION_BY")
@@ -253,5 +257,13 @@ public class CandidateTimelineActivity implements Serializable {
 	public void setCreatedUserId(Long createdUserId)
 	{
 		this.createdUserId = createdUserId;
+	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
 	}
 }
