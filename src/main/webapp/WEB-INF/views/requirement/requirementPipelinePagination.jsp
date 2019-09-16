@@ -6,7 +6,11 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <div id="popupSaveId" class="popupWrap popupWrap2" style="display: none;"></div>
-
+<script>
+   var workflowConfigured = '${workflowConfigured}';
+//   alert(workflowConfigured);
+ //  workflowConfigured = 'false';
+</script>
 <script>
 	function requirementPipelinePagination(url, requirementId, submissionType) {
 		var atsUrl ='${SourceLeadWeb_atsUrl}';
@@ -432,6 +436,7 @@
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
+											if(workflowConfigured == 'false'){// Default Workflow Starts here if workflowConfigured is false.
 											if (opt.requirementCurrentStatus != 'SUBMITTED'
 													&& opt.requirementCurrentStatus != 'CLOSED'
 													&& opt.requirementCurrentStatus != 'REJECTED'
@@ -655,9 +660,122 @@
 														+ opt.submissionDisplayStatus
 														+ '</span>';
 											}
-											return result;
+											}// Default Workflow Ends here.
+											else{// Custom Workflow Starts here.  SRINIVA SABBU.
+											/// if workflow is configured preparing the status drop down values.
+											//Below blcok excuted when current is REJECTED and BACKOUT stages.
+											if (opt.submissionStatus == 'REJECTED') {
+												result = result
+														+ '<td><div class="tblwidth-150"><span>'
+														+ opt.submissionDisplayStatus
+														+ '</span>';
+												if (opt.rejectedReason != null
+														&& opt.rejectedReason != ''
+														&& opt.rejectedReason != 'undefined'
+														&& opt.rejectedCategoryType != null
+														&& opt.rejectedCategoryType != 'Other') {
+													result = result
+															+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+															+ "<font color='red'>Category</font>: "
+															+ opt.rejectedCategoryType
+															+ '<br>'
+															+ "Reason: "
+															+ opt.rejectedReason
+															+ '</p></div></i></div></td>';
+												}
+												if (opt.rejectedReason != null
+														&& opt.rejectedReason != ''
+														&& opt.rejectedReason != 'undefined'
+														&& opt.rejectedCategoryType != null
+														&& opt.rejectedCategoryType == 'Other') {
+													result = result
+															+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+															+ "<font color='red'>Category</font>:"
+															+ opt.rejectedCategoryType
+															+ '<br>'
+															+ "Other: "
+															+ opt.rejectedCategoryOther
+															+ '<br>'
+															+ "Reason: "
+															+ opt.rejectedReason
+															+ '</p></div></i></div></td>';
+												}
+											} else if (opt.submissionStatus == 'BACKOUT') {
+												result = result
+														+ '<td><div class="tblwidth-150"><span>'
+														+ opt.submissionDisplayStatus
+														+ '</span>';
+												if (opt.backOutReason != null
+														&& opt.backOutReason != ''
+														&& opt.backOutReason != 'undefined'
+														&& opt.backOutCategoryType != null
+														&& opt.backOutCategoryType != 'Other') {
+													result = result
+															+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+															+ "<font color='red'>Category</font>: "
+															+ opt.backOutCategoryType
+															+ '<br>'
+															+ "Reason: "
+															+ opt.backOutReason
+															+ '</p></div></i></div></td>';
+												}
+												if (opt.backOutReason != null
+														&& opt.backOutReason != ''
+														&& opt.backOutReason != 'undefined'
+														&& opt.backOutCategoryType != null
+														&& opt.backOutCategoryType == 'Other') {
+													result = result
+															+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+															+ "<font color='red'>Category</font>:"
+															+ opt.backOutCategoryType
+															+ '<br>'
+															+ "Other: "
+															+ opt.backOutCategoryOther
+															+ '<br>'
+															+ "Reason: "
+															+ opt.backOutReason
+															+ '</p></div></i></div></td>';
+												}
+											} 
+											
+									else{// else blcok excuted other than REJECTED and BACKOUT stages.
+										
+										  result = result
+											+ '<td><div class="tblwidth-150">';
+									    result = result
+											+ '<select id="rejectApplicantSelectspocState'
+											+ opt.id
+											+ '" onChange="rejectApplicant('
+											+ opt.id + ','
+											+ requirementId
+											+ ',\''
+											+ submissionType
+											+ '\')";>';
+									     result = result
+											+ "<option value='Status'>"
+											+ opt.submissionDisplayStatus
+											+ "</option>";
+										// if not a client requirement remove option from the dropdown options list.
+										if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){
+											delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
 										}
-									} ],
+										'<sec:authorize access="!hasRole(\'ROLE_SHORTLIST\')">';
+										  delete opt.workflowStagesMap["SHORTLIST"];
+										'</sec:authorize>';
+									     $.each( opt.workflowStagesMap, function(val, name ) {
+										     if(opt.submissionDisplayStatus != name ){
+									    	    result = result+"<option value='"+val+"'>"+name+"</option>";
+										     }
+									    	});
+										 result = result
+														+ '</select>';
+												result = result
+														+ '</div></td>';
+										}
+											
+										} // else close of REJECTED and BACKOUT stages. // Custom Workflow Ends here.s
+									  return result;
+									}}],
 							"scrollCollapse" : false,
 							"initComplete" : function(settings, json) {
 								$('#tab-1').hide();
