@@ -1883,14 +1883,12 @@ function getEndDatePickerById(projectId,localFieldName){
 			$(".side_mask").fadeOut(200);
 			$("body").css('overflow-y', 'auto');
 			//update the details in list.
-			var vendorCont = document.getElementById('listOfVendors').value;
+			/* var vendorCont = document.getElementById('listOfVendors').value;
 			if(vendorCont == "listbyContact"){
 				getClientContactList();
-				//getVendorContactListsELK();
 			}if(vendorCont == "listbyVendor" ){
-				/* getClientDetailsELK(); */
 				getClientList();
-	   		}
+	   		} */
 		});
 	});
 	
