@@ -13,6 +13,12 @@
   <div id="shareEmptypopUp"></div>
   
   
+<style type="text/css">
+.trashbackground{
+    background-color: #ffff !important;
+    }
+</style>
+  
 <script>
   function noAccess(id){ 	
 	 
@@ -270,7 +276,7 @@ function candidateSideBar(candidateId){
 					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" id="uploadedImage" accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger trashbackground" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
 						 result = result+'  </div>';
@@ -1761,7 +1767,7 @@ chosenthree.search_field.on('keydown keyup', function(e3)
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-// 		candidateList();
+ 		candidateList();
 	}
 </script>
 
