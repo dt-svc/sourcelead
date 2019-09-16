@@ -444,7 +444,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			             <div class="input-group er ratetype">
 			                <div class="input-group-btn tblminwidth-75" style="min-width: 65px !important;">
 				                
-				                <select class="selectpicker" id="candiRateType" name="candiRateType" field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+				                <select class="selectpicker" id="candiRateType" name="candiRateType" field-name="Rate Per" ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'   ? 'data-validation-optional="true"' : 'data-validation="required"'}>
 					                 <option ${contract.billingRateType == 'INR' ? 'selected' : currencyCode  == 'INR' ? 'selected' : ''}>INR</option>
 					                 <option ${contract.billingRateType == 'AUD' ? 'selected' : currencyCode  == 'AUD' ? 'selected' : ''}>AUD</option>
 					                 <option ${contract.billingRateType == 'USD' ? 'selected' : currencyCode  == 'USD' ? 'selected' : ''}>USD</option>
@@ -455,10 +455,10 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				                </select>
 			                </div>
 							  	
-							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" disabled value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
+							  	<input type="text" class="form-control" id="candiFlatReward" name="candiFlatReward" disabled value="${contract.billingAmount}" placeholder="Billing Amount" ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'   ? 'data-validation-optional="true"' : 'data-validation="required validate_int validate_length length1-8"'} field-name="Billing Amount">
 			                
 			                <div class="input-group-btn tblminwidth-75 ratetype">
-			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer"  field-name="Rate Per" ${contract.contractType == 'Vendor NSA' || contract.contractType == 'Vendor NDA' || contract.contractType == 'NDA' || contract.contractType == 'NSA'  ? 'data-validation-optional="true"' : 'data-validation="required"'}>
+			                  <select class="selectpicker" id="candiRatePer" name="candiRatePer"  field-name="Rate Per" ${contract.contractType == 'Client SOW' || contract.contractType == 'Vendor SOW' || contract.contractType == 'Full time offer'   ? 'data-validation-optional="true"' : 'data-validation="required"'}>
 			                      <option>Rate per</option>
 			                    <option ${contract.billingRatePer  == 'Hourly' ? 'selected' : ''}>Hourly</option>
 			                    <option ${contract.billingRatePer  == 'Weekly' ? 'selected' : ''}>Weekly</option>
@@ -1974,14 +1974,12 @@ function hideCommonSOWFields(){
 <script type="text/javascript">
 	function saveNewContract(saveType) {
 		if ($('#newcontract_form').validate(false, validationSettings)) {
-			var formData = getFormData1("newcontract_form");
+			var formData = getFormData("newcontract_form");
 			var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 			$("#contractLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 				type : "POST",
 				data: formData,
-  		        processData: false,
-  		        contentType:false, 
 				url : vmsUrl+ "/saveNewContract?${_csrf.parameterName}=${_csrf.token}&saveType="+saveType,
 				success : function(data) {
 					  if(data == true){
@@ -2399,9 +2397,9 @@ function flush(){
 	document.getElementById("submissionOffersList").value="";
 	document.getElementById("startDate").value="";
 	document.getElementById("endDate").value="";
-	document.getElementById("orgRelationId").value="";
+// 	document.getElementById("orgRelationId").value="";
 	
-	document.getElementById("vendorContact").value="";
+// 	document.getElementById("vendorContact").value="";
 	document.getElementById("clientOrgRelationId").value="";
 	document.getElementById("clientContact").value="";
 	document.getElementById("approver").value="";
