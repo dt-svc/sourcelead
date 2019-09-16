@@ -75,7 +75,7 @@ public class RequirementElkRestController {
 				requirementIndex.setIndustryName(rs.getString("TRAVEL_ALLOWANCE"));
 				requirementIndex.setProjectDurationMonths(rs.getString("PROJECT_DURATION_MONTHS"));
 				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
-				// requirementIndex.setWorkflowId(rs.getLong("WORKFLOW_ID"));// ADDED BY
+				requirementIndex.setWorkflowId(rs.getLong("WORKFLOW_ID"));// ADDED BY
 				// SRINIVAS SABBU ON 24-MAY-2019.
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
