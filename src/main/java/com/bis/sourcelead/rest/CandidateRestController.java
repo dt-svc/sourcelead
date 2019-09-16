@@ -50,6 +50,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
@@ -87,6 +88,7 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
@@ -170,6 +172,9 @@ public class CandidateRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -204,11 +209,9 @@ public class CandidateRestController {
 
 				if (Validator.validate(candidateDto)) {
 					candidateDto.setStaticPath(staticPath);
-					// FileUploadUtil.fillUploadedFileInfo(candidateDto,
-					// candidateDto.getFileInfo());
 					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
-					Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
+					CandidateGlobal candidate = candidateGlobalUtil.storeCandidateGlobal(candidateDto, orgLocation, user);
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 							"Success new candidate is created");
 					response.setResponse(Result.SUCCESS.name());
