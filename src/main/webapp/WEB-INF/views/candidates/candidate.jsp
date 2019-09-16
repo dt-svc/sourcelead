@@ -24,6 +24,7 @@
 	function genderCheckValidation(id){
 		 var gendersList = [];
  		 $("input[name='gender']:checked").each( function (i) {
+ 		    $('#errorGenderMsg').find('p.jquery_form_error_message').remove(); 
  			gendersList[i] = $(this).val();
  		});
  		 

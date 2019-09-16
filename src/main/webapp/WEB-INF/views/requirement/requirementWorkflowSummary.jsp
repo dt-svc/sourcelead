@@ -2197,7 +2197,7 @@ function requirementWorkflowStatusBar(requirementId){
 		 <c:forEach var="stage" items="${stagesList}">
 			<c:choose>
 				 <c:when test = "${stage.stageShortCode =='SUBMISSION'}">
-					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementWorkflowPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
+					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submissionsCount" shortCode="${stage.stageShortCode}">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label  class="mb0 small">${stage.stageName}</label></div>';
 					result = result + '</li>';

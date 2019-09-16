@@ -270,9 +270,9 @@ public class SubmissionsRateController {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
 		ModelAndView model = new ModelAndView();
-		String permission = "YES";
-		if(requirementSubmission.getSubmissionStatus() != ApplicantSubmissionStatus.REQUEST_SENT.toString()){
-			permission = "NO";
+		String permission = "NO";
+		if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.REQUEST_SENT.toString())){
+			permission = "YES";
 		}
 		
 		model.addObject("permission",permission);
@@ -287,7 +287,7 @@ public class SubmissionsRateController {
 		
 		if("Accepted".equalsIgnoreCase(rateStatus) && "YES".equalsIgnoreCase(permission)){
 			
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT.toString()){
+			if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.REQUEST_SENT.toString())){
 				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 			}
