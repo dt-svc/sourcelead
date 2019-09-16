@@ -148,9 +148,9 @@ public class SubmissionsRateRestController {
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				requirementSubmission.setSubmissionRateComment(rejectreason);
 			}else{
-				if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
+				if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT.toString()){
 					requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 					requirementSubmission.setRejectedReason(rejectreason);
 				}
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
@@ -561,8 +561,8 @@ public class SubmissionsRateRestController {
 			RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 			User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
 			
-			if(requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REQUEST_SENT){
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+			if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.REQUEST_SENT.toString())){
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 			}
 			
@@ -580,7 +580,7 @@ public class SubmissionsRateRestController {
 			requirementSubmission.setRejectedCategoryType(Constants.APPLICANT_REJECTED);
 
 			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
-			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+			requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT.toString());
 			requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 			
 			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();

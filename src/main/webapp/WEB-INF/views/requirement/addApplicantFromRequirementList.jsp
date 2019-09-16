@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/style.css?staticTime=${staticTime}" />
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}resources/css/chosen.min.css">
+<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css">
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionFormBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="${SourceLeadWeb_atsUrl}/resources/js/submissionForm-html-generator.js" type="text/javascript" ></script> <!-- form generator -->
 

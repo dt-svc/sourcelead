@@ -511,9 +511,9 @@ public class RequirementReleaseRestController {
 		requirement.setUrl(parentRequirement.getUrl());
 		//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
 		// below lines is commented for to move in next release build.
-		/*if(parentRequirement.getWorkflowId() !=null){
+		if(parentRequirement.getWorkflowId() !=null){
 		requirement.setWorkflowId(parentRequirement.getWorkflowId());
-		}*/
+		}
 		if(parentRequirement.getMedicalClearence() != null){
 		requirement.setMedicalClearence(parentRequirement.getMedicalClearence());
 		}
