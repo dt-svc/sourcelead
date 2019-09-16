@@ -47,6 +47,8 @@ public class CandidateDTO extends SearchDTO{
 	
 	private String middleName;
 	
+	private String fullName;
+	
 	private String dateofBirth;
 	
 	private String panNumber;
@@ -1388,5 +1390,13 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setShiftName(String shiftName) {
 		this.shiftName = shiftName;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }

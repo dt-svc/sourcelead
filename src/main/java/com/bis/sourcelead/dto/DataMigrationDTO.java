@@ -2516,12 +2516,12 @@ public class DataMigrationDTO extends CommonDTO {
 		this.vendor = vendor;
 	}
 
-/*	public String getWorkflow() {
+	public String getWorkflow() {
 		return workflow;
 	}
 
 	public void setWorkflow(String workflow) {
 		this.workflow = workflow;
-	}*/
+	}
    
 }

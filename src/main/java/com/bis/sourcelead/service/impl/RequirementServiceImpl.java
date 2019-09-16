@@ -323,6 +323,14 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setId(requirement.getId());
 			requirement.setUpdatedBy(user.getUserCode());
 			requirement.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			
+			if(requirement.getLevel2ApproverUserId() != null) {
+				requirementDTO.setSequentialApprover1(requirement.getLevel1ApproverUserId()[0]);
+				requirementDTO.setSequentialApprover2(requirement.getLevel2ApproverUserId()[0]);
+			} else if(requirement.getLevel1ApproverUserId()!=null){
+				requirementDTO.setParallelApprover(Arrays.asList(requirement.getLevel1ApproverUserId()));
+			}
+			
 		} else {
 			requirement = new Requirement();
 			requirement.setGeneratedId(getRequirementId(orgLocations));
@@ -352,12 +360,11 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
 		}
 		//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-		// below lines is commented for to move in next release build.
-		/*if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
+		if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
 			RequirementWorkFlow workflow = new RequirementWorkFlow();
 			workflow.setId(Long.parseLong(requirementDTO.getWorkflow()));
 			requirement.setWorkflowId(workflow);
-		}*/
+		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
@@ -1245,6 +1252,38 @@ public class RequirementServiceImpl implements RequirementService {
 				updatedRequirementMailToManager(user, user, savedRequirement, location, orgLocations,redirectURL,redirectOrgLocationId);
 			}
 		}
+		
+		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
+			List<String> parallelApprover = new LinkedList<>();
+			String sequentialApprover1 = "";
+			String sequentialApprover1Status = "", sequentialApprover2Status = "";
+			String sequentialApprover2 = "";
+			
+			List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
+			if (list1 != null && !list1.isEmpty()) {
+				for (RequirementApproverHierarchy rah : list1) {
+					if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+						parallelApprover.add(rah.getApproverUserId().getId() + "");
+					}
+					if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+						if (rah.getLevel() == 1) {
+							sequentialApprover1 = rah.getApproverUserId().getId() + "";
+							sequentialApprover1Status = rah.getRequirementApproverStatus().name();
+						}
+						if (rah.getLevel() == 2) {
+							sequentialApprover2 = rah.getApproverUserId().getId() + "";
+							sequentialApprover2Status = rah.getRequirementApproverStatus().name();
+						}
+					}
+				}
+			}
+			requirementDTO.setParallelApprover(parallelApprover);
+			requirementDTO.setSequentialApprover1(sequentialApprover1);
+			requirementDTO.setReqLevel1ApproverStatus(sequentialApprover1Status);
+			requirementDTO.setSequentialApprover2(sequentialApprover2);
+			requirementDTO.setReqLevel2ApproverStatus(sequentialApprover2Status);
+		}
+		
 		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);
 		
 		if (requirementDTO.isJobFair()) {
