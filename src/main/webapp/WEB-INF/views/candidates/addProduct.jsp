@@ -3,7 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -13,54 +12,37 @@
       
     </section>
     <div class="content-area content-new clearfix backgroundWhite">
+    <form id="addProductForm" method="post">
       <div class="minHeightcol6 mt mb">
         
           <div class="col-md-4 minHeight">
-              <label class="clearfix">Product Code</label>
+              <label class="clearfix">Product Name</label>
               <div class="clearfix">
-                  <input type="text" class="form-control">
+                  <input type="text" name ="productName" id = "productName" class="form-control">
               </div>
               <div class="clearfix"></div>
           </div>
         <div class="col-md-4 minHeight">
-                <label>Product Type</label>
+                <label>Product Category</label>
                 <div class="clearfix">
                   <select class="chosen-select" style="display: none;">
                     <option selected="">Select</option>
-                    <option>Product-1</option>
-                    <option>Product-2</option>
-                    <option>Product-3</option>
-                  </select><div class="chosen-container chosen-container-single" style="width: 100%;" title=""><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off"></div><ul class="chosen-results"></ul></div></div>
+                    <option>Home</option>
+                    <option>Vehicles</option>
+                    <option>Home appliance</option>
+                      <option>Utensils</option>
+                    <option>Electronics/gadgets</option>
+                    <option>Furnitures</option>
+                     <option>Other</option>
+                  </select><div class="chosen-container chosen-container-single" style="width: 100%;" title=""><div class="chosen-drop"><div class="chosen-search"><input type="text" name ="category" id="category" autocomplete="off"></div><ul class="chosen-results"></ul></div></div>
                 </div>
                 
         </div>
-    <div class="col-md-4 minHeight">
-            <label class="clearfix">Category</label>
-            <div class="clearfix">
-              <input type="text" class="form-control">
-            </div>
-            <div class="clearfix"></div>
-    </div>
-
+   
     <div class="col-md-4 minHeight">
         <label class="clearfix">Price</label>
         <div class="clearfix">
-          <input type="text" class="form-control">
-        </div>
-        <div class="clearfix"></div>
-</div>
-
-    <div class="col-md-4 minHeight">
-        <label class="clearfix">Priority</label>
-        <div class="clearfix">
-            <select class="sel">
-                <option selected="">Select</option>
-                <option>Immediate</option>
-                <option>One Week</option>
-                <option>One Month</option>
-                <option>Two Months</option>
-                <option>Three Months</option>
-              </select>
+          <input type="text" name ="price" id="price" class="form-control">
         </div>
         <div class="clearfix"></div>
 </div>
@@ -69,21 +51,13 @@
   <div class="form-group clearfix">
     <label class="clearfix">Status</label>
     <div class="clearfix">
-        <select class="sel">
+        <select class="sel" id ="status">
             <option selected="">Select</option>
             <option>Open</option>
             <option>Close</option>
           </select>
     </div>
-    <div class="clearfix"></div>
   </div>
-</div>
-<div class="col-md-4 minHeight">
-    <label class="clearfix">Notify To</label>
-    <div class="clearfix">
-        <input type="text" class="form-control">
-    </div>
-    <div class="clearfix"></div>
 </div>
 
 <div class="col-md-4 minHeight">
@@ -94,7 +68,7 @@
         <label class="col-md-8 mt5">Public OR Private</label>
         <div class="col-md-4">
         <label class="switch">
-            <input checked="" type="checkbox">
+            <input checked="" type="checkbox"  >
             <span class="slider round"></span>
         </label>
       </div>
@@ -107,10 +81,10 @@
     <label class="clearfix">&nbsp;</label>
     
     <div class="clearfix row">
-        <label class="col-md-8 mt5">Share Details</label>
+        <label class="col-md-8 mt5">Candidate Details</label>
         <div class="col-md-4">
         <label class="switch">
-            <input checked="" type="checkbox">
+            <input checked="" type="checkbox" name = "ShareContactDetails" id="ShareContactDetails">
             <span class="slider round"></span>
         </label>
       </div>
@@ -121,8 +95,8 @@
 <div class="clearfix"></div>
     <div class="col-md-6">
           <label class="clearfix">Product Description <span class="text-danger paddingLeft">*</span></label>
-          <div class="clearfix">
-            <textarea placeholder="Description" class="form-control" cols="2"></textarea>
+          <div class="clearfix">  
+            <textarea placeholder="Description" name="productDescription" class="form-control" cols="2"></textarea>
           </div>
         <div class="clearfix"></div> 
     </div>
@@ -192,12 +166,30 @@
       </div>
     </div>
   </div>
-
+</form>
       </div>  
 
         </section>
 
+ <script type="text/javascript">
+ function listfunction(){
+  var atsUrl='${atsUrl}';
+  var productName = document.getElementById("productName").value;
+  var category = document.getElementById("category").value;
 
+  
+  
+  alert("===" +category)
 
-
+  alert("I am in")
+	 $.ajax({
+			type : "POST",
+            url: atsUrl+"/saveMarketPlaceDetails?status="+status+"&productName="+productName+"&category="+category+"&price="+price+"&productDescription="+productDescription,
+            success : function(json) {
+			}
+            });
+}
+  
+ </script>
+}
  <jsp:include page="../masterFooter.jsp" />	
