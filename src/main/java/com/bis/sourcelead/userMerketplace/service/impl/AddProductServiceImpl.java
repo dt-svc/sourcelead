@@ -1,4 +1,4 @@
-package com.bis.sourcelead.merketPlace.service.impl;
+package com.bis.sourcelead.userMerketplace.service.impl;
 
 import org.springframework.stereotype.Service;
 
