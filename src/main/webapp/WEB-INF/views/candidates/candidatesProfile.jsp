@@ -917,11 +917,18 @@ function reActivateCandidateAlertMessage(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateProfile(candidateId,candidateType,isAssociate){
+function candidateProfile(candidateId,candidateType,isAssociate,candType){
 	  var skillsList = '${skillsList}'; 
+	  
+	  if(candType != null && candType != 'undefined' && candType != '' && candType == 'candidateGlobal'){
+		  candidateUrl = atsUrl +"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }else{
+		  candidateUrl = atsUrl +"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }
+	  
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: candidateUrl,        
          success :function(result) { 
         	 var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
@@ -1102,9 +1109,9 @@ function candidateProfile(candidateId,candidateType,isAssociate){
 							$("#tab-5").empty();  
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
-							employeeSubmissionProfile(candidateId);
-							educationSubmissionProfile(candidateId);
-							 certificationSubmissionProfile(candidateId); 
+							employeeSubmissionProfile(candidateId,candType);
+							educationSubmissionProfile(candidateId,candType);
+							 certificationSubmissionProfile(candidateId,candType); 
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -1534,10 +1541,10 @@ function removeSkillById(candidateId, skillId){
 </script>
 
 <script>
-	function employeeSubmissionProfile(candidateId) {
+	function employeeSubmissionProfile(candidateId,candidateType) {
 				$.ajax({
 					type : "POST",
-					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId+"&candidateType="+candidateType,
 					success : function(data) {
 						if (data && data.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
@@ -1612,10 +1619,10 @@ function removeSkillById(candidateId, skillId){
 </script>
 
 <script>
-function educationSubmissionProfile(candidateId){
+function educationSubmissionProfile(candidateId,candidateType){
 	 $.ajax({  
           type : "GET",
-          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candidateType,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -1704,11 +1711,11 @@ function educationSubmissionProfile(candidateId){
 </script> 
 
 <script>
-function certificationSubmissionProfile(candidateId) {
+function certificationSubmissionProfile(candidateId,candidateType) {
 	
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candidateType,        
           success :function(data) {
         	  if (data && data.response === "INVALID_DATA") {
       		    showError(data.responseMessage);

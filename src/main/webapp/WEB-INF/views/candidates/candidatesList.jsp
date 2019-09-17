@@ -122,16 +122,22 @@ function closeCandiatesSubmitedList() {
 
 <script>
 var candidateStatusGlobal ="";
-function candidateSideBar(candidateId){
+function candidateSideBar(candidateId,candType){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
+	  var candidateUrl = "";
+	  if(candType != null && candType != 'undefined' && candType != '' && candType == 'candidateGlobal'){
+		  candidateUrl = atsUrl+"/getGlobalCandidateInfo?candidateId="+candidateId+"&locationCode="+locationCode+"&candidateType="+candidateType;
+	  }else{
+		  candidateUrl = atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode;
+	  }
+	  
 	  $.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: candidateUrl,
            success :function(json) { 
                 if(json != null && json != 'undefined' && json != ""){  
-                	// var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skills = [];
@@ -528,7 +534,7 @@ function candidateSideBar(candidateId){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\',\''+json.isAssociate+'\');">Profile</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\',\''+json.isAssociate+'\',\''+candType+'\');">Profile</a></li>';
 
 			             '</sec:authorize>';
 			             
@@ -604,7 +610,7 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 getCandidateTagsList(candidateId);
+						 getCandidateTagsList(candidateId,candType);
 						 
 						 
 						 if("${candidateKeyword}" == "requestedDocumentNotification"){
@@ -616,7 +622,7 @@ function candidateSideBar(candidateId){
 						    	$("#candDetailView").addClass("active");
 					 	    	candidateDocuments(candidateId);
 						    }else{
-						    	candidateProfile(candidateId,candidateType,json.isAssociate);
+						    	candidateProfile(candidateId,candidateType,json.isAssociate,candType);
 						    }
 						 
 						 var output = "";
@@ -686,10 +692,17 @@ function candidateSideBar(candidateId){
 
 <!--  ============================= Candidate tags related scripts written by Laxman Start ================================ -->
 <script>
-function getCandidateTagsList(candidateId){
+function getCandidateTagsList(candidateId,candidateType){
+	
+	 if(candidateType != null && candidateType != 'undefined' && candidateType != '' && candidateType == 'candidateGlobal'){
+		  candidateUrl =  atsUrl+"/getCandidatesGlobalTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }else{
+		  candidateUrl =  atsUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }
+	 
 	$.ajax({  
         type : "POST",
-        url: atsUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+        url: candidateUrl,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {

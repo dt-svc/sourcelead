@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,15 +149,22 @@ public class CandidateCertificationsRestController {
 	@RequestMapping(value = { "/getCandidateCertificationListByCandidateIdAndOrgLocationID",
 			"rest/getCandidateCertificationListByCandidateIdAndOrgLocationID" }, method = RequestMethod.POST)
 	public ResponseList<CandidateCertificationDTO> getCandidateCertificationListByCandidateIdAndOrgLocationID(
-			@RequestParam(defaultValue = "0") long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(defaultValue = "0") long candidateId,@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
 		ResponseList<CandidateCertificationDTO> reponseList = new ResponseList<>();
 		try {
 			List<CandidateCertificationDTO> candidateCertificationDTOList = new ArrayList<>();
 			if (candidateId > 0) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (loginOrgLocation != null) {
-					List<CandidateCertifications> candidateCertificationsList = candidateCertificationsService
-							.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+					List<CandidateCertifications> candidateCertificationsList = null;
+					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						candidateCertificationsList = candidateCertificationsService
+								.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+					}else {
+						candidateCertificationsList = candidateCertificationsService
+								.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+					}
+					
 					for (CandidateCertifications candidateCertifications : candidateCertificationsList) {
 						CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();
 						candidateCertificationDTO.setCandidateId(candidateId + "");

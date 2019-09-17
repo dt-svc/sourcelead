@@ -169,16 +169,26 @@ public class CandidateEducationRestController {
 	@RequestMapping(value = { "/getCandidateEducationListByCandidateId",
 			"/rest/getCandidateEducationListByCandidateId" }, method = RequestMethod.GET)
 	public ResponseList<CandidateEducationDTO> getCandidateEducationListByCandidateId(
-			@RequestParam(defaultValue = "0") long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(defaultValue = "0") long candidateId, @RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		ResponseList<CandidateEducationDTO> reponseList = new ResponseList<>();
 		try {
 			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			if (loginOrgLocation != null) {
 				if (candidateId > 0) {
-					List<CandidateEducation> candidatesEducationList = candidateEducationService
-							.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId,
-									loginOrgLocation.getId());
+					List<CandidateEducation> candidatesEducationList = null;
+					
+					
+					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						 candidatesEducationList = candidateEducationService
+									.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateId,
+											loginOrgLocation.getId());
+					}else {
+						 candidatesEducationList = candidateEducationService
+									.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId,
+											loginOrgLocation.getId());
+					}
+					
 					List<CandidateEducationDTO> eduList = new ArrayList<>();
 					for (CandidateEducation candidateEducation : candidatesEducationList) {
 						CandidateEducationDTO edu = new CandidateEducationDTO();

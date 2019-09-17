@@ -158,15 +158,20 @@ public class CandidateEmployersRestController {
 
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
-			Candidate employers = candidateService.getCandidateById(candidateEmployer.getCandidateId());
-			if (employers != null) {
-				Long loc = employers.getOrgLocationId().getId();
+			if (candidateEmployer.getCandidateId() != 0) {
 
 				List<CandidateEmployerDTO> candidateEmployeeDTOList = new ArrayList<>();
-				List<CandidateEmployers> candidatesEmployersList = candidateEmployersService
-						.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateEmployer.getCandidateId(), loc);
+				List<CandidateEmployers> candidatesEmployersList = null;
+				
+				if(StringUtils.isNotBlank(candidateEmployer.getCandidateType()) && candidateEmployer.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidatesEmployersList = candidateEmployersService
+							.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateEmployer.getCandidateId(), orgLocations.getId());
+				}else {
+					candidatesEmployersList = candidateEmployersService
+							.getCandidatesEmployersListByCandidateIdAndOrgLocationID(candidateEmployer.getCandidateId(), orgLocations.getId());
+				}
+				
 
-				// candidatesEmployersList.forEach(candidaet->{
 				for (CandidateEmployers candidateEmployers : candidatesEmployersList) {
 					CandidateEmployerDTO candidateEmployerDTO = new CandidateEmployerDTO();
 
@@ -195,7 +200,6 @@ public class CandidateEmployersRestController {
 					candidateEmployerDTO.setCandidateemployerId(String.valueOf(candidateEmployers.getId()));
 					candidateEmployeeDTOList.add(candidateEmployerDTO);
 				}
-				// });
 				reponseList.setData(candidateEmployeeDTOList);
 				reponseList.setResponse(Result.SUCCESS.name());
 				reponseList.setResponseMessage(Result.SUCCESS.getValue());

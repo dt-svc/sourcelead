@@ -10,11 +10,17 @@
 --%>
 
 <script>
-function candidateQuickViewProfile(candidateId){
+function candidateQuickViewProfile(candidateId,candidateType){
 	  var skillsList = '${skillsList}'; 
+	  var candidateUrl = '';
+	  if(candidateType != null && candidateType != 'undefined' && candidateType != '' && candidateType == 'candidateGlobal'){
+		  candidateUrl = atsUrl +"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }else{
+		  candidateUrl = atsUrl +"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }
 	  $.ajax({
         type : "POST",
-         url: atsUrl +"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: candidateUrl,        
          success :function(result) {  
         	 var json = result.object;
       	     if(result.response === "SESSION_TIMEDOUT") {
@@ -202,11 +208,11 @@ function candidateQuickViewProfile(candidateId){
 						
 					$("#candidateQuickViewDiv").empty();
   				    $("#candidateQuickViewDiv").append(result); 
-  				    qvemployeeSubmission(candidateId);
-  				    qveducationSubmission(candidateId);
-					qwikCertificates(candidateId);
+  				    qvemployeeSubmission(candidateId,candidateType);
+  				    qveducationSubmission(candidateId,candidateType);
+					qwikCertificates(candidateId,candidateType);
 					console.log(result);
-					candidateSideBar(candidateId); 
+					candidateSideBar(candidateId,candidateType); 
               	}else{
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
@@ -236,10 +242,10 @@ function candidateQuickViewProfile(candidateId){
 </script>
 
 <script>
-	function qvemployeeSubmission(candidateId) {
+	function qvemployeeSubmission(candidateId,candidateType) {
 		$.ajax({
 					type : "POST",
-					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId="+candidateId+"&candidateType="+candidateType,
 					success : function(data) {
 						if (data && data.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
@@ -319,10 +325,10 @@ function candidateQuickViewProfile(candidateId){
 </script>
 
 <script>
-function qveducationSubmission(candidateId){
+function qveducationSubmission(candidateId,candidateType){
 	 $.ajax({  
           type : "GET",
-          url: atsUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?candidateId="+candidateId+"&candidateType="+candidateType,        
         		  success :function(data) {
 								if(data && data.response === "INVALID_DATA") {
        								showError(data.responseMessage);
@@ -413,7 +419,7 @@ function qveducationSubmission(candidateId){
 </script> 
 
 <script>
-function qwikCertificates(candidateId){
+function qwikCertificates(candidateId,candidateType){
 	 $.ajax({  
           type : "POST",
           url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        

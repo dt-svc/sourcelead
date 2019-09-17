@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +57,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
-import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -69,6 +66,7 @@ import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -88,6 +86,7 @@ import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -101,6 +100,7 @@ import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -179,6 +179,12 @@ public class CandidateListRestController {
 	
 	@Autowired
 	SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -883,14 +889,7 @@ public class CandidateListRestController {
 				Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
 
 				CandidateDTO candidateDTO = new CandidateDTO();
-
 				Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-				
-				/*
-				 * CandidateSourceDTO
-				 * candidateSource=candidateService.getCandidateSourceById(candidateSource.getId
-				 * ().longValue(),user.getId(), loginOrgLocation);
-				 */
 				int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
 
 				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -1066,7 +1065,7 @@ public class CandidateListRestController {
 						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
 							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
 							Map<Long, String[]> candidateData = candidateCustomFieldDataService
-									.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(), formFieldId, can.getId());
+									.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrgId(), formFieldId, can.getId());
 							Map<String, String> dataMap = new HashMap<>();
 							if (candidateData != null && !candidateData.isEmpty()) {
 								for (Entry<Long, String[]> candidateCustomData : candidateData.entrySet()) {
@@ -2484,5 +2483,222 @@ public class CandidateListRestController {
 		}
 	}
 
+	@RequestMapping(value = { "/getCandidateGlobalById", "/rest/getCandidateGlobalById" }, method = RequestMethod.POST)
+	public @ResponseBody Response<CandidateDTO> getCandidateGlobalById(@RequestParam(value = "candidateId", required = false) String candidateId,
+			HttpServletRequest request) throws Exception {
+		Response<CandidateDTO> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			try {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
 
+				CandidateDTO candidateDTO = new CandidateDTO();
+				CandidateGlobal can = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(candidateId));
+				int percentage = candidateGlobalUtil.getCandidatePercentage(can, loginOrgLocation);
+
+				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				for (LookUpData lookUpData : skillsList) {
+					lhs.add(lookUpData.getName());
+				}
+
+				if (null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())) {
+					String[] csl = can.getSkillsName().split(",");
+					for (String sl : csl) {
+						lhs.add(sl);
+					}
+				}
+				candidateDTO.setAllAndCandidateSkills(lhs);
+
+				// visa type
+				LinkedHashSet<String> visa = new LinkedHashSet<String>();
+				List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+				for (LookUpData lookUpData : visaList) {
+					visa.add(lookUpData.getName());
+				}
+				if (null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())) {
+					String[] csl = can.getVisaType().split(",");
+					for (String sl : csl) {
+						visa.add(sl);
+					}
+				}
+				candidateDTO.setAllAndCandidateVisa(visa);
+				candidateDTO.setVisaType(can.getVisaType());
+				
+				Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+				candidateDTO.setTagsList(tagsList);
+				Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
+				if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
+					StringBuilder candidateTagsStr = new StringBuilder();
+					for(String tags : candidateTagsList) {
+						candidateTagsStr = candidateTagsStr.append(tags).append(",");
+					}
+					candidateTagsStr.toString();
+					candidateDTO.setCandidateTags(candidateTagsStr.substring(0,candidateTagsStr.length()-1));
+				}
+				
+				if (null != can.getExpectedRateCurrencey()) {
+					candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						candidateDTO.setExpectedRateCurrencey(countries.getCurrency());
+					}
+				}
+
+				if (null != can.getCurrentRateCurrency()) {
+					candidateDTO.setCurrentRateCurrency(can.getCurrentRateCurrency());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						candidateDTO.setCurrentRateCurrency(countries.getCurrency());
+
+					}
+				}
+
+				if (null != can.getCurrentRateType()) {
+					candidateDTO.setCurrentRateType(can.getCurrentRateType());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						String countryCheck = countries.getName();
+						switch (countryCheck) {
+						case "India":
+							candidateDTO.setCurrentRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setCurrentRateType("Hourly");
+						}
+					}
+				}
+
+				if (null != can.getOrgRelationId()) {
+					candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
+					if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+					if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidateDTO.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}
+
+				}
+				if (null != can.getSpocId()) {
+					StringBuilder contactName = new StringBuilder();
+					candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
+					if (null != can.getSpocId().getClientUser().getLastName()) {
+						candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
+								.append(can.getSpocId().getClientUser().getLastName()).toString());
+					} else {
+						candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+					}
+
+				}
+				candidateDTO.setProfilePercentage(percentage);
+				candidateDTO.setCountry(can.getCountry());
+				candidateDTO.setCandidateType(can.getCandidateType());
+				candidateDTO.setCity(can.getCity());
+				candidateDTO.setState(can.getState());
+				candidateDTO.setFirstName(can.getFirstName());
+				candidateDTO.setLastName(can.getLastName());
+				candidateDTO.setMiddleName(can.getMiddelName());
+				candidateDTO.setGender(can.getGender());
+				candidateDTO.setMaritalStatus(can.getMaritalStatus());
+				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), can.getDateOfBirth()));
+				candidateDTO.setLocation(can.getLocation());
+				candidateDTO.setSummary(can.getSummary());
+				candidateDTO.setFileUrl(can.getFileUrl());
+				candidateDTO.setMobilePhone(can.getMobilePhone());
+				candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
+				candidateDTO.setSkillsName(can.getSkillsName());
+				candidateDTO.setRateType(can.getRateType());
+				candidateDTO.setDesignationType(can.getDesignationType());
+				candidateDTO.setExpectedRate(can.getExpectedRate());
+				candidateDTO.setCurrentRate(can.getCurrentRate());
+				candidateDTO.setEmail(can.getEmail());
+				candidateDTO.setNoticePeriod(can.getNoticePeriod());
+				
+				if(can.getOtherNoticePeriod() != null) {
+				candidateDTO.setOtherNoticePeriod(can.getOtherNoticePeriod());
+				}
+				candidateDTO.setDesignation(can.getDesignation());
+				candidateDTO.setPrimarySkill(can.getPrimarySkill());
+				candidateDTO.setAddress(can.getAddress());
+				candidateDTO.setExperienceMonths(can.getExperienceMonths());
+				candidateDTO.setExperienceYears(can.getExperienceYears());
+				candidateDTO.setZipcode(can.getZipCode());
+				candidateDTO.setCandidateType(can.getCandidateType());
+				candidateDTO.setStatus(can.getStatus().toString());
+				candidateDTO.setTerminateReason(can.getTerminateReason());
+				candidateDTO.setIsAssociate(can.getIsAssociate());
+				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
+				candidateDTO.setId(can.getId());
+				
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				candidateDTO.setCandidateSourceList(candidateSourceList);
+				
+				if(null != can.getCandidateSource()) {
+					candidateDTO.setCandidateSource(can.getCandidateSource());
+				}
+				
+				if(can.getPanNumber() != null) {
+	 				candidateDTO.setPanNumber(can.getPanNumber());
+					}
+					
+				if(can.getAadharNumber() != null) {
+					candidateDTO.setAadharNumber(can.getAadharNumber());
+					}
+					
+				if(can.getSsnNumber() != null) {
+						candidateDTO.setSsnNumber(can.getSsnNumber());
+						}
+					
+				if(can.getConsultantUser() != null) {
+					candidateDTO.setUserId(can.getConsultantUser().getId());
+				}
+				candidateDTO.setCandidateId(String.valueOf(can.getId()));
+				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+				if (action != null && action.getId() != null) {
+					List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+					List<SourceleadSectionDTO> sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),
+							loginOrgLocation.getId());
+					if (sections != null && !sections.isEmpty()) {
+						for (SourceleadSectionDTO sec : sections) {
+							for (OrglocationFormFieldsDTO customFields : sec.getCustomFieldsList()) {
+								CustomFormFieldDTO custom = new CustomFormFieldDTO();
+								custom.setCustomFormFieldId(customFields.getId());
+								formFieldId.add(custom);
+							}
+						}
+						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+							Map<Long, String[]> candidateData = candidateCustomFieldDataService
+									.getCandidateGlobalCustomFieldDataMapByLocationId(orgLoc.getOrgId(), formFieldId, can.getId());
+							Map<String, String> dataMap = new HashMap<>();
+							if (candidateData != null && !candidateData.isEmpty()) {
+								for (Entry<Long, String[]> candidateCustomData : candidateData.entrySet()) {
+									String labelName = candidateCustomData.getValue()[0];
+									String labelData = candidateCustomData.getValue()[1];
+									String labelId = candidateCustomData.getValue()[2];
+									Long id = candidateCustomData.getKey();
+									StringBuilder keyValue = new StringBuilder();
+									keyValue.append(labelName).append("$").append(labelData);
+									dataMap.put(id.toString(), keyValue.toString());
+									candidateDTO.setCandidateCustomFieldData(dataMap);
+								}
+							}
+						}
+					}
+				}
+
+				response.setObject(candidateDTO);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
 }
