@@ -1,4 +1,4 @@
-package com.bis.sourcelead.clockInOutDaoImpl;
+package com.bis.sourcelead.clockinout.dao.impl;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -24,14 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
-import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
-import com.bis.sourcelead.clockInOutEntity.Breaks;
-import com.bis.sourcelead.clockInOutEntity.ClockInOut;
-import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
-import com.bis.sourcelead.clockInOutUtil.ClockInOutUtil;
+import com.bis.sourcelead.clockinout.dao.ClockInOutConfigDao;
+import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.entity.Breaks;
+import com.bis.sourcelead.clockinout.entity.ClockInOut;
+import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
+import com.bis.sourcelead.clockinout.util.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ProjectsDTO;
