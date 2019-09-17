@@ -291,6 +291,14 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateId.toString());
 		}
 	}
+
+
+
+	@Override
+	public List<CandidateCertifications> getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(
+			Long candidateId, Long orgLocationId) throws Exception {
+		return candidateCertificationsDao.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
 		
 
 }

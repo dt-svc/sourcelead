@@ -192,6 +192,50 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 		}
 		return candidateCommentsList;
 	}
+
+
+	@Override
+	public List<CandidateComments> getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long candidateId,
+			Long orgLocationId) throws Exception {
+		
+		List<CandidateComments> candidateCommentsList = candidateCommentsDao.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(candidateId, orgLocationId);
+
+		for(CandidateComments candidateComments: candidateCommentsList){
+			
+			User user = userService.getUserByUserCode(candidateComments.getUpdatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				 candidateComments.setCommentAuthor(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				candidateComments.setCommentAuthorUserId(user.getId());
+				candidateComments.setCommentAuthorUserImage(user.getFileUrl());
+			}
+			
+			long diff = commonUtil.currentDate().getTime() - candidateComments.getUpdatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder timeBuilder = new StringBuilder();
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				candidateComments.setCommentTime(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+			}else if(diffDays == 0 && diffHours == 0){
+				candidateComments.setCommentTime(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+			}else if(diffDays == 0){
+				candidateComments.setCommentTime(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+			}else if(diffDays < 7){
+				candidateComments.setCommentTime(timeBuilder.append(diffDays).append( " days ").append(diffHours).append(" hours ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(candidateComments.getUpdatedDate());
+				candidateComments.setCommentTime(commonDateFormat.toString());
+			}
+		}
+		
+		return candidateCommentsList;
 	
-	
+	}
 }

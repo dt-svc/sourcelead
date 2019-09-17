@@ -34,4 +34,6 @@ public interface CandidateCommentsService {
 	
 	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(Long candidate, Long submissionId, OrgLocations orgLocation) throws Exception;
 	
+	public List<CandidateComments> getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long candidateId, Long orgLocationId) throws Exception;
+	
 }

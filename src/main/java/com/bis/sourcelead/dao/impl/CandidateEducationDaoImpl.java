@@ -234,4 +234,14 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		return resumesCount;
 
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<CandidateEducation> getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEducation ce where  ce.candidateGlobalId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
+		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return candidateEducation;
+	}
 }

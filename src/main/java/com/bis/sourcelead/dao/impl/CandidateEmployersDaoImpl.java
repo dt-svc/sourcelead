@@ -230,5 +230,15 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		return employersCount;
 }
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<CandidateEmployers> getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateGlobalId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateGlobalId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY (candidateEmployers.endYear) DESC,candidateEmployers.id DESC";  
+		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).list();
+		return candidateList;
+	}
+
 
 }

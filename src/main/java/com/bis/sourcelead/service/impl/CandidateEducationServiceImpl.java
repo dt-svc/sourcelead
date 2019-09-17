@@ -481,4 +481,21 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception {
 		return candidateEducationDao.getCandidateGlobalActiveEducationsCountByCandidateId(candidateId);
 	}
+
+
+	@Override
+	public List<CandidateEducation> getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		List<CandidateEducation> edulist = candidateEducationDao.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		OrgLocations locations = orgLocationService.getOrgLocations(orgLocationId);
+		for(CandidateEducation education :edulist){
+			if(education.getStartDate() != null){
+			education.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getStartDate()));
+			}
+			if(education.getEndDate() != null){
+			education.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(locations.getDateFormat(),education.getEndDate()));
+			}
+		}
+		return edulist;
+	}
 }

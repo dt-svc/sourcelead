@@ -114,5 +114,17 @@ public class CandidateCommentsDaoImpl implements CandidateCommentsDao {
 		candidateCommentsList = candidateCommentsListQuery.setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).setLong("submissionId", submissionId).list();
 		return candidateCommentsList;
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateComments> getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateComments> candidateCommentsList = null;
+		Query candidateCommentsListQuery= session.createQuery("from CandidateComments comments where comments.orgLocationId.id = :orgLocationId and comments.status = '1' and comments.candidateGlobalId.id = :candidateId ORDER BY comments.updatedDate DESC");
+		candidateCommentsList = candidateCommentsListQuery.setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).list();
+		return candidateCommentsList;
+	}
 	
 }

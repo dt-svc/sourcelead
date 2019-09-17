@@ -436,4 +436,10 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		return candidateEmployersList;
 	}
 
+	@Override
+	public List<CandidateEmployers> getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		return candidateEmployersDao.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
+
 }

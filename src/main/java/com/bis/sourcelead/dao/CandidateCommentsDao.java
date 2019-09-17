@@ -18,5 +18,7 @@ public interface CandidateCommentsDao {
 	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, Long orgLocationId) throws Exception;
 	
 	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId(Long candidateId, Long submissionId, Long orgLocationId) throws Exception;
+	
+	public List<CandidateComments> getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long candidateId, Long orgLocationId) throws Exception;
 
 }

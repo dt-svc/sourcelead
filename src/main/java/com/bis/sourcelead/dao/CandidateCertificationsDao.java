@@ -22,4 +22,6 @@ public interface CandidateCertificationsDao {
 
 	public CandidateCertifications getCandidateCertificateBycandidateIdandCertificateId(Long candidateId,Long candidateCertificateId)  throws Exception;
 	
+	public List<CandidateCertifications> getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(Long candidateId ,Long orgLocationId) throws Exception;
+	
 }

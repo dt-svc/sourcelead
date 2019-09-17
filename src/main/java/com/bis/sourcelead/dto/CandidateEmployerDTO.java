@@ -61,6 +61,8 @@ public class CandidateEmployerDTO implements Serializable {
 	private String orgLocationId;
 
 	private String candidateemployerId;
+	
+	private String candidateType;
 
 	public String getCandidateemployerId() {
 		return candidateemployerId;
@@ -251,6 +253,14 @@ public class CandidateEmployerDTO implements Serializable {
 
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	}
 
 

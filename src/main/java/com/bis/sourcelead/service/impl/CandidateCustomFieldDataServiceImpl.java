@@ -32,4 +32,10 @@ public class CandidateCustomFieldDataServiceImpl implements CandidateCustomField
 		return candidateCustomFieldDataDao.savejobCustomFieldData(candidateCustomFields);
 	}
 
+	@Override
+	public Map<Long, String[]> getCandidateGlobalCustomFieldDataMapByLocationId(Long id,
+			List<CustomFormFieldDTO> formFieldId, Long candidateId) throws Exception {
+		return candidateCustomFieldDataDao.getCandidateGlobalCustomFieldDataMapByLocationId(id, formFieldId, candidateId);
+	}
+
 }

@@ -1545,4 +1545,6 @@ public class Constants {
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
 	
 	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
+	
+	public static final String CANDIDATE_GLOBAL = "candidateGlobal";
 }

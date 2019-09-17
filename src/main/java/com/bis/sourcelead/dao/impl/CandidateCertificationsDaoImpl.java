@@ -132,5 +132,18 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 		}
 		return canEMp;
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateCertifications> getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(
+			Long candidateId, Long orgLocationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCertifications cc where cc.candidateGlobalId.id =:candidateId and cc.status = '1' ORDER BY cc.createdDate DESC";  
+		List<CandidateCertifications> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return candidateCertifications;	
+	
+	}
 }
 
