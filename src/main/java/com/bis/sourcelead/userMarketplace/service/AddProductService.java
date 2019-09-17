@@ -1,4 +1,4 @@
-package com.bis.sourcelead.marketPlaceService;
+package com.bis.sourcelead.userMarketplace.service;
 
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
