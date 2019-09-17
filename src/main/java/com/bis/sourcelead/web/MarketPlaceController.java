@@ -46,7 +46,7 @@ public class MarketPlaceController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("atsUrl", atsUrl);
-		model.setViewName("candidates/associateMarketPlaceList");
+		model.setViewName("userMarketplace/associateMarketPlaceList");
 		return model;
 		
 	}
@@ -55,7 +55,7 @@ public class MarketPlaceController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("atsUrl", atsUrl);
-		model.setViewName("candidates/productList");
+		model.setViewName("userMarketplace/productList");
 		return model;
 	}
 	
@@ -64,7 +64,7 @@ public class MarketPlaceController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("atsUrl", atsUrl);
-		model.setViewName("candidates/addProduct");
+		model.setViewName("userMarketplace/addProduct");
 		return model;
 	}
 	
