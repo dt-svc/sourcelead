@@ -1215,6 +1215,40 @@ public class ImmigrationRestController {
 		return response;
 	}
 	
+	
+	@RequestMapping(value = { "/deleteImmigrationEmployerDocumentById" })
+	public Response<String> deleteImmigrationEmployerDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<String>();
+		String status = "";
+		try {
+		 status = candidateEmployersService.removeCandidateEmployerDocById(id);
+		response.setObject(status);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+	
+	
+	@RequestMapping(value = { "/deleteImmigrationEducationDocumentById" })
+	public Response<String> deleteImmigrationEducationDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		
+		Response<String> response = new Response<String>();
+		String status = "";
+		try {
+			 status = candidateEducationService.removeCandidateEucationrDocById(id);
+			response.setObject(status);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		return response;
+	}
+	
+	
 	//Task List for mobile
 	@RequestMapping(value = { "/getImmigrationTasksList" })
 	public ResponseList<TaskDTO> getImmigrationTasksList(
