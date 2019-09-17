@@ -1,4 +1,4 @@
-package com.bis.sourcelead.marktePlace;
+package com.bis.sourcelead.userMarketplace.dto;
 
 import java.sql.Date;
 
