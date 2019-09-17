@@ -1,4 +1,4 @@
-package com.bis.sourcelead.marktePlace;
+package com.bis.sourcelead.userMarketplace.entity;
 
 import java.sql.Date;
 
