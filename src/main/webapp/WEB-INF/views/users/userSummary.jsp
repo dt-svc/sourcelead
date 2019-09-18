@@ -379,7 +379,7 @@ window.onload = function () {
 			    var vendorDocumentsOwnerUsers = "";
 			    var roles = "";
 			    var isGlobalUser = "";
-			    
+			    var country = '${SourceLeadWeb_country}';
 			    
 			    if(json.isGlobal == 'Y'){
 			    	isGlobalUser = 'Yes';
@@ -586,7 +586,7 @@ window.onload = function () {
 					result = result + '<div class="clearfix"></div>';
 				}
 				
-				if(json.user.ssn != null && json.user.ssn != "" && json.user.ssn != 'undefined'){
+				if(json.user.ssn != null && json.user.ssn != "" && json.user.ssn != 'undefined' && country == 'United States'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>SSN:</strong><span class="fix" title="'+json.user.ssn+'">'+json.user.ssn+'</span><div class="clearfix"></div>';
 					result = result + ' 		</div>';
@@ -1004,11 +1004,16 @@ function deleteAssociateImage(userId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteAssociateProfileImage("+userId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='associateImageCancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
+}
+
+function associateImageCancel(){ 
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 
@@ -1971,9 +1976,14 @@ $("#editRoleDetailsList").empty();
 			    var disabled = '';
 			    var readonly = '';
 			    var isMulitplieOrgAccounts = '${isMulitplieOrgAccounts}';
+			    var emailReadOnly = '';
 			    
 			    if(isMulitplieOrgAccounts == 'true'){
 			    	readonly = 'readonly';
+			    }
+			    
+			    if(json.userState != 'NOT_LOGGEDIN'){
+			    	emailReadOnly = 'readonly';
 			    }
 			    
 			    if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
@@ -2051,7 +2061,7 @@ $("#editRoleDetailsList").empty();
 					result = result + ' <div class="user_summary_edit_cta">';
 					result = result + ' <label>Role:</label>';
 					result = result + '<div class="clearfix"><span></span>';
-					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" >';
+					result = result + '<input type="text" value="'+json.roles.displayName+'" name="roleType"  id="role" data-validation="validate_Space validate_length length2-100" data-validation-optional="true" disabled>';
 					result = result + '<input type = "hidden" id = "role" name = "roleType" value = "'+json.roles.id+'">';
 					result = result + ' </div>'; 
 
@@ -2083,7 +2093,7 @@ $("#editRoleDetailsList").empty();
 
 					result = result + ' <div class="user_summary_edit_cta" id="EmailIdDiv">';
 					result = result + ' <label>Email Id<span class="text-danger">&nbsp;*</span></label>';
-					result = result + ' <input type="text" value="'+json.user.email+'" '+readonly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
+					result = result + ' <input type="text" value="'+json.user.email+'" '+emailReadOnly+' id="EmailId" name="email" field-name="EmailId" onblur="validateUserUpdatedEmail('+userId+');" data-validation="required validate_Space validate_email validate_length length2-100"/>';
 					result = result + ' </div>';
 					
 					if("${SourceLeadWeb_country}" == 'India'){
@@ -2541,9 +2551,10 @@ $("#editRoleDetailsList").empty();
 
 <script>
 function preapareCustomFieldDetails(userId,sectionId){
+	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	$.ajax({
         type : "POST",
-         url: atsUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
+         url: sourceleadUrl+"/getAllASectionCustomFields?&userId="+userId+"&requestFrom=user"+"&sectionId="+sectionId,        
          success :function(data) {
         	 $('#customFieldDataId').empty();
         	 $('#customFieldDataId').append(data);
@@ -4100,15 +4111,17 @@ function profileDetails(candidateId){
                 		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
               		       }
 			             
-			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-			                    	 
-			             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
-			             
-             		       }else{
-             		                                                	  
-                   		   result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
-             		     
-             		       }
+			              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod != 'Other'){
+		                    	 
+				               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+				             
+	             		       }else if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod == 'Other'){
+	             		                                                	  
+	                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+"---"+json.otherNoticePeriod+'</span></li>';  
+	             		     
+	             		       }else{
+	             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
+	             		       }
 			             result = result+'</ul>';
 			             result = result+'</ul>';
 			             
@@ -4459,7 +4472,7 @@ function deleteProfileImage(candidateId){
 		        	 $("#popUp").empty();
 		        	 $(".project_inn_mask").fadeOut(200);
 		        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
-		        	 //refreshImageBlock(candidateId);
+		        	  refreshImageBlock(candidateId);
 		        	 //candidateQuickViewProfile(candidateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(atsUrl);
@@ -4612,6 +4625,7 @@ function loadFile(event,candidateId){
 	    	var msg = "Do you want to save the picture.";
 	    	saveOrCancel(msg,candidateId);
 	   } 
+	    
 }
 </script>
 
@@ -4667,7 +4681,8 @@ function saveOrCancel(message,candidateId){
 function cancel(candidateId){ 
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
-	refreshImageBlock(candidateId);
+	profileDetails(candidateId)
+	//refreshImageBlock(candidateId);
 }
 </script>
 

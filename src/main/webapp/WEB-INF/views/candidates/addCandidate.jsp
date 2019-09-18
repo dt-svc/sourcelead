@@ -34,7 +34,9 @@
 	function genderCheckValidation(id){
 		 var gendersList = [];
  		 $("input[name='gender']:checked").each( function (i) {
+ 			$('#errorGenderMsg').find('p.jquery_form_error_message').remove(); 
  			gendersList[i] = $(this).val();
+ 			
  		});
  		 
 		if (gendersList.length > 0) { 
@@ -771,12 +773,37 @@
         if ($('#addcandidate_form').validate(false, validationSettings)) {
             var form = $('#addcandidate_form')[0];
             var formData = new FormData(form); 
-             var formData = getFormData("addcandidate_form"); 
+          /*   var formData = getFormData("addcandidate_form"); 
              /* var formData = $($('#addcandidate_form')[0]).serialize(); */
             //It will escape all the special characters
             $("#store_candidate").attr("disabled", "disabled");
             $("#store_candidate").addClass('button').val('Processing..');
-			$.post(atsUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
+            $.ajax({
+				 type : "POST",
+				 data: formData,
+	    	     processData: false,
+	    	     contentType:false,
+	        	    	url : atsUrl+"/storeCandidate?"+tokenParamName+"="+tokenValue,
+				        success : function(result) {
+				        	
+				        	if (result.response === "AWKWARD") {
+				        	    location.href = "/errorPage";
+				        	} else if (result.response === "SUCCESS") {
+				        		if(result.object === "DataMissing") {
+									$("#store_candidate").removeAttr("disabled");
+									$("#store_candidate").removeAttr('button').val('Save');	
+									showError("Invalid data");
+								}else{
+									location.replace(atsUrl+"/candidatesList");	
+								}
+				        	} else if (result.indexOf('Sign In') !== -1) {
+				        		location.replace(sourceleadUrl);
+				        	} else {
+				        	    showError("Operation failed, please try again");
+				        	}
+				},
+		});
+		/*	$.post(atsUrl + "/storeCandidate?" + tokenParamName + "=" + tokenValue + "", formData, function(result) {
 				
 				if (result && result.response === "INVALID_DATA") {
                     $("#store_candidate").removeAttr("disabled");
@@ -794,7 +821,7 @@
                     showError("Operation failed, please try again");
                 }
 				
-			});
+			});*/
            
             return true;
         } else {
@@ -1018,8 +1045,8 @@
     
         if (noticePeriod.value == 'Other') {
 	            document.getElementById("noticePeriodDiv").style.display = "block";
-	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
-	            $("#otherNoticePeriod").attr("data-validation", "validate_Space validate_length length2-250");
+	            $('#otherNoticePeriod').removeAttr('data-validation-optional');
+	            $("#otherNoticePeriod").attr("data-validation", "validate_Space required validate_length length1-150");
 	        } else {
 	            document.getElementById("noticePeriodDiv").style.display = "none";
 	            $("#otherNoticePeriod").attr("data-validation-optional", "true");

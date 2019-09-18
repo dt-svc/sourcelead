@@ -74,13 +74,13 @@
 					</div>
 					
 					<div class="col-md-5 noPad mt">
-						<div class="col-md-3">
-							<label class="clearfix">Posted On ${jobFair.postedFrom}<span class="text-danger">&nbsp;*</span></label>
+						<div class="col-md-4">
+							<label class="clearfix">Posted on ${jobFair.postedFrom}<span class="text-danger">&nbsp;*</span></label>
 							<div class="clearfix dropdown-select">
 								<select class="form-control" id="requirementsTimeRange" field-name="Posted From" data-validation="required"
 									onchange="getRequirements();" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
 									<option value="today" ${jobFair.postedFrom eq 'today' ? "selected='selected'" : ""}>Today</option>
-									<option value="yesterday" ${jobFair.postedFrom eq 'yesterday' ? "selected='selected'" : ""}>Yesterday</option>
+									<option value="yesterday" ${jobFair.postedFrom eq 'yesterday' ? "selected='selected'" : ""}>Yesterday</option>									
 									<option value="week" ${jobFair == null || jobFair.postedFrom eq 'week' ? "selected='selected'" : ""}>1 week</option>
 									<option value="twoweeks" ${jobFair.postedFrom eq 'twoweeks' ? "selected='selected'" : ""}>2 weeks</option>
 									<option value="month" ${jobFair.postedFrom eq 'month' ? "selected='selected'" : ""}>1 month</option>
@@ -89,7 +89,7 @@
 								</select>
 							</div>
 						</div>
-						<div class="col-md-9">
+						<div class="col-md-8">
 							<label class="clearfix">Select Client</label>
 							<div class="clearfix dropdown-select">
 								<div class="row">
@@ -146,8 +146,8 @@
 								<div class="col-md-12">
 									<select multiple class="chosen-select form-control" name="requirementsList" field-name="Job" 
 										id="requirementsList" ${jobFair.id == 0 ? "disabled='disabled'" : ""}>
-										
-										<c:forEach items="${requirementString.split(',')}" var="req">
+										<c:if test="${!empty requirementString}">
+										<c:forEach items="${requirementStringrequirementString.split(',')}" var="req">
 											<c:set var="selected" value="false"></c:set>
 											<c:forEach items="${jobFair.jobFairRequirementList}" var="jobFairRequirement">
 												<c:if test="${jobFairRequirement.requirementId == req.split(':')[0]}">
@@ -156,7 +156,7 @@
 											</c:forEach>
 											<option value='${req.split(":")[0]}' ${selected?"selected='selected'":""}>${req.split(":")[1]}</option>
 										</c:forEach>
-
+									</c:if>
 									</select>
 								</div>
 							</div>

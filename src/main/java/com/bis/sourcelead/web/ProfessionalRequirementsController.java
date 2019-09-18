@@ -65,6 +65,9 @@ public class ProfessionalRequirementsController {
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
 	
+	@Value("${atsUrl}")
+	private String atsUrl;
+	
 	@Autowired
 	RequirementService requirementService;
 	
@@ -335,6 +338,7 @@ public class ProfessionalRequirementsController {
 		 ModelAndView model = new ModelAndView();
 		 model.setViewName("professional/requirementDetailsSummary");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.addObject("SourceLeadWeb_atsUrl", atsUrl);
 		 model.addObject("sourceleadLoginUrl", sourceleadLoginUrl);
 		 model.addObject("contactUUID", contactUUID);
 		 model.addObject("requirementUUID", requirementUUID);

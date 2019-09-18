@@ -13,7 +13,7 @@
 			          <h4 class="modal-title">Asset Management</h4>
 		        </div>
 		        <div class="modal-body overflow_Auto" style="height:500px">
-		          <form:form id="addAsset_form"  name="addAsset_form"> 
+		          <form:form id="addAsset_form"  name="addAsset_form" method="post"> 
 		           <!-- <i class="fa fa-close close-div"></i> -->
 					 
 					<div class="popinnerdiv minHeightcol5 popinnerdiv-innerscroll"> 
@@ -56,7 +56,7 @@
 		                  <div class="col-md-5" id="snoDiv">
 		                  <label class="clearfix" >Serial Number<span class="text-danger paddingLeft">*</span></label>
 			                  <div class="clearfix">
-			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onblur="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
+			                    <input type="text" class="form-control input-sm" id="sno" name="sno" value="${assetAssignData.slno}" placeholder="Serial Number" field-name="Serial Number" onkeyup="validateAssetSno('${assetAssignData.id}');" data-validation="required validate_Space validate_NumberAndAlphabet validate_length length1-200" >
 			                  </div>
 		                  </div>
 		                  
@@ -358,7 +358,7 @@
 		            </div>
 		            <div class="clearfix mr">
 		                  <div class="pull-right">
-		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset('${assetAssignData.assetUUID}');" class="btn btn-primary mr">
+		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-primary mr">
 		                   <input type="button" value="Cancel" id="" onclick="closeassetManagementPopup();" class="btn btn-default">
 		                  </div>
 		              </div>
@@ -390,10 +390,11 @@ function deleteAssignDocument(index,id){
 	divadttStr = divadttStr.replace(/REPLACEROWID/g, (index));
 	$('#downloadFile'+index).empty();
 	$('#downloadFile'+index).html(divadttStr);
-	
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
+
    $.ajax({
   	  type: "POST",
-     url: sourceleadUrl+"/deleteAssignAssetDoc?"+tokenParamName+"="+tokenValue+"&assetAssignId="+id, 	   
+     url: atsUrl+"/deleteAssignAssetDoc?"+tokenParamName+"="+tokenValue+"&assetAssignId="+id, 	   
 	  success: function(data) {  },
    });
 	   
@@ -418,12 +419,12 @@ function getCustomDependentField(sectionId){
 <script type="text/javascript">
  function validateAssetSno(assetId) {
 	 var assetSno = $("#sno").val(); 
-	  
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
+		        url: atsUrl+"/validateAssetSno?"+tokenParamName+"="+tokenValue+"&assetSno="+assetSno+"&assetId="+assetId, 
 		        success: function(data) {
 		        	if(data == true){
 		        		     $('#snoDiv').find('p.jquery_form_error_message').remove();
@@ -554,8 +555,8 @@ function removeValidation(id){
 	        maxDate: null} );
 		$("#shiftFile"+id).val("");
 	}else{
-		document.getElementById("shiftStart"+id+"").style.display="inline-block";
-		$("#shiftAEmp"+id).attr("data-validation","required");
+		/* document.getElementById("shiftStart"+id+"").style.display="inline-block";
+		$("#shiftAEmp"+id).attr("data-validation","required"); */
 	}
 	 
 }

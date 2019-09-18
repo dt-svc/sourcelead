@@ -949,8 +949,6 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  
-	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
@@ -1003,6 +1001,11 @@ function validateUploadFile(id)
 				    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
 					    	 $("#zipCode").val(json['zipCode']);
 				    	 } 
+				    	 if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
+			   		    		shiftList(json['shift']);
+			   		    	}else{
+			   		    		shiftList();
+			   		    	}
 			    	} else if (response.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
@@ -2723,7 +2726,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
 	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
-	 result = result +'<span class="col-md-2 clearfix"><a href="${SourceLeadWeb_sourceleadUrl}/addNewOnboardTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'<span class="col-md-2 clearfix"><a href="${SourceLeadWeb_atsUrl}/addNewOnboardTemplate" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
 	 result = result +'</sec:authorize>';
 	 result = result +'</div>';

@@ -144,10 +144,13 @@ function addResume(candidateId) {
 		$(".edit-details").removeClass("edit-details-active");
 	   });	
 	 
-	 	/* upload file script to show selected file name*/
-	    document.getElementById("uploadBtn1").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value;
-	    };
+	 	
+	    
+		/* upload file script to show selected file name*/
+	     document.getElementById("uploadBtn1").onchange = function () {
+	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+	  
+	     };  
 	    
 	    /* upload file script for size validation 2MB*/
 	    

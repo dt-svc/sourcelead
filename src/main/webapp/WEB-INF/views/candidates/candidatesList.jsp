@@ -13,6 +13,12 @@
   <div id="shareEmptypopUp"></div>
   
   
+<style type="text/css">
+.trashbackground{
+    background-color: #ffff !important;
+    }
+</style>
+  
 <script>
   function noAccess(id){ 	
 	 
@@ -270,7 +276,7 @@ function candidateSideBar(candidateId){
 					     result = result+'   <i class="fa fa-upload paddingRight"></i> Upload / Change<input type="file" id="uploadedImage" accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);" style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger trashbackground" onclick="deleteImage('+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
 						 result = result+'  </div>';
@@ -1586,7 +1592,7 @@ function imageCancel(){
 		$(".new_side_wrap").removeClass("new_side_wrap_active");
 		$(".req_side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
-		candidateList();
+ 		candidateList();
 	}
 </script>
 
@@ -2523,7 +2529,7 @@ function minMaxExperience(){
 	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#minExpYears").val('').trigger("chosen:updated");
 	    $("#maxExpYears").val('').trigger("chosen:updated");
-	 /*    $("#country").val('').trigger("chosen:updated"); */
+	    $("#country").val('').trigger("chosen:updated");
 	    $("#state").val('').trigger("chosen:updated");
 	    $("#citySearch").val('').trigger("chosen:updated");
 	    $("#education").val('').trigger("chosen:updated");
@@ -2699,10 +2705,23 @@ function cancelShareCandidate(){
 	$(".project_inn_mask").fadeOut(); 
 }
 function closejobpop() {
+// 	shareCandidates = {};
+// 	 $('input[class="contactscheckbox"]').removeProp('checked');
 	$("#sharejob-pop").fadeOut();
 	$(".sideMask").fadeOut();
 	}
 function sharejobpopup(candidateCount) {
+	
+	 $("#sharejob-pop").empty();
+		var buttonDisabled = '';
+		var buttonDisplay = '';
+		if(candidateCount > 50){
+			buttonDisabled = 'disabled';
+			buttonDisplay = 'style="display:block"';
+		}else{
+			buttonDisplay = 'style="display:none"';
+		}
+		
 	var result = "";
 	result = result+ '<form method="post">';
 	 result = result+ '<div  id="shareJob-form" name="shareJob-form" class="modal-dialog">';
@@ -2762,13 +2781,13 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '  </div>';
 	 result = result+ '  </div>';
 	 result = result+ '  <div class="modal-footer">';
-	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="selectedJobSharing();">Share Job</button>';
+	 result = result+ '    <span class="fa fa-exclamation-triangle text-danger pull-left mt10" '+buttonDisplay+'><strong>&nbsp;Selected Candidates are not more than 50</strong></span>';
+	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
 	 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
 	 result = result+ '  </div>';
 	 result = result+ '</div>';
 	 result = result+ '</div>';
 	 result = result+ '</form>';
-	 $("#sharejob-pop").empty();
 	 $("#sharejob-pop").append(result);
 	 
 	 $("#shareRequirementsList").selectpicker('refresh');
@@ -2942,14 +2961,17 @@ function resetCandidateFilter(){
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
+	$("#mySkillsInput").val('');
 	
 	
 	$("#dataTableSearch").val('');
+	mySkillsFunction();
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
 	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
+	mySkillsFunction();
 }
 </script>		
 

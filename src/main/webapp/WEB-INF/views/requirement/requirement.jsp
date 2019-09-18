@@ -10,8 +10,10 @@
 <jsp:include page="requirementClientDetails.jsp"></jsp:include>
 <jsp:include page="requirementInternalDetails.jsp"></jsp:include>
 
+<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+
 <c:if test="${empty requirement.id}">
-	<jsp:include page="requirementAssignedTo.jsp"></jsp:include>
+
 </c:if>
 
 <script src="/resources/js/editor.js?staticTime=${staticTime}"></script>
@@ -31,10 +33,35 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		});
     </script>
 <script>
+
+</script>
+<script>
+function validateWorkflowEditable(requirementId){
+	if(requirementId){ // dont need to validate for adding new job. Becuase we dont have any requirementid for that before save.
+	$.ajax({
+    	type: "GET",
+        url: sourceleadUrl+"/validateWorkflowEditable?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
+        success: function(response) {
+           //if false disable  the workflow name for editing.
+           if(response == false){
+        	   $("#workflowId").attr("disabled", "disabled");
+        	   $("#workflowId").trigger("chosen:updated");
+           }
+        }
+     });
+	}
+}
+</script>
+<script>
 $(document).ready(function() {
 	initLocationAuto('ReqLocation','ReqCountry','ReqState','ReqCity','ReqZipCode','','','');
-	//addLocationAuto('addlocation','0');
 	zipcodeMask('${requirement.country}','ReqZipCode');
+    validateWorkflowEditable('${requirement.id}');
+	var requirementId = '${requirementId}';
+	if(requirementId != null && requirementId != '' && requirementId != 'undefined'){
+		getAssignedMembersListForEdit(requirementId);
+		$('#assignToPopUpCloseId').submit();
+	}
 });
 </script>
 <script>
@@ -2204,24 +2231,29 @@ $(document).ready(function () {
 										</select>
 									</div>
 								</div>
-								<!--  added for workflow integration for job start here  
-								 <!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-   									// below lines is commented for to move in next release build.
+								<!-- added for workflow integration for job start here -->   
 								<div class="form-group">
 									<label class="col-md-3">Workflow<span
 										class="text-danger paddingLeft">*</span></label>
 									<div class="col-md-9">
-
 										<select class="chosen-select form-control"
 											data-validation="required" field-name="Workflow"
 											name="workflow" id="workflowId">
 											<c:forEach var="workflow" items="${workflowList}">
+												<c:choose>
+											       <c:when test="${empty requirement.workflowId.id}"><!-- for new requirement below optios are generated. -->
 													<option value="${workflow.id}"
 														${workflow.configureType=='Default'? 'selected' : ''}>${workflow.workFlowName}</option>
+												   </c:when>
+												   <c:otherwise>
+												   		<option value="${workflow.id}"
+														${workflow.id==requirement.workflowId.id ? 'selected' : ''}>${workflow.workFlowName}</option>
+												   </c:otherwise>
+													</c:choose>
 											</c:forEach>
 										</select>
 									</div>
-								</div>-->
+								</div>
 								<!--  added for workflow integration for job end here -->
 								<div class="form-group" id="internalSubmissionFrom">
 									<label class="col-md-3">Application Form<span
@@ -2263,6 +2295,13 @@ $(document).ready(function () {
 														class="badge ml10 showGrid">0</span>
 												</button>
 											</c:if>
+											
+											<c:if test="${!empty requirement.id}">
+												<a href="javascript:void(0)" data-toggle="modal"
+													data-target="#myModal" onclick="getAssignedMembersListForEdit(${requirement.id});">Assigned
+													Members</a>
+											</c:if>
+											
 											<span data-target="#addTeam" data-toggle="modal"
 												title="Add Team" class="btn btn-default formic1"
 												onclick="flushStoreTeam();getTeamOwners();"> <i

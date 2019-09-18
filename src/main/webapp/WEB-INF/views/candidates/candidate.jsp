@@ -24,6 +24,7 @@
 	function genderCheckValidation(id){
 		 var gendersList = [];
  		 $("input[name='gender']:checked").each( function (i) {
+ 		    $('#errorGenderMsg').find('p.jquery_form_error_message').remove(); 
  			gendersList[i] = $(this).val();
  		});
  		 
@@ -832,8 +833,8 @@ function getDesignationType(designationType){
     
         if (noticePeriod.value == 'Other') {
 	            document.getElementById("noticePeriodDiv").style.display = "block";
-	            $("#otherNoticePeriod").attr("data-validation-optional", "true");
-	            $("#otherNoticePeriod").attr("data-validation", "validate_Space validate_length length2-250");
+	            $('#otherNoticePeriod').removeAttr('data-validation-optional');
+	            $("#otherNoticePeriod").attr("data-validation", "validate_Space required validate_length length1-150");
 	        } else {
 	            document.getElementById("noticePeriodDiv").style.display = "none";
 	            $("#otherNoticePeriod").attr("data-validation-optional", "true");

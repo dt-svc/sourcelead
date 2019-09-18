@@ -358,9 +358,9 @@ public class RequirementOfferRestController {
 				    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 				    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 					    		if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
-					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 					    		}else{
-					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+					    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());
 					    		}
 								 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 								 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
@@ -377,9 +377,9 @@ public class RequirementOfferRestController {
 			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 		    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 						  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
-			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED.toString());
 			    		}else{
-			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString());
 			    		}
 			    		 requirementSubmission.setRejectedReason(rejectedReason);
 						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
@@ -388,10 +388,10 @@ public class RequirementOfferRestController {
 					    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 						  if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
 						requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.OFFERMADE.toString());
-						requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+						requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED.toString());
 					    }else{
 					    	requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString());
-							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);	
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString());	
 					    }
 						requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		    	
@@ -558,7 +558,7 @@ public class RequirementOfferRestController {
 						RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 						requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().toString());
 						if (StringUtils.equalsIgnoreCase(status, "accept")) {
-							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 							requirementSubmission = requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
@@ -567,9 +567,9 @@ public class RequirementOfferRestController {
 							requirementSubmissionService.sendEmailtoAssignedMemberApplicantAuthorization(loginOrg, user, requirementSubmission, orgLocation);
 						}
 						else if (StringUtils.equalsIgnoreCase(status, "rejected")) {
-							ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+							String previousStatus = requirementSubmission.getSubmissionStatus();
 							requirementSubmission.setPreviousSubmissionStatus(previousStatus);
-							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 							requirementSubmission.setSubmissionRequestUser(user.getFirstName() + ""	+ user.getLastName());
 							requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 							if (StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())) {

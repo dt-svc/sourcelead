@@ -137,6 +137,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.mchange.v1.util.StringTokenizerUtils;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -764,9 +765,8 @@ public class UsersListRestController {
 	@RequestMapping(value = "/getUserDetailsById", method = RequestMethod.POST)
 	public @ResponseBody UserRole getUserDetailsById(HttpServletRequest request,
 			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
-
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 OrgLocations orgLocations =  orgLocationService.getOrgLocationById(orgLocationId);
 		
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 
@@ -944,7 +944,7 @@ public class UsersListRestController {
 				 }
 			 }
 			 if(formFieldId != null && !formFieldId.isEmpty() && userId != null) {
-			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(orgLocations.getOrg().getId(),formFieldId,userId);
+			 Map<Long, String[]> userData = userCustomFieldDataService.getUserCustomFieldDataByUserId(org.getId(),formFieldId,userId);
 			 Map<Long,String> dataMap = new HashMap<>();
 			 if(userData!= null && !userData.isEmpty()) {
 				 for(Entry<Long, String[]> userCustomData:userData.entrySet()) {
@@ -1229,6 +1229,8 @@ public class UsersListRestController {
 		Long loginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		User user = userService.getUserById(loginUserId);
 		
+		Long orgId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgId");
+		
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		
@@ -1413,10 +1415,31 @@ public class UsersListRestController {
 			if (StringUtils.isNotBlank(addUserDTO.getProjectApproverUser())) {
 				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
 			} else {
-
-				List<ProjectMembers> projectmembersList = projectMembersService
-						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
-				if (null != projectmembersList) {
+				
+				List<ProjectMembers> projectmembersList = new ArrayList<>();
+				List<ProjectMembers> loginOrgLocPMList = projectMembersService
+						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE,orgLocationId);
+				if(loginOrgLocPMList != null && !loginOrgLocPMList.isEmpty()) {
+					projectmembersList.addAll(loginOrgLocPMList);
+				}
+				List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(orgId);
+				if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+					for(OrgLocations orgLoc : orgLocationsList) {
+						Candidate candidate = candidateService.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLoc.getId());
+						
+						if(candidate != null && StringUtils.isNotBlank(candidate.getDesignationType()) && candidate.getDesignationType().equalsIgnoreCase("Offshore C2C") 
+								&& StringUtils.isNotBlank(candidate.getIsAssociate()) && candidate.getIsAssociate().equalsIgnoreCase(Constants.NO)) {
+							List<ProjectMembers> pmList = projectMembersService
+									.getAllProjectsAssigendToCandidateIdAndStatus(candidate.getId(), Constants.MEMBER_ACTIVE);
+							if(pmList != null && !pmList.isEmpty()) {
+								projectmembersList.addAll(pmList);
+							}
+						}
+						
+					}
+				}
+				
+				if (null != projectmembersList && !projectmembersList.isEmpty()) {
 					for (ProjectMembers pm : projectmembersList) {
 						   try {
 							   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
@@ -2114,8 +2137,16 @@ public class UsersListRestController {
 		User updatedUser = null;
 		if (user != null) {
 			user.setFirstName(addUserDTO.getFirstName());
-			user.setLastName(addUserDTO.getLastName());
-			user.setMiddelName(addUserDTO.getMiddleName());
+			if(StringUtils.isNotBlank(addUserDTO.getLastName())) {
+				user.setLastName(addUserDTO.getLastName());
+			}else {
+				user.setLastName(null);
+			}
+			if(StringUtils.isNotBlank(addUserDTO.getMiddleName())) {
+				user.setMiddelName(addUserDTO.getMiddleName());
+			}else {
+				user.setMiddelName(null);
+			}
 			user.setGender(addUserDTO.getGender());
 			user.setMaritalStatus(addUserDTO.getMaritalStatus());
 			user.setMobilePhone(addUserDTO.getPhoneNumber());
@@ -2432,11 +2463,25 @@ public class UsersListRestController {
 		    }
 			
 			if(StringUtils.isNotBlank(addUserDTO.getWorkLocation())){
-				   OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
+				 OrgLocations workLocation = orgLocationService.getOrgLocations(Long.parseLong(addUserDTO.getWorkLocation()));
 				   candidate.setWorkLocation(workLocation);
+				   if(candidate.getId() != null) {
+					   List<Candidate> canlist = candidateService.getOffshoreCandidatesByParentCandidateId(candidate.getId());
+					   if(canlist != null && !canlist.isEmpty()) {
+						   for(Candidate can :canlist) {
+							   can.setWorkLocation(workLocation);
+							   can.setFirstName(addUserDTO.getFirstName());
+							   can.setLastName(addUserDTO.getLastName());
+							   can.setMiddelName(addUserDTO.getMiddleName());
+							   can.setMobilePhone(addUserDTO.getPhoneNumber());
+							   candidateService.saveOrUpdateCandidate(can);
+							   candidateService.saveOrUpdateCandidateElkDocument(can);
+						   }
+					   }
+				   }
 			}
 			
-			if(addUserDTO.getDateofBirth() != null) {
+			if(StringUtils.isNotBlank(addUserDTO.getDateofBirth())){
 				candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(addUserDTO.getDateFormat(), addUserDTO.getDateofBirth()));
 			}
 			
