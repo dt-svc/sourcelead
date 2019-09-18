@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -165,7 +166,8 @@ public class UserLoginHelper {
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionUUID", userSession.get("actionUUID").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionId", Long.parseLong(userSession.get("actionId").toString()));
 		 SourceLeadSessionManager.setSessionAttribute(req, "sessionId", userSession.get("sessionId").toString());
-		 
+		/* HttpSession httpSession = req.getSession();
+		 httpSession.setAttribute("sessionId", userSession.get("sessionId").toString());*/
 		 try {
 			
 			OrgLocations loginOrgLocations = getLoginOrgLocationDetails(orgLocations);
@@ -1044,6 +1046,10 @@ public class UserLoginHelper {
 		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		user.setEmail(userRoleJson.get("email").toString());
 		user.setUserName(userSession.get("loginUserName").toString());
+		if(userRoleJson.get("mobilePhone") != null) {
+			user.setMobilePhone(userRoleJson.get("mobilePhone").toString());
+		}
+		
 		
 		if(userRoleJson.get("firstName") != null) {
 			user.setFirstName(userRoleJson.get("firstName").toString());
@@ -1075,8 +1081,12 @@ public class UserLoginHelper {
 	public Candidate getCandidateDetails(JSONObject userRoleJson) {
 		
 		Candidate candidate = new Candidate();
-		candidate.setId(Long.valueOf(userRoleJson.get("candidateId").toString()));
-		candidate.setCandidateUUID(userRoleJson.get("candidateUUID").toString());
+		if(userRoleJson.get("candidateId") != null) {
+			candidate.setId(Long.valueOf(userRoleJson.get("candidateId").toString()));
+		}
+		if(userRoleJson.get("candidateUUID") != null) {
+			candidate.setCandidateUUID(userRoleJson.get("candidateUUID").toString());
+		}
 		if(userRoleJson.get("masterCandidateId") != null) {
 			candidate.setMasterCandId(Long.valueOf(userRoleJson.get("masterCandidateId").toString()));
 		}

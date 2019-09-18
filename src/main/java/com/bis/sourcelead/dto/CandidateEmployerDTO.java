@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.bis.sourcelead.entity.LookUpData;
@@ -8,7 +9,7 @@ import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.annotations.Required;
 
 
-public class CandidateEmployerDTO {
+public class CandidateEmployerDTO implements Serializable {
 
 	private Long id;
 
