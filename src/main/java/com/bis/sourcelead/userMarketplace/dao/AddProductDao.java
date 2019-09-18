@@ -1,7 +1,7 @@
 package com.bis.sourcelead.userMarketplace.dao;
 
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductFilesHistory;
-import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductNegotiaitionHistory;
+import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductNegotiationHistory;
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
 
 public interface AddProductDao {
@@ -11,7 +11,7 @@ public interface AddProductDao {
 	
 	MarketPlaceProductFilesHistory saveMarketPlaceProductFilesHistory(MarketPlaceProductFilesHistory marketPlaceProductFilesHistory)throws Exception;
 	
-	MarketPlaceProductNegotiaitionHistory saveMarketPlaceProductNegotiaitionHistory(MarketPlaceProductNegotiaitionHistory marketPlaceProductNegotiaitionHistory)throws Exception;
+	MarketPlaceProductNegotiationHistory saveMarketPlaceProductNegotiationHistory(MarketPlaceProductNegotiationHistory marketPlaceProductNegotiationHistory)throws Exception;
 	
 	MarketPlaceProducts deleteMarketPlaceProducts()throws Exception;
 	
