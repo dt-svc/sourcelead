@@ -305,8 +305,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            StringBuilder totalStringBuilder =new StringBuilder();
 			            orderedList.add(new ListItem(expenseId.append("Expense Id :").append(expenses.getExpenseId()).toString()));
 			            if(expenses.getProjects() != null && expenses.getMasterCandidateId() != null){
-			            	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
-			            	
+			            	//ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenses.getMasterCandidateId().getId(),expenses.getProjects().getId(),orgLoc.getId(),isGlobalUser);
+			            	ProjectMembers pm = projectMembersService.getProjectMemberById(expenses.getProjectMembers().getId());
 			            	if(pm.getProjectMemberCandidteId()!= null){
 			            			if(pm.getProjectMemberCandidteId().getLastName()!= null){
 			            				orderedList.add(new ListItem(nameBuilder.append("Employee Name :").
@@ -751,7 +751,8 @@ public class ExpensesServiceImpl implements ExpensesService{
         employeeId.append(expenseDetails.getExpenseId());
         }
         if(expenseDetails.getProjects() != null && expenseDetails.getMasterCandidateId() != null){
-        	ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+        	//ProjectMembers pm= projectMembersService.getProjectMembersByMasterCandidateIdAndProjectIdLocationId(expenseDetails.getMasterCandidateId().getId(),expenseDetails.getProjects().getId(),orgLocations.getId(),isGlobalUser);
+        	ProjectMembers pm = projectMembersService.getProjectMemberById(expenseDetails.getProjectMembers().getId());
         	if(pm.getProjectMemberCandidteId()!= null){
         			if(pm.getProjectMemberCandidteId().getLastName()!= null){
         				nameBuilder.append(pm.getProjectMemberCandidteId().getFirstName()).
@@ -1019,7 +1020,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 	        cell1.setColspan(18);
 	        headerCellStyle(cell1);
 	        table.setWidthPercentage(100);
-            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5});
+            table.setWidths(new int[]{5,5,5,7,6,6,4,5,5,6});
             table.addCell(cell1);
 	        for (int i = 0; i < headers.length; i++) {
 	            String header = headers[i];
@@ -1126,6 +1127,11 @@ public class ExpensesServiceImpl implements ExpensesService{
 							}else{
 								expenseArray[8] = "--";
 							}
+							if(null != expenseId.getBillingStatus()){
+								expenseArray[9] = expenseId.getBillingStatus();
+								}else{
+								expenseArray[9] = "--";
+								}
 							
 			}
 			arrayList.add(expenseArray);
@@ -1225,6 +1231,10 @@ public class ExpensesServiceImpl implements ExpensesService{
 						if(null != expenseId.getExpenseStatus()){
 							writeRow.createCell(8).setCellValue(expenseId.getExpenseStatus().getValue());
 							createExcelsheet.autoSizeColumn(8);
+						}
+						if(null != expenseId.getBillingStatus()){
+							writeRow.createCell(9).setCellValue(expenseId.getBillingStatus());
+							createExcelsheet.autoSizeColumn(9);
 						}
 		}
 	return createExcelsheet;
@@ -1351,7 +1361,7 @@ public class ExpensesServiceImpl implements ExpensesService{
 					pendingForExpenseApprovalReportDTO.setApprovedBy(expenses.getActionPerformedby());
 					pendingForExpenseApprovalReportDTO.setManagerOne(expenses.getLevel1Name());
 					pendingForExpenseApprovalReportDTO.setManagerTwo(expenses.getLevel2Name());
-					pendingForExpenseApprovalReportDTO.setReportingManager(expenses.getReportingManager());
+					/*pendingForExpenseApprovalReportDTO.setReportingManager(expenses.getReportingManager());*/
 					pendingForExpenseApprovalReportDTO.setFrequency(expenses.getDuration());
 					pendingForExpenseApprovalReportDTO.setSubmittedAmount(expenses.getSubmittedAmount().toString());
 					pendingForExpenseApprovalReportDTO.setSubmittedOn(commonUtil.dateStrFromOrgDateFormatter(locationDateFormat, expenses.getSubmittedDate()));		

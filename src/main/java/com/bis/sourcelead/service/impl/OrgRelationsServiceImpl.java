@@ -139,12 +139,14 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				orgRelations.setResponderType("Client");
 				if(StringUtils.isNotBlank(clientDTO.getGenerateInvoice())){
 				orgRelations.setGenerateInvoice(clientDTO.getGenerateInvoice());
+				orgRelations.setGenerateBill(clientDTO.getGenerateInvoice());
 				}
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
 				if(StringUtils.isNotBlank(clientDTO.getGenerateBill())){
 				orgRelations.setGenerateBill(clientDTO.getGenerateBill());
+				orgRelations.setGenerateInvoice(clientDTO.getGenerateBill());
 				}
 				if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
 						orgRelations.setIsLawFirm(Constants.YES);

@@ -81,4 +81,26 @@ public class PerformanceBadgesDaoImpl implements PerformanceBadgesDao{
 		}
 	}
 
+	@Override
+	public boolean isPerformanceBadgeNameExisted(Long orgLocationId, String badgeName) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		boolean flag = false;
+		query =  "SELECT "
+				+" LOWER(BADGES.NAME) AS name "
+				+" FROM PERFORMANCE_BADGES BADGES "
+				+" WHERE "
+				+" BADGES.ORG_LOCATION_ID = :orgLocationId AND BADGES.STATUS = '1' ";
+		
+		List<String> badgeNamesList = session.createSQLQuery(query).setLong("orgLocationId", orgLocationId).list();
+		    if(badgeNamesList != null &&  !badgeNamesList.isEmpty() ) {
+			  if(badgeNamesList.contains(badgeName.toLowerCase()) == true) {
+				  flag = true;
+			  }
+		  }
+		
+		return flag;
+	}
+
 }

@@ -269,7 +269,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
-        Timezone timezone = timeZoneService.getTimezone(Long.parseLong(orgLocation.getTimeZoneId()));
+        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
@@ -770,10 +770,12 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 		StringBuilder sb = new StringBuilder();
 		if(savedContracts.getParentContractId() == null){
-			for(ContractOwnerHierarchy coh : savedContracts.getOwnerHierarchyList()){
-				sb.append(coh.getOwnerUserId().getId().toString()).append(",");
+			if(savedContracts.getOwnerHierarchyList() != null) {
+				for(ContractOwnerHierarchy coh : savedContracts.getOwnerHierarchyList()){
+					sb.append(coh.getOwnerUserId().getId().toString()).append(",");
+				}
+				contract.setOwnerUserId(sb.toString().replaceAll("\\s*,\\s*$", ""));
 			}
-			contract.setOwnerUserId(sb.toString().replaceAll("\\s*,\\s*$", ""));
 		}else{
 			contract.setOwnerUserId(savedContracts.getOwnerUserId().getId().toString());
 		}
@@ -1211,6 +1213,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		
 			List<ClientContractsDTO> clientContractsList = new ArrayList<>();
 			for(Contracts contracts :clientcontractsList ){
+				Set<ContractOwnerHierarchy> signingAuthlist = contracts.getOwnerHierarchyList();
 				ClientContractsDTO clientConDto = new ClientContractsDTO();
 				StringBuilder ownerName = new StringBuilder();
 				StringBuilder vendorName = new StringBuilder();
@@ -1386,7 +1389,22 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 	    			countOfDoc  = contractRequestDocumentsService.getCountOfDocByContractedId(contracts.getId());
 	    			clientConDto.setReqDocCount(countOfDoc);
 	    		}
-	    		clientContractsList.add(clientConDto);
+	    		if(userRoleName.equalsIgnoreCase(Constants.ROLE_ADMIN)) {
+	    			clientContractsList.add(clientConDto);	
+	    		}else if(ownerUserIds.contains(user.getId()) && (Constants.WAITING_TO_SEND.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) || Constants.WAITING_TO_BE_VERIFY.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) || Constants.FINALIZED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()))) {
+	    			if(!Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+		    			clientContractsList.add(clientConDto);
+		    		}
+		    	}else if(user.getUserCode().equalsIgnoreCase(contracts.getCreatedBy())) {
+		    		if(!Constants.WAITING_TO_SEND.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) && !Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+		    			clientContractsList.add(clientConDto);
+		    		}
+		    	}else if(contracts.getApproverUser() != null && user.getId().longValue() == contracts.getApproverUser().getId().longValue()) {
+		    		if(!Constants.WAITING_TO_SEND.equalsIgnoreCase(contracts.getTemplateSubmissionStatus()) && !Constants.WAITING_TO_BE_SIGNED.equalsIgnoreCase(contracts.getTemplateSubmissionStatus())) {
+		    			clientContractsList.add(clientConDto);
+		    		}
+		    	}
+	    		
 			}
 			responseList.setRecordsFiltered(clientContractsList.size());
 			responseList.setRecordsTotal(clientContractsList.size());
@@ -2092,6 +2110,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 	
 	private void sendMailToOwner(Contracts contracts, User loginUser, Org org, OrgLocations orgLocation) throws Exception
 	{
+		if(contracts.getOwnerHierarchyList() != null) {
 		for (ContractOwnerHierarchy coh : contracts.getOwnerHierarchyList()) {
 			User owner = coh.getOwnerUserId();
 			EmailMessage emailMessage = new EmailMessage();
@@ -2194,6 +2213,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 //			emailScenerioUtil.sendEmail(emailMessage, orgLocation.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 			// emailScenerioUtil.sendNotification(actionLink,
 			// loginUser,approverUser, orgLocation, notificationScenario);
+		}
 		}
 	}
 

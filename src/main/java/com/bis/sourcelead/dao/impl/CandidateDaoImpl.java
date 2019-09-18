@@ -1243,6 +1243,19 @@ public class CandidateDaoImpl implements CandidateDao {
 			query1.append(" and ").append("(")
 					.append(" candidate.firstName like '%" + candidateDTO.getSearchValue() + "%' ")
 					.append("OR candidate.lastName like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR (candidate.middelName like '%" + candidateDTO.getSearchValue().replace("'", "") + "%' ) ")
+					.append("OR (case when candidate.middelName is not null and candidate.lastName is not null"
+							+ " then (concat(candidate.firstName,' ',candidate.middelName,' ',candidate.lastName))"
+							+ " else ((case when candidate.middelName is not null and candidate.lastName is null"
+							+ "				then concat(candidate.firstName,' ',candidate.middelName)"
+							+ "				else ((case when candidate.middelName is null and candidate.lastName is not null"
+							+ "							then concat(candidate.firstName,' ',candidate.lastName)"
+							+ "							else (candidate.firstName) "
+							+ "						end)) "
+							+ "			end)) "
+						    + "end)" 
+						    + " like '%"+candidateDTO.getSearchValue().replace("'", "") + "%' ")
+					
 					.append("OR candidate.primarySkill like '%" + candidateDTO.getSearchValue() + "%' ")
 					.append("OR candidate.email like '%" + candidateDTO.getSearchValue() + "%' ")
 					.append("OR candidate.designationType like '%" + candidateDTO.getSearchValue() + "%' ").append(")");
@@ -1361,6 +1374,8 @@ public class CandidateDaoImpl implements CandidateDao {
 				candDTO.setId(candidate.getId());
 				candDTO.setFirstName(candidate.getFirstName());
 				candDTO.setLastName(candidate.getLastName());
+				candDTO.setMiddleName(candidate.getMiddelName());
+				candDTO.setFullName(candidate.getFullName());
 				candDTO.setPrimarySkill(candidate.getPrimarySkill());
 				candDTO.setDesignationType(candidate.getDesignationType());
 				candDTO.setDesignationOtherType(candidate.getDesignationOtherType());
@@ -3765,6 +3780,32 @@ public class CandidateDaoImpl implements CandidateDao {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate can where can.parentCandidateId.id=:candidateId and can.designationType = '"+Constants.OFFSHORE_C2C+"'";
+		List<Candidate> list = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return list;
+	
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		
+		Session session =  this.sessionFactory.getCurrentSession();
+		String query = "from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "
+				+ "candidate.consultantUser.id = :userId  ";
+		List<Candidate> candidateList =  session.createQuery(query) .setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+		Candidate canidate = null;
+		if(candidateList != null && !candidateList.isEmpty())
+		{
+			canidate = (Candidate) candidateList.iterator().next();
+		}
+		return canidate;
 	}
 
 

@@ -1,28 +1,28 @@
 package com.bis.sourcelead.elk.setup;
 
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.action.DocWriteResponse.Result;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Requests;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.engine.DocumentMissingException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.bis.sourcelead.constants.Constants;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -30,10 +30,11 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Component
 public class SourceleadELKBaseIndexer<T> {
+	
 	private static final Logger logger = LoggerFactory.getLogger(SourceleadELKBaseIndexer.class);
 
 	@Autowired
-	SourceleadELKTransportClient sourceleadELKTransportClient;
+	SourceleadELKRestClient sourceleadELKRestClient;
 
 	@Bean
 	public SourceleadELKBaseIndexer<T> getSourceleadELKBaseIndexer() {
@@ -51,17 +52,22 @@ public class SourceleadELKBaseIndexer<T> {
 	public void saveOrUpdateElkDocument(T entityClass, String index, String type, String id) {
 		String value = "";
 		try {
-			value = toJSON(entityClass); //new ObjectMapper().writeValueAsString(entityClass);
-			sourceleadELKTransportClient.getClient().prepareUpdate(index, type, id).setDoc(value, XContentType.JSON).get();
-			logger.info(type + " has been updated.");
-		} catch (DocumentMissingException e) {
-			sourceleadELKTransportClient.getClient().prepareIndex(index, type, id).setSource(value, XContentType.JSON).execute()
-					.actionGet();
-			logger.info(type + " has been indexed.");
+			value = toJSON(entityClass);
+			
+			IndexRequest indexRequest = new IndexRequest(index, type, id).source(value, XContentType.JSON);
+			
+			if(sourceleadELKRestClient == null)
+				sourceleadELKRestClient = new SourceleadELKRestClient();
+			
+			IndexResponse indexResponse = sourceleadELKRestClient.getClient().index(indexRequest, RequestOptions.DEFAULT);
+			if(indexResponse.getResult() == Result.CREATED || indexResponse.getResult() == Result.UPDATED) {
+				logger.info("ID : "+ id + " ---- " + type + " has been " + indexResponse.getResult().toString().toLowerCase());
+			}
+			sourceleadELKRestClient.shutdown();
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(type + " could not be serialized. " + e.getLocalizedMessage());
 		}
-
 	}
 	
 	/**
@@ -73,13 +79,16 @@ public class SourceleadELKBaseIndexer<T> {
 	 */
 	public void deleteElkDocument(T entityClass, String index, String type, String id) {
 		try {
-			sourceleadELKTransportClient.getClient().prepareDelete(index, type, id).execute().actionGet();
-			// sourceleadELKTransportClient.shutdown();
-			logger.info(index + " Document With id :" + id + " has been deleted.");
+			DeleteRequest deleteRequest = new DeleteRequest(index, type, id);
+			DeleteResponse deleteResponse = sourceleadELKRestClient.getClient().delete(deleteRequest, RequestOptions.DEFAULT);
+			if(deleteResponse.getResult() == Result.DELETED) {
+				logger.info(index + " Document With id :" + id + " has been deleted.");
+			}
+			sourceleadELKRestClient.shutdown();
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(index + " Document With id :" + id + " deletion fails " + ExceptionUtils.getFullStackTrace(e));
 		}
-
 	}
 
 	public SearchHits searchDocumentWithMaxResults(String index, String type, int offset, int maxResults,
@@ -89,54 +98,120 @@ public class SourceleadELKBaseIndexer<T> {
 
 	public SearchResponse searchDocumentWithMaxResults(String index, String type, int offset, int maxResults,
 			String sortColoumn, SortOrder sortOrder, BoolQueryBuilder query) {
-		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
-				.setQuery(query).addSort(sortColoumn, sortOrder).setFrom(offset).setSize(maxResults).execute()
-				.actionGet();
+		SearchResponse response = null;
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(query);
+			searchSourceBuilder.from(offset);
+			searchSourceBuilder.size(maxResults);
+			searchSourceBuilder.sort(sortColoumn, sortOrder);
 
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.indices(index);
+			searchRequest.types(type);
+			searchRequest.source(searchSourceBuilder);
+			
+			RestHighLevelClient client = sourceleadELKRestClient.getClient();
+			if(client != null) {
+				response = client.search(searchRequest, RequestOptions.DEFAULT);
+			} else {
+				logger.info("Client is null");
+			}
+			sourceleadELKRestClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception occured at searchDocumentWithMaxResults()");
+		}
 		return response;
 	}
+		
 	public SearchResponse searchDocumentWithGlobalSearchResult(String index, String type, BoolQueryBuilder query) {
-		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
-				.setQuery(query).execute()
-				.actionGet();
+		SearchResponse response = null;
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.indices(index);
+			searchRequest.types(type);
+			searchRequest.source(searchSourceBuilder);
+			searchSourceBuilder.query(query);
+
+			response = sourceleadELKRestClient.getClient().search(searchRequest, RequestOptions.DEFAULT);
+			sourceleadELKRestClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception occured at searchDocumentWithGlobalSearchResult()");
+		}
 		return response;
 	}
-	
 	
 	public SearchResponse searchDocumentsResults(String index, String type, int offset, int maxResults,
 			  BoolQueryBuilder query) {
-		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
-				.setQuery(query).setFrom(offset).setSize(maxResults).execute()
-				.actionGet();
+		SearchResponse response = null;
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.from(offset);
+			searchSourceBuilder.size(maxResults);
 
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.indices(index);
+			searchRequest.types(type);
+			searchRequest.source(searchSourceBuilder);
+			searchSourceBuilder.query(query);
+
+			response = sourceleadELKRestClient.getClient().search(searchRequest, RequestOptions.DEFAULT);
+			sourceleadELKRestClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception occured at searchDocumentsResults()");
+		}
 		return response;
 	}
 	
-
 	public SearchHits searchDocumentWithMaxResultsForCampaigns(String index, String type, int offset, int maxResults,
 			BoolQueryBuilder query) {
-		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index)
+		SearchHits searchHits = null;
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.from(offset);
+			searchSourceBuilder.size(maxResults);
+			searchSourceBuilder.sort("mailBoxId", SortOrder.DESC);
 
-				.setTypes(type).setQuery(query).addSort("mailBoxId", SortOrder.DESC).setFrom(offset).setSize(maxResults)
-				.execute().actionGet();
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.indices(index);
+			searchRequest.types(type);
+			searchRequest.source(searchSourceBuilder);
+			searchSourceBuilder.query(query);
 
-		return response.getHits();
-
+			SearchResponse response = sourceleadELKRestClient.getClient().search(searchRequest, RequestOptions.DEFAULT);
+			searchHits = response.getHits();
+			sourceleadELKRestClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception occured at searchDocumentWithMaxResultsForCampaigns()");
+		}
+		return searchHits;
 	}
 
 	public SearchHits searchDocument(String index, String type, BoolQueryBuilder query) {
-		SearchResponse response = sourceleadELKTransportClient.getClient().prepareSearch(index).setTypes(type)
-				.setQuery(query).execute().actionGet();
+		SearchHits searchHits = null;
+		try {
+			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
-		/*
-		 * System.out.println("Current results: " + results.length); for (SearchHit hit
-		 * : results) { System.out.println("------------------------------");
-		 * Map<String,Object> result = hit.getSource(); System.out.println(result); }
-		 */
+			SearchRequest searchRequest = new SearchRequest();
+			searchRequest.types(type);
+			searchRequest.indices(index);
+			searchRequest.source(searchSourceBuilder);
+			searchSourceBuilder.query(query);
 
-		return response.getHits();
-
+			SearchResponse response = sourceleadELKRestClient.getClient().search(searchRequest, RequestOptions.DEFAULT);
+			searchHits = response.getHits();
+			sourceleadELKRestClient.shutdown();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception occured at searchDocument()");
+		}
+		return searchHits;
 	}
 
 	public String toJSON(Object obj) {

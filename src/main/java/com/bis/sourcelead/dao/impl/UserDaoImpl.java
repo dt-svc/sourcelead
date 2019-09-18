@@ -1945,7 +1945,11 @@ public class UserDaoImpl implements UserDao {
 				searchQuery = " AND (CONCAT (U.FIRST_NAME,' ',IFNULL(U.LAST_NAME,'')) like '%" + userDTO.getSearchValue() + "%')";
 			}
 			if(teamsList.size()>0 && !teamsList.isEmpty()){
-			subQueryTeam = " AND UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )";
+			subQueryTeam = " AND ("
+					+ "UR.USER_ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )"
+					+ " OR "
+					+ "UR.USER_ID IN(SELECT T.OWNER_USER_ID FROM TEAM T WHERE T.ID IN (:teamsList) and T.STATUS='1')"
+					+ ")";
 			}
 			if(rolesList.size()>0 && !rolesList.isEmpty()){
 				subQueryRole = " AND UR.ROLE_ID IN (SELECT UR.ROLE_ID FROM USER_ROLE UR WHERE UR.ROLE_ID IN (:rolesList))";
@@ -2244,6 +2248,7 @@ public class UserDaoImpl implements UserDao {
 				Set<BigInteger> jobIds = new HashSet<>();
 				Set<BigInteger> primaryUserjobIds = new HashSet<>();
 				Set<BigInteger> assinedUserjobIds = new HashSet<>();
+				Set<String> assinedUserids = new HashSet<>();
 				for(RecruiterRrportDTO reportDTO: recruiterReportAssociateList1){
 					UserDTO userDTO = associatesListMap.get(reportDTO.getManagerUserId());
 					if(userDTO != null && !jobIds.contains(reportDTO.getRequirementId())){
@@ -2265,35 +2270,15 @@ public class UserDaoImpl implements UserDao {
 					}
 					
 					
-					/*userDTO = associatesListMap.get(reportDTO.getApproverUserId());
-					if(userDTO != null){
-						approverUserjobIds.add(reportDTO.getRequirementId());
-						BigDecimal bd = new BigDecimal(approverUserjobIds.size());
-						if(userDTO.getUserRequirementsCount() != null) {
-							bd = bd.add(userDTO.getUserRequirementsCount());
-						}
-						userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount().add(new BigDecimal(1)));
-					}*/
-					
-					//for reference
-					/*if(reportDTO.getAssignedUserId() != null && reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
-							&& (reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue() 
-							&& reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
-						userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
-						if(userDTO != null){
-								jobIds.add(reportDTO.getRequirementId());
-								System.out.println("assign");
-								userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
-						}
-					}*/
 					
 					if(reportDTO.getAssignedUserId() != null){
 						if(reportDTO.getAssignedUserStatus().equalsIgnoreCase("1")
 								&& ((reportDTO.getPrimaryUserId() != null &&  reportDTO.getPrimaryUserId().longValue() !=reportDTO.getAssignedUserId().longValue()) ||(reportDTO.getPrimaryUserId() == null)) 
 								&& (reportDTO.getManagerUserId() != null && reportDTO.getManagerUserId().longValue() !=reportDTO.getAssignedUserId().longValue())) {
 							userDTO = associatesListMap.get(reportDTO.getAssignedUserId());
-							if(userDTO != null && !assinedUserjobIds.contains(reportDTO.getRequirementId())){
+							if(userDTO != null && !assinedUserids.contains(reportDTO.getRequirementId().toString()+","+reportDTO.getAssignedUserId().toString())){
 									jobIds.add(reportDTO.getRequirementId());
+									assinedUserids.add(reportDTO.getRequirementId().toString()+","+reportDTO.getAssignedUserId().toString());
 									assinedUserjobIds.add(reportDTO.getRequirementId());
 									userDTO.setUserRequirementsCount(userDTO.getUserRequirementsCount()==null? BigDecimal.ONE :userDTO.getUserRequirementsCount().add(BigDecimal.ONE) );
 							}
@@ -2302,18 +2287,6 @@ public class UserDaoImpl implements UserDao {
 					
 				}
 				
-				
-				
-				
-			/*if(RecruiterReportAssociateList != null && !RecruiterReportAssociateList.isEmpty()) {
-					for(RecruiterReportAssociateCountView associateReportView : RecruiterReportAssociateList) {
-						UserDTO userDTO = associatesListMap.get(associateReportView.getAssociateUserId());
-						if(associateReportView.getJobCount() != null) {
-							userDTO.setUserRequirementsCount(associateReportView.getJobCount());
-						}
-						
-					}
-				}*/
 				
 				List<RecruiterReportView> recruiterReportViewList = requirementSubmissionHistoryService.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, fromDate, toDate,isGlobalUser, orgId);
 				if(recruiterReportViewList != null && !recruiterReportViewList.isEmpty()) {
@@ -2578,7 +2551,7 @@ public class UserDaoImpl implements UserDao {
 		                + applicantsJoinedReportDTO.getSearchValue()
 		                + "%' )");
 		}
-String groupSubQuery = "";
+String groupSubQuery = " group by u.ID";
 
 String sortingQry ="";
 		
@@ -2617,8 +2590,7 @@ String sortingQry ="";
 				+ "(SELECT  CONCAT(FIRST_NAME,LAST_NAME) AS EMPLOYEE_NAME) AS name "
 				+ "FROM USER u, USER_ROLE ur, REQUIREMENT_SUBMISSION reqSub, REQUIREMENT req where ur.ORG_LOCATIONS_ID = req.ORG_LOCATION_ID and ur.USER_ID = u.ID and u.USER_CODE = reqSub.CREATED_BY and req.ORG_LOCATION_ID= "
 				+ orgLocationId + "  and reqSub.REQUIREMENT_ID = req.ID " + dateQury
-				+ query1+" group by u.ID "
-				+groupSubQuery;
+				+ query1;
 		/*
 		 * if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 		 * !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { teamSubQuery =
@@ -2634,9 +2606,13 @@ String sortingQry ="";
 		
 		if (applicantsJoinedReportDTO.getOrgTeams() != null &&
 				 !applicantsJoinedReportDTO.getOrgTeams().isEmpty()) { 
-			teamSubQuery = " and u.ID IN (SELECT tm.MEMBER_USER_ID FROM TEAM_MEMBERS tm where tm.MEMBER_USER_ID = u.ID and tm.TEAM_ID IN(:teamsList) group by u.ID,req.ID)"; 
+			teamSubQuery = " AND ("
+					+ "U.ID IN (SELECT TM.MEMBER_USER_ID FROM TEAM_MEMBERS TM WHERE TM.TEAM_ID IN (:teamsList) and TM.STATUS = '1' )"
+					+ " OR "
+					+ "U.ID IN (SELECT T.OWNER_USER_ID FROM TEAM T WHERE T.ID IN (:teamsList) and T.STATUS='1')"
+					+ ")";
+			
 				 }
-		
        
 		if (applicantsJoinedReportDTO.getClients() != null &&
 				  !applicantsJoinedReportDTO.getClients().isEmpty()) { 
@@ -2644,7 +2620,7 @@ String sortingQry ="";
 				  
 				  }
 		
-		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry);
+		queryString = session.createSQLQuery(query + clientSubQuery + teamSubQuery + sortingQry+ groupSubQuery);
 		/*
 		 * queryString.setLong("orgLocationId", orgLocationId);
 		 * queryString.setParameter("fromDate", fromDate);

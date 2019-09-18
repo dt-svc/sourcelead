@@ -144,7 +144,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
 		
-		String maxAdminTimeTypeRowNum = jsonObj.getString("maxTsRowNum");
+		String maxAdminTimeTypeRowNum = jsonObj.getString("changeMaxTsRowNum");
 		int maxCount = Integer.parseInt(maxAdminTimeTypeRowNum);
 		RequirementInterview requirementInterview  = null;
 		RequirementInterviewer savedInterviewer = null;
@@ -249,13 +249,13 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           interviewsList.add(requirementInterview);
 					           RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					           RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(applicants[i].replace("\"", "")));
-					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+					           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus());
 					           if(jsonObj.has("isClientInterview")){
 					        	   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW.toString());
 					           }else{
 					        	   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW.toString());
 					           }
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
@@ -264,7 +264,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           if(requirementSubmission.getSourceSubmission() != null){
 					        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 						           if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty() && parentSubmission != null){
-						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW);
+						        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_INTERVIEW.toString());
 						        	   parentSubmission.setUpdatedDate(commonUtil.currentDate());
 						        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
 						           }

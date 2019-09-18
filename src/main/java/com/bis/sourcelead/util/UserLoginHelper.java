@@ -1,5 +1,6 @@
 package com.bis.sourcelead.util;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,24 +33,30 @@ import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.Tabs;
+import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.payroll.service.ConfigurePayrollApproverService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.ConnectionsService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ModulesService;
+import com.bis.sourcelead.service.NotificationsService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.TabsService;
+import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserLoginLogoutSessionService;
+import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.WhiteListIpAddressService;
@@ -79,6 +87,21 @@ public class UserLoginHelper {
 	
 	@Autowired
 	SourceleadActionsService sourceleadActionsService;
+	
+	@Autowired
+	NotificationsService notificationsService;
+	
+	@Autowired
+	TimeZoneService timeZoneService;
+	
+	@Autowired
+	ConnectionsService connectionsService;
+	
+	@Autowired
+	UserMailBoxService userMailBoxService;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Autowired
 	TabsService tabsService;
@@ -143,7 +166,8 @@ public class UserLoginHelper {
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionUUID", userSession.get("actionUUID").toString());
 		 SourceLeadSessionManager.setSessionAttribute(req, "actionId", Long.parseLong(userSession.get("actionId").toString()));
 		 SourceLeadSessionManager.setSessionAttribute(req, "sessionId", userSession.get("sessionId").toString());
-		 
+		/* HttpSession httpSession = req.getSession();
+		 httpSession.setAttribute("sessionId", userSession.get("sessionId").toString());*/
 		 try {
 			
 			OrgLocations loginOrgLocations = getLoginOrgLocationDetails(orgLocations);
@@ -160,8 +184,36 @@ public class UserLoginHelper {
 			
 			Candidate candidate = getCandidateDetails(userRole);
 			SourceLeadSessionManager.setSessionAttribute(req, "candidate", candidate);
-			
-			
+			String orgCode = (String) orgLocations.get("orgCode");
+		    
+			// Start code is added for showing notification count main header bar.
+			Long userId =  loginUser.getId();
+			String locationCode  = (String) orgLocations.get("orgLocationCode");
+			Long orgLocId = Long.valueOf((String)orgLocations.get("orgLocationId"));
+			String timeZone = (String) orgLocations.get("timeZone");
+			Integer notificationCount = notificationsService.getNotificationsCountByUserId(userId, orgCode,
+					locationCode);
+				//SourceLeadSessionManager.removeSessionAttribute(req, "notificationCount");
+				SourceLeadSessionManager.setSessionAttribute(req, "notificationCount", notificationCount);
+				Long receivedConnectionCount = connectionsService.getConnectionReceivedCount(userId);
+				SourceLeadSessionManager.removeSessionAttribute(req, "connectionReceivedCount");
+				SourceLeadSessionManager.setSessionAttribute(req, "connectionReceivedCount", receivedConnectionCount);
+
+				// get notification list by user id
+				List<Notifications> notificationList = notificationsService.getAllNotificationsListByUserId(userId,
+						orgCode, locationCode);
+				calculateDays(notificationList, timeZone);
+
+				SourceLeadSessionManager.removeSessionAttribute(req, "notificationList");
+				SourceLeadSessionManager.setSessionAttribute(req, "notificationList", notificationList);
+
+				Integer inboxUnreadMailsCount = userMailBoxService.getUnReadMessagesByUserIdAndLocationIdAndType(userId,
+						orgLocId, "Inbox");
+				Integer requestedUnreadMailsCount = userMailBoxService
+						.getUnReadMessagesByUserIdAndLocationIdAndType(userId, orgLocId, "Requested");
+				Integer totalUnReadMailsCount = inboxUnreadMailsCount + requestedUnreadMailsCount;
+				SourceLeadSessionManager.setSessionAttribute(req, "unReadMailsCount", totalUnReadMailsCount);
+			// End of notification count code.
 			
 		} catch (NumberFormatException e1) {
 			e1.printStackTrace();
@@ -221,6 +273,7 @@ public class UserLoginHelper {
 			  SourceLeadSessionManager.setSessionAttribute(req, "isAdmin", false);
 		  }
 		  
+			
 		  SourceLeadSessionManager.setSessionAttribute(req, "candidateUUID", userRole.get("candidateUUID"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isGlobalAccess", userRole.get("isGlobalUser"));
 		  SourceLeadSessionManager.setSessionAttribute(req, "isSuperUser", userRole.get("isSuperUser"));
@@ -344,6 +397,7 @@ public class UserLoginHelper {
 		Integer expensesTabCount = 0;
 		Integer resourcesTabCount = 0;
 		Integer paryrollTabCount = 0;
+		Integer performanceTabCount = 0;
 		
 		boolean isJobsTabAccessable = false;
 		SourceLeadSessionManager.setSessionAttribute(req, "isJobsTabAccessable", "N");
@@ -379,6 +433,11 @@ public class UserLoginHelper {
 						paryrollTabCount = paryrollTabCount+1;
 					}
 					
+					if(tab.equalsIgnoreCase("Goals") || tab.equalsIgnoreCase("My Appraisal") || tab.equalsIgnoreCase("Employee Appraisal") 
+							|| tab.equalsIgnoreCase("Org Chart")){
+						performanceTabCount = performanceTabCount+1;
+					}
+					
 					if (isReportTabAccessable == false) {
 						if(tab.equalsIgnoreCase("Reports")) {
 							isReportTabAccessable = true;
@@ -409,6 +468,7 @@ public class UserLoginHelper {
 			SourceLeadSessionManager.setSessionAttribute(req, "expensesTabCount", expensesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "resourcesTabCount", resourcesTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "paryrollTabCount", paryrollTabCount);
+			SourceLeadSessionManager.setSessionAttribute(req, "performanceTabCount", performanceTabCount);
 			SourceLeadSessionManager.setSessionAttribute(req, "actionsList", actionsList);
 			
 			/*List<Long> jobIdList = (List<Long>) SourceLeadSessionManager.getSessionAttribute(req, "requirementIdsList");
@@ -926,10 +986,24 @@ public class UserLoginHelper {
 		if(orgLocationJson.get("orgName").toString() != null) {
 			orgLocations.setOrgName(orgLocationJson.get("orgName").toString());
 		}
+		
+		if(orgLocationJson.get("imgUrl") != null) {
+			orgLocations.setOrgImgUrl(orgLocationJson.get("imgUrl").toString());
+		}
+		
+		
 		orgLocations.setOrgCode(orgLocationJson.get("orgCode").toString());
 		orgLocations.setCurrencyCode(orgLocationJson.get("currencyCode").toString());
 		orgLocations.setCountryCode(orgLocationJson.get("countryCode").toString());
 		orgLocations.setCountry(orgLocationJson.get("country").toString());
+		if(orgLocationJson.get("city") != null) {
+			orgLocations.setCity(orgLocationJson.get("city").toString());
+		}
+		
+		if(orgLocationJson.get("state") != null) {
+			orgLocations.setState(orgLocationJson.get("state").toString());
+		}
+		
 		orgLocations.setOrgId(Long.valueOf(orgLocationJson.get("orgId").toString()));
 		orgLocations.setOrgLocationName(orgLocationJson.get("orgLocationName").toString());
 		if(orgLocationJson.get("createdDate") != null && orgLocationJson.get("createdDate").toString() != null) {
@@ -972,6 +1046,10 @@ public class UserLoginHelper {
 		user.setFullName(userRoleJson.get("loginUserFullName").toString());
 		user.setEmail(userRoleJson.get("email").toString());
 		user.setUserName(userSession.get("loginUserName").toString());
+		if(userRoleJson.get("mobilePhone") != null) {
+			user.setMobilePhone(userRoleJson.get("mobilePhone").toString());
+		}
+		
 		
 		if(userRoleJson.get("firstName") != null) {
 			user.setFirstName(userRoleJson.get("firstName").toString());
@@ -1003,8 +1081,12 @@ public class UserLoginHelper {
 	public Candidate getCandidateDetails(JSONObject userRoleJson) {
 		
 		Candidate candidate = new Candidate();
-		candidate.setId(Long.valueOf(userRoleJson.get("candidateId").toString()));
-		candidate.setCandidateUUID(userRoleJson.get("candidateUUID").toString());
+		if(userRoleJson.get("candidateId") != null) {
+			candidate.setId(Long.valueOf(userRoleJson.get("candidateId").toString()));
+		}
+		if(userRoleJson.get("candidateUUID") != null) {
+			candidate.setCandidateUUID(userRoleJson.get("candidateUUID").toString());
+		}
 		if(userRoleJson.get("masterCandidateId") != null) {
 			candidate.setMasterCandId(Long.valueOf(userRoleJson.get("masterCandidateId").toString()));
 		}
@@ -1079,6 +1161,52 @@ public class UserLoginHelper {
 		
 		return accountsList;
 	}
-	
+	private void calculateDays(List<Notifications> notificationList, String timezone) throws ParseException {
+		for (Notifications notifications : notificationList) {
+			/*
+			 * //differentiating date and time Date date = notifications.getCreatedDate();
+			 * String[] parts = date.toString().split(" ");
+			 * notifications.setDateValue(parts[0]); final SimpleDateFormat sdf = new
+			 * SimpleDateFormat("H:mm"); final Date dateObj = sdf.parse(parts[1]);
+			 * notifications.setTime(new SimpleDateFormat("K:mm a").format(dateObj));
+			 * 
+			 * // calculating days b/w dates Date currentDate = new Date(); Date d1 =
+			 * notifications.getCreatedDate(); SimpleDateFormat dateFormat = new
+			 * SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); String strDate =
+			 * dateFormat.format(currentDate); Date d2 = dateFormat.parse(strDate); long
+			 * diff = d2.getTime() - d1.getTime(); long diffDays = diff / (24 * 60 * 60 *
+			 * 1000); notifications.setCalDays(String.valueOf(diffDays));
+			 */
+			long diff = commonUtil.currentDate().getTime() - notifications.getCreatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder time = new StringBuilder();
+			if (diffDays == 0 && diffHours == 0 && diffMinutes == 0) {
+				notifications.setCalDays(time.append(diffSeconds).append(" sec ago ").toString());
+			} else if (diffDays == 0 && diffHours == 0) {
+				notifications.setCalDays(
+						time.append(diffMinutes).append(" min ").append(diffSeconds).append(" sec ago ").toString());
+			} else if (diffDays == 0) {
+				notifications.setCalDays(
+						time.append(diffHours).append(" hours ").append(diffMinutes).append(" min ago ").toString());
+			} else if (diffDays < 7) {
+				notifications.setCalDays(time.append(diffDays).append(" day(s) ago").toString());
+			} else {
+				DateFormat standardFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss aa");
+				String currentTimeStr = Constants.TZ_DF.format(notifications.getCreatedDate());
+				String currentDateInTimezone = CommonUtil.convertTimeZones("UTC", timezone,
+						currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date converteDate = TZ_DF_TS.parse(currentDateInTimezone);
+				String commonDateFormat = standardFormat.format(converteDate);
+				notifications.setCalDays(commonDateFormat.toString());
+
+			}
+
+		}
+
+	}	
 	
 }

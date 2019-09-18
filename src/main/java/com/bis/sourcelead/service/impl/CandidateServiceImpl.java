@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateCertificationsDao;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
@@ -300,6 +301,12 @@ public class CandidateServiceImpl implements CandidateService {
     @Autowired
   	ReportsUtil reportsUtil;
     
+    @Autowired
+	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Value("${isCouchbaseEnabled}")
+	private String isCouchbaseEnabled;
+    
        
     protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -466,6 +473,15 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
 		
+		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
+		}else {
+			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
+			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
+			}
+		}
 		if(candidateDto.getCustomFormData() !=null) {
 			for( CustomFormFieldDTO customFields:candidateDto.getCustomFormData()) {
 				if(customFields != null && customFields.getCustomFormFieldId() > 0 ) {
@@ -544,10 +560,7 @@ public class CandidateServiceImpl implements CandidateService {
 	
 	referContactsDao.addReferContacts(referContacts);
 		
-		// resume details update in elk
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-		candidateResumesService.saveOrUpdateCandidateElkDocumentWithResumeDetails(savedCandidate);
-		}
+	
 		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
 			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
 			if(fileInfo != null){
@@ -1929,6 +1942,10 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    					employee.setCreatedDate(new Date());
 	    					employee.setUpdatedDate(new Date());
 	    					employeeDao.addEmployee(employee);
+	    					
+	    					if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
+	    						userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
+	    					}
 						}
 					}
 				}
@@ -2077,6 +2094,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			orgRelations.setResponderType("Vendor");
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setGenerateBill("Bulk");
+			orgRelations.setGenerateInvoice("Bulk");
 			orgRelations.setResponderLevel("Tier-5");
 			orgRelations.setVendorRelationStatus("Sent");
 			orgRelations.setStatus("ACTIVE");
@@ -2177,14 +2195,20 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			String rate = getExpectedRate(candidateDTO.getExpectedRate());
 			if (null != rate) {
 				candidateDTO.setExpectedRate(rate);
-				String countryCheck = orgLocations.getCountry();
-				switch (countryCheck) {
-					case "India":
-						candidateDTO.setRateType("Monthly");
-						break;
-					default:
-						candidateDTO.setRateType("Hourly");
+				
+				if(candidateDTO.getExpectedRatePer() != null) {
+					candidateDTO.setRateType(candidateDTO.getExpectedRatePer());
+				}else {
+					String countryCheck = orgLocations.getCountry();
+					switch (countryCheck) {
+						case "India":
+							candidateDTO.setRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setRateType("Hourly");
+					}
 				}
+				
 				
 				if ("India".equals(orgLocations.getCountry())) {
 					
@@ -2237,13 +2261,80 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 					
 					candidateDTO.setExpectedRateCurrencey("EUR");
 				}
-				String countryCheck = orgLocations.getCountry();
-				switch (countryCheck) {
-					case "India":
-						candidateDTO.setRateType("Monthly");
-						break;
-					default:
-						candidateDTO.setRateType("Hourly");
+			}
+		}
+		
+		
+		
+		if (null != candidateDTO.getCurrentRate()) {
+			String rate = getCurrentRate(candidateDTO.getCurrentRate());
+			if (null != rate) {
+				candidateDTO.setCurrentRate(rate);
+				
+				if(candidateDTO.getCurrentRatePer() != null) {
+					candidateDTO.setCurrentRateType(candidateDTO.getCurrentRatePer());
+				}else {
+					String countryCheck = orgLocations.getCountry();
+					switch (countryCheck) {
+						case "India":
+							candidateDTO.setCurrentRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setCurrentRateType("Hourly");
+					}
+				}
+				
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("EUR");
+				}
+			}
+			else {
+				
+				if ("India".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("INR");
+				}
+				else if ("Australia".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("AUD");
+				}
+				else if ("United States".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("USD");
+				}
+				else if ("Singapore".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("SGD");
+				}
+				else if ("United Kingdom".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("GBP");
+				}
+				else if ("France".equals(orgLocations.getCountry())) {
+					
+					candidateDTO.setCurrentRateCurrency("EUR");
 				}
 			}
 		}
@@ -2468,6 +2559,18 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	{
 		
 		String[] Res = expectedRate.split("[\\p{Punct}\\s]+");
+		for (String s : Res) {
+			if (isNumeric(s)) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	private String getCurrentRate(String currentRate)
+	{
+		
+		String[] Res = currentRate.split("[\\p{Punct}\\s]+");
 		for (String s : Res) {
 			if (isNumeric(s)) {
 				return s;
@@ -2752,10 +2855,13 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}
 		
 		 String noticePeriod = null;
-		if(candidateDto.getNoticePeriod() != null)
+		 candidate.setOtherNoticePeriod(null);
+		if(candidateDto.getNoticePeriod() != null) {
 			noticePeriod = candidateDto.getNoticePeriod().replaceAll("\\s+", " ");
+		}
 		
 	    if(noticePeriod != null) {
+	    	
 		if(candidate.getNoticePeriod() != null  && candidate.getNoticePeriod() != "" && !noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())){
 			 activitySummary.append("Notice Period").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getNoticePeriod()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(noticePeriod).append(Constants.NEW_VALUE_TAG_END).append(" ");
 		}else if((candidate.getNoticePeriod() != null || candidate.getNoticePeriod() != "" ||  noticePeriod.equalsIgnoreCase(candidate.getNoticePeriod())) && noticePeriod !="" ){
@@ -2836,15 +2942,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setCandidateHistory(candiateHistoryList);
 		
 		HashSet<CandidateTimelineActivity> candiateTimeLineActivityList = null;
-		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
-			candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
-		}else{
-			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
-				candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
-			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
-				candiateTimeLineActivityList = candidateTimelineActivityService.getCandidateTimelineActivityDetails(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
-			}
-		}
+		
 		candidate.setCandidateTimeLineActivity(candiateTimeLineActivityList);
 		
 		
@@ -3971,6 +4069,17 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			
 		return candidateDao.getCandidateSourceListByOrgLocationIdAndStatus(orgLocationId, status);
 		
+	}
+
+	@Override
+	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId, Long orgLocationId) throws Exception {
+		return candidateDao.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLocationId);
 	}
 
 

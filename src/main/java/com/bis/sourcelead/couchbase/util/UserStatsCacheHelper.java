@@ -1,5 +1,7 @@
 package com.bis.sourcelead.couchbase.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -608,7 +610,9 @@ public class UserStatsCacheHelper {
 		 orgLocationDTO.setWebsite(orgLocations.getWebsite());
 		 
 		 if(orgLocations.getCreatedDate() != null) {
-			 orgLocationDTO.setCreatedDate(orgLocations.getCreatedDate().toString());
+			 DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			    String sDate = df.format(orgLocations.getCreatedDate());
+			 orgLocationDTO.setCreatedDate(sDate);
 		 }
 		 
 		 if(StringUtils.isNotBlank(orgLocations.getWeekOffDays())) {
@@ -790,12 +794,17 @@ public class UserStatsCacheHelper {
 		       	    	actionIdsList.add(actions.getId());
 		       	    	actionRolesList.add(actions.getActionRole());
 		       	    }
-		   		  
-		   		 tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+		   		if(StringUtils.isNotBlank(userRole.getOrgLocations().getOrg().getOrgType()) && 
+		   				!userRole.getOrgLocations().getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+		   			tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
+		   		}else {
+		   			tabNamesList = new ArrayList<String>();
+		   		}
+		   		 
 		   		 tabNamesList.add("Dashboard");
 		    	    
-		    	     userRoleDTO.setMenuList(tabNamesList);
-		    	     userRoleDTO.setRolesList(actionRolesList);
+    	        userRoleDTO.setMenuList(tabNamesList);
+    	        userRoleDTO.setRolesList(actionRolesList);
 		   	 	}
 		   	 
 		     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  

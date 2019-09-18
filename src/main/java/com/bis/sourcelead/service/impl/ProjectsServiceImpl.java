@@ -3114,6 +3114,7 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
  				orgRelations.setResponderLevel("Tier-5");
  				orgRelations.setStatus("ACTIVE");
  				orgRelations.setGenerateInvoice("Bulk");
+ 				orgRelations.setGenerateBill("Bulk");
  				orgRelations.setCreatedBy(user.getUserCode());
  				orgRelations.setCreatedDate(new Date());
  				orgRelations.setUpdatedBy(user.getUserCode());
@@ -4001,48 +4002,63 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 
 
 	@Override
-	public Map<String, List<AvailableAssociatesDTO>> getAvailableAssociatesReport(AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
-		Map<String, List<AvailableAssociatesDTO>> map = new HashMap<>();
-		try {
-			List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO,orgLocations);
-			List<AvailableAssociatesDTO> availableAssociatesDTOList = new ArrayList<>();
-			if(objectList != null && !objectList.isEmpty()) {
-				for(Object[] obj : objectList) {
-					AvailableAssociatesDTO dto = new AvailableAssociatesDTO();
-					SimpleDateFormat dateForm1 = new SimpleDateFormat(orgLocations.getDateFormat());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					if(obj[1] != null)
-					    dto.setEmpId(String.valueOf(obj[1]));
-					if(obj[2] != null)
-						dto.setEmpName(String.valueOf(obj[2]));
-					if(obj[3] != null)
-						dto.setProjectName(String.valueOf(obj[3]));
-					if(obj[4] != null)
-						dto.setProjectStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[4]))));
-					if(obj[5] != null)
-						dto.setProjectEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[5]))));
-					if(obj[6] != null)
-						dto.setEmpStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[6]))));
-					if(obj[7] != null)	
-						dto.setEmpEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[7]))));
-					if(obj[8] != null)
-						dto.setAvailableHours(String.valueOf(obj[8]));
-					if(obj[9] != null)
-						dto.setHoursperWeek(String.valueOf(obj[9]));
-					dto.setOrgWorkingHours(orgLocations.getAverageWorkingHours() * orgLocations.getWorkingDaysPerWeek());
-					availableAssociatesDTOList.add(dto);
-					
-					List<AvailableAssociatesDTO> mapDTOList = map.get(String.valueOf(obj[10]) + "<<>>" + String.valueOf(obj[2])) == null ? new LinkedList<>() : map.get(String.valueOf(obj[10]) + "<<>>" + String.valueOf(obj[2]));
-					mapDTOList.add(dto);
-					map.put(String.valueOf(obj[10]) + "<<>>" + String.valueOf(obj[2]), mapDTOList);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return map;
-	}
+    public Map<String, List<AvailableAssociatesDTO>> getAvailableAssociatesReport(
+            AvailableAssociatesDTO availableAssociatesDTO, OrgLocations orgLocations) {
+        Map<String, List<AvailableAssociatesDTO>> map = null;
+        try {
+            
+            if(availableAssociatesDTO.getUserIds() == null || availableAssociatesDTO.getUserIds().isEmpty()) {
+                List<Long> userIdList = new LinkedList<>();
+                List<Candidate> empList = projectMembersService.getAllAvailableAssociates(orgLocations.getId());
+                for(Candidate c : empList) {
+                    userIdList.add(c.getId());
+                }
+                availableAssociatesDTO.setUserIds(userIdList);
+            }
+            
+            
+            List<Object[]> objectList = projectsDao.getAvailableAssociatesReport(availableAssociatesDTO, orgLocations);
+            List<AvailableAssociatesDTO> availableAssociatesDTOList = new ArrayList<>();
+            if (objectList != null && !objectList.isEmpty()) {
+                map = new HashMap<>();
+                for (Object[] obj : objectList) {
+                    AvailableAssociatesDTO dto = new AvailableAssociatesDTO();
+                    SimpleDateFormat dateForm1 = new SimpleDateFormat(orgLocations.getDateFormat());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    if (obj[1] != null)
+                        dto.setEmpId(String.valueOf(obj[1]));
+                    if (obj[2] != null)
+                        dto.setEmpName(String.valueOf(obj[2]));
+                    if (obj[3] != null)
+                        dto.setProjectName(String.valueOf(obj[3]));
+                    if (obj[4] != null)
+                        dto.setProjectStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[4]))));
+                    if (obj[5] != null)
+                        dto.setProjectEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[5]))));
+                    if (obj[6] != null)
+                        dto.setEmpStartDate(dateForm1.format(sdf.parse(String.valueOf(obj[6]))));
+                    if (obj[7] != null)
+                        dto.setEmpEndDate(dateForm1.format(sdf.parse(String.valueOf(obj[7]))));
+                    if (obj[8] != null)
+                        dto.setAvailableHours(String.valueOf(obj[8]));
+                    if (obj[9] != null)
+                        dto.setHoursperWeek(String.valueOf(obj[9]));
+                    dto.setOrgWorkingHours(
+                            orgLocations.getAverageWorkingHours() * orgLocations.getWorkingDaysPerWeek());
+                    availableAssociatesDTOList.add(dto);
 
+                    List<AvailableAssociatesDTO> mapDTOList = map
+                            .get(String.valueOf(obj[10]) + "<<>>" + String.valueOf(obj[2])) == null ? new LinkedList<>()
+                                    : map.get(String.valueOf(obj[10]) + "<<>>" + String.valueOf(obj[2]));
+                    mapDTOList.add(dto);
+                    map.put(String.valueOf(obj[10]) + "<<>>" + String.valueOf(obj[2]), mapDTOList);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
 
 
 	@Override
@@ -4154,6 +4170,18 @@ public void userEmailToAdmin(StringBuilder tempHTML, OrgLocations orgLocations,U
 	public ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId)
 	{
 		return projectsDao.isUserAssignedToProject(userId,orgLocationId,projectId);
+	}
+	
+	@Override
+	public List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		return projectsDao.getProjectListForProjectTimeEntriesReports(orgLocationsId, orgId, isGlobalManager, userId, type, userRole);
+	}
+	
+	@Override
+	public List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId, Long orgId,
+			String isGlobalManager, Long userId, String type, String userRole) throws Exception {
+		return projectsDao.getProjectListForResourceTimeEntriesReports(orgLocationsId, orgId, isGlobalManager, userId, type, userRole);
 	}
 
 	
