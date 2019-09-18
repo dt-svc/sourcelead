@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.userMarketplace.dao.AddProductDao;
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductFilesHistory;
-import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductNegotiaitionHistory;
+import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductNegotiationHistory;
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
 import com.bis.sourcelead.workflow.dao.Impl.RequirementWorkFlowDaoImpl;
 
@@ -53,17 +53,17 @@ public class AddProductDaoImpl implements AddProductDao {
 	}
 
 	@Override
-	public MarketPlaceProductNegotiaitionHistory saveMarketPlaceProductNegotiaitionHistory(MarketPlaceProductNegotiaitionHistory marketPlaceProductNegotiaitionHistory) throws Exception {
+	public MarketPlaceProductNegotiationHistory saveMarketPlaceProductNegotiationHistory(MarketPlaceProductNegotiationHistory marketPlaceProductNegotiationHistory) throws Exception {
 		try{
-			if(marketPlaceProductNegotiaitionHistory != null){
+			if(marketPlaceProductNegotiationHistory != null){
 			Session session = this.sessionFactory.getCurrentSession();
-			session.saveOrUpdate(marketPlaceProductNegotiaitionHistory);
+			session.saveOrUpdate(marketPlaceProductNegotiationHistory);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			logger.error(e+" in saveMarketPlaceProductNegotiaitionHistory Dao");
 		}
-		return marketPlaceProductNegotiaitionHistory;
+		return marketPlaceProductNegotiationHistory;
 	}
 
 	@Override
