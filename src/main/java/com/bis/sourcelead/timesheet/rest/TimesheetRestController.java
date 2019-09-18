@@ -3708,8 +3708,15 @@ public class TimesheetRestController {
 					fileUrl = pm.getProjectMemberCandidteId().getConsultantUser().getFileUrl();
 
 				timesheetEntryDetailsDTO.setProfileImageFileUrl(fileUrl);
-				timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
-				timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
+				
+				
+				if(pm.getProjectMemberCandidteId().getConsultantUser() != null) {
+					timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getConsultantUser().getFullName());
+					timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getConsultantUser().getEmail());
+				}else {
+					timesheetEntryDetailsDTO.setEmployeeName(pm.getProjectMemberCandidteId().getFullName());
+					timesheetEntryDetailsDTO.setEmployeeEmail(pm.getProjectMemberCandidteId().getEmail());
+				}
 				
 				
 				if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getMobilePhone())) {
@@ -5663,7 +5670,7 @@ public class TimesheetRestController {
 			if (tsDTO.getFileInfo() != null) {
 				for (FileInfo file : tsDTO.getFileInfo()) {
 					FileInfo freshFile = file;
-					if (StringUtils.isEmpty(file.getFileDbId())) {
+					if (StringUtils.isEmpty(file.getFileDbId()) && StringUtils.isNotEmpty(file.getFileURL())) {
 						FileUploadUtil.moveFile(staticPath, file, "timesheetDocuments");
 						TimesheetSubmissionsDocuments tsd = new TimesheetSubmissionsDocuments();
 						tsd.setTimesheetSubmissions(timesheetSubmissions);
@@ -5677,8 +5684,9 @@ public class TimesheetRestController {
 						tsd.setUpdatedBy(loginUser.getUserCode());
 						tsd = timesheetSubmissionsDocumentsService.addTimesheetSubmissionsDocuments(tsd);
 						freshFile.setFileDbId(tsd.getId().toString());
+						fileInfoList.add(freshFile);
 					}
-					fileInfoList.add(freshFile);
+					
 				}
 			}
 			tsDTO.setFileInfo(fileInfoList);
