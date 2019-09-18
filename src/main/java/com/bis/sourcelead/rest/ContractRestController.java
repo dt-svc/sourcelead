@@ -349,7 +349,8 @@ public class ContractRestController {
 		boolean isContractSaved = false;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO, orgLocation, "", user, org, "");
 		if (null != contracts) {
 			isContractSaved = true;
@@ -402,7 +403,12 @@ public class ContractRestController {
 	}
 	
 	@RequestMapping(value = "/getAllClientContractsByOrgLocationIdandStatus", method = RequestMethod.GET)
-	public @ResponseBody ResponseList<ClientContractsDTO> getAllClientContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType, @RequestParam(value = "tabType", required = false) String tabType, @RequestParam(value = "contractsType", required = false) String contractsType, @RequestParam(value = "contractStatus", required = false) String contractStatus, @RequestParam(value = "searchValue", required = false) String searchValue, HttpServletRequest request) throws Exception
+	public @ResponseBody ResponseList<ClientContractsDTO> getAllClientContractsByOrgLocationIdandStatus(@RequestParam(value = "contractSubmissionType", required = false) String contractSubmissionType
+			, @RequestParam(value = "tabType", required = false) String tabType
+			, @RequestParam(value = "contractsType", required = false) String contractsType
+			, @RequestParam(value = "contractStatus", required = false) String contractStatus
+			, @RequestParam(value = "searchValue", required = false) String searchValue
+			, HttpServletRequest request) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
