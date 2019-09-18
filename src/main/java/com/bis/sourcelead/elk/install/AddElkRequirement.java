@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -27,15 +26,14 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.RequirementIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKTC;
-import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddElkRequirement {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkRequirement.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	private SourceleadELKTC<RequirementIndex> client;
+	private SourceleadELKBaseIndexer<RequirementIndex> client;
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkRequirement() throws IOException, SQLException {
@@ -59,7 +57,7 @@ public class AddElkRequirement {
 		Statement stmt = null;
 		try {
 
-			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID;";
+			String sql = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT req INNER JOIN USER user on req.MANAGER_USER_ID = user.ID";
 
 			DataSource dataSource = comboPooledDataSource();
 			 conn = dataSource.getConnection();
@@ -82,7 +80,7 @@ public class AddElkRequirement {
 				requirementIndex.setProjectDurationMonths(rs.getString("PROJECT_DURATION_MONTHS"));
 				requirementIndex.setProjectDurationYears(rs.getString("PROJECT_DURATION_YEARS"));
 				// below line is commented for to move in next release build.
-				//requirementIndex.setWorkflowId(rs.getLong("WORKFLOW_ID"));// ADDED BY SRINIVAS SABBU ON 24-MAY-2019.
+				requirementIndex.setWorkflowId(rs.getLong("WORKFLOW_ID"));// ADDED BY SRINIVAS SABBU ON 24-MAY-2019.
 				requirementIndex.setClosedDate(rs.getString("REQUIRMENT_CLOSED_DATE"));
 				requirementIndex.setIsreceivingApplicants(rs.getString("IS_RECEIVING_APPLICANTS"));
 				if(null != rs.getString("PROJECT_CLIENT_ID") && !"".equalsIgnoreCase(rs.getString("PROJECT_CLIENT_ID"))){
@@ -579,9 +577,9 @@ public class AddElkRequirement {
 			
 			try {
 				AddElkRequirement addElkCandidate = new AddElkRequirement();
-				addElkCandidate.client = new SourceleadELKTC();
+				addElkCandidate.client = new SourceleadELKBaseIndexer<>();
 				   addElkCandidate.addElkRequirement();
-				   addElkCandidate.client.shutdown();
+//				   addElkCandidate.client.shutdown();
 			}catch (Exception e){
 				e.printStackTrace();
 			}

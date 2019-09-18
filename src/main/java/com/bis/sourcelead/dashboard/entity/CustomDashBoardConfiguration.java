@@ -18,6 +18,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Roles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -32,6 +33,9 @@ public class CustomDashBoardConfiguration {
 	@ManyToOne
     @JoinColumn(name="ORG_LOCATION_ID", nullable=false )
 	private OrgLocations orgLocations;
+	
+    @Column(name="ROLE_ID", nullable=false )
+	private Long roleId;
 	
 	@Column(name = "DASHBOARD_NAME")
 	private String dashboardName;
@@ -60,11 +64,6 @@ public class CustomDashBoardConfiguration {
 	
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dashBoardConfId")
-	@Fetch(FetchMode.SELECT)
-    @JsonBackReference
-	private Set<CustomDashBoardRoleConfiguration> dashBoardRoleConf;
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dashBoardConfId")
@@ -126,12 +125,6 @@ public class CustomDashBoardConfiguration {
 	public Long getUpdatedBy()
 	{
 		return updatedBy;
-	}
-
-
-	public Set<CustomDashBoardRoleConfiguration> getDashBoardRoleConf()
-	{
-		return dashBoardRoleConf;
 	}
 
 
@@ -197,12 +190,6 @@ public class CustomDashBoardConfiguration {
 	}
 
 
-	public void setDashBoardRoleConf(Set<CustomDashBoardRoleConfiguration> dashBoardRoleConf)
-	{
-		this.dashBoardRoleConf = dashBoardRoleConf;
-	}
-
-
 	public void setDashBoardAssociatesConf(Set<CustomDashBoardAssociatesConf> dashBoardAssociatesConf)
 	{
 		this.dashBoardAssociatesConf = dashBoardAssociatesConf;
@@ -231,10 +218,16 @@ public class CustomDashBoardConfiguration {
 	{
 		this.dashboardConfUUID = dashboardConfUUID;
 	}
-	
-	
-	
-	
+
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
 	
 	
 	

@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.entity.SubTabs;
+
 import org.hibernate.Query;
 
 @Repository
@@ -101,23 +103,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	@Override
 	@Transactional
-	public int deleteExistedDashBoardRoles(Long customDashBoardConfId)
-	{
-		int isDeleted = 0;
-		try {
-			Session session = this.sessionFactory.getCurrentSession();
-			String query = "delete from CustomDashBoardRoleConfiguration roleConf where roleConf.dashBoardConfId.id =:customDashBoardConfId ";
-			Query qry = session.createQuery(query).setLong("customDashBoardConfId", customDashBoardConfId);
-			int i = qry.executeUpdate();
-			return i;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return isDeleted;
-	}
-
-	@Override
-	@Transactional
 	public int deleteExistedDashBoardAssociates(Long customDashBoardConfId)
 	{
 		int isDeleted = 0;
@@ -131,5 +116,22 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 			e.printStackTrace();
 		}
 		return isDeleted;
+	}
+
+
+	@Override
+	@Transactional
+	public List<SubTabs> getSubModules(Long tabId)
+	{
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from SubTabs sTabs where sTabs.tabs.id = :tabId";
+			List<SubTabs> list =  session.createQuery(query).setLong("tabId", tabId).list();
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 }

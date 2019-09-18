@@ -14,6 +14,12 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style>
+.trashbackground{
+    background-color: #ffff !important;
+}
+</style>
+
  
  <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
     <script type="text/javascript">
@@ -182,7 +188,8 @@ function getBankDetails(){
 			<li class="active" onclick="resetPassword();"><a data-toggle="tab" href="#profile">Details</a></li>
 			<li onclick="resetProfile();"><a data-toggle="tab" href="#updatepassword">Password</a></li>
 			<li onclick="getConfiguredList();"><a data-toggle="tab" href="#configure">Configure</a></li>
-			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li>
+               <!-- 			This functionality properly not implemented so commented the code by Laxman   -->
+<!-- 			<li onclick="getUnsubscribeList();"><a data-toggle="tab" href="#unsubscribe">Unsubscribe</a></li> -->
 			<li onclick="getLinkAccounts();"><a data-toggle="tab" href="#myLinkaccounts">Accounts</a></li>
 			<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 			<li onclick="getBankDetails();"><a data-toggle="tab" href="#myBankDetails">Bank Details</a></li>
@@ -202,13 +209,11 @@ function getBankDetails(){
 				  <div class="profile-img-container profile-image" style="position:relative;">
 				   <img  id="userImage" data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}" alt="Profile Image" class="img-circle img-responsive">
 				  <div class="btn-group uploadfile">
-				  <button type="button" class="btn btn-sm btn-primary">
-				  <i class="fa fa-upload"></i></button>
 				  <label class="btn btn-sm btn-primary">
-                    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
+                    <i class="fa fa-upload"></i> Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this, 'profileImage_form', '', true);" style="visibility:hidden;height:0;width:10px;overflow:hidden" >
                   </label>
                   <c:if test="${!empty SourceLeadWeb_userImgUrl}">
-                  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage()">
+                  <button type="button" class="btn btn-sm btn-danger trashbackground" onclick="deleteImage()">
 				  <i class="fa fa-trash"></i></button>
 				  </c:if>
 				  </div>

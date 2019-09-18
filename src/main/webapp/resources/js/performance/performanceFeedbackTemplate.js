@@ -111,7 +111,7 @@ $('body').on('submit', '#sjfb', function(e){
         
         
         if(submitTemplate){
-         $( "#save_button" ).addClass('button').val('Processing..');
+         $( "#template_save_button" ).addClass('button').val('Processing..');
       	  $.ajax({
       	    	type: "POST",
       	        url: sourceleadUrl+"/savePerformanceFeedbackTemplate?templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 

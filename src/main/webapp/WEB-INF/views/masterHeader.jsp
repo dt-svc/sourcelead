@@ -781,7 +781,7 @@ function preventTabkey(e){
 			          <div class="popupHead"><span>Add Task</span><i class="closePop pull-right"  onClick="taskwidget();"></i></div>
 
 			            <div class="row popupContent">
-			              <div class="col-md-6" >
+			              <div class="col-md-6 reports-head" >
 			                <label>Assign to<span class="text-danger">*</span></label>
 			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
@@ -990,7 +990,7 @@ function preventTabkey(e){
 
 </div>
 
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activitiy</a></div> 
+<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activity</a></div> 
 </div>
 
 <div>
@@ -1269,6 +1269,7 @@ function tasksList(status){
             	
        			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
        			result = result  +' <option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
+       			result = result  +' <option '+(report.taskStatus == "In-Progress" ? "selected" : '') +'>In-Progress</option>';
 	            result = result  +'	<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
                	result = result + ' </select>';
             		 
@@ -1637,25 +1638,25 @@ $("#searchType").selectpicker('refresh');
         <div class="popupContent">
             <div class="clearfix mb">
                 <label class="noPad">Company Name <b class="valStar">*</b></label>
-                <div class="clearfix">
+                <div class="clearfix" id="companynames">
                     <input type="text" class="form-control" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_length length2-100">
                 </div>
             </div>
             <div class="clearfix mb">
                 <label class="noPad">Location </label>
-                <div class="clearfix">
+                <div class="clearfix" id="locations">
                     <input type="text" class="form-control" placeholder="Location" name="location" id="inviteLocation" onclick="initLocationAuto('inviteLocation');">
                 </div>
             </div>
             <div class="clearfix mb">
                 <label class="noPad">Name <b class="valStar">*</b></label>
-                <div class="clearfix">
+                <div class="clearfix" id="names">
                     <input type="text" class="form-control" placeholder="Name" id="name" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
                 </div>
             </div>
             <div class="clearfix mb">
             	<label class="noPad">Email <b class="valStar">*</b></label>
-                <div class="clearfix">
+                <div class="clearfix" id="emails">
                 <div class="input-group errorInptgroup">
                     <input type="text" class="form-control" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email"  onblur="verifyEmail2();"  data-validation="required validate_Space validate_length length2-100 validate_email">
                         <span id="emailStatusIconDiv" class="input-group-addon">
@@ -1666,8 +1667,8 @@ $("#searchType").selectpicker('refresh');
             </div>
 			<div class="clearfix mb">
                 <label class="noPad">Phone <b class="valStar">*</b></label>
-                <div class="clearfix">
-                    <input type="text" class="form-control" placeholder="Phone" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
+                <div class="clearfix" id="mobiles">
+                    <input type="text" class="form-control" placeholder="Phone" id="phone" name="phoneNumber" value=""  field-name="Phone number"data-validation="required validate_Space validate_phone validate_length length9-20">
                 </div>
             </div>
         </div>
@@ -1709,6 +1710,11 @@ $(document).ready(function(){
   
   <script>
   function flushInviteCompany(){
+	  $('#companynames').find('p.jquery_form_error_message').remove();
+		$('#locations').find('p.jquery_form_error_message').remove();
+		$('#names').find('p.jquery_form_error_message').remove();
+		$('#emails').find('p.jquery_form_error_message').remove();
+		$('#mobiles').find('p.jquery_form_error_message').remove();
 	  document.getElementById("inviteCompany_form").reset();
 	  //$("inviteCompany_form").validate().resetForm();
   }
@@ -2168,10 +2174,10 @@ function getAssignedProjects(obj){
 	$("#projectDropDownDiv").empty();
 	$("#projectDropDownDiv").append(output);
 	$('#projectDropDownDiv').trigger("chosen:updated"); 
-	
+	getProjectTasksByProject(obj);
 	}
 	});
-	setTimeout(function(){ getProjectTasksByProject(obj); }, 500);
+// 	setTimeout(function(){ getProjectTasksByProject(obj); }, 500);
 }
 </script>
 
@@ -2212,7 +2218,7 @@ function getProjectTasksByProject(obj){
 </script>
 
 <script>
-function getGeneralTasks(data){
+function getGeneralTasks(obj){
 
 	$.ajax({
 	url: sourceleadUrl + "/getGeneralTasks",

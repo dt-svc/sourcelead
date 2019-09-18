@@ -4,14 +4,12 @@
 <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
-
+// for india location
 <link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 
 
-<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
 <link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
 <link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
 <link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
@@ -81,10 +79,10 @@ $(function(){
 				       <ul>
 						  <li class="actLi">Organization details<i class="fa fa-check-circle"></i></li>
 						  <li class="actLi">Locations<i class="fa fa-check-circle"></i></li>
-						   <c:if test="${SourceLeadWeb_country == 'India'}">
+						   <c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
 						  <li class="actLi">Information<i class="fa fa-check-circle"></i></li>
 						  </c:if>
-						  <c:if test="${SourceLeadWeb_country == 'United States'}">
+						  <c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
 						  <li class="actLi">Federal & state taxes<i class="fa fa-check-circle"></i></li>
 						  </c:if>
 						  <li class="hoverLi">Banking details</li>
@@ -106,19 +104,19 @@ $(function(){
 					<jsp:include page="locationIndiaBankingDetails.jsp" />
 					
 					<div class="welBtns welBtnsA">
-									<c:if test="${SourceLeadWeb_country == 'United States'}">
-									<input type="button" value="Prev" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardFederalAndStateTaxes'">
+									<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardFederalAndStateTaxes'/>'">
 									</c:if>
 									
-									<c:if test="${SourceLeadWeb_country == 'India'}">
-									<input type="button" value="Prev" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardInformationDetails'">
+									<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardInformationDetails'/>'">
 									</c:if>
 									
-									<c:if test="${SourceLeadWeb_country != 'India' && SourceLeadWeb_country != 'United States'}">
-									<input type="button" value="Prev" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardLocations'">
+									<c:if test="${SourceLeadWeb_orgLocations.country != 'India' && SourceLeadWeb_orgLocations.country != 'United States'}">
+									<input type="button" value="Prev" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardLocations'/>'">
 									</c:if>
 									
-									<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/companyOnboardDocuments'"></a>
+									<input type="button" value="Skip this step" class="skipBtn" onClick="javascript:window.location.href = '<c:url value='/app/companyOnboardDocuments'/>'"></a>
 									<div class="clearfix"></div>
 								</div>	
 				</div>	
@@ -187,67 +185,58 @@ $(".loc-alertclose").click(function(){
           <div class="col-md-5">
            <label class="clearfix">Account Type<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
-                    <option value="0">--Select Location--</option>
+                <select onchange="showOrHidePaymentFormFields($(this).val()); changefunction();" field-name="Account Type" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-validation="required">
+                    <option value="">--Select Location--</option>
                     <option value="SAVINGS" data-type="1">Savings</option>
                     <option value="CHECKING" data-type="2">Checking</option>
-                    <c:if test="${SourceLeadWeb_country != 'India'}"> 
-                      <option value="WEPAY" data-type="3">WePay</option>
-                    </c:if>
-                    
                 </select>
            </div>
           </div>
            
         <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
            <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
+           <div class="clearfix" id="bankNameErr">
+                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" field-name="Bank Name" placeholder="Bank Name" class="form-control" data-validation="required validate_length length1-50"/>
            </div>
            </div>
           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
            <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="number" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
+           <div class="clearfix" id="accountNumberErr">
+                <input type="text" id="paymentAccountNumber"  placeholder="Account Number" field-name="Account Number" name="paymentAccountNumber" class="form-control" data-validation="required  validate_int validate_length length9-15"/>
            </div>
            </div>
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-              <label class="clearfix">BSR Number <span class="text-danger">&nbsp;*</span></label>
-	           <div class="clearfix">
-	                <input type="number" id="paymentBSRNumber" data-min='9' placeholder="BSR Number" data-max='15' name="paymentBSRNumber" class="form-control"/>
+              <label class="clearfix">BSR Number </label>
+	           <div class="clearfix" id="bsrNumberErr">
+	                <input type="text" id="paymentBSRNumber" field-name="BSR Number" placeholder="BSR Number"  name="paymentBSRNumber" class="form-control" data-validation-optional="true" data-validation="validate_int validate_length length4-15"/>
 	           </div>
            </div>
            
            <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
-              <label class="clearfix">MICR Code <span class="text-danger">&nbsp;*</span></label>
-	           <div class="clearfix">
-	                <input type="text" id="paymentMICRCode" data-min='9' data-max='15' placeholder="MICR Code" name="paymentMICRCode" class="form-control"/>
+              <label class="clearfix">MICR Code </label>
+	           <div class="clearfix" id="micrCodeErr">
+	                <input type="text" id="paymentMICRCode" field-name="MICR Code" data-validation-optional="true" placeholder="MICR Code" name="paymentMICRCode" class="form-control" data-validation="validate_int validate_length length9-15"/>
 	           </div>
            </div>
         
         <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">IFSC Code <span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="IFC Code" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+           <div class="clearfix" id="ifscCodeErr">
+                <input type="text" id="paymentAccountRoutingNumber" field-name="IFSC Code"  placeholder="IFC Code" name="paymentAccountRoutingNumber" class="form-control" data-validation="required validate_Alphanumeric fixed_length length11"/>
            </div>
            </div>
-           <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">
-           <label class="clearfix">Email<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
-           </div>
-           </div>
+            
         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
            <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
+           <div class="clearfix" id="firstNameErr">
+                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" field-name="First Name" placeholder="First Name" class="form-control" data-validation="required validate_Alphanumeric validate_length length1-100"/>
            </div>
            </div>
         
         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
            <label class="clearfix">Last Name<span class="text-danger">&nbsp;*</span></label>
-           <div class="clearfix">
-                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
+           <div class="clearfix" id="lastNameErr">
+                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" field-name="Last Name" placeholder="Last Name" class="form-control" data-validation="required validate_Alphanumeric validate_length length1-100"/>
            </div>
            </div>
         
@@ -263,6 +252,79 @@ $(".loc-alertclose").click(function(){
     </div>
   </div>
 <!-- Add IP Modal -->
+
+<script>
+function changefunction(){
+	var paymentAccountType = $("#paymentAccountType").val();
+	if(paymentAccountType == "SAVINGS" || paymentAccountType == "CHECKING"){
+	$('#emailErr').find('p.jquery_form_error_message').remove(); 
+	$("#paymentAccountEmail").val('');
+	$('#paymentAccountEmail').removeAttr('data-validation');
+
+	$('#paymentAccountBankName').attr('data-validation',"required validate_length length1-25");
+	$('#paymentAccountNumber').attr('data-validation', "required validate_int validate_length length9-15");
+	$('#paymentBSRNumber').attr('data-validation', "validate_int validate_length length2-9");
+	$('#paymentMICRCode').attr('data-validation', "validate_int validate_length length9-9");
+	$('#paymentAccountRoutingNumber').attr('data-validation', "required validate_Space validate_Alphanumeric fixed_length length11");
+	$("#firstName").attr('data-validation',"required validate_Alphanumeric validate_length length1-25");
+	$("#lastName").attr('data-validation',"required validate_Alphanumeric validate_length length1-25");
+	}else if(paymentAccountType == "WEPAY"){
+	$('#paymentAccountEmail').attr('data-validation', "required validate_length length2-100 validate_email");
+	$("#paymentAccountBankName").val('');
+	$("#paymentAccountNumber").val('');
+	$("#paymentBSRNumber").val('');
+	$("#paymentMICRCode").val('');
+	$("#paymentAccountRoutingNumber").val('');
+	$('#paymentAccountBankName').removeAttr('data-validation');
+	$('#paymentAccountNumber').removeAttr('data-validation');
+	$('#paymentBSRNumber').removeAttr('data-validation');
+	$('#paymentMICRCode').removeAttr('data-validation');
+	$('#paymentAccountRoutingNumber').removeAttr('data-validation');
+
+	}
+	}
+	</script>
+	
+<script>
+function savePaymentAccount() {
+	if ($('#paymentaccount_form').validate(false, validationSettings)) {
+	var data =  {};
+    var val = $("#paymentAccountType").val();
+    var orgloationId = '${orgLocationId}';
+    data["email"] = $("#paymentAccountEmail").val();
+    data["micrCode"] = $("#paymentMICRCode").val().trim();
+	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
+    data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+    data["bankName"] = $("#paymentAccountBankName").val().trim();
+    data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+    data["firstName"] = $("#paymentAccountFirstName").val().trim();
+    data["lastName"] = $("#paymentAccountLastName").val().trim();
+    data["orgLocationId"] = orgloationId;
+    data["accountType"] = val;
+    data["id"] = $("#paymentAccountId").val();
+        $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
+            showError(data.responseMessage);
+             if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
+                closePaymentAccountPopup(val);
+                $("#savePaymentButton").removeAttr("disabled", "disabled");
+                location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+            }
+            getPaymentAccounts(true);
+        });
+    return true;
+	}else{
+		return false;
+	}
+}
+$('body').on('blur', '#paymentaccount_form', function() {
+	$("#paymentaccount_form").showHelpOnFocus();
+	$("#paymentaccount_form").validateOnBlur(false, validationSettings);
+});
+</script>
+
+
+
+
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 function showIndiaPaymentAccountPopup() {
@@ -293,7 +355,6 @@ function showOrHidePaymentFormFields(type) {
             if(parseInt(val) === parseInt(id)) 
                 $(this).show();
         } else {
-            console.log(val);
             val = val.split(",");
             for(var e in val) {
                 if(parseInt(val[e]) === parseInt(id)) {
@@ -304,6 +365,14 @@ function showOrHidePaymentFormFields(type) {
     });
 }
 function closePaymentAccountPopup(type) {
+	$('#bankNameErr').find('p.jquery_form_error_message').remove();
+	 $('#accnoErr').find('p.jquery_form_error_message').remove();
+	 $('#BSRErr').find('p.jquery_form_error_message').remove();
+	 $('#MICRErr').find('p.jquery_form_error_message').remove();
+	 $('#routing').find('p.jquery_form_error_message').remove();
+	 $('#ifsc').find('p.jquery_form_error_message').remove();
+	 $('#firstnameErr').find('p.jquery_form_error_message').remove();
+	 $('#lastnameErr').find('p.jquery_form_error_message').remove();
     $(".modal.paymentaccount-modal").fadeOut();
     $(".comMask").fadeOut();
     if(type) {
@@ -311,56 +380,17 @@ function closePaymentAccountPopup(type) {
         showOrHidePaymentFormFields(type);
         $("input[id*=paymentAccount]").val("");
     }
+    
+    $('#bankNameErr').find('p.jquery_form_error_message').remove(); 
+	$('#accountNumberErr').find('p.jquery_form_error_message').remove(); 
+	$('#bsrNumberErr').find('p.jquery_form_error_message').remove(); 
+	$('#micrCodeErr').find('p.jquery_form_error_message').remove(); 
+	$('#routingNumberErr').find('p.jquery_form_error_message').remove(); 
+	$('#ifscCodeErr').find('p.jquery_form_error_message').remove();
+	$('#firstNameErr').find('p.jquery_form_error_message').remove();
+	$('#lastNameErr').find('p.jquery_form_error_message').remove();
 }
 
-function savePaymentAccount() {
-    var data =  {};
-    var val = $("#paymentAccountType").val();
-    var orgloationId = '${orgLocationId}';
-    var flag = false;
-    if(validateSelect('paymentAccountType', 'Account Type')) {
-        if(val === "WEPAY") {
-            if(validateEmail('paymentAccountEmail')
-                    && validate('paymentAccountFirstName', "First Name")
-                    && validate('paymentAccountLastName', "Last Name")) {
-                data["email"] = $("#paymentAccountEmail").val();
-                flag = true;
-            }
-        } else {
-            if(validate('paymentAccountBankName', "Bank Name")
-                    && validate('paymentAccountNumber', "Account Number")
-                    && validate('paymentBSRNumber', "BSR Number")
-                    && validate('paymentMICRCode', "MICR Code")
-                    && validate('paymentAccountRoutingNumber', "IFSC Code	")
-                    && validate('paymentAccountFirstName', "First Name")
-                    && validate('paymentAccountLastName', "Last Name")) {
-            	data["micrCode"] = $("#paymentMICRCode").val().trim();
-            	data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
-                data["accountNumber"] = $("#paymentAccountNumber").val().trim();
-                data["bankName"] = $("#paymentAccountBankName").val().trim();
-                data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
-                flag = true;
-            }
-        }
-        data["firstName"] = $("#paymentAccountFirstName").val().trim();
-        data["lastName"] = $("#paymentAccountLastName").val().trim();
-        data["orgLocationId"] = orgloationId;
-        data["accountType"] = val;
-        data["id"] = $("#paymentAccountId").val();
-    }
-    if(flag) {
-    	$("#savePaymentButton").attr("disabled", "disabled");
-        $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
-            showError(data.responseMessage);
-             if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
-                closePaymentAccountPopup(val);
-                $("#savePaymentButton").removeAttr("disabled", "disabled");
-                location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
-            }
-            getPaymentAccounts(true);
-        });
-    }
-}
 function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName,bsrNumber,micrCode) {
 	$("[data-fieldtype=account]").hide();
 	showOrHidePaymentFormFields(type);
@@ -396,5 +426,13 @@ function grantWePayAccess(id) {
 }
 </script>
 
+<script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   }; 
+</script>
 
 

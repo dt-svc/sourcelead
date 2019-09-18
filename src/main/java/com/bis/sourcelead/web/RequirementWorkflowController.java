@@ -1,8 +1,13 @@
 package com.bis.sourcelead.web;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,33 +16,46 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
+import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTasksDTO;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireTemplateDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowTasksDTO;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @RequestMapping("/app")
@@ -48,6 +66,12 @@ public class RequirementWorkflowController {
 	
 	@Autowired
 	private UserRoleService userRoleService;
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
+	@Value("${static.path}")
+	private String staticPath;
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementWorkflowController.class);
 	
@@ -66,21 +90,25 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
-		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
+		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
 	}
 	
 	@RequestMapping(value = "/workflowList")
-	public ModelAndView workflowList(HttpServletRequest request) throws Exception{
+	public ModelAndView workflowList(HttpServletRequest request, 
+			@RequestParam(value = "workflowName", required = false)String workflowName)throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		modelandview.setViewName("workflow/workflowList");
+		if(StringUtils.isNotBlank(workflowName)) {
+			modelandview.addObject("workflowName", workflowName);
+		}
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 		User user = new User();
 		user.setId(userId);
 		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
-		requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
+		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
 	
@@ -92,6 +120,11 @@ public class RequirementWorkflowController {
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
 		logger.debug("before calling deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId >>> "+orgLocations.getId());
 		requirementWorkFlowService.deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(requirementWorkFlowDTO.getUuid(), orgLocations.getId());
+		List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowId(),null, orgLocations.getId());
+		modelandview.addObject("isWorkflowEditable", true);
+		if(requirementSubLst != null && requirementSubLst.size()>0) {
+			modelandview.addObject("isWorkflowEditable", false);
+		}
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workflowDescription", requirementWorkFlowStagesDTO.get(0).getWorkflowDescription());
@@ -109,22 +142,25 @@ public class RequirementWorkflowController {
 		user.setId(userId);
 		logger.debug("inside add stage for the workflow >>> "+orgLocations.getId());
 		List<RequirementWorkFlowStagesDTO> requirementWorkFlowStagesDTO = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
-		
+		modelandview.addObject("onlyQuestAndTasksEditable", false);// setting false because adding new stage.
 		modelandview.setViewName("workflow/addStage");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
+		modelandview.addObject("workFlowName", requirementWorkFlowDTO.getWorkFlowName());
 		modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowUuid());
 		return modelandview;
 	}
 	
 	@RequestMapping(value = "/questionnaireList")
-	public ModelAndView goToquestionnaireList(HttpServletRequest request) throws Exception{
+	public ModelAndView goToquestionnaireList(HttpServletRequest request,
+			@RequestParam(value = "templateName", required = false)String templateName) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		logger.debug("inside goToquestionnaireList>>> ");
+		if(StringUtils.isNotBlank(templateName)) {
+		modelandview.addObject("templateName", templateName);
+		}
 		modelandview.setViewName("workflow/questionnaireList");
 		return modelandview;
 	}
-	
-	
 	@RequestMapping(value = "/getQuestionnaireList" , method = RequestMethod.GET)
 	public @ResponseBody ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireList(
 			RequirementQuestionnaireTemplateDTO requirementQuestionnaireTemplateDTO,
@@ -222,8 +258,24 @@ public class RequirementWorkflowController {
 		return workFlowDTO;
 	}
 
-	@RequestMapping(value = "/createRequirementDefaultWorkFlowStages", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/createRequirementDefaultWorkFlowStages", method = RequestMethod.GET)
 	public @ResponseBody List<RequirementWorkFlowStagesDTO> createRequirementDefaultWorkFlowStages(
+			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
+		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
+		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+		try {
+			 logger.debug("inside createRequirementDefaultWorkFlowStages>>> orgLocationid "+orgLocations.getId());
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return requirementDefaultWorkFlowStagesDTO;
+
+	}*/
+	
+	@RequestMapping(value = "/getDefaultWorkFlowStages", method = RequestMethod.GET)
+	public @ResponseBody List<RequirementWorkFlowStagesDTO> getDefaultWorkFlowStages(
 			RequirementWorkFlowDTO requirementWorkFlowDTO, HttpServletRequest request) {
 		List<RequirementWorkFlowStagesDTO> requirementDefaultWorkFlowStagesDTO = null;
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
@@ -249,7 +301,7 @@ public class RequirementWorkflowController {
 		try {
 			
 
-			String[] tableColumns = { "workFlowName","description", "noOfStages", "status"};
+			String[] tableColumns = { "workFlowName","description", "noOfStages", "status","updatedBy"};
 		  	int sortColumnIndex = -1; 
 	  		String sortColumnOrder = "desc"; 
  	  		if (requirementWorkFlowDTO.getOrder() != null && !requirementWorkFlowDTO.getOrder().isEmpty()) {
@@ -277,7 +329,8 @@ public class RequirementWorkflowController {
 			@RequestParam(value = "templateId", required = false) String templateId,
 			@RequestParam(value = "timeLimitMinutes", required = false) Integer timeLimitMinutes,
 			@RequestParam(value = "timeLimitSeconds", required = false) Integer timeLimitSeconds,
-			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, HttpServletRequest request)
+			@RequestParam(value = "jsonStringData", required = false) String jsonStringData, 
+	        @RequestParam(value = "templateName", required = false) String templateName, HttpServletRequest request)
 			throws Exception {
 
 		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
@@ -368,7 +421,7 @@ public class RequirementWorkflowController {
 		
 	@RequestMapping(value = "/saveRequirementWorkflowStage")
 	public @ResponseBody Response<String> saveRequirementWorkflowStage(HttpServletRequest request,
-			@RequestParam(value = "chosenColumnJson", required = false) String chosenColumnJson,
+			@RequestParam(value = "chosenColumnStr", required = false) String chosenColumnStr,
 			RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
@@ -378,9 +431,9 @@ public class RequirementWorkflowController {
 		logger.debug("before saveRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			try {
 				if (user != null && null != requirementWorkFlowStagesDTO) {
-					if(chosenColumnJson != null && StringUtils.isNotBlank(chosenColumnJson))
+					if(StringUtils.isNotBlank(chosenColumnStr)) // chosenColumnStr is a comma separated string passed form the UI.
 					{
-						requirementWorkFlowStagesDTO.setChosenColumns(chosenColumnJson);
+						requirementWorkFlowStagesDTO.setChosenColumns(chosenColumnStr);
 					}
 					requirementWorkFlowService.saveRequirementWorkflowStageByWorkflowId(requirementWorkFlowStagesDTO, orgLocations, user);
 					response.setResponse(Result.SUCCESS.name());
@@ -489,21 +542,26 @@ public class RequirementWorkflowController {
 		
 		@RequestMapping(value = { "/deleteRequirementWorkflowStage" })
 		public @ResponseBody String deleteRequirementWorkflowStage(RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
-				HttpServletRequest request) throws Exception {
+				HttpServletRequest request) {
+			try {
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			Long userId =  (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			User user = new User();
 			user.setId(userId);
-			Boolean flag;
+			Boolean flag = false;
 			logger.debug("before deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
-			flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
+				requirementWorkFlowStagesDTO.setUuid(requirementWorkFlowStagesDTO.getDeletedStageUuids());
+				flag = requirementWorkFlowService.saveRequirementWorkFlowStagesBySeqOrder(requirementWorkFlowStagesDTO, orgLocations, user);
 			if(flag == true) {
 				return Constants.SUCCESS;
 			}
 			logger.debug("afer deleteRequirementWorkflowStage>>> orgLocationid "+orgLocations.getId());
 			return Constants.FAILED;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Constants.FAILED;
 		}
-
+		}
 		
 		@RequestMapping(value = "/saveWorkFlowDetails", method = RequestMethod.POST)
 		public @ResponseBody ResponseList<String> saveWorkFlowDetails(
@@ -625,6 +683,8 @@ public class RequirementWorkflowController {
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
 					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
+					requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
+					
 					response.setResponse(Uuid);
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else if (user == null) {
@@ -643,10 +703,10 @@ public class RequirementWorkflowController {
 			return response;
 			
 		}
-		
 		@RequestMapping(value = "/editStage")
 		public ModelAndView editStage(HttpServletRequest request,
-				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO) throws Exception{
+				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
+				@RequestParam(value = "workflowName", required = false)String workflowName) throws Exception{
 			ModelAndView modelandview = new ModelAndView();
 			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
@@ -656,7 +716,14 @@ public class RequirementWorkflowController {
 			RequirementWorkFlowStages stages = requirementWorkFlowService.getRequirementWorkFlowStageForEditStage(requirementWorkFlowStagesDTO, orgLocations);
 			
 			List<RequirementWorkFlowStagesDTO> stagesDTO = requirementWorkFlowService.getNextRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
-			
+			if(StringUtils.isNotBlank(workflowName)) {
+				modelandview.addObject("workFlowName", workflowName);
+			}
+			List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(null,requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid(), orgLocations.getId());
+			modelandview.addObject("onlyQuestAndTasksEditable", false);
+			if(requirementSubLst != null && requirementSubLst.size()>0) {
+				modelandview.addObject("onlyQuestAndTasksEditable", true);
+			}
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
 			modelandview.addObject("description", stages.getDescription());
@@ -664,12 +731,16 @@ public class RequirementWorkflowController {
 			modelandview.addObject("questionnaireId",stages.getRequirementQuestionnaireTemplateId().getId());
 			modelandview.addObject("questionnaireName",stages.getRequirementQuestionnaireTemplateId().getName());
 			}
+			if(stages.getStageShortCode() != null) {
+				modelandview.addObject("stageShortCode",stages.getStageShortCode());
+			}
 			modelandview.addObject("commentRequired", stages.getCommentRequired());
 			modelandview.addObject("requiredList", stages.getRequiredStatsList());
 			modelandview.addObject("chosenColumns", stages.getChosenColumns());
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
 			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			modelandview.addObject("configureType", stages.getConfigureType());
 			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
 			return modelandview;
 		}
@@ -708,4 +779,271 @@ public class RequirementWorkflowController {
 			return response;
 			
 		}
+		
+		@RequestMapping(value = "/validateStageShortCode")
+		@ResponseBody
+		public Response<String> validateStageShortCode(
+				@RequestParam(value = "stageShortCode", required = true)String stageShortCode,
+				@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				@RequestParam(value = "currentStageUuid", required = false)String stageUuid,
+				HttpServletRequest request) throws Exception{
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			String flag ;
+			Response<String> response = new Response<String>();
+			logger.debug("before validateStageShortCode for "+orgLocationId+" orgLocation");
+			flag = requirementWorkFlowService.validateStageShortCode(orgLocationId, stageShortCode, workflowUuid, stageUuid);
+			response.setResponse(flag);
+			logger.debug("after validateStageShortCode for "+orgLocationId+" orgLocation");
+			return response;
+			
+		}
+		
+		@RequestMapping(value = "/checkWorkflowInRequirements")
+		@ResponseBody
+		public TreeMap<Long, String> checkWorkflowInRequirements(@RequestParam(value = "workflowUuid", required = true)String workflowUuid,
+				HttpServletRequest request)throws Exception {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			return requirementWorkFlowService.checkWorkflowInRequirements(workflowUuid, orgLocationId);
+			
+		}
+		
+		@RequestMapping(value = "/getColumnsMapbyWorkflowStage")
+		@ResponseBody
+		public LinkedHashMap<String, String> getColumnsMapbyWorkflowStage(@RequestParam(value = "shortCode", required = true)String shortCode, @RequestParam(value = "workflowId", required = true)Long workflowId,
+				HttpServletRequest request)throws Exception {
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			return requirementWorkFlowService.getColumnsMapbyWorkflowStage(shortCode, workflowId, orgLocationId);
+			
+		}
+		
+		/**
+		 *  below request mapping used to test send email to candidate for work flow questionnaire
+		 * @param request
+		 * @return
+		 * @throws Exception
+		 */
+		@RequestMapping(value = "/sendEmailQuestionniareAndCopyTasks")
+		@ResponseBody
+		public String sendEmailQuestionniareAndCopyTasks(
+				@RequestParam(value = "quesionnaireId", required = true)Long quesionnaireId, @RequestParam(value = "submissionId", required = true)Long submissionId,
+				@RequestParam(value = "stageName", required = true) String stageName, @RequestParam(value = "stageId", required = true) Long stageId,
+				@RequestParam(value = "questionnaireUuid", required = true) String questionnaireUuid,
+				@RequestParam(value = "jobTitle", required = true) String jobTitle,
+				@RequestParam(value = "stageUuid", required = true) String stageUuid,
+				HttpServletRequest request)throws Exception {
+			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+			User loginUser  =    (User) SourceLeadSessionManager.getSessionAttribute(request,	"user");
+			System.out.println("inside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
+			logger.debug("nside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
+			// Write the code for copying tasks to user which are assigned to Stage level start here.
+			 try {
+		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(stageId,orgLocations,loginUser);
+		     	logger.debug("Workflow email tasks and notifications status :::"+taskStatus);
+			 }catch(Exception e) {
+				 e.printStackTrace();
+				 logger.error("Exception caught while sending task emailt to the candidates "+e.getMessage());
+			 }
+		    //copy Tasks end here.
+			 String QuestMailstatus=Constants.FAILED;
+			 try {
+			 Candidate candidate = new Candidate();// these are the details of the candidate to whom to need to send email.
+		    candidate = requirementWorkFlowService.getCandidateByRequirementSubmissionId(submissionId);
+		    
+			if (candidate != null) {
+				HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+	
+				paramsMap.put("candidate", candidate);
+				paramsMap.put("orgLocations", orgLocations);
+				paramsMap.put("loginUser", loginUser);
+				paramsMap.put("templateId", quesionnaireId);
+				paramsMap.put("templateUuid", questionnaireUuid);
+				paramsMap.put("stageName", stageName);
+				paramsMap.put("jobTitle", jobTitle);
+				paramsMap.put("stageUuid", stageUuid);
+				paramsMap.put("submissionId", submissionId);
+				paramsMap.put("stageId", stageId);
+				//status = Constants.SUCCESS;
+				QuestMailstatus	=  requirementWorkFlowService.sendEmailToCandidateWithQuestionnaireTemplate(paramsMap);
+			 }
+			}catch(Exception e) {
+				e.printStackTrace();
+				logger.error("Exception caught while sending questionniare email to candidates :::>"+e.getMessage());
+			}
+			System.out.println("Questionaire Email Sent Status :  "+QuestMailstatus);
+			return QuestMailstatus;
+		}
+		
+		
+	@RequestMapping(value = { "/ws/publicQuestionnaireTemplate", "/viewQuestionnaireTemplate" })
+	public ModelAndView publicQuestionnaireTemplate(
+			@RequestParam(value = "templateUuid", required = true) String templateUuid,
+			@RequestParam(value = "stageUuid", defaultValue = "", required = false) String stageUuid,
+			@RequestParam(value = "submissionId", defaultValue = "", required = false) String submissionId) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("workflow/publicQuestionnaireTemplate");
+		model.addObject("templateUuid", templateUuid);
+		model.addObject("workflowStageUuid", stageUuid);
+		model.addObject("requirementSubmissionId", submissionId);
+		model.addObject("auto", Constants.QUESTIONNAIRE_AUTO_SUBMISSION);
+		model.addObject("manual", Constants.QUESTIONNAIRE_MANUAL_SUBMISSION);
+		return model;
+
+	}
+		 
+	//viewQuestionnaireFeedBackTemplate
+	@RequestMapping(value =  "/viewQuestionnaireFeedBackTemplate" )
+	public ModelAndView publicQuestionnaireTemplate(
+			@RequestParam(value = "templateUuid", required = true) String templateUuid) throws Exception {
+		String emptyString = "";
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("workflow/publicQuestionnaireFeedBackTemplate");
+		model.addObject("templateUuid", templateUuid);
+		model.addObject("workflowStageId", emptyString);
+		model.addObject("requirementSubmissionId", emptyString);
+		return model;
+	}
+	
+	
+		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
+		 @ResponseBody
+		   public RequirementQuestionnaireTemplateDTO getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid,
+					@RequestParam(value = "workflowStageUuid", required = false) String workflowStageUuid,
+					@RequestParam(value = "submissionId", required = false) String submissionId) throws Exception {
+			 RequirementQuestionnaireTemplateDTO questionnaireTemplate = requirementWorkFlowService.getSavedQuestionnaire(templateUuid, workflowStageUuid, submissionId);
+				 return questionnaireTemplate;
+		   }
+/**
+ *  Below method is used to disable work flow name for requirement if any candidate submitted for the requirement
+ * @param requirementId
+ * @param request
+ * @return
+ * @throws Exception
+ */
+	// if any requirement id present in submission table disable the work flow name for edit.
+	@RequestMapping(value = "/validateWorkflowEditable", method = RequestMethod.GET)
+	@ResponseBody
+	public boolean validateWorkflowEditable(@RequestParam(value = "requirementId", required = true) Long requirementId,
+			HttpServletRequest request) throws Exception {
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		
+		boolean isEditable = false;
+		RequirementSubmission requirementSub = requirementWorkFlowService.validateWorkflowEditable(requirementId,	orgLocationId);
+		if (requirementSub == null) isEditable = true;
+		
+		return isEditable;
+
+	}
+	
+	@RequestMapping(value = "/saveQuestionnaireFeedbackTemplate", method = RequestMethod.POST)
+	 @ResponseBody
+		public String saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO,
+				HttpServletRequest request)
+				throws Exception {
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			String result = null;
+			RequirementQuestionnaireFeedbackTemplate qemplate = null;
+			try {
+				qemplateDTO.setStaticPath(staticPath);
+				qemplate = requirementWorkFlowService.saveQuestionnaireFeedbackTemplate(qemplateDTO, orgLocations, user);
+				result = qemplate.getUuid();
+				return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+
+		}
+	 
+	 @RequestMapping(value = "/getQuestionnaireTemplateFeedbackList" , method = RequestMethod.GET)
+	 @ResponseBody
+	   public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
+		 RequirementQuestionnaireFeedbackTemplateDTO templateDTO  = requirementWorkFlowService.getQuestionnaireTemplateFeedbackList(templateUuid);
+		 return templateDTO;
+	   }
+
+	 
+	 // This Public URL Method Saves Default Workflow And Default Workflow Stages.
+	 // After Saving Workflow, All Requirements Are Updated By Default Workflow Id.
+	 @RequestMapping(value = "/ws/saveDefaultRequirementWorkflowAndStages", method = RequestMethod.GET)
+	 @ResponseBody
+		public String saveDefaultRequirementWorkflowAndStages() throws Exception{
+			System.out.println("Started saveDefaultRequirementWorkflowAndStages..");
+			StringBuilder responseBuilder = new StringBuilder("");
+			String result = requirementWorkFlowService.saveDefaultRequirementWorkflowAndStages();
+			String date = new Date().toString();
+			responseBuilder.append(result+". ");
+			if(StringUtils.equalsIgnoreCase(result, Result.SUCCESS.getValue())) {
+				responseBuilder.append("Default Workflow And Default Workflow Stages Are Saved & ");
+				result = requirementWorkFlowService.updateDefaultWorkflowInRequirementProcedure();
+				if(StringUtils.isNotBlank(result)) {
+					responseBuilder.append(result);
+				}
+			}
+			System.out.println("Finished saveDefaultRequirementWorkflowAndStages..");
+			return date + " - "+responseBuilder.toString();
+		 }
+	 
+	@RequestMapping(value = "/getQuestionnaireAssignedToStage", method = RequestMethod.GET)
+	 @ResponseBody
+		public RequirementQuestionnaireTasksDTO getQuestionnaireIdAssignedToStage(@RequestParam(value="workflowId", required=false) Long workflowId, @RequestParam(value="stageName", required=false) String stageName,HttpServletRequest request) throws Exception{
+			System.out.println("getQuestionnaireIdAssignedToStage..");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			RequirementQuestionnaireTasksDTO questionnaireTasksDTO = null;
+		try {
+			questionnaireTasksDTO = requirementWorkFlowService.getQuestionnaireIdAssignedToStage(workflowId, stageName, orgLocationId);
+			System.out.println("Finished getQuestionnaireIdAssignedToStage..");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return questionnaireTasksDTO;
+	}
+
+	@RequestMapping(value = { "/deleteAssignTask" }, method = RequestMethod.POST)
+	public @ResponseBody String deleteTask(@RequestParam(value = "uuid", required = false) String uuid, HttpServletRequest request) throws Exception {
+	
+		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+		String status = requirementWorkFlowService.deleteAssignedTask(uuid, orgLocations.getId());
+		
+		return status;
+	}
+	
+	// below method is used to update remaining minutes and seconds in feedback table when time limit is configured for questionnaire.
+	@RequestMapping(value = { "/updateFeedbackQuestionnaireTimer" }, method = RequestMethod.POST)
+	public @ResponseBody String updateFeedbackQuestionnaireTimer(@RequestParam(value = "questTemplUuid", required = false) String questTemplUuid, 
+			@RequestParam(value = "stageId", required = false) Long stageId, 
+			@RequestParam(value = "submissionId", required = false) Long submissionId, 
+			@RequestParam(value = "minutes", required = false) Integer minutes, 
+			@RequestParam(value = "seconds", required = false) Integer seconds, 
+			HttpServletRequest request) throws Exception {
+
+		   String status = requirementWorkFlowService.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId,
+				                                                                   minutes, seconds);
+		return status;
+	}
+	
+	@RequestMapping(value = "/saveQuestionnaireTemplateForSubmission", method = RequestMethod.GET)
+	@ResponseBody	
+	public RequirementQuestionnaireFeedbackTemplateDTO saveQuestionnaireTemplateForSubmission(RequirementQuestionnaireFeedbackTemplateDTO templateDTO, HttpServletRequest request)throws Exception{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		RequirementQuestionnaireFeedbackTemplate qemplate = null;
+		RequirementQuestionnaireFeedbackTemplateDTO dto = new RequirementQuestionnaireFeedbackTemplateDTO();
+		try {
+			qemplate = requirementWorkFlowService.saveQuestionnaireFeedbackTemplate(templateDTO, orgLocations, user);
+			dto.setUuid(qemplate.getUuid());
+			dto.setTimeLimitMinutes(qemplate.getTimeLimitMinutes());
+			dto.setTimeLimitSeconds(qemplate.getTimeLimitSeconds());
+			return dto;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	
+	}
+	
+	
 }

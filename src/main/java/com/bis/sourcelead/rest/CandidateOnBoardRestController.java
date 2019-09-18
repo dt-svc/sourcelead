@@ -693,6 +693,11 @@ public class CandidateOnBoardRestController {
 			if (candidate.getSpocId() != null) {
 				candidateDTO.setVendorSpocId(candidate.getSpocId().getId().toString());
 			}
+			
+			if (null != candidate.getShift()) {
+				candidateDTO.setShift(candidate.getShift().getId().toString());
+				candidateDTO.setShiftName(candidate.getShift().getShiftName());
+			}
 			response.setObject(candidateDTO);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
@@ -2190,68 +2195,6 @@ public class CandidateOnBoardRestController {
 		}
 		Response<AssociatePfEsiDetailsDTO>  resObj = associatePfEsiService.saveAssociatePfEsi(associatePfEsiDetailsDTO,orgLocation,loginUser);	
 		return resObj;
-	}
-	
-	@RequestMapping(value = "/saveNomineeDetails", method = RequestMethod.POST)
-	public @ResponseBody Response<AssociateNomineeDTO> saveNomineeDetails(AssociateNomineeDTO associateNomineeDTO,
-			HttpServletRequest request) throws Exception {
-		
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = null;
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
-				.getCandidateOnBoardingByUserIdAndLocationId(associateNomineeDTO.getUserId(), orgLocation.getId());
-		if(candidateOnBoarding == null) {
-			candidate = candidateService.getCandidateByConsultantUserId(associateNomineeDTO.getUserId(), orgLocation.getId());
-		}else {
-			candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
-		}
-		
-		Response<AssociateNomineeDTO>  resObj = associateNomineeService.saveAssociateNomineeDetails(associateNomineeDTO,orgLocation,candidate,user);
-		
-		return resObj;
-		
-	}
-	
-	
-	@RequestMapping(value = "/getNomineeDetails", method = RequestMethod.GET)
-	public @ResponseBody ResponseList<AssociateNomineeDTO> getNomineeDetails(AssociateNomineeDTO associateNomineeDTO,
-			HttpServletRequest request) throws Exception {
-		
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		Candidate candidate = null;
-		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
-				.getCandidateOnBoardingByUserIdAndLocationId(associateNomineeDTO.getUserId(), orgLocation.getId());
-		if(candidateOnBoarding == null) {
-			candidate = candidateService.getCandidateByConsultantUserId(associateNomineeDTO.getUserId(), orgLocation.getId());
-		}else {
-			candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
-		}
-		
-		ResponseList<AssociateNomineeDTO>  resList = associateNomineeService.getAssociateNomineeDetails(associateNomineeDTO,orgLocation,candidate,user);
-		
-				return resList;
-		
-	}
-	
-	
-	@RequestMapping(value = "/deleteNominee", method = RequestMethod.POST)
-	public AssociateNominee deleteNominee(AssociateNomineeDTO associateNomineeDTO,
-			HttpServletRequest request) throws Exception {
-		
-		AssociateNominee associateNominee = associateNomineeService.getNomineeById(associateNomineeDTO.getId());
-		associateNominee.setStatus(Constants.RECORD_INACTIVE);
-		return associateNomineeDao.saveAssociateNomineeDetails(associateNominee);
-	}
-	
-	@RequestMapping(value = "/editNominee", method = RequestMethod.POST)
-	public AssociateNominee editNominee(AssociateNomineeDTO associateNomineeDTO,
-			HttpServletRequest request) throws Exception {
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		AssociateNominee associateNominee = associateNomineeService.getNomineeById(associateNomineeDTO.getId());
-		associateNominee.setDob(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), associateNominee.getDateOfBirth()));
-		return associateNomineeDao.saveAssociateNomineeDetails(associateNominee);
 	}
 	
 }

@@ -188,6 +188,31 @@ public class HrReportRestController {
 
 	}
 	
+	
+	@RequestMapping(value = "/projectTimeEntriesReport")
+	public ModelAndView projectTimeEntriesReport(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 model.setViewName("reports/projectTimeEntryReportList");
+		 model.addObject("SourceLeadWeb_orgLocationId",orgLocations.getId());
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+	
+	@RequestMapping(value = "/resourceTimeEntriesReport")
+	public ModelAndView resourceTimeEntriesReport(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 model.setViewName("reports/resourceTimeEntryReportList");
+		 model.addObject("SourceLeadWeb_orgLocationId",orgLocations.getId());
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+
+	}
+	
+	
 	/**
 	 * Getting Asset Reports 
 	 * @param assetsReportDTO
@@ -325,12 +350,16 @@ public class HrReportRestController {
 	public List<ProjectMembers> getProjectMembersBasedOnProjectId(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
 		List<ProjectMembers> projectMemberList = null;
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
 		dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
-		//if(dayWiseTimesheetReoprtsDto.getStartDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate()) && dayWiseTimesheetReoprtsDto.getEndDate()!= null && StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
-			 projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
-		//}
+		dayWiseTimesheetReoprtsDto.setLoginUserRoleType(loginUserRole);
+		dayWiseTimesheetReoprtsDto.setIsGlobalUser(isGlobalUser);
+		dayWiseTimesheetReoprtsDto.setOrgId(org.getId());
+		projectMemberList = projectMemberService.getAllProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
 		return projectMemberList;
 	}
 
@@ -1374,5 +1403,206 @@ public class HrReportRestController {
 			file.delete();
 		}
 	}
+	
+	
+	
+	@RequestMapping(value="/projectTimeEntriesReportList",method= RequestMethod.POST)
+	public ModelAndView projectTimeEntriesReportList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
+		int start = dayWiseTimesheetReoprtsDto.getStart();
+		int length = 0;
+		if(dayWiseTimesheetReoprtsDto.getPageNo()<1) {
+			dayWiseTimesheetReoprtsDto.setPageNo(1);
+		}
+		if(dayWiseTimesheetReoprtsDto.getPageSize()<1) {
+			length = 10;
+			dayWiseTimesheetReoprtsDto.setPageSize(10);
+		}else {
+			length = dayWiseTimesheetReoprtsDto.getPageSize();
+		}
+		dayWiseTimesheetReoprtsDto.setStart(start);
+		dayWiseTimesheetReoprtsDto.setLength(length);
+		
+		ResponseList<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getProjectTimeEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser,isGlobalUser) ;
+		model.addObject("dayWiseTimesheetReoprtsList",listDto.getData());
+	    if(listDto != null && listDto.getData() != null && !listDto.getData().isEmpty()) {
+	    	for (DayWiseTimesheetReoprtsListDTO totalHours : listDto.getData()) {
+				model.addObject("totalBillable",totalHours.getBillableTotalCount());
+				model.addObject("totalNonBillable",totalHours.getNonBillableTotalCount());
+			}
+	    }
+		model.addObject("startDate",dayWiseTimesheetReoprtsDto.getStartDate());
+		model.addObject("endDate",dayWiseTimesheetReoprtsDto.getEndDate());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("reports/projectEntriesReportList");
+		model.addObject("totalRows",listDto.getRecordsFiltered());
+		model.addObject("pageCount",dayWiseTimesheetReoprtsDto.getPageNo());
+		model.addObject("pageSize",dayWiseTimesheetReoprtsDto.getLength());
+		model.addObject("searchValue",dayWiseTimesheetReoprtsDto.getSearchValue());
+		return model;
+	}
+	
+	
+	
+	@RequestMapping(value="/resourceTimeEntriesReportList",method= RequestMethod.POST)
+	public ModelAndView resourceTimeEntriesReportList(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("exportDto",dayWiseTimesheetReoprtsDto);
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		
+		int start = dayWiseTimesheetReoprtsDto.getStart();
+		int length = 0;
+		if(dayWiseTimesheetReoprtsDto.getPageNo()<1) {
+			dayWiseTimesheetReoprtsDto.setPageNo(1);
+		}
+		if(dayWiseTimesheetReoprtsDto.getPageSize()<1) {
+			length = 10;
+			dayWiseTimesheetReoprtsDto.setPageSize(10);
+		}else {
+			length = dayWiseTimesheetReoprtsDto.getPageSize();
+		}
+		dayWiseTimesheetReoprtsDto.setStart(start);
+		dayWiseTimesheetReoprtsDto.setLength(length);
+		
+		ResponseList<DayWiseTimesheetReoprtsListDTO>  listDto = dayEntryReportsService.getResourceTimeEntriesList(dayWiseTimesheetReoprtsDto,orgLocations, loginUser,isGlobalUser) ;
+		model.addObject("dayWiseTimesheetReoprtsList",listDto.getData());
+	    if(listDto != null && listDto.getData() != null && !listDto.getData().isEmpty()) {
+	    	for (DayWiseTimesheetReoprtsListDTO totalHours : listDto.getData()) {
+				model.addObject("totalBillable",totalHours.getBillableTotalCount());
+				model.addObject("totalNonBillable",totalHours.getNonBillableTotalCount());
+			}
+	    }
+		model.addObject("startDate",dayWiseTimesheetReoprtsDto.getStartDate());
+		model.addObject("endDate",dayWiseTimesheetReoprtsDto.getEndDate());
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.setViewName("reports/resourceEntriesReportList");
+		model.addObject("totalRows",listDto.getRecordsFiltered());
+		model.addObject("pageCount",dayWiseTimesheetReoprtsDto.getPageNo());
+		model.addObject("pageSize",dayWiseTimesheetReoprtsDto.getLength());
+		model.addObject("searchValue",dayWiseTimesheetReoprtsDto.getSearchValue());
+		return model;
+	}
+	
+	
+	@RequestMapping(value="/getProjectListForProjectTimeEntriesReportBasedOnStartAndEndDate")
+	public List<ProjectsDTO> getProjectListForProjectTimeEntriesReportBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
+		dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
+		List<ProjectsDTO> projectList  = null;
+		try {
+			projectList = projectService.getProjectListForProjectTimeEntriesReports(orgLocations.getId(), org.getId(), isGlobalUser, loginUser.getId(), dayWiseTimesheetReoprtsDto.getTypeOfProject(),userRole);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
+		return projectList;
+	}
 
+	@RequestMapping(value="/getProjectListForResourceTimeEntriesReportBasedOnStartAndEndDate")
+	public List<ProjectsDTO> getProjectListForResourceTimeEntriesReportBasedOnStartAndEndDate(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws JsonProcessingException {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
+		dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
+		List<ProjectsDTO> projectList  = null;
+		try {
+			projectList = projectService.getProjectListForResourceTimeEntriesReports(orgLocations.getId(), org.getId(), isGlobalUser, loginUser.getId(), dayWiseTimesheetReoprtsDto.getTypeOfProject(),userRole);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 
+		return projectList;
+	}
+	
+	@RequestMapping(value="/getProjectMembersForResourceTimeEntriesBasedOnProjectId")
+	public List<ProjectMembers> getProjectMembersForResourceTimeEntriesBasedOnProjectId(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request) throws Exception {
+		
+		List<ProjectMembers> projectMemberList = null;
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request,"org");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		dayWiseTimesheetReoprtsDto.setLocationsId(orgLocations.getId());
+		dayWiseTimesheetReoprtsDto.setLoginUserId(loginUser.getId());
+		dayWiseTimesheetReoprtsDto.setLoginUserRoleType(loginUserRole);
+		dayWiseTimesheetReoprtsDto.setIsGlobalUser(isGlobalUser);
+		dayWiseTimesheetReoprtsDto.setOrgId(org.getId());
+	    projectMemberList = projectMemberService.getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
+		return projectMemberList;
+	}
+
+	@RequestMapping(value="/exportProjectTimeEntriresTimesheetReport")
+	public void exportProjectTimeEntriresTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		File file = null;
+		if ("excel".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())) {
+				file = dayEntryReportsService.exportProjectTimeEntryReportsWithoutProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser,isGlobalUser);
+		} else if("pdf".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())){
+				file = dayEntryReportsService.exportProjectTimeEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser,isGlobalUser);
+		}
+		if (file != null) {
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+		}
+	}
+
+
+	@RequestMapping(value="/exportResourceTimeEntriresTimesheetReport")
+	public void exportResourceTimeEntriresTimesheetReport(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+		File file = null;
+		if ("excel".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())) {
+				file = dayEntryReportsService.exportResourceTimeEntryReportsWithoutProjectExcel(dayWiseTimesheetReoprtsDto,orgLocations,loginUser,isGlobalUser);
+		} else if("pdf".equalsIgnoreCase(dayWiseTimesheetReoprtsDto.getExportType())){
+				file = dayEntryReportsService.exportResourceTimeEntryReportsWithProjectPdf(dayWiseTimesheetReoprtsDto,orgLocations,loginUser,isGlobalUser);
+		}
+		if (file != null) {
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			StringBuilder fileName = new StringBuilder();
+			response.setHeader("Content-Disposition",
+					fileName.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+			response.setContentLength((int) file.length());
+			InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+			inputStream.close();
+			response.getOutputStream().close();
+			response.getOutputStream().flush();
+		}
+	}
 }

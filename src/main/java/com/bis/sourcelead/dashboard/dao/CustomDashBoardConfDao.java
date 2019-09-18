@@ -3,6 +3,7 @@ package com.bis.sourcelead.dashboard.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.entity.SubTabs;
 
 public interface CustomDashBoardConfDao {
 
@@ -14,7 +15,7 @@ public interface CustomDashBoardConfDao {
 
 	CustomDashBoardConfiguration getCustomDashboardConfById(Long customDashBoardConfId, Long orgLocationId);
 
-	int deleteExistedDashBoardRoles(Long customDashBoardConfId);
-
 	int deleteExistedDashBoardAssociates(Long customDashBoardConfId);
+
+	List<SubTabs> getSubModules(Long tabId);
 }

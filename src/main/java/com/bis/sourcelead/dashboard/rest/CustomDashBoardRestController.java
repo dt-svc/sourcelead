@@ -16,15 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
-import com.bis.sourcelead.dashboard.entity.CustomDashBoardRoleConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.SubTabsDTO;
+import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
+import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
@@ -48,6 +51,9 @@ public class CustomDashBoardRestController {
 	
 	@Autowired
 	CustomDashboardConfService customDashboardConfService;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
 	
 	
 	/**
@@ -104,7 +110,7 @@ public class CustomDashBoardRestController {
 	 */
 	
 	@RequestMapping(value="/configureCustomDashBoardModule")
-	public ModelAndView configureCustomDashBoardModule(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView configureCustomDashBoardModule(@RequestParam(value = "customDashBoardConfUUID",required = false) String customDashBoardConfUUID, HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		try {
 			model.addObject("sourceleadUrl", sourceleadUrl);
@@ -227,8 +233,8 @@ public class CustomDashBoardRestController {
 			model.addObject("users", users);
 			
 			//selected roles
-			Set<CustomDashBoardRoleConfiguration> selectedRoles = customDashBoardConf.getDashBoardRoleConf();
-			model.addObject("selectedRoles", selectedRoles);
+//			Set<CustomDashBoardRoleConfiguration> selectedRoles = customDashBoardConf.getDashBoardRoleConf();
+//			model.addObject("selectedRoles", selectedRoles);
 			
 			
 			// selected associates
@@ -243,5 +249,67 @@ public class CustomDashBoardRestController {
 	
 		return model;
 		
+	}
+	
+	/**
+	 * Gettinh all associates based on roles
+	 * @param req
+	 * @param res
+	 * @param roleId
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAssociateListBasedOnRole", method = RequestMethod.GET)
+	public @ResponseBody List<UserRole> getAssociateListBasedOnRole(HttpServletRequest req,HttpServletResponse res,@RequestParam(value = "roleId", required = false) Long roleId) throws Exception
+	{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+			return userRoleDao.getUsersListByRoleAndLocationId(roleId, orgLocation.getId(), "ACTIVE", user.getId(), null, null);
+		
+	}
+	
+	/**
+	 * Get associates list by locationId
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getAllAssociateList", method = RequestMethod.GET)
+	public @ResponseBody List<UserRole> getAllAssociateList(HttpServletRequest req,HttpServletResponse res) throws Exception
+	{
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+			return userRoleDao.getAllActiveUsersListByOrgLocationId(orgLocation.getId());
+		
+	}
+	
+	
+	
+	/**
+	 * Get associates list by locationId
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getRoleBasedModules", method = RequestMethod.GET)
+	public @ResponseBody List<TabsDTO> getRoleBasedModules(HttpServletRequest req,HttpServletResponse res) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		return customDashboardConfService.getRoleBasedModules(orgLocation.getId(),5589l);
+	}
+	
+	
+	/**
+	 * Get sub modules
+	 * @param req
+	 * @param res
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getSubModules", method = RequestMethod.GET)
+	public @ResponseBody List<SubTabsDTO> getSubModules(@RequestParam(value = "tabId", required = false) Long tabId,HttpServletRequest req,HttpServletResponse res) throws Exception
+	{
+		return customDashboardConfService.getSubModules(tabId);
 	}
 }

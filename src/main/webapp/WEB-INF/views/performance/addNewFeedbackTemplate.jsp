@@ -32,7 +32,7 @@
 		            <div class="col-xs-12 col-md-6" id="templateNameDiv">
 		           <label>Category Name<span class="text-danger">&nbsp;*</label>
 			    	<div class="mt10">
-			    			<input type="text" class="form-control input-sm"  onblur="validateTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">
+			    			<input type="text" class="form-control input-sm"  onblur="performanceManagement.validateFeedbackTemplateName()" id="templateName" name="templateName" field-name="Template Name" data-validation="required validate_Space validate_length length2-100">
 			    	</div>
 			    	</div>
 			    	
@@ -76,7 +76,7 @@
 	           <div class="pull-right mr">
 	           
 	           
-	           <button type="submit" class="slBtn md colorBtn" id="save_button"  onclick="">Save</button>
+	           <button type="submit" class="slBtn md colorBtn" id="template_save_button"  onclick="">Save</button>
 	           <button type="button" class="slBtn md popClose"  onClick="performanceManagement.getFeedbackList();"  onclick="" >Cancel</button>
 	           
 	           </div>
