@@ -18,8 +18,8 @@ import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "MARKETPLACE_PRODUCT_NEGOTIAITION_HISTORY")
-public class MarketPlaceProductNegotiaitionHistory {
+@Table(name = "MARKETPLACE_PRODUCT_NEGOTIATION_HISTORY")
+public class MarketPlaceProductNegotiationHistory {
 
 @Id
 @Column(name = "ID", nullable = false)
@@ -29,10 +29,10 @@ private Long id;
 @JoinColumn(name="MARKETPLACE_PRODUCT_ID")        
 private MarketPlaceProducts marketPlaceProductId;
 
-@Column(name="NEGOTIAIED_PRICE")
+@Column(name="NEGOTIATED_PRICE")
 private String negotiatedPrice;
 
-@Column(name="NEGOTIAIED_QUANTITY")
+@Column(name="NEGOTIATED_QUANTITY")
 private int negotiatedQuantity;
 
 @Column(name="APPROVED_USER_ID")

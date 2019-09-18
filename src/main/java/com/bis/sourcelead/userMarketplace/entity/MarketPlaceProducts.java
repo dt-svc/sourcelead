@@ -85,7 +85,7 @@ private Date warrantyEndDate;
 @Column(name = "PRODUCT_CURRENT_STATUS")
 private String productCurrentStatus;
 
-@Column(name = "AVLBL_QUANITY")
+@Column(name = "AVLBL_QUANTITY")
 private int avlblQuantity;
 
 @Column(name = "PRODUCT_AVLBL_END_DATE")
