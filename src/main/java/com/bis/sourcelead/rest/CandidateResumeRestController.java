@@ -41,17 +41,20 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOffersService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -89,6 +92,12 @@ public class CandidateResumeRestController {
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	/**
 	 * @author Venkat Kesav
@@ -103,7 +112,6 @@ public class CandidateResumeRestController {
 	 * 
 	 * @throws Exception
 	 */
-	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_RESUMES','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_RESUMES')")
 	@RequestMapping(value = { "/saveCandidateResume" }, method = RequestMethod.POST)
 	public @ResponseBody Response<Integer> saveCandidateResume(CandidateResumeDTO candidateResumeDTO, HttpServletRequest request)
 			throws Exception {
@@ -111,15 +119,24 @@ public class CandidateResumeRestController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		if (user != null) {
 			candidateResumeDTO.setStaticPath(staticPath);
-			// FileUploadUtil.fillUploadedFileInfo(candidateResumeDTO,
-			// candidateResumeDTO.getFileInfo());
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
-				Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
-				candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(),
-						orgLocation);
-				Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
-				response.setObject(percentage);
+				
+				if(StringUtils.isNotBlank(candidateResumeDTO.getCandidateType()) && 
+						candidateResumeDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+					candidateResumesService.storeGlobalCandidateResume(candidateResumeDTO, user, candidateGlobal, candidateResumeDTO.getResumeId(),
+							orgLocation);
+					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
+					response.setObject(percentage);
+				}else {
+					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+					candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(),
+							orgLocation);
+					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+					response.setObject(percentage);
+				}
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -187,42 +204,47 @@ public class CandidateResumeRestController {
 	 */
 	@RequestMapping(value = { "/candidateResumesListByCandidateId", "rest/candidateResumesListByCandidateId" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateResumeDTO> candidateResumesListByCandidateId(
-			@RequestParam(value = "candidateId", required = false) String candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateId", required = false) String candidateId,
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		ResponseList<CandidateResumeDTO> resumeList = new ResponseList<>();
 		Integer status = Constants.CANDIDATE_ACTIVE;
 		List<CandidateResumeDTO> candidateResumesDTOList = new ArrayList<>();
 		if (candidateId != null) {
-			List<CandidateResumes> candidateResumesList = candidateResumesService
-					.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
-			for (CandidateResumes candidateResume : candidateResumesList) {
-				CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
-				User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
-				if (createdUser != null) {
-					StringBuilder name = new StringBuilder();
-					candidateResume
-							.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
-				}
-				// List<FileInfo> fileInfo = new ArrayList<>();
-				// FileInfo fInfo = new FileInfo();
-				candidateResumeDTO.setId(candidateResume.getId());
-				candidateResumeDTO.setTitle(candidateResume.getTitle());
-				candidateResumeDTO.setDescription(candidateResume.getDescription());
-				candidateResumeDTO.setCreatedBy(candidateResume.getCreatedBy());
-				candidateResumeDTO.setFileContentType(candidateResume.getFileContentType());
-				candidateResumeDTO.setFileName(candidateResume.getFileName());
-				candidateResumeDTO.setFileURL(candidateResume.getFileURL());
-				candidateResumeDTO.setResumeId(String.valueOf(candidateResume.getId()));
-				// fInfo.setContentType(candidateResume.getFileContentType());
-				// fInfo.setFileName(candidateResume.getFileName());
-				//// fInfo.setFileURL(candidateResume.getFileURL());
-				// fileInfo.add(fInfo);
-				candidateResumeDTO.setCandidateId(candidateId);
-				candidateResumeDTO.setCandidateResumeUpdateDateToString(
-						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateResume.getUpdatedDate()));
-				candidateResumesDTOList.add(candidateResumeDTO);
-
+			List<CandidateResumes> candidateResumesList = null;
+			if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+				 candidateResumesList = candidateResumesService
+						.getCandidateGlobalResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
+			}else {
+				candidateResumesList = candidateResumesService
+						.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			}
+			
+			if(candidateResumesList != null && !candidateResumesList.isEmpty()) {
+				for (CandidateResumes candidateResume : candidateResumesList) {
+					CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
+					User createdUser = userService.getUserByUserCode(candidateResume.getCreatedBy());
+					if (createdUser != null) {
+						StringBuilder name = new StringBuilder();
+						candidateResume
+								.setCreatedBy(name.append(createdUser.getFirstName()).append(" ").append(createdUser.getLastName()).toString());
+					}
+					candidateResumeDTO.setId(candidateResume.getId());
+					candidateResumeDTO.setTitle(candidateResume.getTitle());
+					candidateResumeDTO.setDescription(candidateResume.getDescription());
+					candidateResumeDTO.setCreatedBy(candidateResume.getCreatedBy());
+					candidateResumeDTO.setFileContentType(candidateResume.getFileContentType());
+					candidateResumeDTO.setFileName(candidateResume.getFileName());
+					candidateResumeDTO.setFileURL(candidateResume.getFileURL());
+					candidateResumeDTO.setResumeId(String.valueOf(candidateResume.getId()));
+					candidateResumeDTO.setCandidateId(candidateId);
+					candidateResumeDTO.setCandidateResumeUpdateDateToString(
+							commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateResume.getUpdatedDate()));
+					candidateResumesDTOList.add(candidateResumeDTO);
+
+				}
+			}
+			
 		}
 		resumeList.setData(candidateResumesDTOList);
 		return resumeList;
@@ -246,11 +268,10 @@ public class CandidateResumeRestController {
 	public Response<String> terminateResume(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "resumeId", required = false) String resumeId) throws Exception {
+			@RequestParam(value = "resumeId", required = false) String resumeId,
+			@RequestParam(value = "candidateType", required = false) String candidateType) throws Exception {
 		Response<String> response = new Response<>();
 		try {
-			// User user = (User)
-			// SourceLeadSessionManager.getSessionAttribute(request, "user");
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
 				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
@@ -271,19 +292,14 @@ public class CandidateResumeRestController {
 								.append(candidateResume.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
 					candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "",
-							Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
-					// update the candidate Resume on ELK
-					if (null != candidate && null != candidate.getId()) {
-						CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-						candidateIndex.setCandidateId(candidate.getId());
-						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-						candidateIndex.setCurrentResumeId(Constants.CANDIATE_RESUME_IN_ACTIVE);
-
-						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
-								Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
+					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateResume.getCandidateGlobalId(), "",
+								Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
+					}else {
+						candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "",
+								Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
 					}
+					
 				}
 				Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
 				response.setObject(percentage.toString());
