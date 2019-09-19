@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -89,12 +89,12 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 
         CandidateEmployers candidateEmployers = null;
         CandidateEmployers currentEmployer = null;
-        Candidate can  = new Candidate();
         StringBuffer activitySummary = new StringBuffer();
+        CandidateGlobal candidateGlobal = null;
+        Candidate can = null;
         if(candidateId!=null){
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateEmployeeId())){
 	       			candidateEmployers = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(Long.parseLong(candidateEmployerDTO.getCandidateEmployeeId()), candidateId);
-	       			// candidateEmployers.setId(Long.valueOf(jsonObject.getString("candidateEmployeeId")));
        	    }else{
     	    	candidateEmployers = new CandidateEmployers();
     	    }
@@ -105,8 +105,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 				activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
         	candidateEmployers.setName(candidateEmployerDTO.getName());
-        	can.setId(candidateId);
-        	candidateEmployers.setCandidateId(can);
+        	if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateType()) && candidateEmployerDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+        		candidateGlobal  = new CandidateGlobal();
+        		candidateGlobal.setId(candidateId);
+            	candidateEmployers.setCandidateGlobalId(candidateGlobal);
+        	}else {
+        		can  = new Candidate();
+            	can.setId(candidateId);
+            	candidateEmployers.setCandidateId(can);
+        	}
+        	
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getAddress())){
         	if(candidateEmployers != null && candidateEmployers.getAddress() != null){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -155,7 +163,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     				activitySummary.append("Start Year").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getStartYear()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getStartYear()).append(Constants.NEW_VALUE_TAG_END).append(" ");
     			}
  				   candidateEmployers.setStartYear(candidateEmployerDTO.getStartYear());
- 				  // candidateEmployers.setStartMonth(jsonObject.getString("startMonth").split("&")[1]);
         	}else{
         		 candidateEmployers.setStartYear("");
         	}
@@ -167,7 +174,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     				activitySummary.append("End Year").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getEndYear()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getEndYear()).append(Constants.NEW_VALUE_TAG_END).append(" ");
     			}   
         		candidateEmployers.setEndYear(candidateEmployerDTO.getEndYear());
-  				   //candidateEmployers.setEndMonth(jsonObject.getString("endMonth").split("&")[1]);
         	}else{
        		 candidateEmployers.setEndYear("");
         	}
@@ -198,7 +204,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	candidateEmployers.setCreatedDate(commonUtil.currentDate());
         	candidateEmployers.setUpdatedBy(user.getUserCode());
         	candidateEmployers.setUpdatedDate(commonUtil.currentDate());
-		}
+		
 		
         candidateEmployers = candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
         candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
@@ -207,12 +213,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	candidateActivityCommonUtil.storeCandidateEmployersHistory(currentEmployer, user);
         }
         
+        if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateType()) && candidateEmployerDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+        	candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocationId, candidateGlobal, "", Constants.CANDIDATE_EMPLOYERS_UPDATED, activitySummary.toString(), "CANDIDATE");
+        }else {
         candidateActivityCommonUtil.storeCandidateActivity(user, orgLocationId, can, "", Constants.CANDIDATE_EMPLOYERS_UPDATED, activitySummary.toString(), "CANDIDATE");
-		
+        }
 		/*
 		 * updating Candidate Employer DB data in existing candidateindex
 		 */
-		saveOrUpdateCandidateElkDocumentWithEmployerDetails(candidateId,orgLocationId.getId());
+		//saveOrUpdateCandidateElkDocumentWithEmployerDetails(candidateId,orgLocationId.getId());
+        }
 		
 		return candidateEmployers;
 	}
@@ -440,6 +450,22 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	public List<CandidateEmployers> getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		return candidateEmployersDao.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
+
+	@Override
+	public CandidateEmployers removeCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,
+			Long candidateEmployerId) throws Exception {
+		
+		 CandidateEmployers can = candidateEmployersDao.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
+		 can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		 can = candidateEmployersDao.storeCandidateEmployers(can);
+	     return can;
+	}
+
+	@Override
+	public CandidateEmployers getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,
+			Long candidateEmployerId) throws Exception {
+		return candidateEmployersDao.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
 	}
 
 }

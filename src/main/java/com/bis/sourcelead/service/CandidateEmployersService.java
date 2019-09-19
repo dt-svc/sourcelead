@@ -83,4 +83,9 @@ public interface CandidateEmployersService {
 	
 	public List<CandidateEmployers>   getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	
+	public CandidateEmployers removeCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
+
+	public CandidateEmployers getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
+
+	
 }
