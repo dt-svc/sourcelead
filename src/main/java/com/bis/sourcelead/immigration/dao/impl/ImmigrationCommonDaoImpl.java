@@ -2204,7 +2204,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Lca> getAllLcaList(Date currentDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String listQuery = "from Lca lca where  lca.endDate<:currentDate order by lca.createdBy.id";
+		String listQuery = "from Lca lca where  lca.endDate=:currentDate order by lca.createdBy.id";
 		List<Lca> lcaList = session.createQuery(listQuery).setDate("currentDate",currentDate).list();
 		return lcaList;
 	}
