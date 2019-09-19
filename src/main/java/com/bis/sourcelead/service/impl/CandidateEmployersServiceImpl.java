@@ -94,7 +94,12 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         Candidate can = null;
         if(candidateId!=null){
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateEmployeeId())){
+	       		if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateType()) && candidateEmployerDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+	       			candidateEmployers = candidateEmployersDao.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId,Long.parseLong(candidateEmployerDTO.getCandidateEmployeeId()));
+	       		}else {
 	       			candidateEmployers = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(Long.parseLong(candidateEmployerDTO.getCandidateEmployeeId()), candidateId);
+	       		}
+        		
        	    }else{
     	    	candidateEmployers = new CandidateEmployers();
     	    }
