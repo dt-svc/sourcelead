@@ -40,8 +40,7 @@ public class MarketPlaceController {
 	@Autowired
 	private AddProductService addProductService;
 	
-	
-	@RequestMapping(value = "/productList")
+	@RequestMapping(value = "/productsList")
 	public ModelAndView productList() throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -58,6 +57,4 @@ public class MarketPlaceController {
 		model.setViewName("userMarketplace/addProduct");
 		return model;
 	}
-	
-	
 }
