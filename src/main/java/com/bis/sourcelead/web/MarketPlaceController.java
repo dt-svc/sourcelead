@@ -15,11 +15,11 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.marketPlaceService.AddProductService;
-import com.bis.sourcelead.marktePlace.MarketPlaceProducts;
-import com.bis.sourcelead.marktePlace.MarketPlaceProductsDTO;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.userMarketplace.dto.MarketPlaceProductsDTO;
+import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
+import com.bis.sourcelead.userMarketplace.service.AddProductService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 
@@ -41,16 +41,7 @@ public class MarketPlaceController {
 	private AddProductService addProductService;
 	
 	
-	@RequestMapping(value = "/associateMarketplaceList")
-	public ModelAndView associateMarket() throws Exception {
-		ModelAndView model = new ModelAndView();
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.addObject("atsUrl", atsUrl);
-		model.setViewName("userMarketplace/associateMarketPlaceList");
-		return model;
-		
-	}
-	@RequestMapping(value = "/productsList")
+	@RequestMapping(value = "/productList")
 	public ModelAndView productList() throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -68,14 +59,5 @@ public class MarketPlaceController {
 		return model;
 	}
 	
-	@RequestMapping(value = "/saveMarketPlaceDetails", method = RequestMethod.POST)
-	public @ResponseBody Response<String>saveMarketPlaceDetails(MarketPlaceProductsDTO marketPlaceProductsDTO, HttpServletRequest request)throws Exception {
-		Response<String> response = new Response<>();
-		Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-      
-		MarketPlaceProducts	marketPlaceProducts = addProductService.savemarketPlaceDetails(marketPlaceProductsDTO,orgLocations,userId);
-		return null;
-}
+	
 }

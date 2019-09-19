@@ -32,7 +32,7 @@
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToPurchaseOrderList();">Purchase Orderlist</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript: goToSalesOrderList();">Sales Orderlist</a></li>
             <li id=""><a href="javascript:void(0)" onclick="javascript:goToWalletList();">Wallet</a></li> 
-             <li id=""><a href="${SourceLeadWeb_atsUrl}/associateMarketplaceList" >Associate Marketplace</a></li> 
+             <li id=""><a href="${SourceLeadWeb_atsUrl}/productList" >Associate Marketplace</a></li> 
          <div class="clearfix"></div>
      </ul>
 </div>
