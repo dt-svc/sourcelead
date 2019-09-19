@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -101,5 +102,9 @@ public interface CandidateResumesService {
 	public CandidateResumesDTO  getCandidateGlobalLatesResumeDetails(Long candidateId) throws Exception;
 	
 	Integer getCandidateGlobalActiveResumeCountByCandidateId(Long candidateId) throws Exception;
+	
+	public List<CandidateResumes> getCandidateGlobalResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception;
+	
+	public CandidateResumes storeGlobalCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, CandidateGlobal candidate, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
 	
 }

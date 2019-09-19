@@ -171,7 +171,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = " from CandidateResumes candidateResumes   where candidateResumes.id = :resumeId" ;
+		String query = " from CandidateResumes candidateResumes left join fetch candidateResumes.candidateGlobalId  where candidateResumes.id = :resumeId" ;
 		List<CandidateResumes> candidateResumesList =session.createQuery(query).setLong("resumeId", resumeId).list(); 
 		CandidateResumes candidateResumes = null;
 		if(candidateResumesList != null && !candidateResumesList.isEmpty()){
@@ -407,6 +407,18 @@ public Integer getCandidateGlobalActiveResumeCountByCandidateId(Long candidateId
 	educationsCount = filterCount.intValue();
 	return educationsCount;
 
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public List<CandidateResumes> getCandidateGlobalResumesListByCandidateIdAndStatus(Long candidateId, Integer status)
+		throws Exception {
+	logger.debug("In get Resumes list by candidateid and status method");
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateGlobalId where candidateResumes.candidateGlobalId =:candidateId and candidateResumes.status = :status ORDER BY candidateResumes.id DESC";  
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).list();
+	return candidateResumesList;
 }
 
 

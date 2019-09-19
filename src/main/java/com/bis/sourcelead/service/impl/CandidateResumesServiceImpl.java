@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,11 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -61,6 +64,9 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	
 	/**
 	 * @author Venkat Kesav
@@ -405,5 +411,114 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	@Override
 	public Integer getCandidateGlobalActiveResumeCountByCandidateId(Long candidateId) throws Exception {
 		return candidateResumesDao.getCandidateGlobalActiveResumeCountByCandidateId(candidateId);
+	}
+
+
+	@Override
+	public List<CandidateResumes> getCandidateGlobalResumesListByCandidateIdAndStatus(Long candidateId, Integer status)
+			throws Exception {
+		CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateGlobal.getOrgLocationId().getId());
+		List<CandidateResumes> candidateResumesList = candidateResumesDao.getCandidateGlobalResumesListByCandidateIdAndStatus(candidateId, status);
+		for (CandidateResumes canResumes : candidateResumesList) {
+			if (canResumes.getUpdatedDate() != null) {
+				canResumes.setCandidateResumeUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), canResumes.getUpdatedDate()));
+			}
+		}
+		return candidateResumesList;
+	}
+
+
+	@Override
+	public CandidateResumes storeGlobalCandidateResume(CandidateResumeDTO candidateResumeDTO, User user,
+			CandidateGlobal candidate, String resumeId, OrgLocations orgLocations) throws JSONException, Exception {
+		
+
+		CandidateResumes candidateResume = null;
+		StringBuffer activitySummary = new StringBuffer();
+		if (resumeId != null && !resumeId.equalsIgnoreCase("null")) {
+			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
+				if (candidateResume.getTitle() != null) {
+					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
+				
+				if (candidateResume.getDescription() != null) {
+					activitySummary.append("Description").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getDescription()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getDescription()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
+				candidateResume.setDescription(candidateResumeDTO.getDescription());
+			candidateResume.setUpdatedBy(user.getUserCode());
+			candidateResume.setUpdatedDate(CommonUtil.currentDate());
+			if (candidateResumeDTO.getFileInfo() != null) {
+				FileInfo fileInfo = candidateResumeDTO.getFileInfo().get(0);
+				if (fileInfo.getFileName() != null ) {
+					activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
+				}
+				// candidateResume.setDocFile(multiFile.getBytes());
+				candidateResume.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
+				candidateResume.setFileName(fileInfo.getFileName());
+				candidateResume.setFileContentType(fileInfo.getContentType());
+				try {
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+				} catch (Exception e) {
+				}
+			}
+			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+				candidateResume.setTitle(candidateResumeDTO.getTitle());
+			}else {
+				candidateResume.setTitle(candidateResume.getFileName());
+			}
+		}
+		else {
+			candidateResume = new CandidateResumes();
+			if (StringUtils.isNotBlank(candidateResumeDTO.getTitle())) {
+				candidateResume.setTitle(candidateResumeDTO.getTitle());
+			}
+			if (StringUtils.isNotBlank(candidateResumeDTO.getDescription())) {
+				candidateResume.setDescription(candidateResumeDTO.getDescription());
+			}
+			if (candidate != null) {
+				candidateResume.setCandidateGlobalId(candidate);
+			}
+			if (orgLocations != null) {
+				candidateResume.setOrgLocationId(orgLocations);
+			}
+			candidateResume.setStatus(Constants.CANDIDATE_ACTIVE);
+			candidateResume.setResumeUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			candidateResume.setCreatedDate(commonUtil.currentDate());
+			candidateResume.setUpdatedBy(user.getUserCode());
+			candidateResume.setCreatedBy(user.getUserCode());
+			candidateResume.setUpdatedDate(commonUtil.currentDate());
+			if (candidateResumeDTO.getFileInfo() != null) {
+				FileInfo fileInfo = candidateResumeDTO.getFileInfo().get(0);
+				if (candidateResume.getTitle() != null ) {
+					activitySummary.append("Title").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.NEW_VALUE_TAG_END);
+				}
+				else {
+					activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(fileInfo.getFileName()).append(Constants.NEW_VALUE_TAG_END);
+				}
+				// candidateResume.setDocFile(multiFile.getBytes());
+				if(StringUtils.isNotBlank(fileInfo.getFileURL())) {
+					candidateResume.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
+				}
+				if(StringUtils.isNotBlank(fileInfo.getFileName())) {
+					candidateResume.setFileName(fileInfo.getFileName());
+				}
+				
+				if (StringUtils.isBlank(candidateResumeDTO.getTitle())) {
+					candidateResume.setTitle(fileInfo.getFileName());
+				}
+				candidateResume.setFileContentType(fileInfo.getContentType());
+					candidate.setFileName(fileInfo.getFileName());
+					FileUploadUtil.moveFile(candidateResumeDTO.getStaticPath(), fileInfo, "resumes");
+			}
+		}
+		candidateResumesDao.updateCandidateResume(candidateResume);
+		candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
+		candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_RESUME_UPDATED, activitySummary.toString(), "CANDIDATE");
+
+    	
+		//saveOrUpdateCandidateElkDocumentWithResumeDetails(candidate);
+		return candidateResume;
+	
 	}
 }

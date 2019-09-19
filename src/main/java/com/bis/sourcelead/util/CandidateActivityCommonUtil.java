@@ -1,7 +1,6 @@
 package com.bis.sourcelead.util;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -9,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateHistoryDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.entity.Candidate;
@@ -20,6 +20,7 @@ import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.CandidateReferencesHistory;
@@ -29,7 +30,6 @@ import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.constants.Constants;
 /**
  * This is the commonutil for saving candidate activities throughout the
  * application
@@ -118,9 +118,6 @@ public class CandidateActivityCommonUtil {
 		candidateHistory.setSkillsName(candidate.getSkillsName());
 		candidateHistory.setVisaType(candidate.getVisaType());
 		candidateHistory.setPrimarySkill(candidate.getPrimarySkill());
-		/*candidateHistory.setCandidateEducation
-		candidateHistory.setCandidateEmployers
-		candidateHistory.setCandidateResumes*/
 		candidateHistory.setIsAssociate(candidate.getIsAssociate());
 		candidateHistory.setStatus(candidate.getStatus());
 		candidateHistory.setCreatedUser(user);
@@ -196,7 +193,6 @@ public class CandidateActivityCommonUtil {
 			candidateResumesHistory.setCandidateResumes(candidateResumes);
 			candidateResumesHistory.setTitle(candidateResumes.getTitle());
 			candidateResumesHistory.setDescription(candidateResumes.getDescription());
-//			candidateResumesHistory.setDocFile(candidateResumes.getDocFile());
 			candidateResumesHistory.setFileURL(candidateResumes.getFileURL());
 			candidateResumesHistory.setFileContentType(candidateResumes.getFileContentType());
 			candidateResumesHistory.setFileName(candidateResumes.getFileName());
@@ -350,5 +346,88 @@ public class CandidateActivityCommonUtil {
 		candidateReferencesHistory.setCreatedBy(user.getUserCode());
 		candidateReferencesHistory.setCreatedDate(commonUtil.currentDate());
 		candidateHistoryDao.storeCandidateReferencesHistory(candidateReferencesHistory);
+	}
+	
+	
+	public void storeCandidateGlobalActivity(User user, OrgLocations orgLocations, CandidateGlobal candidate, String actionOn, String actionDesc, String actionSummary, String actionIcon) throws Exception
+	{
+		CandidateTimelineActivity candidateTimelineActivity = new CandidateTimelineActivity();
+		
+		candidateTimelineActivity.setCandidateGlobalId(candidate);
+		candidateTimelineActivity.setOrgLocationId(orgLocations);
+		if(user !=null){
+			candidateTimelineActivity.setActionBy(user.getFullName());
+			candidateTimelineActivity.setCreatedUser(user);
+			candidateTimelineActivity.setCreatedBy(user.getUserCode());
+			candidateTimelineActivity.setUpdatedBy(user.getUserCode());
+		}
+		else{
+			candidateTimelineActivity.setActionBy(null);
+			candidateTimelineActivity.setCreatedUser(null);
+			candidateTimelineActivity.setCreatedBy(null);
+			candidateTimelineActivity.setUpdatedBy(null);
+		}
+		candidateTimelineActivity.setActionOn(actionOn);
+		candidateTimelineActivity.setActionDesc(actionDesc);
+		candidateTimelineActivity.setActionSummary(actionSummary);
+		candidateTimelineActivity.setActionIcon(actionIcon);
+		candidateTimelineActivity.setStatus(Constants.RECORD_ACTIVE);
+		candidateTimelineActivity.setCreatedDate(commonUtil.currentDate());
+		candidateTimelineActivity.setUpdatedDate(commonUtil.currentDate());
+		
+		candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
+	}
+	
+	public void storeCandidateGlobalHistory(CandidateGlobal candidate, User user) throws Exception
+	{
+		CandidateHistory candidateHistory = new CandidateHistory();
+		candidateHistory.setCandidateGlobalId(candidate);
+		candidateHistory.setCandidateType(candidate.getCandidateType());
+		candidateHistory.setCandidateUUID(candidate.getCandidateUUID());
+		candidateHistory.setIsFavourite(candidate.getIsFavourite());
+		candidateHistory.setIsFavouriteAssociate(candidate.getIsFavouriteAssociate());
+		candidateHistory.setFirstName(candidate.getFirstName());
+		candidateHistory.setLastName(candidate.getLastName());
+		candidateHistory.setCountry(candidate.getCountry());
+		candidateHistory.setState(candidate.getState());
+		candidateHistory.setCity(candidate.getCity());
+		candidateHistory.setLocation(candidate.getLocation());
+		candidateHistory.setZipCode(candidate.getZipCode());
+		candidateHistory.setLatitude(candidate.getLatitude());
+		candidateHistory.setLongitude(candidate.getLongitude());
+		candidateHistory.setMobilePhone(candidate.getMobilePhone());
+		candidateHistory.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+		candidateHistory.setEmail(candidate.getEmail());
+		candidateHistory.setCurrentRate(candidate.getCurrentRate());
+		candidateHistory.setCurrentRateType(candidate.getCurrentRateType());
+		candidateHistory.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+		candidateHistory.setDesignation(candidate.getDesignation());
+		candidateHistory.setDesignationOtherType(candidate.getDesignationOtherType());
+		candidateHistory.setExpectedRate(candidate.getExpectedRate());
+		candidateHistory.setRateType(candidate.getRateType());
+		candidateHistory.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+		candidateHistory.setSummary(candidate.getSummary());
+		candidateHistory.setDesignationType(candidate.getDesignationType());
+		candidateHistory.setExperienceYears(candidate.getExperienceYears());
+		candidateHistory.setExperienceMonths(candidate.getExperienceMonths());
+		candidateHistory.setNoticePeriod(candidate.getNoticePeriod());
+		candidateHistory.setAddress(candidate.getAddress());
+		candidateHistory.setSkillsName(candidate.getSkillsName());
+		candidateHistory.setVisaType(candidate.getVisaType());
+		candidateHistory.setPrimarySkill(candidate.getPrimarySkill());
+		candidateHistory.setIsAssociate(candidate.getIsAssociate());
+		candidateHistory.setStatus(candidate.getStatus());
+		candidateHistory.setCreatedUser(user);
+		if(user != null){
+		candidateHistory.setCreatedBy(user.getUserCode());
+		}
+		else{
+			candidateHistory.setCreatedBy(null);	
+		}
+		candidateHistory.setCreatedDate(commonUtil.currentDate());
+		candidateHistoryDao.storeCandidateHistory(candidateHistory);
+		storeCandidateEducationListHistory(candidate.getCandidateEducation(), user);
+		storeCandidateEmployersListHistory(candidate.getCandidateEmployers(), user);
+		storeCandidateResumesListHistory(candidate.getCandidateResumes(), user);
 	}
 }
