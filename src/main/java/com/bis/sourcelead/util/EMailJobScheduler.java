@@ -555,16 +555,20 @@ public class EMailJobScheduler {
 			String fromUser = "";
 			User configUser=null;
 			Date currentDate = new Date();
-			Date daysFilter = null;
-			Calendar cal = Calendar.getInstance();
-			
+			Date expectedExpiryDate = null;
+			Calendar cal = null;
+		   // Below code used to send calculate expected expire days and sends the remainder email to LCA managers.
 			int expiring_days_arr [] = {180, 90, 60, 30, 15, 7};
 			for(int i=0; i<expiring_days_arr.length; i++) {
+				cal= Calendar.getInstance();
 				cal.add(Calendar.DATE, expiring_days_arr[i]);
-				daysFilter = cal.getTime();
-			// lca expired in 180 days it will send email to lca manager
-			List<Lca> lcaListExpiring = immigrationCommonService.getAllLcaList(daysFilter);
+				expectedExpiryDate = cal.getTime();
 			
+			List<Lca> lcaListExpiring = immigrationCommonService.getAllLcaList(expectedExpiryDate);
+			//System.out.println("passportListExpiring list size: "+lcaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+			//		" expiry date :" +expectedExpiryDate);
+			logger.info("passportListExpiring list size: "+lcaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+					" expiry date :" +expectedExpiryDate);
 			if(lcaListExpiring != null && lcaListExpiring.size()>0) {
 				List<Lca> lcaListByManager = new ArrayList<Lca>();
 
@@ -588,8 +592,9 @@ public class EMailJobScheduler {
 				    sendEmailReminderToLcaManagerExpiredInDays(toUser, fromUser, lcaListExpiring, ol, String.valueOf(expiring_days_arr[i]));
 				}
 			  }
-			}	
-			
+			}	// End code of send calculate expected expire days and sends the remainder email to LCA managers.
+		
+			// below the code to send expired LCA's email for the LCA manager.
 			List<Lca> lcaList = immigrationCommonService.getAllLcaList(currentDate);
 			if (lcaList != null && lcaList.size() > 0) {
 				List<Lca> lcaListByManager = new ArrayList<Lca>();
@@ -616,7 +621,7 @@ public class EMailJobScheduler {
 					User fromNotificationUser =userService.getUserByEmail(fromUser);														// object.
 					sendEmailReminderToLcaManagerExpired(toUser, fromNotificationUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
 				}
-			}
+			}// End code of  to send expired LCA's remainder email for the LCA manager.
 			
 			
 		} catch (Exception e) {
