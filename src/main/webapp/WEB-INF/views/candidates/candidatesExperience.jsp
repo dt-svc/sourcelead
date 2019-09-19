@@ -12,7 +12,7 @@
      2.parameter : candidateId .
 --%>
 <script>
-	function candidateExperience(candidateId) {
+	function candidateExperience(candidateId,candType) {
 		 var candidateType = '${candidateType}';
 		var result = "";
 		if(window.candidateStatusGlobal == '0'){
@@ -31,11 +31,11 @@
 		}else{
 			if(candidateType == "Candidates"){
 				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
 				'</sec:authorize>';
 			}else{
 				'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EMPLOYER\')">';
-				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
+				result = result	+ '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addExperience('+ candidateId+ ',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Employer</a> </span> ';
 				'</sec:authorize>';
 			}
 			
@@ -57,7 +57,7 @@
 		$("#tab-9").empty();
 		$("#tab-3").append(result);
 
-		candidateEmployersList(candidateId);
+		candidateEmployersList(candidateId,candType);
 
 	}
 </script>
@@ -86,7 +86,7 @@ function closeCertificatePopup(){
      3.ajax url implementation in CandidateEmployersRestController.
 --%>
 <script type="text/javascript">	
-	function candidateEmployersStore(candidateId) {
+	function candidateEmployersStore(candidateId,candType) {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -118,7 +118,7 @@ function closeCertificatePopup(){
 				document.getElementById("endYearValidation").style.display="none";
 				$("#candidateEmployersAdd").attr("disabled", "disabled");
 				$("#candidateEmployersAdd").addClass('button').val('Processing..'); 
-	        	$.post(atsUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
+	        	$.post(atsUrl+"/storeCandidateEmployers?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType, formData, function(result) {
 		        	if (result && result.response === "INVALID_DATA") {
 					    $("#update_candidate").removeAttr("disabled");
 					    $("#update_candidate").removeAttr('button').val('Save');
@@ -156,8 +156,8 @@ function closeCertificatePopup(){
 	       				$("#selector3").removeAttr("style");
 	       				$("#selector3").css({ display: "block" });
 	       				$("#empMsgDiv").html("Success!! New Employer added");
-						candidateEmployersList(candidateId);
-						qvemployeeSubmission(candidateId);
+						candidateEmployersList(candidateId,candType);
+						qvemployeeSubmission(candidateId,candType);
 						empMsgFadein();
 						setTimeout(function(){
 				 			candidateList();					 			
@@ -191,7 +191,7 @@ function closeCertificatePopup(){
 
 <script>
 	var startYearFlag = true ,endYearFlag = true;
-	function addExperience(candidateId) {
+	function addExperience(candidateId,candType) {
 
 		var result = "";
 		result = result + '   <!-- Popup Div --> ';
@@ -280,7 +280,7 @@ function closeCertificatePopup(){
 		
 		
 		result = result + '	               <div class="clearfix mr">';
-		result = result	+ '	                 <button type="button" id ="candidateEmployersAdd" onClick ="candidateEmployersStore('+ candidateId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
+		result = result	+ '	                 <button type="button" id ="candidateEmployersAdd" onClick ="candidateEmployersStore('+ candidateId+ ',\''+candType+'\');"class="btn btn-sm btn-primary pull-right">Add</button>';
 		result = result + '	               </div>';
 		result = result + '	             </div>';
 		result = result + '	        </form> ';
@@ -304,12 +304,12 @@ function closeCertificatePopup(){
 
 <script>
 
-	function editEmployer(candidateEmpId, candidateId) {
+	function editEmployer(candidateEmpId, candidateId, candType) {
 		$.ajax({
 			type : "POST",
 			url : atsUrl
 					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
-					+ candidateId + "&candidateEmpId=" + candidateEmpId,
+					+ candidateId + "&candidateEmpId=" + candidateEmpId+"&candidateType"+candType,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
@@ -523,6 +523,8 @@ function closeCertificatePopup(){
 					}else{
 						result = result	+ '<input type="text" max class="form-control input-sm" value="" id="endYear" name="endYear"   placeholder="Enter Year"  field-name="end Year" data-validation="required" data-validation-optional="true" >';
 					}
+					
+					
 					result = result + '	                <div><p id="endYearValidation" class="small text-danger" style="display: none"></p>';
 					result = result + '</div>';
 					result = result + '</div>';
@@ -531,7 +533,7 @@ function closeCertificatePopup(){
 					result = result	+ '	               <div class="clearfix mr">';
 					result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
 					result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-					result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Update</button>';
+					result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+candidateId+','+candidateEmpId+',\''+candType+'\')"; class="btn btn-sm btn-primary pull-right">Update</button>';
 					result = result + '	               </div>';
 					result = result + '	             </div>';
 					result = result + '	        </form> ';
@@ -617,7 +619,7 @@ function applyKeyEventsToYears() {
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-	function candidateEmployersList(candidateId) {
+	function candidateEmployersList(candidateId,candType) {
 		 var candidateType = '${candidateType}';
 		 var locationList ='${SourceLeadWeb_dateFormat}';	
 		  if(locationList.match("yyyy-MM-dd")){
@@ -631,8 +633,7 @@ function applyKeyEventsToYears() {
 		  }
 				$.ajax({
 					type : "POST",
-					url : atsUrl+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="
-							+ candidateId,
+					url : atsUrl+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,
 					success : function(json) {
 						if (json && json.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
@@ -690,18 +691,18 @@ function applyKeyEventsToYears() {
 			                   result = result+'<td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
 								}else{
 									if(candidateType == "Candidates"){
-										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a></sec:authorize>';	
+										result = result+'<td><div class="tblicons"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ',\''+candType+'\');" title="Edit"></a></sec:authorize>';	
 									}else{
-										result = result+'<td><div class="tblicons"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a></sec:authorize>';
+										result = result+'<td><div class="tblicons"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editEmployer('+ opt.id+ ','+ candidateId+ ',\''+candType+'\');" title="Edit"></a></sec:authorize>';
 									}
 										
 								}if(window.candidateStatusGlobal == '0'){
 									result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
 								}else{
 									if(candidateType == "Candidates"){
-										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></sec:authorize></div></td>';	
+										result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ',\''+candType+'\');" title="Remove"></i></sec:authorize></div></td>';	
 									}else{
-										result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ');" title="Remove"></i></sec:authorize></div></td>';
+										result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\')"><i class="glyphicon glyphicon-trash" onclick="removeEmployer('+ opt.id + ',' + candidateId+ ',\''+candType+'\');" title="Remove"></i></sec:authorize></div></td>';
 									}
 									
 								}
@@ -748,13 +749,13 @@ function deletePopup(){
 <div id="deleteExcepPopUp"></div> 
 
 <script type="text/javascript">
-function removeEmployer(candidateemployerId, candidateId){
+function removeEmployer(candidateemployerId, candidateId, candType){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop_emp' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Employer</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmployer("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deletePopup();'></b>";
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteSelectedEmployer('+candidateemployerId+','+candidateId+',\''+candType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="deletePopup();"></b>';
 	result = result +"	</div>";
 	$("#deleteExcepPopUp").empty();
 	$("#deleteExcepPopUp").append(result);
@@ -772,12 +773,12 @@ function removeEmployer(candidateemployerId, candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-	function deleteSelectedEmployer(candidateemployerId, candidateId) {
+	function deleteSelectedEmployer(candidateemployerId, candidateId, candType) {
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		$.ajax({
 			type : "POST",
-			url : atsUrl+"/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId,
+			url : atsUrl+"/removeCandidateEmployerBycandidateIdandCandidateEmployerID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+ candidateId + "&candidateemployerId="+candidateemployerId+"&candidateType="+candType,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
@@ -840,7 +841,7 @@ function removeEmployer(candidateemployerId, candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script type="text/javascript">
-	function updateCandidateEmployers(candidateId, candidateExperianceId) {
+	function updateCandidateEmployers(candidateId, candidateExperianceId, candType) {
 
 		var validationSettings = {
 			errorMessagePosition : 'element',
@@ -871,7 +872,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			} else if(startYearFlag && endYearFlag) {
 				
 				document.getElementById("endYearValidation").style.display="none";
-				$.post(atsUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId, formData, function(result) {
+				$.post(atsUrl+"/upDateCandidateEmployerByCandidateIdAndCandidateExperianceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateExperianceId="+candidateExperianceId+"&candidateType="+candType, formData, function(result) {
 					if (result && result.response === "INVALID_DATA") {
 					    $("#update_candidate").removeAttr("disabled");
 					    $("#update_candidate").removeAttr('button').val('Save');
@@ -889,9 +890,9 @@ function removeEmployer(candidateemployerId, candidateId){
 						$("#selector3").removeAttr("style");
 		    			$("#selector3").css({ display: "block" });
 		    			$("#empMsgDiv").html("Employer details updated");
-						candidateEmployersList(candidateId);
+						candidateEmployersList(candidateId,candType);
 						empMsgFadein();
-						qvemployeeSubmission(candidateId);
+						qvemployeeSubmission(candidateId,candType);
 						setTimeout(function(){
 				 			candidateList();					 			
 				 		},100);

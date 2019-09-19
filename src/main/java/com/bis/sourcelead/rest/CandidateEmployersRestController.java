@@ -32,15 +32,17 @@ import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
-import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 /**
@@ -77,6 +79,12 @@ public class CandidateEmployersRestController {
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEmployersRestController.class);
 
@@ -113,9 +121,16 @@ public class CandidateEmployersRestController {
 			if (user != null && Validator.validate(candidateEmployerDTO)) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				candidateEmployersService.storeCandidateEmployers(candidateEmployerDTO, user, loginOrgLocation, candidateId);
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
-				response.setObject(percentage);
+				if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateType()) && candidateEmployerDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidate, loginOrgLocation);
+					response.setObject(percentage);
+				}else {
+					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+					Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
+					response.setObject(percentage);
+				}
+			
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if (user == null) {
@@ -258,28 +273,41 @@ public class CandidateEmployersRestController {
 			if (user != null) {
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(Long.parseLong(candidateEmployerDTO.getOrgLocationId()));
 				StringBuffer activitySummary = new StringBuffer();
-				CandidateEmployers candidatesEmployersList = candidateEmployersService
-						.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerDTO.getCandidateId(),
-								Long.parseLong(candidateEmployerDTO.getCandidateemployerId()));
-				Candidate candidate = candidateService.getCandidateById(candidateEmployerDTO.getCandidateId());
-
+				CandidateEmployers candidatesEmployersList = null;
+				
+				if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateType()) && candidateEmployerDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					 candidatesEmployersList = candidateEmployersService
+							.removeCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateEmployerDTO.getCandidateId(),
+									Long.parseLong(candidateEmployerDTO.getCandidateemployerId()));
+					CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateEmployerDTO.getCandidateId());
+					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+					response.setObject(percentage.toString());
+				}else {
+					 candidatesEmployersList = candidateEmployersService
+								.removeCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerDTO.getCandidateId(),
+										Long.parseLong(candidateEmployerDTO.getCandidateemployerId()));
+					Candidate candidate = candidateService.getCandidateById(candidateEmployerDTO.getCandidateId());
+					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+					response.setObject(percentage.toString());
+				}
+				
 				activitySummary.append("Employer").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
-						.append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
+				.append(candidatesEmployersList.getName()).append(Constants.NEW_VALUE_TAG_END);
 				candidateActivityCommonUtil.storeCandidateEmployersHistory(candidatesEmployersList, user);
 				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidatesEmployersList.getCandidateId(), "",
 						Constants.CANDIDATE_DELETED_EMPLOYER, activitySummary.toString(), "CANDIDATE");
 
-				if (null != candidate && null != candidate.getId()) {
+				/*if (null != candidate && null != candidate.getId()) {
 					CandidateIndex candidateIndex =  candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
 					candidateIndex.setCandidateId(candidate.getId());
 					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
 					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
 							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-				}
+				}*/
 
-				Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
-				response.setObject(percentage.toString());
+			
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -311,18 +339,25 @@ public class CandidateEmployersRestController {
 	 * 
 	 * @throws Exception
 	 */
-	// @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_EMPLOYEER','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER')")
 	@RequestMapping(value = "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId")
 	public Response<CandidateEmployers> getCandidateEmployerByCandidateIdAndCandidateEmpoyerId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateEmpId", required = false) Long candidateEmpId, 
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		Response<CandidateEmployers> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				CandidateEmployers candidatesEmployersList = candidateEmployersService
-						.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
-				response.setObject(candidatesEmployersList);
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateEmployers candidatesEmployersList = candidateEmployersService
+							.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
+					response.setObject(candidatesEmployersList);
+				}else {
+					CandidateEmployers candidatesEmployersList = candidateEmployersService
+							.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmpId);
+					response.setObject(candidatesEmployersList);
+				}
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
