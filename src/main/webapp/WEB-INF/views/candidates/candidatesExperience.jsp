@@ -308,8 +308,7 @@ function closeCertificatePopup(){
 		$.ajax({
 			type : "POST",
 			url : atsUrl
-					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="
-					+ candidateId + "&candidateEmpId=" + candidateEmpId+"&candidateType"+candType,
+					+ "/getCandidateEmployerByCandidateIdAndCandidateEmpoyerId?"+tokenParamName+"="+tokenValue+"&candidateId="+ candidateId + "&candidateEmpId=" + candidateEmpId+ "&candidateType=" + candType,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";
