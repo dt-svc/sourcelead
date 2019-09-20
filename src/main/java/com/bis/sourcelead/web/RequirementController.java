@@ -1279,9 +1279,9 @@ public class RequirementController {
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
 		String permission = "NO";
-		if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE.toString()){
+		if(requirementOffers.getSubmissionId().getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.OFFERMADE.toString())){
 			permission = "YES";
-		}else if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString()){
+		}else if(requirementOffers.getSubmissionId().getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString())){
 			permission = "YES";
 		}
 		
@@ -1293,10 +1293,7 @@ public class RequirementController {
 		model.addObject("SourceLeadWeb_atsUrl", atsUrl);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("permission",permission);
-		
-		System.out.println("submission status "+requirementOffers.getSubmissionId().getSubmissionStatus());
-		System.out.println("permission "+permission);
-		System.out.println("offerStatus "+offerStatus);
+	
 		
 		if(offerStatus.equalsIgnoreCase("Accepted") && permission.equalsIgnoreCase("YES")){
 			
