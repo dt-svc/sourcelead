@@ -2,6 +2,7 @@ package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -92,9 +93,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_TEMPLATE_JSON_STRING_VALUES", columnDefinition = "TEXT default NULL")
     private String submissionTemplateJsonStringValue;
 	
-	@Column(name = "SUBMISSION_STATUS")
+/*	@Column(name = "SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
-	private ApplicantSubmissionStatus submissionStatus;
+	private ApplicantSubmissionStatus submissionStatus;*/
+	
+	@Column(name = "SUBMISSION_STATUS")
+	private String submissionStatus;
 	
 	@Column(name = "NEED_APPLICANT_PERMIT")
     private String needApplicantPermit;
@@ -132,9 +136,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "SUBMISSION_REQUEST_FILE_NAME", columnDefinition = "TEXT default NULL")
 	private String submissionRequestFileName;
 	
-	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
+	/*@Column(name = "PREVIOUS_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
     private ApplicantSubmissionStatus previousSubmissionStatus;
+	*/
+	@Column(name = "PREVIOUS_SUBMISSION_STATUS")
+    private String previousSubmissionStatus;
 	
 	@Column(name = "REJECTED_REASON", columnDefinition = "TEXT default NULL")
     private String rejectedReason;
@@ -215,7 +222,42 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+    private String currentCtc;
+    
+    @Transient
+    @JsonProperty
 	private String expectedCTC;
+    
+    // start  WORKFLOW related columns added by SRINIVAS 
+    @Transient
+    @JsonProperty
+    private String alternateNumber;
+    
+    @Transient
+    @JsonProperty
+   	private String location;
+    
+    @Transient
+    @JsonProperty
+   	private String dateOfBirthStr;
+    
+    @Transient
+    @JsonProperty
+    private String education;
+    
+    @Transient
+    @JsonProperty
+	private String noticePeriod;
+	
+    @Transient
+    @JsonProperty
+	private HashMap<String, String> workflowStagesMap;
+	
+    @Transient
+    @JsonProperty
+	private String submittedQuestionrUuid;
+    
+    // END  WORKFLOW related columns added by SRINIVAS 
     
     @Transient
     @JsonProperty
@@ -278,7 +320,7 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
-   	private ApplicantSubmissionStatus requirementStage;
+   	private String requirementStage;
     
 	@Transient
 	@JsonProperty
@@ -597,6 +639,7 @@ public class RequirementSubmission implements Serializable{
 	private String invoiceGenerateDate;
 
     
+    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -677,6 +720,14 @@ public class RequirementSubmission implements Serializable{
 		return expectedCTC;
 	}
 
+	public String getCurrentCtc() {
+		return currentCtc;
+	}
+
+	public void setCurrentCtc(String currentCtc) {
+		this.currentCtc = currentCtc;
+	}
+
 	public void setExpectedCTC(String expectedCTC) {
 		this.expectedCTC = expectedCTC;
 	}
@@ -754,11 +805,11 @@ public class RequirementSubmission implements Serializable{
 		this.submissionTemplateJsonStringValue = submissionTemplateJsonStringValue;
 	}
 
-	public ApplicantSubmissionStatus getSubmissionStatus() {
+	public String getSubmissionStatus() {
 		return submissionStatus;
 	}
 
-	public void setSubmissionStatus(ApplicantSubmissionStatus submissionStatus) {
+	public void setSubmissionStatus(String submissionStatus) {
 		this.submissionStatus = submissionStatus;
 	}
 
@@ -939,11 +990,11 @@ public class RequirementSubmission implements Serializable{
 		this.requirementName = requirementName;
 	}
 
-	public ApplicantSubmissionStatus getRequirementStage() {
+	public String getRequirementStage() {
 		return requirementStage;
 	}
 
-	public void setRequirementStage(ApplicantSubmissionStatus requirementStage) {
+	public void setRequirementStage(String requirementStage) {
 		this.requirementStage = requirementStage;
 	}
 
@@ -1155,11 +1206,11 @@ public class RequirementSubmission implements Serializable{
 		this.rejectedReason = rejectedReason;
 	}
 
-	public ApplicantSubmissionStatus getPreviousSubmissionStatus() {
+	public String getPreviousSubmissionStatus() {
 		return previousSubmissionStatus;
 	}
 
-	public void setPreviousSubmissionStatus(ApplicantSubmissionStatus previousSubmissionStatus) {
+	public void setPreviousSubmissionStatus(String previousSubmissionStatus) {
 		this.previousSubmissionStatus = previousSubmissionStatus;
 	}
 
@@ -1755,6 +1806,62 @@ public class RequirementSubmission implements Serializable{
 	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
 		this.invoiceGenerateDate = invoiceGenerateDate;
 	}
-	
-	
+
+	public String getAlternateNumber() {
+		return alternateNumber;
+	}
+
+	public void setAlternateNumber(String alternateNumber) {
+		this.alternateNumber = alternateNumber;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+
+	public String getDateOfBirthStr() {
+		return dateOfBirthStr;
+	}
+
+	public void setDateOfBirthStr(String dateOfBirthStr) {
+		this.dateOfBirthStr = dateOfBirthStr;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getNoticePeriod() {
+		return noticePeriod;
+	}
+
+	public void setNoticePeriod(String noticePeriod) {
+		this.noticePeriod = noticePeriod;
+	}
+
+	public HashMap<String, String> getWorkflowStagesMap() {
+		return workflowStagesMap;
+	}
+
+	public void setWorkflowStagesMap(HashMap<String, String> workflowStagesMap) {
+		this.workflowStagesMap = workflowStagesMap;
+	}
+
+	public String getSubmittedQuestionrUuid() {
+		return submittedQuestionrUuid;
+	}
+
+	public void setSubmittedQuestionrUuid(String submittedQuestionrUuid) {
+		this.submittedQuestionrUuid = submittedQuestionrUuid;
+	}
+
 }
