@@ -553,7 +553,6 @@ public class EMailJobScheduler {
 		//System.out.println("******************  updating All LCA  Deatails Started..! **********");
 		try {
 			String fromUser = "";
-			User configUser=null;
 			Date currentDate = new Date();
 			Date expectedExpiryDate = null;
 			Calendar cal = null;
@@ -565,64 +564,66 @@ public class EMailJobScheduler {
 				expectedExpiryDate = cal.getTime();
 			
 			List<Lca> lcaListExpiring = immigrationCommonService.getAllLcaList(expectedExpiryDate);
-			//System.out.println("passportListExpiring list size: "+lcaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
-			//		" expiry date :" +expectedExpiryDate);
-			logger.info("passportListExpiring list size: "+lcaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+			System.out.println("lca list size: "+lcaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+				" expiry date :" +expectedExpiryDate);
+			logger.info("lca list size: "+lcaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
 					" expiry date :" +expectedExpiryDate);
 			if(lcaListExpiring != null && lcaListExpiring.size()>0) {
-				List<Lca> lcaListByManager = new ArrayList<Lca>();
 
-				Map<User, List<Lca>> managerLcaMap = new HashMap<User, List<Lca>>();
+				Map<Long, List<Lca>> managerLcaMap = new HashMap<Long, List<Lca>>();
 				
 				for (Lca  lcaObj : lcaListExpiring) { // here for loop preparing lca list by user base.
+					
+					Long  managerId = lcaObj.getCreatedBy().getId();
 
-					if (managerLcaMap.get(lcaObj.getCreatedBy()) == null) {
-						lcaListByManager = new ArrayList<Lca>();
+					if (managerLcaMap.get(managerId) == null) {
+						List<Lca> lcaListByManager = new ArrayList<Lca>();
 						lcaListByManager.add(lcaObj);
-						managerLcaMap.put(lcaObj.getCreatedBy(), lcaListByManager);
+						managerLcaMap.put(managerId, lcaListByManager);
 					} else {
-						managerLcaMap.get(lcaObj.getCreatedBy()).add(lcaObj);
+						managerLcaMap.get(managerId).add(lcaObj);
 					}
 				}
-				for (Map.Entry<User, List<Lca>> entry : managerLcaMap.entrySet()) {
+				for (Map.Entry<Long, List<Lca>> entry : managerLcaMap.entrySet()) {
 				//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-					User toUser = (User)entry.getKey();
+					User toUser =userService.getUserById(entry.getKey());
 					List<Lca> mapLcaList = entry.getValue();
 					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // ge
-				    sendEmailReminderToLcaManagerExpiredInDays(toUser, fromUser, lcaListExpiring, ol, String.valueOf(expiring_days_arr[i]));
+				    sendEmailReminderToLcaManagerExpiredInDays(toUser, fromUser, mapLcaList, ol, String.valueOf(expiring_days_arr[i]));
 				}
 			  }
 			}	// End code of send calculate expected expire days and sends the remainder email to LCA managers.
 		
+			// BELOW CODE IS COMMENTED FOR TEMPORARILY FOR NOT SEND REMAINDERS FOR EXPIRED LCAS. commented on 20 sep 2019 Srinivas Sabbu.
 			// below the code to send expired LCA's email for the LCA manager.
-			List<Lca> lcaList = immigrationCommonService.getAllLcaList(currentDate);
+			/*List<Lca> lcaList = immigrationCommonService.getAllLcaList(currentDate);
 			if (lcaList != null && lcaList.size() > 0) {
 				List<Lca> lcaListByManager = new ArrayList<Lca>();
-
-				Map<User, List<Lca>> managerLcaMap = new HashMap<User, List<Lca>>();
+				
+				Map<Long, List<Lca>> managerLcaMap = new HashMap<Long, List<Lca>>();
 
 				for (Lca lcaObj : lcaList) { // here for loop preparing lca list by user base.
-
-					if (managerLcaMap.get(lcaObj.getCreatedBy()) == null) {
+					Long  managerId = lcaObj.getCreatedBy().getId();
+					if (managerLcaMap.get(managerId) == null) {
 						lcaListByManager = new ArrayList<Lca>();
 						lcaListByManager.add(lcaObj);
-						managerLcaMap.put(lcaObj.getCreatedBy(), lcaListByManager);
+						managerLcaMap.put(managerId, lcaListByManager);
 					} else {
-						managerLcaMap.get(lcaObj.getCreatedBy()).add(lcaObj);
+						managerLcaMap.get(managerId).add(lcaObj);
 					}
 				}
 				// below code is used for sending email to each user in map. Map contains user
 				// as key and value as list of lca objects.
-				for (Map.Entry<User, List<Lca>> entry : managerLcaMap.entrySet()) {
+				for (Map.Entry<Long, List<Lca>> entry : managerLcaMap.entrySet()) {
 				//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-					User toUser = (User) entry.getKey();
+					User toUser =userService.getUserById(entry.getKey());
 					List<Lca> mapLcaList = entry.getValue();
 					OrgLocations ol = mapLcaList.get(0).getOrgLocationId(); // getting org loaction id from the first
 					User fromNotificationUser =userService.getUserByEmail(fromUser);														// object.
 					sendEmailReminderToLcaManagerExpired(toUser, fromNotificationUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
 				}
 			}// End code of  to send expired LCA's remainder email for the LCA manager.
-			
+			*/
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
@@ -829,7 +830,7 @@ public class EMailJobScheduler {
 			 
 		//	 System.out.println("expiredInDays>>>>>>>>>>>>>>>>>>>>>"+expiredInDays);
 			 globalVarsMap.put("Lca_Table", sb.toString());
-			 globalVarsMap.put("Expiring_Days",String.valueOf(expiredInDays));
+			 globalVarsMap.put("Expiring_Days",String.valueOf(expiredInDays+1));// date difference returning 1 less value, then added manually added 1 day.
 			 
 			StringBuilder loginBuilder = new StringBuilder();
 			globalVarsMap.put("URL_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
