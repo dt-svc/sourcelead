@@ -305,8 +305,8 @@ function savePaymentAccount() {
         $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
             showError(data.responseMessage);
              if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
-                closePaymentAccountPopup(val);
-                $("#savePaymentButton").removeAttr("disabled", "disabled");
+            	$("#savePaymentButton").prop("disabled", true);
+            	 closePaymentAccountPopup(val);
                 location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
             }
             getPaymentAccounts(true);
