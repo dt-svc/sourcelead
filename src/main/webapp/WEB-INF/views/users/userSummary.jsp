@@ -4233,7 +4233,7 @@ function profileDetails(candidateId){
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			                result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
@@ -4255,6 +4255,9 @@ function profileDetails(candidateId){
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
+			              '</sec:authorize>';
+			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
+			              result = result+'<li id="candidateImmigrationTab"><a href="#tab-12" onclick="candidatePassport('+candidateId+');">Immigration</a></li>';
 			              '</sec:authorize>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -4286,6 +4289,18 @@ function profileDetails(candidateId){
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 result = result + '<div id="tab-12" class="project_tabs_inn">';
+							result  = result + '<div class="clearfix" style="height:35px;">';
+							
+							result  = result + '<div class="clearfix project-tabs-menu project-tabs-menu-custom">';
+							result  = result + '<ul class="list-unstyled list-inline col-md-12 mb0 mt2">';
+							result  = result + '<li class="cursorPointer current" onClick="candidatePassport('+candidateId+');" value="passport"><a>Passport</a></li><li value="visa" onClick="candidateVisa('+candidateId+');" class="cursorPointer"><a>Visa</a></li><li onClick="candidateLca('+candidateId+');" class="cursorPointer" value="lca"><a>LCA</a></li>';
+							result  = result + '</ul>';
+							result  = result + '</div>';
+							result = result + '</div>';
+							result  = result + '<div class="clearfix"></div>';
+						 result = result + '<div id="immigrationCandidate"></div>';
 						 result = result + '</div>';
 			             result = result+'     </div>';
 			             result = result+'   </div>';
@@ -4937,6 +4952,9 @@ function cancelRejectPopup() {
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
+<jsp:include page="candidatePassport.jsp"></jsp:include>
+<jsp:include page="candidateVisa.jsp"></jsp:include>
+<jsp:include page="candidateLca.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>

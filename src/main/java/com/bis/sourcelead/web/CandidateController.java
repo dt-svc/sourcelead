@@ -2,6 +2,8 @@ package com.bis.sourcelead.web;
 
 import java.io.FileNotFoundException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +31,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
+import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 
@@ -41,6 +46,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
+import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -51,6 +57,8 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -125,6 +133,9 @@ public class CandidateController {
 	
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
+	
+	@Autowired
+	private ImmigrationCommonService immigrationCommonService;
 	
 	/**
 	 * Handles to display candidate jsp
@@ -826,5 +837,85 @@ public class CandidateController {
 			
 			return model;
 		}
-	
+	/* Below method is used to get the passport details for the Associate.
+	 *  Table Name: CANDIDATE_PASSPORT
+	 */
+	@RequestMapping(value = { "/getAssociatePassportDetails" })
+		public  @ResponseBody ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(HttpServletRequest request,
+				@RequestParam(value = "candidateId", required = true) Long candidateId) throws Exception {
+	    	ResponseList<ImmigrationPassportDTO> reponseList = new ResponseList<>();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+		try {
+			if (orgLocations != null) {
+				if (candidateId != null) {
+					reponseList = immigrationCommonService.getAssociatePassportDetails(candidateId, orgLocations);
+					reponseList.setResponse(Result.SUCCESS.name());
+					reponseList.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					reponseList.setResponse(Result.INVALID_USER.name());
+					reponseList.setResponseMessage(Result.INVALID_USER.getValue());
+				}
+			} else {
+				reponseList.setResponse(Result.SESSION_TIMEDOUT.name());
+				reponseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+		} catch (Exception e) {
+			reponseList.setResponse(Result.AWKWARD.name());
+			reponseList.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return reponseList;
+	}
+	/* Below method is used to get the passport details for the Associate.
+	 *  Table Names: CANDIDATE_VISA, CANDIDATE_VISA_HISTORY
+	 */
+	@RequestMapping(value = { "/getAssociateVisaDetails" })
+	public  @ResponseBody ResponseList<ImmigrationVisaDTO> getAssociateVisaDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId) throws Exception {
+    	ResponseList<ImmigrationVisaDTO> reponseList = new ResponseList<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+	try {
+		Date toDayDate = new Date();
+		List<Long> expiredVisaIdList= new ArrayList<Long>();
+		if (orgLocations != null) {
+			if (candidateId != null) {
+				List<ImmigrationVisaDTO> visaList = new ArrayList<ImmigrationVisaDTO>();
+				visaList = immigrationCommonService.getCandidateVisaDetails(candidateId,"");
+				for (ImmigrationVisaDTO canVisa : visaList) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String currentDateStr = dateFormat.format(toDayDate);
+					Date newDate = dateFormat.parse(currentDateStr);
+					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				
+
+					if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
+						canVisa.setCurrentStatus("Active");
+					} else {
+						canVisa.setCurrentStatus("Expired");
+						if(canVisa.getStatus() == 1)
+						expiredVisaIdList.add(canVisa.getCandidateVisaId());
+					}
+					canVisa.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(canVisa.getValidFrom())));
+					canVisa.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(canVisa.getValidTo())));
+				}
+				reponseList.setData(visaList);
+				reponseList.setResponse(Result.SUCCESS.name());
+				reponseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				reponseList.setResponse(Result.INVALID_USER.name());
+				reponseList.setResponseMessage(Result.INVALID_USER.getValue());
+			}
+		} else {
+			reponseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			reponseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+	} catch (Exception e) {
+		reponseList.setResponse(Result.AWKWARD.name());
+		reponseList.setResponseMessage(Result.AWKWARD.getValue());
+		logger.error(ExceptionUtils.getFullStackTrace(e));
+	}
+	return reponseList;
+}
 }
