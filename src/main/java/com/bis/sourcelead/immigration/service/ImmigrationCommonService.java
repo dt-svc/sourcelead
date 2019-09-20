@@ -77,6 +77,8 @@ public interface ImmigrationCommonService {
 	
 	List<CandidatePassport> getCandidatePassportDetails(Long candidateId,String searchValue);
 	
+	ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(Long candidateId,OrgLocations orgLocations) throws Exception;
+	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
 	//passport delete

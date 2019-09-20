@@ -1404,7 +1404,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		// TODO Auto-generated method stub
 		return immigrationCommonDao.getCandidatePassportDetails(candidateId,searchValue);
 	}
-
+	@Override
+		public ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(Long candidateId, OrgLocations orgLocations)throws Exception {
+			return immigrationCommonDao.getAssociatePassportDetails(candidateId, orgLocations);
+	}
 	@Override
 	public CandidateFamilyDetails getCandidateFamilyDetailsById(Long id) {
 		// TODO Auto-generated method stub

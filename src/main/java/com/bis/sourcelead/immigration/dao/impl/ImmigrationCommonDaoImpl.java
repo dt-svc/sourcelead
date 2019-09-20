@@ -3,6 +3,7 @@ package com.bis.sourcelead.immigration.dao.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
@@ -61,6 +64,7 @@ import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationReportView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
 import com.bis.sourcelead.entity.LcaHistory;
@@ -3197,5 +3201,51 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return lca;
 		
 		
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(Long candidateId, OrgLocations orgLocations) {
+		  Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<ImmigrationPassportDTO> responseList = new ResponseList<>();
+        List<CandidatePassport> passportList = null;
+        Date toDayDate = new Date();
+        try {
+        if (candidateId != null) {
+			String queryString = "from CandidatePassport cp where cp.candidate.id=:candidateId  order by cp.updatedDate desc";
+			passportList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
+		
+		}
+        List<ImmigrationPassportDTO> passportDTOList = new ArrayList<ImmigrationPassportDTO>();
+        if(passportList != null && passportList.size()>0) {
+        	
+        	for (CandidatePassport canPassport :passportList) {
+        		ImmigrationPassportDTO passDto= new ImmigrationPassportDTO();
+        		passDto.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassport.getValidFromDate()));
+        		passDto.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassport.getValidToDate()));
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDateStr = dateFormat.format(toDayDate);
+				Date newDate = dateFormat.parse(currentDateStr);
+				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+
+				if (currentDate.before(canPassport.getValidToDate())) {
+					passDto.setCurrentStatus("Active");
+				} else {
+					passDto.setCurrentStatus("Expired");
+				}
+				passDto.setCandidatePassportId(canPassport.getId());
+				passDto.setPassportNumber(canPassport.getPassportNumber());
+				passDto.setCountry(canPassport.getCountry());
+				passportDTOList.add(passDto);
+			}
+        	
+        }
+        responseList.setData(passportDTOList);
+        }catch(Exception e) {
+        	e.printStackTrace();
+        }
+        return responseList;
 	}
 }	
