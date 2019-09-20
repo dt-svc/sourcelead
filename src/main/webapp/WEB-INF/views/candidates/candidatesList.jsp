@@ -551,7 +551,7 @@ function candidateSideBar(candidateId,candType){
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+',\''+candType+'\');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
