@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.apache.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -178,6 +179,11 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 							subTabsDTO.setSubTabDisplayName(sTab.getSubtabDisplayName());
 							subTabsDTO.setSubTabName(sTab.getSubTabName());
 							CustomModuleConfiguration modConf =  moduleDashboardConfService.getSubModuleById(sTab.getId());
+							if(modConf != null) {
+								subTabsDTO.setIsSubTabConfigured("YES");
+							}else {
+								subTabsDTO.setIsSubTabConfigured("NO");
+							}
 							stabList.add(subTabsDTO);
 						}
 						
