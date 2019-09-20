@@ -145,5 +145,24 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 		return candidateCertifications;	
 	
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateCertifications getCandidateGlobalCertificateBycandidateIdandCertificateId(Long candidateId,
+			Long candidateCertificateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCertifications  cEmp left join fetch cEmp.candidateGlobalId left join fetch cEmp.orgLocationId where cEmp.id = :candidateCertificateId and cEmp.candidateGlobalId.id = :candidateId ";
+		List<CandidateCertifications> certificatesList =  session.createQuery(query.toString()).setLong("candidateCertificateId", candidateCertificateId).setLong("candidateId", candidateId)
+				.list();
+		
+
+		CandidateCertifications canEMp = null;
+		if (certificatesList != null && certificatesList.size() > 0) {
+			canEMp = (CandidateCertifications) certificatesList.iterator().next();
+		}
+		return canEMp;
+	}
 }
 

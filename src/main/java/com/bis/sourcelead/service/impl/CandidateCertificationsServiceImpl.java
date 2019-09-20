@@ -23,6 +23,7 @@ import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateCertificationsService;
@@ -83,14 +84,16 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	 public CandidateCertifications storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO ,User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 			CandidateCertifications candidatecertificate  = new CandidateCertifications();
 			Candidate can = new Candidate();
-			//SimpleDateFormat simpleDateFormat = orgLocationId.getLocFullFormDateFormatter();
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
 			StringBuffer activitySummary = new StringBuffer();
 			 if(candidateId!= null){
 				 if(StringUtils.isNotBlank(candidateCertificationDTO.getCandidatecertificateID())){
-//		       		 if(jsonObject.getString("candidatecertificateID")!=null && !jsonObject.getString("candidatecertificateID").isEmpty()){
-		       			//candidatecertificate.setId(Long.valueOf(jsonObject.getString("candidatecertificateID")));
-		       			candidatecertificate = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, Long.valueOf(candidateCertificationDTO.getCandidatecertificateID()));
-//		       	     }
+					 if(StringUtils.isNotBlank(candidateCertificationDTO.getCandidateType()) && candidateCertificationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						 candidatecertificate = candidateCertificationsDao.getCandidateGlobalCertificateBycandidateIdandCertificateId(candidateId, Long.valueOf(candidateCertificationDTO.getCandidatecertificateID()));
+					 }else {
+						 candidatecertificate = candidateCertificationsDao.getCandidateCertificateBycandidateIdandCertificateId(candidateId, Long.valueOf(candidateCertificationDTO.getCandidatecertificateID()));
+					 }
+		       			
 	       	    }
 			if (StringUtils.isNotBlank(candidateCertificationDTO.getName())) {
 				if(candidatecertificate != null && candidatecertificate.getName() != null){
@@ -156,27 +159,35 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 				}else{
 					candidatecertificate.setValidTo(null);
 				}
+				
+				 if(StringUtils.isNotBlank(candidateCertificationDTO.getCandidateType()) && candidateCertificationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					    candidateGlobal.setId(candidateId);
+						candidatecertificate.setCandidateGlobalId(candidateGlobal);
+				 }else {
+					    can.setId(candidateId);
+						candidatecertificate.setCandidateId(can);
+				 }
+				
 				candidatecertificate.setStatus(Constants.CANDIDATE_ACTIVE);
 				candidatecertificate.setCreatedBy(user.getUserCode());
 				candidatecertificate.setCreatedDate(commonUtil.currentDate());
 				candidatecertificate.setUpdatedBy(user.getUserCode());
 				candidatecertificate.setUpdatedDate(commonUtil.currentDate());
 				candidatecertificate.setOrgLocationId(orgLocationId);
-				can.setId(candidateId);
-				candidatecertificate.setCandidateId(can);
+			
 			
 		}
 			logger.debug("In CandidateCertificationsServiceImpl class save method");
 			candidatecertificate = candidateCertificationsDao.storeCandidateCertifications(candidatecertificate);
 			
-			candidateActivityCommonUtil.storeCandidateCertificationsHistory(candidatecertificate, user);
-			
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocationId, can, "", Constants.CANDIDATE_CERTIFICATION_UPDATED, activitySummary.toString(), "CANDIDATE");
-			
-			/*
-			 * updating Candidate Certification DB data in existing candidateindex
-			 */
-			saveOrUpdateCandidateElkDocumentWithCertificationDetails(candidateId, orgLocationId.getId());
+			 if(StringUtils.isNotBlank(candidateCertificationDTO.getCandidateType()) && candidateCertificationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+				    candidateActivityCommonUtil.storeCandidateCertificationsHistory(candidatecertificate, user);
+					candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocationId, candidateGlobal, "", Constants.CANDIDATE_CERTIFICATION_UPDATED, activitySummary.toString(), "CANDIDATE");
+					
+			 }else {
+				    candidateActivityCommonUtil.storeCandidateCertificationsHistory(candidatecertificate, user);
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocationId, can, "", Constants.CANDIDATE_CERTIFICATION_UPDATED, activitySummary.toString(), "CANDIDATE");
+			 }
 			
 			return candidatecertificate;
 		}
@@ -240,11 +251,6 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 		 candidateActivityCommonUtil.storeCandidateCertificationsHistory(can, user);
 		 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocation, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_CERTIFICATION, activitySummary.toString(), "CANDIDATE");
 
-	     /*
-		 * updating Candidate Employer DB data in existing candidateindex
-		 */
-	     saveOrUpdateCandidateElkDocumentWithCertificationDetails(candidateId,can.getOrgLocationId().getId());
-	     
 	     return can;
 
 	}
@@ -298,6 +304,32 @@ public class CandidateCertificationsServiceImpl implements CandidateCertificatio
 	public List<CandidateCertifications> getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(
 			Long candidateId, Long orgLocationId) throws Exception {
 		return candidateCertificationsDao.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
+
+
+
+	@Override
+	public CandidateCertifications getCandidateGlobalCertificateBycandidateIdandCertificateId(Long candidateId,
+			Long candidateCertificateId) throws Exception {
+		return candidateCertificationsDao.getCandidateGlobalCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
+	}
+
+
+
+	@Override
+	public CandidateCertifications removeCandidateGlobalCertificateBycandidateIdandcandidateCertificateId(
+			Long candidateId, Long candidateCertificateId, User user, OrgLocations orgLocation) throws Exception {
+
+	     CandidateCertifications can = candidateCertificationsDao.getCandidateGlobalCertificateBycandidateIdandCertificateId(candidateId, candidateCertificateId);
+	     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+	     can = candidateCertificationsDao.storeCandidateCertifications(can);
+	     StringBuffer activitySummary = new StringBuffer();
+	     activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+		 candidateActivityCommonUtil.storeCandidateCertificationsHistory(can, user);
+		 candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocation, can.getCandidateGlobalId(), "", Constants.CANDIDATE_DELETED_CERTIFICATION, activitySummary.toString(), "CANDIDATE");
+	     
+	     return can;
+
 	}
 		
 
