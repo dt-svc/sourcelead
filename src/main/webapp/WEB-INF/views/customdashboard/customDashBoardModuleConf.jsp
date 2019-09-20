@@ -118,8 +118,14 @@ function getRoleBasedModules(){
 				for(var j=0;j<json.subTabsDTO.length;j++){
 					var opt = json.subTabsDTO[j];
 					output = output + '<li class="clearfix">';
-					output = output + '<input id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
-					output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					if(opt.isSubTabConfigured == 'NO'){
+						output = output + '<input checked id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					}else{
+						output = output + '<input id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					}
+					
 					output = output + '</li>';
 						
 				}
