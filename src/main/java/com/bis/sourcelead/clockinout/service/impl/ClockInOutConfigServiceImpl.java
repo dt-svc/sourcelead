@@ -1,4 +1,4 @@
-package com.bis.sourcelead.clockInOutServiceImpl;
+package com.bis.sourcelead.clockinout.service.impl;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -29,18 +29,18 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bis.sourcelead.clockInOutDTO.ClockInOutAssociateReportSummaryDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutConfigDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutFiltersDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutSubDTO;
-import com.bis.sourcelead.clockInOutDTO.ClockInOutUserTimeEntryDTO;
-import com.bis.sourcelead.clockInOutDao.ClockInOutConfigDao;
-import com.bis.sourcelead.clockInOutEntity.Breaks;
-import com.bis.sourcelead.clockInOutEntity.ClockInOut;
-import com.bis.sourcelead.clockInOutEntity.ClockInOutConfig;
-import com.bis.sourcelead.clockInOutService.ClockInOutConfigService;
-import com.bis.sourcelead.clockInOutUtil.ClockInOutUtil;
+import com.bis.sourcelead.clockinout.dao.ClockInOutConfigDao;
+import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutConfigDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutSubDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.entity.Breaks;
+import com.bis.sourcelead.clockinout.entity.ClockInOut;
+import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
+import com.bis.sourcelead.clockinout.service.ClockInOutConfigService;
+import com.bis.sourcelead.clockinout.util.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
