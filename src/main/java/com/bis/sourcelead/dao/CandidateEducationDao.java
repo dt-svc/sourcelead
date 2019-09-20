@@ -43,5 +43,9 @@ public interface CandidateEducationDao {
 	Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 	
 	public List<CandidateEducation>   getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	
+	public CandidateEducation getCandidateGlobalEducationBycandidateIdandEducationId(Long candidateId,Long candidateEducationId)  throws Exception;
+	
+	public Boolean validateCandidateGlobalEducationName(Long candidateId, String candidateEducation) throws Exception;
 
 }

@@ -29,6 +29,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -86,21 +87,33 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	public CandidateEducation storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,Long candidateId, Long orgLocationId,User user) throws Exception {
 		
 		CandidateEducation candidateEducation = null;
-		Candidate candidate = new Candidate();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
+		 CandidateGlobal candidateGlobal = null;
+		 Candidate candidate = null;
 		if(candidateId !=null){
         	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
 	       		 if(candidateEducationDTO.getCandidateEduId() !=null){
-	       			//candidateEducation.setId(Long.valueOf(jsonObject.getString("candidateEduId")));
-	       			candidateEducation = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, Long.valueOf(candidateEducationDTO.getCandidateEduId()));
+	       			if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+	       				candidateEducation = candidateEducationDao.getCandidateGlobalEducationBycandidateIdandEducationId(candidateId, Long.valueOf(candidateEducationDTO.getCandidateEduId()));
+	       			}else {
+	       				candidateEducation = candidateEducationDao.getCandidateEducationBycandidateIdandEducationId(candidateId, Long.valueOf(candidateEducationDTO.getCandidateEduId()));
+	       			}
+	       			
 	       	     }
        	    }else{
-       	    	candidateEducation =new CandidateEducation();
+       	    	candidateEducation = new CandidateEducation();
        	     }
-		
-		candidate.setId(candidateId);
-		candidateEducation.setCandidateId(candidate);
+    	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+    		    candidateGlobal = new CandidateGlobal();
+    		    candidateGlobal.setId(candidateId);
+    			candidateEducation.setCandidateGlobalId(candidateGlobal);
+    	}else {
+    		    candidate = new Candidate();
+    			candidate.setId(candidateId);
+    			candidateEducation.setCandidateId(candidate);
+    	}
+       
 		
 		orgLocations.setId(orgLocationId);
 		candidateEducation.setOrglocationId(orgLocations);
@@ -130,8 +143,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		if(candidateEducationDTO.getStartDate() != null && candidateEducationDTO.getStartDate() != ""){
 			try {
 				
-				//String pattern = "dd-MM-yyyy";
-				//DateFormat format = LoginSessionController.DATEFORMAT;
                 Date startDate = commonUtil.orgLocationDateFormat(locations.getDateFormat(),candidateEducationDTO.getStartDate());
                 candidateEducation.setStartDate(startDate);
 				
@@ -209,7 +220,11 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		candidateActivityCommonUtil.storeCandidateEducationHistory(candidateEducation, user);
 		
-		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
+		if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+			candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
+		}else {
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
+		}
 		
 		/*
 		 * updating Candidate Education DB data in existing candidateindex
@@ -497,5 +512,34 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 			}
 		}
 		return edulist;
+	}
+
+
+	@Override
+	public CandidateEducation getCandidateGlobalEducationBycandidateIdandEducationId(Long candidateId,
+			Long candidateEducationId) throws Exception {
+		return candidateEducationDao.getCandidateGlobalEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+	}
+
+
+	@Override
+	public Boolean validateCandidateGlobalEducationName(Long candidateId, String candidateEducation) throws Exception {
+		return candidateEducationDao.validateCandidateGlobalEducationName(candidateId, candidateEducation);
+	}
+
+
+	@Override
+	public CandidateEducation removeCandidateGlobalEducationBycandidateIdandcandidateEducationId(Long candidateId,
+			Long candidateEducationId, User user, OrgLocations orgLocations) throws Exception {
+		 CandidateEducation can = candidateEducationDao.getCandidateGlobalEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+	     can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+	     can =  candidateEducationDao.storeCandidateEducation(can);
+	     StringBuffer activitySummary = new StringBuffer();
+	     activitySummary.append("Education").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
+		 candidateActivityCommonUtil.storeCandidateEducationHistory(can, user);
+		 candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, can.getCandidateGlobalId(), "", Constants.CANDIDATE_DELETED_EDUCATION, activitySummary.toString(), "CANDIDATE");
+			
+	     
+	     return can;
 	}
 }

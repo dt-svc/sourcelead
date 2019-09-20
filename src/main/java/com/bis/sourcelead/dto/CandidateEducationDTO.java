@@ -72,6 +72,8 @@ public class CandidateEducationDTO extends CommonDTO {
 	
 	private String endYear;
 	
+	private String candidateType;
+	
 	public String getName() {
 		return name;
 	}
@@ -344,6 +346,14 @@ public class CandidateEducationDTO extends CommonDTO {
 
 	public void setEndYear(String endYear) {
 		this.endYear = endYear;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	}
 
 }
