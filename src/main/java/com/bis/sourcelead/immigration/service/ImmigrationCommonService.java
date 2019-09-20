@@ -243,4 +243,11 @@ public interface ImmigrationCommonService {
     
 	Lca updateLcaAvailablePositionsById(Lca lca);
 	public Lca getLcaNumber(String lcaNo) throws Exception;
+	
+	// below method added to get the CandidatePassport list which end dates are equal to expected expiry date used in CRON.
+	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate)throws Exception;
+	
+	// below method added to get the CandidateVisaHistory list which end dates are equal to expected expiry date used in CRON.
+	public List<CandidateVisaHistory> getAllVisaHistoryList(Date expectedExpiryDate)throws Exception;
+	
 }
