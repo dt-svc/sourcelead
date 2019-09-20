@@ -211,6 +211,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 	@Autowired
 	InvoicePaymentService invoicePaymentService;
 
+
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -3122,7 +3123,9 @@ public class InvoiceServiceImpl implements InvoiceService {
 								.toString();
 			
 					}
-					emailScenerioUtil.sendNotification(actionLink, user, invoice.getContactUser(), invoice.getResponderLocationId(),
+					User invoiceUser = userService.getUserById(Long.parseLong(invoice.getContactUsers()));
+					
+					emailScenerioUtil.sendNotification(actionLink, user, invoiceUser, invoice.getResponderLocationId(),
 							notificationScenario, new HashMap<String, String>());
 				}
 				invoice.setTimelineHistoryReminder("Reminder");
