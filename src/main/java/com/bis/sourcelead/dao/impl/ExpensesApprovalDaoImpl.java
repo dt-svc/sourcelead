@@ -342,6 +342,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	}
 	
 	
+	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public Integer updateApprovalStatusByApproverForExpense(Long expenseId,Long approverUserId,String status,String rejectedReason,OrgLocations location,String isGlobalUser) throws Exception {
@@ -401,7 +402,7 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 	    		/*
 	    		 * get Max Level
 	    	    */
-	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from ExpensesApproverHierarchy sah  where sah.hierarchyId.projectClientsId.id = :projectClientsId and  sah.expenseId.id = :expenseId and sah.hierarchyId.status != '0'  ");
+	    		Query queryForMaxLevel = session.createQuery("select Max(sah.hierarchyId.level) from ExpensesApproverHierarchy sah  where sah.hierarchyId.projectClientsId.id = :projectClientsId and  sah.expenseId.id = :expenseId   ");
 	    		List<Integer> maxList = queryForMaxLevel.setLong("projectClientsId", sah.getHierarchyId().getProjectClientsId().getId()).setLong("expenseId", expenseId).list();
 	    		
 	    		if(maxList !=null && !maxList.isEmpty()){
@@ -518,7 +519,6 @@ public class ExpensesApprovalDaoImpl implements ExpensesApprovalDao{
 		return maxLevel;
 		
 	}
-	
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public void updateExpenseStatusByExpenseId(Long expenseId,String status) {
