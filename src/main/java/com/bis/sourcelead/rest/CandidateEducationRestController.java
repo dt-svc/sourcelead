@@ -1,9 +1,6 @@
 package com.bis.sourcelead.rest;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -32,15 +29,18 @@ import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -81,6 +81,12 @@ public class CandidateEducationRestController {
 
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateEducationRestController.class);
 
@@ -119,7 +125,6 @@ public class CandidateEducationRestController {
 		return response;
 	}
 
-	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_EDUCATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateEducation", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Integer> storeCandidateEducation(CandidateEducationDTO candidateEducationDTO,
@@ -201,7 +206,12 @@ public class CandidateEducationRestController {
 						edu.setInstitute(candidateEducation.getInstitute());
 						edu.setAddress(candidateEducation.getAddress());
 						edu.setId(candidateEducation.getId());
-						edu.setCandidateId(candidateEducation.getCandidateId().getId());
+						if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+							edu.setCandidateId(candidateEducation.getCandidateGlobalId().getId());
+						}else {
+							edu.setCandidateId(candidateEducation.getCandidateId().getId());
+						}
+						
 						edu.setCandidateEduId(candidateEducation.getId().toString());
 						edu.setStartDate(candidateEducation.getStartDateStr());
 						edu.setEndDate(candidateEducation.getEndDateStr());
@@ -253,30 +263,43 @@ public class CandidateEducationRestController {
 			if (user != null) {
 				OrgLocations orgLocations = orgLocationService
 						.getOrgLocations(candidateEducationDTO.getOrgLocationId());
-				CandidateEducation candidateEducation = candidateEducationService
-						.removeCandidateEducationBycandidateIdandcandidateEducationId(
-								candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
-								user, orgLocations);
-				// OrgLocations loginOrgLocation = (OrgLocations)
-				// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService
-						.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
-				if (null != candidate && null != candidate.getId()) {
-					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-					candidateIndex.setCandidateId(candidate.getId());
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
-							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-
-					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
-					response.setObject(percentage.toString());
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				CandidateEducation candidateEducation = null;
+				if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidateEducation = candidateEducationService
+							.removeCandidateGlobalEducationBycandidateIdandcandidateEducationId(
+									candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
+									user, orgLocations);
+					
+					CandidateGlobal candidate = candidateGlobalService
+							.getCandidateGlobalByCandidateId(candidateEducationDTO.getCandidateId());
+					if (null != candidate && null != candidate.getId()) {
+						Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+						response.setObject(percentage.toString());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				}else {
+					candidateEducation = candidateEducationService
+							.removeCandidateEducationBycandidateIdandcandidateEducationId(
+									candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
+									user, orgLocations);
+					
+					Candidate candidate = candidateService
+							.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
+					if (null != candidate && null != candidate.getId()) {
+						Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
+						response.setObject(percentage.toString());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
 				}
+				
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -295,17 +318,24 @@ public class CandidateEducationRestController {
 	public Response<CandidateEducationDTO> getCandidateEducationBycandidateIdandEducationId(
 			@RequestParam(value = "candidateId", required = false, defaultValue = "0") Long candidateId,
 			@RequestParam(value = "candidateEducationId", required = false, defaultValue = "0") Long candidateEducationId,
+			@RequestParam(value = "candidateType", required = false) String candidateType,
 			HttpServletRequest request) throws Exception {
 		Response<CandidateEducationDTO> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (user != null && candidateId > 0 && candidateEducationId > 0) {
 				CandidateEducationDTO candEduDTO = new CandidateEducationDTO();
-				CandidateEducation candidatesEducationList = candidateEducationService
-						.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
-				Candidate can = candidateService.getCandidateById(candidateId);
-				// SimpleDateFormat formatter =
-				// can.getOrgLocationId().getLocFullFormDateFormatter();
+				CandidateEducation candidatesEducationList = null;
+						
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					 candidatesEducationList = candidateEducationService
+								.getCandidateGlobalEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+				}else {
+					 candidatesEducationList = candidateEducationService
+							.getCandidateEducationBycandidateIdandEducationId(candidateId, candidateEducationId);
+				}
+				
 
 				if (candidatesEducationList.getName() != null) {
 					candEduDTO.setName(candidatesEducationList.getName());
@@ -337,11 +367,11 @@ public class CandidateEducationRestController {
 
 				if (candidatesEducationList.getStartDate() != null) {
 					candEduDTO.setStartDateStr(commonUtil.dateStrFromOrgDateFormatter(
-							can.getOrgLocationId().getDateFormat(), candidatesEducationList.getStartDate()));
+							orgLocations.getDateFormat(), candidatesEducationList.getStartDate()));
 				}
 				if (candidatesEducationList.getEndDate() != null) {
 					candEduDTO.setEndDateStr(commonUtil.dateStrFromOrgDateFormatter(
-							can.getOrgLocationId().getDateFormat(), candidatesEducationList.getEndDate()));
+							orgLocations.getDateFormat(), candidatesEducationList.getEndDate()));
 				}
 
 				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -428,14 +458,21 @@ public class CandidateEducationRestController {
 
 	@RequestMapping(value = {"/validateEduname","/rest/validateEduname"})
 	public Response<Boolean> validateEduname(@RequestParam(value = "name", required = false) String name,
-			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request)
+			@RequestParam(value = "candidateId", required = false) Long candidateId, 
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request)
 			throws Exception {
 		Response<Boolean> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null && candidateId > 0) {
 				String candidateEducation = name;
-				Boolean canEdu = candidateEducationService.validateEducationName(candidateId, candidateEducation);
+				Boolean canEdu = false;
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					canEdu = candidateEducationService.validateCandidateGlobalEducationName(candidateId, candidateEducation);
+				}else {
+					canEdu = candidateEducationService.validateEducationName(candidateId, candidateEducation);
+				}
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				response.setObject(canEdu);
