@@ -358,6 +358,8 @@ public class LeaveManagementRestController {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		
+		
 		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRoleId");
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		List<User> usersList = userService.getUsersHierarchyListByOrgLocationIdAndRoleIdAndNoCurrentUser(
@@ -2768,7 +2770,7 @@ public class LeaveManagementRestController {
 			if(!StringUtils.isNotBlank(notifyToOthers) && selectedUserRole.getReportingManager() != null){
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(selectedUserRole.getReportingManager().getId(),orgLocations.getId());
 				if (userRole == null) {
-					userRole = userRoleService.getGlobalUserReportingManagerByUserIdAndOrgId(selectedUserRole.getReportingManager().getId(),orgLocations.getOrg().getId());
+					userRole = userRoleService.getGlobalUserReportingManagerByUserIdAndOrgId(selectedUserRole.getReportingManager().getId(),orgLocations.getOrgId());
 				}
 				if (userRole != null) {
 //					String roles = userRole.getRoles().getActionId();
