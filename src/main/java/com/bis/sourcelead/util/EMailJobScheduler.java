@@ -594,8 +594,9 @@ public class EMailJobScheduler {
 			  }
 			}	// End code of send calculate expected expire days and sends the remainder email to LCA managers.
 		
+			// BELOW CODE IS COMMENTED FOR TEMPORARILY FOR NOT SEND REMAINDERS FOR EXPIRED LCAS. commented on 20 sep 2019 Srinivas Sabbu.
 			// below the code to send expired LCA's email for the LCA manager.
-			List<Lca> lcaList = immigrationCommonService.getAllLcaList(currentDate);
+			/*List<Lca> lcaList = immigrationCommonService.getAllLcaList(currentDate);
 			if (lcaList != null && lcaList.size() > 0) {
 				List<Lca> lcaListByManager = new ArrayList<Lca>();
 				
@@ -622,7 +623,7 @@ public class EMailJobScheduler {
 					sendEmailReminderToLcaManagerExpired(toUser, fromNotificationUser, mapLcaList, ol, ImmigrationConstants.LCA_STATUS_EXPIRED);
 				}
 			}// End code of  to send expired LCA's remainder email for the LCA manager.
-			
+			*/
 			
 		} catch (Exception e) {
 			logger.error("ERROR in " + e.getMessage());
