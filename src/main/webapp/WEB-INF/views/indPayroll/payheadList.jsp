@@ -128,7 +128,7 @@ function payheadListPagination(url,pmsUrl){
 	    	  	"data": "name",
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
-	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span title='"+opt.name+"'>"+opt.name+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show'><div class='pull-left' title='"+opt.name+"'>"+opt.name+"</div><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
