@@ -153,9 +153,18 @@ public class AssetDaoImpl implements AssetDao{
 			}
 		}
 		
-		if (Arrays.asList(status).contains("Working")) {
-			subquery2 = subquery2 + "asset.workingStatus = 'Working' OR ";
+		if (Arrays.asList(status).contains("Assigned ")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'Assigned ' OR ";
 		}
+		
+		if (Arrays.asList(status).contains("unassigned")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'unassigned' OR ";
+		}
+		
+		if (Arrays.asList(status).contains("end of life")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'end of life' OR ";
+		}
+		
 		if (Arrays.asList(status).contains("Out Of Service")) {
 			subquery2 = subquery2 + "asset.workingStatus = 'Out Of Service' OR ";
 		}
@@ -534,9 +543,18 @@ public class AssetDaoImpl implements AssetDao{
 		
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
-		 if (Arrays.asList(status).contains("Working")) {
-				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Working' OR ";
+		 if (Arrays.asList(status).contains("Assigned ")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Assigned ' OR ";
 			}
+		 
+		 if (Arrays.asList(status).contains("unassigned")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'unassigned' OR ";
+			}
+		 
+		 if (Arrays.asList(status).contains("end of life")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'end of life' OR ";
+			}
+		 
 			if (Arrays.asList(status).contains("Out Of Service")) {
 				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Out Of Service' OR ";
 			}
