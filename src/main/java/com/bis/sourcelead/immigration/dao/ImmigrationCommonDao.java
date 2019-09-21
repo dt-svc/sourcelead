@@ -331,4 +331,6 @@ public interface ImmigrationCommonDao {
 	Lca updateLcaAvailablePositionsById(Lca lca);
 
 	public Lca getLcaNumber(String lcaNo) throws Exception;
+
+	List<LcaDTO> getAssociateLcaDetails(Long candidateId);
 }

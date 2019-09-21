@@ -1145,7 +1145,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		Candidate candidate = candidateDao
 				.getCandidateByCandidateId(Long.parseLong(immigrationPassportDTO.getCandidateId()));
-		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
+		Immigration immigration = null;
+		if(immigrationId != null) {
+		 immigration = immigrationCommonDao.getImmigrationById(immigrationId);
+		}
 		// SimpleDateFormat simpleDateFormat =
 		// orgLocationId.getLocFullFormDateFormatter();
 		StringBuffer activitySummary = new StringBuffer();
@@ -1197,7 +1200,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		logger.debug("In CandidateCertificationsServiceImpl class save method");
 		candidatePassport = immigrationCommonDao.savePassportDetails(candidatePassport);
 		StringBuilder actionDesc = new StringBuilder();
-		if (immigrationPassportDTO.getCandidatePassportId() != null) {
+		if (immigrationPassportDTO.getCandidatePassportId() != null && immigrationId != null) {
 			
 			actionDesc.append("Passport Details Updated ").toString();
 			
@@ -3215,5 +3218,10 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public Lca getLcaNumber(String lcaNo) throws Exception{
 		
 		return immigrationCommonDao.getLcaNumber(lcaNo);
+	}
+
+	@Override
+	public List<LcaDTO> getAssociateLcaDetails(Long candidateId) {
+		return immigrationCommonDao.getAssociateLcaDetails(candidateId);
 	}
 }

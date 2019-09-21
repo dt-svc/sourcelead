@@ -3221,9 +3221,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	
         	for (CandidatePassport canPassport :passportList) {
         		ImmigrationPassportDTO passDto= new ImmigrationPassportDTO();
-        		passDto.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
-						canPassport.getValidFromDate()));
         		passDto.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassport.getValidFromDate()));
+        		passDto.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
 						canPassport.getValidToDate()));
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				String currentDateStr = dateFormat.format(toDayDate);
@@ -3247,5 +3247,46 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
         	e.printStackTrace();
         }
         return responseList;
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaDTO> getAssociateLcaDetails(Long candidateId) {
+		List<LcaDTO> lcaList = null;
+			try {
+			logger.debug("in  getAssociateLcaDetails --->  ");
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "SELECT " + 
+					" l.LCA_NO as lcaNo, " + 
+					" l.LCA_TITLE as lcaTitle, " + 
+					" GROUP_CONCAT(lpe.LOCATION SEPARATOR ' & ') AS location, "+
+					" l.PREVAILING_WAGE as prevailingWage, " + 
+					" l.LCA_STATUS as lcaStatus, " + 
+					" CAST(l.NO_OF_POSITIONS AS CHAR(5))as noOfPositions, " + 
+					" CAST(l.AVAILABLE_POSITIONS AS CHAR(5))as availablePositions, " + 
+					" CAST(l.STATUS AS CHAR(1))as status, " + 
+					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
+					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate, " + 
+					
+					" lvc.NEW_EMPLOYMENT as newEmployment, " + 
+                    " CAST(lvc.NEW_EMPLOYMENT_COUNT AS CHAR(5))as newEmploymentCount " + 
+					
+					" FROM " + 
+					" LCA l, " + 
+					" LCA_HISTORY lh, " + 
+					" LCA_PLACE_OF_EMPLOYMENT lpe, " + 
+					" LCA_VISA_CLARIFICATIONS lvc" +
+					" WHERE " + 
+					
+					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID " + 
+					"  AND lh.CANDIDATE_ID = :candidateId"+
+					" GROUP BY l.ID";
+			lcaList = session.createSQLQuery(queryString).setParameter("candidateId", candidateId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
+		
+			}catch(Exception e) {
+				logger.error("Exception caught while fetching candidate LCA details "+e.getMessage());
+				e.printStackTrace();
+			}
+			return lcaList;
 	}
 }	
