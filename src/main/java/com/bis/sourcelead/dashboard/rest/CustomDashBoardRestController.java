@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,9 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
+import com.bis.sourcelead.dashboard.dto.ModuleConfigureDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.CustomModuleConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
+import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
@@ -54,6 +58,9 @@ public class CustomDashBoardRestController {
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	ModuleDashboardConfService moduleDashboardConfService;
 	
 	
 	/**
@@ -114,6 +121,7 @@ public class CustomDashBoardRestController {
 		ModelAndView model = new ModelAndView();
 		try {
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("customDashBoardConfUUID",customDashBoardConfUUID);
 			model.setViewName("customdashboard/customDashBoardModuleConf");
 			
 		}catch(Exception e) {
@@ -163,7 +171,14 @@ public class CustomDashBoardRestController {
 
 	}
 	
-	
+	/**
+	 * Custom DashBoard Configuration
+	 * 
+	 * @param customDashBoardConfDTO
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/saveCustomDashBoardConfiguration", method = RequestMethod.POST)
 	public @ResponseBody Response<CustomDashBoardConfiguration> saveCustomDashBoardConfiguration(CustomDashBoardConfDTO customDashBoardConfDTO ,HttpServletRequest request) throws Exception
 	{
@@ -312,4 +327,31 @@ public class CustomDashBoardRestController {
 	{
 		return customDashboardConfService.getSubModules(tabId);
 	}
+	
+	
+
+	@RequestMapping(value = "/saveModuleDashBoardConfiguration", method = RequestMethod.POST)
+	public @ResponseBody Response<ModuleConfigureDTO> saveModuleDashBoardConfiguration(ModuleConfigureDTO moduleConfDto , HttpServletRequest request) throws Exception
+	{
+		Response<ModuleConfigureDTO> response = new Response<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (Validator.validate(moduleConfDto)) {
+				ModuleConfigureDTO moduleConfi =  moduleDashboardConfService.saveModuleConfiguration(moduleConfDto,orgLocation,user.getId());
+				response.setObject(moduleConfi);
+				response.setResponse(Result.SUCCESS.name());
+			}
+			else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
 }
