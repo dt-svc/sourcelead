@@ -44,6 +44,16 @@ public class ImmigrationConstants {
 	
 	public static final String IS_CURRENT_NO = "N";
 	
+	public static final String PASSPORT_EXPIRES_IN_DAYS_MAIL = "PassportExpiresInDaysMail";
+	
+	public static final String PASSPORT_EXPIRED_MAIL = "PassportExpiredMail";
+	
+	public static final String PASSPORT_EXPIRED_NOTIFICATION = "PassportExpiredNotification";
+	
+	public static final String VISA_EXPIRES_IN_DAYS_MAIL = "VisaExpiresInDaysMail";
+	
+	public static final String VISA_EXPIRED_MAIL = "VisaExpiredMail";
+	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
             "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company",
