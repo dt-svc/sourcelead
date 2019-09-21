@@ -35,8 +35,10 @@
 		            <div class="clearfix">
 						<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 							<option selected value="">-Select Working Status-</option>
-							<option value="Working" ${assetAssignData.workingStatus eq "Working" ? 'selected' : ''}>Working</option>
-							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
+							<option value="Assigned" ${assetAssignData.workingStatus eq "Assigned" ? 'selected' : ''}>Assigned </option>
+							<option value="unassigned" ${assetAssignData.workingStatus eq "unassigned" ? 'selected' : ''}>unassigned</option>
+							<option value="end of life" ${assetAssignData.workingStatus eq "end of life" ? 'selected' : ''}>end of life</option>
+							<option value="Out of service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
 						</select>	
 		            </div>
 		            </div>

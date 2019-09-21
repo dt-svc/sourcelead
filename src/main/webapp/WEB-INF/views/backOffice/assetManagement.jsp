@@ -460,9 +460,11 @@ function openAssetFilterPop(){
 							<label><strong>Working Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="workStatusFilter">
-				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
-                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out of service</label></li>
-                                    <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
+				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Assigned " ><label>Assigned </label></li>
+				                     <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="unassigned " ><label>unassigned </label></li>
+				                      <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="end of life" ><label>end of life</label></li>
+                                    <li class="checkBox positionRelative"><input id="c4" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out of service</label></li>
+                                    <li class="checkBox positionRelative"><input id="c5" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
 		                        </ul>
 							 </div>
 						</div> 
@@ -764,26 +766,39 @@ function projectAssetPaginations(url){
 		  	  	"targets": colIndex++,
 			  	"data": "",
 			  	"render": function(data, type, report) {
-			  		var result = "";
+			  		 var result = "";
 			  		 var selected1 = '';
 	   				 var selected2 = '';
 	   				 var selected3 = '';
-			  		 if(report.workingStatus == 'Working'){
+	   				 var selected4 = '';
+	   				 var selected5 = '';
+	   				 
+			  		 if(report.workingStatus == 'Assigned '){
 						selected1 = 'selected';
 					 } 
-				
-					 if(report.workingStatus == 'Out Of Service'){
+			  		 
+			  		if(report.workingStatus == 'unassigned '){
 						selected2 = 'selected';
-					 }
-					 if(report.workingStatus == 'Service'){
+					 } 
+				
+					 if(report.workingStatus == 'end of life'){
 						selected3 = 'selected';
+					 }
+					 if(report.workingStatus == 'Out Of Service'){
+							selected4 = 'selected';
+						 }
+					 
+					 if(report.workingStatus == 'Service'){
+						selected5 = 'selected';
 					 }
 					
 			  	 	result = result + ' <td><div class="tblminwidth-150">';
 					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.assetUUID+'\',\''+report.id+'\');">';
-					result = result + ' <option '+selected1+'>Working</option>';
-					result = result + ' <option '+selected2+'>Out Of Service</option>';
-					result = result + ' <option '+selected3+'>Service</option>';
+					result = result + ' <option '+selected1+'>Assigned</option>';
+					result = result + ' <option '+selected2+'>unassigned</option>';
+					result = result + ' <option '+selected3+'>end of life</option>';
+					result = result + ' <option '+selected4+'>Out Of Service</option>';
+					result = result + ' <option '+selected5+'>Service</option>';
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 		           return result;
