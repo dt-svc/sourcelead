@@ -42,7 +42,7 @@ function candidateLca(candidateId){
 	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
     result  = result + '</div>';
-	if(window.candidateStatusGlobal == '0'){
+/* 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType == "Candidates"){
 			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 	
 			result = result  +'<a href="javascript:void(0)"  class="addUser-org" ></a> ';
@@ -64,7 +64,7 @@ function candidateLca(candidateId){
 			'</sec:authorize>';
 		}
 		
-	}
+	} */
 		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
 		result = result  +'     </div>  ';
 		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
@@ -133,7 +133,7 @@ function candidateLcaList(candidateId){
 	  }
 	 $.ajax({  
           type : "GET",
-          url: atsUrl+"/getAssociatePassportDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getAssociateLcaDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -144,77 +144,65 @@ function candidateLcaList(candidateId){
         		} else if (response.response === "SUCCESS") {
         			$("#candidateLcaList").empty();
                	 var result = "";
-               	 result = result +"<table id='candidatePassportPagination' class='display' cellspacing='0' width='100%' >"; 
+               	 result = result +"<table id='candidateLcaPagination' class='display' cellspacing='0' width='100%' >"; 
                     result = result +"<thead>"; 
                     result = result +"  <tr>"; 
                     result  = result + '           <th>LCA Number</th>';
-                	 result  = result + '           <th>Country</th>';
+                	 result  = result + '           <th>LCA Title</th>';
+                	 result  = result + '           <th>Location</th>';	
+                	 result  = result + '           <th>Prevailing Wage</th>';
                 	 result  = result + '           <th>Valid From <br>(<small class="custom-small">'+canLcaDatePattern+'</small>)</th>';
                 	 result  = result + '           <th>Valid To <br>(<small class="custom-small">'+canLcaDatePattern+'</small>)</th>';
-                	 result  = result + '           <th>Status</th>';
-                	 result  = result + '           <th>Action</th>';
+                	 result  = result + '           <th>LCA Status</th>';
                     result = result +"  </tr>"; 
                     result = result +"</thead>";
                     result = result +"<tbody>"; 
                     
                     for (var i = 0; i < response.data.length; i++) { 
                    	 var opt = response.data[i];  
-                   	console.log(opt)
                    	 result  = result + '         <tr>';
-                   	 if(opt.passportNumber != null && opt.passportNumber != '' && opt.passportNumber != 'undefined'){
-                   	 result  = result + '<td><div><span title = "'+opt.passportNumber+'">'+opt.passportNumber+'</span></div></td>';
+                   	 if(opt.lcaNo != null && opt.lcaNo != '' && opt.lcaNo != 'undefined'){
+                   	 result  = result + '<td><div><span title = "'+opt.lcaNo+'">'+opt.lcaNo+'</span></div></td>';
                    	    }else{
                    	    	 result  = result + ' <td><div><span>----</span></div></td>';
                    	    }
-                   	 if(opt.country != null && opt.country != '' && opt.country != 'undefined'){
-                   	 result  = result + ' <td><div><span title="'+opt.country+'">'+opt.country+'</span></div></td>';
+                   	 if(opt.lcaTitle != null && opt.lcaTitle != '' && opt.lcaTitle != 'undefined'){
+                   	 result  = result + ' <td><div><span title="'+opt.lcaTitle+'">'+opt.lcaTitle+'</span></div></td>';
                    	 }else{
                    		 result  = result + ' <td><div><span>----</span></div></td>';
                    	 }
-                   	 if(opt.validFrom != null && opt.validFrom != '' && opt.validFrom != 'undefined'){
-                   	 result  = result + ' <td><div><span>'+opt.validFrom+'</span></div></td>';
+                   	 if(opt.location != null && opt.location != '' && opt.location != 'undefined'){
+                       	 result  = result + ' <td><div><span title="'+opt.location+'">'+opt.location+'</span></div></td>';
+                      }else{
+                       	  result  = result + ' <td><div><span>----</span></div></td>';
+                      }
+                   	 if(opt.prevailingWage != null && opt.prevailingWage != '' && opt.prevailingWage != 'undefined'){
+                       	 result  = result + ' <td><div><span title="'+opt.prevailingWage+'">'+opt.prevailingWage+'</span></div></td>';
+                      }else{
+                       	  result  = result + ' <td><div><span>----</span></div></td>';
+                      }
+                   	 if(opt.startDate != null && opt.startDate != '' && opt.startDate != 'undefined'){
+                   	 result  = result + ' <td><div><span>'+opt.startDate+'</span></div></td>';
                    	 }else{
                    		 result  = result + ' <td><div><span>----</span></div></td>';
                    	 }
-                   	 if(opt.validTo != null && opt.validTo != '' && opt.validTo != 'undefined'){ 
-                   	 result  = result + '<td><div><span>'+opt.validTo+'</span></div></td>';
+                   	 if(opt.endDate != null && opt.endDate != '' && opt.endDate != 'undefined'){ 
+                   	 result  = result + '<td><div><span>'+opt.endDate+'</span></div></td>';
                    	 }else{
                    		 result  = result + '<td><div><span>----</span></div></td>';
                    	 }
-                   	 if(opt.currentStatus != null && opt.currentStatus != '' && opt.currentStatus  != 'undefined'){
-                   	 result  = result + '<td><div><span>'+opt.currentStatus+'</span></div></td>';
+                   	 if(opt.lcaStatus != null && opt.lcaStatus != '' && opt.lcaStatus  != 'undefined'){
+                   	 result  = result + '<td><div><span>'+opt.lcaStatus+'</span></div></td>';
                    	 }else{
                    		 result  = result + '<td><div><span>----</span></div></td>'; 
                    	 }
-                   	 if(opt.candidatePassportId != null && opt.candidatePassportId != '' && opt.candidatePassportId != 'undefined'){
-                   		 if(window.candidateStatusGlobal == '0'){
-                   			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-                   		 }
-                   		 else{
-                   			 if(candidateType == "Candidates"){
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.candidatePassportId+ ');" title="Edit"></a></sec:authorize>';
-                   			 }else{
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.candidatePassportId+ ');" title="Edit"></a></sec:authorize>';
-                   			 }
-                   				 
-                   		 }
-                   		 if(window.candidateStatusGlobal == '0'){
-								result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
-                   		 }else{
-                   			 if(candidateType == "Candidates"){
-                   				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.candidatePassportId+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
-                   			 }else{
-                   				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.candidatePassportId+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
-                   			 }
-                   			  
-                   		 }
-                   	}
+                   	 
                    	 result  = result + '</tr>';
                      } 
                     result = result +" </tbody>";
                     result = result +"</table>";
                     $("#candidateLcaList").append(result); 
-                   // educationPagination();
+                   lcaPagination();
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
@@ -232,16 +220,14 @@ function candidateLcaList(candidateId){
 --%>
 
 <script>
-function educationPagination(){  
-    $('#candidateEducationPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
+function lcaPagination(){  
+    $('#candidateLcaPagination').DataTable( { 
+    	"searching": false,
+   	 	"paging":   false,
+        "ordering": false,
+        "info":     false,
+      	"oLanguage": {
+     	    "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
 }
@@ -254,11 +240,6 @@ function educationPagination(){
      1.usage   : used in addEducation() function.
 --%>
 
-<script>
-function closePopup(){
-	 $("#popUpDiv").removeClass("edit-details-active");
-}
-</script>
 
 <%-- 
      @author : sarath kumar.
@@ -1114,10 +1095,9 @@ function clearEndDt(){
 		<form id="lcaSave_Form" name = "lcaSave_Form" method = "post">
 		<div class="popUpOut" id="popLcaView">
 		<!--hidden id for edit -->
-		<input type="hidden" name="lcaId" id="currlcaId" value="${immigrationDTO.lcaId}">
-		<div class="popupHead">
+		<!-- <div class="popupHead">
 			<h2 class="pull-left mt">Assign LCA</h2><a href="javascript:void(0)" class="fa fa-close popCan mt mr" onclick="closeLcapopup();"></a>
-		</div>
+		</div> -->
 		
 		<div class="popupMid clearfix">
 

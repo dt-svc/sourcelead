@@ -22,6 +22,7 @@
 
 <script>
 var atsUrl ='${SourceLeadWeb_atsUrl}';
+var candidateId = '${candidateId}';
 function candidatePassport(candidateId){
 	 var candidateType = '${candidateType}';
 	var result = "";
@@ -35,7 +36,7 @@ function candidatePassport(candidateId){
 	
 	
 	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
-    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="msgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType == "Candidates"){
@@ -88,22 +89,41 @@ function candidatePassport(candidateId){
     
     candidatePassportList(candidateId);
     $("#addPass").click(function(){
+    	$("#candidateID").val(candidateId);
 		$(".popMask").fadeIn(200);
 		$("#popPassView").fadeIn(100);
 	});	
-  //Tab script
-	//$(".tabcontent").hide();
-	//immigrationTabHandler();
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    var finalDateFormatPassSave = getJSDateFormat(locationDate);
+   $('#validFrom').datepicker({
+        dateFormat: finalDateFormatPassSave,
+        changeMonth: true,
+    	  changeYear: true, 
+    	  maxDate:0,
+        onSelect: function (selected) {
+             // var dt = new Date(selected);
+             var dt = $(this).datepicker('getDate', '+1d'); 
+             dt.setDate(dt.getDate() + 1);
+              $("#validTo").datepicker("option", "minDate", dt);
+          }
+    });
+    
+    $('#validTo').datepicker({
+       dateFormat: finalDateFormatPassSave,
+       changeMonth: true,
+    	 changeYear: true, 
+       onSelect: function (selected) {
+          //var dt = new Date(selected);
+          var dt = 	  $(this).datepicker('getDate', '-1d');
+          dt.setDate(dt.getDate() - 1);
+          $("#validFrom").datepicker("option", "maxDate", dt);
+      }
+    });
+   
 }
 </script>
 
 <!-- Show success message after form submission script -->
-<script>
-	function eduMsgFadeinFunction() {
-		$("#selector4").fadeIn(200);
-        $('#selector4').delay(2000).fadeOut('slow');
-	}
-</script> 
 <!-- End -->
 
 
@@ -155,7 +175,6 @@ function candidatePassportList(candidateId){
                     
                     for (var i = 0; i < response.data.length; i++) { 
                    	 var opt = response.data[i];  
-                   	console.log(opt)
                    	 result  = result + '         <tr>';
                    	 if(opt.passportNumber != null && opt.passportNumber != '' && opt.passportNumber != 'undefined'){
                    	 result  = result + '<td><div><span title = "'+opt.passportNumber+'">'+opt.passportNumber+'</span></div></td>';
@@ -188,9 +207,9 @@ function candidatePassportList(candidateId){
                    		 }
                    		 else{
                    			 if(candidateType == "Candidates"){
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.candidatePassportId+ ');" title="Edit"></a></sec:authorize>';
+                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="editPassportDetailsByRowId('+ opt.candidatePassportId+ ');" title="Edit"></a></sec:authorize>';
                    			 }else{
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.candidatePassportId+ ');" title="Edit"></a></sec:authorize>';
+                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="editPassportDetailsByRowId('+ opt.candidatePassportId+ ');" title="Edit"></a></sec:authorize>';
                    			 }
                    				 
                    		 }
@@ -198,9 +217,9 @@ function candidatePassportList(candidateId){
 								result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
                    		 }else{
                    			 if(candidateType == "Candidates"){
-                   				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.candidatePassportId+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+                   				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="deleteImmigrationRecord(deletePassportDetails,'+opt.candidatePassportId+');" title="Remove"></i></sec:authorize></div></td>';	 
                    			 }else{
-                   				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.candidatePassportId+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+                   				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="deleteImmigrationRecord(deletePassportDetails,'+opt.candidatePassportId+');" title="Remove"></i></sec:authorize></div></td>';
                    			 }
                    			  
                    		 }
@@ -210,6 +229,7 @@ function candidatePassportList(candidateId){
                     result = result +" </tbody>";
                     result = result +"</table>";
                     $("#candidatePassportList").append(result); 
+                    passportPagination();
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
@@ -219,7 +239,103 @@ function candidatePassportList(candidateId){
      }); 
 }
 </script>
+<script>
+function passportPagination(){  
+    $('#candidatePassportPagination').DataTable( { 
+    	"searching": false,
+   	 	"paging":   false,
+        "ordering": false,
+        "info":     false,
+      	"oLanguage": {
+     	    "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
+<script>
+function deletePassportDetails(id){
+	console.log(candidateId);
+	$.ajax({
+        url: vmsUrl + immiModulePath + "/deleteCandidatePassportDetails?id="+id+"&candidateId="+candidateId,
+        type: "GET",
+        success: function (result) {
+        	console.log(result);
+        	if(result == "success"){
+        			showSuccessMsg("Successfully Record Deleted.");
+        			deleteImmigrationPopupDiv();
+        			setTimeout(function(){ candidatePassport(candidateId)}, 1000);
+        	}
+        	
+        }
+    });
+}
+function editPassportDetailsByRowId(id){
+	$("passNum").val(id);
+	$.ajax({
+        url: vmsUrl + immiModulePath + "/getCandidatePassportDetailsById?id="+id,
+        type: "GET",
+        success : function(data) {
+        	if(data != null){
+        		formObj = $('#CandidatePassportform')[0]; // load the child form
+    			var childPopNames=["passportNumber","country", "validFrom","validTo"];
+    			$("#addPass").trigger('click');
+    			immigration.udpatePopupFormdata(formObj,childPopNames,data);
+    			$('#validFrom').val(data.validFromDateStr);
+    			$('#passNum').val(data.id);
+    			$('#validTo').val(data.validToDateStr);
+    			
+    			$('#countryName').val(data.country);
+    			$('#countryName').selectpicker('refresh');
+    			$('#candidatePassportId').val(data.id);	
+        		
+        	}
+        }
+    });
+}
+function savePassportVisaDetails() {
+	
+	if ($("#CandidatePassportform").validate(false, validationSettings)) {
+		$("#passport_save_id").attr("disabled",true);
+			var formData = getFormData("CandidatePassportform");
+			 var candidateId = '${candidateId}';
+			 console.log( "candidateId "+candidateId);
+            $.ajax({
+            url: vmsUrl + immiModulePath + "/savePassportDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId,
+            type : "POST",
+			data : formData,
+			success : function(result) {
+				
+							if (result && result.response === "INVALID_DATA") {
+		                    	 showError(result.responseMessage);
+		                    }else if (result.response === "AWKWARD") {
+		                        location.href = "/errorPage";
+		                    }else if(result.response === 'SUCCESS') {
+		                    	
+									$('#popPassView').hide();
+									$('.popMask').fadeOut();
+									if($('#candidatePassportId').val().trim() != ''){
+										showSuccessMsg("Successfully Updated Passport Details.");
+			                    	}else{
+			                    		showSuccessMsg("Successfully New Passport Details Added.");
+			                    	}
+									//candidatePassport(candidateId);
+									setTimeout(function(){ candidatePassport(candidateId)}, 1000);
+								
+		                    }else{
+		                    	 showError("Operation failed, please try again");
+		                    }
+							$("#passport_save_id").removeAttr("disabled");
+			}
+		});
+		return true;
+	} else {
+		return false;
+	}
+}
+</script>
+<script>
 
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination.
@@ -235,11 +351,6 @@ function candidatePassportList(candidateId){
      1.usage   : used in addEducation() function.
 --%>
 
-<script>
-function closePopup(){
-	 $("#popUpDiv").removeClass("edit-details-active");
-}
-</script>
 
 <%-- 
      @author : sarath kumar.
@@ -269,7 +380,7 @@ var validationSettings = {
 	};
 </script>
 
-          
+         
 
 <script type="text/javascript">
 	(function($) {
@@ -300,7 +411,7 @@ var validationSettings = {
 
 <form id="CandidatePassportform" name="CandidatePassportform" method="post"> 
 		<input type="hidden" id="Passport" name="Passport" value="Passport" >
-		<div class="popUpOut" id="popPassView">
+		<div class="popUpOut" id="popPassView" style="z-index:999999">
 		<input type = "hidden" id="candidatePassportId"  name="candidatePassportId">
 		<div class="popupHead">
 			<h2 class="pull-left mt">Add Passport</h2><a href="javascript:void(0)" class="fa fa-close popCan mt mr" onClick="passportHandler();"></a>
@@ -347,7 +458,7 @@ var validationSettings = {
 			</div>		
 			<div class="clearfix"></div>							
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id="passport_save_id" onclick="immigration.savePassportVisaDetails()">
+            <input value="Save" class="" type="button" id="passport_save_id" onclick="savePassportVisaDetails()">
             <input value="Cancel" class="popCan" type="button" onClick="passportHandler();">
           </div>		
 	

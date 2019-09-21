@@ -25,9 +25,9 @@ function candidateVisa(candidateId){
 	 var candidateType = '${candidateType}';
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
-		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt25">  ';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
 	}else{
-		result = result  +'    <div class="project_tabs_inn_head addUser-org  mt10">  ';
+		result = result  +'    <div class="project_tabs_inn_head addUser-org">  ';
 	}
 	
 	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
@@ -89,6 +89,31 @@ function candidateVisa(candidateId){
   //Tab script
 	//$(".tabcontent").hide();
 	//immigrationTabHandler();
+    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var finalDateFormatVisaSave = getJSDateFormat(locationDate);
+	 $('#visaValidFrom').datepicker({
+	      dateFormat: finalDateFormatVisaSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	      onSelect: function (selected) {
+	           // var dt = new Date(selected);
+	           var dt = 	  $(this).datepicker('getDate', '+1d'); 
+	           dt.setDate(dt.getDate() + 1);
+	            $("#visaValidTo").datepicker("option", "minDate", dt);
+	        }
+	  });
+	  
+	  $('#visaValidTo').datepicker({
+	      dateFormat: finalDateFormatVisaSave,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	        onSelect: function (selected) {
+	            //var dt = new Date(selected);
+	            var dt = 	  $(this).datepicker('getDate', '-1d');
+	            dt.setDate(dt.getDate() - 1);
+	            $("#visaValidFrom").datepicker("option", "maxDate", dt);
+	        }
+	  });
 }
 </script>
 
@@ -135,7 +160,7 @@ function candidateVisaList(candidateId){
         		} else if (response.response === "SUCCESS") {
         			$("#candidateVisaList").empty();
                	 var result = "";
-               	 result = result +"<table id='candidatePassportPagination' class='display' cellspacing='0' width='100%' >"; 
+               	 result = result +"<table id='candidateVisaPagination' class='display' cellspacing='0' width='100%' >"; 
                      result = result +"<thead>"; 
                      result = result +"  <tr>"; 
                      result  = result + '           <th>Visa Type</th>';
@@ -183,15 +208,15 @@ function candidateVisaList(candidateId){
                    	 }else{
                    		 result  = result + '<td><div><span>----</span></div></td>'; 
                    	 }
-                   	 if(opt.candidateVisaId != null && opt.candidateVisaId != '' && opt.candidateVisaId != 'undefined'){
+                   	 if(opt.id != null && opt.id != '' && opt.id != 'undefined'){
                    		 if(window.candidateStatusGlobal == '0'){
                    			 result = result+' <td><div class="tblicons"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
                    		 }
                    		 else{
                    			 if(candidateType == "Candidates"){
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.candidateVisaId+ ');" title="Edit"></a></sec:authorize>';
+                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="immigration.editVisaDetailsByRowId('+ opt.id+ ');" title="Edit"></a></sec:authorize>';
                    			 }else{
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.candidateVisaId+ ');" title="Edit"></a></sec:authorize>';
+                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="immigration.editVisaDetailsByRowId('+ opt.id+ ');" title="Edit"></a></sec:authorize>';
                    			 }
                    				 
                    		 }
@@ -199,9 +224,9 @@ function candidateVisaList(candidateId){
 								result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
                    		 }else{
                    			 if(candidateType == "Candidates"){
-                   				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.candidateVisaId+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
+                   				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="deleteImmigrationRecord(deleteVisaDetails,'+opt.id+');" " title="Remove"></i></sec:authorize></div></td>';	 
                    			 }else{
-                   				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.candidateVisaId+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
+                   				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="deleteImmigrationRecord(deleteVisaDetails,'+opt.id+');" " title="Remove"></i></sec:authorize></div></td>';
                    			 }
                    			  
                    		 }
@@ -211,7 +236,7 @@ function candidateVisaList(candidateId){
                     result = result +" </tbody>";
                     result = result +"</table>";
                     $("#candidateVisaList").append(result); 
-                   // educationPagination();
+                    visaPagination();
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
@@ -221,17 +246,40 @@ function candidateVisaList(candidateId){
      }); 
 }
 </script>
-
+<script>
+function deleteVisaDetails(visaHistoryId){
+	$.ajax({
+        url: vmsUrl + immiModulePath + "/deleteCandidateVisaDetails?visaHistoryId="+visaHistoryId,
+        type: "GET",
+        success: function (result) {
+        	if(result=="success"){
+        			showSuccessMsg("Successfully Record Deleted.");
+        			setTimeout(function(){candidateVisa(candidateId)}, 1000);
+            	    deleteImmigrationPopupDiv(); // removes the existing added delete popup div in html code.
+        	}
+        	
+        }
+    });
+}
+</script>
+<script>
+function visaPagination(){  
+    $('#candidateVisaPagination').DataTable( { 
+    	"searching": false,
+    	 "paging":   false,
+         "ordering": false,
+         "info":     false,
+    	"oLanguage": {
+     	    "sZeroRecords": "", "sEmptyTable": ""
+     	}
+    } );
+}
+</script>
 <%-- 
      @author : sarath kumar.
      this script is for prepare pagination.
      1.usage     : used in candidateVisaList().
 --%>
-
-function closePopup(){
-	 $("#popUpDiv").removeClass("edit-details-active");
-}
-</script>
 
 <%-- 
      @author : sarath kumar.
@@ -277,7 +325,7 @@ var validationSettings = {
 <div class="clearfix">
 <!--popcode start  -->
 		<form id="CandidateVisaform" name="CandidateVisaform" method="post"> 
-		<div class="popUpOut" id="popUpVisa">
+		<div class="popUpOut" id="popUpVisa" style="z-index:999999">
 		<input type = "hidden" id="candidateVisaId"  name="candidateVisaId">
 		 <input type = "hidden" id="visaHistoryId"  name="visaHistoryId">
 		<div class="popupHead">

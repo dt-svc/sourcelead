@@ -4291,7 +4291,7 @@ function profileDetails(candidateId){
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 result = result + '<div id="tab-12" class="project_tabs_inn">';
-							result  = result + '<div class="clearfix" style="height:35px;">';
+							result  = result + '<div class="clearfix" style="height:35px; position: absolute; left: 0; top: 0; width: 350px; z-index:1">';
 							
 							result  = result + '<div class="clearfix project-tabs-menu project-tabs-menu-custom">';
 							result  = result + '<ul class="list-unstyled list-inline col-md-12 mb0 mt2">';
@@ -4299,7 +4299,7 @@ function profileDetails(candidateId){
 							result  = result + '</ul>';
 							result  = result + '</div>';
 							result = result + '</div>';
-							result  = result + '<div class="clearfix"></div>';
+							result  = result + '<div class="clearfix" style="height:35px;"></div>';
 						 result = result + '<div id="immigrationCandidate"></div>';
 						 result = result + '</div>';
 			             result = result+'     </div>';
@@ -4936,15 +4936,55 @@ function sendMailConfirmation(userId,confirmationDate,designation){
 	});
 	
 }
-
+function showSuccessMsg(msg){
+	$("#selector4").fadeIn(200);
+	$('#msgDiv').text(msg)
+	setTimeout(function(){ $('#selector4').hide();$('#msgDiv').text("") }, 1000);
+}
 function cancelRejectPopup() {
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 
 }
-</script>
-<script>
 
+function deleteImmigrationRecord(elem,arg1,arg2){
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <b>Do you want to remove record permanently?</b>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+	result = result +"	</div>";
+	$("#deletepopUp").append(result);
+	$("#remove_immigration_popup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+	}
+function cancelImmigrationDelete(){
+	 deleteImmigrationPopupDiv();
+	}
+function deleteImmigrationPopupDiv(){
+	$("#remove_immigration_popup").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+	$("#deletepopUp").empty();
+}
+function deleteImmigrationRecordById(elem, arg1, arg2){	
+	if(typeof elem ==='function') {
+		if(typeof arg2 == 'undefiend'){
+			elem(arg1);
+		}
+		else{
+		elem(arg1, arg2);
+	}
+	}
+	else{
+		alert("Not a valid Function call.");
+	}
+}
 </script>
+<div id="deletepopUp"></div>
+<input type="hidden" id = "candidateID" value = "${candidateId}">
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 
 
 <%-- <jsp:include page="associatePay.jsp"></jsp:include> --%>

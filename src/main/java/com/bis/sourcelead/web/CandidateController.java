@@ -34,6 +34,7 @@ import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ImmigrationPassportDTO;
 import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationVisaDTO;
+import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 
@@ -839,6 +840,7 @@ public class CandidateController {
 		}
 	/* Below method is used to get the passport details for the Associate.
 	 *  Table Name: CANDIDATE_PASSPORT
+	 *  Currently use in profile tab of associate summary.
 	 */
 	@RequestMapping(value = { "/getAssociatePassportDetails" })
 		public  @ResponseBody ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(HttpServletRequest request,
@@ -868,7 +870,8 @@ public class CandidateController {
 		return reponseList;
 	}
 	/* Below method is used to get the passport details for the Associate.
-	 *  Table Names: CANDIDATE_VISA, CANDIDATE_VISA_HISTORY
+	 *  Table Names: CANDIDATE_VISA, CANDIDATE_VISA_HISTORY.
+	 *  Currently use in profile tab of associate summary
 	 */
 	@RequestMapping(value = { "/getAssociateVisaDetails" })
 	public  @ResponseBody ResponseList<ImmigrationVisaDTO> getAssociateVisaDetails(HttpServletRequest request,
@@ -878,7 +881,6 @@ public class CandidateController {
 				"orgLocations");
 	try {
 		Date toDayDate = new Date();
-		List<Long> expiredVisaIdList= new ArrayList<Long>();
 		if (orgLocations != null) {
 			if (candidateId != null) {
 				List<ImmigrationVisaDTO> visaList = new ArrayList<ImmigrationVisaDTO>();
@@ -889,13 +891,10 @@ public class CandidateController {
 					Date newDate = dateFormat.parse(currentDateStr);
 					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
 				
-
 					if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
 						canVisa.setCurrentStatus("Active");
 					} else {
 						canVisa.setCurrentStatus("Expired");
-						if(canVisa.getStatus() == 1)
-						expiredVisaIdList.add(canVisa.getCandidateVisaId());
 					}
 					canVisa.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(canVisa.getValidFrom())));
 					canVisa.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(canVisa.getValidTo())));
@@ -918,4 +917,53 @@ public class CandidateController {
 	}
 	return reponseList;
 }
+	/* Below method is used to get the passport details for the Associate.
+	 *  Table Names: LCA, LCA_HISTORY,LCA_PLACE_OF_EMPLOYMENT,LCA_VISA_CLARIFICATIONS.
+	 *  Currently use in profile tab of associate summary.
+	 */
+	@RequestMapping(value = { "/getAssociateLcaDetails" })
+	public  @ResponseBody ResponseList<LcaDTO> getAssociateLcaDetails(HttpServletRequest request,
+			@RequestParam(value = "candidateId", required = true) Long candidateId) throws Exception {
+    	ResponseList<LcaDTO> reponseList = new ResponseList<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+	try {
+		Date toDayDate = new Date();
+		if (orgLocations != null) {
+			if (candidateId != null) {
+				List<LcaDTO> lcaList = new ArrayList<LcaDTO>();
+				lcaList = immigrationCommonService.getAssociateLcaDetails(candidateId);
+				for (LcaDTO lcaDto : lcaList) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String currentDateStr = dateFormat.format(toDayDate);
+					Date newDate = dateFormat.parse(currentDateStr);
+					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+				
+
+					if (StringUtils.isNotBlank(lcaDto.getEndDate()) && currentDate.before(commonUtil.stringToDate(lcaDto.getEndDate()))) {
+						lcaDto.setLcaStatus("Active");
+					} else {
+						lcaDto.setLcaStatus("Expired");
+					}
+					lcaDto.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getEndDate())));
+					lcaDto.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getStartDate())));
+				}
+				reponseList.setData(lcaList);
+				reponseList.setResponse(Result.SUCCESS.name());
+				reponseList.setResponseMessage(Result.SUCCESS.getValue());
+			} else {
+				reponseList.setResponse(Result.INVALID_USER.name());
+				reponseList.setResponseMessage(Result.INVALID_USER.getValue());
+			}
+		} else {
+			reponseList.setResponse(Result.SESSION_TIMEDOUT.name());
+			reponseList.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+	} catch (Exception e) {
+		reponseList.setResponse(Result.AWKWARD.name());
+		reponseList.setResponseMessage(Result.AWKWARD.getValue());
+		logger.error(ExceptionUtils.getFullStackTrace(e));
+	}
+	return reponseList;
+ }
 }

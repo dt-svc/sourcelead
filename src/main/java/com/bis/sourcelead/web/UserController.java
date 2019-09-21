@@ -262,7 +262,10 @@ public class UserController {
 			    
 				request.setAttribute("candidateId", candidate.getId());
 				request.setAttribute("userId", user.getId());
-				
+				List<Countries> countryList = countriesService.getAllCountries(); // added for passport details.
+				model.addObject("countryList", countryList); // added for passport countries.
+				List<String> canVisaList = lookUpDataService.getAllVisaByCategory();// added for Visa Types.
+				model.addObject("canVisaList", canVisaList);// added for Visa Types.
 				model.setViewName("users/userSummary");
 			}else{
 				model.setViewName("registration/persmissionDenied");
