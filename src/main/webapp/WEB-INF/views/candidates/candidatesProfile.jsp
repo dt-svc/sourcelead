@@ -992,11 +992,11 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
 							if(candidateType == "Candidates") {
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Skill</button></span>';
 								 '</sec:authorize>';
 							} else {
 								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Skill</button></span>';
 								'</sec:authorize>';
 							}
 							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
@@ -1320,13 +1320,13 @@ function saveCandidateTags(candidateId){
 </script>
 
 <script>
-	function editSkill(candidateId){
+	function editSkill(candidateId,isAssociate,candType){
 		$("#skillName").prop('disabled', false).trigger("chosen:updated");
 		$("#editSkillBtn").remove();
 		$("#editSkillBtnSpan").hide();
 		window.skillCountBefore = $("#skillName :selected").length;
 		var result = '';
-		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Save Skill</button>';
 		$("#saveSkillBtnSpan").empty();
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
@@ -1336,16 +1336,16 @@ function saveCandidateTags(candidateId){
 		
 	}
 
-	function saveSkill(candidateId){
+	function saveSkill(candidateId,isAssociate,candType){
 		$("#skillName").prop('disabled', true).trigger("chosen:updated");
 		window.skillCountAfter = $("#skillName :selected").length;
 		if(skillCountBefore != skillCountAfter){
-			saveSkils(candidateId);
+			saveSkils(candidateId,isAssociate,candType);
 		}
 		$("#saveSkillBtn").remove();
 		$("#saveSkillBtnSpan").hide();
 		var result = '';
-		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Skill</button>';
 		$("#editSkillBtnSpan").empty();
 		$("#editSkillBtnSpan").append(result);
 		$("#editSkillBtnSpan").show();
@@ -1363,15 +1363,15 @@ function saveCandidateTags(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>  
- function saveSkils(candidateId){
+ function saveSkils(candidateId,isAssociate,candType){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined') {
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&skillName="+jsonData
 	 } else {
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -1384,10 +1384,10 @@ function saveCandidateTags(candidateId){
         	} else if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		showSuccessStatusPopup("Visa details updated successfully");
+        		showSuccessStatusPopup("Skills details updated successfully");
         		var candidateType = "Candidates";
-          	  	candidateProfile(candidateId,candidateType);
-          	  	candidateQuickViewProfile(candidateId);
+          	  	candidateProfile(candidateId,candidateType,isAssociate,candType);
+          	  	candidateQuickViewProfile(candidateId,candType);
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {

@@ -64,6 +64,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateGlobalIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateGlobal;
@@ -185,6 +186,9 @@ public class CandidateListRestController {
 	
 	@Autowired
 	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalIndexHelper candidateGlobalIndexHelper;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -1893,18 +1897,28 @@ public class CandidateListRestController {
 	@RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
 	public Response<String> saveOrUpdateOnlySkillBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
-			@RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "skillName", required = false) String skillName, 
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
+		Candidate can = null;
+		CandidateGlobal candidateGlobal = null;
+		String candidateSkills = null;
 		try {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
-				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+					candidateSkills = candidateGlobal.getSkillsName();
+				}else {
+					can = candidateService.getCandidateByCandidateId(candidateId);
+					candidateSkills = can.getSkillsName();
+				}
+				
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				StringBuffer activitySummary = new StringBuffer();
-//				if (null != can && StringUtils.isNotEmpty(skillName)) {
 					ArrayList<String> oldSkills = new ArrayList<>();
-					if (StringUtils.isNotBlank(can.getSkillsName())) {
-						oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+					if (StringUtils.isNotBlank(candidateSkills)) {
+						oldSkills.addAll(Arrays.asList(candidateSkills.split("\\s*,\\s*")));
 					}
 					ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
 					ArrayList<String> actualNewSkills = new ArrayList<>();
@@ -1916,41 +1930,28 @@ public class CandidateListRestController {
 							.append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
 							.append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills))
 							.append(Constants.NEW_VALUE_TAG_END);
-					can.setSkillsName("");
-					can.setSkillsName(skillName);
-					candidateService.saveOrUpdateCandidate(can);
-					candidateService.saveOrUpdateCandidateElkDocument(can);
-					candidateActivityCommonUtil.storeCandidateHistory(can, user);
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
-							activitySummary.toString(), "CANDIDATE");
-					// return "success";
-//				}
+					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						candidateGlobal.setSkillsName("");
+						candidateGlobal.setSkillsName(skillName);
+						candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+						CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
+						candidateActivityCommonUtil.storeCandidateGlobalHistory(candidateGlobal, user);	
+						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_SKILL_UPDATED,
+								activitySummary.toString(), "CANDIDATE");
+					}else {
+						can.setSkillsName("");
+						can.setSkillsName(skillName);
+						candidateService.saveOrUpdateCandidate(can);
+						candidateService.saveOrUpdateCandidateElkDocument(can);
+						candidateActivityCommonUtil.storeCandidateHistory(can, user);
+						
+						candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
+								activitySummary.toString(), "CANDIDATE");
+					}
+					
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-//				} else {
-//					/*
-//					 * ArrayList<String> oldSkills = new ArrayList<>(); if
-//					 * (StringUtils.isNotBlank(can.getSkillsName())) {
-//					 * oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*"))); }
-//					 * ArrayList<String> newSkills = new
-//					 * ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*"))); ArrayList<String>
-//					 * actualNewSkills = new ArrayList<>(); actualNewSkills.addAll(newSkills);
-//					 * newSkills.removeAll(oldSkills); oldSkills.removeAll(actualNewSkills);
-//					 * 
-//					 * activitySummary.append("Skills").append(" : ").append(Constants.
-//					 * OLD_VALUE_TAG_INITIATION) .append(String.join(",",
-//					 * oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
-//					 * .append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",",
-//					 * newSkills)) .append(Constants.NEW_VALUE_TAG_END); can.setSkillsName("");
-//					 * candidateService.saveOrUpdateCandidate(can);
-//					 * candidateService.saveOrUpdateCandidateElkDocument(can);
-//					 * candidateActivityCommonUtil.storeCandidateHistory(can, user);
-//					 * candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
-//					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
-//					 * "CANDIDATE"); return "failed";
-//					 */
-//					response.setResponse(Result.INVALID_DATA.name());
-//					response.setResponseMessage(Result.INVALID_DATA.getValue());
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
