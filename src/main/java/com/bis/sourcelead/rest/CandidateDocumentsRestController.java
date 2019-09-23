@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -30,18 +31,21 @@ import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequestedDocuments;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateDocumentsService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequestedDocumentsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -84,6 +88,12 @@ public class CandidateDocumentsRestController {
 	
 	@Autowired
 	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	/**
 	 * @author Prasad K
@@ -102,22 +112,28 @@ public class CandidateDocumentsRestController {
 	public @ResponseBody Response<String> saveCandidateDocument(CandidateDocumentsDTO candidateDocumentsDTO, HttpServletRequest request)
 			throws Exception {
 		Response<String> response = new Response<>();
+		Integer percentage = 0;
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				candidateDocumentsDTO.setStaticPath(staticPath);
-				// FileUploadUtil.fillUploadedFileInfo(candidateDocumentsDTO,
-				// candidateDocumentsDTO.getFileInfo());
 
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (null != candidateDocumentsDTO.getCandidateId()) {
 					candidateDocumentsService.storeCandidateDocuments(candidateDocumentsDTO,
 							Long.parseLong(candidateDocumentsDTO.getCandidateId()), candidateDocumentsDTO.getDocumentUUID(),
 							orgLocation.getId(), user);
-					Candidate candidate = candidateService
-							.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
-					// return percentage.toString();
+					
+					if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						CandidateGlobal candidateGlobal = candidateGlobalService
+								.getCandidateGlobalByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+						percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
+					}else {
+						Candidate candidate = candidateService
+								.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+						percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+					}
+					
 					response.setObject(percentage.toString());
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -195,14 +211,21 @@ public class CandidateDocumentsRestController {
 	@RequestMapping(value = { "/getCandidateDocumentsListByCandidateId",
 			"rest/getCandidateDocumentsListByCandidateId" }, method = RequestMethod.POST)
 	public ResponseList<CandidateDocumentsDTO> getCandidateDocumentsListByCandidateId(@RequestParam(defaultValue = "0") long candidateId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		ResponseList<CandidateDocumentsDTO> responseList = new ResponseList<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null && candidateId > 0) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				List<CandidateDocumentsDTO> candidateDocumentsList = candidateDocumentsService
-						.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+				List<CandidateDocumentsDTO> candidateDocumentsList =  null;
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidateDocumentsList = candidateDocumentsService
+							.getCandidateGlobalDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+				}else {
+					candidateDocumentsList = candidateDocumentsService
+							.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+				}
+				
 				responseList.setData(candidateDocumentsList);
 				responseList.setResponse(Result.SUCCESS.name());
 				responseList.setResponseMessage(Result.SUCCESS.getValue());
@@ -339,25 +362,31 @@ public class CandidateDocumentsRestController {
 							Constants.CANDIDATE_DELETED_DOCUMENTS, activitySummary.toString(), "CANDIDATE");
 
 				}
-				Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-				if (null != candidate && null != candidate.getId()) {
-					CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-					candidateIndex.setCandidateId(candidate.getId());
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
-							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-
-					// OrgLocations loginOrgLocation = (OrgLocations)
-					// SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-					Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
-					response.setObject(percentage.toString());
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setResponse(Result.INVALID_DATA.name());
-					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				
+				if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+					if (null != candidateGlobal && null != candidateGlobal.getId()) {
+						Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, loginOrgLocation);
+						response.setObject(percentage.toString());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
+				}else {
+					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+					if (null != candidate && null != candidate.getId()) {
+						Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
+						response.setObject(percentage.toString());
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					} else {
+						response.setResponse(Result.INVALID_DATA.name());
+						response.setResponseMessage(Result.INVALID_DATA.getValue());
+					}
 				}
+				
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -444,7 +473,8 @@ public class CandidateDocumentsRestController {
 
 	@RequestMapping(value = "/rejectRequestedDocuments", method = RequestMethod.POST)
 	public @ResponseBody Response<String> rejectRequestedDocuments(@RequestParam(value = "json", required = false) String json,
-			@RequestParam(value = "documentsIds", required = false) String documentsIds, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "documentsIds", required = false) String documentsIds, 
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -452,7 +482,7 @@ public class CandidateDocumentsRestController {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String json1 = "{" + json + "}";
 				JSONObject jsonObj = new JSONObject(json1);
-				requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation, documentsIds);
+				requestedDocumentsService.rejectRequestedDocuments(jsonObj, user, loginOrgLocation, documentsIds,candidateType);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if (user == null) {
@@ -475,14 +505,22 @@ public class CandidateDocumentsRestController {
 			@RequestParam(value = "documentsIds", required = false) String documentsIds,
 			@RequestParam(value = "userId", required = false) Long userId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "candidateId", required = false) Long candidateId) throws Exception {
+			@RequestParam(value = "candidateId", required = false) Long candidateId,
+			@RequestParam(value = "candidateType", required = false) String candidateType) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = userService.getUserById(userId);
 			if (user != null && documentsIds != null && !documentsIds.isEmpty()) {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
+				
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+					requestedDocumentsService.acceptRequestedCandidateGlobalDocuments(user, documentsIds, loginOrgLocation, candidateGlobal);
+				}else {
+					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+					requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
+				}
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if (user == null) {
