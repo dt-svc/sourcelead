@@ -5107,6 +5107,7 @@ public class EMailJobScheduler {
 				Date currentDate = new Date();
 				Date expectedExpiryDate = null;
 				Calendar cal = null;
+				UserRole userRole = null;
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
@@ -5123,7 +5124,7 @@ public class EMailJobScheduler {
 					Map<Candidate, List<CandidatePassport>> passportMap = new HashMap<Candidate, List<CandidatePassport>>();
 					
 					for (CandidatePassport  passportObj : passportListExpiring) { // here for loop preparing Passport list by user base.
-
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
 						if (passportMap.get(passportObj.getCreatedBy()) == null) {
 							passportList = new ArrayList<CandidatePassport>();
 							passportList.add(passportObj);
@@ -5137,7 +5138,7 @@ public class EMailJobScheduler {
 						Candidate toUser = (Candidate)entry.getKey();
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
-						sendPassportExpiresInDaysMailToCandidate(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]));
+						sendPassportExpiresInDaysMailToCandidate(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}	
@@ -5152,6 +5153,7 @@ public class EMailJobScheduler {
 					for (CandidatePassport passportObj : passportList) { // here for loop preparing Passport list by user base.
 
 						logger.info("passportListExpired list size: "+passportList.size()+" expired.");
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
 						if (managerPassportMap.get(passportObj.getCreatedBy()) == null) {
 							passportListByManager = new ArrayList<CandidatePassport>();
 							passportListByManager.add(passportObj);
@@ -5168,7 +5170,7 @@ public class EMailJobScheduler {
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
 						List<CandidatePassport> mapPassportList = entry.getValue();
-						sendPassportExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol);
+						sendPassportExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol, userRole);
 					}
 				}
 				
@@ -5180,7 +5182,7 @@ public class EMailJobScheduler {
 			}
 		}
 	   
-	   private void sendPassportExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus) throws Exception {
+	   private void sendPassportExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
 			
 		      EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -5288,11 +5290,20 @@ public class EMailJobScheduler {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// Passport Expired Notification 
+				EmailScenario notificationScenario = null;
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRES_IN_DAYS_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				String actionLink ="";
+				emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 
 		}
 	
 	   
-	   private void sendPassportExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidatePassport> passportList, OrgLocations ol) throws Exception {
+	   private void sendPassportExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidatePassport> passportList, OrgLocations ol, UserRole userRole) throws Exception {
 		   EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
 		      StringBuilder sb = new StringBuilder();
@@ -5363,16 +5374,14 @@ public class EMailJobScheduler {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
-			/*// LCA manager Expired Notification 
+			// Passport Expired Notification 
 			EmailScenario notificationScenario = null;
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			//   System.out.println("notificationScenario :"+notificationScenario.getBody());
 			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 			notificationScenario.setBody(notificationBody);
-			StringBuilder actionLinkBuilder = new StringBuilder();
-			String actionLink = actionLinkBuilder.append("")
-					.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
-			emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());*/
+			String actionLink ="";
+			emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 			}
 	   
 	   
@@ -5389,6 +5398,7 @@ public class EMailJobScheduler {
 				Date currentDate = new Date();
 				Date expectedExpiryDate = null;
 				Calendar cal = null;
+				UserRole userRole = null;
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
@@ -5404,7 +5414,8 @@ public class EMailJobScheduler {
 
 					Map<Candidate, List<CandidateVisaHistory>> visaMap = new HashMap<Candidate, List<CandidateVisaHistory>>();
 					
-					for (CandidateVisaHistory  visaObj : visaListExpiring) { // here for loop preparing visa list by user base.
+					for (CandidateVisaHistory  visaObj : visaListExpiring) {
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());// here for loop preparing visa list by user base.
 						if (visaMap.get(visaObj.getCreatedBy()) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
@@ -5418,7 +5429,7 @@ public class EMailJobScheduler {
 						Candidate toUser = (Candidate)entry.getKey();
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
-						sendVisaExpiresInDaysMailToCandidate(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]));
+						sendVisaExpiresInDaysMailToCandidate(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}	
@@ -5432,6 +5443,7 @@ public class EMailJobScheduler {
 
 					for (CandidateVisaHistory visaObj : visaListExpiring) { // here for loop preparing Visa list by user base.
 						logger.info("visaListExpired list size: "+visaListExpiring.size()+" expired.");
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
 						if (visaMap1.get(visaObj.getCreatedBy()) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
@@ -5448,7 +5460,7 @@ public class EMailJobScheduler {
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
 						List<CandidateVisaHistory> mapPassportList = entry.getValue();
-						sendVisaExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol);
+						sendVisaExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol, userRole);
 					}
 				}
 				
@@ -5460,7 +5472,7 @@ public class EMailJobScheduler {
 			}
 		}
 	   
-	   private void sendVisaExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidateVisaHistory> visaList, OrgLocations ol, String currPassDayStatus) throws Exception {
+	   private void sendVisaExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidateVisaHistory> visaList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
 			
 		      EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -5568,11 +5580,20 @@ public class EMailJobScheduler {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// visa Expired Notification 
+				EmailScenario notificationScenario = null;
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRES_IN_DAYS_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				String actionLink = "";
+				emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 
 		}
 	
 	   
-	   private void sendVisaExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidateVisaHistory> visaList, OrgLocations ol) throws Exception {
+	   private void sendVisaExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidateVisaHistory> visaList, OrgLocations ol, UserRole userRole) throws Exception {
 		   EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
 		      StringBuilder sb = new StringBuilder();
@@ -5643,16 +5664,14 @@ public class EMailJobScheduler {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
-			/*// LCA manager Expired Notification 
+			// Visa Expired Notification 
 			EmailScenario notificationScenario = null;
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			//   System.out.println("notificationScenario :"+notificationScenario.getBody());
 			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 			notificationScenario.setBody(notificationBody);
-			StringBuilder actionLinkBuilder = new StringBuilder();
-			String actionLink = actionLinkBuilder.append("")
-					.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
-			emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());*/
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 			}
 	
 	 //Passport expiry mail to manager..
