@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -2204,7 +2205,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Lca> getAllLcaList(Date currentDate) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String listQuery = "from Lca lca where  lca.endDate<:currentDate order by lca.createdBy.id";
+		String listQuery = "from Lca lca where  lca.endDate=:currentDate order by lca.createdBy.id";
 		List<Lca> lcaList = session.createQuery(listQuery).setDate("currentDate",currentDate).list();
 		return lcaList;
 	}
@@ -3197,5 +3198,34 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		return lca;
 		
 		
+	}
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate) {
+		try{
+		Session session = this.sessionFactory.getCurrentSession();
+		String listQuery = "from CandidatePassport cp where  cp.validToDate=:expectedExpiryDate and cp.status = "+Constants.RECORD_ACTIVE+" order by cp.createdBy.id";
+		List<CandidatePassport> candidatePassportList = session.createQuery(listQuery).setDate("expectedExpiryDate",expectedExpiryDate).list();
+		return candidatePassportList;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateVisaHistory> getAllVisaHistoryList(Date expectedExpiryDate) {
+		try{
+			Session session = this.sessionFactory.getCurrentSession();
+			String listQuery = "from CandidateVisaHistory cvh where  cvh.validToDate=:expectedExpiryDate and cvh.status = "+Constants.RECORD_ACTIVE+" order by cvh.createdBy.id";
+			List<CandidateVisaHistory> candidateVisaHistoryList = session.createQuery(listQuery).setDate("expectedExpiryDate",expectedExpiryDate).list();
+			return candidateVisaHistoryList;
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}
 	}
 }	

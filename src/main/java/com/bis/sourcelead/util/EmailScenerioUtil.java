@@ -166,7 +166,7 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	notification.setMode(Constants.NOTIFICATION_UNREAD);
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
-	notification.setOrgCode(loginOrgLocation.getOrgCode());
+	notification.setOrgCode(loginOrgLocation.getOrg().getOrgCode());
 	notification.setUserNotificationStatus("Sent");
 	notification.setNotificationStatus(Constants.NOTIFICATION_NOT_DELETED);
 	if(parameterList != null && !parameterList.isEmpty()) {
