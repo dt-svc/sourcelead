@@ -31,7 +31,7 @@ function candidateVisa(candidateId){
 	}
 	
 	result  = result + '<div class="success_pop" id="selector4" style="display: none;">';
-    result  = result + '<i class="fa fa-check-circle"></i><span id="eduMsgDiv"></span>';
+    result  = result + '<i class="fa fa-check-circle"></i><span id="msgDiv"></span>';
     result  = result + '</div>';
 	if(window.candidateStatusGlobal == '0'){
 		if(candidateType == "Candidates"){
@@ -114,15 +114,97 @@ function candidateVisa(candidateId){
 	            $("#visaValidFrom").datepicker("option", "maxDate", dt);
 	        }
 	  });
+	  
+		 
+
 }
 </script>
 
 <!-- Show success message after form submission script -->
 <script>
-	function eduMsgFadeinFunction() {
-		$("#selector4").fadeIn(200);
-        $('#selector4').delay(2000).fadeOut('slow');
+function validateCandidateVisaAndSave() {
+	if ($("#CandidateVisaform").validate(false, validationSettings)) {
+	 var  country =   $('#visaCountry').val();
+	 if(country == '') return;
+	 var candidateId = $("#candidateID").val();
+	 
+	  var idNumberVal = null;
+	  var id = null;
+
+	  
+	id = $("#candidateVisaId").val();
+    visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
+	  
+	  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+		 $.ajax({
+		    	type: "GET",
+		    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+		        success: function(data) {
+		        	if(data == true){
+		        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
+						   $("#visa_save_id").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+                          $("#visa_save_id").removeAttr("disabled");
+                           saveVisaDetails(); // saving the visa details once validation is 
+		        	}
+		        
+		        },
+		    });
+		
+	} else {
+		return false;
 	}
+}
+function saveVisaDetails() {
+	
+	if ($("#CandidateVisaform").validate(false, validationSettings)) {
+		$("#visa_save_id").attr("disabled",true);
+			var formData = getFormData("CandidateVisaform");
+		 	var candidateId = $('#candidateID').val();
+            var immigrationId = $('#immigrationId').val();
+            var nonImmFlag=false;
+            console.log("before "+immigrationId)
+             if(immigrationId == undefined){
+            	    console.log("inside"+immigrationId);
+            	 nonImmFlag = nonImmFlag;
+            	 immigrationId = '';
+             }
+             var visaHistoryId = $('#visaHistoryId').val();
+            $.ajax({
+            url: vmsUrl + immiModulePath + "/saveVisaDetailsPage?candidateId="+candidateId+"&immigrationId="+immigrationId+"&visaHistoryId="+visaHistoryId,
+            type : "POST",
+			data : formData,
+			success : function(result) {
+							if (result && result.response === "INVALID_DATA") {
+		                    	 showError(result.responseMessage);
+		                    }else if (result.response === "AWKWARD") {
+		                        location.href = "/errorPage";
+		                    }else if(result.response === 'SUCCESS') {
+		                    	
+									$("#popUpVisa").hide();
+									$(".popMask").fadeOut(200); // close the popup code															// popup code
+									if($('#candidateVisaId').val().trim() != ''){
+										showSuccessMsg("Successfully Updated Visa Details.");
+			                    	}else{
+			                    		showSuccessMsg("Successfully New Visa Details Added.");
+			                    	}
+									setTimeout(function(){candidateVisa(candidateId)}, 1000);
+								
+		                    }else{
+		                    	 showError("Operation failed, please try again");
+		                    }
+							$("#passport_save_id").removeAttr("disabled");
+							$("#visa_save_id").removeAttr("disabled");
+			}
+		});
+		return true;
+	} else {
+		return false;
+	}
+}
 </script> 
 <!-- End -->
 
@@ -147,10 +229,45 @@ function candidateVisaList(candidateId){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  canVisaDatePattern = 'YYYY-DD-MM'; 
 	  }
+	  
+	 function enableVisaExtensiondDate(expiredVisaIdsLst){
+			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			  var finalDateFormatVisaSave = getJSDateFormat(locationDate);
+			for( var i = 0 ; i<expiredVisaIdsLst.length; i++){
+				 var visaId=expiredVisaIdsLst[i];
+				// console.log("Expired visa id is "+visaId);
+			    $('#visaExtendDate'+visaId).datepicker({
+			      dateFormat: finalDateFormatVisaSave,
+			      changeMonth: true,
+			  	  changeYear: true, 
+			  	  minDate:1,
+			      onSelect: function (selected) {
+			    	  var extensionDate = $(this).val();
+			    	  addvisaExtensionDate($(this).attr("visaId"),extensionDate);
+			         }
+			    });
+			}
+	  };
+    addvisaExtensionDate = function(visaId, extensionDate){
+			 var candidateId = $("#candidateID").val();
+			$.ajax({
+		    	type: "GET",
+		    	 url:vmsUrl + immiModulePath + "/addVisaExtensionDate?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId
+		    	                       +"&immigrationId=&extensionDate="+extensionDate+"&visaId="+visaId, 
+		        success: function(visaDetails) {
+		        	showSuccessMsg("Successfully Visa Date updated.");
+		        	setTimeout(function(){candidateVisa(candidateId)}, 1000);
+		        }
+			});
+			
+		}
+    
+   
 	 $.ajax({  
           type : "GET",
           url: atsUrl+"/getAssociateVisaDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
+        		//console.log(response.data[0].expiredVisaLst);
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
         		} else if (response && response.response === "INVALID_USER") {
@@ -176,7 +293,7 @@ function candidateVisaList(candidateId){
                     
                     for (var i = 0; i < response.data.length; i++) { 
                    	 var opt = response.data[i];  
-                   	console.log(opt)
+                   
                    	 result  = result + '         <tr>';
                     if(opt.visaType != null && opt.visaType != '' && opt.visaType != 'undefined'){
                       	 result  = result + '<td><div><span title = "'+opt.visaType+'">'+opt.visaType+'</span></div></td>';
@@ -214,13 +331,35 @@ function candidateVisaList(candidateId){
                    		 }
                    		 else{
                    			 if(candidateType == "Candidates"){
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="immigration.editVisaDetailsByRowId('+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+                   				result = result+' <td><div class="width50px">';
+                   				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
+                   				if(opt.currentStatus == 'Expired' && opt.status == 1){
+                   				result = result+'<input type="text" class="calendar visaCalendarInput" visaId ='+opt.candidateVisaId+' id=visaExtendDate'+opt.candidateVisaId+' readonly="readonly">';
+                   				}
+                   				else if(opt.currentStatus == 'Active' && opt.status == 1){
+                   					result = result+'<i id="edit" onclick=immigration.editVisaDetailsByRowId('+opt.id+')';
+                   					result = result+'	class="glyphicon glyphicon-pencil cursorPointer"></i>';
+                   				}
+                   				result = result+'   <i id="delete"  onclick=deleteImmigrationRecord(deleteVisaDetails,'+opt.id+')' ;
+               					result = result+'   class="glyphicon glyphicon-trash pull-right cursorPointer"></i></div></td>';
+                   				result = result+'</sec:authorize>';
                    			 }else{
-                   				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="immigration.editVisaDetailsByRowId('+ opt.id+ ');" title="Edit"></a></sec:authorize>';
+                   				result = result+' <td><div class="width50px">';
+                   				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')">';
+                   				if(opt.currentStatus == 'Expired' && opt.status == 1){
+                   				result = result+'<input type="text" class="calendar visaCalendarInput"  visaId ='+opt.candidateVisaId+'  id=visaExtendDate'+opt.candidateVisaId+' readonly="readonly">';
+                   				}
+                   				else if(opt.currentStatus == 'Active' && opt.status == 1){
+                   					result = result+'<i id="edit" onclick=immigration.editVisaDetailsByRowId('+opt.id+')';
+                   					result = result+'  class="glyphicon glyphicon-pencil cursorPointer"></i>';
+                   				}
+                   				result = result+'  <i id="delete"  onclick=deleteImmigrationRecord(deleteVisaDetails,'+opt.id+')';
+               					result = result+'  class="glyphicon glyphicon-trash pull-right cursorPointer"></i></div></td>';
+                   				result = result+'</sec:authorize>'; 
                    			 }
                    				 
                    		 }
-                   		 if(window.candidateStatusGlobal == '0'){
+                   		/*  if(window.candidateStatusGlobal == '0'){
 								result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
                    		 }else{
                    			 if(candidateType == "Candidates"){
@@ -229,13 +368,17 @@ function candidateVisaList(candidateId){
                    				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="deleteImmigrationRecord(deleteVisaDetails,'+opt.id+');" " title="Remove"></i></sec:authorize></div></td>';
                    			 }
                    			  
-                   		 }
+                   		 } */
                    	}
                    	 result  = result + '</tr>';
                      } 
                     result = result +" </tbody>";
                     result = result +"</table>";
                     $("#candidateVisaList").append(result); 
+                    if(response.data[0].expiredVisaLst != 'undefined' 
+        				&& response.data[0].expiredVisaLst != '' && response.data[0].expiredVisaLst != null){
+        			enableVisaExtensiondDate(response.data[0].expiredVisaLst);
+        		   } 
                     visaPagination();
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
@@ -386,11 +529,12 @@ var validationSettings = {
 			 <div class="clearfix"></div>
 		
 		<div class="immiPopFoot">
-            <input value="Save" class="" type="button" id="visa_save_id" onclick="immigration.validateCandidateVisaAndSave()">
+            <input value="Save" class="" type="button" id="visa_save_id" onclick="validateCandidateVisaAndSave()">
             <input value="Cancel" class="popCan" type="button" onClick="popFun();">
           </div>		
 	</div><!--popcode end  -->	
-</div>
+   </div>
+</form>
 <script>
 		 // Add addVisa Div  
 			function popFun() {

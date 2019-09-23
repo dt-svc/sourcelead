@@ -298,7 +298,7 @@ function savePassportVisaDetails() {
 		$("#passport_save_id").attr("disabled",true);
 			var formData = getFormData("CandidatePassportform");
 			 var candidateId = '${candidateId}';
-			 console.log( "candidateId "+candidateId);
+			 //console.log( "candidateId "+candidateId);
             $.ajax({
             url: vmsUrl + immiModulePath + "/savePassportDetailsPage?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId,
             type : "POST",

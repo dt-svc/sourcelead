@@ -4291,7 +4291,7 @@ function profileDetails(candidateId){
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 result = result + '<div id="tab-12" class="project_tabs_inn">';
-							result  = result + '<div class="clearfix" style="height:35px; position: absolute; left: 0; top: 0; width: 350px; z-index:1">';
+							result  = result + '<div class="clearfix zIndex-div">';
 							
 							result  = result + '<div class="clearfix project-tabs-menu project-tabs-menu-custom">';
 							result  = result + '<ul class="list-unstyled list-inline col-md-12 mb0 mt2">';
