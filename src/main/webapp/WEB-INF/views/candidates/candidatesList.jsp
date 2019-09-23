@@ -559,7 +559,7 @@ function candidateSideBar(candidateId,candType){
 			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+',\''+candType+'\');">Documents</a></li>';
 			             '</sec:authorize>';
 			             
-			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+');">References</a></li>';
+			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+',\''+candType+'\');">References</a></li>';
 						 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';

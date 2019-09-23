@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +136,7 @@ public class CandidateReferencesRestController {
 
 	@RequestMapping(value = {"/validateReferEmail","/rest/validateReferEmail"}, method = RequestMethod.POST)
 	public @ResponseBody Response<Boolean> validateReferEmail(@RequestParam("candidateId") Long candidateId,
-			@RequestParam("referId") Long referId, @RequestParam("email") String email) throws Exception {
+			@RequestParam("referId") Long referId, @RequestParam("email") String email, @RequestParam("candidateType") String candidateType) throws Exception {
 		Response<Boolean> response = new Response<>();
 		try {
 			CandidateReferences cr = null;
@@ -144,7 +145,12 @@ public class CandidateReferencesRestController {
 			}
 			Boolean flag = false;
 			if (null == cr) {
-				flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateGlobalId(email, candidateId);
+				}else {
+					flag = candidateReferencesService.validateReferenceEmailByReferEmailAndCandidateId(email, candidateId);
+				}
+				
 			}
 			response.setObject(flag);
 			response.setResponse(Result.SUCCESS.name());
@@ -172,12 +178,21 @@ public class CandidateReferencesRestController {
 	@RequestMapping(value = { "/getCandidateReferencesListByCandidateId",
 			"rest/getCandidateReferencesListByCandidateId" }, method = RequestMethod.POST)
 	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateId(
-			@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode, HttpServletRequest request)
+			@RequestParam(value = "candidateId", required = false) String candidateId, @RequestParam("locationCode") String locationCode, 
+			@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request)
 			throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-		ResponseList<CandidateReferencesDTO> candidateReferencesList = candidateReferencesService
-				.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
+		ResponseList<CandidateReferencesDTO> candidateReferencesList =  null;
+		
+		if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+			candidateReferencesList = candidateReferencesService
+					.getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
+		}else {
+			candidateReferencesList = candidateReferencesService
+					.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
+		}
+		 
 		return candidateReferencesList;
 	}
 
@@ -201,7 +216,6 @@ public class CandidateReferencesRestController {
 			User user = userService.getUserById(candidateReferencesDTO.getLoginUserId());
 			if (user != null) {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(candidateReferencesDTO.getOrgLocationId());
-				Candidate candidate = candidateService.getCandidateById(candidateReferencesDTO.getCandidateId());
 				CandidateReferences candidateReferences = candidateReferencesService
 						.getCandidateReferenceByReferenceId(Long.parseLong(candidateReferencesDTO.getRefId()));
 				if (candidateReferences != null) {
@@ -215,21 +229,8 @@ public class CandidateReferencesRestController {
 					candidateActivityCommonUtil.storeCandidateReferencesHistory(candidateReferences, user);
 					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateReferences.getCandidateId(), "",
 							Constants.CANDIDATE_DELETED_REFERENCES, activitySummary.toString(), "CANDIDATE");
-
-					if (null != candidate && null != candidate.getId()) {
-						CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-						candidateIndex.setCandidateId(candidate.getId());
-						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-						candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
-								Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} else {
-						response.setResponse(Result.INVALID_USER.name());
-						response.setResponseMessage(Result.INVALID_USER.getValue());
-					}
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
@@ -323,12 +324,11 @@ public class CandidateReferencesRestController {
 	 */
 	@RequestMapping(value = "/getCandidateReferencesByCandidateIdAndReferenceId")
 	public Response<CandidateReferences> getCandidateReferencesByCandidateIdAndReferenceId(
-			@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "refId", required = false) Long refId) throws Exception {
 		Response<CandidateReferences> response = new Response<>();
 		try {
 			CandidateReferences candidateReferencesList = candidateReferencesService
-					.getCandidateReferencesByCandidateIdAndReferenceId(candidateId, refId);
+					.getCandidateReferenceByReferenceId(refId);
 			response.setObject(candidateReferencesList);
 			response.setResponse(Result.SUCCESS.name());
 			response.setResponseMessage(Result.SUCCESS.getValue());
