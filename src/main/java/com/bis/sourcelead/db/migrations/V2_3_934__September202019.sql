@@ -1,0 +1,1 @@
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`) VALUES ((SELECT MAX( ID ) FROM `ENTITY_TYPE`), 'managerName', '{{updatedRequirementEmailToManager.managerName}}');
