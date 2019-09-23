@@ -164,17 +164,10 @@ function saveVisaDetails() {
 		$("#visa_save_id").attr("disabled",true);
 			var formData = getFormData("CandidateVisaform");
 		 	var candidateId = $('#candidateID').val();
-            var immigrationId = $('#immigrationId').val();
-            var nonImmFlag=false;
-            console.log("before "+immigrationId)
-             if(immigrationId == undefined){
-            	    console.log("inside"+immigrationId);
-            	 nonImmFlag = nonImmFlag;
-            	 immigrationId = '';
-             }
+           
              var visaHistoryId = $('#visaHistoryId').val();
             $.ajax({
-            url: vmsUrl + immiModulePath + "/saveVisaDetailsPage?candidateId="+candidateId+"&immigrationId="+immigrationId+"&visaHistoryId="+visaHistoryId,
+            url: vmsUrl + immiModulePath + "/saveVisaDetailsPage?candidateId="+candidateId+"&immigrationId=&visaHistoryId="+visaHistoryId,
             type : "POST",
 			data : formData,
 			success : function(result) {
