@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateCommentsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -75,26 +76,17 @@ public class CandidateCommentsRestController {
 	@PreAuthorize("hasAnyRole('ROLE_POST_COMMENTS','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateComment", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCandidateComment(CandidateCommentsDTO candidateCommentsDTO,
-			String candidateId, String submissionId, HttpServletRequest request) throws Exception {
+			Long candidateId, Long submissionId, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				
-				if (StringUtils.isNotEmpty(candidateId)) {
-					Candidate candidate = null;
-					if (StringUtils.isNumeric(candidateId)) {
-						candidate = new Candidate();
-						candidate.setId(Long.parseLong(candidateId));
-					}
-					RequirementSubmission submission = null;
-					if (StringUtils.isNotEmpty(submissionId) && StringUtils.isNumeric(submissionId)) {
-						submission = new RequirementSubmission();
-						submission.setId(Long.parseLong(submissionId));
-					}
+				if (candidateId != null) {
+					
 					if (Validator.validate(candidateCommentsDTO)) {
-					candidateCommentsService.storeCandidateComments(candidateCommentsDTO, user, candidate, orgLocation, submission);
+					candidateCommentsService.storeCandidateComments(candidateCommentsDTO, user, candidateId, orgLocation, submissionId);
 					SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage", "Successfully you have added");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -130,15 +122,22 @@ public class CandidateCommentsRestController {
 	 */
 	@RequestMapping(value = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation", method = RequestMethod.POST)
 	public @ResponseBody ResponseList<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(String candidateId,
-			HttpServletRequest request) throws Exception {
+			String candidateType,HttpServletRequest request) throws Exception {
 		ResponseList<CandidateComments> response = new ResponseList<>();
+		List<CandidateComments> candidateCommentsList = null;
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (StringUtils.isNotEmpty(candidateId)) {
-					List<CandidateComments> candidateCommentsList = candidateCommentsService
-							.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation);
+					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						candidateCommentsList = candidateCommentsService
+								.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation.getId());
+					}else {
+						candidateCommentsList = candidateCommentsService
+								.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation);
+					}
+					 
 					response.setData(candidateCommentsList);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());

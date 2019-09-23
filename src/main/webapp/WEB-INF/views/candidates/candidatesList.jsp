@@ -472,13 +472,13 @@ function candidateSideBar(candidateId,candType){
 			            result = result+'         <div class="pull-right cmt-button">';
 			            result = result+'          <span class="comments-button">';
 			            
-			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+',\''+candType+'\')">';
 			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
 			            result = result+'            </button>';
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+',null,\''+candType+'\');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -562,7 +562,7 @@ function candidateSideBar(candidateId,candType){
 			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+',\''+candType+'\');">References</a></li>';
 						 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+',null,\''+candType+'\');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_CANDIDATE_REQUIREMENT_HISTORY\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -685,7 +685,7 @@ function candidateSideBar(candidateId,candType){
            
       }); 
 	  
-	  savedCommentAndCount(candidateId);
+	  savedCommentAndCount(candidateId,candType);
 				
 }
 </script>
@@ -1889,12 +1889,12 @@ function exportToExcel(){
 </script>
 
 <script>
-function showComment(candidateId){
+function showComment(candidateId,candType){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
 	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
-	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
+	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+',\''+candType+'\')">';
 	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
 	    result = result+'              </span>';
 		result = result+'	        </form>';
@@ -1916,7 +1916,7 @@ function closeComment(){
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script type="text/javascript">
-	function addComment(candidateId){
+	function addComment(candidateId,candType){
 			var validationSettings = {
 			        errorMessagePosition : 'element',
 			        borderColorOnError : '',
@@ -1928,13 +1928,13 @@ function closeComment(){
 				$("#submit_comment").attr("disabled", "disabled");
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				
-				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,formData,function(result){
+				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,formData,function(result){
 					if (result && result.response === "INVALID_USER") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
-		    			savedCommentAndCount(candidateId);
+		    			savedCommentAndCount(candidateId,candType);
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
@@ -1958,10 +1958,10 @@ function closeComment(){
 
 
 <script>
-function savedCommentAndCount(candidateId){
+function savedCommentAndCount(candidateId,candType){
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,        
          success :function(data) {
         	 if (data && data.response === "INVALID_DATA") {
         		    showError(data.responseMessage);
@@ -1993,13 +1993,13 @@ function savedCommentAndCount(candidateId){
    				            result = result+'         <div class="pull-right cmt-button">';
    				            result = result+'          <span class="comments-button">';
    				            
-   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+',\''+candType+'\')">';
    				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
    				            result = result+'            </button>';
    				            result = result+'            <div class="add-comment">';
    				            result = result+'            </div>';
    				            result = result+'          </span>';
-   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+',null,\''+candType+'\');">View more <span class="label label-warning">'+totalComments+'</span></a>';
    				 			result = result+'		</div>';
    				            result = result+'     </div>';
    	 			           
