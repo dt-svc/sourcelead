@@ -53,9 +53,9 @@ public interface ImmigrationCommonService {
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user,Long immigrationId) throws Exception;
 	
-	CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,Long immigrationId,  Long visaHistoryId)throws Exception;
+	CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,String immigrationId,  Long visaHistoryId)throws Exception;
 	
-	CandidatePassport savePassportDetails(ImmigrationPassportDTO immigrationPassportDTO, User user, OrgLocations orgLocations,Long immigrationId)throws Exception;
+	CandidatePassport savePassportDetails(ImmigrationPassportDTO immigrationPassportDTO, User user, OrgLocations orgLocations,String immigrationId)throws Exception;
 	
 	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId,Long immigrationId) throws Exception;
 
@@ -238,7 +238,7 @@ public interface ImmigrationCommonService {
 	ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId);
 
 	CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,
-			long immigrationId);
+			String immigrationId);
 	
 	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
 	ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
