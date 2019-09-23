@@ -19,6 +19,7 @@ $(document).ready(function(){
     
     <div id="loading"></div>
     <div class="project_wrap newDashSection newDashSectionMdu clearfix">
+    <form:form id="createUser_form"  name="createUser_form" method="post">
         <div class="newDashLeft">
         <div id="tabsListDiv"></div>
         </div>
@@ -34,7 +35,7 @@ $(document).ready(function(){
     </div>
 
         </div>
-
+	</form:form>
 	</div>
 	<div id="actionsPopUp"></div>
   </section>
@@ -42,22 +43,24 @@ $(document).ready(function(){
   
   <script>
   function saveCustomModuleConfiguration(){
-	  alert("Hi");
 	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-		
+	  var customDashBoardConfUUID = '${customDashBoardConfUUID}';
+	  alert(customDashBoardConfUUID);
 	  var subModuleIds = [];
 		 $("input[name='subModule[]']:checked").each( function (i) {
 			 subModuleIds[i] = $(this).val();
 		});
-		 alert(subModuleIds.length);
+		 alert(subModuleIds);
 		if(subModuleIds.length > 0){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
-		    	url: sourceleadUrl+"/saveRoleActions?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid+"&actionIds="+actionIds,
-		        success: function(result) {
-		        	if((result == 'success')){
-		        		location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
+		    	url: sourceleadUrl+"/saveModuleDashBoardConfiguration?${_csrf.parameterName}=${_csrf.token}&customDashBoardConfUUID="+customDashBoardConfUUID+"&subModuleIds="+subModuleIds,
+		        success: function(json) {
+		        	if((json.response == 'SUCCESS')){
+		        		alert("Sucess");
+		        		//location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
+		        		location.replace(sourceleadUrl+"/configureCustomDashBoard"); 
 			        } 
 		        },
 		 }); 
@@ -115,8 +118,14 @@ function getRoleBasedModules(){
 				for(var j=0;j<json.subTabsDTO.length;j++){
 					var opt = json.subTabsDTO[j];
 					output = output + '<li class="clearfix">';
-					output = output + '<input id="sTab'+opt.subTabId+'" value=" " class="checkbox-custom" name="subModule[]" type="checkbox">';
-					output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					if(opt.isSubTabConfigured == 'NO'){
+						output = output + '<input checked id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					}else{
+						output = output + '<input id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
+					}
+					
 					output = output + '</li>';
 						
 				}
