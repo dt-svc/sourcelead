@@ -196,59 +196,60 @@ public class LeaveManagementReportsRestController {
 				
 					
 			leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
-			List<LeaveReportView> list = leaveReportsList.getData();
-	        for(LeaveReportView lrv : list){
-	        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
-	    		 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getToDate());
-	        }
-	    	leaveReportsList.getData().stream().forEach(u -> {
-	 		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
-	 		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
-	 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
-	 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
-	 		   
-	 		   
-	 		  LeaveType leaveType = new LeaveType() ;
-	 		  leaveType.setId(u.getLeaveTypeId());
-	 		  leaveType.setDuration(u.getDuration());
-	 		  leaveType.setIncludeWeekoff(u.getIncludeWeekoff());
-	 		  leaveType.setIncludeHolidays(u.getIncludeHolidays());
-				Leave leave = new Leave();
-				leave.setFromDate(u.getFromDate());
-				if(StringUtils.isNotBlank(hrLeaveReportDTO.getEndDate()))
-					leave.setToDate( u.getToDate());
-				
-				if(StringUtils.isNotBlank(u.getFromHalfDay())) {
-					leave.setFromHalfDay(u.getFromHalfDay());
-				}
-				if(StringUtils.isNotBlank(u.getToHalfDay())) {
-					leave.setToHalfDay(u.getToHalfDay());
-				}
-				if(StringUtils.isNotBlank(u.getFromDateFromHalfTime())) {
-					leave.setFromDateFromHalfTime(u.getFromDateFromHalfTime());
-				}
-				if(StringUtils.isNotBlank(u.getFromDateToHalfTime())) {
-					leave.setFromDateToHalfTime(u.getFromDateToHalfTime());
-				}
-				if(StringUtils.isNotBlank(u.getToDateFromHalfTime())) {
-					leave.setToDateFromHalfTime(u.getToDateFromHalfTime());
-				}
-				if(StringUtils.isNotBlank(u.getToDateToHalfTime())) {
-					leave.setToDateToHalfTime(u.getToDateToHalfTime());
-				}
-				if(u.getUserId() !=null) {
-					User user=new User();
-					user.setId(u.getUserId());
-					leave.setUser(user);
-				}
-				float noOfDays = 0f;
-				noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocation,leaveType,leave,"Duration");
-				String noOfDays1 = String.valueOf(noOfDays);
-				u.setNoOfDays(noOfDays1);
-	 		   
-	 	   });
-	    	
-
+		
+			if(leaveReportsList.getData() != null) {
+				List<LeaveReportView> list = leaveReportsList.getData();
+		        for(LeaveReportView lrv : list){
+		        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
+		    		 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getToDate());
+		        }
+		    	leaveReportsList.getData().stream().forEach(u -> {
+		 		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
+		 		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
+		 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+		 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+		 		   
+		 		   
+		 		  LeaveType leaveType = new LeaveType() ;
+		 		  leaveType.setId(u.getLeaveTypeId());
+		 		  leaveType.setDuration(u.getDuration());
+		 		  leaveType.setIncludeWeekoff(u.getIncludeWeekoff());
+		 		  leaveType.setIncludeHolidays(u.getIncludeHolidays());
+					Leave leave = new Leave();
+					leave.setFromDate(u.getFromDate());
+					if(StringUtils.isNotBlank(hrLeaveReportDTO.getEndDate()))
+						leave.setToDate( u.getToDate());
+					
+					if(StringUtils.isNotBlank(u.getFromHalfDay())) {
+						leave.setFromHalfDay(u.getFromHalfDay());
+					}
+					if(StringUtils.isNotBlank(u.getToHalfDay())) {
+						leave.setToHalfDay(u.getToHalfDay());
+					}
+					if(StringUtils.isNotBlank(u.getFromDateFromHalfTime())) {
+						leave.setFromDateFromHalfTime(u.getFromDateFromHalfTime());
+					}
+					if(StringUtils.isNotBlank(u.getFromDateToHalfTime())) {
+						leave.setFromDateToHalfTime(u.getFromDateToHalfTime());
+					}
+					if(StringUtils.isNotBlank(u.getToDateFromHalfTime())) {
+						leave.setToDateFromHalfTime(u.getToDateFromHalfTime());
+					}
+					if(StringUtils.isNotBlank(u.getToDateToHalfTime())) {
+						leave.setToDateToHalfTime(u.getToDateToHalfTime());
+					}
+					if(u.getUserId() !=null) {
+						User user=new User();
+						user.setId(u.getUserId());
+						leave.setUser(user);
+					}
+					float noOfDays = 0f;
+					noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocation,leaveType,leave,"Duration");
+					String noOfDays1 = String.valueOf(noOfDays);
+					u.setNoOfDays(noOfDays1);
+		 		   
+		 	   });	
+			}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
