@@ -2725,8 +2725,10 @@ function exportPipelineToExcel(requirementId,submissionType){
 	 var workflowId ='${workflowId}';  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
-      if(emptypilpeline > 0 ){
+      if(emptypilpeline > 0 && submissionType != 'all'){
           window.location.href = atsUrl+"/getWorkflowSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&workflowId="+workflowId+"&exportType=xls";
+	  }else if(emptypilpeline > 0 && submissionType == 'all'){
+		  window.location.href = atsUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -2746,13 +2748,17 @@ function exportPipelineToExcel(requirementId,submissionType){
 
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
+	
 	$('.export_pipline').hide();
 	 var workflowId ='${workflowId}';  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
-	  if(emptypilpeline > 0 ){
+	  if(emptypilpeline > 0 && submissionType != 'all'){
 		  window.location.href = atsUrl+"/getWorkflowSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&workflowId="+workflowId+"&exportType=pdf";
-	  }else{
+	  }else if(emptypilpeline > 0 && submissionType == 'all'){
+		  window.location.href = atsUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+	  }
+	  else{
 		  var result = "";
 			/* result = result +"	<div class='project_inn_mask'></div>"; */
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
