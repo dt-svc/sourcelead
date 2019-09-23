@@ -1,4 +1,4 @@
-package com.bis.sourcelead.clockInOutUtil;
+package com.bis.sourcelead.clockinout.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -16,7 +16,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.bis.sourcelead.clockInOutDTO.PreviousNextDTO;
+import com.bis.sourcelead.clockinout.dto.PreviousNextDTO;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.CommonUtil;
