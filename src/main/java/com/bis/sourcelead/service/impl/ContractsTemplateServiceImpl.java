@@ -269,7 +269,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
 		
-        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+        Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLocation.getTimeZoneId()));
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
