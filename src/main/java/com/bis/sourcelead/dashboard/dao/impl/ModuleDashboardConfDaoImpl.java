@@ -2,7 +2,9 @@ package com.bis.sourcelead.dashboard.dao.impl;
 
 import java.util.List;
 
+
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -56,5 +58,26 @@ private static final Logger logger = LoggerFactory.getLogger(CustomDashBoardConf
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	@Override
+	@Transactional
+	public boolean deleteModuleConfByDashBoardId(Long dashBoardConfId)
+	{
+		boolean isDeleted = false;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "delete from CustomModuleConfiguration custMod where custMod.dashBoardConfId.id =:dashBoardConfId ";
+			Query qry = session.createQuery(query).setLong("dashBoardConfId", dashBoardConfId);
+			int i = qry.executeUpdate();
+			if( i >0) {
+				isDeleted = true;
+			}
+			return isDeleted;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isDeleted;
 	}
 }

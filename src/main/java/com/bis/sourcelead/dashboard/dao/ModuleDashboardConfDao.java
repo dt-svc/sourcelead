@@ -7,4 +7,6 @@ public interface ModuleDashboardConfDao {
 	CustomModuleConfiguration saveModuleConfiguration(CustomModuleConfiguration customModConf);
 
 	CustomModuleConfiguration getSubModuleByIdAndConfDashBoardId(Long subModuleId,Long confDashBoardId);
+
+	boolean deleteModuleConfByDashBoardId(Long dashBoardConfId);
 }

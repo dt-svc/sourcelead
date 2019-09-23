@@ -35,6 +35,7 @@ public class ModuleDashboardConfServiceImpl implements ModuleDashboardConfServic
 		
 		try {
 			 CustomDashBoardConfiguration dashBoardConf = customDashBoardConfDao.getCustomDashboardConfByUUID(moduleConfDto.getCustomDashBoardConfUUID(), orgLocation.getId());
+			 boolean isExistedConfRemoved = moduleDashboardConfDao.deleteModuleConfByDashBoardId(dashBoardConf.getId());
 			 String[] commaSeparatedArr = moduleConfDto.getSubModuleIds().split("\\s*,\\s*");
 			 List<String> subIds = Arrays.stream(commaSeparatedArr).collect(Collectors.toList());
 			 for(String subId : subIds) {
