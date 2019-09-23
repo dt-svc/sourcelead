@@ -32,7 +32,7 @@
 	<div class="styleTables">
 		<div id="salarySetupListLoading"></div>
 		<div id="choicepopUp"></div>
-		<div id="payrollSalarySetupList" class="datatable_filter"></div>
+		<div id="payrollSalarySetupList" class="project_wrap_table datatable_filter"></div>
 	</div>
   </div>
 </section>
@@ -144,7 +144,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	    	  	"render": function(data, type, opt, meta) {
 	    	  		 var result = "";
 	    	  		 var pname = opt.name+" ("+opt.shortCode+")";
-	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show tbldata-dotdot_140'><span title='"+pname+"'>"+pname+"</span><i class='fa fa-binoculars'></i></div></a></td>";
+	    	  		 result = result +"<td><a href='${SourceLeadWeb_pmsUrl}/payrollPayheadSummary?uuid="+opt.uuid+"'><div class='proj_show'><div class='pull-left' title='"+pname+"'>"+pname+"</div><i class='fa fa-binoculars'></i></div></a></td>";
 		             return result;
 	    	  	}
 	      },{
@@ -165,15 +165,22 @@ function salarySetupListPagination(url,sourceleadUrl){
 	          },{
 		    	  "targets": colIndex++,
 	              "data": "formula",
+	              "data": "method",
 	              "render": function ( data, type, opt, meta ) {
 	            	  var result = "";
 	            	  var pFormula = "";
 	            	  if(opt.formula != null && opt.formula != '' && opt.formula != 'undefined'){
-	            		  pFormula = opt.formula;
-	            	  }else{
+	            		  
+		            	  if( opt.method == '% of CTC'){
+		            		  pFormula = opt.formula+"%";           		  
+		            	  }else{
+		            		 pFormula = opt.formula;
+		            	      }
+		            	  }
+	            	  else{
 	            		  pFormula = "--";
 	            	  }
-	            	  result = result +"<td><div><span id='formulaSpan"+opt.uuid+"'>"+pFormula+"</span></div></td>";
+	            	  result = result +"<td><div class='tblminwidth-100 text-center' id='formulaSpan"+opt.uuid+"'>"+pFormula+"</div></td>";
 	            	  return result;
 	              }
 		     },{
@@ -183,7 +190,7 @@ function salarySetupListPagination(url,sourceleadUrl){
 	              "render": function ( data, type, opt, meta ) {
 	            	    var result = "";
 	            	    result = result +"<td>";
-	            	    result = result +"<div class='tbldata-dotdot_50'>";
+	            	    result = result +"<div class='tbldata-dotdot_80'>";
 	            	    if(opt.isFormulaEditable != 'N'){
 	            	    	result = result +"<a href='javascript:void(0)' title='Set' id="+opt.uuid+" onClick='salarySetup(this); '>Set</a>";
 	            	    }
