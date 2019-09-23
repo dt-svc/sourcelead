@@ -392,7 +392,7 @@ function candidateVisaList(candidateId){
 <script>
 function deleteVisaDetails(visaHistoryId){
 	$.ajax({
-        url: vmsUrl + immiModulePath + "/deleteCandidateVisaDetails?visaHistoryId="+visaHistoryId,
+        url: vmsUrl + immiModulePath + "/deleteCandidateVisaDetails?visaHistoryId="+visaHistoryId+"&candidateId="+candidateId,
         type: "GET",
         success: function (result) {
         	if(result=="success"){
