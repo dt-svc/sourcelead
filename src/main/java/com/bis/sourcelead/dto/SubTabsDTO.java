@@ -7,6 +7,8 @@ public class SubTabsDTO {
 	private String subTabName;
 	
 	private String subTabDisplayName;
+	
+	private String isSubTabConfigured;
 
 	public Long getSubTabId()
 	{
@@ -36,6 +38,16 @@ public class SubTabsDTO {
 	public void setSubTabDisplayName(String subTabDisplayName)
 	{
 		this.subTabDisplayName = subTabDisplayName;
+	}
+
+	public String getIsSubTabConfigured()
+	{
+		return isSubTabConfigured;
+	}
+
+	public void setIsSubTabConfigured(String isSubTabConfigured)
+	{
+		this.isSubTabConfigured = isSubTabConfigured;
 	}
 	
 	
