@@ -20,6 +20,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -50,6 +51,7 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		
 		CandidateReferences candidateReferences = null;
 		Candidate candidate = new Candidate();
+		CandidateGlobal candidateGlobal = new CandidateGlobal();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
 		if(candidateId !=null){
@@ -58,8 +60,15 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
        	    }else{
        	    	candidateReferences = new CandidateReferences();
        	    }
-		candidate.setId(candidateId);
-		candidateReferences.setCandidateId(candidate);
+        
+        	if(StringUtils.isNotBlank(candidateReferencesDTO.getCandidateType()) && candidateReferencesDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+        		candidateGlobal.setId(candidateId);
+        		candidateReferences.setCandidateGlobalId(candidateGlobal);
+        	}else {
+        		candidate.setId(candidateId);
+        		candidateReferences.setCandidateId(candidate);
+        	}
+		
 		
 		orgLocations.setId(orgLocationId);
 		candidateReferences.setOrgLocationId(orgLocations);
@@ -128,9 +137,11 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		
 		candidateActivityCommonUtil.storeCandidateReferencesHistory(candidateReferences, user);
 		
-		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
-		
-		//saveOrUpdateCandidateElkDocumentWithReferenceDetails(candidateReferences.getCandidateId(),orgLocationId);
+		if(StringUtils.isNotBlank(candidateReferencesDTO.getCandidateType()) && candidateReferencesDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+			candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
+		}else {
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
+		}
 		
 		return candidateReferences;
 	
@@ -201,6 +212,39 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	@Override
 	public Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception {
 		return candidateReferencesDao.validateReferenceEmailByReferEmailAndCandidateId(referenceEmail, candidateId);
+	}
+
+	@Override
+	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(
+			Long candidateId, Long orgLocationId, String loginUserCode) throws Exception {
+
+		List<CandidateReferences> referList =  candidateReferencesDao.getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(candidateId, orgLocationId);
+		ResponseList<CandidateReferencesDTO> responseReferList = new ResponseList<>();
+		List<CandidateReferencesDTO> referDTOLIst = new ArrayList<>();
+		for(CandidateReferences candiRefer : referList){
+			CandidateReferencesDTO refer = new CandidateReferencesDTO();
+			refer.setId(candiRefer.getId());
+			refer.setRefId(candiRefer.getId().toString());
+			refer.setName(candiRefer.getName());
+			refer.setEmail(candiRefer.getEmail());
+			refer.setMobilePhone(candiRefer.getMobilePhone());
+			refer.setRelation(candiRefer.getRelation());
+			refer.setComment(candiRefer.getComment());
+			refer.setDesignation(candiRefer.getDesignation());
+			refer.setCandidateId(candidateId);
+			refer.setOrgLocationId(orgLocationId);
+			refer.setUserCode(loginUserCode);
+			referDTOLIst.add(refer);
+		}
+		responseReferList.setData(referDTOLIst);
+ 		return responseReferList;
+	
+	}
+
+	@Override
+	public Boolean validateReferenceEmailByReferEmailAndCandidateGlobalId(String referenceEmail, Long candidateId)
+			throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndCandidateGlobalId(referenceEmail, candidateId);
 	}
 
 }
