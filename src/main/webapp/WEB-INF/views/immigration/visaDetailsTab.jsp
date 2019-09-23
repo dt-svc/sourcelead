@@ -56,7 +56,7 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				    
 				        <td>
-				        <div class="tblminwidth-100">
+				        <div class="width50px">
 				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
 				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
 				        </c:if>
@@ -67,12 +67,12 @@
 					</c:if>
 				<i id="delete" 
 				 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i> </div></td>
+				 class="glyphicon glyphicon-trash pull-right cursorPointer"></i> </div></td>
 				    </c:when>
 				    <c:otherwise>
 				        <c:choose>
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						      <td><div class="tblminwidth-100">
+						      <td><div class="width50px">
 				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
 				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
 						       </c:if>
@@ -83,7 +83,7 @@
 								</c:if>
 								<i id="delete" 
 							 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
-							 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+							 class="glyphicon glyphicon-trash pull-right cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
 						    </c:otherwise>

@@ -1323,7 +1323,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/saveVisaDetailsPage" }, method = RequestMethod.POST)
 	public Response<String> saveVisaDetailsPage(ImmigrationVisaDTO immigrationVisaDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId,
 			@RequestParam(value = "visaHistoryId", required = false) Long visaHistoryId) {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1336,6 +1336,8 @@ public class ImmigrationController {
 		if(visaHistoryId != null) {
 			immigrationVisaDTO.setId(visaHistoryId);// setting value as "N"
 		}
+		// immigrationId changed from Long to String when VISA details added form associate summary we don't  get immigration id.
+	    // validation check added for immigrationId in service layer.
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationVisaDTO)) {
@@ -1377,12 +1379,13 @@ public class ImmigrationController {
 				"orgLocations");
 		Response<String> response = new Response<>();
 		logger.debug("Candidate ID ----> :  " + immigrationPassportDTO.getCandidateId());
+		 // immigrationId changed from Long to String when PASSPORT details added form associate summary we don't get immigration id.
+		 // validation check added for immigrationId in service layer.
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationPassportDTO)) {
 					
-					immigrationCommonService.savePassportDetails(immigrationPassportDTO, user, orgLocations,
-							Long.parseLong(immigrationId));
+					immigrationCommonService.savePassportDetails(immigrationPassportDTO, user, orgLocations,immigrationId);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1814,7 +1817,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/addVisaExtensionDate" })
 	public void addCandidateExtensionDatebyVisaId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
-			@RequestParam(value = "immigrationId", required = true) long immigrationId,
+			@RequestParam(value = "immigrationId", required = true) String immigrationId,  
 			@RequestParam(value = "extensionDate", required = true) String extensionDate,
 			@RequestParam(value = "visaId", required = true) long visaId) throws Exception {
 		logger.debug(" inisde getCandidateVisaDetailsByVisaNuimebr controller test -->");
