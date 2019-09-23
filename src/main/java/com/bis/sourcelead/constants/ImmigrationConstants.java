@@ -70,7 +70,11 @@ public class ImmigrationConstants {
 	
 	public static final String PASSPORT_EXPIRED_NOTIFICATION_TO_REPORTINGMANAGER = "PassportExpiredNotificationToReportingManager";
 	
+	public static final String PASSPORT_EXPIRES_IN_DAYS_NOTIFICATION_TO_REPORTINGMANAGER = "PassportExpiresInDaysNotificationToReportingManager";
+	
 	public static final String VISA_EXPIRED_NOTIFICATION_TO_REPORTINGMANAGER = "VisaExpiredNotificationToReportingManager";
+	
+	public static final String VISA_EXPIRES_IN_DAYS_NOTIFICATION_TO_REPORTINGMANAGER = "VisaExpiresInDaysNotificationToReportingManager";
 	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
