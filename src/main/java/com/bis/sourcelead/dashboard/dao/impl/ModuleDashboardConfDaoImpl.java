@@ -43,12 +43,12 @@ private static final Logger logger = LoggerFactory.getLogger(CustomDashBoardConf
 
 	@Override
 	@Transactional
-	public CustomModuleConfiguration getSubModuleById(Long subModuleId)
+	public CustomModuleConfiguration getSubModuleByIdAndConfDashBoardId(Long subModuleId,Long confDashBoardId)
 	{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CustomModuleConfiguration customModuleConfiguration where customModuleConfiguration.subTabId = :subModuleId";
-			List<CustomModuleConfiguration> list = session.createQuery(query).setLong("subModuleId", subModuleId).list();
+			String query = "from CustomModuleConfiguration customModConf where customModConf.subTabId = :subModuleId and customModConf.dashBoardConfId.id=:dashBoardConfId";
+			List<CustomModuleConfiguration> list = session.createQuery(query).setLong("subModuleId", subModuleId).setLong("dashBoardConfId", confDashBoardId).list();
 			if(list != null && list.size() >0) {
 				return list.get(0);
 			}

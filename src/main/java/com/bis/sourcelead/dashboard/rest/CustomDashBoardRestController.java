@@ -308,10 +308,12 @@ public class CustomDashBoardRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getRoleBasedModules", method = RequestMethod.GET)
-	public @ResponseBody List<TabsDTO> getRoleBasedModules(HttpServletRequest req,HttpServletResponse res) throws Exception
+	public @ResponseBody List<TabsDTO> getRoleBasedModules(@RequestParam(value="custmDashBoardConfUUID",required = false) String custmDashBoardConfUUID,HttpServletRequest req,HttpServletResponse res) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
-		return customDashboardConfService.getRoleBasedModules(orgLocation.getId(),5589l);
+		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(req, "loginUserRoleId");
+		CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(custmDashBoardConfUUID, orgLocation.getId());
+		return customDashboardConfService.getRoleBasedModules(orgLocation.getId(),roleId,dashBoard.getId());
 	}
 	
 	

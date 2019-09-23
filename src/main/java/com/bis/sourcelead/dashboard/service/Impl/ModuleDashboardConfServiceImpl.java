@@ -57,9 +57,10 @@ public class ModuleDashboardConfServiceImpl implements ModuleDashboardConfServic
 	}
 
 	@Override
-	public CustomModuleConfiguration getSubModuleById(Long subModuleId)
+	public CustomModuleConfiguration getSubModuleByIdAndConfDashBoardId(Long subModuleId,Long confDashBoardId)
 	{
-		return moduleDashboardConfDao.getSubModuleById(subModuleId);
+		return moduleDashboardConfDao.getSubModuleByIdAndConfDashBoardId(subModuleId,confDashBoardId);
 	}
+
 	
 }
