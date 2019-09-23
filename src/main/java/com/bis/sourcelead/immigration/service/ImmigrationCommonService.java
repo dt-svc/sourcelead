@@ -82,7 +82,7 @@ public interface ImmigrationCommonService {
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
 	//passport delete
-	 void removeCandidateVisaDetails(Long visaHistoryId);
+	 void removeCandidateVisaDetails(Long visaHistoryId, Long candidateId, User user, OrgLocations orgLocations);
 		 
 	 //passport delete
 	 void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations);

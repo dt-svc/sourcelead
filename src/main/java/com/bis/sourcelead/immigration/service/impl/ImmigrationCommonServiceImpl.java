@@ -963,6 +963,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Immigration immigration = immigrationCommonDao.getImmigrationById(immigrationId);
 		candidate.setCandidateId(familyDetailsDto.getCandidateId());
 		familyDetails.setCandidate(candidate);
+		familyDetails.setOrgLocationId(orgLocations);
 		familyDetails.setFirstName(familyDetailsDto.getFirstName());
 		familyDetails.setMiddleName(familyDetailsDto.getMiddleName());
 		familyDetails.setLastName(familyDetailsDto.getLastName());
@@ -1051,6 +1052,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		}
 		
 		candidateVisa.setCandidate(candidate);
+		candidateVisa.setOrgLocationId(orgLocations);
 		candidateVisa.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidateVisa.setUpdatedDate(commonUtil.currentDate());
 		candidateVisa.setUpdatedBy(user);
@@ -1200,6 +1202,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		
 
 		candidatePassport.setCandidate(candidate);
+		candidatePassport.setOrgLocationId(orgLocations);
 		candidatePassport.setStatus(Constants.CANDIDATE_ACTIVE);
 		candidatePassport.setUpdatedDate(commonUtil.currentDate());
 		candidatePassport.setUpdatedBy(user);
@@ -1428,8 +1431,17 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	
 	// visa delete
 	@Override
-	public void removeCandidateVisaDetails(Long visaHistoryId) {
+	public void removeCandidateVisaDetails(Long visaHistoryId, Long candidateId, User user, OrgLocations orgLocations) {
 		immigrationCommonDao.removeCandidateVisaDetails(visaHistoryId);
+		StringBuilder actionDesc = new StringBuilder();
+		actionDesc.append("Visa Details Removed ").toString();
+		Candidate candidate = new Candidate();
+		candidate.setId(candidateId);
+		try {
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 	
@@ -1437,6 +1449,15 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Override
 	public void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations) {
 		immigrationCommonDao.removeCandidatePassportDetails(candidateId, id, user, orgLocations);
+		StringBuilder actionDesc = new StringBuilder();
+		actionDesc.append("Passport Details Removed ").toString();
+		Candidate candidate = new Candidate();
+		candidate.setId(candidateId);
+		try {
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -3166,6 +3187,7 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 
 			CandidateVisa candidateVisa = new CandidateVisa();
 			candidateVisa.setId(immigrationVisaDTO.getCandidateVisaId());
+			candidateVisa.setOrgLocationId(orgLocations);
 			Immigration immigration = new Immigration();
 			candVisaHistory = immigrationCommonDao.getCandidateVisaHistoryByStatus(
 												immigrationVisaDTO.getCandidateVisaId(), ImmigrationConstants.IS_CURRENT_NO);
