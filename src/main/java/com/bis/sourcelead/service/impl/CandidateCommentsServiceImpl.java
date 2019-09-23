@@ -16,6 +16,7 @@ import com.bis.sourcelead.dao.CandidateCommentsDao;
 import com.bis.sourcelead.dto.CandidateCommentsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
@@ -63,16 +64,32 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Candidate candidate, OrgLocations orgLocations, RequirementSubmission submission) throws Exception {
+	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Long candidateId, OrgLocations orgLocations, Long submissionId) throws Exception {
 		CandidateComments candidateComments = new CandidateComments();
 		StringBuffer activitySummary = new StringBuffer();
+		Candidate candidate = null;
+		CandidateGlobal candidateGlobal = null;
 			if(candidateCommentsDTO.getComment() != null){
 				activitySummary.append("Comment").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCommentsDTO.getComment()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				candidateComments.setComment(candidateCommentsDTO.getComment());
 			}
-			if(candidate != null){
+			
+			if (StringUtils.isNotBlank(candidateCommentsDTO.getCandidateType()) && candidateCommentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+				candidateGlobal = new CandidateGlobal();
+				candidateGlobal.setId(candidateId);
+				candidateComments.setCandidateGlobalId(candidateGlobal);
+			}else {
+				candidate = new Candidate();
+				candidate.setId(candidateId);
 				candidateComments.setCandidateId(candidate);
 			}
+			
+			RequirementSubmission submission = null;
+			if (submissionId != null) {
+				submission = new RequirementSubmission();
+				submission.setId(submissionId);
+			}
+		
 			if(submission != null){
 				candidateComments.setSubmissionId(submission);
 			}
@@ -84,9 +101,15 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			candidateComments.setUpdatedBy(user.getUserCode());
 			candidateComments.setCreatedBy(user.getUserCode());
 			candidateComments.setUpdatedDate(commonUtil.currentDate());
-		candidateCommentsDao.storeCandidateComments(candidateComments);
+		    candidateCommentsDao.storeCandidateComments(candidateComments);
 		
-		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
+		  if (StringUtils.isNotBlank(candidateCommentsDTO.getCandidateType()) && candidateCommentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+			  candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
+		  }else {
+			  candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
+		  }
+			  
+		
 		return candidateComments;
 	}
 	

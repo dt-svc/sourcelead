@@ -28,7 +28,7 @@ public interface CandidateCommentsService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Candidate candidate, OrgLocations orgLocation, RequirementSubmission submissionId) throws JSONException,Exception;
+	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user,Long candidateId, OrgLocations orgLocation, Long submissionId) throws JSONException,Exception;
 	
 	public List<CandidateComments> getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long candidateId, OrgLocations orgLocation) throws Exception;
 	
