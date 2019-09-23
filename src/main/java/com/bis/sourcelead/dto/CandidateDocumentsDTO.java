@@ -69,6 +69,8 @@ public class CandidateDocumentsDTO {
 	
 	private String documentId;
 	
+	private String candidateType;
+	
 	public String getCandidateId()
 	{
 		return candidateId;
@@ -352,6 +354,14 @@ public class CandidateDocumentsDTO {
 	public void setDocumentId(String documentId)
 	{
 		this.documentId = documentId;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	}
 	
 	

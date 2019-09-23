@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateDocumentsDTO;
 import com.bis.sourcelead.entity.CandidateDocuments;
 
 /**
@@ -30,4 +31,8 @@ public interface CandidateDocumentsDao {
 	public Integer getCandidateActiveDocumentsByCandidateId(Long candidateId);
 	
 	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId);
+	
+	public List<CandidateDocuments> getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	
+	public CandidateDocuments getCandidateGlobalDocumentByCandidateId(Long candidateId, String documentUUID) throws Exception;
 }

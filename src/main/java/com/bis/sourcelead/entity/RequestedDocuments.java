@@ -38,6 +38,9 @@ private static final long serialVersionUID = 1L;
     @JoinColumn(name="CANDIDATE_ID")        
     private Candidate candidateId;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CANDIDATE_GLOBAL_ID")        
+    private CandidateGlobal candidateGlobalId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATION_ID")        
@@ -174,4 +177,14 @@ private static final long serialVersionUID = 1L;
 	{
 		this.isDocsUploaded = isDocsUploaded;
 	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
+	}
+	
+	
 }

@@ -127,7 +127,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception {
 		logger.debug("In Candidate Document By documentId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd  where cd.id = :documentId" ;
+		String query = " from CandidateDocuments cd left join fetch cd.candidateGlobalId  where cd.id = :documentId" ;
 		List<CandidateDocuments> candidateDocumentsList =session.createQuery(query).setLong("documentId", documentId).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
@@ -141,7 +141,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentUUID(String documentUUID) throws Exception {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd where cd.documentUUID = :documentUUID" ;
+		String query = " from CandidateDocuments cd left join fetch cd.candidateGlobalId where cd.documentUUID = :documentUUID" ;
 		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setString("documentUUID", documentUUID).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
@@ -214,6 +214,30 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		documentsCount = filterCount.intValue();
 		return documentsCount;
 
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateDocuments> getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateGlobalId.id =:candidateId  and cd.status = 1 ORDER BY cd.id DESC";
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return candidateDocumentsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateDocuments getCandidateGlobalDocumentByCandidateId(Long candidateId, String documentUUID)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateDocuments  cd left join fetch cd.candidateGlobalId where cd.candidateGlobalId.id = :candidateId and cd.documentUUID =:documentUUID";
+		List<CandidateDocuments> candidateDocumentsList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setString("documentUUID", documentUUID).list();
+		CandidateDocuments canDoc = null;
+		if (candidateDocumentsList != null && candidateDocumentsList.size() > 0) {
+			canDoc = (CandidateDocuments) candidateDocumentsList.iterator().next();
+		}
+		return canDoc;
 	}
 
 }

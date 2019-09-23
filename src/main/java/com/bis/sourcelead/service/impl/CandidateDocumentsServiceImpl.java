@@ -22,6 +22,7 @@ import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateDocuments;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateDocumentsService;
@@ -57,10 +58,16 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 			Long orgLocationId, User user) throws Exception {
 		CandidateDocuments candidateDocuments = null;
 		Candidate candidate = new Candidate();
+		CandidateGlobal candidateGlobal = new CandidateGlobal();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
 		if (null != candidateId) {
-			candidateDocuments = candidateDocumentsDao.getCandidateDocumentByCandidateId(candidateId, documentUUID);
+			if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+				candidateDocuments = candidateDocumentsDao.getCandidateGlobalDocumentByCandidateId(candidateId, documentUUID);
+			}else {
+				candidateDocuments = candidateDocumentsDao.getCandidateDocumentByCandidateId(candidateId, documentUUID);
+			}
+			
 			if (null != candidateDocuments) {
 				if (StringUtils.isNotBlank(candidateDocumentsDTO.getName())) {
 					if (candidateDocumentsDTO.getName().equalsIgnoreCase("Other")) {
@@ -174,7 +181,12 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					}
 				}
 
-				candidate.setId(candidateDocuments.getCandidateId().getId());
+				if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidateGlobal.setId(candidateDocuments.getCandidateGlobalId().getId());
+				}else {
+					candidate.setId(candidateDocuments.getCandidateId().getId());
+				}
+				
 				orgLocations.setId(candidateDocuments.getOrgLocationId().getId());
 			} else {
 				candidateDocuments = new CandidateDocuments();
@@ -242,8 +254,14 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					candidateDocuments.setIsConfidential("N");
 				}
 				candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_MANUALLY);
-				candidate.setId(candidateId);
-				candidateDocuments.setCandidateId(candidate);
+				if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidateGlobal.setId(candidateId);
+					candidateDocuments.setCandidateGlobalId(candidateGlobal);
+				}else {
+					candidate.setId(candidateId);
+					candidateDocuments.setCandidateId(candidate);
+				}
+				
 				orgLocations.setId(orgLocationId);
 				if (orgLocationId != null) {
 					candidateDocuments.setOrgLocationId(orgLocations);
@@ -267,7 +285,6 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 					candidateDocuments.setFileURL(fileInfo.getFileURL());
 					;
 					if (fileInfo != null) {
-						// candidate.setFileName(fileInfo.getFileName());
 						FileUploadUtil.moveFile(candidateDocumentsDTO.getStaticPath(), fileInfo, "candidateDocuments");
 					}
 
@@ -278,10 +295,15 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 
 			candidateActivityCommonUtil.storeCandidateDocumentsHistory(candidateDocuments, user);
 
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_DOCUMENTS_UPDATED,
-					activitySummary.toString(), "CANDIDATE");
+			if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+				candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_DOCUMENTS_UPDATED,
+						activitySummary.toString(), "CANDIDATE");
+			}else {
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_DOCUMENTS_UPDATED,
+						activitySummary.toString(), "CANDIDATE");
+			}
+			
 
-			saveOrUpdateCandidateElkDocumentWithDocumentDetails(candidateId, orgLocationId);
 		}
 		return candidateDocuments;
 	}
@@ -386,5 +408,55 @@ public class CandidateDocumentsServiceImpl implements CandidateDocumentsService 
 	@Override
 	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId) {
 		return candidateDocumentsDao.getCandidateGlobalActiveDocumentsByCandidateId(candidateId);
+	}
+
+	@Override
+	public List<CandidateDocumentsDTO> getCandidateGlobalDocumentsDTOListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+
+		List<CandidateDocuments> docList = candidateDocumentsDao.getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(candidateId,
+				orgLocationId);
+		List<CandidateDocumentsDTO> candiDocList = new ArrayList<>();
+		for (CandidateDocuments doc : docList) {
+			CandidateDocumentsDTO docDto = new CandidateDocumentsDTO();
+			docDto.setId(doc.getId().toString());
+			if (StringUtils.isNotBlank(doc.getDocumentOtherType()))
+				docDto.setDocumentOtherType(doc.getDocumentOtherType());
+			if (StringUtils.isNotBlank(doc.getDocumentType()))
+				docDto.setDocumentType(doc.getDocumentType());
+			docDto.setName(doc.getDocumentType());
+			if (StringUtils.isNotBlank(doc.getIsConfidential()))
+				docDto.setIsConfidential(doc.getIsConfidential());
+			if (StringUtils.isNotBlank(doc.getFileName()))
+				docDto.setFileName(doc.getFileName());
+			if (StringUtils.isNotBlank(doc.getFileURL()))
+				docDto.setFileURL(doc.getFileURL());
+			if (StringUtils.isNotBlank(doc.getFileContentType()))
+				docDto.setFileContentType(doc.getFileContentType());
+			if (StringUtils.isNotBlank(doc.getDescription()))
+				docDto.setDescription(doc.getDescription());
+			if (StringUtils.isNotBlank(doc.getDocumentUUID()))
+				docDto.setDocumentUUID(doc.getDocumentUUID());
+			if (StringUtils.isNotBlank(doc.getDocUploadStatus()))
+				docDto.setDocUploadStatus(doc.getDocUploadStatus());
+			if (doc.getRequestedDocumentsId() != null)
+				docDto.setRequestDocumentId(doc.getRequestedDocumentsId().getId().toString());
+			if (StringUtils.isNotBlank(doc.getDocUploadStatus()))
+				docDto.setDocUploadStatus(doc.getDocUploadStatus());
+			if (StringUtils.isNotBlank(doc.getRequestedDocRejectedReason()))
+				docDto.setRequestedDocRejectedReason(doc.getRequestedDocRejectedReason());
+
+			if (StringUtils.isNotBlank(doc.getRequestedDocStatus())) {
+				docDto.setRequestedDocStatus(doc.getRequestedDocStatus());
+			}
+			docDto.setDoctype(doc.getDocumentType());
+			docDto.setUserIdStr(doc.getCreatedBy());
+			docDto.setCandidateId(String.valueOf(candidateId));
+			docDto.setDocumentUUID(doc.getDocumentUUID());
+			docDto.setDocumentId(String.valueOf(doc.getId()));
+			candiDocList.add(docDto);
+		}
+		return candiDocList;
+	
 	}
 }

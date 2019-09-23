@@ -77,7 +77,7 @@ private static final Logger logger = LoggerFactory.getLogger(RequestedDocumentsD
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RequestedDocuments> requestedDocuments = new ArrayList<RequestedDocuments>();
 		logger.debug("getCandidateById start");
-		requestedDocuments = session.createQuery("from RequestedDocuments requestedDocuments left join fetch requestedDocuments.candidateId "
+		requestedDocuments = session.createQuery("from RequestedDocuments requestedDocuments left join fetch requestedDocuments.candidateId left join fetch requestedDocuments.candidateGlobalId "
 				+ " left join fetch requestedDocuments.orgLocationId orgLocation left join fetch orgLocation.org where requestedDocuments.requestDocUUID = :requestDocUUID" ).setString("requestDocUUID", requestDocUUID ).list();
 		logger.debug("getCandidateById end");
 		if (requestedDocuments.size() > 0) {
