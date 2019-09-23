@@ -20,7 +20,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.service.ProjectMembersService;
 
 @RestController
-@RequestMapping(value = "/projectMembers")
+@RequestMapping(value = "/app/projectMembers")
 public class ProjectMembersRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ProjectMembersRestController.class);
@@ -85,7 +85,7 @@ public class ProjectMembersRestController {
 			pmhList.add(pmh);
 			
 			
-			projectMembers.setCurrentBillRate(100.0F);
+			projectMembers.setCurrentBillRate(100.0);
 			projectMembers.setRateType("Monthly");
 			projectMembers.setStatus(Constants.MEMBER_ACTIVE);
 			projectMembers.setCreatedDate(new Date());
@@ -126,7 +126,7 @@ public class ProjectMembersRestController {
 			pmh.setUpdatedDate(new Date());
 			pmh.setUpdatedBy("Raj");
 			pmhList.add(pmh);
-			projectMembers.setCurrentBillRate(500.0F);
+			projectMembers.setCurrentBillRate(500.0);
 			projectMembers.setRateType("Monthly");
 			projectMembers.setStatus("1");
 			projectMembers.setCreatedDate(new Date());

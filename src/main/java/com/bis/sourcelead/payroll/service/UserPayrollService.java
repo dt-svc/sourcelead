@@ -19,7 +19,13 @@ public interface UserPayrollService {
 
 	ResponseList<Checks> getChecksList(ChecksDTO checksDTO, Long orgLocationId)throws Exception;
 
-	List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations)throws Exception;
+	ResponseList<Checks> getChecksListByEmployeeId(OrgLocations orgLocation, ChecksDTO checksDTO)throws Exception;
 
 	Checks getUniqueChecksListByEmployeeId(String empId, Long orgLocationId, ChecksDTO checksDTO)throws Exception;
+
+	Object deletePayrollEntitiesByUUIDAndEntityType(Object obj);
+
+	Object getPayrollEntitiesByUUIDAndEntityType(String uuid, String entityType);
+
+	List<Checks> getChecksListByEmployeeId(Long empId, OrgLocations orgLocations) throws Exception;
 }

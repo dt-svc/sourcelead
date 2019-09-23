@@ -3,18 +3,37 @@ package com.bis.sourcelead.dto;
 import java.util.List;
 import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
+import com.bis.sourcelead.annotations.Required;
+
 public class InvoiceDTO extends SearchDTO {
 
+	@Required (desc = "ClientOrgRelationId", dependsOn = "clientOrgRelation", parentValue = "createInvoice")
 	private String clientOrgRelationId;
+	
 	private String savedInvoiceId;
 	private String clientCurrency;
+	
+	@Required (desc = "ClientContact", either = "vendorContact")
 	private String clientContact;
+	
+	@Required (desc = "InvoiceId")
 	private String invoiceId;
+	
+	@Required (desc = "InvoiceDate")
 	private String invoiceDate;
+	
 	private String paymentFrequency;
+	
+	@Required (desc = "DueDate")
 	private String dueDate;
+	
+	@CleanHtml(escape=false)
 	private String billingAddress;
+	
+	@CleanHtml(escape=false)
 	private String accountDetails;
+	
 	private List<FileInfo> fileInfo;
 	private List<InvoiceLineItemsDTO> lineItems;
 	private List<InvoiceTaxDTO> invoiceTax;
@@ -26,18 +45,31 @@ public class InvoiceDTO extends SearchDTO {
 	private String afterDiscountTotal;
 	private String grandTotal;
 	private String disCount;
+	private String isJobClosure;
+	
+	@Required (desc = "vendorOrgRelationId", dependsOn = "vendorOrgRelation", parentValue = "createPayables")
     private String vendorOrgRelationId;
+	
+	@Required (desc = "vendorContact", either = "clientContact")
     private String vendorContact;
+	
+	@Required (desc = "projectId", dependsOn = "project", parentValueAny = true)
     private String projectId;
+	
+	@Required (desc = "frequency", dependsOn = "frequency", parentValueAny = true)
     private String frequency;
+	
     private String vendorCurrency;
     private String hiddenHours;
     private String invoiceforexpenses;
     private String projectMemberId;
     private String expensesId;
+   
     private List<InvoiceExpensesDTO> expenseInvoice;
     private String staticPath;
+    
     private String clientName;
+    
     private String projectName;
     private String inoviceDue;
     private String invoiceStatus;
@@ -53,7 +85,24 @@ public class InvoiceDTO extends SearchDTO {
     private String exportEndDate;
     private String vendorName;
     private String locationdateForList;
+    private String orgLocationId;
+    private String orgRelationId;
+    private String paymentAccount;
+    private String invoiceUUID;
+    private String count;
+    private String tags;
+    private String invoiceDeleteStatus;
+    private long invoiceTemplateId;
+    private String notifyToOthers;
     
+	public long getInvoiceTemplateId() {
+		return invoiceTemplateId;
+	}
+
+	public void setInvoiceTemplateId(long invoiceTemplateId) {
+		this.invoiceTemplateId = invoiceTemplateId;
+	}
+
 	public List<InvoiceExpensesDTO> getExpenseInvoice() {
 		return expenseInvoice;
 	}
@@ -440,5 +489,84 @@ public class InvoiceDTO extends SearchDTO {
 	public void setLocationdateForList(String locationdateForList) {
 		this.locationdateForList = locationdateForList;
 	}
+
+	public String getOrgLocationId()
+	{
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(String orgLocationId)
+	{
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getPaymentAccount() {
+		return paymentAccount;
+	}
+
+	public void setPaymentAccount(String paymentAccount) {
+		this.paymentAccount = paymentAccount;
+	}
+
+	public String getInvoiceUUID()
+	{
+		return invoiceUUID;
+	}
+
+	public void setInvoiceUUID(String invoiceUUID)
+	{
+		this.invoiceUUID = invoiceUUID;
+	}
+
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
+	}
+
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public String getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getInvoiceDeleteStatus() {
+		return invoiceDeleteStatus;
+	}
+
+	public void setInvoiceDeleteStatus(String invoiceDeleteStatus) {
+		this.invoiceDeleteStatus = invoiceDeleteStatus;
+	}
+
+
+	public String getIsJobClosure() {
+		return isJobClosure;
+	}
+
+	public void setIsJobClosure(String isJobClosure) {
+		this.isJobClosure = isJobClosure;
+	}
+
+	public String getNotifyToOthers() {
+		return notifyToOthers;
+	}
+
+	public void setNotifyToOthers(String notifyToOthers) {
+		this.notifyToOthers = notifyToOthers;
+	}
 	
+
 }

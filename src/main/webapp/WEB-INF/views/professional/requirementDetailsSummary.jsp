@@ -13,90 +13,29 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Job Summary</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
+var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 </script>
-
-<style type="text/css">
-.viewTemplate .sjfb-field{
-margin: 0;
-}
-.positionRelative {
-position: relative;
-}
-.container.container-wraper{
-	padding: 15px;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	background: #fafafa;
-	border-radius:5px;
-	margin-top: 25px;
-}
-.container-wraper h3 {
-margin: 0;
-margin-bottom: 10px;
-font-size: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field{
-display: inline-flex;
-margin-bottom: 10px;
-}
-.container-wraper .viewTemplate .sjfb-field label {
-font-size:14px !important;
-font-weight: 600;
-}
-.container-wraper viewTemplate .sjfb-field{
-width: 48.5%;
-}
-.ml{
-margin-left: 15px;
-}
-.choices label {
-width: auto !important;
-padding-right: 15px;
-}
-.choices input[type="checkbox"], .choices input[type="radio"]{
- margin-right: 10px;
- position: relative;
- top: 1px;
-}
-.stickyfooter {
-	bottom: 0;
-	width: 100%;
-	height: 40px;
-	line-height: 40px;
-	background-color: #f5f5f5;
-	padding:0;
-}
-.require_wrap_details {
-min-height:100px;
-}
-.reqPadTop {
-	padding: 70px 10px 20px 10px;
-}
-.profile_details h4 {
-width: 950px;
-}
-</style>
 
 <script type="text/javascript">
 var postdatavalues = { title: "", link: "", picture: "", description: "", comment: "" };
@@ -136,7 +75,7 @@ window.onload = function () {
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -146,7 +85,7 @@ window.onload = function () {
    
   
    
-   <footer class="clearfix stickyfooter">
+   <footer class="clearfix stickyfooterStyles">
    <div class="container">
     <div class="pull-left"> @ Copyright : Source Lead, All right reserved </div>
     <div class="pull-right"> Powered by: businessintelli.com </div>
@@ -157,8 +96,7 @@ window.onload = function () {
 
 <script>
 function publicRequirementProfile(requirementUUID){
-	
-	
+	var sourceleadLoginUrl = '${sourceleadLoginUrl}';
 	var contactUUID = '${contactUUID}';
 	var requirementUUID = '${requirementUUID}';
 	var referUUID = '${referUUID}';
@@ -270,7 +208,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'          <div class="col-md-3">';
 				 result = result +'         <div class="openPostBtns">';
 				 
-				 result = result +'<a href="'+sourceleadUrl+'/logout" class="refer">Refer</a>';
+				 result = result +'<a href="'+sourceleadLoginUrl+'" class="refer">Refer</a>';
 			     result = result +'<a href="'+sourceleadUrl+"/register?contactUUID="+contactUUID+'&requirementUUID='+requirementUUID+'&referUUID='+referUUID+'" class="jobApply">Apply</a>'; 
 				
 				 result = result +'          </div>';
@@ -281,7 +219,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'      <div class="project_side_wrap_inn_tabs mt" id="new-id">';
 				 result = result +'        <div class="project_tabs">';
 				 result = result +'          <div id="tab-1" class="project_tabs_inn" style="display: block;">';
-				 result = result +'            <div class="require_wrap_details"> ';
+				 result = result +'            <div class="require_wrap_details minHeight100"> ';
 				 result = result +'              <h2>Descriptions:</h2>';
 				 result = result +'              <div class="RDdetails">'+description+'</div>';
 				 result = result +'              <h2>Other details:</h2>';
@@ -293,7 +231,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -317,7 +255,7 @@ function publicRequirementProfile(requirementUUID){
 </script>
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 <jsp:include page="../socialinviterscripts.jsp" />

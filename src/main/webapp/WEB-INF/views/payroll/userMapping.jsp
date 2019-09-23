@@ -15,7 +15,7 @@ $(document).ready(function(){
   <div class="pull-left">
     <h2>User Mapping</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; User Mapping</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; User Mapping</div>
 </section>
 	<div id="loading"></div>
 	<div id="popUp"></div>
@@ -24,7 +24,7 @@ $(document).ready(function(){
 <div class="content-area content-new clearfix">
             <div class="clearfix mt col-md-12 mb">
              <div class="col-md-5 dropdown-select">
-               <label class="col-md-3">Imported Users</label>
+               <label class="col-md-3">Imported Users<span class="text-danger paddingLeft">*</span></label>
                <div class="col-md-9" id="errImportedUserIdDiv">
                <select  class="chosen-select" class="form-control" id="importedUserId" name="importedUserId" field-name="Imported User" data-validation="required" onchange="removeImportValidation();">
                 <option value="" selected>-Select User-</option>
@@ -40,10 +40,10 @@ $(document).ready(function(){
                </div>
              </div>
              <div class="col-md-5">
-             <label class="col-md-3">Org Users</label>
+             <label class="col-md-3">Org Users<span class="text-danger paddingLeft">*</span></label>
                <div class="col-md-9" id="errOrgUserIdDiv">
-               <select class="chosen-select" data-placeholder="Select Org Users" id="slUserId" name="slUserId" field-name="Sl User" data-validation="required" onchange="removeOrgValidation();">
-                <option value="" selected>-Select Org Users-</option>
+               <select class="chosen-select" data-placeholder="Select Org User" id="slUserId" name="slUserId" field-name="Org User" data-validation="required" onchange="removeOrgValidation();">
+                <option value="" selected>-Select Org User-</option>
 	            <c:forEach var="users" items="${usersList}">
 					<option value="${users.id}">${users.firstName} ${users.lastName}</option>
 				</c:forEach>
@@ -150,7 +150,8 @@ function userMappingTablePagination(){
             "sZeroRecords": "", "sEmptyTable": ""
        }
     });
-    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>")
+    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>");
+    $('.dataTables_filter input').attr("placeholder", "Search");
 }
 </script>
 
@@ -179,7 +180,7 @@ function mergeDiffUsers(){
 	  //It will escape all the special characters
     var jsonData = encodeURIComponent(con);
 	var sourceleadUrl = '${sourceleadUrl}';
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 				type : "POST",
 				url : sourceleadUrl+ "/mergeUser?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,

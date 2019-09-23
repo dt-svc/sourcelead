@@ -63,7 +63,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 			}
 			logger.debug("RequirementInterview Added Successfully");
 		} catch (Exception exception) {
-			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_SUBMISSION"));
+			StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"REQUIREMENT_INTERVIEW"));
 				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
 		}
 		return requirementInterview;
@@ -73,9 +73,17 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterview getRequirementInterviewById(String requirementInterviewId) {
 			logger.debug("In RequirementInterview getRequirementInterviewById method");
-			Long requirementInterviewIdValue = Long.parseLong(requirementInterviewId);
 			Session session = this.sessionFactory.getCurrentSession();
-			return (RequirementInterview) session.get(RequirementInterview.class, requirementInterviewIdValue);
+			String query = " from RequirementInterview ri left join fetch ri.submissionId sub left join fetch sub.requirement where ri.id = :requirementInterviewId" ;
+			List<RequirementInterview> interviewsList =session.createQuery(query).setLong("requirementInterviewId", Long.parseLong(requirementInterviewId)).list(); 
+			RequirementInterview interview = null;
+			if(interviewsList != null && !interviewsList.isEmpty()){
+				interview = interviewsList.get(0);
+			}
+			return interview;
+			
+			
+			
 	}
 	
 
@@ -85,7 +93,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		logger.debug("In RequirementInterview getRequirementInterviewById method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from RequirementInterview ri where ri.id = :requirementInterviewId and ri.submissionId.id = :submissionId and ri.submissionId.orgLocations.id = :orgLocationsId" ;
-		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list(); 
+		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("requirementInterviewId", requirementInterviewId).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list(); 
 		RequirementInterview interview = null;
 		if(interviewsList != null && !interviewsList.isEmpty()){
 			interview = interviewsList.iterator().next();
@@ -99,7 +107,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterview interview where (interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId)  OR (interview.submissionId.sourceSubmission.id = :submissionId and interview.submissionId.vendorLocationId.id = :orgLocationsId) ";
-		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return interviewsList;
 	}
@@ -110,7 +118,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		logger.debug("In RequirementInterviewDaoImpl class getRequirementInternalAndIsClientInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId ";
-		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementInterview> interviewsList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return interviewsList;
 	}
@@ -124,7 +132,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		logger.debug("In RequirementInterviewDaoImpl class getCustomerInterviewsBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		//String query = "from RequirementInterview interview where interview.submissionId.id IN(Select rs.id from RequirementSubmission rs where rs.sourceSubmission.id = :submissionId and rs.requirement.id = :requirementId and rs.vendorLocationId.id = :orgLocationsId ) and interview.notificationToSpoc='Y' ";
-		//interviewsList =  session.createQuery(query).setLong("requirementId", requirement.getParentRequirement().getId()).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		//interviewsList =  session.createQuery(query).setLong("requirementId", requirement.getParentRequirement().getId()).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		}
 		return interviewsList;
 	}
@@ -180,12 +188,12 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 			}
         }
 		
-		return queryExe.setCacheable(true).list();
+		return queryExe.list();
 		
         //CAST('10:00:00' AS TIME) BETWEEN start_time AND end_time
         
 		//String query = "from RequirementInterview ri where DATE(ri.dateOfInterview) = CURDATE()";
-		//List<RequirementInterview> requirementInterviewList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		//List<RequirementInterview> requirementInterviewList = session.createQuery(query).setLong("orgLocationsId", orgLocationsId).list();
 		//return requirementInterviewList;
 	}
 
@@ -196,7 +204,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		logger.debug("In RequirementInterviewDaoImpl class getRequirementInterviewsHistoryBySubmissionIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RequirementInterview interview where (interview.submissionId.id = :submissionId and interview.submissionId.orgLocations.id = :orgLocationsId)  OR (interview.submissionId.sourceSubmission.id = :submissionId and interview.submissionId.vendorLocationId.id = :orgLocationsId) ";
-		List<RequirementInterview> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).setCacheable(true).list();
+		List<RequirementInterview> interviewsHistoryList =  session.createQuery(query).setLong("submissionId", submissionId).setLong("orgLocationsId", orgLocationsId).list();
 		
 		return interviewsHistoryList;
 	}
@@ -214,7 +222,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	     List<Long> interviewCount = session.createQuery(query).setLong("candidateId", candidateId)
 	    		   .setString("submissionStatus", submissionStatus)
 	    		   .setDate("startDate", startDate)
-				   .setDate("endDate", endDate).setCacheable(true).list();
+				   .setDate("endDate", endDate).list();
 		 Integer count= 0;
 		 
 		 if(interviewCount != null && !interviewCount.isEmpty()){
@@ -229,7 +237,7 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 			Long locationId, Date startUTCDate, Date endUTCDate) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from RequirementInterview interview where interview.submissionId.id IN(:submissionsList) and interview.startTime >= :startDateUTC and interview.startTime <= :endDateUTC)" ;
-		List<RequirementInterview> interviewList =session.createQuery(query).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("submissionsList", submissionsList).setCacheable(true).list(); 
+		List<RequirementInterview> interviewList =session.createQuery(query).setParameter("startDateUTC", startUTCDate).setParameter("endDateUTC", endUTCDate).setParameterList("submissionsList", submissionsList).list(); 
 		return interviewList;
 	}
 
@@ -237,8 +245,8 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public RequirementInterview getinterviewBySubmissionId(Long submissionId) {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.id=(SELECT MAX(id) FROM RequirementInterview)" ;
-		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("submissionId", submissionId).setCacheable(true).list(); 
+		String query = " from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.id=(SELECT MAX(ri.id) FROM RequirementInterview ri where ri.submissionId.id = :submissionId)" ;
+		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("submissionId", submissionId).list(); 
 		RequirementInterview interview = null;
 		if(interviewsList != null && !interviewsList.isEmpty()){
 			interview = interviewsList.iterator().next();
@@ -246,12 +254,58 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		return interview;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public RequirementInterview getLatestInterviewBySubmissionId(Long submissionId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " from RequirementInterview interview where interview.submissionId.id = :submissionId and interview.startTime=(SELECT MAX(ri.startTime) FROM RequirementInterview ri where ri.submissionId.id = :submissionId)" ;
+		List<RequirementInterview> interviewsList =session.createQuery(query).setLong("submissionId", submissionId).list(); 
+		RequirementInterview interview = null;
+		if(interviewsList != null && !interviewsList.isEmpty()){
+			interview = interviewsList.iterator().next();
+		}
+		return interview;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getInterviewDatesForCalendarEvent(Long userId, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where "
+				+ " interview.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id = :userId) "
+				+ " and interview.submissionId.orgLocations.id = :orgLocationId " ;
+		List<Date> interviewDates =session.createQuery(query).setLong("userId", userId).setLong("orgLocationId", orgLocationId).list(); 
+		return interviewDates;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getInterviewDatesForInterviewrsInterviewSlots(List<Long> interivewerIds, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where "
+				+ " interview.id IN (select interviewer.requirementInterview.id from RequirementInterviewer interviewer where interviewer.interviewerUser.id IN (:interivewerIds) ) "
+				+ " and interview.submissionId.orgLocations.id = :orgLocationId " ;
+		List<Date> interviewDates =session.createQuery(query).setParameterList("interivewerIds", interivewerIds).setLong("orgLocationId", orgLocationId).list(); 
+		return interviewDates;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where interview.submissionId.id IN (:applicantSubmissionIds) " ;
+		List<Date> interviewDates =session.createQuery(query).setParameterList("applicantSubmissionIds", applicantSubmissionIds).list(); 
+		return interviewDates;
+	}
+
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {
 		Session session = this.sessionFactory.getCurrentSession();
 		 String query ="from RequirementInterview ri left join fetch ri.submissionId submission left join fetch  submission.orgLocations where ri.status = 1 and ri.startTime > :date and ri.startTime < :triggerTime";
-		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).setCacheable(true).list();
+		List<RequirementInterview> requirementInterviewList = session.createQuery(query).setString("date",currentTime).setString("triggerTime",triggerTime).list();
 		return requirementInterviewList;
 	}*/
 	

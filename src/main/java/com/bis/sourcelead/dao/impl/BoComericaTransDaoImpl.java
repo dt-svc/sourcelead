@@ -56,7 +56,7 @@ public class BoComericaTransDaoImpl implements BoComericaTransDao{
 	public BoComericaTrans getBoComericaTransById(Long Id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BoComericaTrans> boComericaTrans = new ArrayList<BoComericaTrans>();
-		boComericaTrans = session.createQuery("from BoComericaTrans where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		boComericaTrans = session.createQuery("from BoComericaTrans where id=:id" ).setLong( "id", Id ).list();
 		if (boComericaTrans.size() > 0) {
 			return boComericaTrans.get(0);
 		} else {
@@ -70,7 +70,7 @@ public class BoComericaTransDaoImpl implements BoComericaTransDao{
 		
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from BoComericaTrans bct where bct.status = '1' "; 
-		List<BoComericaTrans> boComericaTransList = session.createQuery(query.toString()).setCacheable(true).list();
+		List<BoComericaTrans> boComericaTransList = session.createQuery(query.toString()).list();
 		return boComericaTransList;
 	}
 
@@ -86,18 +86,18 @@ public class BoComericaTransDaoImpl implements BoComericaTransDao{
 		if(jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate")) 
 				&& jsonObj.has("toTransDate") && "".equals(jsonObj.getString("toTransDate"))){
 			    fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
-			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setCacheable(true).list();
+			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).list();
 		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) 
 					&& jsonObj.has("fromTransDate") && "".equals(jsonObj.getString("fromTransDate"))){
 			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
-			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("toTransDate", toTransDate).setCacheable(true).list();
+			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("toTransDate", toTransDate).list();
 		}else if(jsonObj.has("toTransDate") && jsonObj.getString("toTransDate") != null && !"".equals(jsonObj.getString("toTransDate")) && 
 				jsonObj.has("fromTransDate") && jsonObj.getString("fromTransDate") != null && !"".equals(jsonObj.getString("fromTransDate"))){
 			fromTransDate = sdf.parse(jsonObj.getString("fromTransDate"));
 			toTransDate = sdf.parse(jsonObj.getString("toTransDate"));
-			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).setCacheable(true).list();
+			return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setDate("fromTransDate", fromTransDate).setDate("toTransDate", toTransDate).list();
 		}
-		return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).setCacheable(true).list();
+		return session.createQuery(querySB.append("from BoComericaTrans bt where bt.status = '1' ").append(whereString).append(" ").toString()).list();
 	}
 	
 	

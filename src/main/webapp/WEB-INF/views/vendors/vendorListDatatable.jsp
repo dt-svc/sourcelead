@@ -118,9 +118,15 @@ function getVendorList(){
 		    	  		var pattern = new RegExp(/["'"]/g);
 				   		var orgName = (report.orgName).replace(pattern, "\\'");
 		    	  		var result = "";
-		    	  		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
+		    	  		var sourceleadUrl = '${sourceleadUrl}';
+		    	  		
+	    	  		'<sec:authorize access="hasAnyRole(\"ROLE_VIEW_VENDOR\",\"ROLE_VIEW_EDIT_VENDOR\")">';
 			   			result = result +'<td>';
-			   			result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></i>';
+			   			if(report.vendorRelationStatus == 'Draft'){
+			   				result = result +'<div class="proj_show"><a href="'+sourceleadUrl+'/addVendor?orgRelationUUID='+report.orgRelationUUID+'" class="pull-left"><span  class="tbldata-dotdot-me pull-left" title="'+report.orgName+'">'+report.orgName+'</span><i class="fa fa-binoculars pull-right"></a></i>';
+			   			}else if(report.vendorRelationStatus == null || report.vendorRelationStatus != 'Draft' ){
+			   				result = result +'<div class="proj_show" onclick="vendorSideBar(\''+report.responderLocationId+'\',\''+report.orgRelationId+'\',\''+orgName+'\');"><span class="tbldata-dotdot-me pull-left" title="'+report.orgName+'"><a>'+report.orgName+'</a></span><i class="fa fa-binoculars pull-right"></i>';
+			   			}
 			   			result = result +'</div>';
 			   			result = result +'</td>';
 			   		'</sec:authorize>';
@@ -139,10 +145,16 @@ function getVendorList(){
 	        	"sortable": false,
 	            "render": function ( data, type, report, meta ) {
 	            	    var result = "";
-	            	    if( report.website != null && report.website != '' && report.website != 'undefined'){
+	            	    
+	            	    var webSite = "";
+	              		if(report.website != 'null' && report.website != null && report.website != '' && report.website != 'undefined'){
+	              			webSite = report.website;
+	    		   		}
+	            	   
+	            	    if( webSite != null && webSite != '' && webSite != 'undefined'){
 	    		   			result = result +'<td>';
 	    		   			result = result +'<div>';
-	    		   			result = result +'<span class="tbldata-dotdot-vsm" title='+report.website+'>'+report.website+'</span>';
+	    		   			result = result +'<span class="tbldata-dotdot-vsm" title='+webSite+'>'+webSite+'</span>';
 	    		   			result = result +'</div>';
 	    		   			result = result +'</td>';
 	    		   		}else{
@@ -153,18 +165,17 @@ function getVendorList(){
 	          }, {
 	              "targets": colIndex++,
 	              "data": "initiatorCountry",
-	          	  "sortable": false,
 	              "render": function ( data, type, report, meta ) {
 	            	  var result = "";
 	              		var location = "";
-	    		   		if(report.city != null && report.city != '' && report.city != 'undefined'){
+	              		if(report.city != null && report.city != '' && report.city != 'undefined' && report.state != null && report.state != '' && report.state != 'undefined'){
 	    		   			location = report.city+", "+report.state+", "+report.country;
 	    		   		}else if(report.state != null && report.state != '' && report.state != 'undefined'){
 	    		   			location = report.state+", "+report.country;
 	    		   		}else{
 	    		   			location = report.country;
 	    		   		}
-	    		   		
+	           
 	    		   		if(location != null && location  != '' && location  != 'undefined'){
 	    		   			result = result +'<td>';
 	    		   			result = result +'<div>';
@@ -200,6 +211,7 @@ function getVendorList(){
 	                
 	          },{
 	        	  "targets": colIndex++,
+	        	  "sortable": false,
 	                "data": "releasedJobsCount",
 	                "render": function ( data, type, report, meta ) {
 	                	  var result = "";
@@ -211,11 +223,7 @@ function getVendorList(){
 		    	  	"data": "noContacts",
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
-		    	  		if(null != report.noContacts && report.noContacts  != '' && report.noContacts  != 'undefined'){
 							result = result +'<td><div class="tbldata-dotdot_80">'+report.noContacts+'</div></td>';
-						}else{
-							result = result +'<td><div >---</div></td>';
-						}
 		    	  		 return result;
 		    	  	}
 		    	  }],

@@ -40,14 +40,19 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.EmployerPayrollCostDao;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.UserPayroll;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
+import com.bis.sourcelead.payroll.service.AccountDeductionsService;
 import com.bis.sourcelead.payroll.service.EmployerPayrollCostService;
 import com.bis.sourcelead.payroll.service.UserPayrollService;
+import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
 import com.bis.sourcelead.service.ProjectMembersService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostService {
@@ -60,6 +65,9 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Autowired
 	SubmissionApproverHierarchyService submissionApproverHierarchyService;
@@ -75,6 +83,12 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	
 	@Autowired
 	private UserPayrollService userPayrollService;
+	
+	@Autowired
+	private WageTaxSummaryService wageTaxSummaryService;
+	
+	@Autowired
+	private AccountDeductionsService accountDeductionsService;
 
 	@Override
 	public Integer saveEmployerPayrollCost(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObj)
@@ -100,7 +114,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 			int version = 0;
 			version = getEmployerPayrollCostVersionByLocationId(orgLocation.getId());
 			version += 1;
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				if(i == 0){
@@ -195,6 +209,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							employerPayrollCost.setUpdatedBy(user.getUserCode());
 							employerPayrollCost.setUpdatedDate(new Date());
 							employerPayrollCost.setOrgLocationId(orgLocation);
+							employerPayrollCost.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							EmployerPayrollCost empPayrollCost = saveEmpPayrollCost(employerPayrollCost);
 							if(empPayrollCost != null){
 								count++;
@@ -222,7 +237,7 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	 * @return EmployerPayrollCost
 	 * @throws Exception 
 	 */
-	private EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
+	public EmployerPayrollCost saveEmpPayrollCost(EmployerPayrollCost employerPayrollCost) throws Exception {
 		return employerPayrollCostDao.saveEmployerPayrollCost(employerPayrollCost);
 	}
 
@@ -265,46 +280,60 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	}
 
 	@Override
-	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user, JSONObject jsonObj) throws Exception {
+	public List<UserPayroll> runPayrollCycle(OrgLocations orgLocation, User user,String isGlobalAccess, JSONObject jsonObj) throws Exception {
 		
-		List<UserPayroll> userPayrollList = null;
-		if(jsonObj.has("payrollCycle")){
-			Date[] dates = null;
-			String payrollCycle = jsonObj.getString("payrollCycle");
-			String[] cycle = payrollCycle.split("_");
-			if(cycle.length >1){
-				dates = get15thToEndDateOfMonth(Integer.parseInt(cycle[0]));
-			}else{
-				 dates = get1to15thDateOfMonth(Integer.parseInt(cycle[0]));
-			}
-			Date startDate = dates[0];
-			Date endDate = dates[1];
+		List<UserPayroll> userPayrollList = new ArrayList<>();
+		Date startDate = null, endDate = null;
+		if(jsonObj.has("StartDate")){
+			startDate = commonUtil.getDateFormat(jsonObj.getString("StartDate"));
+		}
+		if(jsonObj.has("EndDate")){
+			endDate = commonUtil.getDateFormat(jsonObj.getString("EndDate"));
+		}
+		
+		
+//		if(jsonObj.has("payrollCycle")){
+//			Date[] dates = null;
+//			String payrollCycle = jsonObj.getString("payrollCycle");
+//			String[] cycle = payrollCycle.split("_");
+//			if(cycle.length >1){
+//				dates = get15thToEndDateOfMonth(Integer.parseInt(cycle[0]));
+//			}else{
+//				 dates = get1to15thDateOfMonth(Integer.parseInt(cycle[0]));
+//			}
+//			Date startDate = dates[0];
+//			Date endDate = dates[1];
 			
-			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
-			if(userPayrollList == null || userPayrollList.isEmpty()){
+//			userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
+//			if(userPayrollList.size() >= 0){
 				List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectsByOrgLocationId(orgLocation.getId());
 				if(projectMembersList !=null && projectMembersList.size() >0){
+					long i = 1;
 					for(ProjectMembers pm:projectMembersList){
 						StringBuilder sb = new StringBuilder();
 						double amount = 0;
 						double finalAmount = 0;
-						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),startDate,endDate);
+						Map<String, Float> hoursMap = submissionApproverHierarchyService.getTotalHoursByProjectMemberIdStartDateAndEndDateForInvoice(pm.getId(),orgLocation.getId(),startDate,endDate,isGlobalAccess);
 						if(hoursMap.get(Constants.BILLABLE_HOURS) >0){
 							UserPayroll userPayroll = new UserPayroll();
 //							FinalPayrollReport finalPayrollReport = new FinalPayrollReport();
-							userPayroll.setEmpId(pm.getEmployee().getEmployeeId());
-							userPayroll.setUserId(pm.getEmployee().getUser());
+							userPayroll.setId(i);
+							if(pm.getProjectMemberCandidteId() !=null) {
+								String employeeId = wageTaxSummaryService.getWagesAndTaxEmployeeId(pm.getCandidateId());
+								userPayroll.setEmpId(employeeId);	
+								userPayroll.setUserId(pm.getProjectMemberCandidteId().getConsultantUser());
+							}
 							userPayroll.setOrgLocationId(orgLocation);
-							if(pm.getEmployee().getUser().getLastName() !=null){
-								sb.append(pm.getEmployee().getUser().getFirstName()).append(pm.getEmployee().getUser().getLastName());
+							if(pm.getProjectMemberCandidteId().getLastName() !=null){
+								sb.append(pm.getProjectMemberCandidteId().getFirstName()).append(pm.getProjectMemberCandidteId().getLastName());
 							}else{
-								sb.append(pm.getEmployee().getUser().getFirstName());
+								sb.append(pm.getProjectMemberCandidteId().getFirstName());
 							}
 							userPayroll.setEmployeeName(sb.toString());
 							userPayroll.setTotalHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)));
 							userPayroll.setHalfHours(df.format(hoursMap.get(Constants.BILLABLE_HOURS)/2));
-							if(pm.getEmployee().getRate() !=null && !"".equalsIgnoreCase(pm.getEmployee().getRate())){
-								double payRateD =  Double.parseDouble(pm.getEmployee().getRate());
+							if(pm.getPayRate() !=null){
+								double payRateD =  pm.getPayRate();
 								userPayroll.setPayRate(df.format(payRateD));
 								 amount = getAmount(hoursMap.get(Constants.BILLABLE_HOURS),pm);
 								 finalAmount = amount;
@@ -323,27 +352,34 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 							userPayroll.setUpdatedBy(user.getUserCode());
 							userPayroll.setUpdatedDate(new Date());
 							userPayroll.setStatus("1");
-							userPayrollService.saveUserPayroll(userPayroll);
+							userPayrollList.add(userPayroll);
+//							userPayrollService.saveUserPayroll(userPayroll);
 						}
 						
-					}
-					
+//					}
+					i++;
 				}
-				userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
+//				userPayrollList = userPayrollService.getUserPayrollsBystartDateEndDte(orgLocation.getId(),startDate,endDate);
 			}
 			
 			
-		}
+//		}
 		return userPayrollList;
 	}
 
-	private double getAmount(float halgHours, ProjectMembers pm) {
+	private double getAmount(float hours, ProjectMembers pm) {
 		double amount = 0;
-		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
-			float rate = Float.parseFloat(pm.getEmployee().getRate());
-			amount = halgHours*rate;
-		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getEmployee().getRatePer())){
-			float rate = Float.parseFloat(pm.getEmployee().getRate());
+		if(Constants.RATE_TYPE_HOURLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = pm.getPayRate();
+			String hr = String.valueOf(hours);
+			String[] hh = hr.split("\\.");
+			double hrs = Double.parseDouble(hh[0]);
+			double minutes = Double.parseDouble(hh[1]);
+			double totalHourMin = hrs * 60;
+			double totMinutes = totalHourMin + minutes;
+			amount = totMinutes * (rate/60);
+		}else if(Constants.RATE_TYPE_MONTHLY.equalsIgnoreCase(pm.getPayRateType())){
+			double rate = pm.getPayRate();
 			amount = rate/2;
 		}
 		return amount;
@@ -380,5 +416,38 @@ public class EmployerPayrollCostServiceImpl implements EmployerPayrollCostServic
 	{
 		return employerPayrollCostDao.getEmployerPayrollCostVersionByLocationId(locationId);
 	}
+
+
+	@Override
+	public ResponseList<PayrollBalance> getAllPayrollBalanceSheetByOrgLocationId(OrgLocations orgLocation,PayrollBalance payrollBalance,String loginUserRole) throws Exception {
+		
+//		  List<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationId(orgLocation);
+		  ResponseList<WageTaxSummary> wageTaxSummaryList =  wageTaxSummaryService.getUniqueWagesAndTaxListByOrgLocationIdAndPagination(orgLocation,payrollBalance);
+		 ResponseList<PayrollBalance> responseList = new ResponseList<>();
+		 List<PayrollBalance> balanceList = new ArrayList<>();
+		  if(wageTaxSummaryList !=null) {
+			 for(WageTaxSummary WageTaxSummary : wageTaxSummaryList.getData()) {
+				 PayrollBalance balance = accountDeductionsService.getBalance(Long.parseLong(WageTaxSummary.getEmployeeId()), orgLocation,loginUserRole);
+				 balance.setEmpName(WageTaxSummary.getEmployeeName());
+				 balanceList.add(balance);
+			 }
+			 responseList.setData(balanceList);
+			 responseList.setRecordsTotal(wageTaxSummaryList.getRecordsFiltered());
+			 responseList.setRecordsFiltered(wageTaxSummaryList.getRecordsTotal());
+		  }else {
+			  responseList.setData(new ArrayList<PayrollBalance>());
+		  }
+		  
+		  
+		return responseList; 
+	}
+
+
+	@Override
+	public List<EmployerPayrollCost> getEmployerPayrollCostByLocationId(Long locationId)
+	{
+		return employerPayrollCostDao.getEmployerPayrollCostByLocationId(locationId);
+	}
+
 }
 

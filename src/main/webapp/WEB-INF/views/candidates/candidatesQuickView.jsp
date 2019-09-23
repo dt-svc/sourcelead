@@ -15,9 +15,14 @@ function candidateQuickViewProfile(candidateId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-         success :function(data) {  
-              if(data != null && data != 'undefined' && data != ""){  
-              	var json = JSON.parse(data);
+         success :function(result) {  
+        	 var json = result.object;
+      	     if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+              		if(json != null){  
 							var result ="";
 							
 							if(json.country != null && json.country != '' && json.country != 'undefined'){
@@ -43,6 +48,11 @@ function candidateQuickViewProfile(candidateId){
 	             			 	}else{
 	             			 		lastName = '';
 	             			 	}
+	         			 	if(json.middleName != null && json.middleName !='' && json.middleName != 'undefined'){
+	         			 		middleName = json.middleName;
+	         			 	}else{
+	         			 		middleName = "";
+	         			 	}
 	         			 	if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
 	         			 		mobilePhone =json.mobilePhone;
 	             			 	}else{
@@ -101,7 +111,7 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'        <div class="col-md-7">                                                                                                                                ';
 					result = result+'            <div class="media">                                                                                                                               ';
 					result = result+'                <div class="media-body">                                                                                                                      ';
-					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+lastName+'<small> '+designationType+'</small></h4>';
+					result = result+'                    <h4 class="media-heading text-warning">'+json.firstName+' '+middleName+' '+lastName+'<small> '+designationType+'</small></h4>';
 					if(json.summary != null && json.summary != '' && json.summary != 'undifined'){
 						
 						result = result+'      <div class="trimTxt">';
@@ -116,7 +126,7 @@ function candidateQuickViewProfile(candidateId){
 					if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
 					result = result+'<img data-id="profileImage" id="userImage" src="'+json.fileUrl+'" alt="Profile Image" class="media-object" style="width:65px">';
 					}else{
-					result = result+'<img data-id="profileImage" id="userImage" src="resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
+					result = result+'<img data-id="profileImage" id="userImage" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class="media-object" style="width:65px">';
 					} 
 					result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
 						result = result+' <div class="progress nomr">  ';
@@ -196,8 +206,8 @@ function candidateQuickViewProfile(candidateId){
   				    qvemployeeSubmission(candidateId);
   				    qveducationSubmission(candidateId);
 					qwikCertificates(candidateId);
-					candidateSideBar(candidateId);
-              }else{
+					candidateSideBar(candidateId); 
+              	}else{
        	    	         var result ="";
       		    	     result = result+"   <div class='row'>"; 
       					 result = result+"	<div class='col-lg-12'>"; 
@@ -212,6 +222,11 @@ function candidateQuickViewProfile(candidateId){
       					$("#candidateQuickViewDiv").empty();
       				    $("#candidateQuickViewDiv").append(result); 
                       }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
                },
                  
             }); 
@@ -220,20 +235,27 @@ function candidateQuickViewProfile(candidateId){
 
 <script>
 	function qvemployeeSubmission(candidateId) {
-				$.ajax({
+		$.ajax({
 					type : "POST",
-					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : sourceleadUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?&candidateId=" + candidateId,
 					success : function(data) {
-						if (data != null && data != 'undefined' && data != "" && data != '[]') {
-								$("#qvemployeeSubmission").empty();
-								var result = "";
-								var json = JSON.parse(data);
-								result = result +'            <div class="col-md-12">';
-								result = result +' 				<h4>Work Experience</h4>';
-
-								for (var i = 0; i < json.length; i++) {
-									if(i < 4){
-									var opt = json[i];
+						if (data && data.response === "INVALID_DATA") {
+						    $("#update_candidate").removeAttr("disabled");
+						    $("#update_candidate").removeAttr('button').val('Save');
+						    showError(result.responseMessage);
+						} else if (data.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (data.response === "SUCCESS") {
+							if(data.data.length > 0){
+								
+							
+							$("#qvemployeeSubmission").empty();
+							var result = "";
+							result = result +'<div class="col-md-12">';
+							result = result +'<h4>Work Experience</h4>';
+							for (var i = 0; i < data.data.length; i++) {
+								if(i < 4) {
+									var opt = data.data[i];
 									if (opt.name != null && opt.name != '' && opt.name != 'undefined') {
 										name = opt.name;
 									} else {
@@ -244,57 +266,52 @@ function candidateQuickViewProfile(candidateId){
 									} else {
 										designation = " "; 
 									}
-									
-// 									 if (opt.startMonth != null && opt.startMonth != '' && opt.startMonth != 'undefined') {
-// 										startMonth=   opt.startMonth +' - ';
-// 									}else{
-// 										startMonth = " ";
-// 									}
-									
 									if (opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
 										startYear=   opt.startYear;
-									}else{
+									} else{
 										startYear = " ";
 									}
-									
-// 									if (opt.endMonth != null	&& opt.endMonth != '' && opt.endMonth != 'undefined') {
-// 										endMonth = opt.endMonth +' - ';  
-// 									} else {
-// 										endMonth = " ";
-// 									}
-									
 									if (opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 										endYear = opt.endYear;  
 									} else {
 										endYear = " ";
 									}
-									
 									if (opt.address != null && opt.address != '' && opt.address != 'undefined') {
 										address=   opt.address;
-									}else{
+									} else {
 										address = " ";
 									}
 									result = result +'<div class="resume-widget">';
 									if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined' && opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
 										result = result +'  <p><small>'+startYear +' To '+endYear+'</small>';
-								    }else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined'){
+								    } else if(opt.startYear != null && opt.startYear != '' && opt.startYear != 'undefined') {
 								    	result = result +'  <p><small>'+startYear +'</small>';
-								    }else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined'){
+								    } else if(opt.endYear != null	&& opt.endYear != '' && opt.endYear != 'undefined') {
 								    	result = result +'  <p><small>'+endYear+'</small>';
 								    }
-// 									result = result +'  <p><small>'+startMonth +''+startYear +' '+endMonth +''+endYear+'</small>';
 									result = result +'  <small class="pull-right address" title="'+address+'">'+address+'</small></p>';
 									result = result +'  <h4>'+designation+'</h4>';
 									result = result +'  <h5>'+name+'</h5>';
 									result = result +'</div>';
 								}
-						}
-// 								result = result +'          </div>';
-								result = result +'        </div>';
-								$("#qvemployeeSubmission").append(result);
+							}
+							result = result +'</div>';
+							$("#qvemployeeSubmission").append(result);
+							} else {
+							 	var result = '';
+				        	  	result = result +'<div class="col-md-12" style="display:none">';
+				        	  	result = result +' <h4>Work Experience</h4>';
+				        	  	result = result +' <div>---</div>';
+				        	  	result = result +'</div>';
+				        	  	$("#qvemployeeSubmission").empty();
+				        	  	$("#qvemployeeSubmission").append(result);
+							}
+						} else if (data.indexOf('Sign In') !== -1) {
+							/* location.replace(sourceleadUrl); */
+						} else {
+						    showError("Operation failed, please try again");
 						}
 					},
-
 				});
 	}
 </script>
@@ -302,80 +319,93 @@ function candidateQuickViewProfile(candidateId){
 <script>
 function qveducationSubmission(candidateId){
 	 $.ajax({  
-          type : "POST",
-          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#qveducationSubmission").empty();
-	                	 var result = "";
-	                	 
-							result = result +'            <div class="col-md-12">';
-							result = result +'              <h4>Education</h4>';
-							
-							 var json = JSON.parse(data);
-		                     for (var i = 0; i < json.length; i++) {
-		                    	 if(i < 3){
-			                    	 var opt = json[i];  
-			                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-		                    		        EducationName = opt.name;
-			                    	    }else{
-			                    	    	EducationName = " ";
-			                    	    }
-				                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-				                    	 specialization= '(' + opt.specialization +')';
-			                    	  }else{
-			                    		  specialization= " ";
-			                       	 }
-				                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-				                    	 institute = opt.institute;
-			                    	 }else{
-			                    		 institute = " ";
-			                    	 }
-				                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-				                    	 Educationgrade= opt.grade + ' , ';
-			                    	 }else{
-			                    		 Educationgrade = ""; 
-			                    	 }
-			                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                    		 EducationgradeType  = opt.gradeType + ' - ';
-					                 }else{
-					                	 EducationgradeType = " "; 
-					                 }
-			                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-			                    		 Educationaddress = ' , ' +opt.address;
-			                    	 }else{
-			                    		 Educationaddress = " ";
-			                    	 }
-			                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-			                    		 EducationstartDateStr = opt.startDateStr;
-			                    	 }else{
-			                    		 EducationstartDateStr = " ";
-			                    	 }
-			                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-			                    		 EducationendDateStr = opt.endDateStr;
-			                    	 }else{
-			                    		 EducationendDateStr = " ";
-			                    	 }
-			                    	 
-										result = result +'<div class="resume-widget">';
-										 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-											 result = result +'<p><small>'+EducationstartDateStr+' To '+EducationendDateStr+'</small></p>';
-					                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-					                    	    	result = result +'<p><small>'+EducationstartDateStr+'</small></p>';
-					                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
-					                    	    	result = result +'<p><small>'+EducationendDateStr+'</small></p>';
-					                    	    }
-// 										result = result +'<p><small>'+EducationstartDateStr+' '+EducationendDateStr+'</small></p>';
-										result = result +'<h5>'+EducationName+' '+specialization+'</h5>';
-										result = result +'</div>';
-		                     	}
-		                     }
-							
-							result = result +'        </div>';
-	                     $("#qveducationSubmission").append(result); 
-        	  }
+          type : "GET",
+          url: sourceleadUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+        		  success :function(data) {
+								if(data && data.response === "INVALID_DATA") {
+       								showError(data.responseMessage);
+       							} else if (data.response === "AWKWARD") {
+       	    						location.href = "/errorPage";
+					       		} else if (data.response === "SUCCESS") {
+					       			$("#qveducationSubmission").empty();
+				                	 var result = "";
+										result = result +'            <div class="col-md-12">';
+										result = result +'              <h4>Education</h4>';
+					                     for (var i = 0; i < data.data.length; i++) {
+					                    	 if(i < 3) {
+						                    	 var opt = data.data[i];  
+						                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+					                    		        EducationName = opt.name;
+						                    	    }else{
+						                    	    	EducationName = " ";
+						                    	    }
+							                     if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+							                    	 specialization= '(' + opt.specialization +')';
+						                    	  }else{
+						                    		  specialization= " ";
+						                       	 }
+							                     if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+							                    	 institute = opt.institute;
+						                    	 }else{
+						                    		 institute = " ";
+						                    	 }
+							                     if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+							                    	 Educationgrade= opt.grade + ' , ';
+						                    	 }else{
+						                    		 Educationgrade = ""; 
+						                    	 }
+						                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+						                    		 EducationgradeType  = opt.gradeType + ' - ';
+								                 }else{
+								                	 EducationgradeType = " "; 
+								                 }
+						                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+						                    		 Educationaddress = ' , ' +opt.address;
+						                    	 }else{
+						                    		 Educationaddress = " ";
+						                    	 }
+						                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+						                    		 EducationstartDateStr = opt.startDateStr;
+						                    	 }else{
+						                    		 EducationstartDateStr = " ";
+						                    	 }
+						                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+						                    		 EducationendDateStr = opt.endDateStr;
+						                    	 }else{
+						                    		 EducationendDateStr = " ";
+						                    	 }
+						                    	 
+													result = result +'<div class="resume-widget">';
+													 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined' && opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+														 result = result +'<p><small>'+EducationstartDateStr+' To '+EducationendDateStr+'</small></p>';
+								                    	    }else if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+								                    	    	result = result +'<p><small>'+EducationstartDateStr+'</small></p>';
+								                    	    }else if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+								                    	    	result = result +'<p><small>'+EducationendDateStr+'</small></p>';
+								                    	    }
+//			 										result = result +'<p><small>'+EducationstartDateStr+' '+EducationendDateStr+'</small></p>';
+													result = result +'<h5>'+EducationName+' '+specialization+'</h5>';
+													result = result +'</div>';
+					                     	}
+					                     }
+										
+										result = result +'        </div>';
+				                     $("#qveducationSubmission").append(result); 
+				                     
+				                     
+				                     /* var result = '';
+				               	  result = result +'            <div class="col-md-12 " style="display:none">';
+				               	  result = result +' <h4>Education</h4>';
+				               	  result = result +' <div>---</div>';
+				               	  result = result +'            </div>';
+				               	  $("#qveducationSubmission").empty();
+				               	  $("#qveducationSubmission").append(result); */
+					       		} else if (data.indexOf('Sign In') !== -1) {
+        							location.replace(sourceleadUrl);
+					        	} else {
+					        	    showError("Operation failed, please try again");
+					        	}
         },
-          
      }); 
 }
 </script> 
@@ -385,17 +415,21 @@ function qwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-        	  if (data != null && data != 'undefined' && data != "" && data != '[]') {
-	                	 $("#qvcertificationSubmission").empty();
+          success :function(response) {
+        	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			if(response.data.length>0) {
+        				 $("#qvcertificationSubmission").empty();
 	                	 var result = "";
-	                	 
 	                	 result = result +'<div class="col-md-12">';
 						 result = result +' <h4>Certifications</h4>';
-							var json = JSON.parse(data);
-							for (var i = 0; i < json.length; i++) { 
-								if(i < 3){
-		                    	var opt = json[i];  
+// 							var json = JSON.parse(data);
+							for (var i = 0; i < response.data.length; i++) {
+								if(i < 3) {
+		                    	var opt = response.data[i];
 								result = result +'<div class="resume-widget resumewidget">';
 								
 								if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != "" && opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
@@ -423,13 +457,24 @@ function qwikCertificates(candidateId){
 								result = result +'</div>';   */
 								result = result +'                  </div>';
 							} 
-        	  }
+        	  				}
 							result = result +'        </div>';
-							
 							$("#qvcertificationSubmission").append(result); 
-          }
+        			} else {
+        				 var result = '';
+        	        	  result = result +'            <div class="col-md-12 " style="display:none">';
+        	        	  result = result +' <h4>Certifications</h4>';
+        	        	  result = result +' <div>---</div>';
+        	        	  result = result +'            </div>';
+        	        	  $("#qvcertificationSubmission").empty();
+        	        	  $("#qvcertificationSubmission").append(result); 
+        			}
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      });
 }
 </script>

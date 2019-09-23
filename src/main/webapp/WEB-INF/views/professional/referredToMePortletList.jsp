@@ -2,17 +2,7 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
- <style type="text/css">
- .require_wrap_details_cta b {
-    width: 110px;
-}
-.top_o{
-top:0 !important;
-}
-.repoPositi .dataTables_filter {
-    top: 0px !important;
-}
- </style>
+
 
 <script>
 $(document).ready(function() {
@@ -51,7 +41,7 @@ $(document).ready(function() {
     <div class="pull-left">
       <h2>Referred To Me</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalDashboard'/>">Home</a> » <span class="applicantStatus"></span>&nbsp; List </div>
   </section>
   <section class="clearfix">
   <div class="timesheet_out timesheet_background crowdDash_btn">
@@ -144,7 +134,7 @@ function portletListFilter(requirementStatus){
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 	    	 var result =""; 
-	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi">';
+	    	   result = result + '<div class="require_wrap_table overflow-data filter-position repoPositi repo_positi">';
 	    	   result = result + '<div class="clerfix">';
 	    	   result = result + '<table id="professionalDashboardPortletPagenation" class="display" cellspacing="0" width="100%"">';
 	           result = result + '<thead>';
@@ -188,6 +178,11 @@ function portletListFilter(requirementStatus){
 		        	   }else{
 		        		   city = "";
 		        	   }
+		        	   if(report.country != null && report.country != '' && report.country != 'undefined'){
+		        		   country = ' , '+report.country;
+		        	   }else{
+		        		   country = "";
+		        	   }
 		        	   
 		        	   if(report.rate != null && report.rate != '' && report.rate != 'undefined'){
 		        		   rate = report.rate;
@@ -211,10 +206,35 @@ function portletListFilter(requirementStatus){
 		        		   referredOn= "--";
 		        	   } */
 		        	   result = result +'         <tr>';
-		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'/'+report.referUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><a href="<c:url value="/app/requirementProfile/'+report.requirementUUID+'/'+report.referUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.orgName+'">'+report.orgName+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
-		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.country+' '+state+' '+city+'</div></td>';
+		        	   
+// 		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+country+' '+state+' '+city+'</div></td>';
+		        	   
+		        	   
+		        	   result = result +'<td>';
+	   		        	result = result +'<div class="positionRelative">';
+		   		         for(var k=0; k<1; k++){
+		   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+report.locationsList[k]+'</p>';
+		   		         }
+	   		    	
+		   		        result = result +'<div class="show_Empdetails showjoblist">';
+	   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+
+	   		        	result = result +'<div class="emailvalues emailvaluesNew">';
+	   		        	
+						for(var k=0; k<report.locationsList.length; k++){
+							result = result +'<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+		   		        	
+	   		    	 	}
+	   		        	result = result +'</div>';
+	   		        	result = result +'</div>';
+	   
+
+  		        	result = result +'</div>';
+  		        	result = result +'</td>';
+  		        	
 		        	   result = result +'         <td><div class="tblminwidth-dotdot">'+rate+' '+rateType+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.requirementSubmissionStatus+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+report.submissionStatus+'</div></td>';
@@ -279,7 +299,7 @@ function portletListFilter(requirementStatus){
 		        		  submissionStatus = "NEW"
 		        	  }
 		        	   result = result +'         <tr>';
-		        	   result = result +'         <td><a href="<c:url value="/requirementProfile/'+report.requirementUUID+'/'+report.referUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   result = result +'         <td><a href="<c:url value="/app/requirementProfile/'+report.requirementUUID+'/'+report.referUUID+'"/>"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.requirementOrgName+'">'+report.requirementOrgName+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+requirementJobType+'</div></td>';
 		        	   result = result +'         <td><div class="tbldata-dotdot-100">'+report.requirementCountry+' '+state+' '+city+'</div></td>';

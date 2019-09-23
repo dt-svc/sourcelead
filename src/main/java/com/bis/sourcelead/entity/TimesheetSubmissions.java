@@ -10,23 +10,19 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -34,7 +30,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_SUBMISSIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetSubmissions")
 public class TimesheetSubmissions implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -44,10 +39,18 @@ public class TimesheetSubmissions implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBER_ID", nullable=false)
 	private ProjectMembers projectMembers;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	private Projects projects;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false)        
+    private MasterCandidate masterCandidateId;
 	
 	@NotNull
     @DateTimeFormat(pattern="dd/MM/yyyy  HH:mm:ss") 
@@ -59,8 +62,9 @@ public class TimesheetSubmissions implements Serializable{
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
-	@Column(name = "ESTIMATED_HOURS")
-	private String estimatedHours;
+	@Column(name = "REJECTED_REASON")
+	@Type(type="text")
+	private String rejectedReason;
 	
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
@@ -71,43 +75,10 @@ public class TimesheetSubmissions implements Serializable{
 	@Column(name = "NON_BILLABLE_HOURS")
 	private String nonBillableHours;
 	
-	
-	/*@Column(name = "SUBMISSION_STATUS")
-	@Enumerated(EnumType.STRING)
-	private Submission_Status submissionStatus;
-	
-	@Column(name = "SUBMISSION_APPROVALSTATUS")
-	@Enumerated(EnumType.STRING)
-    private Submission_ApprovalStatus submissionApprovalStatus;*/
-	
-	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(mappedBy = "submissionId",cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
 	private Set<SubmissionApproverHierarchy> approverHierarchyList = new HashSet<SubmissionApproverHierarchy>(0);
-	
-  
-	@Column(name = "REJECTED_REASON")
-	@Type(type="text")
-	private String rejectedReason;
 		
-	@Column(name = "LEVEL_OF_APPROVER")
-	private Integer levelOfApprover;
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-	@JoinColumn(name = "APPROVER_USER_ID", nullable=false)
-	private User approverUserId;
-	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
-	@Column(name = "FILE_CONTENT_TYPE")
-	private String fileContentType;
-	
-	@Column(name = "FILE_NAME")
-	private String fileName;
-	
 	@Column(name = "WEEK_COMMENTS")
 	@Type(type="text")
 	private String weekcomments;
@@ -130,9 +101,6 @@ public class TimesheetSubmissions implements Serializable{
 	
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
-	
-/*	@Transient
-	private Collection<ProjectTasks> projectTasksList;*/
 	
 	@Transient
 	private String  endDateStr;
@@ -196,72 +164,7 @@ public class TimesheetSubmissions implements Serializable{
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
-	/*public Submission_Status getSubmissionStatus() {
-		return submissionStatus;
-	}
-
-	public void setSubmissionStatus(Submission_Status submissionStatus) {
-		this.submissionStatus = submissionStatus;
-	}
-
-	public Submission_ApprovalStatus getSubmissionApprovalStatus() {
-		return submissionApprovalStatus;
-	}
-
-	public void setSubmissionApprovalStatus(Submission_ApprovalStatus submissionApprovalStatus) {
-		this.submissionApprovalStatus = submissionApprovalStatus;
-	}*/
-
-	public String getRejectedReason() {
-		return rejectedReason;
-	}
-
-	public void setRejectedReason(String rejectedReason) {
-		this.rejectedReason = rejectedReason;
-	}
-
-	public Integer getLevelOfApprover() {
-		return levelOfApprover;
-	}
-
-	public void setLevelOfApprover(Integer levelOfApprover) {
-		this.levelOfApprover = levelOfApprover;
-	}
-
-	@JsonIgnore
-	public User getApproverUserId() {
-		return approverUserId;
-	}
-
-	public void setApproverUserId(User approverUserId) {
-		this.approverUserId = approverUserId;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
-	public String getFileContentType() {
-		return fileContentType;
-	}
-
-	public void setFileContentType(String fileContentType) {
-		this.fileContentType = fileContentType;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
+	
 	public String getWeekcomments() {
 		return weekcomments;
 	}
@@ -308,22 +211,6 @@ public class TimesheetSubmissions implements Serializable{
 
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
-	}
-
-	/*public Collection<ProjectTasks> getProjectTasksList() {
-		return projectTasksList;
-	}
-
-	public void setProjectTasksList(Collection<ProjectTasks> projectTasksList) {
-		this.projectTasksList = projectTasksList;
-	}*/
-
-	public String getEstimatedHours() {
-		return estimatedHours;
-	}
-
-	public void setEstimatedHours(String estimatedHours) {
-		this.estimatedHours = estimatedHours;
 	}
 
 	public String getTotalHours() {
@@ -436,6 +323,30 @@ public class TimesheetSubmissions implements Serializable{
 
 	public void setApproverHierarchyList(Set<SubmissionApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
+	}
+
+	public Projects getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Projects projects) {
+		this.projects = projects;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getRejectedReason() {
+		return rejectedReason;
+	}
+
+	public void setRejectedReason(String rejectedReason) {
+		this.rejectedReason = rejectedReason;
 	}
 	
 	

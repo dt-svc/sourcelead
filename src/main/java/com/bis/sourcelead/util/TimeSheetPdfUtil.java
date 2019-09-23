@@ -2,14 +2,12 @@ package com.bis.sourcelead.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -22,26 +20,25 @@ import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.beans.TimesheetHours;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.TimesheetEntriesDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
-import com.bis.sourcelead.entity.TimesheetEntries;
+import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectApproverHierarchyService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectTasksService;
-import com.bis.sourcelead.service.SubmissionApproverHierarchyService;
-import com.bis.sourcelead.service.TimesheetSubmissionsDocumentsService;
-import com.bis.sourcelead.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.service.impl.ExportTimesheetEntriesImpl;
-import com.bis.sourcelead.web.LoginSessionController;
+import com.bis.sourcelead.timesheet.dao.TimeSheetDayEntriesDao;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsDocumentsService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.timesheet.service.impl.ExportTimesheetEntriesImpl;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -70,7 +67,7 @@ public class TimeSheetPdfUtil {
 	private static final Logger logger = LoggerFactory.getLogger(ExportTimesheetEntriesImpl.class);
 	
 	@Autowired
-	TimesheetEntriesDao timesheetEntriesDao;
+	TimeSheetDayEntriesDao timeSheetDayEntriesDao;
 	
 	@Autowired
 	TimesheetSubmissionsService timesheetSubmissionsService;
@@ -118,10 +115,11 @@ public class TimeSheetPdfUtil {
      * @param navigation
      * @param startDate
      * @param orgLocations
+     * @param loginUser 
      * @return 
      * @throws Exception 
      */
-	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations) throws Exception {
+	public File exportTimesheetPdf(ProjectMembers projectMember, String frequencyStartDate,String frequencyEndDate, OrgLocations orgLocations,String requestFrom, User loginUser,String globalUser) throws Exception {
 
 		//DateFormat format = LoginSessionController.DATEFORMAT;
 		Map<String,java.util.List<TimesheetHours>> map = new HashMap();
@@ -133,7 +131,7 @@ public class TimeSheetPdfUtil {
 		Date employeeEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),frequencyEndDate.replaceAll("/", "-"));
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(projectMember.getEmployee().getUser().getFirstName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
+		sb.append(orgLocations.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),new Date()));
 		file = File.createTempFile(sb.toString(),".pdf");
 		file.setReadable(true);
 		
@@ -145,12 +143,17 @@ public class TimeSheetPdfUtil {
 	        table1.setWidths(width);
         java.util.List<String> timeSheetStatus = new ArrayList<>();
         
-        
-		
-		SubmissionApproverHierarchy sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
-		Submission_Status submissionStatus = sah.getSubmissionStatus();
-		String submissionStatusStr = submissionStatus.getValue();
-		
+        SubmissionApproverHierarchy sah = null;
+        String submissionStatusStr = "";
+		if(requestFrom.equalsIgnoreCase("employee")) {
+			 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectMemberId(employeeStartDate, employeeEndDate, projectMember.getId());
+		}else if(requestFrom.equalsIgnoreCase("dashboard") || requestFrom.equalsIgnoreCase("approver")) {
+			 sah =submissionApproverHierarchyService.getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(loginUser.getId(), projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), orgLocations.getId(),employeeStartDate, employeeEndDate,globalUser);
+		}
+		if(sah != null) {
+			Submission_Status submissionStatus = sah.getSubmissionStatus();
+			submissionStatusStr = submissionStatus.getValue().toUpperCase();
+		}
 		Map<String,String> tabFrequency = timesheetFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(frequencyStartDate, frequencyEndDate,orgLocations.getDateFormat());
 		if(tabFrequency != null && !tabFrequency.isEmpty()){
 			Float billableHours = 0f;
@@ -164,10 +167,9 @@ public class TimeSheetPdfUtil {
 				 Date weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),value.replaceAll("/", "-"));
 				 
 				 java.util.List<TimesheetHours> hoursList = new ArrayList<>();
-				 int column = 0;
 				 String weekMondayDate = null;
 				 
-				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllEmployeeTimesheetSubmissionsByProjectMemberId(weekStartDate, weekEndDate, projectMember.getId());
+				 TimesheetSubmissions ts = timesheetSubmissionsService.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(weekStartDate, weekEndDate, projectMember.getProjects().getId(),projectMember.getMasterCandidateId().getId());
 				 if(null != ts){
 					 if(null != ts.getBillableHours()){
 						 Float weekBillable = Float.parseFloat(ts.getBillableHours());
@@ -212,14 +214,20 @@ public class TimeSheetPdfUtil {
 		    	        default:   weekMondayDate = CalendarUtil.getPreviousDateByDecrementor(key,0,orgLocations.getDateFormat());
 		    	                break;
 		           }
-		    		
+		    		String tuesDayDate =  CalendarUtil.getNextDate(weekMondayDate,orgLocations.getDateFormat());
+		    		String WednesDayDate =  CalendarUtil.getNextDate(tuesDayDate,orgLocations.getDateFormat());
+		    		String ThursDayDate =  CalendarUtil.getNextDate(WednesDayDate,orgLocations.getDateFormat());
+		    		String FriDayDate =  CalendarUtil.getNextDate(ThursDayDate,orgLocations.getDateFormat());
+		    		String SaturdayDate =  CalendarUtil.getNextDate(FriDayDate,orgLocations.getDateFormat());
+		    		String SundayDate =  CalendarUtil.getNextDate(SaturdayDate,orgLocations.getDateFormat());
 				 
-				 Collection<TimesheetEntries>  timesheetEntriesList =   getAllTimesheetEntriesBySubmissionId(ts.getId());
-					if(timesheetEntriesList != null && !timesheetEntriesList.isEmpty()){
-								Integer maxCount = timesheetEntriesList.size();
-								maxCount = maxCount+1;
-								for(TimesheetEntries timesheetEntries   : timesheetEntriesList){
-									
+				 Collection<TimeSheetDayEntries>  timeSheetDayEntriesList =   getAllTimeSheetDayEntriesBySubmissionId(ts.getId());
+					if(timeSheetDayEntriesList != null){
+						    HashMap<Long,TimesheetHours> taskMap = new HashMap<>();
+								//Integer maxCount = timeSheetDayEntriesList.size();
+								//maxCount = maxCount+1;
+								for(TimeSheetDayEntries timesheetDayEntries   : timeSheetDayEntriesList){
+								  if(timesheetDayEntries!= null && timesheetDayEntries.getProjectTask() != null) {
 									Long weekTotHours = 0L;
 								    Long monHours = 0L;
 									Long tueHours = 0L;
@@ -228,83 +236,105 @@ public class TimeSheetPdfUtil {
 									Long friHours = 0L;
 									Long satHours = 0L;
 									Long sunHours = 0L;
-									
-									TimesheetHours timesheetHours = new TimesheetHours();
-							            	  if(timesheetEntries.getProjectTask() !=null){
-													timesheetHours.setTaskName(timesheetEntries.getProjectTask().getTaskName());
-												}
-								            	  
-								              if(timesheetEntries.getMonHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getMonHours())){
-								            	  if(timesheetEntries.getMonHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getMonHours())){
-														timesheetHours.setMonDayHours(timesheetEntries.getMonHours());
-													}
-								            	  monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
-								            	  monHours =  monHours + getTotalHoursFormDayHours(timesheetEntries.getMonHours());
-								              }
-								              if(timesheetEntries.getTueHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getTueHours())){
-								            	  if(timesheetEntries.getTueHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getTueHours())){
-														timesheetHours.setTueDayHours(timesheetEntries.getTueHours());
-													}
-								            	  tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
-								            	  tueHours = tueHours + getTotalHoursFormDayHours(timesheetEntries.getTueHours());
-								              }
-								              if(!isNullOrEmpty(timesheetEntries.getTuecomments())){
-//								            	  cell3.setCellComment(getCellComment(sheet,wb,timesheetEntries.getTuecomments()));
-								              }
-//								              Cell cell4 = writeRow.createCell(4);
-								              if(timesheetEntries.getWedHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getWedHours())){
-//								            	  cell4.setCellValue(timesheetEntries.getWedHours()); 
-								            	  if(timesheetEntries.getWedHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getWedHours())){
-														timesheetHours.setWedDayHours(timesheetEntries.getWedHours());
-													}
-								            	  wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
-								            	  wedHours = wedHours + getTotalHoursFormDayHours(timesheetEntries.getWedHours());
-								              }
-								              if(timesheetEntries.getThuHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getThuHours())){
-								            	  if(timesheetEntries.getThuHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getThuHours())){
-														timesheetHours.setThuDayHours(timesheetEntries.getThuHours());
-													}
-								            	  thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
-								            	  thuHours = thuHours + getTotalHoursFormDayHours(timesheetEntries.getThuHours());
-								              }
-								              if(timesheetEntries.getFriHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getFriHours())){
-								            	  if(timesheetEntries.getFriHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getFriHours())){
-														timesheetHours.setFriDayHours(timesheetEntries.getFriHours());
-													}
-								            	  friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
-								            	  friHours = friHours + getTotalHoursFormDayHours(timesheetEntries.getFriHours());
-								              }
-								              if(timesheetEntries.getSatHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSatHours())){
-								            	  if(timesheetEntries.getSatHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSatHours())){
-														timesheetHours.setSatDayHours(timesheetEntries.getSatHours());
-													}
-								            	  satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
-								            	  satHours = satHours + getTotalHoursFormDayHours(timesheetEntries.getSatHours());
-								              } 
-								              if(timesheetEntries.getSunHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSunHours())){
-								            	  if(timesheetEntries.getSunHours() !=null && !"".equalsIgnoreCase(timesheetEntries.getSunHours())){
-														timesheetHours.setSunDayHours(timesheetEntries.getSunHours());
-													}
-								            	  sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
-								            	  sunHours = sunHours + getTotalHoursFormDayHours(timesheetEntries.getSunHours());
-								              } 
-							            	  if(!isNullOrEmpty(timesheetEntries.getSuncomments())){
-//							            		  cell8.setCellComment(getCellComment(sheet,wb,timesheetEntries.getFricomments()));
-							            	  }  
-							            	  weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
-							            	  timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
-								              column++;
-								              hoursList.add(timesheetHours);
-								     }
-								map.put(projectMember.getProjects().getProjectName(), hoursList);
-						  }
+									TimesheetHours timesheetHours = taskMap.get(timesheetDayEntries.getProjectTask().getId());
+			            		    if(timesheetHours == null){
+			            		    	timesheetHours = new TimesheetHours();
+			            		    	taskMap.put(timesheetDayEntries.getProjectTask().getId(), timesheetHours);
+			            		    	hoursList.add(timesheetHours);
+			            		    }
+							            		    
+									 timesheetHours.setTaskName(timesheetDayEntries.getProjectTask().getTaskName());
+					            	  if(weekMondayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+						            	  if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setMonDayHours(timesheetDayEntries.getTotalHours());
+												monTotHours = monTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	monHours =  monHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+monHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              }
+					            	  if(tuesDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+					            		  if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setTueDayHours(timesheetDayEntries.getTotalHours());
+												tueTotHours = tueTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	tueHours = tueHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+tueHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              }
+					            	  if(WednesDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+					            		  if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setWedDayHours(timesheetDayEntries.getTotalHours());
+												wedTotHours = wedTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								                wedHours = wedHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								                weekTotHours = timesheetHours.getWeekTotalHours()+wedHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              }
+					            	  if(ThursDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+					            		    if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setThuDayHours(timesheetDayEntries.getTotalHours());
+												thuTotHours = thuTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	thuHours = thuHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+thuHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              }
+					            	  if(FriDayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+					            		   if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setFriDayHours(timesheetDayEntries.getTotalHours());
+												friTotHours = friTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	friHours = friHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+friHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              }
+					            	  if(SaturdayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+					            		  if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setSatDayHours(timesheetDayEntries.getTotalHours());
+												satTotHours = satTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	satHours = satHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+satHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              } 
+					            	  if(SundayDate.equalsIgnoreCase(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),timesheetDayEntries.getTimesheetDate()))){
+					            		  if(StringUtils.isNotEmpty(timesheetDayEntries.getTotalHours())){
+												timesheetHours.setSunDayHours(timesheetDayEntries.getTotalHours());
+												sunTotHours = sunTotHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	sunHours = sunHours + getTotalHoursFormDayHours(timesheetDayEntries.getTotalHours());
+								            	weekTotHours = timesheetHours.getWeekTotalHours()+sunHours;
+												timesheetHours.setWeekTotalHours(weekTotHours);
+												timesheetHours.setWeekTotal(getTotalHours(weekTotHours));
+											}
+						            	  
+						              } 
+					            	  //weekTotHours = monHours + tueHours + wedHours + thuHours + friHours + satHours + sunHours;
+					            	  
+						              
+						       }
+						}
+						  map.put(projectMember.getProjects().getProjectName(), hoursList);
+					 }
 					Long totalHours = monTotHours+tueTotHours+wedTotHours+thuTotHours+friTotHours+satTotHours+sunTotHours;
 //					grandTotalHours = getTotalHours(totalHours);
 					grandTotalHours = grandTotalHours + totalHours;
 					String billable = getTotalHours((long) (Math.round(billableHours)));
 					String nonBillable = getTotalHours((long) (Math.round(nonBillableHours)));
 					String grandtotal = getTotalHours(grandTotalHours);
-					document =  prepareHeadres(projectMember.getEmployee().getUser(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
+					document =  prepareHeadres(projectMember.getProjectMemberCandidteId(),frequencyStartDate,frequencyEndDate,file,submissionStatusStr,orgLocations,projectMember.getProjects().getProjectName(),billable,nonBillable,grandtotal);
 					int [] width2 = new int[]{5,5,5,5,5,5,5,5,5};
 					String[] headers2 = Constants.TIMESHEET_EXCEL_HEADERS2;
 					int [] width3 = new int[]{1};
@@ -320,60 +350,76 @@ public class TimeSheetPdfUtil {
 				        	 PdfPTable table2 = getPdfTable(headers2,width2,k);
 				        	 PdfPTable table3 = getPdfTable(headers3,width3,k);
 //				        	 java.util.List<Employee> = entry.getValue();
-				        	for(TimesheetHours hours:entry1.getValue()){
-				        		String innerTable [] = new String[headers2.length];
-				        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
-				        			innerTable[0] = hours.getTaskName();
-				        		}else{
-				        			innerTable[0] = "--";
-				        		}
-				        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
-				        			innerTable[1] = hours.getMonDayHours();
-				        		}else{
-				        			innerTable[1] = "--";
-				        		}
-				        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
-				        			innerTable[2] = hours.getTueDayHours();
-				        		}else{
-				        			innerTable[2] = "--";
-				        		}
-				        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
-				        			innerTable[3] = hours.getWedDayHours();
-				        		}else{
-				        			innerTable[3] = "--";
-				        		}
-				        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
-				        			innerTable[4] = hours.getThuDayHours();
-				        		}else{
-				        			innerTable[4] = "--";
-				        		}
-				        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
-				        			innerTable[5] = hours.getFriDayHours();
-				        		}else{
-				        			innerTable[5] = "--";
-				        		}
-				        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
-				        			innerTable[5] = hours.getFriDayHours();
-				        		}else{
-				        			innerTable[5] = "--";
-				        		}
-				        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
-				        			innerTable[6] = hours.getSatDayHours();
-				        		}else{
-				        			innerTable[6] = "--";
-				        		}
-				        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
-				        			innerTable[7] = hours.getSunDayHours();
-				        		}else{
-				        			innerTable[7] = "--";
-				        		}
-				        		if(hours.getWeekTotal() !=null){
-				        			innerTable[8] = hours.getWeekTotal().toString();
-				        		}else{
-				        			innerTable[8] = "--";
-				        		}
-				        		innerTableArrayData.add(innerTable);
-				        	}
+				        	 if(entry1.getValue() != null && entry1.getValue().size() >0) {
+				        		 for(TimesheetHours hours:entry1.getValue()){
+						        		String innerTable [] = new String[headers2.length];
+						        		if(hours.getTaskName() != null && !"".equalsIgnoreCase(hours.getTaskName())){
+						        			innerTable[0] = hours.getTaskName();
+						        		}else{
+						        			innerTable[0] = "--";
+						        		}
+						        		if(hours.getMonDayHours() !=null && !"".equalsIgnoreCase(hours.getMonDayHours())){
+						        			innerTable[1] = hours.getMonDayHours();
+						        		}else{
+						        			innerTable[1] = "--";
+						        		}
+						        		if(hours.getTueDayHours() !=null && !"".equalsIgnoreCase(hours.getTueDayHours())){
+						        			innerTable[2] = hours.getTueDayHours();
+						        		}else{
+						        			innerTable[2] = "--";
+						        		}
+						        		if(hours.getWedDayHours() !=null && !"".equalsIgnoreCase(hours.getWedDayHours())){
+						        			innerTable[3] = hours.getWedDayHours();
+						        		}else{
+						        			innerTable[3] = "--";
+						        		}
+						        		if(hours.getThuDayHours() !=null && !"".equalsIgnoreCase(hours.getThuDayHours())){
+						        			innerTable[4] = hours.getThuDayHours();
+						        		}else{
+						        			innerTable[4] = "--";
+						        		}
+						        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+						        			innerTable[5] = hours.getFriDayHours();
+						        		}else{
+						        			innerTable[5] = "--";
+						        		}
+						        		if(hours.getFriDayHours() !=null && !"".equalsIgnoreCase(hours.getFriDayHours())){
+						        			innerTable[5] = hours.getFriDayHours();
+						        		}else{
+						        			innerTable[5] = "--";
+						        		}
+						        		if(hours.getSatDayHours() !=null && !"".equalsIgnoreCase(hours.getSatDayHours())){
+						        			innerTable[6] = hours.getSatDayHours();
+						        		}else{
+						        			innerTable[6] = "--";
+						        		}
+						        		if(hours.getSunDayHours() !=null && !"".equalsIgnoreCase(hours.getSunDayHours())){
+						        			innerTable[7] = hours.getSunDayHours();
+						        		}else{
+						        			innerTable[7] = "--";
+						        		}
+						        		if(hours.getWeekTotal() !=null){
+						        			innerTable[8] = hours.getWeekTotal().toString();
+						        		}else{
+						        			innerTable[8] = "--";
+						        		}
+						        		innerTableArrayData.add(innerTable);
+						        	}	 
+				        	 }else {
+				        			String innerTable [] = new String[headers2.length];
+					        			innerTable[0] = "--";
+					        			innerTable[1] = "--";
+					        			innerTable[2] = "--";
+					        			innerTable[3] = "--";
+					        			innerTable[4] = "--";
+					        			innerTable[5] = "--";
+					        			innerTable[5] = "--";
+					        			innerTable[6] = "--";
+					        			innerTable[7] = "--";
+					        			innerTable[8] = "--";
+					        		innerTableArrayData.add(innerTable);
+					        	}	
+				        	
 				        	for (String[] timeSheetArray: innerTableArrayData) {
 				              for (int i = 0; i < timeSheetArray.length; i++) {
 				                  String datum = timeSheetArray[i];
@@ -407,7 +453,14 @@ public class TimeSheetPdfUtil {
 					 table1.addCell("");
 					 table1.addCell(table4);
 					 table1.addCell(getTotalHours(totalHours));
-			        document.addTitle("Pdf table created for TimeSheet Entries..!!");
+					 if(projectMember.getProjectMemberCandidteId()!= null) {
+						 if(projectMember.getProjectMemberCandidteId().getLastName()!= null) {
+							 StringBuilder fullname = new StringBuilder();
+							 document.addTitle(fullname.append(projectMember.getProjectMemberCandidteId().getFirstName()).append(projectMember.getProjectMemberCandidteId().getLastName()).toString());
+						 }else {
+							 document.addTitle(projectMember.getProjectMemberCandidteId().getFirstName());
+						 }
+					 }
 			        table1.setSpacingBefore(15f);
 			        document.add(table1);
 			        logger.info("Pdf table created !!");
@@ -458,7 +511,7 @@ public class TimeSheetPdfUtil {
 		return table;
 	}
 
-	private Document prepareHeadres(User user, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
+	private Document prepareHeadres(Candidate candidate, String weekStartDate, String weekEndDate, File file, String submissionStatusStr, OrgLocations orgLocations,String projectName,String billableHours,String nonbillableHours, String totalHours) {
 		 Document document = new Document(PageSize.LETTER.rotate());
 		    try {
 		    	StringBuilder nameSb = new StringBuilder();
@@ -471,8 +524,8 @@ public class TimeSheetPdfUtil {
 		        BaseColor myBordColor = WebColors.getRGBColor("#000000");
 		        boldFont.setColor(myBordColor);
 		        StringBuilder sbPipeHearder = new StringBuilder();
-		        sbPipeHearder.append(orgLocations.getOrgLocationName()).append(" ").append("TimeSheet");
-	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).append(" TimeSheet.").toString(),boldFont);
+		        sbPipeHearder.append(orgLocations.getOrgLocationName());/*.append(" ").append("TimeSheet")*/
+	            Paragraph para = new Paragraph(sb.append(orgLocations.getOrgLocationName()).toString(),boldFont);/*.append(" TimeSheet")*/
 	            para.setAlignment(Element.ALIGN_CENTER);
 	            para.add("\n\n");
 	            document.add(para);
@@ -483,16 +536,18 @@ public class TimeSheetPdfUtil {
 	            table.setHorizontalAlignment(Element.ALIGN_LEFT);
 	            table.setWidths(new int[]{10,10});
 	            table.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-	            if(user.getFirstName()!=null && user.getLastName()!=null){
-	            	nameSb.append(user.getFirstName()).append(" ").append(user.getLastName());
+	            if(candidate.getFirstName()!=null && candidate.getLastName()!=null){
+	            	nameSb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName());
 	            }else{
-	            	nameSb.append(user.getFirstName());
+	            	nameSb.append(candidate.getFirstName());
 	            }
 	            table.addCell("Name : "+nameSb.toString());
 	            table.addCell("Status : "+submissionStatusStr);
-	            table.addCell("Email Id : "+user.getEmail());
+	            table.addCell("Email Id : "+candidate.getEmail());
 	            table.addCell("Billabe Hours : "+billableHours);
-	            table.addCell("Phone Number : "+user.getMobilePhone());
+	            if(candidate.getMobilePhone() != null) {
+	              table.addCell("Phone Number : "+candidate.getMobilePhone());
+	            }
 	            table.addCell("Non-Billabe Hours : "+nonbillableHours);
 	            table.addCell("Project : "+projectName);
 	            table.addCell("Total Hours : "+totalHours);
@@ -523,8 +578,8 @@ public class TimeSheetPdfUtil {
 			return document;
 	}
 
-	 public Collection<TimesheetEntries> getAllTimesheetEntriesBySubmissionId(Long submissionId) throws Exception {
-			Collection<TimesheetEntries> list = timesheetEntriesDao.getAllTimesheetEntriesBySubmissionId(submissionId);
+	 public List<TimeSheetDayEntries> getAllTimeSheetDayEntriesBySubmissionId(Long submissionId) throws Exception {
+		    List<TimeSheetDayEntries> list = timeSheetDayEntriesDao.getAllTimeSheetDayEntriesBySubmissionId(submissionId);
 			return list;
 			
 		}

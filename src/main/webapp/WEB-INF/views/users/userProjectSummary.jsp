@@ -10,7 +10,7 @@ function userAssignedProjects(userId){
 	var orgLocationId ='${SourceLeadWeb_orgLocationId}';
 	  $.ajax({
            type : "GET",
-           url: sourceleadUrl+"/getAssignedProjectsListForUser?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId,    
+           url: sourceleadUrl+"/getAssignedProjectsListForUser?"+tokenParamName+"="+tokenValue+"&userId="+userId+"&orgLocationId="+orgLocationId+"&fromType=Associate",    
             success :function(data) {
                 	prepareAssignedProjectsData(data);
           },
@@ -26,7 +26,6 @@ function userAssignedProjects(userId){
 
 <script>
 function prepareAssignedProjectsData(data){
-
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  assignedProjectsDate = 'YYYY-MM-DD';
@@ -37,22 +36,19 @@ function prepareAssignedProjectsData(data){
 	  }if(locationList.match("yyyy-dd-MM")){
 		  assignedProjectsDate = 'YYYY-DD-MM'; 
 	  }  
-	  
 
 	var result = "";
 	result = result +"<table id='assignedProjectsListPagination' class='display' cellspacing='0' width='100%' >"; 
     result = result +"<thead>"; 
     result = result +" <tr>"; 
-    result = result +"    <th>Project Id</th>"; 
     result = result +"    <th>Project Name</th>"; 
-    result = result +"    <th>Rate</th>"; 
     result = result +"    <th>Start Date</th>";
     result = result +"    <th>End Date</th>"; 
-    result = result +"    <th>Approved Hours</th>"; 
-    result = result +"    <th>Rejected Hours</th>"; 
-    result = result +"    <th>Waiting For Approval</th>"; 
-    result = result +"    <th>Saved Hours</th>";
-    result = result +"    <th>Claimed Expense</th>"; 
+    result = result +"    <th>Bill Rate</th>"; 
+    result = result +"    <th>Pay Rate</th>"; 
+    result = result +"    <th>Estimated hrs</th>"; 
+    result = result +"    <th>Estimated Budget</th>";
+    result = result +"    <th>Actual hrs</th>"; 
     result = result +"	  <th>Status</th>";
     result = result +"  </tr>"; 
     result = result +"</thead>";
@@ -60,27 +56,39 @@ function prepareAssignedProjectsData(data){
         
    for (var i = 0; i < data.length; i++) { 
     var opt = data[i];
+    
+    
+    if(opt.currentBillRate != null && opt.currentBillRate != 'undefined' && opt.currentBillRate != ''){
+		billRate = opt.billRateCurrency+" "+opt.currentBillRate+" /"+opt.rateType
+	}else{
+		billRate = "--";
+	}
+	
+	if(opt.payRate != null && opt.payRate != 'undefined' && opt.payRate != ''){
+		payRate = opt.payRateCurrency+" "+opt.payRate+" /"+opt.payRateType
+	}else{
+		payRate = "---";
+	}
+	
+	if(opt.estimatedHours != null && opt.estimatedHours != 'undefined' && opt.estimatedHours != ''){
+		estimatedHours = opt.estimatedHours;
+	}else{
+		estimatedHours = "--";
+	}
+	
+	if(opt.estimatedBudget != null && opt.estimatedBudget != 'undefined' && opt.estimatedBudget != ''){
+		estimatedBudget = opt.estimatedBudget;
+	}else{
+		estimatedBudget = "--";
+	}
+	
    	result = result +"<tr>"; 
-   	 
-   	result = result +"<td>";
-   	if(opt.id != '' && opt.id != null && opt.id != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.id+"'>"+opt.id+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
+ 
 	result = result +"</td>";
 	
 	result = result +"<td>";
    	if(opt.projectName != '' && opt.projectName != null && opt.projectName != 'undefined'){
-   		result = result +"<div class='tbldata-dotdot'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-	result = result +"<td>";
-   	if(opt.flatPercent != '' && opt.flatPercent != null && opt.flatPercent != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.flatPercent+"'>"+opt.flatPercent+"</span></div>";
+   		result = result +"<div class='tbldata-dotdot'><a href='"+sourceleadUrl+"/projectSummary?projectUUID="+opt.projectUUID+"&projectClientUUID="+opt.projectClientUUID+"'><span title='"+opt.projectName+"'>"+opt.projectName+"</span></a></div>";
    	}else{
    		result = result +"<div>-----</div>";
    	}
@@ -94,57 +102,42 @@ function prepareAssignedProjectsData(data){
    	}
 	result = result +"</td>";
 	
+	
 	result = result +"<td>";
-	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
-   		result = result +"	    <div><input type='text' value='"+opt.projectEndDateStr+"' class='project_inline_field project_inline_field_enddate' id='endDate"+opt.id+"' name='endDate'  readonly='readonly'></div>";
+   	if(opt.projectEndDateStr != '' && opt.projectEndDateStr != null && opt.projectEndDateStr != 'undefined'){
+	   	result = result +"<div class='tblminwidth-75' title='"+opt.projectEndDateStr+"'>"+opt.projectEndDateStr+"</span></div>";
    	}else{
-   		result = result +"<div>-----</div>";
+   		result = result +"<div>-----</div>"; 
    	}
+	result = result +"</td>";
+	
+	result = result +"<td>";
+	   	result = result +"<div class='tbldata-dotdot-vsm' title='"+billRate+"'>"+billRate+"</span></div>";
+	result = result +"</td>";
+	
+	result = result +"<td>";
+	   	result = result +"<div class='tbldata-dotdot-vsm' title='"+payRate+"'>"+payRate+"</span></div>";
+	result = result +"</td>";
+	
+	result = result +"<td>";
+	   	result = result +"<div class='tbldata-dotdot_50' title='"+estimatedHours+"'>"+estimatedHours+"</span></div>";
+	result = result +"</td>";
+	
+	result = result +"<td>";
+	   	result = result +"<div class='tbldata-dotdot_50' title='"+estimatedBudget+"'>"+estimatedBudget+"</span></div>";
 	result = result +"</td>";
 	
 	result = result +"<td>";
    	if(opt.approvedHrs != '' && opt.approvedHrs != null && opt.approvedHrs != 'undefined'){
 	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.approvedHrs+"'>"+opt.approvedHrs+"</span></div>";
    	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-	result = result +"<td>";
-   	if(opt.rejectedHrs != '' && opt.rejectedHrs != null && opt.rejectedHrs != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.rejectedHrs+"'>"+opt.rejectedHrs+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-	result = result +"<td>";
-   	if(opt.submittedHrs != '' && opt.submittedHrs != null && opt.submittedHrs != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.submittedHrs+"'>"+opt.submittedHrs+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-	result = result +"<td>";
-   	if(opt.draftHrs != '' && opt.draftHrs != null && opt.draftHrs != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.draftHrs+"'>"+opt.draftHrs+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
-   	}
-	result = result +"</td>";
-	
-	result = result +"<td>";
-   	if(opt.userExpensesClaimedAmount != '' && opt.userExpensesClaimedAmount != null && opt.userExpensesClaimedAmount != 'undefined'){
-	   	result = result +"<div class='tbldata-dotdot_50' title='"+opt.userExpensesClaimedAmount+"'>"+opt.userExpensesClaimedAmount+"</span></div>";
-   	}else{
-   		result = result +"<div>-----</div>";
+   		result = result +"<div>0.0</div>";
    	}
 	result = result +"</td>";
 	
 	result = result +"<td>";
    	if(opt.projectStatus != '' && opt.projectStatus != null && opt.projectStatus != 'undefined'){
-   		if(opt.projectStatus == "CLOSED"){
+   		if(opt.projectStatus == 'CLOSED'){
    			result = result +"<div class='tbldata-dotdot_50' title='Inactive'>Inactive</span></div>";
    		}else{
    			result = result +"<div class='tbldata-dotdot_50' title='Active'>Active</span></div>";
@@ -159,9 +152,12 @@ function prepareAssignedProjectsData(data){
    }
     result = result +"</tbody>";
     result = result +"</table>";
-    $("#tab-1").empty(); 
-    $("#tab-2").empty(); 
-    $("#tab-2").append(result);  
+    $("#candidateSideDiv").empty();
+    $("#tab-18").empty(); 
+    $("#tab-17").empty(); 
+    $("#tab-19").empty();
+    $("#tab-25").empty();
+    $("#tab-19").append(result);  
     pagination(); 
 
     

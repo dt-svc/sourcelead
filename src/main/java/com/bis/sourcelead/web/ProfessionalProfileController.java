@@ -1,10 +1,14 @@
 package com.bis.sourcelead.web;
 
+import static org.mockito.Matchers.isNotNull;
+
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.jsoup.select.Evaluator.IsEmpty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,23 +20,30 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.TagEntites;
+import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.StatesService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class ProfessionalProfileController {
 
 	@Value("${sourceleadUrl}")
@@ -58,6 +69,16 @@ public class ProfessionalProfileController {
 	
 	@Autowired
 	OrgLocationService orgLocationService;
+	
+	@Autowired
+	CandidateCommentsService candidateCommentsService;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	SourceleadTagsService sourceleadTagsService;
+
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -103,12 +124,13 @@ public class ProfessionalProfileController {
 				model.addObject("visaList", visaList);
 				
 				Integer candidateResumeCount =  candidateResumesService.getCandidateResumeCountByResumeId(candidateId);
-				if(candidateResumeCount > 0 ){
+				/*if(candidateResumeCount > 0 ){
 					model.setViewName("professional/profile");
 				}else{
 					model.setViewName("professional/updateProfessionalProfile");
-				}
-				
+				}*/
+				model.setViewName("professional/profile");
+				model.addObject("candidateResumeCount", candidateResumeCount);
 				model.addObject("sourceleadUrl", sourceleadUrl);
 				model.addObject("candidateId", candidateId);
 				return model;
@@ -118,6 +140,8 @@ public class ProfessionalProfileController {
 		public Candidate getProfessionalInfo(@RequestParam(value="candidateId", required=false) Long  candidateId,@RequestParam(value="locationCode", required=false) String  locationCode,HttpServletRequest request) throws Exception {
 		        Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
 		        OrgLocations orgLocations = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+				 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+				
 		        if(null != candidate.getConsultantUser()){
 		        	candidate.setFirstName(candidate.getConsultantUser().getFirstName());
 		        	if(null != candidate.getConsultantUser().getLastName()){
@@ -135,10 +159,47 @@ public class ProfessionalProfileController {
 			        if(null != candidate.getConsultantUser().getLinkedIn()){
 			        	candidate.setLinkedIn(candidate.getConsultantUser().getLinkedIn());
 			        }
+			        
+			        UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(candidate.getConsultantUser().getId(), orgLocations.getId());
+			        if(userRole != null && StringUtils.isNotBlank(userRole.getDesignation())) {
+			        	candidate.setDesignation(userRole.getDesignation());
+			        }
 			        	
+		        }
+		        Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+		        candidate.setTagsList(tagsList);
+				Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES.getValue(), candidate.getId());
+				if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
+					StringBuilder candidateTagsStr = new StringBuilder();
+					for(String tags : candidateTagsList) {
+						candidateTagsStr = candidateTagsStr.append(tags).append(",");
+					}
+					candidateTagsStr.toString();
+					candidate.setCandidateTags(candidateTagsStr.substring(0,candidateTagsStr.length()-1));
+				}
+		        
+		        if (candidate.getOrgRelationId() != null) {
+					if (candidate.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidate.setVendorName(candidate.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+					if (candidate.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidate.setVendorName(candidate.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}
+
+				}
+		        
+		        
+		        if(candidate.getSpocId() != null){
+		        candidate.setVendorContactName(candidate.getSpocId().getVendorUser().getFullName());
 		        }
 		        int percentage = candidateService.getCandidatePercentage(candidate,orgLocations);
 		        candidate.setProfilePercentage(percentage);
+		       /* if(candidate.getConsultantUser() != null) {
+		        	 candidate.getConsultantUser().setPassword(null);
+		        }*/
+		        List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocations);
+		        candidate.setCommentsCount(String.valueOf(candidateCommentsList.size()));
+		        candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidate.getDateOfBirth()));
 				return candidate;
 	}
 	 

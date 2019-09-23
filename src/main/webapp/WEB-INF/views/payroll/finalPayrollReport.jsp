@@ -7,7 +7,7 @@ function generatrPayroll(data,payrollCycle){
 				result = result + '<th>Employee Id</th>';
 				result = result + '<th>Employee Name</th>';
 				result = result + '<th>Total '+payrollCycle+' Hours</th>';
-				result = result + '<th>1/2 Hours</th>';
+				/* result = result + '<th>1/2 Hours</th>'; */
 				result = result + '<th>Pay Rate</th>';
 				result = result + '<th>Amount</th>';
 				result = result + '<th>Pre Deductions</th>';
@@ -36,7 +36,7 @@ function generatrPayroll(data,payrollCycle){
 							result = result + ' <td><div>--</div></td>';
 						}
 						result = result + '<td><div class="tblminwidth-75">'+opt.totalHours+'</div></td>';
-						result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.halfHours+'</div></td>';
+						/* result = result + '<td><div class="tbldata-dotdot-vsm">'+opt.halfHours+'</div></td>'; */
 						if(opt.payRate !=null && opt.payRate !='' && opt.payRate !='undefined'){
 							result = result + ' <td><i class="fa fa-dollar paddingLeft text-left pull-left"></i><div class="tbldata-dotdot-sm"">'+opt.payRate+'</div></td>';
 						}else{

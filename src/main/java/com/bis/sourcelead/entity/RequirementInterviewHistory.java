@@ -23,8 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 	@Entity
-	@Table(name = "REQUIREMENT_INTERVIEW_HISTORY", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentInterviewHistory")
+	@Table(name = "REQUIREMENT_INTERVIEW_HISTORY")
 	public class RequirementInterviewHistory implements Serializable{
 
 	
@@ -35,18 +34,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="INTERVIEW_ID", nullable=false )        
     private RequirementInterview interviewId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocationId;
 	
@@ -89,24 +88,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String endTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String interviewersList;
 	
 	@Transient
+	@JsonProperty
 	private String clientName;
 	
 	@Transient
+	@JsonProperty
 	private Long interviewTemplateid;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackEndTime;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackStartTime;
 
 	@Transient
     private String isNotifyToVendorRequired;
 	
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
@@ -121,6 +126,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String interviewStartDateTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String  interviewHistoryCreatedDate;
 	
 	@Transient
@@ -140,15 +146,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String  requirementUUID;
 	
 	@Transient
+	@JsonProperty
 	private String interviewTimeZoneStartTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String interviewTimeZoneEndTimeStr;
 	
 	@Transient
+	@JsonProperty
 	private String interviewTimezoneDateStr;
 	
 	@Transient
+	@JsonProperty
 	private Long interviewerId;
 	
 	@Transient
@@ -159,6 +169,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private List<ProposeTime> proposeTimeList;
 	
 	@Transient
+	@JsonProperty
 	private List<Tasks> tasksList;
 	
 	@Transient
@@ -170,37 +181,57 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String selectedDate;
 	
 	@Transient
+	@JsonProperty
 	private String candidateEmail;
 		
 	@Transient
+	@JsonProperty
 	private String candidatePhoneNumber;
 	
 	@Transient
+	@JsonProperty
 	private String rescheduleComment;
 	
 	@Transient
+	@JsonProperty
 	private String timezone;
 	
 	@Transient
+	@JsonProperty
 	private String interviewSubmissionId;
 	
 	@Transient
+	@JsonProperty
 	private String isOwnOrgTemplate;
 	
 	@Transient
+	@JsonProperty
 	private String feedbackDate;
 	
 	@Transient
+	@JsonProperty
 	private String submissionStatus;
 	
 	@Transient
+	@JsonProperty
 	private String proposeTimeStatus;
 
 	@Transient
+	@JsonProperty
 	private List<RequirementInterviewer> requirementInterviewerList;
 	
 	@Transient
+	@JsonProperty
 	private Long requirementIntervieweId;
+	
+	
+	@Transient
+	@JsonProperty
+	private String interviewTemplateUUId;
+	
+	@Transient
+	@JsonProperty
+	private String interviewerUUID;
 	
 	public String getCandidateEmail() {
 		return candidateEmail;
@@ -613,5 +644,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setRequirementIntervieweId(Long requirementIntervieweId) {
 		this.requirementIntervieweId = requirementIntervieweId;
+	}
+
+	public String getInterviewTemplateUUId() {
+		return interviewTemplateUUId;
+	}
+
+	public void setInterviewTemplateUUId(String interviewTemplateUUId) {
+		this.interviewTemplateUUId = interviewTemplateUUId;
+	}
+
+	public String getInterviewerUUID() {
+		return interviewerUUID;
+	}
+
+	public void setInterviewerUUID(String interviewerUUID) {
+		this.interviewerUUID = interviewerUUID;
 	}
 }

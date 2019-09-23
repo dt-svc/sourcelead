@@ -1,17 +1,24 @@
 package com.bis.sourcelead.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.dto.CandidateReferencesDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -34,6 +41,9 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	
 	@Autowired
     CandidateActivityCommonUtil candidateActivityCommonUtil; 
+	
+	 @Autowired
+	 private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;	
 
 	@Override
 	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws Exception {
@@ -120,14 +130,47 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		
 		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
+		saveOrUpdateCandidateElkDocumentWithReferenceDetails(candidateReferences.getCandidateId(),orgLocationId);
+		
 		return candidateReferences;
 	
 	}
+	
+	@Override
+    @Async
+	public void saveOrUpdateCandidateElkDocumentWithReferenceDetails(Candidate candidate,Long locationId) throws Exception {
+		if(null != candidate && null != candidate.getId()){
+			    CandidateIndex candidateIndex = new CandidateIndex();
+			    candidateIndex.setCandidateId(candidate.getId());
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
+			    sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		}
+	}
 
 	@Override
-	public List<CandidateReferences> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
-			Long orgLocationId) throws Exception {
-		return candidateReferencesDao.getCandidateReferencesListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	public ResponseList<CandidateReferencesDTO> getCandidateReferencesListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId, String loginUserCode) throws Exception {
+		List<CandidateReferences> referList =  candidateReferencesDao.getCandidateReferencesListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+		ResponseList<CandidateReferencesDTO> responseReferList = new ResponseList<>();
+		List<CandidateReferencesDTO> referDTOLIst = new ArrayList<>();
+		for(CandidateReferences candiRefer : referList){
+			CandidateReferencesDTO refer = new CandidateReferencesDTO();
+			refer.setId(candiRefer.getId());
+			refer.setRefId(candiRefer.getId().toString());
+			refer.setName(candiRefer.getName());
+			refer.setEmail(candiRefer.getEmail());
+			refer.setMobilePhone(candiRefer.getMobilePhone());
+			refer.setRelation(candiRefer.getRelation());
+			refer.setComment(candiRefer.getComment());
+			refer.setDesignation(candiRefer.getDesignation());
+			refer.setCandidateId(candidateId);
+			refer.setOrgLocationId(orgLocationId);
+			refer.setUserCode(loginUserCode);
+			referDTOLIst.add(refer);
+		}
+		responseReferList.setData(referDTOLIst);
+ 		return responseReferList;
 	}
 
 	@Override
@@ -143,6 +186,21 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	@Override
 	public CandidateReferences getCandidateReferenceByReferenceId(Long refId) throws Exception {
 		return candidateReferencesDao.getCandidateReferenceByReferenceId(refId);
+	}
+
+	@Override
+	public Boolean validateReferenceEmail(String referenceEmail, Long candidateId,Long candidateReferenceId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmail(referenceEmail,candidateId,candidateReferenceId);
+	}
+
+	@Override
+	public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail, Long referId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndReferId(referEmail, referId);
+	}
+
+	@Override
+	public Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception {
+		return candidateReferencesDao.validateReferenceEmailByReferEmailAndCandidateId(referenceEmail, candidateId);
 	}
 
 }

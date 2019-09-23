@@ -19,14 +19,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Shivayogi
  */
 
 @Entity
-@Table(name = "CANDIDATE_CERTIFICATIONS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateCertifications")
-public class CandidateCertifications implements Serializable{
+@Table(name = "CANDIDATE_CERTIFICATIONS")
+public class CandidateCertifications implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,13 +36,11 @@ public class CandidateCertifications implements Serializable{
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
-    @JoinColumn(name="ORG_LOCATION_ID", nullable=false )        
-    private OrgLocations orgLocationId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
+	private OrgLocations orgLocationId;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidateId;
 
@@ -59,26 +58,27 @@ public class CandidateCertifications implements Serializable{
 
 	@Column(name = "DESCRIPTION")
 	private String description;
-	
-	
+
 	@Column(name = "VALIDFROM")
 	private Date validFrom;
 
 	@Column(name = "VALIDTO")
 	private Date validTo;
-	
+
 	@Transient
+	@JsonProperty
 	private String candidatevalidFromDateToString;
-    
+
 	@Transient
+	@JsonProperty
 	private String candidatevalidToDateToString;
-	
+
 	@Transient
-	private Long candidatecertificateID; 
-	
+	private Long candidatecertificateID;
+
 	@Transient
 	private String msg;
-	
+
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 
@@ -90,10 +90,9 @@ public class CandidateCertifications implements Serializable{
 
 	@Column(name = " UPDATED_BY")
 	private String updatedBy;
-	
+
 	@Column(name = " STATUS")
 	private Integer status;
-	
 
 	public Long getId() {
 		return id;
@@ -174,7 +173,7 @@ public class CandidateCertifications implements Serializable{
 	public void setValidTo(Date validTo) {
 		this.validTo = validTo;
 	}
-	
+
 	public String getCandidatevalidFromDateToString() {
 		return candidatevalidFromDateToString;
 	}
@@ -223,7 +222,6 @@ public class CandidateCertifications implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
-	
 	public Integer getStatus() {
 		return status;
 	}
@@ -248,5 +246,4 @@ public class CandidateCertifications implements Serializable{
 		this.msg = msg;
 	}
 
-	
 }

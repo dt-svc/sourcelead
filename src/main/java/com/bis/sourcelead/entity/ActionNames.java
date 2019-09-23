@@ -13,8 +13,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "ACTION_NAMES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="actionRole")
+@Table(name = "ACTION_NAMES")
 public class ActionNames implements Serializable {
 	
 	

@@ -2,16 +2,9 @@
 <jsp:include page="masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-
-<style>
-.settPop .form-control {
-    height: auto !important; 
-}
-</style>
 
 
 <script type="text/javascript">
@@ -39,7 +32,7 @@
       <div class="pull-left">
         <h2>Requested Associates</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Associates</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Requested Associates</div>
 </section>
 
  <div class="content-area content-new clearfix">
@@ -48,8 +41,9 @@
    <div class="clearfix"></div>
    <div class="vendor_wrap_mask"></div>
    <div id="rejectedReasonDiv"></div>
+   <div id="requestOnHoldReasonDiv"></div>
    <div class="modal-footer">
-   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
+   <button class="btn btn-primary" type="button" value="Back to list" onClick="javascript:window.location.href = '<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>'" >Back to list</button>
    </div>
 					
  </div>
@@ -85,37 +79,9 @@ function getRequestedAssociatesList(){
 				result = result +'</div>';
 				
 				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Total Hours :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.estimatedHours+'</strong> hours</label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Approver :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.approverName+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Total Budget :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label>${SourceLeadWeb_currencyCode}&nbsp;<strong>'+json.estimatedBudget+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
 				result = result +'<label class="col-md-4 control-label">Description :</label>';
 				result = result +'<div class="col-md-8">';
 				result = result +'<label><strong>'+json.description+'</strong></label>  ';
-				result = result +' </div>';    
-				result = result +'</div>';
-				
-				result = result +'<div class="col-md-6">'; 
-				result = result +'<label class="col-md-4 control-label">Status :</label>';
-				result = result +'<div class="col-md-8">';
-				result = result +'<label><strong>'+json.requestStatus+'</strong></label>  ';
 				result = result +' </div>';    
 				result = result +'</div>';
 				
@@ -127,7 +93,8 @@ function getRequestedAssociatesList(){
 				result = result +'             <thead>';
 				result = result +'                 <tr>';
 				result = result +'                     <th>Name</th>';
-				result = result +'                     <th>Location</th>';
+				result = result +'                     <th>Requested Location</th>';
+				result = result +'                     <th>Approver</th>';
 				result = result +'                     <th>Pay Rate</th>';
 				result = result +'                     <th>Bill Rate</th>';
 				result = result +'                     <th>Start Date</th>';
@@ -143,15 +110,33 @@ function getRequestedAssociatesList(){
 				
 				 for(var i=0; i<json.resourceRequestList.length; i++){
 					 var opt = json.resourceRequestList[i];
+					 
+					 var startDate = '';
+					 var endDate = '';
+					 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+						 startDate = opt.startDateStr;
+					 }else{
+						 startDate = "-------"
+					 }
+					 
+					 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){
+						 endDate = opt.startDateStr;
+					 }else{
+						 endDate = "-------"
+					 }
 					
 					    result = result +'<tr>';
 					    
 					    result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateName+'">'+opt.candidateName+'</div>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.candidateName+'">'+opt.candidateName+'</div>';
 						result = result +'</td>'; 
 						
 					    result = result +'<td>';
-					 	result = result +'<div class="tbldata-dotdot" title="'+opt.candidateLocation+'">'+opt.candidateLocation+'</div>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.requestedLocation+'">'+opt.requestedLocation+'</div>';
+						result = result +'</td>';
+						
+					    result = result +'<td>';
+					 	result = result +'<div class="tbldata-dotdot-vsm" title="'+opt.approverName+'">'+opt.approverName+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -163,11 +148,11 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.startDateStr+'">'+opt.startDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+startDate+'">'+startDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
-					 	result = result +'<div class="tblminwidth-100" title="'+opt.endDateStr+'">'+opt.endDateStr+'</div>';
+					 	result = result +'<div class="tblminwidth-100" title="'+endDate+'">'+endDate+'</div>';
 						result = result +'</td>';
 						
 						result = result +'<td>';
@@ -183,9 +168,17 @@ function getRequestedAssociatesList(){
 						result = result +'</td>';
 						
 						result = result +'<td id="action'+opt.requestUUID+'">';
-						if(opt.resourceStatus == null){
-			    			result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
+						if(opt.resourceStatus == 'Waiting For Approval' || opt.resourceStatus == 'On hold'){
+							result = result +'<div class="tbldata-dotdot_80">'; 
+							if(opt.resourceStatus == 'On hold'){
+				    			  result = result +"<i class='glyphicon glyphicon-comment edit-reason'><div class='edit-status'><p>"+opt.rejectedReason+"</p></div></i>&nbsp;|&nbsp;";
+				    			}
+							result = result + '<a href="javascript:void(0)" onclick="acceptAssociate(\''+opt.requestUUID+'\');"><i class="fa fa-check text-success" alt="Approve" title="Approve"></i></a>&nbsp;|&nbsp;';
 				    		result = result + '<a href="javascript:void(0)" onclick="rejectAssociate(\''+opt.requestUUID+'\',\''+opt.candidateName+'\');"><i class="fa fa-times text-danger" alt="Reject" title="Reject"></i></a>';
+				    		if(opt.resourceStatus == 'Waiting For Approval'){
+				    			result = result + '&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="onholdAssociateRequest(\''+opt.requestUUID+'\',\''+opt.requestedUser+'\');"><i class="fa fa-clock-o" alt="Onhold" title="Onhold"></i></a>';
+				    		}
+				    		result = result +'</div>';	
 			    		}else{
 			    			result = result +'<div class="tbldata-dotdot_80 text-success"><strong>'+opt.resourceStatus+'</strong></div>';
 			    		}
@@ -209,9 +202,9 @@ function getRequestedAssociatesList(){
 
 <script>
 function rejectAssociate(requestUUID,candidateName){
-	
+	$("#requestOnHoldReasonDiv").empty();
 	var result = "";
-	result = result + '	<div class="settPop">';
+	result = result + '	<div class="settPop settPopFormcontrol">';
 	result = result + '	<div id="loading"></div>';
 	result = result + '<form id="rejectedReason_form" name="rejectedReason_form" method="post">';
 	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
@@ -251,6 +244,8 @@ function rejectAssociate(requestUUID,candidateName){
 function cancelRejectedReason(){
 	$(".settPop").slideUp(200);
 	$(".vendor_wrap_mask").fadeOut(200);
+	 $("#rejectedReasonDiv").empty();
+	$("#requestOnHoldReasonDiv").empty();
 }
 </script>
 
@@ -260,12 +255,12 @@ function acceptAssociate(requestUUID){
 	 var userId = '${SourceLeadWeb_userId}';
      var orglocationId = '${SourceLeadWeb_orgLocationId}';
 	 var sourceleadUrl ='${sourceleadUrl}';
-	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#requestedAssociatesDivLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	 $.ajax({
 		    type : "POST",
 	    	url: sourceleadUrl+"/acceptRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId, 
 	        success: function(result) {
-	        	$("#action"+requestUUID).html("<span>Accepted</span>");
+	        	$("#action"+requestUUID).html("<span>Approved</span>");
 	        	$("#requestedAssociatesDivLoading").removeAttr("style"); 
 	        },
 	    });
@@ -289,7 +284,7 @@ function saveRejectAssociate(requestUUID){
       
         $("#submit_rejectedReason").attr("disabled", "disabled");
 		
-        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	 $.ajax({
 	 		    type : "POST",
 	    	    data: formData,
@@ -315,6 +310,104 @@ function saveRejectAssociate(requestUUID){
 	   		$("#rejectedReason_form").validateOnBlur(false, validationSettings);
 	   	});
 	
+}
+</script>
+
+
+
+<script>
+function onholdAssociateRequest(requestUUID,candidateName){
+	var result = "";
+	result = result + '	<div class="settPop settPopFormcontrol">';
+	result = result + '	<div id="loading"></div>';
+	result = result + '<form id="onHold_form" name="onHold_form" method="post">';
+	result = result + '<input type="hidden" name="requestUUID" value="'+requestUUID+'">';
+	result = result + '	<h3>Associate Request On Hold Reason<i class="fa fa-times" onclick="cancelRequestOnholdReason();"></i></h3>  ';
+	result = result + '	<div class="settPopInn"> ';
+	
+	result = result + '		<div class="clearfix">  ';
+	result = result + '		<div class="col-md-12">  ';
+	result = result + '		  <label class="col-md-2 noPad" for="Initiator Name">Associate :</label> ';
+	result = result + '		  <label class="col-md-8 paddingRight">'+candidateName+'</label> ';
+	result = result + '		</div>  ';
+
+	result = result + '		  <label class="col-md-12 mt10" for="Project Id">Reason</label> ';
+	result = result + '		  <div class="col-md-12 taskdesp">   ';
+	result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
+	result = result + '			<span class="hidden"></span> </div>  ';
+	result = result + '		</div>';
+	result = result + '		<div class="col-md-12 mt5 clearfix"> ';
+	result = result + '		<div class="pull-right">  ';
+	result = result + '		  <input type="button" value="Save" id="submit_onHold"  onclick="saveOnHoldRequest(\''+requestUUID+'\');" class="btn btn-primary" >';
+	result = result + '		  <input type="button" value="Cancel" class="btn btn-default ml10" onclick="cancelRequestOnholdReason();">';
+	result = result + '		</div>';
+	result = result + '		</div>';
+	result = result + '		<div class="clearfix"></div>   ';
+	result = result + '	</div>  ';
+	result = result + '</form>';
+	result = result + '	</div>';
+    $("#requestOnHoldReasonDiv").empty();
+    $("#requestOnHoldReasonDiv").append(result);
+    
+    $(".settPop").slideDown(200);
+	$(".vendor_wrap_mask").fadeIn(200);
+	 
+}
+</script>
+
+<script>
+function saveOnHoldRequest(requestUUID){
+	
+if ($('#onHold_form').validate(false, validationSettings)){ 
+	  	
+		var frm = $('#onHold_form').serializeFormJSON();
+		var jsonData = JSON.stringify(frm);
+	    var form = $('#onHold_form')[0];
+	    var formData = new FormData(form);
+	  	formData.append("json",jsonData)
+	  	
+        var sourceleadUrl ='${sourceleadUrl}';
+        var userId = '${SourceLeadWeb_userId}';
+        var orglocationId = '${SourceLeadWeb_orgLocationId}';
+        
+        $("#submit_onHold").attr("disabled", "disabled");
+        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 	 	 $.ajax({
+	 		    type : "POST",
+	    	    data: formData,
+	    	    contentType : 'application/json; charset=utf-8',
+		        processData: false,
+		        contentType:false, 
+	    	    dataType : 'json',
+		    	url: sourceleadUrl+"/onholdRequestedAssociate?${_csrf.parameterName}=${_csrf.token}&requestUUID="+requestUUID+"&userId="+userId+"&orglocationId="+orglocationId,
+		        success: function(result) {
+		        	
+		        	cancelRequestOnholdReason();
+		        	$("#action"+requestUUID).html("<span>Onhold</span>")
+		        	$("#loading").removeAttr("style"); 
+		        	
+		        },
+		    });  
+      return true; 
+		
+	}else{
+		return false;
+	  }
+	
+	  $('body').on('blur', '#onHold_form', function() {
+	   		$("#onHold_form").showHelpOnFocus();
+	   		$("#onHold_form").validateOnBlur(false, validationSettings);
+	   	});
+}
+
+
+</script>
+
+
+<script>
+function cancelRequestOnholdReason(){
+	$(".settPop").slideUp(200);
+	$(".vendor_wrap_mask").fadeOut(200);
 }
 </script>
 

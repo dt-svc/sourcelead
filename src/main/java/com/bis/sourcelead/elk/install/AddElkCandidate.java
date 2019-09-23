@@ -1,8 +1,6 @@
 package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
-import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,17 +9,12 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.engine.DocumentMissingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,22 +25,23 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
+
 
 
 public class AddElkCandidate{
+	
 	private static final Logger logger = LoggerFactory.getLogger(AddElkCandidate.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private TransportClient client;
+	private SourceleadELKTC<CandidateIndex> client;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	public void addElkCandidate() throws IOException, SQLException {
 		ArrayList<CandidateIndex> elkCandidateList = getElkCandidates();
 		if(elkCandidateList != null && !elkCandidateList.isEmpty()){
 			for (CandidateIndex candidateIndex :elkCandidateList) {
-				saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
+				client.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateIndex.getCandidateId().toString());
 			}
 		}
 		  logger.info("Candidates Successfully Added To Elk");
@@ -61,7 +55,7 @@ public class AddElkCandidate{
 		 DataSource dataSource = comboPooledDataSource();
 		ArrayList<CandidateIndex> candidateIndexsList = new ArrayList<CandidateIndex>();
 		 try {
-				String sql = "SELECT * FROM sourcelead.CANDIDATE candidate";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE candidate";
 				Connection conn = dataSource.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
@@ -69,9 +63,24 @@ public class AddElkCandidate{
 			    	CandidateIndex candidateIndex = new CandidateIndex();
 			    	candidateIndex.setCandidateId(rs.getLong("ID"));
 			    	candidateIndex.setOrgLocationId(rs.getLong("ORG_LOCATION_ID"));
-					candidateIndex.setFirstName(rs.getString("FIRST_NAME"));
-					candidateIndex.setLastName(rs.getString("LAST_NAME"));
-					candidateIndex.setEmail(rs.getString("EMAIL"));
+					candidateIndex.setFirstName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
+					candidateIndex.setLastName(firstLetterCapitalizedString(rs.getString("LAST_NAME")));
+					String createdBy = null ;
+					Long orgLocationId = rs.getLong("ORG_LOCATION_ID");
+					
+					if(!isNullOrEmpty(rs.getString("CREATED_BY"))){
+						createdBy = rs.getString("CREATED_BY");
+					}
+					
+					if(!isNullOrEmpty(rs.getString("LAST_NAME"))){
+						candidateIndex.setFullName(firstLetterCapitalizedString(rs.getString("FIRST_NAME"))+" "+firstLetterCapitalizedString(rs.getString("LAST_NAME")));
+					}else {
+						candidateIndex.setFullName(firstLetterCapitalizedString(rs.getString("FIRST_NAME")));
+					}
+					
+					if(StringUtils.isNotBlank(rs.getString("EMAIL"))) {
+						candidateIndex.setEmail(rs.getString("EMAIL").toLowerCase());
+					}
 					candidateIndex.setAlternateEmail(rs.getString("ALTERNATE_EMAIL"));
 					candidateIndex.setMobilePhone(rs.getString("MOBILE_PHONE"));
 					candidateIndex.setAlternateMobilePhone(rs.getString("ALTERNATE_MOBILE_PHONE"));
@@ -88,6 +97,8 @@ public class AddElkCandidate{
 					candidateIndex.setLongitude(rs.getString("LONGITUDE"));
 					
 					candidateIndex.setGeneratedId(rs.getString("GENERATED_ID"));
+					
+					candidateIndex.setCreatedByUserCode(rs.getString("CREATED_BY"));
 					
 					if(!isNullOrEmpty(rs.getLong("MASTER_CANDIDATE_ID"))){
 						candidateIndex.setMasterCandidateId(rs.getLong("MASTER_CANDIDATE_ID"));
@@ -195,7 +206,7 @@ public class AddElkCandidate{
 		    	    	/**
 		    	    	 * Skills Save in Candidate table Not In Candidate Skills Table
 		    	    	 */
-		    	    	    /*String sql1 = "SELECT * FROM sourcelead.CANDIDATE_SKILLS candidateSkills where candidateSkills.CANDIDATE_ID = '"+ candidateId+"' ";
+		    	    	    /*String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_SKILLS candidateSkills where candidateSkills.CANDIDATE_ID = '"+ candidateId+"' ";
 							Statement stmt1 = conn.createStatement();
 							ResultSet rs1 = stmt1.executeQuery(sql1);
 							if(rs1 != null){
@@ -208,7 +219,7 @@ public class AddElkCandidate{
 								}
 		    	           }*/
 							
-						    String sql2 = "SELECT * FROM sourcelead.CANDIDATE_EMPLOYERS candidateEmployers where candidateEmployers.CANDIDATE_ID = '"+ candidateId+"' ";
+						    String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_EMPLOYERS candidateEmployers where candidateEmployers.CANDIDATE_ID = '"+ candidateId+"' ";
 							Statement stmt2 = conn.createStatement();
 							ResultSet rs2 = stmt2.executeQuery(sql2);
 							if(rs2 != null){
@@ -221,7 +232,7 @@ public class AddElkCandidate{
 								}
 		    	           }
 							
-						   String sql3= "SELECT * FROM sourcelead.CANDIDATE_EDUCATION candidateEducation where candidateEducation.CANDIDATE_ID = '"+ candidateId+"' ";
+						   String sql3= "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_EDUCATION candidateEducation where candidateEducation.CANDIDATE_ID = '"+ candidateId+"' ";
 						   Statement stmt3 = conn.createStatement();
 							ResultSet rs3 = stmt3.executeQuery(sql3);
 							if(rs3 != null){
@@ -234,7 +245,7 @@ public class AddElkCandidate{
 								}
 		    	           }
 							
-						   String sql5= "SELECT * FROM sourcelead.CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ candidateId+"' ";
+						   String sql5= "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_CERTIFICATIONS candidateCertifications where candidateCertifications.CANDIDATE_ID = '"+ candidateId+"' ";
 						   Statement stmt5 = conn.createStatement();
 							ResultSet rs5 = stmt5.executeQuery(sql5);
 							if(rs5 != null){
@@ -247,7 +258,7 @@ public class AddElkCandidate{
 								}
 		    	           }
 								
-						   String sql4= "SELECT * FROM sourcelead.CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ candidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM sourcelead.CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
+						   String sql4= "SELECT * FROM "+dbconfig.getSchema()+".CANDIDATE_RESUMES candidateResumes where candidateResumes.CANDIDATE_ID = '"+ candidateId+"'  and candidateResumes.CREATED_DATE IN (SELECT max(canresume.CREATED_DATE) FROM "+dbconfig.getSchema()+".CANDIDATE_RESUMES canresume where canresume.CANDIDATE_ID = '"+ candidateId+"' and canresume.status = '1') and candidateResumes.status = '1' ";
 						   Statement stmt4 = conn.createStatement();
 							ResultSet rs4 = stmt4.executeQuery(sql4);
 							if(rs4 != null){
@@ -255,8 +266,46 @@ public class AddElkCandidate{
 									 candidateIndex.setCurrentResumeId(rs4.getLong("ID"));
 									 candidateIndex.setCurrentResumeName(rs4.getString("FILE_NAME"));
 									 candidateIndex.setResumeContent("");
+									 candidateIndex.setFileUrl(rs4.getString("FILE_URL"));
+									 candidateIndex.setFileContentType(rs4.getString("FILE_CONTENT_TYPE"));
+									 candidateIndex.setResumeName(rs4.getString("FILE_NAME"));
 							    }
 		    	           }
+							
+							if(createdBy != null && !createdBy.isEmpty()) {
+								String sql6 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where  user.USER_CODE = '"+createdBy+"' ";
+								Statement stmt6 = conn.createStatement();
+								ResultSet rs6 = stmt6.executeQuery(sql6);
+								if(rs6 != null){
+									 while(rs6.next()){
+										   if(null != rs6.getString("FIRST_NAME") && null != rs6.getString("LAST_NAME") && !rs6.getString("LAST_NAME").isEmpty()){
+											   StringBuilder sb =  new StringBuilder();
+											   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).append(" ").append(rs6.getString("LAST_NAME")).toString());
+										   }else if(null != rs6.getString("FIRST_NAME")){
+											   StringBuilder sb =  new StringBuilder();
+											   candidateIndex.setCreatedBy(sb.append(rs6.getString("FIRST_NAME")).toString());
+										   }
+								    }
+			    	           }
+							}
+							
+
+							String sql7 = "SELECT * FROM "+dbconfig.getSchema()+".SOURCELEAD_TAGS  tags where  tags.ENTITY_ID = '"+candidateId+"' and  tags.ORG_LOCATION_ID = '"+orgLocationId+"' and tags.ENTITY_TYPE = 'CANDIDATES' and tags.STATUS = '1' ";
+							Statement stmt7 = conn.createStatement();
+							ResultSet rs7 = stmt7.executeQuery(sql7);
+							if(rs7 != null){
+								StringBuilder tagsStr = new StringBuilder();
+								
+								 while(rs7.next()){
+									 tagsStr = tagsStr.append(rs7.getString("TAG_NAME")).append(","); 
+							    }
+								 String tagString = tagsStr.toString();
+								 if(tagString != null && !tagString.isEmpty()) {
+									 candidateIndex.setTags(tagString.substring(0,tagString.length()-1));
+								 }
+								 
+		    	           }
+						
 		    	    }
 		    	    candidateIndexsList.add(candidateIndex);
 			    }
@@ -273,40 +322,9 @@ public class AddElkCandidate{
 		return false;
 	}
 
-	public void saveOrUpdateElkDocument(CandidateIndex candidateIndex,String index,String type,String id) {
-		String entityInJson = null;
-		try {
-		    entityInJson = toJSON(candidateIndex);
-		    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
-		    logger.info(type+" has been updated.");
-		} 
-        catch(DocumentMissingException e){
-        	client.prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
-		    logger.info(type+" has been indexed.");
-		}
-		catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-		
-     }
-	
-	 public String toJSON(Object obj){
-	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
-	            public HierarchicalStreamWriter createWriter(Writer writer) {
-	                return new JsonWriter(writer, JsonWriter.DROP_ROOT_MODE);
-	            }
-	        });
-	        return xstream.toXML(obj);
-	  }
-	 
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
@@ -317,28 +335,23 @@ public class AddElkCandidate{
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
 		
-		try {
-	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", dbconfig.getCluster())
-	                  .put("node.name", dbconfig.getNode())
-	         		  .put("path.home", dbconfig.getPath())
-	                  .build();
-			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-	     } catch (Exception exception) {
-			logger.error(ExceptionUtils.getFullStackTrace(exception));
-		}
-		
 		return comboPooledDataSource;
 	}
 	public static void main(String[] args) throws IOException {
 			
+		 AddElkCandidate addElkCandidate = new AddElkCandidate();
 		try {
-			   AddElkCandidate addElkCandidate = new AddElkCandidate();
+			  addElkCandidate.client = new SourceleadELKTC();
 			   addElkCandidate.addElkCandidate();
+			   addElkCandidate.client.shutdown();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();
-		}
+		} 
+	}
+	
+	public String firstLetterCapitalizedString(String name){
+		 String finalString = WordUtils.capitalizeFully(name);
+		return finalString;
 	}
 }

@@ -51,7 +51,7 @@ import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.util.SourceleadResumeParser;
+import com.bis.sourcelead.util.SourceleadResumeParserNew;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
@@ -65,6 +65,7 @@ import com.thoughtworks.xstream.io.json.JsonWriter;
  */
 
 @RestController
+@RequestMapping("/app")
 public class AssociatesRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AssociatesRestController.class);
@@ -115,7 +116,7 @@ public class AssociatesRestController {
 	RequirementOfferHistoryService requirementOfferHistoryService; 
 	
 	@Autowired
-	private SourceleadResumeParser sourceleadResumeParser;
+	private SourceleadResumeParserNew sourceleadResumeParser;
 	
     @Autowired
     private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
@@ -207,6 +208,29 @@ public class AssociatesRestController {
 			}
 			
 			resultJson = toJSON(vendorList);
+			return resultJson;
+
+		}
+	   
+	   @RequestMapping(value = "/getAllRelationsByOrgLocationAndType", method = RequestMethod.GET)
+		public String getAllRelationsByOrgLocationAndType(@RequestParam(value = "type", required = false) String type,
+				HttpServletRequest request) throws Exception {
+		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			String resultJson = null;
+			List<OrgRelations> orgRelationsList = orgRelationsService.getClientOrVendorListByOrgLocationIdForImmigration(orgLocations.getId(),type);
+			for(OrgRelations orgRelation:orgRelationsList){
+				if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
+					orgRelation.setImmigrationRelatedId(orgRelation.getResponderLocationId().getId());
+				}
+				if(orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
+					orgRelation.setImmigrationRelatedId(orgRelation.getLocationId().getId());
+				}
+				
+			}
+			
+			resultJson = toJSON(orgRelationsList);
 			return resultJson;
 
 		}

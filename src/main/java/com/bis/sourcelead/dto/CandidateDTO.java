@@ -1,24 +1,22 @@
 package com.bis.sourcelead.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
+import java.math.BigInteger;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.entity.MasterCandidate;
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
-import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.Team;
-import com.bis.sourcelead.entity.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public class CandidateDTO {
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class CandidateDTO extends SearchDTO{
 
+	private Long id;
+	
 	private String candidateId;
 	
 	private String staticPath;
@@ -30,6 +28,8 @@ public class CandidateDTO {
 	private List<FileInfo> uploadedFileInfo;
 
 	//private OrgLocations orgLocationId;
+	
+	private Long workLocation;
 
 	private String consultantUser;
 
@@ -43,6 +43,18 @@ public class CandidateDTO {
 	private String firstName;
 
 	private String lastName;
+	
+	private String maritalStatus;
+	
+	private String gender;
+	
+	private String middleName;
+	
+	private String dateofBirth;
+	
+	private String panNumber;
+	
+	private String aadharNumber;
 
 	@Required(desc = "email")
 	@Email
@@ -79,9 +91,14 @@ public class CandidateDTO {
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String otherNoticePeriod;
+	
+	private String vendor;
 
 	private String designation;
 
+    @Required(desc = "designation type")
 	private String designationType;
 
 	private String designationOtherType;
@@ -98,6 +115,7 @@ public class CandidateDTO {
 
 	private String expectedRateCurrencey;
 
+	@CleanHtml(escape=false)
 	private String summary;
 
 	private String visaType;
@@ -175,7 +193,93 @@ public class CandidateDTO {
 	private String orgloationId;
 	
 	private String loginUserId;
+	
+	private String candidateName;
+	
+	private String candidateUpdateDateToString;
+	
+	private String vendorContactName;
+	
+	private String candidateResumeName;
+	
+	private String candidateResumeFileType;
+	 
+	private Integer assignedProjectsCount;
+	
+	private String fileUrl;
+	
+	private LinkedHashSet<String> allAndCandidateVisa;
+	
+	private LinkedHashSet<String> allAndCandidateSkills;
+	 
+	private String vendorName;
+	
+	private int profilePercentage;
+	 
+	private String candidateCreationType;
+	
+	private String userRole;
+	
+	private String reportingManager;
+	 
+	private String resumeUUID;
+	
+	private Long orgLocationId;
+	
+	private String resourceType;
+	
+	private  String selectedAssociates;
+	
+	private String projectUUID;
+	
+	private String roles;
+	
+	private String teams;
 
+	private String vendorOrgRelationId;
+	
+	private String vendorSpocId;
+	
+	private Long requirementId;
+	
+	private String docFile;
+	
+	private List<CustomFormFieldDTO> customFormData;
+	
+	 private Map<String,String> candidateCustomFieldData;
+	 
+	 private Long userId;
+	 
+	 private BigInteger candId;
+	 
+	 private Set<String> tagsList;
+	 
+	 private Set<String> candidateTagsList;
+	 
+	 private String candidateTags;
+	 
+	 private String generatedId;
+
+	 private String uploadId;
+	 
+	private String userCode; 
+	
+	private String timePeriod;
+		
+	private String customStartDate;
+		
+	private String customEndDate;
+	
+	private Integer submittedJobsCount;
+	
+	private String defaultOrgProbationPeriod;
+	
+	private String marketPrice;
+	
+	private String ssnNumber;
+	
+	private String employmentType;
+	
 	public String getCandidateId() {
 		return candidateId;
 	}
@@ -392,6 +496,15 @@ public class CandidateDTO {
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+	
+
+	public String getOtherNoticePeriod() {
+		return otherNoticePeriod;
+	}
+
+	public void setOtherNoticePeriod(String otherNoticePeriod) {
+		this.otherNoticePeriod = otherNoticePeriod;
 	}
 
 	public String getDesignation() {
@@ -762,6 +875,16 @@ public class CandidateDTO {
 		this.candidateEmployers = candidateEmployers;
 	}
 
+	public String getCandidateName()
+	{
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName)
+	{
+		this.candidateName = candidateName;
+	}
+
 	public String getOrgloationId()
 	{
 		return orgloationId;
@@ -781,4 +904,433 @@ public class CandidateDTO {
 	{
 		this.loginUserId = loginUserId;
 	}
+
+	public String getCandidateUpdateDateToString()
+	{
+		return candidateUpdateDateToString;
+	}
+
+	public void setCandidateUpdateDateToString(String candidateUpdateDateToString)
+	{
+		this.candidateUpdateDateToString = candidateUpdateDateToString;
+	}
+
+	public String getVendorContactName()
+	{
+		return vendorContactName;
+	}
+
+	public void setVendorContactName(String vendorContactName)
+	{
+		this.vendorContactName = vendorContactName;
+	}
+
+	public String getCandidateResumeName()
+	{
+		return candidateResumeName;
+	}
+
+	public void setCandidateResumeName(String candidateResumeName)
+	{
+		this.candidateResumeName = candidateResumeName;
+	}
+
+	public String getCandidateResumeFileType()
+	{
+		return candidateResumeFileType;
+	}
+
+	public void setCandidateResumeFileType(String candidateResumeFileType)
+	{
+		this.candidateResumeFileType = candidateResumeFileType;
+	}
+
+	public Integer getAssignedProjectsCount()
+	{
+		return assignedProjectsCount;
+	}
+
+	public void setAssignedProjectsCount(Integer assignedProjectsCount)
+	{
+		this.assignedProjectsCount = assignedProjectsCount;
+	}
+
+	public String getFileUrl()
+	{
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl)
+	{
+		this.fileUrl = fileUrl;
+	}
+
+
+	public LinkedHashSet<String> getAllAndCandidateVisa() {
+		return allAndCandidateVisa;
+	}
+
+	public void setAllAndCandidateVisa(LinkedHashSet<String> allAndCandidateVisa) {
+		this.allAndCandidateVisa = allAndCandidateVisa;
+	}
+
+	public LinkedHashSet<String> getAllAndCandidateSkills() {
+		return allAndCandidateSkills;
+	}
+
+	public void setAllAndCandidateSkills(LinkedHashSet<String> allAndCandidateSkills) {
+		this.allAndCandidateSkills = allAndCandidateSkills;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public int getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(int profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+	public String getCandidateCreationType()
+	{
+		return candidateCreationType;
+	}
+
+	public void setCandidateCreationType(String candidateCreationType)
+	{
+		this.candidateCreationType = candidateCreationType;
+	}
+
+	public String getUserRole() {
+		return userRole;
+	}
+
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+
+	public String getReportingManager() {
+		return reportingManager;
+	}
+
+	public void setReportingManager(String reportingManager) {
+		this.reportingManager = reportingManager;
+	}
+
+	public String getResumeUUID() {
+		return resumeUUID;
+	}
+
+	public void setResumeUUID(String resumeUUID) {
+		this.resumeUUID = resumeUUID;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(String resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public String getSelectedAssociates() {
+		return selectedAssociates;
+	}
+
+	public void setSelectedAssociates(String selectedAssociates) {
+		this.selectedAssociates = selectedAssociates;
+	}
+
+	public String getProjectUUID() {
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID) {
+		this.projectUUID = projectUUID;
+	}
+
+	public String getRoles() {
+		return roles;
+	}
+
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getVendorOrgRelationId()
+	{
+		return vendorOrgRelationId;
+	}
+
+	public void setVendorOrgRelationId(String vendorOrgRelationId)
+	{
+		this.vendorOrgRelationId = vendorOrgRelationId;
+	}
+
+	public String getVendorSpocId()
+	{
+		return vendorSpocId;
+	}
+
+	public void setVendorSpocId(String vendorSpocId)
+	{
+		this.vendorSpocId = vendorSpocId;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
+	public Map<String, String> getCandidateCustomFieldData() {
+		return candidateCustomFieldData;
+	}
+
+	public void setCandidateCustomFieldData(Map<String, String> candidateCustomFieldData) {
+		this.candidateCustomFieldData = candidateCustomFieldData;
+	}
+
+	public String getTeams() {
+		return teams;
+	}
+
+	public void setTeams(String teams) {
+		this.teams = teams;
+	}
+
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getDateofBirth() {
+		return dateofBirth;
+	}
+
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
+	}
+
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public BigInteger getCandId() {
+		return candId;
+	}
+
+	public void setCandId(BigInteger candId) {
+		this.candId = candId;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
+	}
+
+	public Long getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Long requirementId) {
+		this.requirementId = requirementId;
+	}
+
+	public String getDocFile() {
+		return docFile;
+	}
+
+	public void setDocFile(String docFile) {
+		this.docFile = docFile;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Set<String> getCandidateTagsList() {
+		return candidateTagsList;
+	}
+
+	public void setCandidateTagsList(Set<String> candidateTagsList) {
+		this.candidateTagsList = candidateTagsList;
+	}
+
+	public String getCandidateTags() {
+		return candidateTags;
+	}
+
+	public void setCandidateTags(String candidateTags) {
+		this.candidateTags = candidateTags;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+	
+	public String getUploadId() {
+		return uploadId;
+	}
+
+	public void setUploadId(String uploadId) {
+		this.uploadId = uploadId;
+	}
+
+	public String getUserCode() {
+		return userCode;
+	}
+
+	public void setUserCode(String userCode) {
+		this.userCode = userCode;
+	}
+
+	public String getTimePeriod() {
+		return timePeriod;
+	}
+
+	public void setTimePeriod(String timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+
+	public String getCustomStartDate() {
+		return customStartDate;
+	}
+
+	public void setCustomStartDate(String customStartDate) {
+		this.customStartDate = customStartDate;
+	}
+
+	public String getCustomEndDate() {
+		return customEndDate;
+	}
+
+	public void setCustomEndDate(String customEndDate) {
+		this.customEndDate = customEndDate;
+	}
+
+	public Integer getSubmittedJobsCount() {
+		return submittedJobsCount;
+	}
+
+	public void setSubmittedJobsCount(Integer submittedJobsCount) {
+		this.submittedJobsCount = submittedJobsCount;
+	}
+
+	public String getDefaultOrgProbationPeriod() {
+		return defaultOrgProbationPeriod;
+	}
+
+	public void setDefaultOrgProbationPeriod(String defaultOrgProbationPeriod) {
+		this.defaultOrgProbationPeriod = defaultOrgProbationPeriod;
+	}
+
+	public String getMarketPrice() {
+		return marketPrice;
+	}
+
+	public void setMarketPrice(String marketPrice) {
+		this.marketPrice = marketPrice;
+	}
+
+	public Long getWorkLocation() {
+		return workLocation;
+	}
+
+	public void setWorkLocation(Long workLocation) {
+		this.workLocation = workLocation;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
 }

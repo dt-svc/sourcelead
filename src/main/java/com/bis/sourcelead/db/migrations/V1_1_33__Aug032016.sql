@@ -1,1 +1,1 @@
-UPDATE `sourcelead`.`EMAIL_SCENARIO` SET `SIGNATURE`='Best Regards \n\n SourceLead' WHERE `ID`='17';
+UPDATE `EMAIL_SCENARIO` SET `SIGNATURE`='Best Regards \n\n SourceLead' WHERE `ID`='17';

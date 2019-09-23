@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,17 +14,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.constants.Constants;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_DOCUMENTS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectDocuments")
 public class ProjectDocuments implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -37,7 +41,7 @@ public class ProjectDocuments implements Serializable {
 	@Column(name = "FILE_TYPE")
 	private String fileType;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projects;
@@ -51,6 +55,49 @@ public class ProjectDocuments implements Serializable {
 	
 	@Column(name = "STATUS")
 	private Integer status;
+	
+	@Column(name = "FILE_URL")
+	@Type(type="text")
+	private String fileUrl;
+
+	@Column(name = "FILE_FORMAT")
+	private String fileFormat;
+
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_FOLDER_ID")
+   	private ProjectDocumentFolder projectFolderId;
+	
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CREATED_BY")
+   	private User createdBy;
+	
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPDATED_BY")
+   	private User updatedBy;
+	
+	@Column(name = "CREATED_NAME")
+	private String createdByName;
+	
+	@Column(name = "CREATED_DATE")
+	private Date createdDate;
+	
+	@Column(name = "UPDATED_NAME")
+	private String updatedByName;
+	
+	@Column(name = "UPDATED_DATE")
+	private Date updatedDate;
+	
+	@Transient
+    @JsonProperty
+    private String createdDateStr;
+	
+	@Transient
+    @JsonProperty
+	private String permissionAccess;
+	
 	
 	public Long getId() {
 		return Id;
@@ -98,12 +145,11 @@ public class ProjectDocuments implements Serializable {
 		
 	}
 
-	public ProjectDocuments(String fileName, String fileType, byte[] fileContents, Projects projects,Integer status) {
+	public ProjectDocuments(String fileName, String fileURL, String fileType, Projects projects) {
 		super();
 		this.fileName = fileName;
+		this.fileUrl = fileURL;
 		this.fileType = fileType;
-		this.fileContents = fileContents;
-		this.status = Constants.CANDIDATE_ACTIVE;
 		this.projects = projects;
 	}
 
@@ -123,7 +169,95 @@ public class ProjectDocuments implements Serializable {
 		this.status = status;
 	}
 
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public ProjectDocumentFolder getProjectFolderId() {
+		return projectFolderId;
+	}
+
+	public void setProjectFolderId(ProjectDocumentFolder projectFolderId) {
+		this.projectFolderId = projectFolderId;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	public User getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public String getCreatedByName() {
+		return createdByName;
+	}
+
+	public Date getCreatedDate() {
+		return createdDate;
+	}
+
+	public String getUpdatedByName() {
+		return updatedByName;
+	}
+
+	public Date getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public void setUpdatedBy(User updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public void setCreatedByName(String createdByName) {
+		this.createdByName = createdByName;
+	}
+
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public void setUpdatedByName(String updatedByName) {
+		this.updatedByName = updatedByName;
+	}
+
+	public void setUpdatedDate(Date updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getFileFormat() {
+		return fileFormat;
+	}
+
+	public void setFileFormat(String fileFormat) {
+		this.fileFormat = fileFormat;
+	}
+
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
+	}
 	
-	
-	
+	public String getCreatedDateStr() {
+		if(createdDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+			createdDateStr = dateFormat.format(createdDate);
+		}
+		return createdDateStr;
+	}
+
+	public String getPermissionAccess() {
+		return permissionAccess;
+	}
+
+	public void setPermissionAccess(String permissionAccess) {
+		this.permissionAccess = permissionAccess;
+	}
 }

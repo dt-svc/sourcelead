@@ -7,6 +7,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 
 public interface WageTaxSummaryDao {
@@ -23,10 +24,16 @@ public interface WageTaxSummaryDao {
 
 	List<WageTaxSummary> getMappedUsersListByOrgLocationId(Long locationId)throws Exception;
 
-	List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation)throws Exception;
+	List<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationId(OrgLocations orgLocation) throws Exception;
 
 	WageTaxSummary getWageTaxSummaryByEmpIdandDuration(String empId,Long locationId, Date startDate, Date endDate);
 
 	int getWageTaxSummaryVersionByLocationId(Long locationId);
+
+	ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation, PayrollBalance payrollBalance) throws Exception;
+
+	WageTaxSummary getEmployeeIdByUserId(User consultantUser)throws Exception;
+
+	ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO);
 
 }

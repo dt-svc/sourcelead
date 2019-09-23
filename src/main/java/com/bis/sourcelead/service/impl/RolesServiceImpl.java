@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.RolesDao;
+import com.bis.sourcelead.dto.RoleDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.service.RolesService;
@@ -117,6 +118,42 @@ public class RolesServiceImpl implements RolesService{
 	@Override
 	public Roles getRolesByRoleNameAndOrgId(String roleName, Long orgId) throws Exception {
 		return rolesDao.getRolesByRoleNameAndOrgId(roleName, orgId);
+	}
+
+
+	@Override
+	public List<Roles> getAllRolesListByOrgLocationIdList(List<Long> orgLocationIdsList) throws Exception {
+		return rolesDao.getAllRolesListByOrgLocationIdList(orgLocationIdsList);
+	}
+
+
+	@Override
+	public Roles getRolesByUUIDAndOrgLocationId(String uuid, Long orgLocationId) throws Exception {
+		return rolesDao.getRolesByUUIDAndOrgLocationId(uuid, orgLocationId);
+	}
+
+
+	@Override
+	public Roles getRolesByUUID(String uuid) throws Exception {
+		return rolesDao.getRolesByUUID(uuid);
+	}
+
+
+	@Override
+	public List<String> getRolesListByOrgLocationId(Long orgLocationId) throws Exception {
+		return rolesDao.getRolesListByOrgLocationId(orgLocationId);
+	}
+
+
+	@Override
+	public List<Roles> getRolesListUsingMultipleIds(String[] roleIds) throws Exception {
+		
+		return rolesDao.getRolesListUsingMultipleIds(roleIds);
+	}
+	@Override
+	public List<RoleDTO> getRolesDTOListByOrgLocationId(Long orgLocationId) throws Exception {
+		return rolesDao.getRolesDTOListByOrgLocationId(orgLocationId);
+
 	}
 	
 

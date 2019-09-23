@@ -1,6 +1,8 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -22,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
@@ -37,7 +40,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "PROJECT_MEMBERS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "projectMembers")
 public class ProjectMembers implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,15 +49,33 @@ public class ProjectMembers implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Projects projects;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "EMPLOYEE_ID", nullable = false)
 	private Employees employee;
+
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
+	@JsonBackReference
+	private Candidate projectMemberCandidteId;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false )        
+    private MasterCandidate masterCandidateId;
+	
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_CLIENTS_ID")
+	@JsonBackReference
+    private ProjectClients projectClientsId;
 
 	/*
 	 * @Column(name = "TIMESHEET_FREQUENCY") private String timesheetFrequency;
@@ -71,10 +91,31 @@ public class ProjectMembers implements Serializable {
 	private String role;
 
 	@Column(name = "CURRENT_BILL_RATE")
-	private Float currentBillRate;
+	private Double currentBillRate;
 
 	@Column(name = "RATE_TYPE")
 	private String rateType;
+	
+	@Column(name = "BILL_RATE_CURRENCY")
+	private String billRateCurrency;
+	
+	@Column(name = "PAY_RATE")
+	private Double payRate;
+
+	@Column(name = "PAY_RATE_TYPE")
+	private String payRateType;
+	
+	@Column(name = "PAY_RATE_CURRENCY")
+	private String payRateCurrency;
+	
+	@Column(name = "ESTIMATED_HOURS")
+	private Double estimatedHours;
+	
+	@Column(name = "ESTIMATED_BUDGET")
+	private Double estimatedBudget;
+	
+	@Column(name = "PERCENTAGE_OF_WORK")
+	private BigDecimal percentageOfWork;
 
 	@Column(name = "STATUS")
 	private String status;
@@ -100,9 +141,14 @@ public class ProjectMembers implements Serializable {
 	private String empName;
 	
 	@Transient
+	@JsonProperty
 	private String empEmail;
+	
+	@JsonProperty
 	@Transient
 	private String startDate;
+	
+	@JsonProperty
 	@Transient
 	private String endDate;
 	
@@ -113,7 +159,10 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String rejectedHrs;
+	
+	
 	@Transient
+	@JsonProperty
 	private String openHrs;
 	
 	@JsonProperty
@@ -123,9 +172,11 @@ public class ProjectMembers implements Serializable {
 	@JsonProperty
 	@Transient
 	private String submittedHrs;
+	
 	@Transient
 	@JsonProperty
 	private String projectAssignedDateStr;
+	
 	@Transient
 	@JsonProperty
 	private String projectEndDateStr;
@@ -141,187 +192,251 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	@JsonProperty
 	private String userId;
+	
 	@Transient
+	@JsonProperty
 	@Enumerated(EnumType.STRING)
 	private Status userState;
+	
+	@JsonProperty
+	@Transient
+	private String rateHistroyList;
     
 	@Transient
+	@JsonProperty
 	private String employeeIdForExpenses;
 	
      //For Expenses 
     
     @Transient
+    @JsonProperty
     private Float janExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float janExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float janExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float febExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float febExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float febExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float marExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float aprExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float aprExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float aprExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float mayExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float junExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float julExpenseUnApprovedTotal;
     
     
     @Transient
+    @JsonProperty
     private Float augExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float augExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float augExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float sepExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float octExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float novExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float decExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float claimedExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q1ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q2ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q3ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float Q4ExpenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseApprovedTotal;
     
     @Transient
+    @JsonProperty
     private Float expenseUnApprovedTotal;
     
     @Transient
+    @JsonProperty
 	private String employementType;
 	
 	@Transient
+	@JsonProperty
 	private String userName;
 	
 	@Transient
+	@JsonProperty
 	private String userEmail;
 	
 	
@@ -337,24 +452,31 @@ public class ProjectMembers implements Serializable {
 	private String terminateReason;
 
 	@Transient
+	@JsonProperty
 	private String totalHours;
 
 	@Transient
+	@JsonProperty
 	private String candidateName;
 
 	@Transient
+	@JsonProperty
 	private Long candidateId;
 
 	@Transient
+	@JsonProperty
 	private String userRoleType;
 
 	@Transient
+	@JsonProperty
 	private Long submissionApproverHierarchyId;
 
 	@Transient
+	@JsonProperty
 	private Long submissionInvoiceId;
 
 	@Transient
+	@JsonProperty
 	private LinkedHashSet<String> monthsStringFormat;
 	
 	@Transient
@@ -368,6 +490,44 @@ public class ProjectMembers implements Serializable {
 	@Transient
 	private String projectUUID;
 	
+	@Transient
+	@JsonProperty
+	private String startDateStr;
+	
+	@Transient
+	@JsonProperty
+	private String endDateStr;
+	
+	
+	@Transient
+	@JsonProperty
+	private String payRateStr;
+	
+	
+	@Transient
+	@JsonProperty
+	private String billRateStr;
+	
+	@Transient
+	@JsonProperty
+	private Long userRoleId;
+	
+	@Transient
+	@JsonProperty
+	private String projectClientUUID;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private int timeReportsTotalCountValue;
+	
+	@Transient
+	@JsonProperty
+	private String projectMemberStatus;
+	
 	public Long getSubmissionInvoiceId() {
 		return submissionInvoiceId;
 	}
@@ -377,16 +537,18 @@ public class ProjectMembers implements Serializable {
 	}
 
 	@Transient
+	@JsonProperty
 	private List<Contracts> contractsList;
 
 	@JsonIgnore
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	
+	@OneToMany(mappedBy = "projectMemberId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonBackReference
 	@Fetch(FetchMode.SELECT)
 	private Set<ProjectMembersHistory> memberHistoryList = new HashSet<ProjectMembersHistory>(0);
 
 	@Transient
+	@JsonProperty
 	private List<ProjectMembers> projectMembersList;
 
 	public Date getProjectAssignedDate() {
@@ -478,6 +640,8 @@ public class ProjectMembers implements Serializable {
 	public void setEmployee(Employees employee) {
 		this.employee = employee;
 	}
+	
+	
 
 	/*
 	 * public String getTimesheetFrequency() { return timesheetFrequency; }
@@ -485,6 +649,14 @@ public class ProjectMembers implements Serializable {
 	 * public void setTimesheetFrequency(String timesheetFrequency) {
 	 * this.timesheetFrequency = timesheetFrequency; }
 	 */
+
+	public Candidate getProjectMemberCandidteId() {
+		return projectMemberCandidteId;
+	}
+
+	public void setProjectMemberCandidteId(Candidate projectMemberCandidteId) {
+		this.projectMemberCandidteId = projectMemberCandidteId;
+	}
 
 	public String getRole() {
 		return role;
@@ -494,11 +666,11 @@ public class ProjectMembers implements Serializable {
 		this.role = role;
 	}
 
-	public Float getCurrentBillRate() {
+	public Double getCurrentBillRate() {
 		return currentBillRate;
 	}
 
-	public void setCurrentBillRate(Float currentBillRate) {
+	public void setCurrentBillRate(Double currentBillRate) {
 		this.currentBillRate = currentBillRate;
 	}
 
@@ -551,6 +723,14 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getEmpName() {
+		if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getFirstName())&& StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			empName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
+		}else if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getFirstName())){
+			empName = projectMemberCandidteId.getFirstName();
+		}
+		else if(projectMemberCandidteId != null && StringUtils.isNotEmpty(projectMemberCandidteId.getLastName())){
+			empName = projectMemberCandidteId.getLastName();
+		}
 		return empName;
 	}
 
@@ -559,6 +739,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getEmpEmail() {
+		if(projectMemberCandidteId != null){
+			empEmail = projectMemberCandidteId.getEmail();
+		}
 		return empEmail;
 	}
 
@@ -663,6 +846,13 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public String getCandidateName() {
+		if(projectMemberCandidteId != null){
+			if(projectMemberCandidteId.getLastName() != null){
+				candidateName = projectMemberCandidteId.getFirstName()+" "+projectMemberCandidteId.getLastName();
+			}else{
+				candidateName = projectMemberCandidteId.getFirstName();
+			}
+		}
 		return candidateName;
 	}
 
@@ -671,6 +861,9 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Long getCandidateId() {
+		if(projectMemberCandidteId != null){
+			candidateId = projectMemberCandidteId.getId();
+		}
 		return candidateId;
 	}
 
@@ -1187,6 +1380,8 @@ public class ProjectMembers implements Serializable {
 	}
 
 	public Float getClaimedExpenseTotal() {
+		if(claimedExpenseTotal == null)
+			claimedExpenseTotal = 0f;
 		return claimedExpenseTotal;
 	}
 
@@ -1255,5 +1450,192 @@ public class ProjectMembers implements Serializable {
 	{
 		this.memberEnddate = memberEnddate;
 	}
+
+	public String getBillRateCurrency() {
+		return billRateCurrency;
+	}
+
+	public void setBillRateCurrency(String billRateCurrency) {
+		this.billRateCurrency = billRateCurrency;
+	}
+
+	public Double getPayRate() {
+		return payRate;
+	}
+
+	public void setPayRate(Double payRate) {
+		this.payRate = payRate;
+	}
+
+	public String getPayRateType() {
+		return payRateType;
+	}
+
+	public void setPayRateType(String payRateType) {
+		this.payRateType = payRateType;
+	}
+
+	public String getPayRateCurrency() {
+		return payRateCurrency;
+	}
+
+	public void setPayRateCurrency(String payRateCurrency) {
+		this.payRateCurrency = payRateCurrency;
+	}
+
+	public Double getEstimatedHours() {
+		return estimatedHours;
+	}
+
+	public void setEstimatedHours(Double estimatedHours) {
+		this.estimatedHours = estimatedHours;
+	}
+
+	public Double getEstimatedBudget() {
+		return estimatedBudget;
+	}
+
+	public void setEstimatedBudget(Double estimatedBudget) {
+		this.estimatedBudget = estimatedBudget;
+	}
+
+	public String getStartDateStr() {
+		if(projectAssignedDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+				startDateStr = dateFormat.format(projectAssignedDate);	
+		}else{
+			startDateStr = "";
+		}
+		return startDateStr;
+	}
+
+	public void setStartDateStr(String startDateStr) {
+		this.startDateStr = startDateStr;
+	}
+
+	public String getEndDateStr() {
+		if(projectEndDate != null){
+			SimpleDateFormat dateFormat = projects.getOrgLocationsId().getLocFullFormDateFormatter();
+			endDateStr = dateFormat.format(projectEndDate);	
+		}else{
+			endDateStr = "";
+		}
+		return endDateStr;
+	}
+
+	public void setEndDateStr(String endDateStr) {
+		this.endDateStr = endDateStr;
+	}
+
+	public String getPayRateStr() {
+		if(payRate != null){
+			StringBuilder payRateBuilder = new StringBuilder();
+			payRateStr = payRateBuilder.append(payRateCurrency).append(" ").append(payRate).append(" / ").append(payRateType).toString();
+		}else{
+			payRateStr = "-----";
+		}
+		return payRateStr;
+	}
+
+	public void setPayRateStr(String payRateStr) {
+		this.payRateStr = payRateStr;
+	}
+
+	public String getBillRateStr() {
+		if(currentBillRate != null){
+			StringBuilder billRateBuilder = new StringBuilder();
+			billRateStr = billRateBuilder.append(billRateCurrency).append(" ").append(currentBillRate).append(" / ").append(rateType).toString();
+		}else{
+			billRateStr = "-----";
+		}
+		return billRateStr;
+	}
+
+	public void setBillRateStr(String billRateStr) {
+		this.billRateStr = billRateStr;
+	}
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getProjectClientUUID() {
+		if(projectClientsId != null) {
+			projectClientUUID = projectClientsId.getUuid();
+		}
+		return projectClientUUID;
+	}
+	
+	public String getOrgRelationUUID() {
+		if(projectClientsId != null && projectClientsId.getOrgRelationId() != null) {
+			orgRelationUUID = projectClientsId.getOrgRelationId().getUUID();
+		}
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID) {
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public Long getUserRoleId() {
+		return userRoleId;
+	}
+
+	public void setUserRoleId(Long userRoleId) {
+		this.userRoleId = userRoleId;
+	}
+
+	public int getTimeReportsTotalCountValue() {
+		return timeReportsTotalCountValue;
+	}
+
+	public void setTimeReportsTotalCountValue(int timeReportsTotalCountValue) {
+		this.timeReportsTotalCountValue = timeReportsTotalCountValue;
+	}
+
+	public String getRateHistroyList() {
+		return rateHistroyList;
+	}
+
+	public void setRateHistroyList(String rateHistroyList) {
+		this.rateHistroyList = rateHistroyList;
+	}
+
+	public String getProjectMemberStatus() {
+		return projectMemberStatus;
+	}
+
+	public void setProjectMemberStatus(String projectMemberStatus) {
+		this.projectMemberStatus = projectMemberStatus;
+	}
+
+	public BigDecimal getPercentageOfWork() {
+		return percentageOfWork;
+	}
+
+	public void setPercentageOfWork(BigDecimal percentageOfWork) {
+		this.percentageOfWork = percentageOfWork;
+	}
+
+	
+
+	
+	
 	
 }

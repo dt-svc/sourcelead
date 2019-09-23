@@ -21,6 +21,7 @@ import com.bis.sourcelead.service.QuickBookCustomerService;
  */
 
 @RestController
+@RequestMapping("/app")
 public class QuickBooksCustomerRestController {
 
 	private static final Logger logger = LoggerFactory.getLogger(QuickBooksCustomerRestController.class);

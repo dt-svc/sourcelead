@@ -13,80 +13,61 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css?staticTime=${staticTime}">
-<link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css?staticTime=${staticTime}">
+<link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 </head>
 
- <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
  
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>  
-<script src="resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
-<script src="resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
-<script src="resources/js/moment.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>  
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/themeswitcher.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/datetime-moment.js?staticTime=${staticTime}"></script>
 
 <script>
 		$(document).ready(function() { 
 			var interviewStatus  = '${interviewStatus}';
 			var intervewStartTime = '${interviewStartTime}';
 			var intervewEndTime = '${interviewEndTime}';
-			if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
-				$("#expire").removeAttr("style");
+			if(interviewStatus == 'Action_Done'){
+				$("#actionDone").removeAttr("style");
 			}else{
-				if(interviewStatus == 'Attending'){     
-					$("#accept").removeAttr("style");
-				}else if(interviewStatus == 'Not_Attending'){
-					$("#reject").removeAttr("style");
-				}else if(interviewStatus == 'Maybe'){
-					$("#tentative").removeAttr("style");
+				if(intervewStartTime != "interviewStartTime" && intervewEndTime != "interviewEndTime"){
+					$("#expire").removeAttr("style");
+				}else{
+					if(interviewStatus == 'Attending'){ 
+						$("#accept").removeAttr("style");
+					}else if(interviewStatus == 'Not_Attending'){
+						$("#reject").removeAttr("style");
+					}else if(interviewStatus == 'Maybe'){
+						$("#tentative").removeAttr("style");
+					}
 				}
 			}
-			
 		});
 </script>
 
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-.tentative-user{
-	 background-color:#f0ad4e;
-	 border: 1px solid #f0ad4e;
-	 -webkit-box-shadow: 0 8px 6px -8px #505050;
-	-moz-box-shadow: 0 8px 6px -8px #505050;
-	box-shadow: 0 8px 6px -8px #505050;
-}
-.ui-timepicker-wrapper {
-width: 8%;
-}
-</style>
+
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -118,11 +99,17 @@ width: 8%;
 									  <p class="reason-msg">You are Rejecting the Interview for position <B>${requirementInterview.submissionId.requirement.jobTitle} </B></p>
 							  </div>
 		  		</div>
+		  		<div id="actionDone" style="display:none">
+				          <div class="col-md-8 col-md-offset-2 inner-widget pending-user">
+					          <i class="fa fa-ban fa-3x"></i>
+							  <p class="reason-msg">Your decision has already submitted</p>
+						  </div>
+		  		</div>
 		 </div>
   </section>
   <div id="popUp"></div>
 
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
   <!-- Footer Area -->
   <footer class="footer-publicpages clearfix">
   <div class="container">

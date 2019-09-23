@@ -1,9 +1,13 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,18 +17,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
-@Table(name = "ASSET", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "asset")
+@Table(name = "ASSET")
 public class Asset implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -42,8 +49,7 @@ public class Asset implements Serializable{
 	@Column(name = "NAME")
 	private String name;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ASSET_CATEGORY_ID")
 	private AssetCategory assetCategory;
 	
@@ -69,6 +75,8 @@ public class Asset implements Serializable{
 	@Column(name = "MONITOR")
 	private String monitor;
 	
+	@Column(name = "ISSUE_DATE")
+	private Date issueDate;
 
 	@Column(name = "ATTACHMENT",columnDefinition="mediumblob")
 	@Lob
@@ -77,47 +85,57 @@ public class Asset implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "MAC_ADDRESS")
+	private String macAddress;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "SHIFT_A_EMPLOYEE")
-	private Employees shiftAEmployee;
+	@Column(name = "FILE_URL")
+	private String fileUrl;
 	
-	@Column(name = "SHIFT_A_ATTACHMENT",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] shiftADocFile;
-		
-	@Column(name = "SHIFT_A_FILE_CONTENT_TYPE")
-	private String shiftAFileContentType;
-	
-	@Column(name = "SHIFT_A_FILE_NAME")
-	private String shiftAFileName;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "SHIFT_B_EMPLOYEE")
-	private Employees shiftBEmployee;
-	
-	@Column(name = "SHIFT_B_ATTACHMENT",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] shiftBDocFile;
-		
-	@Column(name = "SHIFT_B_FILE_CONTENT_TYPE")
-	private String shiftBFileContentType;
-	
-	@Column(name = "SHIFT_B_FILE_NAME")
-	private String shiftBFileName;
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
+	
+	
+	@OneToMany(mappedBy="asset",cascade=CascadeType.ALL)
+    @Fetch(FetchMode.SELECT)
+    @JsonBackReference
+    private Set<AssetAssign> assetAssign;
 	
 	@Column(name = "DESCRIPTION")
 	@Type(type="text")
 	private String description;
+	
+	@Column(name = "ASSET_UUID")
+	private String assetUUID;
+	
+	@Column(name = "PURCHASE_DATE")
+	private Date purchaseDate;
+	
+	@Column(name = "DEPRECIATION_DATE")
+	private Date depreciationDate;
+	
+	@Column(name = "OPERATING_SYSTEM")
+	private String operatingSystem;
+	
+	@Column(name = "OS_KEY")
+	private String osKey;
+	
+	@Column(name = "ANTI_VIRUS")
+	private String antiVirus;
+	
+	@Column(name = "COST")
+	private BigDecimal cost;
+	
+	@Column(name = "DEPRECIATION_AMOUNT")
+	private BigDecimal depreciationAmount;
+	
+	@Column(name = "VENDOR_DETAILS")
+	private String vendorDetails;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -134,18 +152,26 @@ public class Asset implements Serializable{
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
 	
-	@Transient
-	private String shiftAEmpName;
-	
 	@Transient 
-	private String shiftBEmpName;
-	
-	@Transient 
+	@JsonProperty
 	private String categoryName;
 	
+	@Transient
+    @JsonProperty
+    private String issueDateStr;
+  
 	@Transient 
 	private List<Employees> employeesList;
 
+	@Transient
+    @JsonProperty
+    private String assetTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -237,70 +263,6 @@ public class Asset implements Serializable{
 		this.monitor = monitor;
 	}
 
-	public Employees getShiftAEmployee() {
-		return shiftAEmployee;
-	}
-
-	public void setShiftAEmployee(Employees shiftAEmployee) {
-		this.shiftAEmployee = shiftAEmployee;
-	}
-
-	public byte[] getShiftADocFile() {
-		return shiftADocFile;
-	}
-
-	public void setShiftADocFile(byte[] shiftADocFile) {
-		this.shiftADocFile = shiftADocFile;
-	}
-
-	public String getShiftAFileContentType() {
-		return shiftAFileContentType;
-	}
-
-	public void setShiftAFileContentType(String shiftAFileContentType) {
-		this.shiftAFileContentType = shiftAFileContentType;
-	}
-
-	public String getShiftAFileName() {
-		return shiftAFileName;
-	}
-
-	public void setShiftAFileName(String shiftAFileName) {
-		this.shiftAFileName = shiftAFileName;
-	}
-
-	public Employees getShiftBEmployee() {
-		return shiftBEmployee;
-	}
-
-	public void setShiftBEmployee(Employees shiftBEmployee) {
-		this.shiftBEmployee = shiftBEmployee;
-	}
-
-	public byte[] getShiftBDocFile() {
-		return shiftBDocFile;
-	}
-
-	public void setShiftBDocFile(byte[] shiftBDocFile) {
-		this.shiftBDocFile = shiftBDocFile;
-	}
-
-	public String getShiftBFileContentType() {
-		return shiftBFileContentType;
-	}
-
-	public void setShiftBFileContentType(String shiftBFileContentType) {
-		this.shiftBFileContentType = shiftBFileContentType;
-	}
-
-	public String getShiftBFileName() {
-		return shiftBFileName;
-	}
-
-	public void setShiftBFileName(String shiftBFileName) {
-		this.shiftBFileName = shiftBFileName;
-	}
-
 	public OrgLocations getOrgLocations() {
 		return orgLocations;
 	}
@@ -357,30 +319,6 @@ public class Asset implements Serializable{
 		this.updatedBy = updatedBy;
 	}
 
-	public String getShiftAEmpName() {
-		return shiftAEmpName;
-	}
-
-	public void setShiftAEmpName(String shiftAEmpName) {
-		this.shiftAEmpName = shiftAEmpName;
-	}
-
-	public String getShiftBEmpName() {
-		return shiftBEmpName;
-	}
-
-	public void setShiftBEmpName(String shiftBEmpName) {
-		this.shiftBEmpName = shiftBEmpName;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -398,6 +336,9 @@ public class Asset implements Serializable{
 	}
 
 	public String getCategoryName() {
+		if(assetCategory !=null) {
+			categoryName = assetCategory.getCategoryName();
+		}
 		return categoryName;
 	}
 
@@ -411,5 +352,147 @@ public class Asset implements Serializable{
 
 	public void setEmployeesList(List<Employees> employeesList) {
 		this.employeesList = employeesList;
+	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	 
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+	public Date getIssueDate() {
+		return issueDate;
+	}
+
+	public void setIssueDate(Date issueDate) {
+		this.issueDate = issueDate;
+	}
+
+	public String getMacAddress() {
+		return macAddress;
+	}
+
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
+	}
+
+	public Set<AssetAssign> getAssetAssign() {
+		return assetAssign;
+	}
+
+	public void setAssetAssign(Set<AssetAssign> assetAssign) {
+		this.assetAssign = assetAssign;
+	}
+
+	public String getIssueDateStr() {
+		if(issueDate != null) {
+			SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
+			issueDateStr = dateFormat.format(issueDate);	
+		}
+		return issueDateStr;
+	}
+
+	public void setIssueDateStr(String issueDateStr) {
+		this.issueDateStr = issueDateStr;
+	}
+
+	public String getAssetTags() {
+		return assetTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setAssetTags(String assetTags) {
+		this.assetTags = assetTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Date getPurchaseDate() {
+		return purchaseDate;
+	}
+
+	public Date getDepreciationDate() {
+		return depreciationDate;
+	}
+
+	public String getOperatingSystem() {
+		return operatingSystem;
+	}
+
+	public String getOsKey() {
+		return osKey;
+	}
+
+	public String getAntiVirus() {
+		return antiVirus;
+	}
+
+	public BigDecimal getCost() {
+		return cost;
+	}
+
+	public BigDecimal getDepreciationAmount() {
+		return depreciationAmount;
+	}
+
+	public void setPurchaseDate(Date purchaseDate) {
+		this.purchaseDate = purchaseDate;
+	}
+
+	public void setDepreciationDate(Date depreciationDate) {
+		this.depreciationDate = depreciationDate;
+	}
+
+	public void setOperatingSystem(String operatingSystem) {
+		this.operatingSystem = operatingSystem;
+	}
+
+	public void setOsKey(String osKey) {
+		this.osKey = osKey;
+	}
+
+	public void setAntiVirus(String antiVirus) {
+		this.antiVirus = antiVirus;
+	}
+
+	public void setCost(BigDecimal cost) {
+		this.cost = cost;
+	}
+
+	public void setDepreciationAmount(BigDecimal depreciationAmount) {
+		this.depreciationAmount = depreciationAmount;
+	}
+
+	public String getVendorDetails() {
+		return vendorDetails;
+	}
+
+	public void setVendorDetails(String vendorDetails) {
+		this.vendorDetails = vendorDetails;
+	}
+
+	public String getAssetUUID() {
+		return assetUUID;
+	}
+
+	public void setAssetUUID(String assetUUID) {
+		this.assetUUID = assetUUID;
 	}
 }

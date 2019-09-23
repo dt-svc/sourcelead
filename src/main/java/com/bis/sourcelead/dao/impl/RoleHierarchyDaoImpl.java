@@ -56,7 +56,7 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 	@Transactional
 	public List<RoleHierarchy> getRoleHierarchyByOrgLocationId(Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.orgLocations.id = :orgLocationId and roleHierarchy.status = '1' ORDER BY roleHierarchy.hierarchyLevel ASC ").setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		return session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.orgLocations.id = :orgLocationId and roleHierarchy.status = '1' ORDER BY roleHierarchy.hierarchyLevel ASC ").setLong("orgLocationId", orgLocationId).list();
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RoleHierarchy> roleHierarchy = new ArrayList<RoleHierarchy>();
 		logger.debug("RoleHierarchy start");
-		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.hierarchyLevel = :hierarchyLevel and roleHierarchy.orgLocations.id = :orgLocationId " ).setInteger( "hierarchyLevel", hierarchyLevel ).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.hierarchyLevel = :hierarchyLevel and roleHierarchy.orgLocations.id = :orgLocationId " ).setInteger( "hierarchyLevel", hierarchyLevel ).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("RoleHierarchy end");
 		if (roleHierarchy.size() > 0) {
 			return roleHierarchy.get(0);
@@ -81,7 +81,7 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RoleHierarchy> roleHierarchy = new ArrayList<RoleHierarchy>();
 		logger.debug("RoleHierarchy start");
-		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.id = :id" ).setLong("id", id).setCacheable(true).list();
+		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.id = :id" ).setLong("id", id).list();
 		logger.debug("RoleHierarchy end");
 		if (roleHierarchy.size() > 0) {
 			return roleHierarchy.get(0);
@@ -96,7 +96,7 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "select max(roleHierarchy.hierarchyLevel) from RoleHierarchy roleHierarchy where roleHierarchy.orgLocations.id = :orgLocationId ";
 		
-		List<Integer> hierarchyList = (List<Integer>)session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Integer> hierarchyList = (List<Integer>)session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		Integer maxHierarchyCount = null;
 		
 			if(hierarchyList != null && !hierarchyList.isEmpty()){
@@ -112,7 +112,7 @@ public class RoleHierarchyDaoImpl implements RoleHierarchyDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<RoleHierarchy> roleHierarchy = new ArrayList<RoleHierarchy>();
 		logger.debug("RoleHierarchy start");
-		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.hierarchyName = :levelName and roleHierarchy.orgLocations.id = :orgLocationId" ).setString("levelName", levelName).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		roleHierarchy = session.createQuery("from RoleHierarchy roleHierarchy where roleHierarchy.hierarchyName = :levelName and roleHierarchy.orgLocations.id = :orgLocationId" ).setString("levelName", levelName).setLong("orgLocationId", orgLocationId).list();
 		logger.debug("RoleHierarchy end");
 		if (roleHierarchy.size() > 0) {
 			return roleHierarchy.get(0);

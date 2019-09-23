@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,8 +18,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "INVOICE_TAX", catalog = "sourcelead")  
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceTax")
+@Table(name = "INVOICE_TAX")  
 public class InvoiceTax {
 	
 	private static final long serialVersionUID = 1L;
@@ -39,13 +39,13 @@ public class InvoiceTax {
 	@Column(name = "TAX_VALUE")
 	private String taxValue;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INVOICE_ID", nullable = false)
 	private Invoice invoice;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
 	

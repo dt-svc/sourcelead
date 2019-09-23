@@ -18,6 +18,8 @@ public class ClientImportObject {
 	
 	private String phone;
 	
+	private String extensionNumber;
+	
 	private String status;
 	
 	private String emailid;
@@ -80,6 +82,15 @@ public class ClientImportObject {
 	}
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 	public String getStatus() {
 		return status;

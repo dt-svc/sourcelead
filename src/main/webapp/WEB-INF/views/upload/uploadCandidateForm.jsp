@@ -2,256 +2,222 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<script type="text/javascript">
+window.onload = function () {
+	var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	xlsupload.getFailureUploadStats("Candidates",dateFormat);
+};
+		
+</script>
 
-<style type="text/css">
-.center-div{
-width:300px;
-height:30px;
-margin:10px 220px 0;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
-  
-  
+
 <section class="content-wraper">
-    <section class="content-header clearfix">
+	<section class="content-header clearfix">
+	
+	<section class="content-header clearfix">
+	        <div class="success_pop" id="selector" style="display: none; width: 600px;">
+		         <i class="fa fa-check-circle"></i><span id="successMsg"></span>
+			</div>
+    </section>
+    
       <div class="pull-left">
         <h2>Import Candidates</h2>
       </div>
       <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
       
        <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-      <div class="pull-right brud-crum"><a href="<c:url value='/recruiterDashboard'/>">Home</a> &raquo; <a href="candidatesList">Candidates List</a> &raquo; Import Candidates </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/recruiterDashboard'/>">Home</a> &raquo; <a href="${appPath}/candidatesList">Candidates List</a> &raquo; Import Candidates </div>
       </c:if>
     </section>
-    <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="candidateFileUpload?${_csrf.parameterName}=${_csrf.token}">
-    <div class="content-area clearfix">
-    <div id="loading"></div> 
-      <div class="clearfix form-area form-horizontal toggle-div remove-div mt">
-        <div class="row minHeight">
-          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
-		  <!-- Download File button -->
-		  <div class="clearfix mb">
-			 <a href="<c:url value='/downloadCreateCandidateTemplate'/>"> <button class="btn btn-info btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Template
-			</button></a>
-			</div>
-			<!-- Attach File button -->
-			
-			<div class="dropzone">
-			  <div class="clearfix">
-			  <div class="btn-group pull-right">
-			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile()">
-				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
-			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/candidatesList'/>'">
-				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
-			  </button>
-			  </div>
-			  </div>
-			<div class="file-upload clearfix mt text-center" id="fileDiv" onclick = "check();">
-		<div class="col-md-9" id="candidateNameDiv">
-			<label class="bg-default">
-			<i aria-hidden="true" class="fa fa-paperclip"></i> <br/>
-                <input type="file" name="file" field-name="File Upload" style="display: none;" id="uploadBtn" data-validation="required validate_importFile">
-            </label>
-        	</div>
-        	
-        	<div class="center-div">
-        	<input id="uploadFile" placeholder="" disabled="disabled"/>
-        	</div>
-        	
-        	
-			</div>
-			<p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p>
-			<p class="text-danger text-center mt" id="success">${msg}</p> 
-		   	 
-		   	 <!--  Downloaded File show here -->
-		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
-				    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-				    <div>File Holder</div>
+	<div id="loading"><p class="textLoad" id="LoadingTextMsg"></p></div>
+	<div class="content-area clearfix" id="dataFileImportDiv">
+		<form:form id="upload_candidate_form" name="upload_candidate_form" method="post" enctype="multipart/form-data">
+			<div class="clearfix form-area form-horizontal toggle-div remove-div mt">
+			<div class="row minHyewtriuwe rwrghek	fghjqwehjgfwej tkjreight">
+				<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+					<!-- Download File button -->
+					<div class="clearfix mb row">
+					<div class="col-xs-3 col-md-3">
+						<input type="text" class="form-control" placeholder="Header Index" id="headerPosition" name="headerPosition"  field-name="Header index" data-validation="required validate_Space validate_length length1-6 validate_int">
+					</div>
+					
+						<div class="col-xs-5 col-md-5">
+							<a href="<c:url value='${appPath}/downloadCreateCandidateTemplate'/>"
+								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
+							</a>
+						</div>
+						<div class="col-xs-4 col-md-4">
+							<div class="btn-group btn-group-justified">
+								<div class="btn-group">
+									<input type="button" class="btn btn-primary" id="upload_button"
+										name="upload_button" onclick="fetchFieldsWithMatchedColumn();"
+										value="Import">
+								</div>
+								<div class="btn-group">
+									<input type="reset" class="btn btn-danger" value="Reset"
+										onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm'/>'">
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<!-- Attach File button -->
+
+					<div class="dropzone">
+						<div class="clearfix"></div>
+						<div class="file-upload clearfix text-center">
+							<div class="col-md-12" id="uploadDocDiv">
+								<label class="bg-default" id="attach_file_btn"> <i aria-hidden="true"
+									class="fa fa-paperclip" title="Attach file"></i> <br /> <input
+									type="file" name="file" field-name="File Upload"
+									style="display: none;" id="uploadBtn"
+									data-validation="required validate_xlsx_importFile">
+								</label>
+								<div class="clearfix"></div>
+								<label id="newUploadFile"></label> 
+								<input type="text" hidden readonly id="dataFilePath" value="">
+							</div>
+							<div class="center-div">
+								<input id="uploadFile" placeholder="" disabled="disabled"
+									style="width: 100%;" />
+							</div>
+							 <p class="text-danger small" style="font-size: 12px; display: none;" id="errorImage" ><i class="fa fa-exclamation-triangle" ></i><b>&nbsp;Document size should be less than 6 MB</b></p>
+						</div>
+
+						<!--  Downloaded File show here -->
+						<div class="col-xs-3 alert alert-success fade in hidden"
+							style="position: absolute; top: 10px;" id="fileAttached">
+							<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+							<div>File Holder</div>
+						</div>
+						<!--  Downloaded File show here -->
+					</div>
+					
+					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
-		   	 <!--  Downloaded File show here -->
-		   	 
-			</div>
-			
-			<!-- =================== -->
-			 <div class="bgInfo bg-info clearfix">
-			 <span class="pull-left"><i class="fa fa-question" aria-hidden="true"></i></span>
-			  <span class="info-msg pull-left">
-			  <p>
-			  According to this template, the Candidates need to <span class="text-danger"><strong>Import Required Fields</strong></span></p>
-			  </p>
-			  <p>
-			  <label><i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label>
-			  <label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label>
-			  </p>
-			  </span>
-            </div>
-            
-            <div class="clearfix"></div>
-	        <div class="form-group">
+				<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+					<div class="bgInfo bg-info clearfix text-center">
+						<span><i class="fa fa-question" aria-hidden="true"></i></span> <span
+							class="info-msg clearfix mt">
+							<p class="clearfix mt">
+								 <span class="text-danger"><strong>Required Fields</strong></span>
+							</p>
+							<p>
+								<label>&nbsp;&nbsp;<i class="fa fa-user"></i>&nbsp;&nbsp;First Name</label> <label>
+								&nbsp;&nbsp;<i class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label> <label>
+							</p>
+						</span>
+					</div>
+				</div>
+				
+		  <div class="clearfix"></div>
+	        <!-- <div class="form-group">
 	             <div class="col-md-9">
 	               <div class="checkbox checkBox ml">
-	                  <!--  <input type="checkbox" value="Y" name="email"> -->
-	                     <label><input type="checkbox" value="Y" name="inviteEmail"></label><span>Invite to SourceLead</span>
+	                     <label><input type="checkbox" onclick="checkInviteEmail();" id="inviteEmailCheck"></label><span>Invite to SourceLead</span>
 	               </div>
 	                </div>
-	         </div>
-          
-          </div>
-		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-		  <div class="errInfo clearfix">
-		  <div id="errorFileDiv"  style="display: none;">
-		  <p class="text-danger"><strong>Error File Download</strong></p>
-		      <c:if test="${!empty errorMessage}">
-				   <div class="file-upload"> 
-				  <a href="<c:url value='/downloadCandidaeErrorFile/${fileName}'/>" onclick="errorMsgAppend();"> 
-					<label class="btn btn-block">
-					<i class="fa fa-download" aria-hidden="true"></i> <br>
-		               ${errorMessage}
-		            </label>
-		            </a>
-					</div>
-		     </c:if>			
-          </div>
-          </div>
-		  </div>
-        </div>
-        <div class="form-footer clearfix row hidden">
-          <div class="col-lg-12">
-            <div class="pull-right">
-              <input type="button" class="btn btn-primary" value="Import">
-              <input type="button" class="btn btn-default ml" value="Cancel">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    </form:form>
-  </section>  
- <script>
-$(document).ready(function(){
-	document.getElementById("uploadFile").value = '';
-	var errormsg = '${errorMessage}';
-	$("#fileAttached").hide();
-	if(errormsg){
-		$("#errorFileDiv").show();
-	}
+	         </div> -->
+			</div>
+            
+		</div>
+		</form:form>
+	</div>
+	
+	<div class="clearfix">
+	<div id="dataFieldsDiv" style="display: none"></div>
+	<input type="hidden" id="inviteEmail" name="inviteEmail" value="N"/>
+	<input type="hidden" id="sizeinbytes" name="sizeinbytes"/>
+	
+	
+	<div class="project_tabs_inn_table project_tabs_inn_table_a datatable_filter dataSeaTop">
+		<h5 class="mt25" id="uploadXlsHistoryDivTitle" hidden>Recent Failure Uploads History</h5>
+	    	<table id="uploadXlsHistoryDiv" class="display" cellspacing="0" width="100%"></table>
+		</div>	  
+</section>
+
+<div class="success_pop" id="selector11" style="display: none;">
+    <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+</div>
+<script type="text/javascript" src="/resources/js/xlsBulkUpload.js"></script>
+
+<script>
+function checkInviteEmail(){
+	 var flag = document.getElementById("inviteEmailCheck").checked;
+	 
+	 if(flag == true){
+		 $("#inviteEmail").val('Y'); 
+	 }else{
+		 $("#inviteEmail").val('N'); 
+	 }
+}
+</script>
+
+
+<script type="text/javascript">
+document.getElementById("uploadBtn").onchange = function () {
+	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
+	  if(sizeinbytes > 6000000){
+		  document.getElementById("errorImage").style.display="";
+		  $('#newUploadFile').text('');
+		  $("#upload_button").attr("disabled","disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  }else{
+		  $('#sizeinbytes').val(sizeinbytes); 
+		  document.getElementById("errorImage").style.display="none";
+		  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+		  fileUpload("uploadBtn", "dataMigration");
+		  $("#upload_button").removeAttr("disabled");
+		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  }
+	
+};
+</script>
+
+<script type="text/javascript">
+function fetchFieldsWithMatchedColumn(){
+	var fileUrl = $("#dataFilePath").val();
+	var uploadType = "candidatesUpload";
+	var headerPosition = $("#headerPosition").val();
+        if (($('#upload_candidate_form').validate(false, validationSettings))){
+        	$('#upload_button').prop('disabled', true);
+      	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+          	$.ajax({
+    			type: "POST",
+    		    url: sourceleadUrl+"/candidateUploadFieldMapping?"+tokenParamName+"="+tokenValue+"&filePath="+fileUrl+"&uploadType="+uploadType+"&headerPosition="+headerPosition, 
+    		    success: function(data) {
+    		    	$("#dataFileImportDiv").attr("style","display:none");
+    		    	$('#dataFieldsDiv').removeAttr("style");
+    		    	$('#dataFieldsDiv').append(data);
+    		    },
+    		});
+          	$('#loading').removeAttr("style");
+        }
+        else{
+      	  return false;	
+        }
+}
+
+$('body').on('blur', '#upload_candidate_form', function() {
+	$("#upload_candidate_form").showHelpOnFocus();
+	$("#upload_candidate_form").validateOnBlur(false, validationSettings);
+	
 });
 </script>
 
 <script type="text/javascript">
-
-document.getElementById("uploadBtn").onchange = function () {
-    document.getElementById("uploadFile").value = this.value.split( '\\' ).pop();;
-};
-</script>
-
-<script>
-function check(){
-	var errormsg = '${errorMessage}';
-		$("#errorFileDiv").hide();
-		$("#fileExist").empty();
-		$("#success").empty();
-		$('#fileDiv').find('p.jquery_form_error_message').remove();
+function cancelFileImport(){
+	location.replace(sourceleadUrl+"/uploadCandidateForm");
 }
-
 </script>
 
-<script>
-function errorMsgAppend(){
-	var errormsg = '${errorMessage}';
-	if(errormsg){
-	    $("#errorFileDiv").hide();
-	 	$("#fileExist").empty();
-		$("#success").empty();
-	}
-	
-}
 
-</script>
+<!-- Footer Area -->
+<jsp:include page="../masterFooter.jsp" />
+<!-- Footer Area -->
 
-<script type="text/javascript">
-function uploadSave() {
-	$('#upload_form').submit(function() {
-          if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            	return true;  
-          }
-          else{
-        	  return false;	
-          }
-          	
-          })
-}
-	$('body').on('blur', '#upload_form', function() {
-		$("#upload_form").showHelpOnFocus();
-		$("#upload_form").validateOnBlur(false, validationSettings);
-		
-	});
-</script>
-
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
-
-
-<script>
- function checkFile()
-    {
-     var fsize = $('#uploadBtn')[0].files[0].size;
-     $('#candidateNameDiv').find('p.jquery_form_error_message').remove();
-     var res_field = document.upload_form.elements["uploadFile"].value;   
-     var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx'];
-     if (res_field.length > 0)
-        {
-             if (allowedExtensions.indexOf(extension) === -1) 
-                {
-                  //alert('Invalid file Format. Only ' + allowedExtensions.join(', ') + ' are allowed.');
-                   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " are allowed.");
-                    return false;
-                  return false;
-                }
-                	if (fsize > 5120000)
-                    {
-                   	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"  File size should be below 500 KB");
-                        return false;
-                    }  
-                
-       }
-		$('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
-		$('input#uploadBtn').attr('class','valid form-control');
-		$('#candidateNameDiv').find('p.jquery_form_error_message').remove();
-		$("#upload_form").click(function() {
-			if ($(this).validate(false, validationSettings)) {
-			}
-		});
-	   
-    }
-</script> 
-
-  <!-- Footer Area -->
-  <footer class="footer-area clearfix">
-    <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
-  </footer>
-  <!-- Footer Area -->
-
-   

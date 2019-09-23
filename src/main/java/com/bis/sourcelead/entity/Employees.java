@@ -22,7 +22,6 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name="EMPLOYEE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="employees")
 public class Employees implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -32,8 +31,8 @@ public class Employees implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="USER_ID", nullable=false )        
     private User user;
 	
@@ -46,20 +45,20 @@ public class Employees implements Serializable{
 	@Column(name ="DOB")
 	private Date dob;
 	
-	@Column(name="COUNTRY")
+	@Column(name="COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name="STATE")
+	@Column(name="STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name="CITY")
+	@Column(name="CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name="EMPLOYEE_STATE")
 	private String employeeState;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_LOCATIONS_ID", nullable=false )        
     private OrgLocations orgLocations;
 	
@@ -81,18 +80,18 @@ public class Employees implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId;
 	    
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="DEPARTMENT_ID", nullable=false )        
     private Department departmentId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SPOC_ID", nullable=false )        
     private OrgSpoc spocId;
 	
@@ -114,6 +113,15 @@ public class Employees implements Serializable{
 	@Column(name = "CURRENT_CURRENCY")
 	private String currentCurrency;
 	
+	@Column(name ="CONFIRMATION_DATE")
+	private Date confirmationDate;	
+	
+	@Column(name ="PROBATION_PERIOD")
+	private String probationPeriod;	
+	
+	@Column(name ="PROBATION_STATUS")
+	private String probationStatus;	
+	
 	@Transient
     private String hireDateStr;
 	
@@ -129,7 +137,28 @@ public class Employees implements Serializable{
 	@Transient
     private String userType;
 	
+	@Transient
+	private String panNumber;
 	
+	@Transient
+	private String dateOfBirth;
+	
+	
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
 
 	public Long getId() {
 		return id;
@@ -384,5 +413,28 @@ public class Employees implements Serializable{
 		this.departmentId = departmentId;
 	}
 
-			
+	public Date getConfirmationDate() {
+		return confirmationDate;
+	}
+
+	public void setConfirmationDate(Date confirmationDate) {
+		this.confirmationDate = confirmationDate;
+	}
+
+	public String getProbationPeriod() {
+		return probationPeriod;
+	}
+
+	public void setProbationPeriod(String probationPeriod) {
+		this.probationPeriod = probationPeriod;
+	}
+
+	public String getProbationStatus() {
+		return probationStatus;
+	}
+
+	public void setProbationStatus(String probationStatus) {
+		this.probationStatus = probationStatus;
+	}
+
 }

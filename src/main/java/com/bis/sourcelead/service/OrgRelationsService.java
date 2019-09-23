@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ProjectTasksDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -21,6 +25,8 @@ public interface OrgRelationsService {
 	
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception;
 	
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception;
+	
 	List<OrgRelations> getAllClientsByOrgNameOrgLocationId(String  orgName,Long orgLocationId) throws Exception;
 	
 	public OrgRelations getClientByOrgLocationId(Long orgLocationId) throws Exception;
@@ -33,11 +39,13 @@ public interface OrgRelationsService {
 	
 	List<OrgRelations> getAllVendorsListByOrgLocationId(Long id);
 	
+	List<OrgRelationDTO> getAllVendorsDTOListByOrgLocationId(Long id);
+	
 	List<OrgRelations> getAllVendorsListByOrgName(String  orgName,Long id);
 
 	OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId);
 	
-	OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId);
+	OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId) throws Exception;
 	
 	OrgRelations getOrRelationsById(Long orgRelationId)  throws Exception;
 
@@ -56,7 +64,9 @@ public interface OrgRelationsService {
 	List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId,Long loginUserId) throws Exception;
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId,String type);
-
+	
+	List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId,String type);
+	
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
@@ -64,4 +74,20 @@ public interface OrgRelationsService {
 	public List<OrgRelations> getAllClientsByOrgLocationIdAndDomain(Long orgLocationId, String domain, String responderType);
 
 	OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
+	OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId,Long locationId) throws Exception;
+	
+	OrgRelations getOrgRelationsByUUID(String UUID) throws Exception;
+	
+	List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId);
+	
+	ResponseList<OrgSpoc>  getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(OrgSpocDTO orgSpocDTO,Long id, Long orgLocationId, String relationType,String vendorStatus, List<Long> vendorOrgLocationsIds) throws Exception;
+
+	ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO ,Long id,String status, String vendorsRelationId) throws Exception;
+
+	List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception;
+	
+	List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception;
+	
+	int updatePaymentTermsInOrgrelations();
 }

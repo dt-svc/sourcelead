@@ -1,56 +1,116 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
-import com.bis.sourcelead.entity.MasterCandidate;
-import com.bis.sourcelead.enums.Submission_Status;
-import com.ibm.icu.math.BigDecimal;
-
-public class ExpensesDTO implements Serializable {
+public class ExpensesDTO extends TimesheetExpenseEntryDetailsUtilDTO implements Serializable {
 private static final long serialVersionUID = 1L;
 
 	private Long id;
 	
-	private String expenseId;
-	
-	private String ExpenseAutoId;
+	private String expenseAutoId;
 	
 	private String expensePurpose;
 	
-	private float totalAmount;
+	private long projectId;
 	
-	private String clientNameExpense;
+	private String projectMemberName;
 	
 	private String projectName;
 	
-	private String noOfExpenses;
-	
-	private Submission_Status expenseStatus;
-	
-	private Submission_Status combinedSubmissionStatus;
-	
-    private List<ExpensesEntriesDTO> expensesEntries;
-	
 	private Long projectMemberId;
 	
-	private String startDateExpense;
+	private Long masterCandidateId;
 	
-	private String endDateExpense;
+	private String clientName;
+	
+	private BigDecimal totalAmount;
+	
+	private String noOfExpenses;
+	
+	private String expenseStatus;
+	
+	private String combinedSubmissionStatus;
+	
+    private List<ExpensesEntriesDTO> expenseEntry;
+	
+	private String startDate;
+	
+	private String endDate;
+	
+	private String createdBy;
 	
 	private boolean sahApproved;
 	
-	private String expCreatedBy;
+	
+//	private String expenseLocationCode;
 	
 	private BigDecimal expenseAmountDivId;
 	
-	private String staticPath;
+	private List<Long> removedDocumentIds;
+	
+	private String projectClientUUID;
+	 
+	private String projectUUID;
+	
+	private String orgRelationUUID;
+	
+	private String expensesRejectedReason;
+	
+	private String projectStatus;
+	
+	private String billingStatus;
+	
+	private String projectMemberStartDate;
+	
+	private String projectMemberEndDate;
+	
+	private String submittedDate;
+	
+	
+	public String getSubmittedDate() {
+		return submittedDate;
+	}
 
-	private List<Map<String, String>> fileInfo;
-	
-	private List<FileInfo> uploadedFileInfo;
-	
+	public void setSubmittedDate(String submittedDate) {
+		this.submittedDate = submittedDate;
+	}
+
+	public String getProjectMemberStartDate() {
+		return projectMemberStartDate;
+	}
+
+	public void setProjectMemberStartDate(String projectMemberStartDate) {
+		this.projectMemberStartDate = projectMemberStartDate;
+	}
+
+	public String getProjectMemberEndDate() {
+		return projectMemberEndDate;
+	}
+
+	public void setProjectMemberEndDate(String projectMemberEndDate) {
+		this.projectMemberEndDate = projectMemberEndDate;
+	}
+
+	public String getBillingStatus() {
+		return billingStatus;
+	}
+
+	public void setBillingStatus(String billingStatus) {
+		this.billingStatus = billingStatus;
+	}
+
+	private BigDecimal totalsubmittedAmount;
+
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -59,62 +119,47 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 	}
 
-	public String getExpenseId() {
-		return expenseId;
+	public String getExpenseAutoId() {
+		return expenseAutoId;
 	}
 
-	public void setExpenseId(String expenseId) {
-		this.expenseId = expenseId;
+	public void setExpenseAutoId(String expenseAutoId) {
+		this.expenseAutoId = expenseAutoId;
 	}
 
 	public String getExpensePurpose() {
 		return expensePurpose;
 	}
 
-	public void setExpensePurpose(String purpose) {
-		this.expensePurpose = purpose;
+	public void setExpensePurpose(String expensePurpose) {
+		this.expensePurpose = expensePurpose;
 	}
 
-	public float getTotalAmount() {
-		return totalAmount;
+	
+	public Long getProjectId() {
+		return projectId;
 	}
 
-	public void setTotalAmount(float totalAmount) {
-		this.totalAmount = totalAmount;
+	public void setProjectId(long projectId) {
+		this.projectId = projectId;
 	}
 
-	/*public String getClientName() {
-		return clientName;
+	public String getProjectName() {
+		return projectName;
 	}
 
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
-	}*/
-
-
-	public String getNoOfExpenses() {
-		return noOfExpenses;
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+	
+	public Long getMasterCandidateId() {
+		return masterCandidateId;
 	}
 
-	public void setNoOfExpenses(String noOfExpenses) {
-		this.noOfExpenses = noOfExpenses;
+	public void setMasterCandidateId(Long masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
 	}
 
-	public Submission_Status getExpenseStatus() {
-		return expenseStatus;
-	}
-
-	public void setExpenseStatus(Submission_Status expenseStatus) {
-		this.expenseStatus = expenseStatus;
-	}
-
-	public List<ExpensesEntriesDTO> getExpensesEntries() {
-		return expensesEntries;
-	}
-
-	public void setExpensesEntries(List<ExpensesEntriesDTO> expensesEntries) {
-		this.expensesEntries = expensesEntries;
-	}
 
 	public Long getProjectMemberId() {
 		return projectMemberId;
@@ -124,7 +169,57 @@ private static final long serialVersionUID = 1L;
 		this.projectMemberId = projectMemberId;
 	}
 
-	/*public String getStartDate() {
+	public String getClientName() {
+		return clientName;
+	}
+
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
+
+	
+
+	public String getNoOfExpenses() {
+		return noOfExpenses;
+	}
+
+	public void setNoOfExpenses(String noOfExpenses) {
+		this.noOfExpenses = noOfExpenses;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getExpenseStatus() {
+		return expenseStatus;
+	}
+
+	public void setExpenseStatus(String expenseStatus) {
+		this.expenseStatus = expenseStatus;
+	}
+
+	public String getCombinedSubmissionStatus() {
+		return combinedSubmissionStatus;
+	}
+
+	public void setCombinedSubmissionStatus(String combinedSubmissionStatus) {
+		this.combinedSubmissionStatus = combinedSubmissionStatus;
+	}
+
+	public List<ExpensesEntriesDTO> getExpenseEntry() {
+		return expenseEntry;
+	}
+
+	public void setExpenseEntry(List<ExpensesEntriesDTO> expenseEntry) {
+		this.expenseEntry = expenseEntry;
+	}
+
+	public String getStartDate() {
 		return startDate;
 	}
 
@@ -138,17 +233,17 @@ private static final long serialVersionUID = 1L;
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
-	}*/
-
-	public Submission_Status getCombinedSubmissionStatus() {
-		return combinedSubmissionStatus;
 	}
 
-	public void setCombinedSubmissionStatus(Submission_Status combinedSubmissionStatus) {
-		this.combinedSubmissionStatus = combinedSubmissionStatus;
+	public String getCreatedBy() {
+		return createdBy;
 	}
 
-	public boolean getSahApproved() {
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public boolean isSahApproved() {
 		return sahApproved;
 	}
 
@@ -156,87 +251,7 @@ private static final long serialVersionUID = 1L;
 		this.sahApproved = sahApproved;
 	}
 
-	public String getProjectName() {
-		return projectName;
-	}
 
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	public String getExpCreatedBy() {
-		return expCreatedBy;
-	}
-
-	public void setExpCreatedBy(String expCreatedBy) {
-		this.expCreatedBy = expCreatedBy;
-	}
-
-	/*public BigDecimal getTotalAmontRoundOffValue()
-	{
-		return totalAmontRoundOffValue;
-	}
-
-	public void setTotalAmontRoundOffValue(BigDecimal totalAmontRoundOffValue)
-	{
-		this.totalAmontRoundOffValue = totalAmontRoundOffValue;
-	}*/
-
-	public String getStaticPath() {
-		return staticPath;
-	}
-
-	public void setStaticPath(String staticPath) {
-		this.staticPath = staticPath;
-	}
-
-	public List<Map<String, String>> getFileInfo() {
-		return fileInfo;
-	}
-
-	public void setFileInfo(List<Map<String, String>> fileInfo) {
-		this.fileInfo = fileInfo;
-	}
-
-	public List<FileInfo> getUploadedFileInfo() {
-		return uploadedFileInfo;
-	}
-
-	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
-		this.uploadedFileInfo = uploadedFileInfo;
-	}
-
-	public String getExpenseAutoId() {
-		return ExpenseAutoId;
-	}
-
-	public void setExpenseAutoId(String expenseAutoId) {
-		ExpenseAutoId = expenseAutoId;
-	}
-
-	public String getClientNameExpense() {
-		return clientNameExpense;
-	}
-
-	public void setClientNameExpense(String clientNameExpense) {
-		this.clientNameExpense = clientNameExpense;
-	}
-
-	public String getStartDateExpense() {
-		return startDateExpense;
-	}
-
-	public void setStartDateExpense(String startDateExpense) {
-		this.startDateExpense = startDateExpense;
-	}
-
-	public String getEndDateExpense() {
-		return endDateExpense;
-	}
-
-	public void setEndDateExpense(String endDateExpense) {
-		this.endDateExpense = endDateExpense;
-	}
 
 	public BigDecimal getExpenseAmountDivId() {
 		return expenseAmountDivId;
@@ -245,9 +260,79 @@ private static final long serialVersionUID = 1L;
 	public void setExpenseAmountDivId(BigDecimal expenseAmountDivId) {
 		this.expenseAmountDivId = expenseAmountDivId;
 	}
-	
-	
-	
-	
-	
+
+	public String getProjectMemberName() {
+		return projectMemberName;
+	}
+
+	public void setProjectMemberName(String projectMemberName) {
+		this.projectMemberName = projectMemberName;
+	}
+
+	/*public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
+	}
+*/
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public List<Long> getRemovedDocumentIds() {
+		return removedDocumentIds;
+	}
+
+	public void setRemovedDocumentIds(List<Long> removedDocumentIds) {
+		this.removedDocumentIds = removedDocumentIds;
+	}
+
+	public String getProjectClientUUID()
+	{
+		return projectClientUUID;
+	}
+
+	public void setProjectClientUUID(String projectClientUUID)
+	{
+		this.projectClientUUID = projectClientUUID;
+	}
+
+	public String getProjectUUID()
+	{
+		return projectUUID;
+	}
+
+	public void setProjectUUID(String projectUUID)
+	{
+		this.projectUUID = projectUUID;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getExpensesRejectedReason() {
+		return expensesRejectedReason;
+	}
+	public void setExpensesRejectedReason(String expensesRejectedReason) {
+		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
+
 }

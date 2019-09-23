@@ -8,59 +8,15 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style type="text/css">
-.viewTemplate .sjfb-field{
-margin: 0;
-}
-.positionRelative {
-position: relative;
-}
-.container.container-wraper{
-	padding: 15px;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	background: #fafafa;
-	border-radius:5px;
-	margin-top: 25px;
-}
-.container-wraper h3 {
-	margin: 0; margin-bottom: 10px; font-size: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field{
-	display: inline-flex; margin-bottom: 15px; padding: 0 15px;
-}
-.container-wraper .viewTemplate .sjfb-field label {
-	font-size:14px !important; font-weight: 600; max-width: inherit; padding-right: 15px; width: 25%;
-}
-.choices, .form-control {
- width: 75%;
- }
-/* .container-wraper viewTemplate .sjfb-field{
-	width: 48.5%;
-} */
-.ml{
-margin-left: 15px;
-}
+.choices, .form-control { width: 75%; }
 .choices label {
 width: auto !important; padding-right: 15px;
 }
 .choices input[type="checkbox"], .choices input[type="radio"]{
  margin-right: 10px; position: relative; top: 1px;
 }
-.stickyfooter {
-	position: absolute; bottom: 0; width: 100%; height: 40px; line-height: 40px; background-color: #f5f5f5; padding:0;
-}
-.viewTemplate .sjfb-field, choices choices-radio {
-    width: 50%;
- }
- /* .viewTemplate textarea + p.jquery_form_error_message{
-top:70px !important;
-} */
-.required-field {
-position: relative;
-}
-p.jquery_form_error_message {
-	width: 100%; position: absolute; bottom: -15px; left: 24%;
-    }
+.required-field { position: relative; }
+p.jquery_form_error_message { width: 100%; position: absolute; bottom: -15px; left: 24%; }
 </style>
 
 <script type="text/javascript">
@@ -68,7 +24,7 @@ window.onload = function () {
 	var requirementInterviewid = '${requirementInterviewid}';
 	var previousInterviewId = '${afterRequirementInterviewid}';
 	var feedbackStatus = '${feedbackStatus}';
-		if(parseInt(requirementInterviewid) == parseInt(previousInterviewId)){
+		if(requirementInterviewid == previousInterviewId){
 		if(feedbackStatus == "N"){
 			viewTemplateNo();
 		}else{
@@ -177,7 +133,7 @@ function saveFeedbackNo(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
+			url :sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 			success : function(data) {
 				$("#cancelFeedbackDiv").hide();
 				viewTemplateNo();
@@ -200,13 +156,14 @@ $('body').on('blur', '#cancelFunction_form', function() {
 		var templateId = '${templateId}';
 		var sourceleadUrl ='${sourceleadUrl}';
 		var requirementInterviewid = '${requirementInterviewid}';
+		var orgLocations = '${orgLocations}';
 		$(".project_inn_mask").hide();
 		$(".remove_user_pop").hide();
 		$("#cancelFeedbackDiv").hide();
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 		        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -231,6 +188,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result +  '&nbsp &nbsp Selected for Interview :- &nbsp;'+interviewStatus;
 				     result = result + ' </div>';
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/app/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 
@@ -282,7 +240,7 @@ function interviewTemplateForm(){
 		
 		result = result + '<form id="interviewTemplate_form" name="interviewTemplate_form" enctype="multipart/form-data" method="post">';
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
+		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
@@ -303,17 +261,15 @@ function interviewTemplateForm(){
 }
 </script>
 
+
 <script>
 function saveInterviewTemplate(){
 	if ($('#interviewTemplate_form').validate(false, validationSettings)){ 
-	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var templateId = '${templateId}';
 	  	  var requirementInterviewid = '${requirementInterviewid}';
 	      var sourceleadUrl ='${sourceleadUrl}';
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
-	      var con1 = JSON.stringify(frm);
-	      con1= con1.replace(/[{}]/g, "");
-	      var jsonData = encodeURIComponent(con1);
+	      var jsonData = JSON.stringify(frm);
 	      var form = $('#interviewTemplate_form')[0];
 	      var formData = new FormData(form); 
 	      //Loop through fields and save field data to array
@@ -365,19 +321,15 @@ function saveInterviewTemplate(){
 	            });
 	       });
 	      var con = JSON.stringify(fields);
-	      con = encodeURIComponent(con);
-	      
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	      
+	      formData.append("jsonStringData",con);
+	      formData.append("jsonData",jsonData); 
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  	     $.ajax({
-		    	type: "GET",
+		    	type: "POST",
 		    	data: formData,
-	 	        contentType : 'application/json; charset=utf-8',
-	 	        enctype: 'multipart/form-data',
-		        processData: false,
-		        contentType:false,
-	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
+		    	  processData: false,
+	    	        contentType:false,
+	 	    	url : sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)
@@ -425,8 +377,8 @@ $('body').on('blur', '#interviewTemplate_form', function() {
 
 <section class="content-wraper clearfix">
   <!-- Header Area -->
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative interFeedback" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container container-wraper positionRelative interFeedback" style="display: none;"> </div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper containerWrraper positionRelative interFeedback" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container container-wraper containerWrraper positionRelative interFeedback" style="display: none;"> </div>
    <div id="viewInterviewTemplateList" class="container interFeedback"></div>
    <div id="viewInterviewTemplateNo" class="container interFeedback"></div>
  </section>  
@@ -440,7 +392,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
   
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url:"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -601,7 +553,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	 var submissionDetails = "";
@@ -627,11 +579,11 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		    	     result = result + '<div class="clearfix row">';
 		  			 result = result + '<div class="release-jobs submissionDetails">';
 				     result = result + '<div class="clearfix sub-details">';
-				     result = result + ' <h2 class="active clearfix intfd_dashbord"><span class="col-md-3">Interview Feedback Details</span> <span class="col-md-4">Req. Name:<lable class="paddingLeft" title="'+requirementName+'">'+requirementName+'</label></span><span class="col-md-4">Appli. Name:<lable class="paddingLeft" title="'+applicantName+'">'+applicantName+'</label></span></h2>';
+				     result = result + ' <h2 class="active clearfix intfd_dashbord"><span class="col-md-3">Interview Feedback Details</span> <span class="col-md-4">Job Name:<lable class="paddingLeft" title="'+requirementName+'">'+requirementName+'</label></span><span class="col-md-4">Appli. Name:<lable class="paddingLeft" title="'+applicantName+'">'+applicantName+'</label></span></h2>';
 				     result = result + ' <div class="content clearfix">'; 
 				     result = result + submissionDetails;
 				     result = result + ' </div>';
-	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
+	       	         result = result +"<h5><a class='btn btn-primary btn-sm' href='<c:url value='/app/dashboard/"+orgLocations+"'/>''> <span title='Back'><i class='fa fa-angle-double-left paddingRight'></i>Back</span> </a> </h5>";
 				     result = result + ' </div>';
 	                 result = result + ' </div>';
                      result = result + ' </div>'; 

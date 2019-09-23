@@ -54,7 +54,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId and bisUser.userId.id IS NULL";
-		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(bisUserList != null && bisUserList.size() >0)
 		{
 			return bisUserList;
@@ -66,7 +66,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public BisUserMapping getBisUserById(Long importedUserId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<BisUserMapping> users = session.createQuery("from BisUserMapping where id=:id" ).setCacheable(true).setLong( "id", importedUserId ).setCacheable(true).list();
+		List<BisUserMapping> users = session.createQuery("from BisUserMapping where id=:id" ).setLong( "id", importedUserId ).list();
 		logger.debug("getUserById end");
 		if (users.size() > 0) {
 			return users.get(0);
@@ -81,7 +81,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId and bisUser.userId.id <> NULL";
-		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(bisUserList != null && bisUserList.size() >0)
 		{
 			return bisUserList;
@@ -135,12 +135,12 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		if (employeeListDTO != null && employeeListDTO.getLength() > 0) {
 			queryObj.setFirstResult(employeeListDTO.getStart());
 			queryObj.setMaxResults(employeeListDTO.getLength());
-			queryObj.setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+			queryObj.setLong("orgLocationId", orgLocationId).list();
 		}
 		employeesList = queryObj.list();
 		int count = 0;
 		int filteredCount = 0;
-		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<Long> countlist = session.createQuery("select count(*) " + countQuery).setLong("orgLocationId", orgLocationId).list();
 		if(countlist != null && !countlist.isEmpty()) {
 			count = countlist.iterator().next().intValue();
 		}
@@ -163,7 +163,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		/*Session session = this.sessionFactory.getCurrentSession();
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId";
-		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 		if(bisUserList != null && bisUserList.size() >0)
 		{
 			return bisUserList;
@@ -177,7 +177,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<BisUserMapping> bisUserList = null;
 		String query = "from BisUserMapping bisUser  left join fetch bisUser.orgLocationId where bisUser.orgLocationId.id =:orgLocationId and bisUser.empId = :empId";
-		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).setCacheable(true).list();
+		bisUserList = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setLong("empId", empId).list();
 		if(bisUserList != null && bisUserList.size() >0)
 		{
 			return bisUserList;
@@ -191,7 +191,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(bis.version)  FROM BisUserMapping bis where bis.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();
@@ -205,7 +205,7 @@ public class BisUserMappingDaoImpl implements BisUserMappingDao {
 	{
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(ch.version)  FROM Checks ch where ch.orgLocationId.id =:orgLocationId";
-		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).setCacheable(true).list();
+		List<Integer> version = session.createQuery(query).setLong("orgLocationId", locationId).list();
 		Integer count = 0;
 		if(version != null && !version.isEmpty() && version.get(0) != null){
 				count = version.get(0).intValue();

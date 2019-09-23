@@ -27,7 +27,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "TIMESHEET_HISTORY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="timeSheetHistory")
 public class TimesheetHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -37,18 +36,18 @@ public class TimesheetHistory implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TIMESHEET_SUBMISSION_ID") 
 	private TimesheetSubmissions timesheetSubmissions;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TIMESHEET_ENTRIES_ID") 
 	private TimesheetEntries timesheetEntries;
 
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_TASK")
 	private ProjectTasks projectTask;
 	

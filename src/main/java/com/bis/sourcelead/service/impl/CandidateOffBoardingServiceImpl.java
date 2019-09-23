@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.nio.file.StandardWatchEventKinds;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,8 @@ import com.bis.sourcelead.dao.CandidateOffBoardingDao;
 import com.bis.sourcelead.dao.OffboardTasksDao;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.CandidateOffBoardingDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -37,6 +41,8 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.web.LoginSessionController;
+
+import cucumber.deps.difflib.StringUtills;
 
 @Service
 public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingService{
@@ -55,6 +61,10 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
+	
+
+	@Value("${sourceleadLoginUrl}")
+	private String sourceleadLoginUrl;
 	
 	@Autowired
 	UserDao userDao;
@@ -80,7 +90,7 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 	}
 
 	@Override
-	public CandidateOffBoarding saveOffBoardingCandidatesDetails(JSONObject jsonObj, OrgLocations orgLocations, User user)
+	public CandidateOffBoarding saveOffBoardingCandidatesDetails(CandidateOffBoardingDTO candidateOffBoardingDTO, OrgLocations orgLocations, User user)
 			throws Exception {
 		
 		CandidateOffBoarding candidateOffBoarding = null;
@@ -88,8 +98,8 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		// date format
 		//SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		
-		if(jsonObj.has("savedoffboardId") && !isNullOrEmpty(jsonObj.getString("savedoffboardId"))){
-			candidateOffBoarding = candidateOffBoardingDao.getCandidateOffBoardingById(Long.valueOf(jsonObj.getString("savedoffboardId")));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getSavedoffboardId())){
+			candidateOffBoarding = candidateOffBoardingDao.getCandidateOffBoardingById(Long.valueOf(candidateOffBoardingDTO.getSavedoffboardId()));
 		}else{
 			candidateOffBoarding = new CandidateOffBoarding();
 			candidateOffBoarding.setOffboardUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -97,70 +107,66 @@ public class CandidateOffBoardingServiceImpl implements CandidateOffBoardingServ
 		}
 		
 		User offboardUser = new User();
-		offboardUser.setId(Long.valueOf(jsonObj.getString("offboardUser")));
+		offboardUser.setId(Long.valueOf(candidateOffBoardingDTO.getOffboardUser()));
 		candidateOffBoarding.setUserId(offboardUser);
 		
-		candidateOffBoarding.setFirstName(jsonObj.getString("firstName"));
+		candidateOffBoarding.setFirstName(candidateOffBoardingDTO.getFirstName());
 		
-		if(jsonObj.has("lastName") && !isNullOrEmpty(jsonObj.getString("lastName"))){
-			candidateOffBoarding.setLastName(jsonObj.getString("lastName"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getLastName())){
+			candidateOffBoarding.setLastName(candidateOffBoardingDTO.getLastName());
 		}else{
 			candidateOffBoarding.setLastName(null);
 		}
 		
-		if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
-			candidateOffBoarding.setMobileNumber(jsonObj.getString("mobileNumber"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getMobileNumber())){
+			candidateOffBoarding.setMobileNumber(candidateOffBoardingDTO.getMobileNumber());
 		}
 		
-		if(jsonObj.has("email") && !isNullOrEmpty(jsonObj.getString("email"))){
-			candidateOffBoarding.setEmail(jsonObj.getString("email"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getEmail())){
+			candidateOffBoarding.setEmail(candidateOffBoardingDTO.getEmail());
 		}
 		
-		if(jsonObj.has("dateOfJoin") && !isNullOrEmpty(jsonObj.getString("dateOfJoin"))){
-			candidateOffBoarding.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("dateOfJoin")));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getDateOfJoin())){
+			candidateOffBoarding.setDateOfJoin(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),candidateOffBoardingDTO.getDateOfJoin()));
 		}
 		
-		if(jsonObj.has("role") && !isNullOrEmpty(jsonObj.getString("role"))){
-			candidateOffBoarding.setRole(jsonObj.getString("role"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getRole())){
+			candidateOffBoarding.setRole(candidateOffBoardingDTO.getRole());
 		}
 		
-		if(jsonObj.has("employmentType") && !isNullOrEmpty(jsonObj.getString("employmentType"))){
-			candidateOffBoarding.setEmploymentType(jsonObj.getString("employmentType"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getEmploymentType())){
+			candidateOffBoarding.setEmploymentType(candidateOffBoardingDTO.getEmploymentType());
 		}
 		
 		
-		if(jsonObj.has("endDate") && !isNullOrEmpty(jsonObj.getString("endDate"))){
-			candidateOffBoarding.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("endDate")));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getEndDate())){
+			candidateOffBoarding.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),candidateOffBoardingDTO.getEndDate()));
 		}
 		
-		if(jsonObj.has("reason") && !isNullOrEmpty(jsonObj.getString("reason"))){
-			candidateOffBoarding.setReason(jsonObj.getString("reason"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getReason())){
+			candidateOffBoarding.setReason(candidateOffBoardingDTO.getReason());
 		}
 		
-		if(jsonObj.has("explanation") && !isNullOrEmpty(jsonObj.getString("explanation"))){
-			candidateOffBoarding.setExplanation(jsonObj.getString("explanation"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getExplanation())){
+			candidateOffBoarding.setExplanation(candidateOffBoardingDTO.getExplanation());
 		}
 		
-		if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod"))){
-			candidateOffBoarding.setNoticePeriod(jsonObj.getString("noticePeriod"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getNoticePeriod())){
+			candidateOffBoarding.setNoticePeriod(candidateOffBoardingDTO.getNoticePeriod());
 		}
 		
-		if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod")) && !jsonObj.getString("noticePeriod").equalsIgnoreCase("Relieve Immediately")){
-			candidateOffBoarding.setHaveToWorkInNoticePeriod(jsonObj.getString("workInNoticePeriod"));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getNoticePeriod()) && !candidateOffBoardingDTO.getNoticePeriod().equalsIgnoreCase("Relieve Immediately")){
+			candidateOffBoarding.setHaveToWorkInNoticePeriod(candidateOffBoardingDTO.getWorkInNoticePeriod());
 		}else{
 			candidateOffBoarding.setHaveToWorkInNoticePeriod(null);
 		}
 		
-		if(jsonObj.has("effectiveDate") && !isNullOrEmpty(jsonObj.getString("effectiveDate"))){
-			candidateOffBoarding.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("effectiveDate")));
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getEffectiveDate())){
+			candidateOffBoarding.setEffectiveDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),candidateOffBoardingDTO.getEffectiveDate()));
 		}
 		
-		if(jsonObj.has("offboardingTemplate") && !isNullOrEmpty(jsonObj.getString("offboardingTemplate"))){
-			
-			String templateIds = jsonObj.getString("offboardingTemplate");
-			templateIds = templateIds.replaceAll("\\[", "").replaceAll("\\]","");
-			templateIds = templateIds.replaceAll("\"", "");
-			candidateOffBoarding.setOffboardTemplateId(templateIds);
+		if(StringUtils.isNotBlank(candidateOffBoardingDTO.getOffboardingTemplate())){
+			candidateOffBoarding.setOffboardTemplateId(candidateOffBoardingDTO.getOffboardingTemplate());
 		}else{
 			candidateOffBoarding.setOffboardTemplateId(null);
 		}
@@ -277,42 +283,24 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
          else{
         	 globalVarsMap.put("applicantName", candidateOffBoarding.getFirstName());
          }
-         globalVarsMap.put("companyName", orgLocations.getOrg().getOrgName());
+         globalVarsMap.put("companyName", orgLocations.getOrgLocationName());
         
          StringBuilder linkBuild = new StringBuilder();
-         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("/").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-        
-                
-        
-         InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
         
          //getting the current EmailScenario by EmailScenario unique name and entity type
-         EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_EMAIL);
          EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
         
-         //covert subject,body and signature
-         String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-         String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-         String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-         String url = sourceleadUrl;
-        
-         String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+         String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
          notificationScenario.setBody(notificationbody);
-
         
         // OrgLocations vendorOrgLoc = requirement.getSpocId().getVendorLocationId();
 
-        
-         //construct HTML template using required data
-         String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-         emailMessage.setSubject(subject);
-         emailMessage.setMessageBody(emailTemplate);
-        
          //calling the sendEmail method of emailScenerioUtil
-         emailScenerioUtil.sendEmail(emailMessage,orgLocations.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+         commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocations.getOrg(),orgLocations,Constants.OFFBOARDINGPROCESSAPPLICANTTERMINATION,new ArrayList<EmailAttachment>());
          String actionLink="";
-       emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario);
+       emailScenerioUtil.sendNotification(actionLink, loginUser, candidateOffBoarding.getUserId(), orgLocations, notificationScenario,new HashMap<String,String>());
 
 
     }
@@ -448,53 +436,52 @@ public void mailToOffboardCandidate(CandidateOffBoarding candidateOffBoarding, U
 		 }
 		 
 		 
-		 //setting the Recipient information
-		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 		
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
-		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_EMAIL,Constants.ENTITY_TYPE_EMAIL);
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.TASK_MECHANISM_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 
-		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
-		 String body = emailScenerioUtil.buildTempBody(emailScenario.getBody(),globalVarsMap);
-		 String signature = emailScenerioUtil.buildSignature(emailScenario.getSignature(),globalVarsMap);
-		 String url = sourceleadUrl;
 		 
-		 String notificationbody = emailScenerioUtil.buildTempBody(notificationScenario.getBody(),globalVarsMap);
+		 String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(),globalVarsMap,notificationScenario);
 		 notificationScenario.setBody(notificationbody);
 		 
-		 //construct HTML template using required data
-		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, orgLocations.getOrg(),orgLocations);
-		 emailMessage.setSubject(subject);
-		 emailMessage.setMessageBody(emailTemplate);
 		 
 		 //calling the Email 
 		 
 		 if(!isNullOrEmpty(task.getAlertType())){
 			 if(task.getAlertType().equalsIgnoreCase("Email")){
-				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId(),Constants.TASK_MECHANISM_EMAIL,new ArrayList<EmailAttachment>());
 			 }
 			 //calling the Notification 
 			 if(task.getAlertType().equalsIgnoreCase("Notification")){
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(), task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 			 //calling the Email  and notification 
 			 if(task.getAlertType().equalsIgnoreCase("Email,Notification")){
-				 emailScenerioUtil.sendEmail(emailMessage,task.getOwnerOrglocationId().getId(),iAdressArray,new ArrayList<EmailAttachment>());
+				 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,task.getOwnerOrglocationId().getOrg(),task.getOwnerOrglocationId(),Constants.TASK_MECHANISM_EMAIL,new ArrayList<EmailAttachment>());
 				 String actionLink="";
-				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario);
+				 emailScenerioUtil.sendNotification(actionLink, task.getTaskOwnerId(),task.getAssignedUserId(),task.getOwnerOrglocationId(), notificationScenario,new HashMap<String,String>());
 			 }
 		 }
 
 }
 
+	@Override
+	public List<CandidateOffBoarding> candidateOffboringDelayMail(){
+		return candidateOffBoardingDao.candidateOffboringDelayMail();
+	}
 
 	@Override
 	public CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser, Long orgLocationId)
 			throws Exception {
 		return candidateOffBoardingDao.getCandidateOffBoardingByUserIdAndLocationId(offboardingUser, orgLocationId);
+	}
+
+
+	@Override
+	public ResponseList<CandidateOffBoardingDTO> getCandidateOffBoardingList(
+			CandidateOffBoardingDTO candidateOffBoardingDTO, OrgLocations orgLocations) throws Exception {
+		return candidateOffBoardingDao.getCandidateOffBoardingList(candidateOffBoardingDTO, orgLocations);
 	}
 
 }

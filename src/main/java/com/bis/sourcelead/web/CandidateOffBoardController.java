@@ -35,6 +35,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateOffBoardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOffBoardController.class);
@@ -193,9 +194,13 @@ public class CandidateOffBoardController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
- 			
  			model.setViewName("offboard/offboardingTemplatesList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "OffboardCreateMsg");
+ 			if(!isNullOrEmpty(msg)){
+ 				model.addObject("msg", msg);
+ 				SourceLeadSessionManager.removeSessionAttribute(request, "OffboardCreateMsg");
+ 			}
  			return model;
  	}
 	
@@ -229,7 +234,7 @@ public class CandidateOffBoardController {
  			return model;
  	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
+//	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
 	@RequestMapping(value = "/viewOffboardCandidateDetails")
  	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
  			HttpServletRequest request) throws Exception {

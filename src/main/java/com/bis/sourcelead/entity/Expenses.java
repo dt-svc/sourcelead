@@ -1,13 +1,13 @@
 package com.bis.sourcelead.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,19 +23,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import com.bis.sourcelead.enums.Submission_Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ibm.icu.math.BigDecimal;
 
 @Entity
-@Table(name = "EXPENSES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "Expenses")
+@Table(name = "EXPENSES")
 public class Expenses implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -44,14 +38,16 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="LOCATION_ID", nullable=false ) 
 	@JsonBackReference
     private OrgLocations orgLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	@Column(name = "EXPENSES_LOCATION_ID") 
+    private Long expensesLocationId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_MEMBERS_ID", nullable=false)
 	@JsonBackReference
 	private ProjectMembers projectMembers;
@@ -63,7 +59,10 @@ private static final long serialVersionUID = 1L;
 	private String purpose;
 	
 	@Column(name = "TOTAL_AMOUNT")
-	private float totalAmount;
+	private BigDecimal totalAmount;
+	
+	@Column(name = "Total_Submitted_Amount")
+	private BigDecimal totalsubmittedAmount;
 	
 	@Column(name = "CLIENT_NAME")
 	private String clientName;
@@ -95,6 +94,10 @@ private static final long serialVersionUID = 1L;
 	@JsonBackReference
 	private Date updatedDate;
 	
+	@Column(name = "SUBMITTED_DATE")
+	@JsonBackReference
+	private Date submittedDate;
+	
 	@Column(name = "UPDATED_BY")
 	 @JsonBackReference
 	private String updatedBy;
@@ -109,17 +112,31 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "BILLING_PAYABLE_STATUS")
 	private String billingPayableStatus;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy="expensesId",cascade = CascadeType.ALL)
-	 @JsonBackReference
-//    @Fetch(FetchMode.SELECT)
+	@Column(name = "BILLING_STATUS")
+	private String billingStatus;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PROJECT_ID", nullable=false)
+	@JsonBackReference
+	private Projects projects;
+	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="MASTER_CANDIDATE_ID", nullable=false) 
+	@JsonBackReference
+    private MasterCandidate masterCandidateId;
+	
+	
+	@OneToMany(mappedBy="expensesId")
+	@JsonBackReference
+//  @Fetch(FetchMode.SELECT)
     private Set<ExpensesEntries> expensesEntries;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy="expenseId",cascade = CascadeType.ALL)
-	 @JsonBackReference
+	
+	@OneToMany(mappedBy="expenseId")
+	@JsonBackReference
    // @Fetch(FetchMode.SELECT)
-    private Set<ExpensesApproverHierarchy> approverHierarchyList;
+    private List<ExpensesApproverHierarchy> approverHierarchyList;
 
 	@Transient
 	@JsonProperty
@@ -134,9 +151,15 @@ private static final long serialVersionUID = 1L;
 		
 	@Transient
 	private List<User> projectManagerUserList;
+	
+	@Transient
+	private List<User> projectEmp;
   
 	@Transient
 	private String employementType;
+	
+	@Transient
+	private String expenseAutoId;
 	
 	@Transient
 	private String userName;
@@ -154,11 +177,32 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	@JsonProperty
 	private String dateFrequency;
+	
+	@Transient
+	@JsonProperty
+	private String locationsCode;
     
 
 	@Transient
 	@JsonProperty
 	private BigDecimal totalAmountRoundoffValue;
+	
+
+	@Transient
+	@JsonProperty
+	private String expenseLocationCode;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+	
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
+	
+	@Transient
+	@JsonProperty
+	private String expensesRejectedReason;
 	
 	public Long getId() {
 		return id;
@@ -200,11 +244,13 @@ private static final long serialVersionUID = 1L;
 		this.purpose = purpose;
 	}
 
-	public float getTotalAmount() {
+
+	
+	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(float totalAmount) {
+	public void setTotalAmount(BigDecimal totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -289,11 +335,11 @@ private static final long serialVersionUID = 1L;
 	{
 		this.expensesEntries = expensesEntries;
 	}
-	public Set<ExpensesApproverHierarchy> getApproverHierarchyList() {
+	public List<ExpensesApproverHierarchy> getApproverHierarchyList() {
 		return approverHierarchyList;
 	}
 
-	public void setApproverHierarchyList(Set<ExpensesApproverHierarchy> approverHierarchyList) {
+	public void setApproverHierarchyList(List<ExpensesApproverHierarchy> approverHierarchyList) {
 		this.approverHierarchyList = approverHierarchyList;
 	}
 
@@ -305,6 +351,17 @@ private static final long serialVersionUID = 1L;
 		this.expenseStatus = expenseStatus;
 	}
 	
+
+	public String getLocationsCode() {
+		if(orgLocationId != null){
+			locationsCode = orgLocationId.getLocationCode();
+		}
+		return locationsCode;
+	}
+
+	public void setLocationsCode(String locationsCode) {
+		this.locationsCode = locationsCode;
+	}
 
 	public String getStartDateStr() {
 		if(startDate != null){
@@ -420,6 +477,108 @@ private static final long serialVersionUID = 1L;
 	}
 
 
+	public Projects getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Projects projects) {
+		this.projects = projects;
+	}
+
+	public MasterCandidate getMasterCandidateId() {
+		return masterCandidateId;
+	}
+
+	public void setMasterCandidateId(MasterCandidate masterCandidateId) {
+		this.masterCandidateId = masterCandidateId;
+	}
+
+	public String getExpenseLocationCode() {
+		return expenseLocationCode;
+	}
+
+	public void setExpenseLocationCode(String expenseLocationCode) {
+		this.expenseLocationCode = expenseLocationCode;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getExpensesRejectedReason() {
+		return expensesRejectedReason;
+	}
+
+	public void setExpensesRejectedReason(String expensesRejectedReason) {
+		this.expensesRejectedReason = expensesRejectedReason;
+	}
+
+	public Long getExpensesLocationId() {
+		return expensesLocationId;
+	}
+
+	public void setExpensesLocationId(Long expensesLocationId) {
+		this.expensesLocationId = expensesLocationId;
+	}
+
+	public String getExpenseAutoId() {
+		return expenseAutoId;
+	}
+
+	public void setExpenseAutoId(String expenseAutoId) {
+		this.expenseAutoId = expenseAutoId;
+	}
+
+	public BigDecimal getTotalsubmittedAmount() {
+		return totalsubmittedAmount;
+	}
+
+	public void setTotalsubmittedAmount(BigDecimal totalsubmittedAmount) {
+		this.totalsubmittedAmount = totalsubmittedAmount;
+	}
+
+	public String getBillingStatus() {
+		return billingStatus;
+	}
+
+	public void setBillingStatus(String billingStatus) {
+		this.billingStatus = billingStatus;
+	}
+
+	public Date getSubmittedDate() {
+		return submittedDate;
+	}
+
+	public void setSubmittedDate(Date submittedDate) {
+		this.submittedDate = submittedDate;
+	}
+
+	public List<User> getProjectEmp() {
+		return projectEmp;
+	}
+
+	public void setProjectEmp(List<User> projectEmp) {
+		this.projectEmp = projectEmp;
+	}
+	
+	
+	
 
 //	public List<ExpensesEntries> getExpenseEntriesList() {
 //		return expenseEntriesList;

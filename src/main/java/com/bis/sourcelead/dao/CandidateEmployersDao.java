@@ -18,5 +18,11 @@ public interface CandidateEmployersDao {
 	
 	CandidateEmployers getCandidateCurrentEmployer(Long candidateId, Long orgLocationId) throws Exception;
 	
+	CandidateEmployers getCandidateEmployerById(Long candidateEmployersId) throws Exception;
+	
 	CandidateEmployers getCandidateLastCompanyEmployer(Long candidateId, Long orgLocationId) throws Exception;
+	
+	public List<CandidateEmployers> getCandidatesEmployersListByCandidateIdAndOrgLocationIDImmigration(Long candidateId, String searchVal) throws Exception;
+	
+	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId);
 }

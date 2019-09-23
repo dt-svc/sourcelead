@@ -23,7 +23,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -53,6 +53,7 @@
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
+											$("#emptyPipelinelist").val(1);
 											'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_APPLICANT\')">';
 											result = result
 													+ '         <td><div onclick="applicantQuickViewProfile('
@@ -109,7 +110,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-												+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
+												+ '         <td><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
@@ -418,7 +419,7 @@
 											var result = "";
 											result = result
 													+ '<td><div class="tblwidth-150"><span>'
-													+ opt.submissionStatus
+													+ opt.submissionDisplayStatus
 													+ '</span>';
 											if (opt.rejectedReason != null
 													&& opt.rejectedReason != ''
@@ -430,24 +431,10 @@
 														+ "<font color='red'>Category</font>: "
 														+ opt.rejectedCategoryType
 														+ '<br>'
+														+ "<font>Reason</font> : "
 														+ opt.rejectedReason
 														+ '</p></div></i></div></td>';
 											}
-
-											if (opt.rejectedReason != null
-													&& opt.rejectedReason != ''
-													&& opt.rejectedReason != 'undefined'
-													&& opt.rejectedCategoryType == null) {
-												result = result
-														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
-														+ "<font color='red'>Category</font>: "
-														+ "Bad Fit"
-														+ '<br>'
-														+ "Reason: "
-														+ opt.rejectedReason
-														+ '</p></div></i></div></td>';
-											}
-
 											if (opt.rejectedReason != null
 													&& opt.rejectedReason != ''
 													&& opt.rejectedReason != 'undefined'
@@ -480,7 +467,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementsPagination").wrap(

@@ -47,6 +47,7 @@ import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.service.HrDeductionsService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class HrDeductionsServiceImpl implements HrDeductionsService{
@@ -98,7 +99,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 			version = getHrDeductionsVersionByLocationId(orgLocation.getId());
 			version += 1;
 			
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				
@@ -207,6 +208,7 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 									hrDeductions.setBatchNumber(jsonObj.getString("batchNumber"));
 								}
 							}
+							hrDeductions.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 							hrDeductions.setCreatedBy(user.getUserCode());
 							hrDeductions.setCreatedDate(new Date());
 							hrDeductions.setUpdatedBy(user.getUserCode());
@@ -359,6 +361,13 @@ public class HrDeductionsServiceImpl implements HrDeductionsService{
 	public int getHrDeductionsVersionByLocationId(Long locationId)
 	{
 		return hrDeductionsDao.getHrDeductionsVersionByLocationId(locationId);
+	}
+
+
+	@Override
+	public ResponseList<HrDeductions> getHrDeductionsByEmployeeId(OrgLocations orgLocation,HrDeductionsDTO hrDeductionsDTO) {
+		
+		return hrDeductionsDao.getHrDeductionsByEmployeeId(orgLocation,hrDeductionsDTO);
 	}
 
 }

@@ -10,41 +10,37 @@
 <!-- Content Area -->
 <script type="text/javascript">
 window.onload = function() { 
-	getRequirementList();
+	getDayWiseReports();
 	}
 </script>
 
-<script>
+<!-- <script>
 function getRequirementList(){
 		var sourceleadUrl ='${sourceleadUrl}';
 	    var status = "";
 	    var clients = "";
+	    var reportType = $("#reportTypeId").val();
+	    var startDate = $("#ExportStartDate").val();
+		var endDate = $("#ExportEndDate").val();
+		$("#requirementReportsDiv12").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
-	          success :function(data) {
+	          //url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&status="+status+"&clients="+clients,    
+	            url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
+	        	 success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
 	          
 	     }); 
 }
-</script>
+</script> -->
 <script>
 function prepareReportDataDiv(data){
 	var SourceLeadWeb_loginOrg= '${SourceLeadWeb_loginOrg}';
 	
 	
 	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  prepareReportDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  prepareReportDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  prepareReportDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  prepareReportDate = 'YYYY-DD-MM'; 
-	  }  
-	
+	  var prepareReportDate = getOrgDateFormat(locationList);
 	
 	var result = '';
 	result = result +  '<table id="requirementReportPagination" class="display" cellspacing="0" width="100%" >';
@@ -124,7 +120,7 @@ function prepareReportDataDiv(data){
         
         result = result + '<td>';
         if(report.totalApplicants != null && report.totalApplicants != '' && report.totalApplicants !='undefined'&& report.totalApplicants != null && report.totalApplicants != ''){
-        		result = result + "<div><span>"+report.totalApplicants+"</span></div> ";
+        		result = result + "<div class='tblminwidth-50'>"+report.totalApplicants+"</div> ";
         }
         else{
 		    	result = result + "<div><span>0</span></div>";
@@ -133,10 +129,10 @@ function prepareReportDataDiv(data){
         
         result = result + '<td>';
         if(report.postedDateStr != null && report.postedDateStr != '' && report.postedDateStr !='undefined'&& report.postedDateStr != null && report.postedDateStr != ''){
-       		 result = result + "<div><span>"+report.postedDateStr+"</span></div>";
+       		 result = result + "<div class='tblminwidth-90'>"+report.postedDateStr+"</div>";
         }
         else{
-		    	result = result + "<div><span>---</span></div>";
+		    	result = result + "<div class='tblminwidth-90'>---</div>";
 		    }
         result = result + '</td>';
         result = result + '</tr>';
@@ -144,7 +140,10 @@ function prepareReportDataDiv(data){
 	result = result + '	</tbody>';
 	result = result + '</table>';
 	  $("#requirementReportsDiv12").empty();
-    $("#requirementReportsDiv12").append(result);
+      $("#requirementReportsDiv12").append(result);
+      $("#loderDiv").empty();
+	  $("#loderDiv").removeAttr('style');
+
     requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
@@ -165,14 +164,15 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 	        ],
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
-    } );
+    });
+	$('#requirementReportPagination').wrap("<div class='width100percnt overflow_Auto'></div>");
 	$(".vendor_wrap_inn_table").find('a.buttons-excel').prop("title", "Export to Excel");
 	$(".vendor_wrap_inn_table").find('a.buttons-pdf').prop("title", "Export to PDF");
 }
@@ -182,16 +182,8 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 	$(function() {
 		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatEduUpdate = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatEduUpdate = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatEduUpdate = getJSDateFormat(locationDate);
+		  
 		$('#ExportStartDate').datepicker({
 			changeMonth: true,
 			changeYear: true, 
@@ -231,38 +223,18 @@ function toDate(selector) {
 }
 </script>
 
-<style>
-.project_tabs_inn_table.vendor_wrap_inn_table div span {
-	max-width: 150px;
-}
-</style>
-
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Reports</h2>
-		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Jobs Posted</a>
-			<div class="RePop">
-				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-<%-- 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
-				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
-				</ul>
-			</div>
-		</div>
+      <h2 class="pull-left">Posted Job Reports</h2>
+		
     </div>
-   <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Jobs Posted</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Job Posted Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
      
-      <div class="timesheet_head">
+      <div class="timesheet_head" style="min-height: 40px;">
 
 <div class="pull-left reportBtns reportcutom_Btns">
 	  <div class="reportBtn dropdown-select">
@@ -282,11 +254,11 @@ function toDate(selector) {
 	 <div class="cusShow pull-left">
 	 <span class="dashboard-datepkr">
 	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
+	 <p id="reportStartDate" class="ReError" style="display:none"></p>
 	 </span>
 	<span class="dashboard-datepkr">
 	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
+	<p id="reportEndDate" class="ReError" style="display:none"></p>
 	</span>
 	<span><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
 	</div>
@@ -338,7 +310,8 @@ function toDate(selector) {
 		</ul>
 	</div> -->
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
+  <div class="project_tabs_inn_table vendor_wrap_inn_table divspan-styles positionRelative minHeight_225">
+  <div id="loderDiv"></div>
                  <div id="requirementReportsDiv12" class="repoPositiNoCount"></div>
                 </div>      
 </div>
@@ -566,12 +539,15 @@ $(".reminder").click(function(){
 function getDayWiseReports(){
 	$('#reportStartDate').empty();
 	$('#reportEndDate').empty(); 
+	document.getElementById("reportStartDate").style.display="none";
+	document.getElementById("reportEndDate").style.display="none";
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(reportType!="custom"){
-	$.ajax({
+// 		$("#requirementReportsDiv12").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#loderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
           success :function(data) {
@@ -601,14 +577,16 @@ function getCustomReports(){
 	var reportType = $("#reportTypeId").val();
 	var startDate = $("#ExportStartDate").val();
 	var endDate = $("#ExportEndDate").val();
-	var sourceleadUrl ='${sourceleadUrl}';
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("reportStartDate").style.display="block";
 		$("#reportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("reportEndDate").style.display="block";
 		$("#reportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#loderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
@@ -649,3 +627,4 @@ function getCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
+<jsp:include page="../masterFooter.jsp" />

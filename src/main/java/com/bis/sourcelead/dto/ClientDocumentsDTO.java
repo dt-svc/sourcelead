@@ -1,11 +1,11 @@
 package com.bis.sourcelead.dto;
 
 import java.util.List;
-import java.util.Map;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Required;
 
-public class ClientDocumentsDTO {
+public class ClientDocumentsDTO extends CommonDTO {
 	
 private String staticPath;
 	
@@ -23,6 +23,7 @@ private String staticPath;
 	
 	private String endDate;
 	
+	@CleanHtml(escape=false)
 	private String description;
 	
 	private String userId;

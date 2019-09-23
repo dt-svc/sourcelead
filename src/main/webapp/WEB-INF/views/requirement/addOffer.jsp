@@ -5,7 +5,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<link rel="stylesheet" href="resources/css/style.css" />
+<link rel="stylesheet" href="/resources/css/style.css" />
 
 <script>
 		$(document).ready(function() {
@@ -19,6 +19,7 @@
 <!-- For add New Interview -->
 <script>
 function addOffer(requirementId){
+	 $(".clearUpload").hide();
 	$('.action-pop').slideUp();
 	var clientSubmissions = '${clientSubmissions}';
 	
@@ -29,25 +30,29 @@ function addOffer(requirementId){
 	        	var json = JSON.parse(data);
 	        	
 				var result = "";
-				result= result + '	          <div class="add_inter">';
+				result= result + '<div class="clearfix">';
 				
 				result = result + '<form id="addOffer_form" name="addOffer_form" enctype="multipart/form-data" method="post" >';
 				result = result + '<input type="hidden" id="maxOfferRowNum" name="maxOfferRowNum" value="1" />';
 				result = result + '<input type="hidden" id="reqId" name="requirementId" value='+requirementId+'>';
 				
 				result = result + '<input type="hidden" id="isFlushCandidateRequired" name="isFlushCandidateRequired">';
+				result = result + '<input type="hidden" id="clientOffer" name="clientOffer" value="N">';
 				
 				/* result= result + '	            <div class="add_inter_head"> <span>Add Offer</span><a href="javascript:void(0)" onClick="addOfferRow(this);"><i class="fa fa-plus"></i> Add row</a>'; */
-				result= result + '	            <div class="add_inter_head"> <span>Generate Offer</span><span class="text-success col-md-offset-1">No Of Candidates Selected: <b id="selectedOfferApplicantsCount">0</b></span>';
+				result= result + '	            <div class="add_inter_head mt10 ml10"> <span>Generate Offer</span><span class="text-success col-md-offset-1">Total candidates selected: <b id="selectedOfferApplicantsCount">0</b></span>';
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '	            </div>';
 				
 				if(clientSubmissions == 'Y'){
+					result= result + '<div class="clearfix ml checkBox">';
 				    result = result + '<input type="checkbox" name="isClientOffer" id="isClientOffer" class="isClient" onclick="myOfferFunction();">';
-			        result = result + '<label>&nbsp;&nbsp;<strong>Is Client Offer</strong>&nbsp;&nbsp;</label>';
+			        result = result + '<label>&nbsp;&nbsp;<strong>Clients Offer</strong>&nbsp;&nbsp;</label>';
+			        result= result + '</div>';
+
 				} 
 				
-				result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl">';
+				result= result + '	            <table cellpadding="0" cellspacing="0" id="addOfferTbl" class="hidden">';
 				result= result + '	              <tbody>';
 				result= result + '	                <tr id="divTsRow0">';
 				result= result + '	                  <th>Applicant</th>';
@@ -61,12 +66,123 @@ function addOffer(requirementId){
 				result= result + '	              </tbody>';
 				result= result + '	            </table>';
 				
+				
+				result= result + '<div class="project_wrap clearfix">                                              ';
+				result= result + '<div class="clearfix mt ">                                                       ';
+				result= result + '<div class="clearfix minHeightcol6">';
+				result= result + '<div class="col-md-12 mb clearfix">  ';
+				result= result + '<label class="clearfix">Applicants<span class="text-danger">&nbsp;*</span></label>';
+				result= result + '<div class="clearfix reports-head">';
+				result= result + '<select multiple class="blminwidth-50"  id="1applicantId" onchange="selectOfferApplicants()" data-placeholder="Select Applicants" name="1applicantId" field-name="Applicant" data-validation="required" >';
+				result= result + '</select>';
+				result= result + '</div>';
+				result= result + '</div>';
+				
+				result= result + '<div class="col-md-6 clearfix">';
+				result= result + '<label class="clearfix">Date of Joining<span class="text-danger">&nbsp;*</span></label>';
+				result= result + '<div class="clearfix">';
+				result= result + '<input class="form-control Datepicker calendar" placeholder="Date" name="1joiningDate" id="1joiningDate"  readonly="readonly"  type="text" data-validation="required" field-name="Joining Date" >';
+				result= result + '</div>';
+				result= result + '</div>';
+
+				result= result + '<div class="col-md-6 clearfix">';
+				result= result + '<label class="clearfix">Rate / Salary<span class="text-danger">&nbsp;*</span></label> ';
+				result= result + '<div class="clearfix row">';
+				result= result + '<div class="col-md-3">';
+				result= result + '<div class="clearfix">';
+				result= result + '      <select class="sel width100percnt" id="1aymentType" name="1PaymentType">';
+				result= result + '         		 <option ${SourceLeadWeb_currencyCode ==  "INR" ? "selected" : ""}>INR</option>   ';
+				result= result + '                <option ${SourceLeadWeb_currencyCode == "AUD" ? "selected" : ""}>AUD</option>  ';
+				result= result + '                <option ${SourceLeadWeb_currencyCode == "USD" ? "selected" : ""}>USD</option>  ';
+				result= result + '                <option ${SourceLeadWeb_currencyCode == "GBP" ? "selected" : ""}>GBP</option>  ';
+				result= result + '                <option ${SourceLeadWeb_currencyCode == "SGD" ? "selected" : ""}>SGD</option>  ';
+				result= result + '                <option ${SourceLeadWeb_currencyCode == "EUR" ? "selected" : ""}>EUR</option>  ';
+				result= result + '      </select>';
+				result= result + '</div>';
+				result= result + '</div>                                                                           ';
+
+				result= result + '<div class="col-md-5 padding_left padding_right">                                ';
+				result= result + '<input type="text" value="" class="form-control" id="1Amount" name="1paymentTypAmount" field-name="Rate" data-validation="required validate_float validate_length length1-8" onclick="validateRateAndRateType();">';
+				result= result + '</div>                                                                           ';
+				
+				result= result + '<div class="col-md-4">                                                           ';
+				result= result + '<select class="sel width100percnt" id="1PaymentMode" name="1PaymentMode" field-name="Rate Per" onchange="validateRateAndRateType();">';
+				result= result + '   <option value="">Rate Per</option>                    ';
+				result= result + '   <option value="Hourly">Hourly</option>                ';
+				result= result + '   <option value="Weekly">Weekly</option>                ';
+				result= result + '   <option value="Bi-weekly">Bi-Weekly</option>          ';
+				result= result + '   <option value="Monthly">Monthly</option>              ';
+				result= result + '   <option value="Bi-Monthly">Bi-Monthly</option>        ';
+				result= result + '   <option value="Semi-Monthly">Semi-Monthly</option>    ';
+				result= result + '   <option value="Yearly">Yearly</option>                ';
+				result= result + '</select>';
+				result= result + '</div>                                                                           ';
+				result= result + '</div>                                                                           ';
+				result= result + '</div>                                                                           ';
+
+				result= result + '<div class="col-md-6 clearfix mt10">';
+				result= result + '<label class="clearfix">Employment Type</label>';
+				result= result + '<div class="clearfix">                                                           ';
+				result= result + '<select class="sel width100percnt" id="1PositionType" name="1PositionType" onchange="otherJobType(this);">';
+				result= result + ' 	 <option value="" disabled selected>Select Type</option>';
+				result= result + '     <option  ${requirement.jobType  == "C2C" ? "selected" : ""}>C2C</option>';
+				result= result + '     <option  ${requirement.jobType  == "W-2" ? "selected" : ""}>W-2</option>';
+				result= result + '     <option  ${requirement.jobType  == "C2H" ? "selected" : ""}>C2H</option>';
+				result= result + '     <option  ${requirement.jobType  == "Contract" ?  "selected" : ""}>Contract</option>';
+				result= result + '     <option  ${requirement.jobType  == "Part Time" ? "selected" : ""}>Part Time</option>';
+				result= result + '     <option  ${requirement.jobType  == "Full Time" ? "selected" : ""}>Full Time</option>';
+				result= result + '     <option  ${requirement.jobType  == "Other" ? "selected" : ""}>Other</option>';
+				result= result + '</select>';
+				result= result + '</div>                                                                           ';
+				result= result + '</div>                                                                           ';
+					
+				result= result + '<div class="col-md-6 clearfix mt10" id="1PositionTypeCheck" style="display: none;">';
+				result= result + '<label class="clearfix">Other Type</label>';
+				result= result + '<div calss="clearfix"><input value=""  type="text" id="1JobOtherType" name="1JobOtherType" class="form-control" placeholder="Other type" field-name="Other type"></div>';
+				result= result + '</div>';
+				
+				result= result + '<div class="col-md-6 clearfix mt10">                                                  ';
+				result= result + '<label class="clearfix">Attachment</label>                                       ';
+				result= result + '<div class="clearfix">                                                           ';
+				result= result + '	<div class="input-group errorInptgroup width100percnt" id="OfferAttachmentuploadFileGroup">';
+				result= result + '    <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+				result= result + '      <input type="file" style="display: none;" id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>';
+				result= result + '	</label> ';
+				result= result + '	<input type="text" class="form-control" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >';
+				result= result + '	<div class="clearUpload"></div>';
+				result= result + ' </div>    ';
+				     
+				result= result + '</div>                                                                           ';
+				result= result + '</div>                                                                           ';
+
+				result= result + '<div class="col-md-6 clearfix mt10">                                                  ';
+				result= result + '<label class="clearfix">Offer Expired Date</label>                               ';
+				result= result + '<div class="clearfix">                                                           ';
+				result= result + '<input type="text" class="form-control calendar" id="offerExpireDate" name="offerExpireDate" placeholder="Offer Expire Date" readonly>                                ';
+				result= result + '</div>                                                                           ';
+				result= result + '</div>                                                                           ';
+
+				result= result + '<div class="col-md-6 clearfix mt10">';
+				result= result + '<label class="clearfix">Offer Letter Template</label>                            ';
+				result= result + '<div class="clearfix">';
+				result= result + '<select class="form-control"  id="offerTemplateId"  data-placeholder="Offer Letter Template" name="offerTemplateId">';
+				result= result + '</select>';
+				result= result + '</div>';
+				result= result + '</div>';
+				
+				result= result + '<div class="clearfix mb"></div>';
+				
+				result= result + '</div>';
+				result= result + '</div>';
+				result= result + '</div>';
+				
+				
 				result= result + ' <div class="row pad2">';
 				result = result + '<div class="col-md-12 mt10">';
 				result = result + '<div class="ne-ch">';
 				
 				result= result + ' <label>';
-				result= result + '<input type="checkbox" checked onclick="NotifyToApplicant();" id="notifyToApplicant" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
+				result= result + '<input type="checkbox" onclick="NotifyToApplicant();" id="notifyToApplicant" value="Y" name="notifyToApplicant">&nbsp;Notify To Applicant</label>';
 			   
 				if(data =="true"){
 					result= result + '<input type="hidden" value="Y"  id="notifyToVendor" name="notifyToVendor"/>';
@@ -94,13 +210,25 @@ function addOffer(requirementId){
 				$("#addOfferDiv").empty();
 				$("#addOfferDiv").append(result);
 				
-				
+				getOfferLetterTemplateList();
 				$(".add_offer_wrap").addClass("add_offer_wrap_active");
 				$(".side_mask").fadeIn(200);
 				$("body").css('overflow-y', 'hidden');
 				
 				addOfferRow();
-    
+				
+				
+				$(".clearUpload").click(function(){
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadFile").val("");
+					$("#OfferAttachmentuploadFileGroup").find("input#OfferAttachmentuploadBtn").val("");
+			        $("#OfferAttachmentuploadFileGroup").find("p.jquery_form_error_message").remove();
+					$(".clearUpload").hide();
+					$("#OfferAttachmentuploadFile").val('');
+				    $("#addOffer_form input[data-id*=OfferAttachmentuploadBtn]").remove();
+				    $("#OfferAttachmentuploadFile").removeAttr('record-exist');
+				    $("#OfferAttachmentuploadFile").removeAttr('record-exist-errormsg');   
+				});
+				
 	        },
 	    });
 	 
@@ -149,21 +277,21 @@ function selectOfferApplicants(){
 
 
 <div id="divOfferTd3" style="display: none; float: left;">
-   	 <div class="positionRelative float select-field">
-           <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType" style="height: 30px;">
+   	 <div class="float select-field tblminwidth-75">
+          <%--  <select class="form-control" id="REPLACEROWIDPaymentType" name="REPLACEROWIDPaymentType" style="height: 30px;">
 	          		 <option ${SourceLeadWeb_currencyCode == 'INR' ? 'selected' : ''}>INR</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'AUD' ? 'selected' : ''}>AUD</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'USD' ? 'selected' : ''}>USD</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'GBP' ? 'selected' : ''}>GBP</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'SGD' ? 'selected' : ''}>SGD</option>
 	                 <option ${SourceLeadWeb_currencyCode == 'EUR' ? 'selected' : ''}>EUR</option>
-           </select>
+           </select> --%>
      </div>
      <div class="positionRelative float select-field">
      	  <input type="text" value="" class="form-control input-sm" id="REPLACEROWIDAmount" name="REPLACEROWIDpaymentTypAmount" field-name="Rate" data-validation="required validate_float validate_length length1-8" onclick="validateRateAndRateType();">
      </div>
    	 <div class="positionRelative float select-rateper select-field">
-           <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Per" style="height: 30px;" onchange="validateRateAndRateType();">
+         <%--  <select class="form-control" id="REPLACEROWIDPaymentMode" name="REPLACEROWIDPaymentMode" field-name="Rate Per" style="height: 30px;" onchange="validateRateAndRateType();">
 	                 <option value="">Rate Per</option>
 	                 <option value="Hourly">Hourly</option>
 	                 <option value="Weekly">Weekly</option>
@@ -172,12 +300,12 @@ function selectOfferApplicants(){
 	                 <option value="Bi-Monthly">Bi-Monthly</option>
 	                 <option value="Semi-Monthly">Semi-Monthly</option>
 	                 <option value="Yearly">Yearly</option>
-           </select>
+           </select> --%>
      </div>
 </div> 
 
 <div id="divOfferTd4" style="display: none; float: left;" class="select-field">
- 	<select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType" onchange="otherJobType(this);">
+ 	<%-- <select class="form-control" id="REPLACEROWIDPositionType" name="REPLACEROWIDPositionType" onchange="otherJobType(this);">
  	 				 <option value="" disabled selected>Select Type</option>
 	                 <option  ${requirement.jobType  == 'C2C' ? 'selected' : ''}>C2C</option>
 	                 <option  ${requirement.jobType  == 'W-2' ? 'selected' : ''}>W-2</option>
@@ -187,8 +315,8 @@ function selectOfferApplicants(){
 	                 <option  ${requirement.jobType  == 'Full Time' ? 'selected' : ''}>Full Time</option>
 	                 <option  ${requirement.jobType  == 'Other' ? 'selected' : ''}>Other</option>
 	                      
-	</select>
-	<div id="REPLACEROWIDPositionTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDJobOtherType" name="REPLACEROWIDJobOtherType" class="form-control input-sm pavInp" placeholder="Other type" field-name="Other type"></div>
+	</select> --%>
+<!-- 	<div id="REPLACEROWIDPositionTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDJobOtherType" name="REPLACEROWIDJobOtherType" class="form-control input-sm pavInp" placeholder="Other type" field-name="Other type"></div> -->
 </div>	  
 
 <!-- <div id="divOfferTd6" style="display: none; float: left;">
@@ -198,11 +326,12 @@ function selectOfferApplicants(){
 </div> -->
             
 <div id="divOfferTd5" style="display: none; float: left;">
-	<div class="input-group" id="OfferAttachmentuploadFileGroup">
+	<div class="input-group errorInptgroup" id="OfferAttachmentuploadFileGroup">
         <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-          <input type="file" style="display: none;"  multiple id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
+          <input type="file" style="display: none;" id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
 		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
+		<div class="clearUpload"></div>
      </div>                 
 </div>
 
@@ -215,7 +344,6 @@ function selectOfferApplicants(){
 
 <script type="text/javascript">
 	function addOfferRow() {
-		
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 		  var finalDateFormatOffer = '';
 		  if(locationDate.match("yyyy-MM-dd")){
@@ -238,35 +366,7 @@ function selectOfferApplicants(){
 		var row = tbl.insertRow(maxRowNum);
 		row.setAttribute("id", "divTsRow" + maxRowNum);
 		
-		var cell0 = row.insertCell(0);
-		var divTsTd1Str = document.getElementById("divOfferTd1").innerHTML;
-		divTsTd1Str = divTsTd1Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell0.innerHTML = divTsTd1Str;
-		
-		var cell1 = row.insertCell(1);
-		cell1.innerHTML = "<div class='positionRelative date' id='offerDatePic'><input class='form-control input-sm Datepicker' placeholder='Date' name='"+maxRowNum+"joiningDate' id='"+maxRowNum+"joiningDate'  readonly='readonly'  type='text' data-validation='required' field-name='Joining Date' > <span class='input-group-addon input-groupAddon'><i class='fa fa-calendar'></i></span> </div>";
-		
-		var cell2 = row.insertCell(2);
-		var divTsTd3Str = document.getElementById("divOfferTd3").innerHTML;
-		divTsTd3Str = divTsTd3Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell2.innerHTML = divTsTd3Str; 
-		
-		var cell3 = row.insertCell(3);
-		var divTsTd4Str = document.getElementById("divOfferTd4").innerHTML;
-		divTsTd4Str = divTsTd4Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell3.innerHTML = divTsTd4Str; 
-			
-		
-		var cell4 = row.insertCell(4);
-		var divTsTd5Str = document.getElementById("divOfferTd5").innerHTML;
-		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-		divTsTd5Str = divTsTd5Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell4.innerHTML = divTsTd5Str; 
-		
-		/* var cell5 = row.insertCell(5);
-		var divTsTd6Str = document.getElementById("divOfferTd6").innerHTML;
-		divTsTd6Str = divTsTd6Str.replace(/REPLACEROWID/g, (maxRowNum));
-		cell5.innerHTML = divTsTd6Str; */
+		 
 		
 		$("#"+maxRowNum+"applicantId").chosen();
 		
@@ -279,6 +379,14 @@ function selectOfferApplicants(){
 			}
 		});
 		
+		$('#offerExpireDate').datepicker({
+			dateFormat : finalDateFormatOffer,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+				removevalidation();
+			}
+		});
 		
 		
 		$(".add_offer_wrap").addClass("add_offer_wrap_active");
@@ -288,7 +396,6 @@ function selectOfferApplicants(){
 		
 		getShortListAndSubmittedAndInterviewedCandidates(maxRowNum);
 		
-
 		
 	   /*  $("#"+maxRowNum+"applicantId").on('change', function (e) {
 	    	  getUpdatedSubmittedAndShortListedAndInterviewedCandidates();
@@ -410,7 +517,7 @@ function validateRateAndRateType(){
   		$("#add_offer").attr("disabled", "disabled");
   		$("#add_offer" ).addClass('button').val('Processing..');  
   		
-  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+  		 $("#offerLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 	    	type: "POST",
  	    	data: formData,
@@ -453,15 +560,15 @@ function validateRateAndRateType(){
   <script type="text/javascript">
 function alertOfferMessage(message){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	<div class='comMask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOfferPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelInterviewPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelOfferPopup();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelOfferPopup();'></b>";
 	result = result +"	</div>";
 	$("#offerPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
-	$(".project_inn_mask").fadeIn(200);
+	$(".comMask").fadeIn(200);
 
 }
 </script>
@@ -469,44 +576,10 @@ function alertOfferMessage(message){
 <script type="text/javascript">
 function cancelOfferPopup(){
 	$("#offerPopUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+	$(".comMask").fadeOut(200);
 }
 </script>
  
-<!-- <script type="text/javascript">
- function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
-	 var existingApplicantsIds = [];    
-	 for(i=rowId ; i > 0; i--){
-		 var applicant = $("#"+(i)+"applicantId").val();
-		 if(applicant != null && applicant != '' && applicant != 'undefined'){
-			 existingApplicantsIds.push(applicant);
-		 }
-	 }
-	
-	 var sourceleadUrl ='${sourceleadUrl}';
-	 var requirementId = $("#reqId").val();
-     
-		 $.ajax({
-		    	type: "POST",
-		        url: sourceleadUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	
-		        	for (var i=0; i<json.length; i++)
-					{
-			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-					}
-		        	$("#"+rowId+"applicantId").empty();
-		        	$("#"+rowId+"applicantId").append(output);
-		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
-			       
-		        },
-		    });
-	
- }
-</script>  -->
 
 <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
@@ -554,7 +627,6 @@ function cancelOfferPopup(){
 		       	        	$("#"+(i-1)+"applicantId").trigger("chosen:updated");
 			       	    }
 		        	}
-		        	
 		        	$("#"+rowId+"applicantId").empty();
 		        	$("#"+rowId+"applicantId").append(output);
 		        	$("#"+rowId+"applicantId").trigger("chosen:updated");
@@ -623,8 +695,7 @@ function cancelOfferPopup(){
 
 function NotifyToVendor(){
 	
-	 if (document.getElementById('notifyToVendor').checked){
-	
+	if($("#notifyToVendor").is(':checked')){
 		 $("#notifyToVendor").val('Y');	
 	}else {
 		
@@ -638,7 +709,7 @@ function NotifyToVendor(){
 
 <script>
 function NotifyToApplicant(){
-	 if (document.getElementById('notifyToApplicant').checked){
+	if($("#notifyToApplicant").is(':checked')){
 		 $("#notifyToApplicant").val('Y');	
 	}else {
 		 $("#notifyToApplicant").val('N');
@@ -672,6 +743,11 @@ $(function(){
 <script>
 function myOfferFunction(){
 	$("#isFlushCandidateRequired").val('Y');
+	if(document.getElementById('isClientOffer').checked) {
+		 $("#clientOffer").val("Y");
+    }else{
+    	$("#clientOffer").val("N");
+    }
 	getShortListAndSubmittedAndInterviewedCandidates();
 }
 </script>
@@ -692,8 +768,9 @@ function otherJobType(id){
 }
 </script>
 
-<<script type="text/javascript">
+<script type="text/javascript">
 $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
+	 $(".clearUpload").show();
 	 $('#OfferAttachmentuploadFile').val(this.value.split( '\\' ).pop());
 	 $("#OfferAttachmentuploadFile").focus();
 	 if(validate_fileupload(this.value)){
@@ -701,9 +778,9 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 		 var docSize = this.files[0].size;
 	      $("#OfferAttachmentuploadFileGroup").find('p.jquery_form_error_message').remove();
 	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
+	    	  //document.getElementById("OfferAttachmentuploadFile").value = '';
 	    	  $('#OfferAttachmentuploadFileGroup').find('p.jquery_form_error_message').remove();
-			  $("input#uploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
+			  $("input#OfferAttachmentuploadFile").after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
 			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist','yes');
 			  document.getElementById("OfferAttachmentuploadFile").setAttribute('record-exist-errorMsg','Limit is exceeded than 2MB'); 
 	      }else{
@@ -713,5 +790,27 @@ $(document.body).on('change', '#OfferAttachmentuploadBtn' ,function(){
 	 }
 });
 </script>
-  
+
+  <script>
+function getOfferLetterTemplateList(){
+	 $.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getOfferLetterTemplateList",
+	        success: function(data) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Offer Letter Template</option>";
+	        	for (var i=0; i<data.length; i++)
+				{
+		        		var opt = data[i];
+		        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
+				}
+	        	$("#offerTemplateId").empty();
+	        	$("#offerTemplateId").append(output);
+	        	$("#offerTemplateId").chosen();
+	        	$("#offerTemplateId").trigger("chosen:updated");
+	        }
+	 });
+	 
+} 
+</script>
 <jsp:include page="../masterFooter.jsp" />

@@ -41,19 +41,23 @@ import com.bis.sourcelead.SourceleadPasswordEncoder;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.WagesTaxSummaryDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.payroll.dao.WageTaxSummaryDao;
 import com.bis.sourcelead.payroll.entity.BisUserMapping;
 import com.bis.sourcelead.payroll.entity.EmployerPayrollCost;
 import com.bis.sourcelead.payroll.entity.InvoiceData;
+import com.bis.sourcelead.payroll.entity.PayrollBalance;
 import com.bis.sourcelead.payroll.entity.PayrollHelper;
 import com.bis.sourcelead.payroll.entity.WageTaxSummary;
 import com.bis.sourcelead.payroll.rest.EmployeePayrollRestController;
 import com.bis.sourcelead.payroll.service.WageTaxSummaryService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -77,6 +81,9 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Override
 	public WageTaxSummary saveWageTaxSummary(WageTaxSummary wageTaxSummary) throws Exception {
@@ -340,7 +347,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	}
 
 	@Override
-	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user) throws Exception {
+	public Integer saveWagesTaxSummaryBulk(MultipartFile multipartFile, OrgLocations orgLocation, User user,JSONObject jsonObject) throws Exception {
 
 
 		String fileName = multipartFile.getOriginalFilename();
@@ -365,7 +372,7 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 			version = getWageTaxSummaryVersionByLocationId(orgLocation.getId());
 			version += 1;
 			
-			for (int i = 0; i < numberOfSheets; i++) {
+			for (int i = 0; i < 1; i++) {
 				Sheet sheet = workbook.getSheetAt(i);
 				Iterator<Row> rowIterator = sheet.iterator();
 				String employeeId = null;
@@ -467,6 +474,23 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 									wageTaxSummary.setNet(net);
 								}
 								
+								if (jsonObject.has("fromDate")) {
+									if (jsonObject.getString("fromDate") != null
+											&& !"".equalsIgnoreCase(jsonObject.getString("fromDate"))) {
+										wageTaxSummary.setFromDate(
+												conversionUtil.getDateFromString(jsonObject.getString("fromDate")));
+									}
+
+								}
+								if (jsonObject.has("toDate")) {
+									if (jsonObject.getString("toDate") != null
+											&& !"".equalsIgnoreCase(jsonObject.getString("toDate"))) {
+										wageTaxSummary
+												.setToDate(conversionUtil.getDateFromString(jsonObject.getString("toDate")));
+									}
+								}
+								
+								wageTaxSummary.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 								wageTaxSummary.setEmployeeName(employeeName);
 								wageTaxSummary.setEmployeeId(employeeId);
 								wageTaxSummary.setSsnNumber(ssn);
@@ -646,5 +670,30 @@ public class WageTaxSummaryServiceImpl implements WageTaxSummaryService{
 	public int getWageTaxSummaryVersionByLocationId(Long locationId)
 	{
 		return wageTaxSummaryDao.getWageTaxSummaryVersionByLocationId(locationId);
+	}
+
+	@Override
+	public ResponseList<WageTaxSummary> getUniqueWagesAndTaxListByOrgLocationIdAndPagination(OrgLocations orgLocation,PayrollBalance payrollBalance) throws Exception {
+		return wageTaxSummaryDao.getUniqueWagesAndTaxListByOrgLocationIdAndPagination(orgLocation,payrollBalance);
+	}
+
+	@Override
+	public String getWagesAndTaxEmployeeId(Long candidateId) throws Exception
+	{
+		String empId = null;
+		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		WageTaxSummary  wageTaxSummary  = wageTaxSummaryDao.getEmployeeIdByUserId(candidate.getConsultantUser());
+		if(wageTaxSummary != null){
+			if(wageTaxSummary.getEmployeeId() !=null){
+				empId = wageTaxSummary.getEmployeeId();
+			}
+		}
+		return empId;
+	}
+
+	@Override
+	public ResponseList<WageTaxSummary> getWagesAndTaxByEmpId(OrgLocations orgLocation, WagesTaxSummaryDTO wagesTaxSummaryDTO)
+	{
+		return wageTaxSummaryDao.getWagesAndTaxByEmpId(orgLocation, wagesTaxSummaryDTO);
 	}
 }

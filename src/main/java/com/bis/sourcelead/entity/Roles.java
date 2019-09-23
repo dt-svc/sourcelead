@@ -21,8 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "ROLES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="roles")
+@Table(name = "ROLES")
 public class Roles implements Serializable{
  
 	private static final long serialVersionUID = 1L;
@@ -38,12 +37,12 @@ public class Roles implements Serializable{
 	@Column(name = "DISPLAY_NAME")
 	private String displayName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocations;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID")
 	private Org org;
@@ -52,7 +51,7 @@ public class Roles implements Serializable{
 	@Type(type="text")
 	private String actionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "HIERARCHY_ID")
 	private RoleHierarchy roleHierarchy;
@@ -62,6 +61,9 @@ public class Roles implements Serializable{
 	
 	@Column(name = "STATUS")
 	private String status;
+	
+	@Column(name = "UUID")
+	private String uuid;
 	
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
@@ -223,6 +225,14 @@ public class Roles implements Serializable{
 
 	public void setIsRoleAssigned(String isRoleAssigned) {
 		this.isRoleAssigned = isRoleAssigned;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 

@@ -19,16 +19,15 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "CANDIDATE_EMPLOYERS_HISTORY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidateEmployersHistory")
+@Table(name = "CANDIDATE_EMPLOYERS_HISTORY")
 public class CandidateEmployersHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = false)
 	private Long id;
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_EMPLOYERS", nullable = false)
 	private CandidateEmployers candidateEmployers;
 	@Column(name = "NAME")
@@ -51,13 +50,21 @@ public class CandidateEmployersHistory implements Serializable {
 	private String endYear;
 	@Column(name = " ENDDATE  ")
 	private Date endDate;
+	// immigration column start
+	@Column(name = " TAX_ID")
+	private String taxId;
+	@Column(name = " EMPLOYMENT_TYPE")
+	private String employmentType;
+	@Column(name = " JOB_TITLE")
+	private String jobTitle;
+	// immigration column end
 	@Column(name = "STATUS ")
 	private Integer status;
 	@Column(name = "CREATED_DATE")
 	private Date createdDate;
 	@Column(name = "CREATED_BY")
 	private String createdBy;
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CREATED_USER")
 	private User createdUser;
@@ -172,6 +179,30 @@ public class CandidateEmployersHistory implements Serializable {
 		this.endDate = endDate;
 	}
 	
+	public String getTaxId() {
+		return taxId;
+	}
+
+	public void setTaxId(String taxId) {
+		this.taxId = taxId;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
 	public Integer getStatus()
 	{
 		return status;

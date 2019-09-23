@@ -44,7 +44,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
 		List<CandidateSkills> candidateSkillsList = null;
 		Query citiesListQuery= session.createQuery("from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)");
-		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
+		candidateSkillsList = citiesListQuery.setString("candidateId", candidateId).setInteger( "status", status ).list();
 		return candidateSkillsList;
 	}
 	
@@ -54,7 +54,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
 		String query = "select cs.name from CandidateSkills cs where cs.candidateId.id =:candidateId and (cs.status =:status or cs.status is null)";
-	    List<String> skillNames = session.createQuery(query).setString( "candidateId", candidateId).setInteger( "status", status ).setCacheable(true).list();
+	    List<String> skillNames = session.createQuery(query).setString( "candidateId", candidateId).setInteger( "status", status ).list();
         return skillNames;
 	}
 	
@@ -65,7 +65,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		logger.debug("In Candidate Skill by candidateId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from CandidateSkills candidateSkills left join fetch candidateSkills.candidateId  where candidateSkills.candidateId.id = :candidateId" ;
-		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setString("candidateId", candidateId).setCacheable(true).list(); 
+		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setString("candidateId", candidateId).list(); 
 		CandidateSkills candidateSkills = null;
 		if(candidateSkillsList != null && !candidateSkillsList.isEmpty()){
 			candidateSkills = candidateSkillsList.iterator().next();
@@ -80,7 +80,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		logger.debug("In Candidate Skill by SkillId");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from CandidateSkills candidateSkills left join fetch candidateSkills.candidateId  where candidateSkills.id = :candidateSkillId" ;
-		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setLong("candidateSkillId", candidateSkillId).setCacheable(true).list(); 
+		List<CandidateSkills> candidateSkillsList =session.createQuery(query).setLong("candidateSkillId", candidateSkillId).list(); 
 		CandidateSkills candidateSkills = null;
 		if(candidateSkillsList != null && !candidateSkillsList.isEmpty()){
 			candidateSkills = candidateSkillsList.iterator().next();
@@ -94,7 +94,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = " from CandidateSkills candidateSkills where candidateSkills.candidateId.id = :candidateId" ;
-		return session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list(); 
+		return session.createQuery(query).setLong("candidateId", candidateId).list(); 
 	}
 
 
@@ -106,7 +106,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		Integer status = Constants.CANDIDATE_SKILL_ACTIVE;
 		String query = "from CandidateSkills s where s.name = :skillName and s.candidateId = :candidateId and s.status = "+status+" ";
-		List<CandidateSkills> candidateSkillsList = session.createQuery(query).setString("candidateId", candidateId).setString("skillName", skillName).setCacheable(true).list();
+		List<CandidateSkills> candidateSkillsList = session.createQuery(query).setString("candidateId", candidateId).setString("skillName", skillName).list();
 		CandidateSkills candidateSkills = null;
 		if(candidateSkillsList != null && !candidateSkillsList.isEmpty())
 		{
@@ -125,7 +125,7 @@ public class CandidateSkillsDaoImpl  implements CandidateSkillsDao{
 		 boolean flag = false;
 		 if(skillName != null){
 				String query = "from CandidateSkills s where s.name <> :skillName and s.status = "+status+" ";
-				List<CandidateSkills> candidateSkillsList =session.createQuery(query).setString("skillName", skillName).setCacheable(true).list();
+				List<CandidateSkills> candidateSkillsList =session.createQuery(query).setString("skillName", skillName).list();
 				if (candidateSkillsList != null && candidateSkillsList.size() > 0) {
 					if(flag = true){
 						return flag;	

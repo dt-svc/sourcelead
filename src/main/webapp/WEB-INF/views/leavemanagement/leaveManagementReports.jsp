@@ -1,27 +1,113 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script type="text/javascript" src="https://www.amcharts.com/lib/3/pie.js"></script> 
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<script src="/resources/js/amcharts.js"></script>
+<script src="/resources/js/serial.js"></script>
+<script src="/resources/js/pie.js"></script>
+
+ <%-- <script src="resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+
+<jsp:include page="topLeaveTakers.jsp" />
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script> --%>
+<script type="text/javascript">
+		 $(document).ready(function(){
+			 getHolidaysList();
+			 getEmployeeLeavesList();
+			 getPieChartBasedOnUser();
+			 
+			 	getEmployeeTotalCounts();
+			 	getSelfTotalCounts();
+			
+			});
+</script>
+
+
+
+<style type="text/css">
+.timeBalance-scroll .col-md-2 {
+border: 1px solid #ccc; padding-top:15px; margin:0 15px 15px; text-transform:capitalize;
+background-color: #fcfcfc;
+}
+</style>
+
+
+<input type="hidden" id="leaveEmptyMessage" name="leaveEmptyMessage" />
+<div id="popUp"></div>
+<div id="loading"></div>
  <!-- Content Area -->
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Leave Management</h2>
       </div>
-      <div class="pull-right brud-crum">Home &raquo; Leave Management</div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Leave Management</div>
     </section>
-    <div class="timesheet_out">
+    
+    <div class="project_wrap">
       <div class="clients_side_wrap_inn no_pad">
         <div class="project_side_wrap_inn_tabs" id="new-id">
-             <div class="pull-right">
-                          <a href="<c:url value='/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
-                      </div>
+        
+         <sec:authorize access="hasRole('ROLE_APPLY_LEAVE')"> 
+             <div class="pull-right tblminwidth-125 paddingTop mr">
+             <div class="success_pop" id="msgDiv" style="display: none;"></div>
+              <form:form id="upload_leave_excel_form" name="upload_leave_excel_form" enctype="multipart/form-data">
+                 <div title="Import" class="positionRelartive pull-left zIndex mr">
+                 			<sec:authorize access="hasRole('ROLE_IMPORT_BALANCE_LEAVES')">
+					        	<a onclick="leaveImport();"><i class="glyphicon glyphicon-import expIcon mt5"></i>&nbsp;</a> 
+					 		 </sec:authorize>      	
+						        	<div class="dowload_pop">
+					        			<div class="modal-content">
+						        			<div class=modal-header>
+							        			 <button type="button" class="close" data-dismiss="modal" onClick="closeImportFile();">&times;</button>
+						          				<h4 class="modal-title">Leave Import</h4>
+						        			</div>
+						        			<div class="modalBody">
+						        				<div class="row">
+						        					<div class="col-md-12 mb5 clearfix">
+						        					<a href="<c:url value='${appPath}/downloadLeaveTemplate'/>" class="text-primary">
+						        						Download Template :
+														<i class="ml fa fa-download"></i>
+														</a>
+						        					</div>
+						        					<div class="clearfix"></div>
+						        					
+						        					
+						        					<div class="col-md-12">
+						        					<div class="uploadTempalte" id="validation">
+						        					<input type="file" class="margin-top0" id="leaveInputFileId" name="file" data-validation="required validate_xls_importFile" field-name="File">
+						        					</div>
+						        					</div>
+						        				</div>
+						        			</div>
+						        			<div class="clearfix modalFooter">
+						        				<div class="pull-right">
+						        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
+						        						<button type="button" class="btn btn-default btn-sm mr" title="Reset" onclick="resetUpload();">Reset</button>
+						        				</div>
+						        			</div>
+					        			</div>
+						        	</div>
+						        </div>
+						        </form:form>
+			        <div class="pull-left">
+		                 <a href="<c:url value='${appPath}/applyLeave'/>" title="Apply Leave" class="btn btn-primary btn-sm zindex">Apply Leave</a>
+		            </div>
+             </div>
+         </sec:authorize>  
           <ul class="project-tabs-menu projecttabs-custom">
             <li class="current"><a href="#tab-1">Self</a></li>
-            <li><a href="#tab-2">Employees</a></li>
+            <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_LEAVE\')">
+            	<li><a href="#tab-2" onclick="getEmployeeLeavesList();getTopLeaveTakers();getLeaveTakersBarChat();">Employees</a></li>
+            </sec:authorize>
             <div class="clearfix"></div>
           </ul>
            
@@ -31,737 +117,359 @@
             <div id="tab-1" class="project_tabs_inn" style="display: block">
               <div class="clearfix">
                 <div class="row">
-                  <div class="clearfix"></div>
-                  <div class="col-md-6">
-                    <h4 class="leaves-heading">My Calendar</h4>
-                    <div id="scheduleCalendar"></div>
+                
+                
+                <!--  New Div for counts -->
+                <div class="clearfix">
+                	
+                	<div id="self" class="clearfix">
+              <div class="col-md-4">
+                        <label class="pull-left mr">Balance Leaves</label>
+                        <div class="color_white" title="Balance Leaves"><span class="label label-info pull-left" id="selfBalancedCounts"></span></div>
+              </div>
+              <div class="clearfix"></div>
+              <div class="db-widget-sm clearfix">
+                <div class="width100percnt clearfix">
+                  <div id="empselfLeaves" style="width: 60%; height: 100px;" class="amchartAnchor-Hide pull-left hidden"> </div>
                     <div class="clearfix"></div>
-                    <ul class="scheduleAvailable">
-                      <li><span class="bg-danger paddingRight"></span>Sick Leave</li>
-                      <li><span class="bg-primary paddingRight"></span>Vacation</li>
-                    </ul>
-                      
+              <div class="mt5 clearfix">
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="selfPendingCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="selfpend"></p>
                   </div>
-                  <div class="col-md-6">
-                    <h4 class="leaves-heading">My Time off balance</h4>
-                    <div class="row time-balance">
-                      <div class="col-md-3 mb">
-                        <h4 class="text-center">Vacation</h4>
-                        <div id="vacationDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
-                      <div class="col-md-3 mb">
-                        <h4 class="text-center">Sick Leaves</h4>
-                        <div id="sickDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <h4 class="text-center">Casual Leaves</h4>
-                        <div id="casualDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"></div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <h4 class="text-center">Other Leaves</h4>
-                        <div id="otherDonut" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"></div>
-                        <div class="text-center">
-                          <h2>
-                            <label class="small text-muted">Remaining:</label>
-                            <label class="clearfix width100percnt mt5">120/80</label>
-                          </h2>
-                        </div>
-                      </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon  text-muted" style="width:30%;"> <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                   <p class="info-box-number"><span id="selfApprovedCounts"></span></p>
+                   <p class="info-box-text text-muted mt5" id="selfapp"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-times fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                  <p class="info-box-number"><span id="selfRejectedCounts"></span></p>
+                  <p class="info-box-text text-muted mt5" id="selfrej"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-ban fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                  <p class="info-box-number"><span id="selfCancelledCounts"></span></p>
+                  <p class="info-box-text text-muted mt5" id="selfcanc"></p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+            
+                <ul class="list-unstyled  clearfix hidden">
+                  
+                </ul>
+                    
+                </div>
+              </div>
+              
+              <div class="col-xs-12 col-sm-4 mb hidden">
+                <div id="selfApproved" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="leavetype-approvedcount.html" id="approved" title="Approved">20</a> </div>
+              </div>
+              <div class="col-xs-12 col-sm-4 mb hidden">
+                <div id="selfRejected" style="width: 100%; height: 150px;" class="amchartAnchor-Hide"> </div>
+                <div class="leavescount text-center"> <a href="leavetype-rejectedcount.html" id="rejected" title="Rejected">10</a> </div>
+              </div>
+            </div>
+            </div>
+            <!--  New Div ends for counts -->
+            
+                  <div class="clearfix"></div>
+                  
+                  <div class="col-md-12">
+                    <h4 class="leaves-heading">Leave Balance</h4>
+                    <div class="time-balance">
+                    <div id="pichartLeaveTypeIdDiv" class="timeBalance-scroll clearfix row"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
                     <div class="col-md-12 mt10"><hr></div>
-                  <div class="col-md-10 col-md-offset-1 listof-holidays">
-                        <div class="row mb5">
-                            <div class="col-md-8"><strong class="leaves-heading">List of Holidays</strong></div>
-                            <div class="col-md-4 dropdown-select">
-                                <select class="form-control">
-                                    <option selected>--Select Year--</option>
-                                    <option>2020</option>
-                                    <option>2019</option>
-                                    <option>2018</option>
-                                    <option>2017</option>
-                                    <option>2016</option>
-                                    <option>2015</option>
-                                    <option>2014</option>
-                                    <option>2013</option>
-                                    <option>2012</option>
-                                    <option>2011</option>
-                                    <option>2010</option>
-                                </select>
+                  <div class="col-md-10 col-md-offset-1 listof-holidays datatable_filter">
+                        <div class="row">
+                            <div class="col-md-5"><strong class="leaves-heading">List of Holidays</strong></div>
+                            <div class="col-md-3 noPad dropdown-select">
+                                 <select class="form-control" id="reportYear" name="reportYear" onChange="getHolidaysList(this);">
+                                    <option value="">--Select Year--</option>
+                    			<c:forEach var="year" items="${yearsList}">
+	                    			<option value="${year}">${year}</option>
+                     			</c:forEach> 
+                                </select> 
                             </div>
+                            <div class="col-md-4 noPad">&nbsp</div>
                             </div>
-                        <table cellspacing="0" cellpadding="0" width="100%;" class="table table-bordered">
-    <thead>
-    <th>S.No</th><th>Name</th><th>Date</th><th>Day of the week</th>
-    </thead>
-  <tr class="text-danger">
-    <td>1</td>
-    <td>New year</td>
-    <td>1/1/2017</td>
-    <td>Sunday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>2</td>
-    <td>Pongal</td>
-    <td>1/13/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>3</td>
-    <td>Maha Sivratri</td>
-    <td>2/24/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>4</td>
-    <td>Ugadi</td>
-    <td>3/29/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>5</td>
-    <td>Good Friday</td>
-    <td>4/14/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>6</td>
-    <td>May day</td>
-    <td>01.05.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>7</td>
-    <td>*Eid    - ul - Fitar </td>
-    <td>26.06.2017</td>
-    <td>Monday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>8</td>
-    <td>Independence Day</td>
-      <td>8/15/2017</td>
-    <td>Tuesday</td>
-  </tr>
-  <tr class="text-danger">
-    <td>9</td>
-    <td>Ganesh Chathurthi</td>
-      <td>8/25/2017</td>
-    <td>Friday</td>
-  </tr>
-  <tr>
-    <td>10</td>
-    <td>Dusherra</td>
-      <td>9/30/2017</td>
-    <td>Saturday</td>
-  </tr>
-  <tr>
-    <td>11</td>
-    <td>Diwali</td>
-    <td>10/18/2017</td>
-    <td>Wednesday</td>
-  </tr>
-  <tr>
-    <td>12</td>
-    <td>Christmas</td>
-      <td>12/25/2017</td>
-    <td>Monday</td>
-  </tr>
-</table>
+                            <div class="clients_wrap_table datatable_filter"></div>
+                            <div id="holidayListDiv"></div>
+                        
                     </div>
-                  <div class="col-md-12 hidden">
-                    <div class="clearfix project_wrap_table">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Employee Name</th>
-                            <th>Requirement</th>
-                            <th>Client</th>
-                            <th>Priority</th>
-                            <th>Applicants</th>
-                            <th>Action</th>
-                          </tr>
-                          <tr>
-                            <td>
-                              <div class="mt5 pull-left tbldata-dotdot-me">
-                                <div class="media">
-                                  <div class="media-left">
-                                      <img src="images/userprofile-img.png" class="media-object" style="width:30px">
-                                  </div>
-                                  <div class="media-body text-left">
-                                    <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                                    <p class="small text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              <div><span><a href="requirement-list.html" title="Click here">Java Deloper</a></span></div>
-                            </td>
-                            <td>
-                              <div><span>ABC Infotech PVT. Ltd.</span></div>
-                            </td>
-                            <td>50%</td>
-                            <td>
-                              <div><span>Immediate</span></div>
-                            </td>
-                            <td>10</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                      <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
-                    </div>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+              
+            </div>
+            <div id="tab-2"  class="project_tabs_inn" style="display: none">
+            	<div class="mask_time"></div> 
+                <div class="row clearfix">
+                
+                <!--  New Div for counts -->
+                <div class="col-md-12 clearfix mb">
+                
+                <div class="db-widget-sm clearfix">
+                <div class="width100percnt clearfix">
+                <div class="clearfix"></div>
+                <div class="mt5 clearfix row">
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-clock-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeRequestedCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empReq"></p>
                   </div>
                 </div>
               </div>
-            </div>
-            <div id="tab-2" class="project_tabs_inn" style="display: none">
-                <div class="row clearfix">
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-check-circle-o fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeApprovedCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empApp"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-times fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeRejectedCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empRej"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-sm-3">
+                <div class="lm-portlet"> <span class="info-box-icon text-muted" style="width:30%;"> <i class="fa fa-ban fa-2x" aria-hidden="true"></i> </span>
+                  <div class="info-box-content">
+                    <p class="info-box-number"><span id="employeeCancelledCounts"></span></p>
+                    <p class="info-box-text text-muted mt5" id="empCanc"></p>
+                  </div>
+                </div>
+              </div>
+              
+              </div>
+                
+                
+                
+                  <!-- <div id="employeeLeaves" style="width: 60%; height: 105px;" class="amchartAnchor-Hide pull-left"> </div> -->
+                  <div style="width: 40%; height: 105px;" class="countList pull-left hidden">
+                <ul class="list-unstyled list-group clearfix mb5">
+                    <li class="clearfix">
+                        <label class="pull-left">Requested Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeRequestedLeaves'/>" class="color_white" id="empReq" title="Requested Leaves"><span class="label label-primary pull-right" id="employeeRequestedCounts"></span>></a>
+                    </li>
+                    <li class="clearfix">
+                        <label class="pull-left">Approved Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeApprovedLeaves'/>" class="color_white" id="empApp" title="Approved Leaves"><span class="label label-success pull-right" id="employeeApprovedCounts"></span></a>
+                    </li>
+                    <li class="clearfix">
+                        <label class="pull-left">Rejected Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeRejectedLeaves'/>" class="color_white" id="empRej" title="Rejected Leaves"><span class="label label-danger pull-right" id="employeeRejectedCounts"></span></a>
+                    </li>
+                    <li class="clearfix">
+                        <label class="pull-left">Cancelled Leaves</label>
+                        <a href="<c:url value='${appPath}/employeeCancelLeaves'/>" class="color_white" id="empCanc" title="Cancelled Leaves"><span class="label label-warning pull-right" id="employeeCancelledCounts"></span></a>
+                    </li>
+                </ul>
+                      
+                    </div>
+                </div>
+              </div> 
+                
+                
+                </div>
+                <div class="cleaarfix"></div>
+                
+                
                     <div class="clearfix mb5">
-                        <div class="col-md-8">
-                            <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span>
-                            <div class="pull-right dropdown-select">
-                                <select>
-                                    <option selected>Department</option>
-                                    <option>UI</option>
-                                    <option>Developers</option>
-                                    <option>HR Department</option>
-                                    <option>Accounts</option>
-                                </select>
-                            </div>
-                                </h4>
+                        <div class="col-md-6">
+                            <h4 class="leaves-heading"><span class="pull-left">Employee Leaves</span></h4>
                         </div>
-                        <div class="col-md-4">
+                        <div class="clearfix col-md-6 pull-right">
+                        
+							<ul class="col-md-5 empUlAli mb0 mt5">
+	                            <li id="filterDepartmentPop"><i class="fa fa-filter"></i> <span>Department</span><i class="fa fa-caret-down"></i>
+	                            <div class="statusFiler-1">
+	                            <ul>
+		                            <c:forEach var="report" items="${departmentList}">
+		                            	<li class="clearfix mb5"><input type="checkbox" name="department" value="${report.id}" onclick="getEmployeeLeavesList();" class="pull-left"><label class="tbldata-dotdot-vsm pull-left mt5" title="${report.departmentName}">${report.departmentName}</label></li>
+		                            </c:forEach>
+	                            </ul>
+	                            </div>
+	                            </li>
+                            </ul> 
+                        	
+                        	<div class=" col-md-7 noPad"> 
                             <div class="form-inline leaves-heading">
                                 <div class="pull-right">
                                 <div class="form-group">
                             <input type="text" class="calendar form-control input-sm" id="leavesCalendar">
                                     </div>
                                 <div class="form-group">
-                            <button type="button" class="btn btn-primary btn-sm" title="Custom" onClick="customizeEmployee();">Custom</button>
+                                <button type="button" class="btn btn-primary btn-sm" title="Clear" onClick="clearLeaveCalender();">Clear</button>
+<!--                             <button type="button" class="btn btn-primary btn-sm" title="Custom" onClick="customizeEmployee();">Custom</button> -->
                                 </div>
                                     </div>
                                 </div>
                                 <div class="clearfix customizeEmployee" style="display: none;">
                                 <div class="clearfix">
-                                <div class="width150px mr2">
-                                <input name="Date" placeholder="From" class="form-control calendar input-sm" type="text">
+                                <div class="col-md-5 noPad mR5">
+                                <input name="Date" placeholder="From" class="form-control calendar input-sm" id="empCustFromDate" type="text">
                                 </div>
-                                <div class="width150px mr2">
-                                <input type="text" name="Date" placeholder="To" class="form-control calendar input-sm">
+                                <div class="col-md-5 noPad mR5">
+                                <input type="text" name="Date" placeholder="To" id="empCustToDate" class="form-control calendar input-sm">
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
-                                    </div>
+                                </div>
+                                </div>
                                 </div>
                         </div>
                     </div>
                     <div class="clearfix ptagmrng-none">
-                        <div class="col-md-3">
-                      <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/24.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                          </div>
-                      </div>
-                            </div>
-                        <div class="col-md-3">
-                        <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-<ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                            </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                        <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/24.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-<ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>                          </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                             <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                             </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                             </div>
-                      </div>
-                        </div>
-                        <div class="col-md-3">
-                         <div class="media media-custom mb">
-                          <div class="media-left">
-                              <div class="empimg-parent">
-                                <img src="images/23.jpg" class="">
-                              </div>
-                          </div>
-                          <div class="media-body text-left">
-                            <h5 class="media-heading tbldata-dotdot">Suresh Kumar Sahoo</h5>
-                            <p class="small text-muted">Java Developer</p>
-                              <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">
-                                  <li title="Date">S</li>
-                                  <li title="Date">M</li>
-                                  <li title="Date">T</li>
-                                  <li title="Date" class="halfday">W</li>
-                                  <li title="Date" class="fullday">T</li>
-                                  <li title="Date">F</li>
-                                  <li title="Date">S</li>
-                              </ul>
-                          </div>
-                      </div>
-                        </div>
+                    <div class="col-md-12" id="employeeEmptylist" style="display:none">
+		        		<div class="media media-custom mb dataTables_empty"></div>
+		            </div>
+                    	<div id="employeelistDiv"></div>
                       </div>
                 </div>
-                <div class="clearfix"><hr></div>
-                <div class="row">
+                <div class="clearfix"></div>
+               <!--  <div class="row">
                   <div class="col-md-6">
                  
                  <div class="clearfix mt5">
                    <h4 class="heading col-md-4">Top leave Takers</h4>
                     <div class="timesheet_head clearfix col-md-8">
+                    <ul class="list-unstyled noPad pull-left">
+                    	<li title="Export" class="mrPOP" id="mypop"><i class="glyphicon glyphicon-export"></i>
+					        	<div id="exportPop" class="ExpPop">
+					              <ul>
+					                <li onclick="leavePdfExport();"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</li>
+					                <li onclick="leaveExcelExport();"><i class="fa fa-file-excel-o text-primary"></i>&nbsp;&nbsp;Excel</li>
+					              </ul>
+					            </div>
+					          </li>  
+                    </ul>
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right">
-                              <option selected>Year</option>
-                              <option>2010</option>
-                              <option>2011</option>
-                              <option>2012</option>
-                              <option>2013</option>
-                              <option>2014</option>
-                              <option>2015</option>
-                              <option>2016</option>
-                              <option>2017</option>
+                            <select class="form-control pull-right" name="topLeaveTakersreportYear" id="topLeaveTakersreportYear" onchange="getTopLeaveTakers();">
+                              <option value="">Year</option>
+                              <option value="2017">2017</option>
+                              <option value="2018">2018</option>
+                              <option value="2019">2019</option>
+                              <option value="2020">2020</option>
+                              <option value="2021">2021</option>
                             </select>
     </div>
     <div class="form-group">
-    <select class="form-control pull-right">
-                              <option selected>Month</option>
-                              <option>January</option>
-                              <option>February</option>
-                              <option>March</option>
-                              <option>April</option>
-                              <option>May</option>
-                              <option>June</option>
-                              <option>July</option>
-                              <option>August</option>
-                              <option>September</option>
-                              <option>October</option>
-                              <option>November</option>
-                              <option>December</option>
+    <select class="form-control pull-right" name="reportMonth" id="reportMonth" onchange="getTopLeaveTakers();">
+                              <option value="">Month</option>
+                              <option value="0">January</option>
+                              <option value="1">February</option>
+                              <option value="2">March</option>
+                              <option value="3">April</option>
+                              <option value="4">May</option>
+                              <option value="5">June</option>
+                              <option value="6">July</option>
+                              <option value="7">August</option>
+                              <option value="8">September</option>
+                              <option value="9">October</option>
+                              <option value="10">November</option>
+                              <option value="11">December</option>
                             </select>
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="customLeaves" onClick="showCustom()">Custom</button>
   </div>
-<!-- Top Leave Takers Custom Date -->
-    <div class="clearfix pull-lefet col-md-6 paddingRight customLeaves" style="display: none;">
-    <div class="pull-left">
-    <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
-    </div>
-    <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
-    </div>
-    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
-    </div>
-    </div>
-<!-- Top Leave Takers Custom Date -->    
+  <div class="clearfix pull-lefet col-md-6 paddingRight customLeaves" style="display: none;">
+  <div id="customDateDivId"></div>
+  </div>
+  
+Top Leave Takers Custom Date
+    
+Top Leave Takers Custom Date    
                         </div>
                         </div>
                  </div>
                      
-                      <div class="clearfix project_wrap_table mt5">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Employee Name</th>
-                            <th>Days</th>
-                            <th>Status</th>
-                          </tr>
-                          </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        <tr>
-                            <td>
-                              <div class="tbldata-dotdot-big" title="Santoshkumar AvaraDeloper">
-                                  <a href="javascript:void(0)">Santoshkumar AvaraDeloper</a>
-                              </div>
-                            </td>
-                            <td>
-                              <div class="tbldata-dotdot-100">2Weeks</div>
-                            </td>
-                              <td><div class="tblminwidth-75">Approved</div></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging22" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
+                      <div class="clearfix project_wrap_table mt5 datatable_filter">
+                       <div id="topLeaveTakersDiv"></div>
                     </div>
                   </div>
 
                   <div class="col-md-6">
                     <div class="clearfix mt5">
-                   <h4 class="heading col-md-4">Employee Leave Report</h4>
+                   <h4 class="heading col-md-4">Leaves Report</h4>
                     <div class="timesheet_head clearfix col-md-8">
                           <div class="dropdown-select">
                             <div class="form-inline pull-right">
                             <div class="form-group">
-                            <select class="form-control pull-right">
-                              <option selected>Year</option>
-                              <option>2010</option>
-                              <option>2011</option>
-                              <option>2012</option>
-                              <option>2013</option>
-                              <option>2014</option>
-                              <option>2015</option>
-                              <option>2016</option>
-                              <option>2017</option>
+                            <select class="form-control pull-right" name="barChartYear" id="barChartYear" onchange="getLeaveTakersBarChat();">
+                              <option value="">Year</option>
+                              <option value="2017">2017</option>
+                              <option value="2018">2018</option>
+                              <option value="2019">2019</option>
+                              <option value="2020">2020</option>
+                              <option value="2021">2021</option>
+                              <option value="2022">2022</option>
                             </select>
                             </div>
                             <div class="form-group">
-                            <select class="form-control pull-right">
-                              <option selected>Month</option>
-                              <option>January</option>
-                              <option>February</option>
-                              <option>March</option>
-                              <option>April</option>
-                              <option>May</option>
-                              <option>June</option>
-                              <option>July</option>
-                              <option>August</option>
-                              <option>September</option>
-                              <option>October</option>
-                              <option>November</option>
-                              <option>December</option>
+                            <select class="form-control pull-right" name="barCharMonth" id="barCharMonth" onchange="getLeaveTakersBarChat();">
+                              <option value="">Month</option>
+                              <option value="0">January</option>
+                              <option value="1">February</option>
+                              <option value="2">March</option>
+                              <option value="3">April</option>
+                              <option value="4">May</option>
+                              <option value="5">June</option>
+                              <option value="6">July</option>
+                              <option value="7">August</option>
+                              <option value="8">September</option>
+                              <option value="9">October</option>
+                              <option value="10">November</option>
+                              <option value="11">December</option>
                             </select>
     </div>
     <button type="submit" class="btn btn-primary btn-sm" id="showLeaveReport" onClick="showLeaveReport()">Custom</button>
   </div>
-<!-- Top Leave Takers Custom Date -->
+Top Leave Takers Custom Date
     <div class="clearfix pull-lefet col-md-6 paddingRight showLeaveReport" style="display: none;">
     <div class="pull-left">
     <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker4" placeholder="From" class="form-control calendar input-sm" type="text">
+    <input value=""  placeholder="From" class="form-control calendar input-sm" type="text" id="barChartFromDate" name="barChartFromDate">
     </div>
     <div class="pull-left mr5" style="width: 140px">
-    <input value="" name="Date" id="datepicker2" placeholder="To" class="form-control calendar input-sm" type="text">
+    <input value=""  placeholder="To" class="form-control calendar input-sm" type="text" id="barChartToDate" name="barChartToDate">
     </div>
-    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="getLeaveTakersBarChat();"><i class="fa fa-search"></i></button>
     </div>
     </div>
-<!-- Top Leave Takers Custom Date -->    
+Top Leave Takers Custom Date    
                         </div>
                         </div>
                  </div>
                       <div id="empLeavereport" class="amchartAnchor-Hide mt5" style="width: 100%; height: 250px;"></div>
-                  
+                  <div id="empLeavereportEmptyDiv" class="dataTables_empty noRecBor" style="display:none"></div>
                     </div>
-                    </div>
-                <!-- Recent Request -->
-                
-                <div class="clearfix">
-                    <hr>
-                    <h4 class="leaves-heading">Recent Requestes</h4>
-                    <div class="clearfix project_wrap_table">
-                      <table>
-        <thead>
-          <tr>
-            <th>Employee Name</th>
-            <th>Leave Type</th>
-            <th>Duration</th>
-            <th>No of Days</th>
-            <th>Leaves Taken</th>
-            <th>This Month</th>
-            <th>Balance Leaves</th>
-            <th>Action </th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>
-              <div class="proj_show tbldata-dotdot-me">
-                  <div class="pull-left tbldata-dotdot" title="BIS10041">Anandkumar Joshimanohar</div>
-                  <i class="fa fa-binoculars pull-right"></i>
-              </div>
-            </td>
-            <td>
-                <div title="2days" class="tblminwidth-90">
-                    Sick Leave
-                </div>
-            </td>
-            
-            <td>
-                <div title="Duration" class="tblminwidth-75">
-                   <div class="width100percnt">
-                        09/10/2017
-                    </div>
-                    <div class="width100percnt mt2">
-                        09/12/2017
-                    </div>
-                </div>
-            </td>
-            <td>
-              <div title="2 days" class="tblminwidth-75">
-                    2 days
-                </div>
-            </td>
-            <td>
-              <div title="No" class="tblminwidth-100">
-                    20
-                </div>
-            </td>
-            <td>
-              <div title="No" class="tbldata-dotdot-100">
-                10
-                </div>
-            </td>
-            <td>
-              <div title="No" class="tbldata-dotdot-100">
-                    10
-                </div>
-            </td>
-            <td>
-                <div class="tblminwidth-75">
-                    <div title="Accept" class="fa fa-check text-success cursorPointer tblminwidth-30"></div>
-                    <div title="Reject" class="fa fa-times text-danger cursorPointer tblminwidth-30"></div>
-                </div>
-            </td>
-          </tr>
-          </tbody>
-      </table>
-                      <!-- Pagenation -->
-                      <nav class="clearfix">
-                        <ul id="paging" class="pagination pull-right">
-                          <li><a href="#">Previous</a></li>
-                          <li class="active"><a href="#">1</a></li>
-                          <li><a href="#">2</a></li>
-                          <li><a href="#">3</a></li>
-                          <li><a href="#">4</a></li>
-                          <li><a href="#">5</a></li>
-                          <li data-page="last"><a href="#">Next</a></li>
-                        </ul>
-                      </nav>
-                    </div>
-                  </div>
-                <!-- Recent Request -->
-              </div>
+                    </div> -->
               
+              </div>
           </div>
         </div>
       </div>
@@ -790,6 +498,13 @@
 </script> 
 
 <script>
+function clearLeaveCalender(){
+	$("#leavesCalendar").val('');
+	getEmployeeLeavesList();
+}
+</script>
+
+<script>
 $(document).ready(function() {
 $("#tab-1").show();
     $(".project-tabs-menu a").click(function(event) {
@@ -812,6 +527,414 @@ $("#tab-1").show();
     });
   });
 </script> 
+
+
+<script>
+function getHolidaysList(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	var reportYear = "";
+	if($("#reportYear").val() !=null && $("#reportYear").val() != 'undefined' && $("#reportYear").val() != ''){
+		reportYear = $("#reportYear").val();
+	}
+	$.get(sourceleadUrl+"/getHolidaysList?orgLocationId="+orgLocationId+"&reportYear="+reportYear+"", function(response) {
+		if (response.response === "AWKWARD") {
+		    location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+		var result = "";				        	
+				result = result + '<table id="viewHolidaysTable" class="display table table-bordered" cellspacing="0" width="100%" >';
+				result = result + '<thead>';
+				result = result + '<tr>';
+				result = result +'<th>S.No</th>';
+				result = result +'<th>Name</th>';
+				result = result +'<th>Date</th>';
+				result = result + '<th>Day of the Week</th>';
+				result = result + '</tr>';
+				result = result + '</thead>	';
+				result = result + '<tbody>';
+				if(response !=null && response !=''){
+					var j = 1;
+					 for (var i=0; i<response.data.length; i++)
+						{
+			        		 var opt = response.data[i];
+			        		 if(opt.isFuture == 'Y'){
+			        			 result = result + ' <tr class="text-success">';
+			        		 }else{
+			        			 result = result + ' <tr class="text-danger">';
+			        		 }
+			        		 
+			        		 result = result + ' <td>'+j+'</td>';
+			        		 if(opt.holidayName !=null && opt.holidayName !='' && opt.holidayName !='undefined'){
+			        			 result = result + '<td title="'+opt.holidayName+'">'+opt.holidayName+'</td>'; 
+			        		 }else{
+			        			 result = result + '<td>---</td>';
+			        		 }
+			        		 result = result + ' <td title="'+opt.fromDate+' - '+opt.toDate+'">'+opt.fromDate+' - '+opt.toDate+'</td>';
+			        		 result = result + ' <td title="'+opt.dayOfTheWeek+'">'+opt.dayOfTheWeek+'</td>';
+			        		 result = result + '  </tr>';
+			        		 j++;
+						}
+				}
+	        	
+				result = result + '  </tbody>';
+				result = result + ' </table>';
+				$("#holidayListDiv").empty();
+				$("#holidayListDiv").append(result);
+				viewHolidaysTable();
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(sourceleadUrl);
+		} else {
+		    showError("Operation failed, please try again");
+		}
+		}); 
+}
+</script>
+
+<script>
+function viewHolidaysTable(){ 
+    $('#viewHolidaysTable').DataTable( { 
+    	"scrollCollapse": false,
+    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"columnDefs": [ { orderable: false, targets: [2]}],
+    	"bLengthChange": true,
+    	"bDestroy": true,
+    	"ordering": true,
+    	"oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": ""
+       }
+    });
+}
+</script>
+
+<script>
+$("#filterDepartmentPop").click(function(){
+	$(".statusFiler-1").toggle();
+	//$(".statusFiler-2, .statusFiler-3").hide();
+});
+
+$("html").click(function() {
+    $(".statusFiler-1").hide();
+});	
+$("#filterDepartmentPop, .statusFiler-1").click(function(e) {
+    e.stopPropagation();
+});	
+</script>
+
+<script>
+function getEmployeeLeavesList(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	var date = $("#leavesCalendar").val();
+	var department = [];
+	$('input:checkbox[name=department]:checked').each(function() 
+    {
+		department.push($(this).val());
+    });
+	$.get(sourceleadUrl+"/getEmployeeLeavesList?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&department="+department+"&leaveDateStr="+date, function(data) {
+		var result = "";	
+		 $("#employeelistDiv").empty();
+		if(data != '' && data != null){
+			$("#employeeEmptylist").hide();
+			for (var i=0; i<data.length; i++){
+				var opt = data[i];
+				result += '<div class="col-md-3">';
+		        result += '<div class="media media-custom mb">';
+		        result += '    <div class="media-left">';
+		        result += '        <div class="empimg-parent">';
+		        if(opt.empProfileImageURL != null && opt.empProfileImageURL != '' && opt.empProfileImageURL != 'undefined'){
+		        	result += '          <img onerror="predefineProfileImage(this);" src="'+opt.empProfileImageURL+'"  class="">';
+		        }else{
+		        	result += '          <img onerror="predefineProfileImage(this);" src=""  class="">';
+		        }
+		        result += '        </div>';
+		        result += '    </div>';
+		        result += '    <div class="media-body text-left">';
+		        if(opt.empName != null && opt.empName != '' && opt.empName != 'undefined'){
+		        	result += '      <h5 class="media-heading tbldata-dotdot">'+opt.empName+'</h5>';
+		        }
+		        
+		        if(opt.empType != null && opt.empType != '' && opt.empType != 'undefined'){
+		        	result += '      <p class="small text-muted">'+opt.empType+'</p>';
+		        }else{
+		        	result += '      <p class="small text-muted">NA</p>';
+		        }
+		        result += '        <ul class="list-unstyled list-inline mrng0 mt5 empLeave-li">';
+		        if(opt.isSunday == "Y" && opt.isSunday != null && opt.isSunday != '' && opt.isSunday != 'undefined'){
+		        	if((opt.isSundayHalfDay == "Y" && opt.isSundayHalfDay != null && opt.isSundayHalfDay != '' && opt.isSundayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">S</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">S</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">S</li>';
+		        }
+		        if(opt.isMonday == "Y" && opt.isMonday != null && opt.isMonday != '' && opt.isMonday != 'undefined'){
+		        	if((opt.isMondayHalfDay == "Y" && opt.isMondayHalfDay != null && opt.isMondayHalfDay != '' && opt.isMondayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">M</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">M</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">M</li>';
+		        }
+		        
+		        if(opt.isTuesday == "Y" && opt.isTuesday != null && opt.isTuesday != '' && opt.isTuesday != 'undefined'){
+		        	if((opt.isTuesdayHalfDay == "Y" && opt.isTuesdayHalfDay != null && opt.isTuesdayHalfDay != '' && opt.isTuesdayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">T</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">T</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">T</li>';
+		        }
+		        
+		        if(opt.isWednesday == "Y" && opt.isWednesday != null && opt.isWednesday != '' && opt.isWednesday != 'undefined'){
+		        	if((opt.isWednesdayHalfDay == "Y" && opt.isWednesdayHalfDay != null && opt.isWednesdayHalfDay != '' && opt.isWednesdayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">W</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">W</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">W</li>';
+		        }
+		        
+		        if(opt.isThursday == "Y" && opt.isThursday != null && opt.isThursday != '' && opt.isThursday != 'undefined'){
+		        	if((opt.isThursdayHalfDay == "Y" && opt.isThursdayHalfDay != null && opt.isThursdayHalfDay != '' && opt.isThursdayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">T</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">T</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">T</li>';
+		        }
+		        
+		        if(opt.isFriday == "Y" && opt.isFriday != null && opt.isFriday != '' && opt.isFriday != 'undefined'){
+		        	if((opt.isFridayHalfDay == "Y" && opt.isFridayHalfDay != null && opt.isFridayHalfDay != '' && opt.isFridayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">F</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">F</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">F</li>';
+		        }
+		        
+		        if(opt.isSaturday == "Y" && opt.isSaturday != null && opt.isSaturday != '' && opt.isSaturday != 'undefined'){
+		        	if((opt.isSaturdayHalfDay == "Y" && opt.isSaturdayHalfDay != null && opt.isSaturdayHalfDay != '' && opt.isSaturdayHalfDay != 'undefined') || opt.duration == "Half Day"){
+		        		result += '            <li title="Day" class="halfday">S</li>';
+		        	}else{
+		        		result += '            <li title="Day" class="fullday">S</li>';
+		        	}
+		        }else{
+		        	result += '            <li title="Day">S</li>';
+		        }
+		        
+		        result += '        </ul>';
+		        result += '    </div>';
+		        result += '</div>';
+		        result += '</div>';
+		        $("#employeelistDiv").empty();
+		        $("#employeelistDiv").append(result);
+			}
+		}else{
+			$("#employeeEmptylist").show();
+		}
+		
+		
+	}); 
+	
+}
+</script>
+
+
+
+<script type="text/javascript">
+function getLeaveTakersBarChat(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	var barChartYear ="";
+	var barCharMonth = "";
+	var barChartFromDate = "";
+	var barChartToDate = "";
+	 if($("#barChartYear").val() !=null && $("#barChartYear").val() != 'undefined' && $("#barChartYear").val() != ''){
+		barChartYear = $("#barChartYear").val();
+	}
+	if($("#barCharMonth").val() !=null && $("#barCharMonth").val() != 'undefined' && $("#barCharMonth").val() != ''){
+		barCharMonth = $("#barCharMonth").val();	
+	}
+	if($("#barChartFromDate").val() !=null && $("#barChartFromDate").val() != 'undefined' && $("#barChartFromDate").val() != ''){
+		var barChartFromDate = $("#barChartFromDate").val();	
+	}
+	if($("#barChartToDate").val() !=null && $("#barChartToDate").val() != 'undefined' && $("#barChartToDate").val() != ''){
+		var barChartToDate = $("#barChartToDate").val();	
+	} 
+	$.ajax({
+	   	type: "GET",
+	   	url: sourceleadUrl+"/getLeaveTakersBarChat?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId+"&barChartYear="+barChartYear+"&barCharMonth="+barCharMonth+"&barChartFromDate="+barChartFromDate+"&barChartToDate="+barChartToDate,	    	   
+	    success: function(data) {
+   			 totalLeaveByEmployeeBarChart(data);
+	    }
+   });
+}
+</script>
+
+<script>
+function totalLeaveByEmployeeBarChart(data){
+	  var chartData = [];
+	   for (var i = 0; i < data.length; i++) { 
+	 		 var opt = data[i]; 
+	         chartData.push({
+	        	 category: opt.leaveType,
+	        	 leaveType: opt.totalLeaves,
+	         	 color: opt.colorCode
+	       });
+	   } 
+	 if(chartData == ""){
+		 $("#empLeavereport").hide();
+		 $("#empLeavereportEmptyDiv").show();
+	 }else{
+		 $("#empLeavereport").show();
+		 $("#empLeavereportEmptyDiv").hide();
+	 }
+	AmCharts.makeChart("empLeavereport",
+			{
+				"type": "serial",
+				"categoryField": "category",
+				"columnSpacing": 20,
+				"columnWidth": 0.5,
+				"autoMarginOffset": 20,
+				"marginBottom": 5,
+				"marginLeft": 0,
+				"marginRight": 5,
+				"marginTop": 10,
+				"minMarginBottom": 0,
+				"minMarginLeft": 0,
+				"minMarginRight": 0,
+				"minMarginTop": 0,
+				"startDuration": 1,
+				"autoDisplay": true,
+				"touchClickDuration": 10,
+				"categoryAxis": {
+                    "autoRotateAngle": 40,
+                    "autoRotateCount": 0,					
+					"gridPosition": "start",
+					"titleFontSize": 0
+				},
+				"trendLines": [],
+				"graphs": [
+					{
+						"balloonText": "[[category]] [[value]]",
+						"colorField": "color",
+						"fillAlphas": 1,
+						"id": "AmGraph-1",
+						"lineColorField": "color",
+						"title": "graph 1",
+						"type": "column",
+						"valueField": "leaveType"
+					}
+				],
+				"guides": [],
+				"valueAxes": [
+					{
+						"stackType": "regular"
+					}
+				],
+				"allLabels": [],
+				"balloon": {
+					"offsetY": 4,
+					"pointerWidth": 10,
+					"verticalPadding": 5
+				},
+				"titles": [],
+				"dataProvider": chartData
+			}
+		);
+}
+</script>
+
+<script>
+function getPieChartBasedOnUser(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+        type : "GET",
+         url: sourceleadUrl+"/getLeaveTypeReport?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,    
+         success :function(data) {
+       	  var chartData = [];
+       		 var result = "";
+       		 if(data.length > 0){
+       			for (var i = 0; i < data.length; i++) {
+      		 		 var opt = data[i];
+      		 		 var numberOfDaysCount = 0;
+      		 		 if(opt.totalNoOfDays != null && opt.totalNoOfDays != "" && opt.totalNoOfDays != 'undefined'){
+      		 			numberOfDaysCount = opt.totalNoOfDays 
+      		 		 }
+      		 		result = result +'  <div class="col-md-2 mb">';
+      	            result = result +'   <h4 class="text-center tbldata-dotdot-vsm" title="'+opt.name+'">'+opt.name+'</h4>';
+      	            //result = result +'   <div id="vacationDonut'+opt.leaveTypeId+'" class="amchartAnchor-Hide" style="width: 100%; height: 125px;"> </div>';
+      	            result = result +'   <div class="text-center">';
+      	            result = result +'     <h2>';
+      	            //result = result +'       <label class="small text-muted">Remaining:</label>';
+      	            result = result +'       <label class="clearfix width100percnt mt5">'+numberOfDaysCount.toFixed(2)+' / '+opt.noOfLeavesPerYear+'</label>';
+      	            result = result +'     </h2>';
+      	            result = result +'   </div>';
+      	            result = result +' </div>';
+      	            
+      	           /*   AmCharts.makeChart("vacationDonut"+opt.leaveTypeId+"", {
+      						"type": "pie",
+      						"balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> </span>",
+      						"innerRadius": "60%",
+      						"pieX": "50%",
+      						"pieY": "50%",
+      						"radius": "48%",
+      						"colorField": "color",
+      						"colors": [],
+      						"labelsEnabled": false,
+      						"marginBottom": 0,
+      						"marginTop": 0,
+      						"titleField": "category",
+      						"valueField": "column-1",
+      						"allLabels": [],
+      						"balloon": {},
+      						"titles": [],
+      						"dataProvider": [
+      							{
+      								"category": "Approved",
+      								"column-1": opt.approvedCount,
+      								"color": "#5cb85c"
+      							},
+      							{
+      								"category": "Pending",
+      								"column-1": opt.pendingCount,
+      								"color": "#337ab7"
+      							},
+      							{
+      								"category": "Rejected",
+      								"column-1": opt.rejectedCount,
+      								"color": "#d9534f"
+      							},
+      							{
+      								"category": "Cancelled",
+      								"column-1": opt.cancelCount,
+      								"color": "#f0ad4e"
+      							}
+      						]
+      					} 
+      							 
+      					); */
+      		   }
+       		 }else{
+       			result = result + '<div class="dataTables_empty center" ></div>';
+       		 }
+       	            $("#pichartLeaveTypeIdDiv").empty();
+       	            $("#pichartLeaveTypeIdDiv").append(result);
+       	  
+       	  
+        },
+         
+    }); 
+}
+</script>
 
 <script>
     /*------My Timeoff Balance Piecharts------*/
@@ -967,97 +1090,598 @@ $("#tab-1").show();
 				}
 			);
     //Custom buttons
-    function showCustom(){
-        $(".customLeaves").toggle();
-    }
+   
+    $("html").click(function() {
+    	$(".customLeaves").hide();
+    })
+    $("#customLeaves, .customLeaves, .ui-datepicker").click(function(e) {
+    	e.stopPropagation();
+    })
+    
     function showLeaveReport(){
         $(".showLeaveReport").toggle();
     }
+    $("html").click(function() {
+        $(".showLeaveReport").hide();
+    });	
+    $("#showLeaveReport, .showLeaveReport").click(function(e) {
+        e.stopPropagation();
+    });
     //jQuery UI Calendar
-    $("#leavesCalendar").datepicker();
+//     $("#leavesCalendar").datepicker();
     </script>
     
-		<script>
-                //Employee LeaveReport Amchart
-			AmCharts.makeChart("empLeavereport",
-				{
-					"type": "serial",
-					"categoryField": "category",
-					"columnSpacing": 20,
-					"columnWidth": 0.5,
-					"autoMarginOffset": 20,
-					"marginBottom": 5,
-					"marginLeft": 0,
-					"marginRight": 5,
-					"marginTop": 10,
-					"minMarginBottom": 0,
-					"minMarginLeft": 0,
-					"minMarginRight": 0,
-					"minMarginTop": 0,
-					"startDuration": 1,
-					"autoDisplay": true,
-					"touchClickDuration": 10,
-					"categoryAxis": {
-						"gridPosition": "start",
-						"titleFontSize": 0
-					},
-					"trendLines": [],
-					"graphs": [
-						{
-							"balloonText": "[[category]] [[value]]",
-							"colorField": "color",
-							"fillAlphas": 1,
-							"id": "AmGraph-1",
-							"lineColorField": "color",
-							"title": "graph 1",
-							"type": "column",
-							"valueField": "column-1"
-						}
-					],
-					"guides": [],
-					"valueAxes": [],
-					"allLabels": [],
-					"balloon": {
-						"offsetY": 4,
-						"pointerWidth": 10,
-						"verticalPadding": 5
-					},
-					"titles": [],
-					"dataProvider": [
-						{
-							"category": "Annual Leave",
-							"column-1": "12",
-							"color": "#64b5f6"
-						},
-						{
-							"category": "Sick Leave",
-							"column-1": "6",
-							"color": "#ef5350"
-						},
-						{
-							"category": "Casual Leave",
-							"column-1": "12",
-							"color": "#66bb6a "
-						},
-						{
-							"category": "Maternity Leave",
-							"column-1": "6",
-							"color": "#3949ab"
-						},
-						{
-							"category": "Personal Leave",
-							"column-1": "8",
-							"color": "#ffa726"
-						}
-					]
-				}
-			);
-		</script>
+		
     <script>
     function customizeEmployee(){
         $(".customizeEmployee").fadeToggle();
     }
     </script>
+    
+    <script>
+    function showCustom(){
+     
+    	$(".customLeaves").toggle();
+        var result = ""
+        	result = result + '<form id="customDate-form" name="customDate-form">';
+           result = result + '<div class="pull-left">';
+           result = result + '<div class="pull-left mr5" style="width: 140px" id="startErr">';
+           result = result + '<input value="" name="reportFromDate" id="reportFromDate" placeholder="From" class="form-control calendar input-sm" type="text" data-validation="required" field-name="Start Date">';
+           result = result + '</div>';
+           result = result + '<div class="pull-left mr5" style="width: 140px" id="endErr">';
+           result = result + '<input value="" name="reportEndDate" id="reportEndDate" placeholder="To" class="form-control calendar input-sm" type="text" data-validation="required" field-name="End Date">';
+           result = result + '</div>';
+           result = result + '<button type="button" class="btn btn-primary btn-sm" onclick="customDatesearchin();"><i class="fa fa-search"></i></button>';
+           result = result + '</div>';
+           result = result + '</form>';
+        
+           $("#customDateDivId").empty();
+		   $("#customDateDivId").append(result);
+           var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+ 		  var finalDateFormatEndDate = '';
+ 		  if(locationDate.match("yyyy-MM-dd")){
+ 			  finalDateFormatEndDate = 'yy-mm-dd';
+ 		  }if(locationDate.match("dd-MM-yyyy")){
+ 			  finalDateFormatEndDate = 'dd-mm-yy'; 
+ 		  }if(locationDate.match("MM-dd-yyyy")){
+ 			  finalDateFormatEndDate = 'mm-dd-yy'; 
+ 		  }if(locationDate.match("yyyy-dd-MM")){
+ 			  finalDateFormatEndDate = 'yy-dd-mm'; 
+ 		  }
+ 		$('#reportFromDate').datepicker({
+ 			dateFormat : finalDateFormatEndDate,
+ 			changeMonth: true,
+ 			changeYear: true, 
+ 			onSelect : function(selected) {
+ 			var dt = $(this).datepicker('getDate', '+1d');
+ 			dt.setDate(dt.getDate());
+ 			$("#reportEndDate").datepicker("option", "minDate", dt);
+ 			removeStartDateValidation();
+ 			}
+ 		});
+ 		
+ 	  $('#reportEndDate').datepicker({
+ 			dateFormat : finalDateFormatEndDate,
+ 			changeMonth: true,
+ 			changeYear: true, 
+ 			onSelect : function(selected) {
+ 			var dt = $(this).datepicker('getDate', '-1d');
+ 			dt.setDate(dt.getDate());
+ 			$("#reportFromDate").datepicker("option", "maxDate", dt);
+ 			removeEndDateValidation();
+ 			}
+ 		});
+    }
+    function removeStartDateValidation(){
+    	$('#startErr').find('p.jquery_form_error_message').remove();
+    }
+    function removeEndDateValidation(){
+    	$('#endErr').find('p.jquery_form_error_message').remove();
+    }
+    function customDatesearchin(){
+    	if ($('#customDate-form').validate(false, validationSettings)) {
+    		getTopLeaveTakers();
+    		$(".customLeaves").hide();
+    	}else {
+			return false;
+		}
+    }
+    $('body').on('blur', '#customDate-form', function() {
+		$("#customDate-form").showHelpOnFocus();
+		$("#customDate-form").validateOnBlur(false, validationSettings);
+	});
+    </script>
+    
+ <script>
+	function getTopLeaveTakers() {
+		
+		
+		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var userId = '${SourceLeadWeb_userId}';
+		var reportYear = "";
+		var reportMonth = "";
+		var reportFromDate = "";
+		if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+			reportYear = $("#topLeaveTakersreportYear").val();
+		}
+		if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+			reportMonth = $("#reportMonth").val();	
+		}
+		if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+			var reportFromDate = $("#reportFromDate").val();	
+		}
+		if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+			var reportEndDate = $("#reportEndDate").val();	
+		}
 
+		var searchValue = $("#dataTableSearch").val();
+  		searchValue = searchValue ? searchValue : "";
+  		var url = sourceleadUrl+"/getTopLeavetakers?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&searchValue="+searchValue+"&userId="+userId+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate;
+  		prepareTopLeaveTakersList(url); 
+	}
+	
+</script>	
+
+<script>	
+	function prepareTopLeaveTakersList(url) {
+		$("#leaveEmptyMessage").val(0);
+		$("#topLeaveTakersDiv").empty();
+		var result = "";
+		result = result + "<table id='topLeaveTakersTable' class='display' cellspacing='0' width='100%' >";
+		result = result + "<thead>";
+		result = result + "  <tr>";
+		result = result + "    <th>Employee Name</th>";
+		result = result + "    <th>Number Of Days</th>";
+		result = result + "    <th>Status</th>";
+		result = result + "  </tr>";
+		result = result + "</thead>";
+		result = result + "<tbody>";
+		result = result + " </tbody>";
+		result = result + "</table>";
+		$("#topLeaveTakersDiv").append(result);
+		topLeaveTakersPagination(url);
+	}
+
+</script>
+
+
+<script>
+function topLeaveTakersPagination(url){
+	var colIndex = 0;
+		 $('#topLeaveTakersTable').DataTable( { 
+	    	"processing": true,
+	        "serverSide": true,
+	        "searching": false,
+	        "ajax": $.fn.dataTable.pipeline( {
+	            url: url,
+	            method: 'POST',
+	            pages: 10
+	        }),
+	        "columns": [
+	            { "data": "empName" },
+	            { "data": "noOfDays"},
+	            { "data": "status" }
+	        ],
+	        "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "empName",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		$("#leaveEmptyMessage").val(1);
+		    	  		var result = "";
+		    	  		result = result + '<td>';
+		    	  		result = result + '<div class="tbldata-dotdot-big" title="">';
+		    	  		result = result + '<a href="javascript:void(0)">'+report.empName+'</a>';
+		    	  		result = result + '</div>';
+		    	  		result = result + '</td>';
+		    	  		return  result; 
+		    	  	}
+		      },{
+	            "targets": colIndex++,
+	            "data": "noOfDays",
+	            "render": function ( data, type, report, meta ) {
+	            	    var result = "";
+	            	    result = result + '<td>';
+	            	    result = result + '<div class="tbldata-dotdot-100">'+report.noOfDays+'</div>';
+	            	    result = result + '</td>';
+		              return result;
+	            }
+	          }, {
+	              "targets": colIndex++,
+	              "data": "status",
+	              "render": function ( data, type, report, meta ) {
+	            	   var result = "";
+	            	   result = result + '<td><div class="tblminwidth-75">'+report.status+'</div></td>';
+	  	              return result; 
+	              }
+	            }],
+		    	"scrollCollapse": false,
+		    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+		    	"aaSorting": [[1,'desc']],
+		    	"bLengthChange": true,
+		    	"bDestroy": true,
+		    	"ordering": true,
+		    	"oLanguage": {
+		     		"sSearch": "",
+		     		 "sZeroRecords": "", "sEmptyTable": ""
+		     		
+		     }
+	    } );
+	    $("#topLeaveTakersTable").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+	    $("input[type=search]").hide();
+	   /*  $("#dataTableSearch").keyup(function(e) {
+	    	   if(e.which === 13) {
+	    		   getClientList();
+	    	   }
+	    	}); */
+}
+</script>
+
+
+<script>
+	$(function() {
+		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatEndDate = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatEndDate = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatEndDate = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatEndDate = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatEndDate = 'yy-dd-mm'; 
+		  }
+		$('#reportFromDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#reportEndDate").datepicker("option", "minDate", dt);
+			}
+		});
+		
+	  $('#reportEndDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#reportFromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+	  
+	  $('#leavesCalendar').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			getEmployeeLeavesList();
+			}
+		});
+	  
+	  $('#empCustFromDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#empCustToDate").datepicker("option", "minDate", dt);
+			}
+		});
+		
+	  $('#empCustToDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#empCustFromDate").datepicker("option", "maxDate", dt);
+			}
+		});
+		
+	  $('#barChartFromDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '+1d');
+			dt.setDate(dt.getDate());
+			$("#toDate").datepicker("option", "minDate", dt);
+			removeStartValid();
+			}
+		});
+		
+	  $('#barChartToDate').datepicker({
+			dateFormat : finalDateFormatEndDate,
+			changeMonth: true,
+			changeYear: true, 
+			onSelect : function(selected) {
+			var dt = $(this).datepicker('getDate', '-1d');
+			dt.setDate(dt.getDate());
+			$("#fromdate").datepicker("option", "maxDate", dt);
+			removeEndValid();
+			}
+		});
+	  
+	});
+</script>
+
+
+<script>
+$('#mypop').click(function(){
+		$("#exportPop").toggle();
+ });
+ $("html").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ $(".billing_dashboard, .nav-tabs").click(function(){
+	$("#exportPop, .ExpPop").hide(200);
+ });
+ 
+ $("#exportPop, #mypop, .nav-tabs, .billing_dashboard").click(function(e) {  
+     e.stopPropagation();
+ });
+</script>
+
+
+<script>
+function leavePdfExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	var emptyExport = $("#leaveEmptyMessage").val();
+	
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+
+	if(emptyExport > 0){
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=PDF";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Leaves List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_leave_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+
+function cancel(){
+	$("#popUp").empty();
+	$(".project_inn_mask").fadeOut(200);
+}
+</script>
+
+<script>
+function leaveExcelExport(){
+	
+	var reportYear = "";
+	var reportMonth = "";
+	var reportFromDate = "";
+	var reportEndDate = "";
+	var emptyExport = $("#leaveEmptyMessage").val();
+	
+	if($("#topLeaveTakersreportYear").val() !=null && $("#topLeaveTakersreportYear").val() != 'undefined' && $("#topLeaveTakersreportYear").val() != ''){
+		reportYear = $("#topLeaveTakersreportYear").val();
+	}
+	if($("#reportMonth").val() !=null && $("#reportMonth").val() != 'undefined' && $("#reportMonth").val() != ''){
+		reportMonth = $("#reportMonth").val();	
+	}
+	if($("#reportFromDate").val() !=null && $("#reportFromDate").val() != 'undefined' && $("#reportFromDate").val() != ''){
+		 reportFromDate = $("#reportFromDate").val();	
+	}
+	if($("#reportEndDate").val() !=null && $("#reportEndDate").val() != 'undefined' && $("#reportEndDate").val() != ''){
+		 reportEndDate = $("#reportEndDate").val();	
+	}
+	if(emptyExport > 0){
+	window.location.href = sourceleadUrl+"/getLeaveExportList?"+tokenParamName+"="+tokenValue+"&topLeaveTakersreportYear="+reportYear+"&reportMonth="+reportMonth+"&reportFromDate="+reportFromDate+"&reportEndDate="+reportEndDate+"&exportType=EXCEL";
+	}else{
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='empty_leave_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"		<p>Leaves List is Empty</p>";
+		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#empty_leave_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+}
+</script>
+
+<script>
+function leaveImport(){
+	resetUpload();
+	$(".dowload_pop").toggle();
+}
+function closeImportFile(){
+	$(".dowload_pop").hide();
+}
+function leaveImpPopClose(){
+	$(".side_mask").fadeOut(200);
+	$(".DocAccPopup").fadeOut(100);	
+}
+</script>
+
+
+<script type="text/javascript">
+function importLeaves(){
+	var validationSettings = {
+            errorMessagePosition : 'element',
+            borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd' 
+            };
+if ($('#upload_leave_excel_form').validate(false, validationSettings)){
+	var frm = $('#upload_leave_excel_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, "");
+	
+	
+	//It will escape all the special characters
+	var jsonData = encodeURIComponent(con);
+	var form = $('#upload_leave_excel_form')[0];
+	var formData = new FormData(form); 
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+		   	type: "POST",
+		   	data: formData,
+    	    contentType : 'application/json; charset=utf-8',
+    	    enctype: 'multipart/form-data',
+	        processData: false,
+	        contentType:false,
+    	    dataType : 'json',
+		    url : sourceleadUrl+"/uploadLeaveType?"+tokenParamName+"="+tokenValue+"", 	   
+ 		    success : function(json) {
+ 		    		$("#loading").removeAttr("style");
+ 		    	    if(json.updateCount != null && json.updateCount != '')
+ 		    	    $("#msgDiv").removeAttr("style");
+ 		 			$("#msgDiv").css({ display: "block" });
+ 		 			$("#msgDiv").html(json.updateCount+ " Associates are updated ..!");
+ 			    	msgFadein();
+ 		    	    closeImportFile();
+ 		    	   resetUpload();
+		 		    },
+		 		   error: function(e){
+			        }
+			 });
+			 
+		}
+}
+</script>
+
+<script>
+function resetUpload(){
+	$("#leaveInputFileId").val("");
+	$("#validation").find('p.jquery_form_error_message').remove();
+}
+</script>
+
+
+<script>
+	function msgFadein() {
+		$("#msgDiv").fadeIn(200);
+        $('#msgDiv').delay(2000).fadeOut('slow');
+	}
+</script> 
+
+
+<script>
+function getEmployeeTotalCounts(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/totalCountsForEmployeeLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	       success :function(report) { 
+	    	   if(report.employeeRequestedCounts != null && report.employeeRequestedCounts != '' && report.employeeRequestedCounts != 'undefined'){
+	    		   if(report.employeeRequestedCounts == 0){
+	      				$('#empReq').html("Requested");
+	      			   }else{
+	      				 $('#empReq').html("<a href='/app/employeeRequestedLeaves'>Requested</a>"); 
+	      			   }
+    			   $("#employeeRequestedCounts").html(report.employeeRequestedCounts); 
+    		   }
+    		   if(report.employeeApprovedCounts != null && report.employeeApprovedCounts != '' && report.employeeApprovedCounts != 'undefined'){
+    			   if(report.employeeApprovedCounts == 0){
+    	   				$('#empApp').html("Approved");
+    	   			   }else{
+    	   				$('#empApp').html("<a href='/app/employeeApprovedLeaves'>Approved</a>"); 
+    	   			   }
+    			   $("#employeeApprovedCounts").html(report.employeeApprovedCounts); 
+    		   }
+    		   if(report.employeeRejectedCounts != null && report.employeeRejectedCounts != '' && report.employeeRejectedCounts != 'undefined'){
+    			   if(report.employeeRejectedCounts == 0){
+    	   				$('#empRej').html("Rejected");
+    	   			   }else{
+    	   				$('#empRej').html("<a href='/app/employeeRejectedLeaves'>Rejected</a>");
+    	   			   }
+    			   $("#employeeRejectedCounts").html(report.employeeRejectedCounts); 
+    		   }
+    		   if(report.employeeCancelledCounts != null && report.employeeCancelledCounts != '' && report.employeeCancelledCounts != 'undefined'){
+    			   if(report.employeeCancelledCounts == 0){
+    				    $('#empCanc').html("Cancelled");
+    	   			   }else{
+    	   				$('#empCanc').html("<a href='/app/employeeCancelLeaves'>Cancelled</a>");
+    	   			   }
+    			   $("#employeeCancelledCounts").html(report.employeeCancelledCounts); 
+    		   }
+    		   
+	       },
+		  });
+}
+ 
+</script>
+
+<script>
+function getSelfTotalCounts(){
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var userId = '${SourceLeadWeb_userId}';
+	 $.ajax({
+	      type : "GET",
+	      url: sourceleadUrl+"/totalCountsForSelfLeaves?"+tokenParamName+"="+tokenValue+"&orgLocationId="+orgLocationId+"&userId="+userId,  
+	       success :function(report) { 
+	   	   if(report.selfPendingCounts != null && report.selfPendingCounts != '' && report.selfPendingCounts != 'undefined'){
+	   		if(report.selfPendingCounts == 0){
+   				$("#selfpend").html("Pending"); 
+   			   }else{
+   				$("#selfpend").html("<a href='/app/pendingLeaves'>Pending</a>"); 
+   			   }
+   			   $("#selfPendingCounts").html(report.selfPendingCounts); 
+   		   }
+   		   if(report.selfApprovedCounts != null && report.selfApprovedCounts != '' && report.selfApprovedCounts != 'undefined'){
+   			if(report.selfApprovedCounts == 0){
+   				$("#selfapp").html("Approved"); 
+   			   }else{
+   				$("#selfapp").html("<a href='/app/approvedLeaves'>Approved</a>");
+   			   }
+   			   $("#selfApprovedCounts").html(report.selfApprovedCounts); 
+   		   }
+   		   if(report.selfRejectedCounts != null && report.selfRejectedCounts != '' && report.selfRejectedCounts != 'undefined'){
+   			   if(report.selfRejectedCounts == 0){
+   				$("#selfrej").html("Rejected"); 
+   			   }else{
+   				$("#selfrej").html("<a href='/app/rejectedLeaves'>Rejected</a>");
+   			   }
+   			   $("#selfRejectedCounts").html(report.selfRejectedCounts); 
+   		   }
+   		   if(report.selfCancelledCounts != null && report.selfCancelledCounts != '' && report.selfCancelledCounts != 'undefined'){
+   			   
+   			if(report.selfCancelledCounts == 0){
+   				$('#selfcanc').html("Cancelled");
+   			   }else{
+   				$("#selfcanc").html("<a href='/app/cancelLeaves'>Cancelled</a>");
+   			   }
+   			   $("#selfCancelledCounts").html(report.selfCancelledCounts); 
+   		   }
+   			if((report.totalBalLeaves != null && report.totalBalLeaves != '' && report.totalBalLeaves != 'undefined') || report.totalBalLeaves == '0'){
+   			   $("#selfBalancedCounts").html(report.totalBalLeaves); 
+   		   }
+   		 
+	       },
+		  });
+}
+</script>
 
 <jsp:include page="../masterFooter.jsp" />

@@ -12,11 +12,21 @@ public interface ProjectApproverHierarchyDao {
 	
 	public ProjectApproverHierarchy getLevelOneProjectApproverByProjectId(Long ProjectId) throws Exception;
 	
+	public ProjectApproverHierarchy getProjectApproverByProjectIdAndLevel(Long projectId,Integer level) throws Exception;
+	
 	public ProjectApproverHierarchy updateProjectApproverHierarchy(ProjectApproverHierarchy projectApproverHierarchy) throws Exception;
+	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientId(Long projectId, Long projectClientId,Long orgId,String isGlobalAccess) throws Exception;
+	
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception;
 
+	public List<ProjectApproverHierarchy> getActiveOrgApproverUsersByProjectMemberMasterCandidateIdAndProjectId(long projectMemberMasterCandidateId,long projectId) throws Exception;
+	
 	public List<ProjectApproverHierarchy> getAllApproverUsersByProjectIdList(List<Long> projectIds) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getApproverUsersByProjectId(long Id) throws Exception;
+	
+	public List<ProjectApproverHierarchy> getApproverUsersByProjectClientId(Long projectClientsId) throws Exception;
 	
 	public List<ProjectApproverHierarchy> getAllProjectApproverHierarchyByProjectId(long Id,long userId) throws Exception;
 	
@@ -47,6 +57,15 @@ public interface ProjectApproverHierarchyDao {
 	 */
 	public List<ProjectApproverHierarchy> getApproverUserIdsByOrgLocationIdAndLevelAndFrequency(Long orgLocationId, String invoiceFrequency, int managerLevel)throws Exception;
 	
+	public ProjectApproverHierarchy getApproverUsersByProjectIdAndProjectClientIdAndApproverUserId(Long approverUserId, Long projectClientId) throws Exception;
+	
 	public ProjectApproverHierarchy getProjectApproverByProjectId(Long ProjectId) throws Exception;
+	
+	public ProjectApproverHierarchy getProjectApproverByUserIdAndProjectIdOrgLocationId(Long userId,Long projectId,Long orgLocationId) throws Exception;
+	
+	List<ProjectApproverHierarchy> getProjectsHierarchyListByProjectClientId(Long projectClientId) throws Exception;
+	
+	String getApprovalMechanismTypeByProjectClientId(Long projectClientId) throws Exception;
+
 	
 }

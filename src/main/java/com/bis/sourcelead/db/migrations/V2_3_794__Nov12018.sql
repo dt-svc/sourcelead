@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('JOB_FAIR','SELECTED_CLIENT','VARCHAR(50) NULL');

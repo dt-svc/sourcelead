@@ -21,8 +21,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "CANDIDATE_OFF_BOARDING", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="candidateOffBoarding")
+@Table(name = "CANDIDATE_OFF_BOARDING")
 public class CandidateOffBoarding implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -32,7 +31,7 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID")
 	private User userId;
@@ -51,16 +50,16 @@ private static final long serialVersionUID = 1L;
 	@Type(type="text")
 	private String address2;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
 	private String location;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
 	private String city;
 	
 	@Column(name = "ZIPCODE")
@@ -97,7 +96,7 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "HAVE_TO_WORK_IN_NOTICE_PERIOD")
 	private String haveToWorkInNoticePeriod;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;

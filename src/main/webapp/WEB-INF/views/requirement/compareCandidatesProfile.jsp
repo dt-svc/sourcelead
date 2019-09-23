@@ -7,44 +7,77 @@
 .new_side_wrap {
 	z-index:100000 !important; 
 }
-/* .side_mask {
-z-index:9999 !important;
-} */
 </style>
 
 <script>
 function compareRecommendedUsers(requirementId){
-	
-	var candlist = JSON.parse($("#compareCandListMap").val());
 	var sourceleadUrl = '${sourceleadUrl}';
 	var locationId = '${SourceLeadWeb_orgLocationId}';
-	
-	var complist = [];
-	 var oTable = $('#recommendationTable').dataTable();
-	 var rowcollection =  oTable.$("input[name='compareCandi']:checked", {"page": "all"});
-	 rowcollection.each(function(index,elem){
-		 complist[index] = $(elem).val();
-	 });
-	
-	if(complist.length >= 2 && complist.length <= 4){
-		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	var candidateIds = new Array();
+	 for(var e in compareCandidates) {
+		 if(!e || !compareCandidates[e] || compareCandidates[e] === "")
+			   continue;
+		 candidateIds.push(compareCandidates[e]);
+	 }
+	if(candidateIds.length >= 2 && candidateIds.length <= 4){
+		var s = "";
+		for(var e in compareCandidates) {
+			if(s !== "")
+				s += ",";
+			s += compareCandidates[e];	
+		}
+		$("#loading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 		    	type: "GET",
-		        url: sourceleadUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+complist,
+		        url: sourceleadUrl+"/getCandidatesToCompare?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+locationId+"&candidatesSelected="+s,
 		        success: function(data) {
-		        	compareRecommendedUsersdiv(data,requirementId,candlist);
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+		        		compareRecommendedUsersdiv(data.object,requirementId);
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        	$("#loading").removeAttr('style');
 		        }
 		 });
 	}else{
-		alert("Please select Minimum 2 Candidates to Compare")
+		recommendationAlertMessage(candidateIds);
 	}
+}
+</script>
+
+<script>
+function recommendationAlertMessage(candidateIds){ 
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	if(candidateIds.length <= 2){
+		result = result +"		<p>Please select Minimum 2 Candidates to Compare</p>";
+	}else{
+		result = result +"		<p>Please select Maximum 4 Candidates to Compare</p>";
+	}
+	result = result + ' <div id="reasonForInvoiceDiv"/>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelTermination(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
 }
 </script>
 
 
 <script>
-function compareRecommendedUsersdiv(data,requirementId,candidateList){
+function compareRecommendedUsersdiv(data,requirementId){
 	var sourceleadUrl = '${sourceleadUrl}';
 	
 	var jobId = "";
@@ -120,11 +153,10 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
  			}
  		}
     }
-	
 	var result = '';
     result = result +'<div class="comMask" style="display: block; z-index:9999;"></div>';
     result = result +'<div class="compare_resume">';
-    result = result +'    <a onclick="closeCompare();" class="close_btn text-danger pull-right btn btn-danger btn-sm">X</a>';
+    result = result +'    <a onclick="closeCompare();" class="close_btn danger pull-right btn btn-danger btn-sm">X</a>';
     
     result = result +'<div class="profilecompareLeft">';
     result = result +'<div class="listHeadr clearfix">';
@@ -138,7 +170,14 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
 	result = result +'<li><label>Rate : </label><span title="'+rate+'">'+rate+'</span></li>';
 	result = result +'<li><label>Experience : </label><span title="'+minexp+'-'+maxexp+'">'+minexp+''+maxexp+'Year(s)</span></li>';
 	result = result +'<li><label>Notice Period : </label><span title="'+jobNoticePeriod+'">'+jobNoticePeriod+'</span></li>';
-	result = result +'<li class="MultLi"><label>Location : </label><span title="'+jobLocation+'">'+jobLocation+'</span></li>';
+	result = result +'<li class="locationLi"><label>Location : </label>';
+	
+	result = result +'<div class="scrollDiv">';
+	for(var e in data.jobLocationList) {
+		result = result +'<span title="'+data.jobLocationList[e]+'">'+data.jobLocationList[e]+'</span><br/>';
+	}
+	result = result +'</div>';
+	result = result +'</li>';
 	result = result +'<li class="MultLi"><label>Education : </label><span title="'+jobEducation+'">'+jobEducation+'</span></li>';
 	result = result +'<li class="MultLi"><label>Visa : </label><span title="'+jobVisa+'">'+jobVisa+'</span></li>';
 	result = result +'<li class="MultLi"><label>Skills : </label><span title="'+jobSkills+'">'+jobSkills+'</span></li>';
@@ -190,8 +229,8 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
     
 	$("#candidateCompare").empty();
 	$("#candidateCompare").append(result);
+	prepareCompareCandidateList();
 	prepareCandidateGrid(data,requirementId);
-	prepareCompareCandidateList(candidateList);
 	
 	$("#compareCandidateList1").chosen();
 	$("#compareCandidateList2").chosen();
@@ -205,12 +244,26 @@ function compareRecommendedUsersdiv(data,requirementId,candidateList){
 </script>
 
 <script>
-function prepareCompareCandidateList(candidateList){
+function prepareCompareCandidateList(){
+	var candiList = JSON.parse($("input[name='compareCandListMap']").val());
 	var output = "";
     output = output + "<option value=''>--Select Candidate--</option>"; 
-    $.each(candidateList, function(key, value) {
-    	output = output + "<option value='" +key+ "'>"+value+"</option>";
-    });
+      for (var key in candiList) {
+		 var value=candiList[key];
+		output = output + "<option value='" +key+ "'>"+value+" </option>"; 
+	  } 
+    
+   /*  for(i=0;i<candiList.length;i++){
+    	opt = candiList[i];
+    	var firstName = "";
+    	if(opt.lastName !=null && opt.lastName != '' && opt.lastName != "undefined"){
+    		firstName = opt.firstName +""+ opt.lastName ;
+    	}else{
+    		firstName = opt.firstName;
+    	}
+    	output = output + "<option value='" +opt.candidateId+ "'>"+firstName+" </option>"; 
+    } */
+ 
    	$("#compareCandidateList1").empty();
    	$("#compareCandidateList2").empty();
    	$("#compareCandidateList3").empty();
@@ -218,7 +271,7 @@ function prepareCompareCandidateList(candidateList){
    	$("#compareCandidateList1").append(output);
    	$("#compareCandidateList2").append(output);
    	$("#compareCandidateList3").append(output);
-   	$("#compareCandidateList4").append(output);
+   	$("#compareCandidateList4").append(output); 
 }
 </script>
 
@@ -228,7 +281,6 @@ function prepareCandidateGrid(data,requirementId){
 	 for(i = 0; i<data.candidateList.length; i++){
 		 if(count < 4){
 			 report = data.candidateList[i];
-		    	if(report.isCandidateSubmitted == 'N'){
 		    		count++;
 		    		var firstName ="";
 			    	if(report.firstName != null && report.firstName != '' && report.firstName != 'undefined'){
@@ -312,6 +364,7 @@ function prepareCandidateGrid(data,requirementId){
 				    	mobile = report.mobilePhone;
 				    }
 				    
+				    var profilePercentage = '${requirementProfilePercentage}';
 				    
 				    var opt = "";
 				    
@@ -353,7 +406,7 @@ function prepareCandidateGrid(data,requirementId){
     	    		opt = opt +'<li title="'+rate+'">'+rate+'</li>';
     	    		opt = opt +'<li title="'+totalExp+'">'+totalExp+'</li>';
     	    		opt = opt +'<li title="'+noticePriod+'">'+noticePriod+'</li>';
-    	    		opt = opt +'<li title="'+location+'" class="MultLi">'+location+'</li>';
+    	    		opt = opt +'<li title="'+location+'" class="locationLi">'+location+'</li>';
     	    		opt = opt +'<li title="'+candieducation+'" class="MultLi">'+candieducation+'</li>';
     	    		opt = opt +'<li title="'+candivisaType+'" class="MultLi">'+candivisaType+'</li>';
     	    		opt = opt +'<li title="'+skillsName+'" class="MultLi">'+skillsName+'</li>';
@@ -362,31 +415,46 @@ function prepareCandidateGrid(data,requirementId){
 	    	    	if(report.currentResumeUUID != null && report.currentResumeUUID != '' && report.currentResumeUUID != 'undefined'){
 	    	    		opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.currentResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';
 	    	    	}
-	    	    	opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	    	    	if(report.isCandidateSubmitted == 'N'){
+	    	    		if(report.candidateProfilePercentage >= profilePercentage){
+	    	    			opt = opt +'<button type="button" id="recSumbmitbtn'+report.candidateId+'" onClick="submitRecomendedApplicant('+requirementId+','+report.candidateId+',\'compare\');" class="btn btn-sm btn-success"><span id="recCandidate'+report.candidateId+'">Add</button>';
+	    	    		}else{
+	    	    			 opt = opt +'<span class="colorRed small">Profile % not matched</span>';
+	    	    		}
+	    	    		
+	    	    	}else{
+	    	    		opt = opt +'<button type="button" class="btn btn-sm btn-success">Added</button>';
+	    	    	}
 	    	    	opt = opt +'</div>';
 		    	    opt = opt +'</div>';
-		    	    
 		    	    if(count==1){
 		    	    	$("#profileDiv1").empty();
 // 		    	    	$("#noRecords1").hide();
 		    	    	$("#profileDiv1").append(opt);
+		    	    	$("#compareCandidateList1").val(report.candidateId);
+		    	    	$("#compareCandidateList1").trigger('chosen:update');
 		    	    }
 		    	    if(count==2){
 		    	    	$("#profileDiv2").empty();
 // 		    	    	$("#noRecords2").hide();
 		    	    	$("#profileDiv2").append(opt);
+		    	    	$("#compareCandidateList2").val(report.candidateId);
+		    	    	$("#compareCandidateList2").trigger('chosen:update');
 		    	    }
 		    	    if(count==3){
 		    	    	$("#profileDiv3").empty();
 // 		    	    	$("#noRecords3").hide();
 		    	    	$("#profileDiv3").append(opt);
+		    	    	$("#compareCandidateList3").val(report.candidateId);
+		    	    	$("#compareCandidateList3").trigger('chosen:update');
 		    	    }
 		    	    if(count==4){
 		    	    	$("#profileDiv4").empty();
 // 		    	    	$("#noRecords4").hide();
 		    	    	$("#profileDiv4").append(opt);
+		    	    	$("#compareCandidateList4").val(report.candidateId);
+		    	    	$("#compareCandidateList4").trigger('chosen:update');
 		    	    }
-		    	}
 		 }else{
 			 break;
 		 }
@@ -400,19 +468,19 @@ function getCandidatetoCompare(div,requirementId){
 	var candidateId = "";
 	if(div == 1){
 		candidateId = $("#compareCandidateList1").val();
-		$("#loading1").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading1").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	}
 	if(div == 2){
 		candidateId = $("#compareCandidateList2").val();
-		$("#loading2").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading2").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	}
 	if(div == 3){
 		candidateId = $("#compareCandidateList3").val();
-		$("#loading3").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading3").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	}
 	if(div == 4){
 		candidateId = $("#compareCandidateList4").val();
-		$("#loading4").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading4").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	}
 	if(candidateId != null && candidateId != '' && candidateId != 'undefined'){
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
@@ -420,8 +488,17 @@ function getCandidatetoCompare(div,requirementId){
 		    	type: "GET",
 		        url: sourceleadUrl+"/getCandidateDetails?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId+"&requirementId="+requirementId, 
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	candidateDiv(json,div,requirementId);
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		candidateDiv(data.object,div,requirementId);
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        }
 		 });
 	}else{
@@ -537,7 +614,8 @@ function candidateDiv(report,div,requirementId){
 	    }else{
 	    	mobile = "NA";
 	    } 
-	   
+	   var profilePercentage = '${requirementProfilePercentage}';
+	    
 	   var opt = "";
 	   opt = opt +'<div class="profilecompare-widget_hdr clearfix">';
 	   opt = opt +'<div class="profileImg">';
@@ -592,7 +670,16 @@ function candidateDiv(report,div,requirementId){
 	   if(report.resumeUUID != null && report.resumeUUID != '' && report.resumeUUID != 'undefined'){
 		   opt = opt +'<button type="button" onClick="viewFile(\''+report.fileUrl+'\',\''+report.candidateResumeName+'\',\''+report.fileContentType+'\');" class="btn btn-sm btn-primary">View Resume</button>';   
 	   }
-	   opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+	   if(report.isCandidateSubmitted == 'N'){
+			if(report.candidateProfilePercentage >= profilePercentage){
+				 opt = opt +'<button type="button" onClick="submitRecomendedApplicant('+requirementId+','+report.id+',\'compare\');" class="btn btn-sm btn-success">Add</button>';
+    		}else{
+    			 opt = opt +'<span class="colorRed small">Profile % not matched</span>';
+    		}
+		  
+	   }else{
+		   opt = opt +'<button type="button" class="btn btn-sm btn-success">Added</button>';
+	   }
 	   opt = opt +'</div>';
 	   opt = opt +'</div>';
 	   opt = opt +'<!-- profile_personalInfo -->';

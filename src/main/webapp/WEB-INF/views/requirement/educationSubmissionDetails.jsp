@@ -5,9 +5,9 @@
 <script>
 function educationSubmissionDetails(candidateId){
 	var result = "";
-	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-	result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>';
-	result = result + '   <div id="educationSubmissionDetailsList" class="datatable_filter"></div>';
+	result = result	+ '   <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">';
+	/* result = result	+ '<div class="project_tabs_inn_head"> <input class="vendorfild" ></div>'; */
+	result = result + '   <div id="educationSubmissionDetailsList" class="datatable_filter mt5"></div>';
 	result = result + '   </div>';
 	
 	$("#tabb-1").empty();
@@ -39,102 +39,88 @@ function educationSubmissionDetailsList(candidateId){
 	  
 	 
 	 $.ajax({  
-          type : "POST",
+          type : "GET",
           url: sourceleadUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-          success :function(data) {
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-             		 else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		 }
-             		 else{
-	                	 $("#educationSubmissionDetailsList").empty();
-	                	 var result = "";
-	                	 result = result +"<table id='educationSubmissionPagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result + '           <th>Education</th>';
-	                 	 result  = result + '           <th>Specialization</th>';
-	                 	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+eduSubListDate+'</small>)</th>';
-	                 	 result  = result + '           <th>End date <br>(<small class="custom-small">'+eduSubListDate+'</small>)</th>';
-	                 	 result  = result + '           <th>Score</th>';
-	                 	 result  = result + '           <th>Score Type</th>';
-	                 	 result  = result + '           <th>Institute/University</th>';
-	                 	 result  = result + '           <th>Address</th>';
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                     var json = JSON.parse(data);
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
-	                    	 result  = result + '         <tr>';
-	                    	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
-	                    	 result  = result + '<td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
-	                    	    }else{
-	                    	    	 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	    }
-	                    	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.specialization+'">'+opt.specialization+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
-	                    	 result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
-	                    	 result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
-	                    	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>'; 
-	                    	 }
-	                    	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
-			                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
-			                 }else{
-			                 result  = result + '<td><div><span>----</span></div></td>'; 
-			                 }
-	                    	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
-	                    	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + '<td><div><span>----</span></div></td>';
-	                    	 }
-	                    	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
-	                    	 result  = result + ' <td><div><span title="'+opt.address+'">'+opt.address+'</span></div></td>';
-	                    	 }else{
-	                    		 result  = result + ' <td><div><span>----</span></div></td>';
-	                    	 }
-	                    
-	                    	 result  = result + '</tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#educationSubmissionDetailsList").append(result); 
-	                     educationSubmissionPagination(); 
-			    	} 
-               /* }else{
-	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No SubmissionEducation Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#educationSubmissionDetailsList").empty();
-				    $("#educationSubmissionDetailsList").append(result); 
-               } */
+          success :function(response) {
+        	  	if (response && response.response === "INVALID_DATA") {
+        		    showError(response.responseMessage);
+        		} else if (response && response.response === "INVALID_USER") {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#educationSubmissionDetailsList").empty();
+               	 	var result = "";
+               	 	result = result +"<table id='educationSubmissionPagination' class='display' cellspacing='0' width='100%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result  = result + '           <th>Education</th>';
+                	 result  = result + '           <th>Specialization</th>';
+                	 result  = result + '           <th>Start date <br>(<small class="custom-small">'+eduSubListDate+'</small>)</th>';
+                	 result  = result + '           <th>End date <br>(<small class="custom-small">'+eduSubListDate+'</small>)</th>';
+                	 result  = result + '           <th>Score</th>';
+                	 result  = result + '           <th>Score Type</th>';
+                	 result  = result + '           <th>Institute/University</th>';
+                	 result  = result + '           <th>Address</th>';
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
+                    for (var i = 0; i < response.data.length; i++) { 
+                   	 var opt = response.data[i];  
+                   	 result  = result + '         <tr>';
+                   	 if(opt.name != null && opt.name != '' && opt.name != 'undefined'){
+                   	 result  = result + '<td><div><span title="'+opt.name+'">'+opt.name+'</span></div></td>';
+                   	    }else{
+                   	    	 result  = result + ' <td><div><span>----</span></div></td>';
+                   	    }
+                   	 if(opt.specialization != null && opt.specialization != '' && opt.specialization != 'undefined'){
+                   	 result  = result + ' <td><div><span title="'+opt.specialization+'">'+opt.specialization+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + ' <td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.startDateStr != null && opt.startDateStr != '' && opt.startDateStr != 'undefined'){
+                   	 result  = result + ' <td><div><span>'+opt.startDateStr+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + ' <td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.endDateStr != null && opt.endDateStr != '' && opt.endDateStr != 'undefined'){ 
+                   	 result  = result + '<td><div><span>'+opt.endDateStr+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + '<td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.grade != null && opt.grade != '' && opt.grade  != 'undefined'){
+                   	 result  = result + '<td><div><span>'+opt.grade+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + '<td><div><span>----</span></div></td>'; 
+                   	 }
+                   	 if(opt.gradeType != null && opt.gradeType != '' && opt.grgradeTypeade  != 'undefined'){
+		                 result  = result + '<td><div><span>'+opt.gradeType+'</span></div></td>';
+		                 }else{
+		                 result  = result + '<td><div><span>----</span></div></td>'; 
+		                 }
+                   	 if(opt.institute != null && opt.institute != '' && opt.institute != 'undefined'){
+                   	 result  = result + '<td><div><span title="'+opt.institute+'">'+opt.institute+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + '<td><div><span>----</span></div></td>';
+                   	 }
+                   	 if(opt.address != null && opt.address != '' && opt.address != 'undefined'){
+                   	 result  = result + ' <td><div><span title="'+opt.address+'">'+opt.address+'</span></div></td>';
+                   	 }else{
+                   		 result  = result + ' <td><div><span>----</span></div></td>';
+                   	 }
+                   
+                   	 result  = result + '</tr>';
+                     } 
+                    result = result +" </tbody>";
+                    result = result +"</table>";
+                    $("#educationSubmissionDetailsList").append(result); 
+                    educationSubmissionPagination();
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script> 

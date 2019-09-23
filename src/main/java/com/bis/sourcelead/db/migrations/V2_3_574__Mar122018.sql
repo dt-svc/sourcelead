@@ -1,0 +1,2 @@
+SET SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`= 'New Invoice  {{InvoiceClientAcceptEmail.invoiceID}} from {{InvoiceClientAcceptEmail.orgName}}' WHERE `UNIQUE_SCENARIO_NAME`='InvoiceClientAcceptEmail' and `ENTITY_TYPE`='Notification';

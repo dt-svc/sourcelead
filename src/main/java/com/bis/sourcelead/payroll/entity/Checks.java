@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,18 +15,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.ConversionUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "CHECKS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "checks")
+@Table(name = "CHECKS")
 public class Checks implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -41,7 +36,7 @@ public class Checks implements Serializable {
 	@Column(name = "EMP_NAME")
 	private String empName;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
@@ -69,8 +64,15 @@ public class Checks implements Serializable {
 	@Column(name = "VENDOR_PAYMENTS")
 	private double vendorPayments;
 	
+	
 	@Column(name = "ELECTRONIC_WITHDRAWALS")
 	private String electronicWithdrawals;
+	
+	@Column(name = "HEALTH_INSURANCE")
+	private String healthInsurance;
+	
+	@Column(name = "IMMIGRATION")
+	private String immigration;
 	
 	@Column(name = "PAYROLL_CHECKS")
 	private double payrollChecks;
@@ -98,6 +100,9 @@ public class Checks implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "UUID")
+	private String uuid;
 	
 	@Transient
 	@JsonProperty
@@ -357,5 +362,30 @@ public class Checks implements Serializable {
 	{
 		this.version = version;
 	}
-	
+
+	public String getHealthInsurance() {
+		return healthInsurance;
+	}
+
+	public void setHealthInsurance(String healthInsurance) {
+		this.healthInsurance = healthInsurance;
+	}
+
+	public String getImmigration() {
+		return immigration;
+	}
+
+	public void setImmigration(String immigration) {
+		this.immigration = immigration;
+	}
+
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
 }

@@ -23,7 +23,7 @@ public class RegistrationOptionalServiceDaoImpl implements RegistrationOptionalS
 		Session session = this.sessionFactory.getCurrentSession();
 		Integer registerStatus = 1;
 		String query = "from RegistrationOptionalService registerOptional where registerOptional.registerType = :registerType and registerOptional.registerStatus = :registerStatus";
-		List<RegistrationOptionalService> optionalServicsList =  session.createQuery(query.toString()).setString("registerType", registerType).setInteger("registerStatus",registerStatus).setCacheable(true).list();
+		List<RegistrationOptionalService> optionalServicsList =  session.createQuery(query.toString()).setString("registerType", registerType).setInteger("registerStatus",registerStatus).list();
 		return optionalServicsList;
 	}
 

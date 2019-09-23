@@ -44,6 +44,7 @@ import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class BillingPayableRestController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BillingPayableRestController.class);
@@ -80,14 +81,14 @@ public class BillingPayableRestController {
 	
 	 @RequestMapping(value = "/getVendorInvoiceAssociatesList", method = RequestMethod.GET)
 	 	public @ResponseBody  String getVendorInvoiceAssociatesList(@RequestParam(value = "selectedAssociates", required = false) String selectedAssociates,
-	 			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,HttpServletRequest request, HttpServletResponse response) throws Exception
+	 			@RequestParam(value = "vendorOrgRelationId", required = false) Long vendorOrgRelationId,
+	 			@RequestParam(value = "contractType", required = false) String contractType,
+	 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	 	{
 	     	String resultJson;
-	     	
+			OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	     	List<Long> associateIds = new ArrayList<Long>();
 	     	List<Candidate> associateList = null;
-	     	
-	     	
 	     	if(!isNullOrEmpty(selectedAssociates)){
 	     		String[] selectedAssoicatesIds =  selectedAssociates.split(",");
 	         	for(int i=0; i < selectedAssoicatesIds.length; i++){
@@ -97,6 +98,13 @@ public class BillingPayableRestController {
 	     	}else{
 	     		associateList = candidateService.getAllActiveVendorAssociatesByOrgLocation(vendorOrgRelationId);
 	     	}
+	     	
+	     	for (Candidate candidate : associateList) {
+				List<Contracts> contractsList = getSowContract(candidate.getId(), loginOrgLocation, vendorOrgRelationId, contractType);
+				if (null != contractsList && contractsList.size() > 0) {
+					candidate.setContractsList(contractsList);
+				}
+			}
 	     	
 	 	    resultJson = commonUtil.toJSON(associateList);
 	 	    return resultJson;
@@ -112,17 +120,27 @@ public class BillingPayableRestController {
 		    Invoice invoice = invoiceService.getInvoicetByInvoiceUUID(invoiceUUID);
 		  //SimpleDateFormat dateFormat = orgLocations.getLocFullFormDateFormatter();
 		    if(null != invoice){
+		    	if(invoice.getPaymentAccount() != null) {
+		    		invoice.setPaymentAccountId(invoice.getPaymentAccount().getId());
+		    	}
 		    	invoice.setVendorOrgRelationId(invoice.getOrgRelationID().getId());
 		    	
 		    	if(invoice.getOrgRelationID().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getResponderLocationId().getOrgLocationName());
+					invoice.setGenerateInvoice(invoice.getOrgRelationID().getGenerateInvoice());
+					invoice.setGenerateBill(invoice.getOrgRelationID().getGenerateBill());
+					invoice.setDataResponderLocationId(invoice.getOrgRelationID().getResponderLocationId().getId());
 				}
 				if(invoice.getOrgRelationID().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
 					invoice.setOrgName(invoice.getOrgRelationID().getLocationId().getOrgLocationName());
+					invoice.setGenerateInvoice(invoice.getOrgRelationID().getGenerateInvoice());
+					invoice.setGenerateBill(invoice.getOrgRelationID().getGenerateBill());
+					invoice.setDataResponderLocationId(invoice.getOrgRelationID().getLocationId().getId());
 				}
-				if(invoice.getContactUser() != null){
+				/*if(invoice.getContactUser() != null){
+					//invoice.setVendorContactId(invoice.getContactUser().getId());
 					invoice.setVendorContactId(invoice.getContactUser().getId());
-				}
+				}*/
 		    	invoice.setInvoiceId(invoice.getInvoiceId());
 		    	if(invoice.getInvoiceDate() != null){
 		    		invoice.setInvoiceDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getInvoiceDate()));	
@@ -131,7 +149,11 @@ public class BillingPayableRestController {
 		    		invoice.setDueDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),invoice.getDueDate()));	
 		    	}
 		    	
-		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId(invoice.getId());
+		    	if(invoice.getParentInvoiceId() != null) {
+		    		invoice.setInvoiceParentId(invoice.getParentInvoiceId().getId());
+		    	}else
+		    		invoice.setInvoiceParentId(null);
+		    	List<InvoiceLineItems> invoiceLineItemsList = invoiceLineItemService.getInvoiceLineItemsByInvoiceId((invoice.getParentInvoiceId() != null)?invoice.getParentInvoiceId().getId():invoice.getId());
 		    	List<InvoiceLineItems> lineItemsList = new ArrayList<InvoiceLineItems>();
 		    	
 		    	for(InvoiceLineItems lineItems : invoiceLineItemsList){
@@ -144,6 +166,10 @@ public class BillingPayableRestController {
 			    			sb.append(candidate.getFirstName());
 		    			 }
 		    			lineItems.setCandidateId(lineItems.getCandidate().getId());
+		    			
+		    			if(lineItems.getRequirementSubmissionId() !=null){
+		    				lineItems.setSubmissionId(lineItems.getRequirementSubmissionId().getId());	
+		    			}
 		    			
 		    			if(null != lineItems.getContract()){
 			    			lineItems.setContractId(lineItems.getContract().getId());
@@ -193,10 +219,10 @@ public class BillingPayableRestController {
 		    	}
 		    	if(invoice.getProjectMemberId() !=null) {
 		    		StringBuilder sb = new StringBuilder();
-		    		if(invoice.getProjectMemberId().getEmployee().getUser().getLastName() != null) {
-		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName()).append(invoice.getProjectMemberId().getEmployee().getUser().getLastName());
+		    		if(invoice.getProjectMemberId().getMasterCandidateId().getLastName() != null) {
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName()).append(invoice.getProjectMemberId().getMasterCandidateId().getLastName());
 		    		}else {
-		    			sb.append(invoice.getProjectMemberId().getEmployee().getUser().getFirstName());	
+		    			sb.append(invoice.getProjectMemberId().getMasterCandidateId().getFirstName());	
 		    		}
 		    		invoice.setProjectMemberName(sb.toString());
 		    		invoice.setMemberId(String.valueOf(invoice.getProjectMemberId().getId()));
@@ -216,7 +242,12 @@ public class BillingPayableRestController {
 		    	List<InvoiceDocument> invoiceDocumentsList = invoiceDocumentsService.getInvoiceDocumentsListByInvoiceId(invoice.getId());
 		    	invoice.setInvoiceDocumentsList(invoiceDocumentsList);
 		    	
-		    	List<InvoiceTax> invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	List<InvoiceTax> invoiceTaxList = null;
+		    	if(invoice.getParentInvoiceId() != null)
+		    	 invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getParentInvoiceId().getId());
+		    	else
+		    	 invoiceTaxList = invoiceTaxService.getInvoiceTaxListByInvoiceId(invoice.getId());
+		    	
 		    	invoice.setInvoiceTaxList(invoiceTaxList);
 		    	
 		    	String currency = "";
@@ -229,14 +260,19 @@ public class BillingPayableRestController {
 				
 		    	invoice.setClientCurrency(currency);
 		    	invoice.setVendorCurrency(currency);
+		    	
+		    	if(invoice.getCustomInvoiceTemplate() != null) {
+		    		invoice.setCustomInvoiceId(invoice.getCustomInvoiceTemplate().getId());
+		    		invoice.setCustomInvoiceName(invoice.getCustomInvoiceTemplate().getName());
+		    	}
+		    	
 		    }
-		    
 		    resultJson = commonUtil.toJSON(invoice);
 			
 			return resultJson;
 	 }
 	 
-	 @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
+	/* @RequestMapping(value = "/downloadInvoiceDocument", method = RequestMethod.GET)
 	    public void downloadInvoiceDocument(@RequestParam(value="documentId", required=false) Long documentId ,HttpServletResponse response) throws Exception {
 			
 			
@@ -263,7 +299,7 @@ public class BillingPayableRestController {
 					logger.error(ExceptionUtils.getFullStackTrace(e));
 				} 
 
-		}  
+		} */ 
 	 
 	 
 	 @RequestMapping(value = "/deleteInvoiceDocumentBydocumentId")

@@ -89,6 +89,11 @@ public class RequirementApproverHierarchyServiceImpl implements RequirementAppro
 	public RequirementApproverHierarchy getApproverHierarchyByRequirementId(Long requirementId) {
 		return requirementApproverHierarchyDao.getApproverHierarchyByRequirementId(requirementId);
 	}
+	
+	@Override
+	public RequirementApproverHierarchy getRejectedApproverHierarchyByRequirementId(Long requirementId) {
+		return requirementApproverHierarchyDao.getRejectedApproverHierarchyByRequirementId(requirementId);
+	}
 
 	@Override
 	public RequirementApproverHierarchy getRequirementApproverHierarchyByRequirementIdExcludingApproverHierarchyId(

@@ -1,6 +1,8 @@
 package com.bis.sourcelead.service.impl;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +18,10 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.SourceleadUserDetailsService;
 import com.bis.sourcelead.entity.TokenInfo;
 import com.bis.sourcelead.service.AuthenticationService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.TokenManager;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
 
 /**
  * Service responsible for all around authentication, token checks, etc.
@@ -27,6 +32,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Autowired
 	private ApplicationContext applicationContext;
+	 /*private static final long MAX_INACTIVE_SESSION_TIME = 5 * 10000;*/
+   
 
 	@Autowired
 	private  AuthenticationManager authenticationManager;
@@ -36,19 +43,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Autowired
     private SourceleadUserDetailsService sourceleadUserDetailsService;
+    
+    @Autowired
+    private  UserService userService;
+    
+    @Autowired
+    private UserRoleService userRoleService;
+    
+    @Autowired
+    private CandidateService candidateService;
 	 
 	@PostConstruct
 	public void init() {}
 	
 
 	@Override
-	public TokenInfo authenticate(String login, String password) throws AuthenticationException {
+	public TokenInfo authenticate(String login, String password,HttpServletRequest request,HttpSession session) throws AuthenticationException {
 		Authentication authentication = new UsernamePasswordAuthenticationToken(login, password);
+		
 			authentication = authenticationManager.authenticate(authentication);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			if (authentication.getPrincipal() != null) {
 				String userName =  (String) authentication.getPrincipal();
-				TokenInfo newToken = tokenManager.createNewToken(sourceleadUserDetailsService.loadUserByUsername(userName));
+				UserDetails userDetails = sourceleadUserDetailsService.loadUserByUsername(userName);
+				   //tokenManager.getUserTokens(userDetails);
+				TokenInfo newToken = tokenManager.createNewToken(userDetails,request,userService,userRoleService,candidateService);
 				if (newToken == null) {
 					return null;
 				}
@@ -58,8 +77,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public boolean checkToken(String token) {
-		UserDetails userDetails = tokenManager.getUserDetails(token);
+	public boolean checkToken(String token,HttpSession session) {
+		UserDetails userDetails = tokenManager.getUserDetails(token,session);
 		if (userDetails == null) {
 			return false;
 		}
@@ -72,8 +91,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	@Override
-	public void logout(String token) {
-		UserDetails logoutUser = tokenManager.removeToken(token);
+	public void logout(String token,HttpSession session) {
+		UserDetails logoutUser = tokenManager.removeToken(token,session);
+		session.invalidate();
 		SecurityContextHolder.clearContext();
 	}
 

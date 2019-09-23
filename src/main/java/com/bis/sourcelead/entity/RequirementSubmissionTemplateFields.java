@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,10 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -29,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION_TEMPLATE_FIELDS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmissionTemplateFields")
 public class RequirementSubmissionTemplateFields implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -40,8 +36,8 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     private Long id;
  	
 	@JsonBackReference
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID")
    	private RequirementSubmission requirementSubmission;
 	
@@ -141,6 +137,19 @@ public class RequirementSubmissionTemplateFields implements Serializable{
     @Transient
     @JsonProperty
     private Integer candidateWorkExperienceMonths;
+    
+    @Transient
+    @JsonProperty
+    private String submissionJsonStringValue;
+    
+    @Transient
+    @JsonProperty
+    private String submissionJsonString;
+    
+    @Transient
+    @JsonProperty
+    private String externalInterviewerUUID;;
+
 
 
     
@@ -422,5 +431,29 @@ public class RequirementSubmissionTemplateFields implements Serializable{
 
 	public void setCandidateWorkExperienceMonths(Integer candidateWorkExperienceMonths) {
 		this.candidateWorkExperienceMonths = candidateWorkExperienceMonths;
+	}
+
+	public String getSubmissionJsonStringValue() {
+		return submissionJsonStringValue;
+	}
+
+	public void setSubmissionJsonStringValue(String submissionJsonStringValue) {
+		this.submissionJsonStringValue = submissionJsonStringValue;
+	}
+
+	public String getSubmissionJsonString() {
+		return submissionJsonString;
+	}
+
+	public void setSubmissionJsonString(String submissionJsonString) {
+		this.submissionJsonString = submissionJsonString;
+	}
+
+	public String getExternalInterviewerUUID() {
+		return externalInterviewerUUID;
+	}
+
+	public void setExternalInterviewerUUID(String externalInterviewerUUID) {
+		this.externalInterviewerUUID = externalInterviewerUUID;
 	}
 }

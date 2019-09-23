@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,21 +15,28 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementInterview;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionCounts;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementPipelineExportService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.web.LoginSessionController;
+
+import opennlp.tools.parser.Cons;
 
 @Service
 public class RequirementPipelineExportServiceImpl implements RequirementPipelineExportService {
@@ -41,6 +49,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 	@Autowired
 	RequirementService requirementService;
+	
+	@Autowired
+	private RequirementLocationsService requirementLocationService;
 
 	@Autowired
 	PdfUtilPipelineHelper pdfUtilPipelineHelper;
@@ -63,19 +74,52 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			//DateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
 			
 			//SimpleDateFormat  simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
-					
 			
 			StringBuilder excelStringBuilder=new StringBuilder();
 			Sheet createExcelsheet = createExcelworkbook.createSheet(excelStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString());
 			Row writeRow = null;
 			if (submissionType.equals("SUBMIT_TO_CLIENT")) {
-				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
+				/*createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
 				int column = 0;
 				for (RequirementSubmission requirementsub : requirementStatusList) {
 					writeRow = createExcelsheet.createRow(column + 8);
 					createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementsub,submissionType,loginOrgLocation);
 					column++;
+				}*/
+				
+				String[] headers = null;
+				String[] extraHeaders = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS_FOR_TEMPLATE_CONFIGURED;
+				int row = 0;
+				int count = 0;
+				for (RequirementSubmission requirementsub : requirementStatusList) {
+					int column = 0;
+					JSONArray jsonArray = new JSONArray(requirementsub.getSubmissionTemplateJsonStringValue());
+					writeRow = createExcelsheet.createRow(row + 8);
+					if (jsonArray != null && jsonArray.length() > 0) {
+						headers = new String[jsonArray.length() + extraHeaders.length];
+						String[] values = new String[jsonArray.length()];
+
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							headers[i] = jsonObject.getString("name");
+							values[i] = jsonObject.getString("value");
+//							values[i] = !jsonObject.getString("value").isEmpty() ? jsonObject.getString("value") : "NO DATA";
+						}
+						
+						for(String value : values) {
+							writeRow.createCell(column++).setCellValue(value);
+							count++;
+						}
+						createExcelsheet = createXlsSheetSubmitClient(createExcelsheet, writeRow, requirementsub,
+								submissionType, loginOrgLocation, values.length);
+					}
+					row++;
 				}
+				for(String head : extraHeaders) {
+					headers[count++] = head;
+				}
+				createExcelsheet = getExcelSheetWithHeaderSubmitClient(createExcelsheet, writeRow, createExcelworkbook,
+						requirementId, requirementSubmissionCounts, headers);
 			}else if (submissionType.equals("REQUEST_SENT")) {
 				createExcelsheet = getExcelSheetWithHeaderRequestSent(createExcelsheet, writeRow, createExcelworkbook,requirementId,requirementSubmissionCounts);
 				int column = 0;
@@ -125,6 +169,17 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				createExcelsheet = getExcelSheetWithHeaderApplicants(createExcelsheet, writeRow, createExcelworkbook,
 						requirementId,requirementSubmissionCounts);
 				int column = 0;
+				/*for (RequirementSubmission requirementsub : requirementStatusList) {
+					writeRow = createExcelsheet.createRow(column + 8);
+					JSONArray jsonArray = new JSONArray(requirementsub.getSubmissionTemplateJsonStringValue());
+					if (jsonArray != null && jsonArray.length() > 0) {
+						for (int i = 0; i < jsonArray.length(); i++) {
+							JSONObject jsonObject = jsonArray.getJSONObject(i);
+							writeRow.createCell(column).setCellValue(!jsonObject.getString("value").isEmpty() ? jsonObject.getString("value") : "NO DATA");
+							column++;
+						}
+					}
+				}*/
 				for (RequirementSubmission requirementsub : requirementStatusList) {
 					writeRow = createExcelsheet.createRow(column + 8);
 					createExcelsheet = createXlsSheet(createExcelsheet, writeRow, requirementsub,submissionType);
@@ -133,7 +188,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			}
 			/*file = new File(orgName + "_Requirements_" + dateFormat.format(new Date()) + ".xls");*/
 			StringBuilder tempFileBuilder=new StringBuilder();
-			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Requirements_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".xls");
+			file = File.createTempFile(tempFileBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".xls");
 			file.setReadable(true);
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -150,57 +205,78 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 	}
 
 	private Sheet createXlsSheetSubmitClient(Sheet createExcelsheet, Row writeRow, RequirementSubmission requirementsub,
-			String submissionType,OrgLocations loginOrgLocation) {
+			String submissionType,OrgLocations loginOrgLocation, int columnCount) {
 		
-		
-		if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
-			writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
-		}
-
-		if (requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())) {
-			writeRow.createCell(1).setCellValue(requirementsub.getCandidateEmail());
-		}
-		if (requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())) {
-			writeRow.createCell(2).setCellValue(requirementsub.getPhoneNumber());
+		if(columnCount == 0) {
+			if (requirementsub.getCandidateName() != null && !"".equalsIgnoreCase(requirementsub.getCandidateName())) {
+				writeRow.createCell(0).setCellValue(requirementsub.getCandidateName());
+			}
+	
+			if (requirementsub.getCandidateEmail() != null && !"".equalsIgnoreCase(requirementsub.getCandidateEmail())) {
+				writeRow.createCell(1).setCellValue(requirementsub.getCandidateEmail());
+			}
+			if (requirementsub.getPhoneNumber() != null && !"".equalsIgnoreCase(requirementsub.getPhoneNumber())) {
+				writeRow.createCell(2).setCellValue(requirementsub.getPhoneNumber());
+			}
 		}
 		if (requirementsub.getResumeName() != null && !"".equalsIgnoreCase(requirementsub.getResumeName())) {
-			writeRow.createCell(3).setCellValue(requirementsub.getResumeName());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getResumeName());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getCreatedDate() != null) {
 			//DateFormat date = new SimpleDateFormat("dd-MM-yyyy");
 			//SimpleDateFormat simpleDateFormat=loginOrgLocation.getLocFullFormDateFormatter();
 			String createdDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementsub.getCreatedDate());
-			writeRow.createCell(4).setCellValue(createdDate);
+			writeRow.createCell(columnCount++).setCellValue(createdDate);
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getCandidate().getExpectedRate() != null && !"".equalsIgnoreCase(requirementsub.getCandidate().getExpectedRate())) {
-			writeRow.createCell(5).setCellValue(requirementsub.getCandidate().getExpectedRate());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getCandidate().getExpectedRate());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getProposedSubmissionRate() != null && !"".equalsIgnoreCase(requirementsub.getProposedSubmissionRate())) {
-			writeRow.createCell(6).setCellValue(requirementsub.getProposedSubmissionRate());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getProposedSubmissionRate());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getUserName() != null && !"".equalsIgnoreCase(requirementsub.getUserName())) {
-			writeRow.createCell(7).setCellValue(requirementsub.getUserName());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getUserName());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getScore() != null && !"".equalsIgnoreCase(requirementsub.getScore())) {
-			writeRow.createCell(8).setCellValue(requirementsub.getScore());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getScore());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getWorkExperience() != null && !"".equalsIgnoreCase(requirementsub.getWorkExperience())) {
-			writeRow.createCell(9).setCellValue(requirementsub.getWorkExperience());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getWorkExperience());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		if (requirementsub.getSubmissionStatus() != null
 				&& !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
-			writeRow.createCell(10).setCellValue(requirementsub.getSubmissionStatus().toString());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getSubmissionStatus().toString());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		
 		/*String submittedon = "--";*/
 		/*String submittedBy = "--";*/
 		if(!submissionType.equals("REQUEST_SENT")){
 		 if(requirementsub.getSubmittedOn() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedOn())){
-			writeRow.createCell(11).setCellValue(requirementsub.getSubmittedOn());
+			writeRow.createCell(columnCount++).setCellValue(requirementsub.getSubmittedOn());
+		} else {
+			writeRow.createCell(columnCount++).setCellValue("");
 		}
 		 if(requirementsub.getSubmittedBy() != null && !"".equalsIgnoreCase(requirementsub.getSubmittedBy())){
-		writeRow.createCell(12).setCellValue(requirementsub.getSubmittedBy());
-		 }
+		writeRow.createCell(columnCount++).setCellValue(requirementsub.getSubmittedBy());
+		 } else {
+				writeRow.createCell(columnCount++).setCellValue("");
+			}
 		 
 		 //client contact name related code start
 		 if(requirementsub.getRequirement().getId() != null){
@@ -208,9 +284,9 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				 if(requirementsub.getRequirement().getSpocId().getOwnerUser().getId() != null){
 					 StringBuilder spocSB = new StringBuilder();
 					 if(requirementsub.getRequirement().getSpocId().getClientUser().getLastName() != null ){
-						 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getClientUser().getLastName()).toString());
-					 }else{
-						 writeRow.createCell(13).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).toString());
+						 writeRow.createCell(columnCount++).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).append(" ").append(requirementsub.getRequirement().getSpocId().getClientUser().getLastName()).toString());
+					 } else{
+						 writeRow.createCell(columnCount++).setCellValue(spocSB.append(requirementsub.getRequirement().getSpocId().getClientUser().getFirstName()).toString());
 					 }
 				 }
 			 }
@@ -255,11 +331,12 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 
 	private Sheet getExcelSheetWithHeaderSubmitClient(Sheet createExcelsheet, Row writeRow,
 			Workbook createExcelworkbook, String requirementId,
-			RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+			RequirementSubmissionCounts requirementSubmissionCounts, String[] headers) throws NumberFormatException, Exception {
 		Requirement requirement = requirementService.getRequirementByRequirementId(Long.parseLong(requirementId));
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
         prepareHeaders(writeRow, createExcelsheet, style, requirement, Constants.SUBMIT_TO_CLIENT_COUNT, requirementSubmissionCounts.getNumOfSubmitToClient());
-		String headers[] = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
+		if(headers == null)
+			headers = Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet, style, headers, 7);
 
 		return createExcelsheet;
@@ -583,7 +660,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		createExcelsheet.setColumnWidth(1, 10000);
 
 		Cell cell1 = writeRow.createCell(0);
-		cell1.setCellValue("Requirement Name :");
+		cell1.setCellValue("Job Name :");
 		cell1.setCellStyle(style);
 		Cell cell2 = writeRow.createCell(1);
 		cell2.setCellValue(requirement.getJobTitle());
@@ -596,14 +673,40 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		Cell cell3 = writeRow.createCell(0);
 		cell3.setCellValue("Location :");
 		cell3.setCellStyle(style);
+		
+		
 
+		List<String> requirementLocationsList = new ArrayList<>();
+		List<RequirementLocations> locationsList;
 		String location = "";
+		StringBuilder requirementBuilder=new StringBuilder();
+		try {
+			locationsList = requirementLocationService.getRequirementLocationsListByRequirementId(requirement.getId());
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locationsJob : locationsList) {
+					requirementLocationsList.add(locationsJob.getLocation());
+					if(locationsJob.getLocation() !=null && locationsJob.getLocation() !=null){
+						location = requirementBuilder.append(locationsJob.getLocation()).toString();
+					}else{
+						location = "--";
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		//reqListDTO.add(RequirementDTO);
+
+		/*String locations = "";
 		StringBuilder requirementBuilder=new StringBuilder();
 		if(requirement.getCountry() !=null && requirement.getState() !=null){
 			location = requirementBuilder.append(requirement.getCountry()).append(" ").append(requirement.getState()).toString();
 		}else{
 			location = requirement.getCountry();
-		}
+		}*/
 		Cell cell4 = writeRow.createCell(1);
 		cell4.setCellValue(location);
 		cell4.setCellStyle(style);

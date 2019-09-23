@@ -18,8 +18,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "USER_LOGIN_LOGOUT_SESSION", catalog = "sourcelead")
-//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "userLoginLogoutSession")
+@Table(name = "USER_LOGIN_LOGOUT_SESSION")
 public class UserLoginLogoutSession  implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -29,8 +28,8 @@ public class UserLoginLogoutSession  implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USERID")
 	private User userId;
 	
@@ -43,6 +42,12 @@ public class UserLoginLogoutSession  implements Serializable{
 	
 	@Column(name = "LOGOUTIME")
 	private Date logoutTime;
+
+	@Column(name = "IS_AUTHENTICATED")
+	private String authenticated;
+
+	@Column(name = "ACTION_UUID")
+	private String actionUUID;
 
 	public Long getId() {
 		return id;
@@ -82,6 +87,24 @@ public class UserLoginLogoutSession  implements Serializable{
 
 	public void setLogoutTime(Date logoutTime) {
 		this.logoutTime = logoutTime;
+	}
+	
+	public String getActionUUID() {
+		return actionUUID;
+	}
+
+	public void setActionUUID(String actionUUID) {
+		this.actionUUID = actionUUID;
+	}
+
+	public String getAuthenticated()
+	{
+		return authenticated;
+	}
+
+	public void setAuthenticated(String authenticated)
+	{
+		this.authenticated = authenticated;
 	}
 
 }

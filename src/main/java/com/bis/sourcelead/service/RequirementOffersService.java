@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -47,5 +48,13 @@ public interface RequirementOffersService {
 	List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId) throws Exception;
 	
 	Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception;
+	
+	void sendApplicantOfferAcceptMail(RequirementOffers requirementOffers) throws Exception;
+
+	void sendApplicantOfferRejectMail(RequirementOffers requirementOffers) throws Exception;
+	
+	RequirementOffers getOnboardRequirementOfferId(Long offerId)throws Exception;
+	
+	List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(Long orgLocationId, Date joiningDate) throws Exception;
 }
 

@@ -5,27 +5,35 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script>
+$(document).ready(function() {
+    $("#filterDropDown").click(function(){
+		$(".approvedPop").slideToggle(200);
+		$(".approvedPop1").slideUp(200);
+	});
+    
+    $("#filterDropDown, .approvedPop, .approvedPop1").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    
+    $("#filterDropDown1").click(function(){
+		$(".approvedPop1").slideToggle(200);
+		$(".approvedPop").slideUp(200);
+	});
+    $("#filterDropDown1, .approvedPop1, .approvedPop").click(function(e) {  
+        e.stopPropagation();
+    });
+    
+    $("html").click(function() {
+        $(".approvedPop, .approvedPop1").slideUp(200);
+    });
+    
+}); 
+</script>
 
-<style type="text/css">
-#loadMoreDiv{
-text-align: center;
-font-size: 18px;
-font-weight: bold;
-vertical-align: middle;
-padding: 20px 15px;
-clear: both;
-display: inline-block;
-margin: auto;
-width: 100%;
-
-}
-#loadMoreDiv .fa-spinner{
-margin-right: 15px;
-}
-</style>
 <script type="text/javascript">
 window.onload = function () {
-//getUsersList('manual');
 	usersListCheck("${searchValue}","${searchResult}");
 	var view = $("#listView").val('GRIDVIEW');
  };
@@ -33,12 +41,7 @@ window.onload = function () {
 
 <script type="text/javascript">
 function usersListCheck(searchValue,searchResult){
-	if(searchResult == 'searchresult'){
-		getUsersSearchResult(searchValue);
-	}else{
-		getUsersList('manual');
-		//searchUser("manual");
-	}
+	getDynamciUserList();
 }
 </script>
 
@@ -57,7 +60,7 @@ function getUsersSearchResult(searchValue){
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','resources/images/userprofileImg.jpg');
+		$(imageId).attr('src','/resources/images/userprofileImg.jpg');
 	}
 </script>
 <input type="hidden" id="noUsers" name="noUsers"/>
@@ -76,207 +79,319 @@ function getUsersSearchResult(searchValue){
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-      <div class="pull-left">
-        <h2>Users </h2>
-      </div>
+      <div class="pull-left"><h2>Associates </h2></div>
       
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Users List </div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Associates List </div>
     </section>
-    <div class="timesheet_out">
-    <div class="vendor_wrap" style="overflow-x: auto;">
-    
-    </div>
-  </div>
-      <section class="clearfix usersHeader positionRelative">
+
+	<div class="project_wrap">
+      <section class="clearfix usersHeader positionRelative  hidden">
       
       <div class="pull-left cand-advsrche onboardBtn">
        <input id="searchElement" type="hidden"></input>
         <input type="hidden" name="listView" id="listView"/>
-			  <%--<a href="javascript:void(0)" class="btn btn-primary btn-sm" title="Advanced Search" onClick="openPop();loadChosenScripts();">
-			  Advanced Search&nbsp;&nbsp;
-			  <i class="fa fa-search"></i>
-			  </a> 
-			   <form id="user_forms" name="user_forms"  >
-				  <div class="cand-advsrch-popup userAdvsrch" >
-					  <a href="javascript:void(0)" class="close-div" onClick="closePop()"><i class="fa fa-close"></i></a>
-					  <div class="row">
-						  <div class="col-md-4">
-							  <label>Any of Keyword <i class="fa fa-info-circle" title="Any of Keyword"></i></label>
-							  <div class="clearfix">
-							        <select class="chosen-select form-control input-sm" multiple data-placeholder="Any Keyword" id="anyOfKeyword" name="anyOfKeyword">
-                                    </select>
-							  	 <!-- <input type="text" class="form-control input-sm" placeholder="Any of Keyword" id="anyOfKeyword" name="anyOfKeyword" value=""> -->
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>All Keywords <i class="fa fa-info-circle" title="All Keywords"></i></label>
-							  <div class="clearfix">
-							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="All Keywords" id="allKeywords" name="allKeywords">
-                                 </select> 
-                                 <!-- <input type="text" class="form-control input-sm" placeholder="All Keywords" id="allKeywords" name="allKeywords" value=""> -->
-                                 
-							  </div>
-						  </div>
-						  <div class="col-md-4">
-							  <label>Exclude Keyword <i class="fa fa-info-circle" title="Exclude Keyword"></i></label>
-							  <div class="clearfix">
-							  	 <select class="chosen-select form-control input-sm" multiple data-placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord">
-                                 </select>
-                                <!--  <input type="text" class="form-control input-sm" placeholder="Exclude Keyword" id="excludeKeyWord" name="excludeKeyWord" value=""> -->
-							  </div>
-						  </div>
-					  </div>
-					  <div class="row">
-						
-	
-						  <div class="col-md-4">
-							  <label>Email<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix" id = "emailDiv">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="Email" id="email" name="email" data-validation="validate_Space validate_email" data-validation-optional="true" onclick = "validationMessage();">
-                                  </select>
-							  </div>
-							  </div>
-						  <div class="col-md-4">
-							  <label>Phone Number<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix" id = "mobilePhoneDiv">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Phone Number" data-validation="validate_Space validate_phone" data-validation-optional="true" id="mobilePhone" name="mobilePhone"onclick = "validationMessage();">
-                                  </select>
-							  </div>
-						  </div>
-						  
-						   <div class="col-md-4">
-							  <label>Role<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Role" id="userType" name="userType">
-                                  <c:forEach var="option" items="${rolesList}">
-	                                   <option value="${option.displayName}">${option.displayName}</option>
-                                  </c:forEach>
-                                  </select>
-							  </div>
-						  </div>
-						  </div>
-						  <div class="row">
-						  <div class="col-md-4">
-							  <label>Employee Id<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix">
-								 <select class="chosen-select form-control input-sm" multiple data-placeholder="Employee Id" id="employeeId" name="employeeId">
-                                  </select>
-							  </div>
-						  </div>
-						  
-						  <div class="col-md-4">
-							  <label>User Status<i class="fa fa-info-circle" title="Employers"></i></label>
-							  <div class="clearfix">
-								  <select class="chosen-select form-control input-sm" multiple data-placeholder="User Status" id="userStatus" name="userStatus">
-                                     <option value="ACTIVE" >Active</option>
-									 <option value="INACTIVE" >In Active</option>
-									 <option value="NOT_LOGGEDIN">Not Logged IN</option>
-                                  </select>
-							  </div>
-						  </div>
-						  
-						  
-						 <div class="col-md-4">
-								<label>Rate</label> 
-								<div class="input-group error-field">
-								<div id="ratePerDiv" class="input-group-btn selp-custom-min custommin">
-									      <select class="selectpicker" name="ratePer" id="ratePer" field-name="Rate Per"  >
-									            <option value="">-Rate Per-</option>
-						                        <option>Hourly</option>
-						                        <option>Daily</option>
-						                        <option>Weekly</option>
-						                        <option>Bi-Weekly</option>
-						                        <option>Semi-Monthly</option>
-						                        <option>Monthly</option>
-						                        <option>Yearly</option>
-				                            </select> 
-									</div>
-								    <div id="rateDiv">
-									  <input type="text" class="form-control input-sm" id="rate"  name="rate"  field-name="Rate"  data-validation="validate_Space validate_float" data-validation-optional="true"  placeholder="Rate">
-									</div>
-									
-								</div>
-							</div>
-						
-					  </div>
-					  <div class="form-footer row mt">
-						  <div class="pull-right mr">
-							 <!--  <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary">Submit</a>
-							  <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10">Cancel</a> -->
-							   <input type="button" value="Search" id="search_user" onclick="searchUser('manual');" class="btn btn-sm btn-primary"/>
-                               <input type="button" value="Cancel" onClick="closePop();" class="btn btn-sm btn-default ml10"/>
-						  </div>
-					  </div>
-				  </div>
-			  </form> --%>
       </div>
        
        
        <div class="section-action-btns clearfix">
        <div class="positionRelative clearfix">
        <ul class="pull-right list-unstyled list-inline">
-        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
-         <li><div class="gridFil grid-fil">
-					<i class="fa fa-th-list"  title="List" onclick="showList('LISTVIEW');" id="ShowGrid"></i>
-					<i class="fa fa-th-large" title="Grid" onclick="showGrid();" id="ShowList"></i>
-			</div></li>	
-          <li><i class="fa fa-filter"></i>&nbsp;
-               <select id="userState" onchange="getUsersView('manual','LISTVIEW');">
-				<option value="ACTIVE" >Active</option>
-				<option value="">All</option>
-				<option value="INACTIVE" >In Active</option>
-				<option value="NOT_LOGGEDIN">Not Logged in</option>
-			   </select>
-          
-          </li>
-          
-		   <li><i class="fa fa-filter"></i>&nbsp;
-				<select id="userRole" onchange="getUsersViewBuRole('manual','LISTVIEW');">
-				<option value="">&nbsp;--Select Role--&nbsp;&nbsp;&nbsp;</option>
-				<!-- <option value="All" >All Roles</option> -->
-				<c:forEach var="roles" items="${rolesList}">
-	                 <option value="${roles.id}">${roles.displayName}</option>
-                </c:forEach>
-				</select>
-		   </li>
-		   
-		 <li>
-			  <a href="javascript:void(0)">
-			  <i class="fa fa-user"></i></a>
-				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName"></span>
-				<span class="action-search" onclick="getUsersList('manual');" title="Search"><i class="fa fa-search"></i></span>
-		  </li> 
-		
-		   <sec:authorize access="hasAnyRole('ROLE_CREATE_USER')"> 
-	           <li><a href="<c:url value='/userCreation'/>"><i class="fa fa-user-plus"></i>&nbsp;Add User</a></li>
-	       </sec:authorize>
-
-		     <sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
-	                      <li title="Import"><a href="<c:url value='/uploadForm'/>"><i class="glyphicon glyphicon-import expIcon"></i>&nbsp;</a></li>
-	         </sec:authorize>		  
 		  
-		   <sec:authorize access="hasRole('ROLE_EXPORT_USERS')"> 
-		   <li title="Export"><a  id="export-pop"><i class="glyphicon glyphicon-export expIcon"></i>&nbsp;</a>
-			    <div id="exportPop" class="user_exp">
-				   <ul class="ul_padding">
-				   <li onclick="exportToPdf();" title="PDF"><i class="fa fa-file-pdf-o"></i>&nbsp; PDF</li>
-				   <li onclick="exportUserData();" title="Excel"><i class="fa fa-file-excel-o"></i>&nbsp; Excel</li>
-				   </ul>
-				</div>
-		   </li>
-		    </sec:authorize>
+		    <li id="searchIdDiv">
+			  <a>
+			  <i class="fa fa-user"></i>
+				<span class="action-search"><input type="text" placeholder="Email/Name" id="searchByName" ></span>
+				</a>
+		  </li>
+		  <li id="dynamicSearch" style="display:none;">
+			  <span class="width215px">
+			  
+			  </span>
+		  </li>
+		  
+		  
         </ul>
       </div>
       </div>
       </section>
-      <div class="project_wrap_table datatable_filter" id="userListGrid">
-              <div id="userListViewDiv" class="filter_position backgroundWhite pdtop mt" style="display:none;"></div> 
+	    
+	       <div id="resetDiv">
+				<div class="cand-advsrch-popup advancedsearch-popup filterDynamic-Search">
+				<h5 class="headerAdsrch">Filters
+					<a href="javascript:void(0)" class="close-div" onClick="closePop()"><i
+						class="fa fa-close"></i></a>
+				</h5>
+				<div class="addInner">
+					<div class="row">
+							
+						<div class="col-md-2">
+						<div class="row">
+						<div class="col-md-12 mb">
+							<label><strong>Status</strong></label>
+							 <div class="clearfix">
+								<ul class="list-unstyled" id="statusFilter">
+		                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="activeStatus" value ="ACTIVE" checked ><label>&nbsp;Active</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="notloggedInStatus" value ="NOT_LOGGEDIN" checked ><label>&nbsp;Not Logged In</label></li>
+									<li class="checkBox positionRelative"><input   type="checkbox" name="userState" id="inactiveStatus" value ="INACTIVE" ><label>&nbsp;In Active</label></li>
+		               				
+		                        </ul>
+							 </div>
+							 </div> 
+							 
+							 <div class="col-md-12 mb">
+								<label><strong>Employment Type</strong></label>
+								 <div class="clearfix">
+									<ul class="list-unstyled" id="employmentTypeFilter">
+			                    	    <li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C"><label>&nbsp;C2C</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType"  value ="C2C-1099" ><label>&nbsp;C2C-1099</label></li>
+										<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="W-2" ><label>&nbsp;W-2</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H"><label>&nbsp;C2H</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="C2H-1099"><label>&nbsp;C2H-1099</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Offshore C2C"><label>&nbsp;Offshore C2C</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Part Time"><label>&nbsp;Part Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Full Time"><label>&nbsp;Full Time</label></li>
+			               				<li class="checkBox positionRelative"><input   type="checkbox" name="employmentType" value ="Other"><label>&nbsp;Others</label></li>
+			                        </ul>
+								 </div>
+							 </div> 
+							 
+						  </div>
+						</div>
+						
+						<div class="col-md-10">
+						
+						<div class="row">
+						
+						<c:if test="${reportingManagersListSize > 0}">
+							 <div class="col-md-4 positionRelative mb">
+									<div class="clearfix dynamic_search filterDynamicsearch">
+										<input type="text" id="myManagersInput" onkeyup="myManagersFunction()" placeholder="Managers" title="Type in a managers">
+										<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+									</div>
+									 <div class="clearfix filterSearch-ul">
+										<ul class="list-unstyled positionRelative filterSearch mt5" id="myManagersUL">
+											<c:forEach var="manager" items="${reportingManagersList}">
+											<li class="checkBox positionRelative"><input  type="checkbox" name="orgManagers" value ="${manager.userId}" ><label>${manager.fullName}</label></li>
+											</c:forEach>
+										</ul>
+									 </div> 
+							 </div> 
+							 </c:if>
+						
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myRolesInput" onkeyup="myRolesFunction()" placeholder="Roles" title="Type in a roles">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myRolesUL">
+									<c:forEach var="roles" items="${rolesList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="userRole" value ="${roles.id}" ><label>${roles.displayName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						
+						<c:if test="${clientListSize > 0}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Clients" title="Type in a clients">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="client" items="${clientsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgClients" value ="${client.orgRelId}" ><label>${client.clientName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						<c:if test="${!empty associateTagsList}">
+						<div class="col-md-4 positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myClientsInput" onkeyup="myClientsFunction()" placeholder="Tags" title="Type in a tag">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myClientsUL">
+									<c:forEach var="tag" items="${associateTagsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="tags" value ="${tag}" ><label>${tag}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						
+						<c:if test="${teamsListSize > 0}">
+						<div class="col-md-4 mb positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myTeamsInput" onkeyup="myTeamsFunction()" placeholder="Teams" title="Type in a teams">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myTeamsUL">
+									<c:forEach var="team" items="${teamsList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgTeams" value ="${team.id}" ><label>${team.name}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						<c:if test="${departmentListSize > 0}">
+						<div class="col-md-4 mb positionRelative mb">
+							<div class="clearfix dynamic_search filterDynamicsearch">
+								<input type="text" id="myDepartmentInput" onkeyup="myDepartmentFunction()" placeholder="Departments" title="Type in a departments">
+								<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+							</div>
+							 <div class="clearfix filterSearch-ul">
+								<ul class="list-unstyled positionRelative filterSearch mt5" id="myDepartmentUL">
+									<c:forEach var="dep" items="${departmentList}">
+									<li class="checkBox positionRelative"><input  type="checkbox" name="orgDepartments" value ="${dep.id}"><label>${dep.departmentName}</label></li>
+									</c:forEach>
+								</ul>
+							 </div> 
+						</div>
+						</c:if>
+						
+						</div>
+						
+						</div>
+						
+						
+					</div>
+					</div>
+					<div class="clearfix advancedsearch-footer">
+						<div class="pull-right mr">
+							<input type="button" value="Apply" id="search_requiremet"
+								onclick="closePop();getDynamciUserList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Reset" id="clear_search"
+								onclick="resetFilter();" class="btn btn-sm btn-primary" />
+						</div>
+					</div>
+				</div>
+			</div>
+      
+      <div class="project_wrap_table datatable_filter backgroundWhite" id="userListGrid">
+      
+      <div class="positionRelative reportHead clearfix">
+<!--       <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
+              <span class="pull-left refreIcon mb10">
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
+			  </span>
+      <ul class="pull-right list-unstyled list-inline">
+        <input type="hidden" name="usersOffset" id="usersOffset" value="0"/>
+		   <sec:authorize access="hasAnyRole('ROLE_CREATE_ASSOCIATE')"> 
+	                    
+                 <%--  <c:if test="${orgLocationsCount > 1}"> --%>
+		                    <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+									<span class="ovrShow"> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<%-- <a href="<c:url value='${appPath}/uploadForm'/>">Import</a> --%>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu immSubMenu-custome">
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Bank Details Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Deduction Contribution Import</a>
+													</c:if>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+
+												    <a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformation'/>">Associate Information</a> 
+													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
+												</c:if>
+											</div>
+										</div>
+										
+									</sec:authorize>									
+									</span>
+								</div>
+							</li>
+				<%-- </c:if> --%>
+				
+			<%-- <c:if test="${orgLocationsCount == 1}">
+				           <sec:authorize access="hasRole('ROLE_USER_BULK_IMPORTS')"> 
+				           <li>
+								<a class="action newAdBtn mr5" onclick="getActions();" href="javascript:void(0)">+ Add <i class="fa fa-caret-down"></i></a>
+								<div class="action-pop">
+								
+								<span class="ovrShow"> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<a href="<c:url value='${appPath}/addAssociateFromLocations'/>">Add From Loc</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+										<div class="immSub">
+											<a href="#">Import</a>
+											<div class="immSubMenu">
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'United States'}">
+												<a href="<c:url value='${sourceleadUrl}/uploadForm'/>">Associate Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateBankForm'/>">Associate Bank Details Import</a>
+												<a href="<c:url value='${sourceleadUrl}/uploadAssociateDeductionContributionDetails'/>">Associate Deduction Contribution Import</a>
+													</c:if>
+												<c:if test="${SourceLeadWeb_orgLocations.country == 'India'}">
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateBankingDetailsForm'/>">Associate Bank Detail</a>
+												    <a href="<c:url value='${sourceleadUrl}/uploadAssociateInformationForm'/>">Associate Information</a> 
+													<a href="<c:url value='${sourceleadUrl}/uploadAssociateSalary'/>">Associate Salary Import</a>
+												</c:if>
+											</div>
+										</div>
+										
+									</sec:authorize>									
+									</span>
+								 <span> 
+									<a href="<c:url value='${appPath}/userCreation'/>">Add Associate</a>
+									<sec:authorize access="hasAnyRole('ROLE_USER_BULK_IMPORTS')"> 
+										<a href="<c:url value='${appPath}/uploadForm'/>">Import</a>
+									</sec:authorize>									
+									</span> 
+								</div>
+							</li>
+							</sec:authorize>
+							
+				<sec:authorize access="!hasRole('ROLE_USER_BULK_IMPORTS')"> 
+						<li><a class="newAdBtn mr5" href="<c:url value='${appPath}/userCreation'/>">+  Associate</a></li>
+				</sec:authorize>
+							
+				</c:if>  --%>
+	           
+						
+	       </sec:authorize>
+			
+			<sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS')"> 
+				<li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
+			</sec:authorize>
+				
+				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+					<div class="newActPop">
+						<span>
+	
+						<sec:authorize access="hasAnyRole('ROLE_EXPORT_ASSOCIATE')"> 
+							<a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a>
+							<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a>
+						</sec:authorize>
+						</span>
+					</div>
+				</li>
+		    
+		  <li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dynamicUserDataTableSearch'/><span class="repSearchIcon" onClick="beforeSearch();"></span></li>
+        </ul>
+      </div>
+      
+              <div id="dynamicUserListViewDiv" class="filter_position filter_position_top60 positionRelative"></div> 
           </div>  
       <div class="clearfix form-area form-horizontal toggle-div remove-div">
       <div class="row">
           <div id="usersListBody"></div> 
-
-          <div id="loadMoreDiv"></div> 
       </div>
       
                
@@ -285,26 +400,220 @@ function getUsersSearchResult(searchValue){
       <div id="popUp"></div>
       </div>
       </div>
+      </div>
   </section>
   
       <!-- Content Area Ends--> 
-
+ <div class="advancedsearch-mask"></div>
       <jsp:include page="../masterFooter.jsp" />
-      <div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+      <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
   
  <!--  Rajashkar
   SCript is used to export user data as xls format -->    
+
+<script>
+function myRolesFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myRolesInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myRolesUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+
+function myClientsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myClientsInput");
+    if(input != null){
+    	filter = input.value.toUpperCase();
+    }
+    ul = document.getElementById("myClientsUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
+}
+
+
+function myManagersFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myManagersInput");
+    if(input != null){
+    	filter = input.value.toUpperCase();
+    }
+    ul = document.getElementById("myManagersUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
+}
+
+
+function myTeamsFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myTeamsInput");
+    if(input != null){
+    	filter = input.value.toUpperCase();
+    }
+    ul = document.getElementById("myTeamsUL");
+    if(ul != null){
+    	 li = ul.getElementsByTagName("li");
+    	    for (i = 0; i < li.length; i++) {
+    	        a = li[i].getElementsByTagName("label")[0];
+    	        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+    	            li[i].style.display = "";
+    	        } else {
+    	            li[i].style.display = "none";
+
+    	        }
+    	    }
+    }
+   
+}
+
+
+function myDepartmentFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myDepartmentInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("myDepartmentUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closePop();
+	  }
+	});
+
+</script>
+
+<script>
+function resetFilter(){
+	$("ul#myRolesUL > li input:checkbox").prop("checked",false);
+	$("ul#statusFilter > li input:checkbox").prop("checked",false);
+	$("ul#myClientsUL > li input:checkbox").prop("checked",false);
+	$("ul#myManagersUL > li input:checkbox").prop("checked",false);
+	$("ul#myTeamsUL > li input:checkbox").prop("checked",false);
+	$("ul#myDepartmentUL > li input:checkbox").prop("checked",false);
+	$("ul#employmentTypeFilter > li input:checkbox").prop("checked",false);
+	$("#dynamicUserDataTableSearch").val('');
+	$("#myManagersInput").val('');
+	$("#myRolesInput").val('');
+	$("#myClientsInput").val('');
+	$("#myTeamsInput").val('');
+	$("#myDepartmentInput").val('');
+	
+	document.getElementById("activeStatus").checked = true;
+	document.getElementById("notloggedInStatus").checked = true;
+	
+	myManagersFunction();
+	myRolesFunction();
+	myClientsFunction();
+	myTeamsFunction();
+	myDepartmentFunction();
+	getDynamciUserList();
+}
+</script>
+
+
 <script>
 function exportUserData(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "xls";
-	var viewType = "LISTVIEW";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
-	var searchByName = document.getElementById("searchByName").value;
-	var userState = document.getElementById("userState").value;
+	
+	 var userRole = [];
+		$('input:checkbox[name=userRole]:checked').each(function() 
+	    {
+			userRole.push($(this).val());
+	    });
+		
+		
+		var userState = [];
+		$('input:checkbox[name=userState]:checked').each(function() 
+	    {
+			userState.push($(this).val());
+	    });
+		
+		var orgClients = [];
+		$('input:checkbox[name=orgClients]:checked').each(function() 
+			    {
+			orgClients.push($(this).val());
+	     });
+		
+		var orgManagers = [];
+		$('input:checkbox[name=orgManagers]:checked').each(function() 
+			    {
+			orgManagers.push($(this).val());
+	     });
+		
+		
+		var orgTeams = [];
+		$('input:checkbox[name=orgTeams]:checked').each(function() 
+			    {
+			orgTeams.push($(this).val());
+	     });
+		
+		
+		var orgDepartments = [];
+		$('input:checkbox[name=orgDepartments]:checked').each(function() 
+			    {
+			orgDepartments.push($(this).val());
+	     });
+		
+		var employmentType = [];
+		$('input:checkbox[name=employmentType]:checked').each(function() 
+			    {
+			employmentType.push($(this).val());
+	     });
+		
+		var tags = [];
+		$('input:checkbox[name=tags]:checked').each(function() 
+	     {
+			tags.push($(this).val());
+	     });
+		
+    var searchValue = $("#dynamicUserDataTableSearch").val();
+    searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=xls&viewType=LISTVIEW";
+		window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=xls";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -321,10 +630,31 @@ function exportUserData(){
 
 }
 </script> 
+
+
+<script>
+	// Close Advanced Search
+		function closePop(){
+			$("div.cand-advsrch-popup").hide();
+			$(".advancedsearch-mask").fadeOut();
+		}
+		function openPop(){
+			$("div.cand-advsrch-popup").toggle();
+			 $(".advancedsearch-mask").fadeIn();
+		}
+		
+		/* function closeAdsrch(){
+ 			$("div.cand-advsrch-popup").fadeOut();
+ 			$(".advancedsearch-mask").fadeOut();
+		} */
+	</script>
+
+
+
 <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
-	$(".project_inn_mask").fadeOut(200);
+// 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
 <!-- script for flush advanced search form -->
@@ -350,13 +680,64 @@ function flushAdvancedData(){
 function exportToPdf(){
 	var userListEmpty = $("#noUsers").val();
 	var exportType = "pdf";
-	var viewType = "LISTVIEW";
 	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-    var userRole = document.getElementById("userRole").value;
-	var searchByName = document.getElementById("searchByName").value;
-	var userState = document.getElementById("userState").value;
+    
+    var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+		    {
+		tags.push($(this).val());
+     });
+    
+    
+    var searchValue = $("#dynamicUserDataTableSearch").val();
+    searchValue = searchValue ? searchValue : "";
 	if(userListEmpty != 'nousers'){
-	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&exportType=pdf&viewType=LISTVIEW";
+	window.location.href = sourceleadUrl + "/getExportUsers?&userRole="+userRole+"&searchValue="+searchValue+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags+"&exportType=pdf";
 	}else{
 		 var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
@@ -373,16 +754,7 @@ function exportToPdf(){
 }
 </script>
    
-   <script>
-	// Close Advanced Search
-		function closePop(){
-			$("div.cand-advsrch-popup").hide();
-		}
-		function openPop(){
-		  $("div.cand-advsrch-popup").toggle();
-		  
-		}
-	</script>
+  
 	<script type="text/javascript">	
 	function loadChosenScripts(){
 	    $('#search_user').removeAttr('disabled');
@@ -412,187 +784,13 @@ function exportToPdf(){
 	    
 	}
 </script>
-   
- <!--  David
-  Script is used scroll based userList -->   
-<script>
-	$(document).scroll(function(e){
-	    // grab the scroll amount and the window height
-	    
-	    var view = $("#listView").val();
-	    if(view == "GRIDVIEW"){
-	    	var scrollAmount = $(window).scrollTop();
-		    var documentHeight = $(document).height();
-		    offset = $("#usersOffset").val();
-		    var UsersCount = $("#totalUsersCount").val(); 
-		    // calculate the percentage the user has scrolled down the page
-		    if($(window).scrollTop()+1 >= $(document).height() - $(window).height()) {
-		    	var avilableCount = $("#usersOffset").val();
-		    	
-		    	avilableCount = parseInt(avilableCount) + parseInt(10); 
-		    	$("#usersOffset").val(avilableCount);
-		    	//searchUser("scroll");
-		    	 getUsersList("scroll");
-		    }
-	    }else{
-	    	$('#loadMoreDiv').empty(); 
-	    }
-	});
-</script>
-
-
-<!--  David
-  Script is used search  based on search key if Enter Key is Pressed -->
-  
- <script type="text/javascript">
-   
-    $("#searchByName").keydown(function (e) {
-			  if (e.keyCode == 13) {
-			    $('input[name = searchByName]').click();
-				 $("#user_forms")[0].reset();
-				 getUsersList("manual");
-			  }
-			});
-  </script> 
  
- <!--  David
-  this script is not used -->    
-<script type="text/javascript">
-	function getUsersList(type){
-		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	    var userRole = document.getElementById("userRole").value;
-	  
-		
-		var searchByName = document.getElementById("searchByName").value;
-		var userState = document.getElementById("userState").value;
-		
-		
-		if(type == "scroll"){
-			offset = $("#usersOffset").val();
-			var searchByName =  document.getElementById("searchElement").innerHTML
-    	}
-		
-		if(type == "manual"){
-			$('#usersListBody').empty();
-    		$("#usersOffset").val(0);
-    		$("#searchElement").val("");
-    		var searchByName = document.getElementById("searchByName").value;
-   		     $('#searchElement').append(searchByName);
-    		 offset = 0;
-    	}
-	
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
-		
-		 $.ajax({ 
-	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset,
-	    			 
-            success: function(data) {
-            	 var json = JSON.parse(data);
-            	 var opt = "";
-          if(data != null && data !='undefined' && data !=null &&  data != [] && json.length >0){ 	
-	       	
-	    	if(json.length > 0)	
-	   		{
-	    		$('#loadMoreDiv').empty(); 
-	 			for(var i=0; i<json.length; i++){
-	 				
-			 				var userRole = json[i];
-			 				var mobilePhone = ""
-			 			    
-			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-			 			    	mobilePhone = userRole.user.mobilePhone;
-			 			    }else{
-			 			    	mobilePhone = "No Data"
-			 			    }
-			       	    	opt = "<div class='col-xs-12 col-sm-12 col-md-6 col-lg-4'>";
-			       	    	opt = opt +"<div class='user-profile'>";
-			       	    	opt = opt +"<div class='col-xs-4 col-sm-4'>";
-			       	    	opt = opt +"<div class='text-center image-parent'>";
-			       	    	opt = opt +"<div class='imageParent'>";
-			       	    	if(userRole.fileUrl != null && userRole.fileUrl != "" && userRole.fileUrl != "undefined"){
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src="+userRole.fileUrl+" alt='image'>";
-			       	    	}else{
-			       	    		opt = opt +"<img data-id= 'userProfileImage'  class='m-t-xs'  src='resources/images/userprofileImg.jpg' alt='image'>";
-			       	    	}
-			       	    	
-			       	    	opt = opt +"</div>";
-			       	    	
-			       	    	
-			       	    	opt = opt +"</div>";
-			       	    	opt = opt +"</div>";
-			       	    	opt = opt +"<div class='col-xs-8 col-sm-8'>";
-			       	    	
-			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	opt = opt +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.userName+"'> "+userRole.userName+"</span> </a> </h4>";
-			       	    	'</sec:authorize>';
-			       	    	
-			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-		       	         	   opt = opt +"<h4><a href='#'> "+userRole.userName+" </a> </h4>";
-		       	    	    '</sec:authorize>';
-			       	    	
-			       	    	opt = opt +"<p><label><i class='fa fa-envelope-o' aria-hidden='true'></i>&nbsp;<span title='"+userRole.userEmail+"'> "+userRole.userEmail+"</span></lable></p>";
-			       	    	opt = opt +"<p><label><i class='fa fa-phone'  aria-hidden='true'></i>&nbsp;<span title='"+mobilePhone+"'> "+mobilePhone+"</span> </label></p>";
-			       	    	opt = opt +"<p><label><i class='fa fa-user'  aria-hidden='true'></i>&nbsp;<span title='"+userRole.userRoleName+"'> "+userRole.userRoleName+"</span></label></p>";
-			       	        
-			       	    	if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-			       	    	  opt = opt +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p>";
-			 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
-			 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-			 			    	 opt = opt +"<p><label id='user"+userRole.userId+"' class='label label-info'><i class='fa fa-envelope' aria-hidden='true'></i><a href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p>";
-			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-			 			    	opt = opt +"<p><label class='label label-success'><i class='fa fa-check'></i>&nbsp;&nbsp;Active</label></p>";
-			 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-			 			    	opt = opt +"<p><label class='label label-danger'><i class='fa fa-ban'></i>&nbsp;&nbsp;In-active</label></p>";
-			 			    } 
-			       	    	
-			       	    	opt = opt +"</div>";
-			       	    	opt = opt +"<div class='clearfix'></div>";
-			       	    	opt = opt +"</div>";
-			       	    	opt = opt +"</div>";
-			       	    	$("#loading").removeAttr("style"); 
-			       	    	if(type == "manual"){
-			            		$('#usersListBody').append(opt);
-			            		 $("#searchByName").val("");
-			            	}else{
-			            		$('#usersListBody').append(result);
-			            		 $("#searchByName").val("");
-			            	}
-				   }
-	 			result = result + '<div class="clear"></div>';
-	 			$("#noUsers").val("")
-	   		    }
-            }else if(type == "scroll"){
-            	$("#noUsers").val("nousers")
-            	$('#loadMoreDiv').empty(); 
-            	$("#loading").removeAttr("style");
-            	var result ="";
-	         	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
-	         	$('#loadMoreDiv').append(result);
-	         	$("#noUsers").val("")
-            }else{
-            	$("#noUsers").val("nousers")
-            	$('#loadMoreDiv').empty(); 
-            	$("#loading").removeAttr("style");
-            	var result ="";
-	         	result = result + '<div id="loadMoreDiv" >No  Records..</div>';
-	         	$('#loadMoreDiv').append(result);
-            }
-	    	
-			 },
-	        error: function(e){
-	        }
-	    });  
 
- }
-</script>
-
-
-
+ 
 <script type="text/javascript">
 function resendInvitation(userId){
 	if(userId != null && userId != ""){
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/resendInvitationEmail?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
@@ -667,7 +865,8 @@ var validationSettings = {
 		    var form = $('#user_forms')[0];
       		var formData = new FormData(form);  
 			$("#search_user").attr("disabled", "disabled");
-			 $.ajax({
+		
+			$.ajax({
 						 type : "POST",
 		        	     data: formData,
 		        	     processData: false,
@@ -735,7 +934,7 @@ function getUserSummary(userId){
 			       	    	result = result +"<div class='col-xs-4 col-sm-4'>";
 			       	    	result = result +"<div class='text-center image-parent'>";
 			       	    	result = result +"<div class='imageParent'>";
-			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
+			       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src='"+userRole.user.fileUrl+"' alt='image'>";
 			       	    	result = result +"</div>";
 			       	    	
 			       	    	
@@ -743,11 +942,11 @@ function getUserSummary(userId){
 			       	    	result = result +"</div>";
 			       	    	result = result +"<div class='col-xs-8 col-sm-8'>";
 			       	    	
-			       	    	'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
-			       	         	result = result +"<h4><a href='<c:url value='/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
+			       	     '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
+			       	         	result = result +"<h4><a href='<c:url value='/app/userSummary/"+userRole.userId+"'/>''> <span title='"+userRole.firstName+" "+lastName+"'> "+userRole.firstName+" "+lastName+" </span> </a> </h4>";
 			       	    	'</sec:authorize>';
 			       	    	
-			       	    	'<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">'
+			       	     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
 		       	         	   result = result +"<h4><a href='#'> "+userRole.firstName+" " " "+lastName+"</a> </h4>";
 		       	    	    '</sec:authorize>';
 			       	    	
@@ -783,7 +982,7 @@ function getUserSummary(userId){
 		    	$('#loadMoreDiv').empty(); 
 		    	$("#loading").removeAttr("style");
 		    	var result ="";
-		     	result = result + '<div id="loadMoreDiv" >No More Records..</div>';
+		     	result = result + '<div id="loadMoreDiv" class="loadMoreDiv_styles">No More Records..</div>';
 		     	$('#loadMoreDiv').append(result);
 		    }
 			  else{
@@ -792,7 +991,7 @@ function getUserSummary(userId){
 		      	  $('#loadMoreDiv').empty(); 
 		          $("#loading").removeAttr("style");
 		          var result ="";
-		       	  result = result + '<div id="loadMoreDiv" >No  Records..</div>';
+		       	  result = result + '<div id="loadMoreDiv" class="loadMoreDiv_styles">No  Records..</div>';
 		       	  $('#usersListBody').append(result);
 		      }
   }
@@ -818,7 +1017,7 @@ function getUserSummary(userId){
   $('#selector').delay(2000).fadeOut('slow');
 	   $("#export-pop").click(function(){
 	               $("#exportPop").toggle();
-	       });
+	   });
 	   $("html").click(function() {
 	       $("#exportPop").hide();
 	   });
@@ -826,350 +1025,339 @@ function getUserSummary(userId){
 	       e.stopPropagation();
 	   });        
 </script> 
-<script type="text/javascript">
-    	   var config = {
-    				  '.chosen-select'           : {},
-    				  '.chosen-select-deselect'  : {allow_single_deselect:true},
-    				  '.chosen-select-no-single' : {disable_search_threshold:10},
-    				  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-    				  '.chosen-select-width'     : {width:"95%"}
-    	   }
-			//Adding Customized Any Of Keyword to the list 
-		    var select, chosen;
-		    select = $("#anyOfKeyword");
-		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosen = select.data('chosen');
-		    chosen.search_field.on('keyup', function(e)
-		    {
-		    	var anyKeyword = this.value.replace(",","");
-		        if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(anyKeyword).text(anyKeyword);
-		            select.append(option);
-		            select.find(option).prop('selected', true);
-                    $("#anyOfKeyword option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#anyOfKeyword").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		  //Adding Customized Any Of Keyword to the list
-		    var selectone, chosenone;
-		    selectone = $("#allKeywords");
-		    selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosenone = selectone.data('chosen');
-		    chosenone.search_field.on('keyup', function(e1)
-		    {
-		    	var allKeyword = this.value.replace(",","");
-		        if ((e1.which == 13 || e1.which == 188) && (allKeyword != null  && allKeyword != '' && allKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(allKeyword).text(allKeyword);
-		            selectone.append(option);
-		            selectone.find(option).prop('selected', true);
-                    $("#allKeywords option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#allKeywords").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selecttwo, chosentwo;
-		    selecttwo = $("#excludeKeyWord");
-		    selecttwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    chosentwo = selecttwo.data('chosen');
-		    chosentwo.search_field.on('keyup', function(e2)
-		    {
-		    	var excludeKeyword = this.value.replace(",","");
-		        if ((e2.which == 13 || e2.which == 188) && (excludeKeyword != null  && excludeKeyword != '' && excludeKeyword != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(excludeKeyword).text(excludeKeyword);
-		            selecttwo.append(option);
-		            selecttwo.find(option).prop('selected', true);
-                    $("#excludeKeyWord option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#excludeKeyWord").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selectthree, chosenthree;
-		    selectthree = $("#email");
-		    selectthree.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Email:' });
-		    chosenthree = selectthree.data('chosen');
-		    chosenthree.search_field.on('keyup', function(e3)
-		    {
-		    	var desg = this.value.replace(",","");
-		        if ((e3.which == 13 || e3.which == 188) && (desg != null  && desg != '' && desg != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(desg).text(desg);
-		            selectthree.append(option);
-		            selectthree.find(option).prop('selected', true);
-                    $("#email option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#email").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		    
-		    var selectfour, chosenfour;
-		    selectfour = $("#mobilePhone");
-		    selectfour.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Mobile Phone:' });
-		    chosenfour = selectfour.data('chosen');
-		    chosenfour.search_field.on('keyup', function(e6)
-		    {
-		    	var cert = this.value.replace(",","");
-		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(cert).text(cert);
-		            selectfour.append(option);
-		            selectfour.find(option).prop('selected', true);
-                    $("#mobilePhone option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#mobilePhone").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-		     var selectfive, chosenfive;
-		    selectfive = $("#employeeId");
-		    selectfive.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add EmployeeId:' });
-		    chosenfive = selectfive.data('chosen');
-		    chosenfive.search_field.on('keyup', function(e6)
-		    {
-		    	var cert = this.value.replace(",","");
-		        if ((e6.which == 13 || e6.which == 188) && (cert != null  && cert != '' && cert != 'undefined'))
-		        {
-		        	var par = this.parent;
-		            var option = $("<option>").val(cert).text(cert);
-		            selectfive.append(option);
-		            selectfive.find(option).prop('selected', true);
-                    $("#employeeId option").each(function(){
-                          $(this).siblings("[value='"+ this.value+"']").remove();
-                    });
-	        		$("#employeeId").trigger("chosen:updated");
-	        		
-		        }
-		    });
-		    
-				for (var selector in config) {
-				  $(selector).chosen(config[selector]);
-				}
-				$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				})
-</script> 
 
-<!-- Added By Rajashekar -->
+
+
+<!-- ====================================== Prepare Dynamic User List By Laxman  ============================================================ -->
 <script>
-	$("#ShowList, #listView").hide();
-	$("#ShowGrid").click(function(){
-		$("#ShowList").show();
-		$("#ShowGrid").hide();
-		$("#listView").show();
-		$("#gridView").hide();		
-	});
-	$("#ShowList").click(function(){
-		$("#ShowGrid").show();
-		$("#ShowList").hide();
-		$("#gridView").show();
-		$("#listView").hide();			
-	});	
-</script>
-
-  <script>
-  function getUsersView(type,viewFormat){
-	  var viewType = $("#listView").val();
-	  if(viewType != 'LISTVIEW'){
-		  getUsersList(type);
-	  }else{
-		  getUsersListView('manual',viewFormat);  
-	  }
-	   
-  } 
-  </script>
-  
-  <script>
-function getUsersViewBuRole(type,viewForm){
-	var viewType = $("#listView").val();
-	  if(viewType != 'LISTVIEW'){
-		  getUsersList(type);
-	  }else{
-		  getUsersListView('manual',viewForm);  
-	  }
-} 
-</script>
-
-<script>
-function showGrid(){
-	$("#listView").val('GRIDVIEW');
-	$("#userListViewDiv").hide();
-	getUsersList('manual');
-	$("#usersListBody").show();
+function getDynamciUserList(){
+	var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	
-}
-
-function showList(viewType){
-	var val = $("#listView").val("LISTVIEW");
-	$("#usersListBody").hide();
-	getUsersListView('manual',viewType);
-	$("#userListViewDiv").show();
-	$('#loadMoreDiv').empty();
+	var userRole = [];
+	$('input:checkbox[name=userRole]:checked').each(function() 
+    {
+		userRole.push($(this).val());
+    });
+	
+	
+	var userState = [];
+	$('input:checkbox[name=userState]:checked').each(function() 
+    {
+		userState.push($(this).val());
+    });
+	
+	var orgClients = [];
+	$('input:checkbox[name=orgClients]:checked').each(function() 
+		    {
+		orgClients.push($(this).val());
+     });
+	
+	var orgManagers = [];
+	$('input:checkbox[name=orgManagers]:checked').each(function() 
+		    {
+		orgManagers.push($(this).val());
+     });
+	
+	
+	var orgTeams = [];
+	$('input:checkbox[name=orgTeams]:checked').each(function() 
+		    {
+		orgTeams.push($(this).val());
+     });
+	
+	var employmentType = [];
+	$('input:checkbox[name=employmentType]:checked').each(function() 
+		    {
+		employmentType.push($(this).val());
+     });
+	
+	
+	var tags = [];
+	$('input:checkbox[name=tags]:checked').each(function() 
+	{
+		tags.push($(this).val());
+     });
+	
+	var orgDepartments = [];
+	$('input:checkbox[name=orgDepartments]:checked').each(function() 
+		    {
+		orgDepartments.push($(this).val());
+     });
+	
+	var searchValue = $("#dynamicUserDataTableSearch").val();
+	 searchValue = searchValue ? searchValue : "";
+	var url = sourceleadUrl+"/getDynamicUserList?"+tokenParamName+"="+tokenValue+"&searchValue="+searchValue+"&userRole="+userRole+"&userState="+userState+"&loginUserRole="+loginUserRole+"&orgClients="+orgClients+"&orgManagers="+orgManagers+"&orgTeams="+orgTeams+"&orgDepartments="+orgDepartments+"&employeMentType="+employmentType+"&tags="+tags;
+    $('#dynamicUserDataTableSearch').removeAttr('disabled');
+	$('#dynamicUserDataTableSearch').attr('disabled','disabled');
+	prepareDynamicUserList(url);
+	
 	
 }
 </script>
 
-
-<script type="text/javascript">
-	function getUsersListView(type,viewType){
-		var loginUserRole = '${SourceLeadWeb_loginUserRole}';
-	    var userRole = document.getElementById("userRole").value;
-		
-		var searchByName = document.getElementById("searchByName").value;
-		var userState = document.getElementById("userState").value;
-		
-		/* if(type == "scroll"){
-			offset = $("#usersOffset").val();
-			var searchByName =  document.getElementById("searchElement").innerHTML
-    	} */
-		
-		if(type == "manual"){
-			$('#usersListBody').empty();
-    		$("#usersOffset").val(0);
-    		$("#searchElement").val("");
-    		var searchByName = document.getElementById("searchByName").value;
-   		     $('#searchElement').append(searchByName);
-    		 offset = 0;
-    	}
-		 $.ajax({ 
-	    	type: "POST",
-	    	url: sourceleadUrl+"/getUsersList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&searchByName="+searchByName+"&userState="+userState+"&loginUserRole="+loginUserRole+"&offset="+offset+"&viewType="+viewType,
-	    			 
-            success: function(data) {
-            	 var json = JSON.parse(data);
-            	 var result = "";
-	    		    var result = "";				        	
-					result = result + '<table id="userListView" class="display" cellspacing="0" width="100%" >';
-					result = result + '<thead>';
-					result = result + '<tr>';
-					result = result + '<th>User Name</th>';
-					result = result + '<th>Email Id</th>';
-					result = result + '<th>Phone No.</th>';
-					result = result + '<th>Role</th>';
-					result = result + '<th>Manager</th>';
-					result = result + '<th>Employment Type</th>';
-					result = result + '<th>Status</th>';
-					/* result = result + '<th>Action</th>'; */
-					result = result + '</tr>';
-					result = result + '</thead>	';
-					result = result + '<tbody>';
-			if(data != null && data !='undefined' && data != ''){ 
-	 			for(var i=0; i<json.length; i++){
-	 				
-			 				var userRole = json[i];
-			 				var mobilePhone = ""
-			 			    
-			 			    if(userRole.user.mobilePhone != null && userRole.user.mobilePhone != ''){
-			 			    	mobilePhone = userRole.user.mobilePhone;
-			 			    }else{
-			 			    	mobilePhone = "--"
-			 			    }
-			 				
-			 				  result = result + ' <tr>';
-			        		   if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
-			        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_USER\',\'ROLE_VIEW_EDIT_USER\',\'ROLE_VIEW_DELETE_USER\')">' 
-			        			   result = result +"<td>"    
-			        			    result = result +" <a href='<c:url value='/userSummary/"+userRole.userId+"'/>'' class='UserTextLeft'>";
-					       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs'  src="+userRole.user.fileUrl+" alt='image'>";
-									result = result + ''+userRole.userName+'</a></td>';
-									'</sec:authorize>';
-								}else{
-								result = result + ' <td><div>--</div></td>';
-								}
-			        		    
-			        		    if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+userRole.userEmail+'</div></td>';
-								}else{
-									result = result + ' <td><div>--</div></td>';
-								}
-			        		    if(mobilePhone !=null && mobilePhone !='' && mobilePhone !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+mobilePhone+'</div></td>';
-								}else{
-									result = result + ' <td><div>--</div></td>';
-								}
-			        		    result = result + ' <td><div class="tblminwidth-75">'+userRole.userRoleName+'</div></td>';
-			        		    if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+userRole.reportingManagerName+'</div></td>';
-								}else{
-									result = result + ' <td><div>--</div></td>';
-								}
-			        		    if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
-									result = result + ' <td><div class="tblminwidth-75">'+userRole.employeMentType+'</div></td>';
-								}else{
-									result = result + ' <td><div>--</div></td>';
-								}
-			        		    if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
-					       	    	  result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
-					 			    }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
-					 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
-					 			    	 result = result +"<td><p><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
-					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
-					 			    	result = result +"<td><p><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
-					 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
-					 			    	result = result +"<td><p><label class='label label-danger'><b class='fa fa-ban'></b>&nbsp;&nbsp;In-active</label></p></td>";
-					 			    } 
-					       	    	
-			        		    /* result = result + ' <td><div class="tblminwidth-75">Remove</div></td>'; */
-			        		   /*  result = result + '<td><div><i class="glyphicon glyphicon-trash" onClick="terminateUSer('+userRole.id+')"; title="Terminate User"></i></div></td>'; */
-								result = result + ' </tr>';
-				   }
-	   		    
-            }
-            result = result + '  </tbody>';
-			result = result + ' </table>';
-			$("#userListViewDiv").empty();
-			$("#userListViewDiv").append(result);
-			userListViewPagination();
-			 },
-	        error: function(e){
-	        }
-	    });  
-
- }
-</script>
-
 <script>
-function userListViewPagination(){
-	 $('#userListView').DataTable( { 
-	    	"scrollCollapse": false,
-	    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+function prepareDynamicUserList(url){
+	 	var result = "";
+		result = result	+ '<div class="clearfix minHeight35 hidden">';
+	    result = result	+ '<div class="remove_search">';
+		result = result	+ '</div>';
+		result = result	+ '</div>';
+		result = result	+ '<div class="project_tabs_inn_table project_tabs_inn_table_a">';
+		result = result + '<table id="dynamicUserListView" class="display" cellspacing="0" width="100%" >';
+		result = result + '<thead>';
+		result = result + '<tr>';
+		result = result + '<th>Associate Name</th>';
+		result = result + '<th>Email Id</th>';
+		result = result + '<th>Phone No.</th>';
+		result = result + '<th>Role</th>';
+		result = result + '<th>Manager</th>';
+		result = result + '<th>Employment Type</th>';
+		result = result + '<th>Status</th>';
+		result = result + '</tr>';
+		result = result + '</thead>';
+		result = result + '</table>';
+		result = result	+ '</div>';
+		$("#dynamicUserListViewDiv").empty();
+		$("#dynamicUserListViewDiv").append(result);
+		dynamicUserListPagination(url);
+}
+</script>
+<script>
+var table = '';
+function dynamicUserListPagination(url){
+	var colIndex = 0;
+	table = $('#dynamicUserListView').DataTable( { 
+	  "processing": true,
+      "serverSide": true,
+      "searching": false,
+      "searchHighlight": true,
+      "ajax": $.fn.dataTable.pipeline( {
+          url: url,
+          method: 'POST',
+          pages: 10
+        }),
+        "columns": [
+            { "data": "userName" },
+            { "data": "email"},
+            { "data": "mobilePhone"},
+            { "data": "displayName"},
+            { "data": "manager"},
+            { "data": "userEmploymentType"},
+            { "data": "status"}
+        ],
+		 "columnDefs": [ {
+		    	  	"targets": colIndex++,
+		    	  	"data": "userNme",
+		    	  	"render": function(data, type, userRole, meta) {
+		    	  		var result = "";
+		    	  		if(userRole.userName !=null && userRole.userName !='' && userRole.userName !='undefined'){
+		        			   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\')">' 
+		        			   result = result +"<td><div class='proj_show divmax-width dotdotwithImage'>"    
+		        			    result = result +" <a href='<c:url value='/app/userSummary/"+userRole.userCode+"'/>'' class='UserTextLeft' title = '"+userRole.userName+"'>";
+		        			    if(userRole.fileUrl != null && userRole.fileUrl !="" && userRole.fileUrl != "undefined"){
+				       	    	result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='"+userRole.fileUrl+"' alt='image'>";
+		        			    }else{
+					       	    result = result +"<img data-id= 'userProfileImage' onerror='predefineProfileImage(this);' class='m-t-xs pull-left'  src='/resources/images/userprofileImg.jpg' alt='image'>";
+		        			    }
+				       	    	result = result + '<div class="tbldata-dotdot-vsm">'+userRole.userName+'</div><i class="fa fa-binoculars pull-right"></i></a></div></td>';
+								'</sec:authorize>';
+							}else{
+							result = result + ' <td><div>--</div></td>';
+							}
+			             return result;
+		    	  	}
+		      },{
+		    	  "targets": colIndex++,
+		          "data": "email",
+		          "render": function ( data, type, userRole, meta ) {
+		        	  var result = "";
+		        	  if(userRole.userEmail !=null && userRole.userEmail !='' && userRole.userEmail !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot" title = "'+userRole.userEmail+'">'+userRole.userEmail+'</div></td>';
+						}else{
+							result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+						}
+		              return result;
+		          		
+		          }
+		          },{
+		        "targets": colIndex++,
+		        "data": "mobilePhone",
+		        "render": function ( data, type, userRole, meta ) {
+		        	if(userRole.mobilePhone != null && userRole.mobilePhone != ''){
+					    	mobilePhone = userRole.mobilePhone;
+					    }else{
+					    	mobilePhone = "--"
+					    }
+		        	  var result = "";
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+mobilePhone+'">'+mobilePhone+'</div></td>';
+		        	 return result;
+		        }
+		      }, {
+		          "targets": colIndex++,
+		          "data": "displayName",
+		          "render": function ( data, type, userRole, meta ) {
+		        	  var result = "";
+		        	  result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.userRoleName+'">'+userRole.userRoleName+'</div></td>';
+		        	  return result;
+		          }
+		        }, {
+		            "targets": colIndex++,
+		            "data": "manager",
+		            "sortable": false,
+		            "render": function ( data, type, userRole, meta ) {
+		            	var result = "";
+		            	if(userRole.reportingManagerName !=null && userRole.reportingManagerName !='' && userRole.reportingManagerName !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot-sm" title = "'+userRole.reportingManagerName+'">'+userRole.reportingManagerName+'</div></td>';
+						}else{
+							result = result + ' <td><div class="tbldata-dotdot-sm">--</div></td>';
+						}
+			              return result;
+		            }
+		      },
+		      {
+		          "targets": colIndex++,
+		          "data": "userEmploymentType",
+		          "sortable": false,
+		          "render": function ( data, type, userRole, meta ) {
+		          	var result = "";
+		          	 if(userRole.employeMentType !=null && userRole.employeMentType !='' && userRole.employeMentType !='undefined'){
+							result = result + ' <td><div class="tbldata-dotdot-100" title = "'+userRole.employeMentType+'">'+userRole.employeMentType+'</div></td>';
+						}else{
+							result = result + ' <td><div class="tbldata-dotdot-100">--</div></td>';
+						}
+			              return result;
+		          }
+		    },
+		    {
+		        "targets": colIndex++,
+		        "data": "status",
+		        "sortable": false,
+		        "render": function ( data, type, userRole, meta ) {
+		        	var result = "";
+		            if(userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'N'){
+		            	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		            	result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Invite</a></label></p></td>";
+		            	'</sec:authorize>';
+	 			    	
+	 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+	 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
+	 			    	'</sec:authorize>';    
+		            
+		            }else if((userRole.isMailSent != null && userRole.isMailSent != "" && userRole.isMailSent == 'Y') &&
+		 			    		(userRole.userState != null && userRole.userState != "" && userRole.userState == 'NOT_LOGGEDIN') ){
+		 			    	'<sec:authorize access="hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		 			    		result = result +"<td><p class='tblminwidth-50'><label id='user"+userRole.userId+"' class='label label-info'><b class='fa fa-envelope' aria-hidden='true'></b><a class='color_white' href='javascript:void(0)' onClick='resendInvitation("+userRole.userId+");'>&nbsp;&nbsp;Resend</a></label></p></td>";
+		 			    	'</sec:authorize>';
+		 			    	
+		 			    	'<sec:authorize access="!hasRole(\'ROLE_VIEW_ASSOCIATE_ADDITIONAL_DETAILS\')">'  
+		 			    			result = result +"<td><p class='tblminwidth-50'>---</p></td>";
+		 			    	'</sec:authorize>';
+		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'ACTIVE'){
+		 			    	result = result +"<td><p class='tblminwidth-50'><label class='label label-success'><b class='fa fa-check'></b>&nbsp;&nbsp;Active</label></p></td>";
+		 			    }else if(userRole.userState != null && userRole.userState != "" && userRole.userState == 'INACTIVE'){
+		 			    	result = result +"<td><p class='tblminwidth-50'><label class='label label-danger'><b class='fa fa-ban'></b>&nbsp;&nbsp;In-active</label></p></td>";
+		 			    } 
+		              return result;
+		        }
+		  }],
+		    "scrollCollapse": false,
+	    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+	    	"aaSorting": [[1,'desc']],
 	    	"bLengthChange": true,
 	    	"bDestroy": true,
 	    	"ordering": true,
+	    	"initComplete": function( settings, json ) {
+	    		 $('#dynamicUserDataTableSearch').removeAttr('disabled');
+	    	  },
 	    	"oLanguage": {
-	            "sSearch": "",
-	            "sZeroRecords": "", "sEmptyTable": ""
-	       }
-	    });
-	    $("#WagesAndTaxListTable").wrap("<div class='overflow_Auto'></div>")
+	     		"sSearch": "",
+	     		 "sZeroRecords": "", "sEmptyTable": "", 
+	     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+	     },
+    	  drawCallback: function(){
+    	      $('a.paginate_button', this.api().table().container()).on('click', function(){
+    	    	  searchHighlight();
+    	         }); 
+    	   }
+    } );
+    $("#dynamicUserListView").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
+    $("input[type=search]").hide();
 }
 </script>
+<script>
+$("#dynamicUserDataTableSearch").keyup(function(event) {
+	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    if (event.keyCode === 13) {
+    	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+    	var searchData = $('#dynamicUserDataTableSearch').val();
+    	var regex =  new RegExp(/[\\]/g);
+    	if(regex.test(searchData) == false){
+    		getDynamciUserList();
+		    searchHighlight();
+    	}else{
+    		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+    	}
+    	$('#dynamicUserDataTableSearch').val(searchData);
+    }
+});
+
+function beforeSearch(){
+	$('#dynamicUserDataTableSearch').parent().find('p.jquery_form_error_message').remove();
+	var searchData = $('#dynamicUserDataTableSearch').val();
+	var regex =  new RegExp(/[\\]/g);
+	if(regex.test(searchData) == false){
+		getDynamciUserList();
+	    searchHighlight();
+	}else{
+		$("#dynamicUserDataTableSearch").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	}
+	$('#dynamicUserDataTableSearch').val(searchData);
+}
+</script>
+ <script>
+ function searchHighlight(){
+	 setTimeout(function () {
+ 		var body = $( table.table().body() );
+	        body.unhighlight();
+	        body.highlight( $("#dynamicUserDataTableSearch").val() );   
+			
+			}, 1000); 
+ }
+ </script>
+ <script>
+	$(document).on( 'init.dt.dth', function (e, settings, json) {
+    table = new $.fn.dataTable.Api( settings );
+    var body = $( table.table().body() );
+    if ( $( table.table().node() ).hasClass( 'searchHighlight' ) || settings.oInit.searchHighlight ||  $.fn.dataTable.defaults.searchHighlight ) {
+	
+	}
+} );
+	</script>
+	
+<script>
+function getActions(){
+	$(".action-pop").slideToggle(200);
+	$(".newActPop").slideUp(200);
+}	
+$("html").click(function(){
+	$(".action-pop").slideUp(200);
+});
+$(".action, .action-pop").click(function(e){
+ 	e.stopPropagation();
+});	
 
 
-<!-- End By Rajashekar -->
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
 
+
+</script>
     

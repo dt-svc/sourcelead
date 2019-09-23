@@ -15,26 +15,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "USER", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "user")
+@Table(name = "USER")
 public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -59,6 +55,9 @@ public class User implements Serializable{
 	@Column(name = "MOBILE_PHONE")
 	private String mobilePhone;
 	
+    @Column(name = "EXTENSION_NUMBER")
+	private String extensionNumber;
+
 	@Column(name = "USER_STATE")
 	@Enumerated(EnumType.STRING)
 	private Status userState;
@@ -78,20 +77,24 @@ public class User implements Serializable{
 	@Column(name = "STATUS")
 	private String status;
 	
+	
+	@Column(name = "SSN")
+	private String ssn;
+	
 	@Column(name = "FILE_NAME")
 	private String fileName;
 	
 	@Column(name = "FILE_URL")
 	private String fileUrl;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "REPORTING_MANAGER_ID")
 	private User reportingManager;
 	
-	@Column(name = "IS_MAIL_SENT")
+	/*@Column(name = "IS_MAIL_SENT")
 	@Enumerated(EnumType.STRING)
-	private Status isMailSent;
+	private Status isMailSent;*/
 	
 	@Column(name = "JOB_TITLE")
 	private String jobTitle;
@@ -99,7 +102,6 @@ public class User implements Serializable{
 	@Column(name = "LOCATION")
 	@Type(type="text")
 	private String location;
-	
 	
 	@Column(name = "LINKEDIN")
 	@Type(type="text")
@@ -139,22 +141,40 @@ public class User implements Serializable{
 	@Column(name = "RECRUITER_REGISTER_COUNTRY")
 	private String recruiterRegisterCountry;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	// Immigration columns Start
+	@Column(name = "MIDDLE_NAME")
+	private String middelName ;
+		
+	@Column(name = "DATE_OF_BIRTH")
+	private Date dateOfBirth;
+		
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "MARITAL_STATUS")
+	private String maritalStatus;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_USER_ID")
+	@JsonIgnore
+	private User linkUserId;
+	
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<UserRole> userRole = new HashSet<UserRole>(0);
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<Employees> employee = new HashSet<Employees>(0);
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="user",cascade = CascadeType.ALL)
     @Fetch(FetchMode.SELECT)
     private Set<PasswordResets> passwordResets;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "consultantUser")
 	private Set<Candidate> candidateSet;
 	
@@ -166,10 +186,6 @@ public class User implements Serializable{
 		this.candidateSet = candidateSet;
 	}
 
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -186,25 +202,51 @@ public class User implements Serializable{
 	@Column(name ="REGISTER_OPTIONAL_SERVICE_ID")
 	private String registerOptionalServiceId;
 	
+	@Column(name = "VERIFICATION_UUID")
+	private String verificationUUID;
+    
+    @Column(name = "IS_VERIFIED")
+	private String isVerified;
+    
+    @Column(name = "URL_SENTTIME")
+	private Date urlSentTime;
+    
+    @Column(name = "LOGIN_SECURITY")
+	private String loginSecurity;
+    
+    @Column(name = "ALLOW_EMPLOYEE_TO_FILL")
+	@Enumerated(EnumType.STRING)
+	private Status allowEmployeeToFill;
+	
 	@Transient
 	private String isPrimaryAdmin;
+	
+	@Transient
+	private String locationCode;
+	
+	@Transient
+	private Long orgLocationId;
 
 	@Transient
     private String tempPwd;
 	
 	@Transient
+	@JsonProperty
     private int assignJobCount;
 	
 	@Transient
 	private String role;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeamId;
 	
 	@Transient
+	@JsonProperty
 	private String assignedTeam;
 	
 	@Transient
+	@JsonProperty
 	private String isAssignedOwner;
 	
 	@Transient
@@ -244,8 +286,38 @@ public class User implements Serializable{
 	private String employmentType;
 	
 	@Transient
+	private String vendorName;
+	
+	@Transient
+	private String vendorContactName;
+	
+	@Transient
 	private String registrationType;
 	
+	@Transient
+	private String isMailSent;
+	
+	@Transient
+	private String associateUserCode;
+	
+	@Transient
+	private Long userId;
+	
+	@Transient
+	private Long candidateId;
+	
+	@Transient
+    @JsonProperty
+    private String associateTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+	
+	
+	@Transient
+    @JsonProperty
+    private String isPayRollApprover;
 	
 
 	public Status getPreviousUserState() {
@@ -257,6 +329,7 @@ public class User implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
     private String fullName;
 	
 	public Long getId() {
@@ -305,6 +378,16 @@ public class User implements Serializable{
 
 	public void setMobilePhone(String mobilePhone) {
 		this.mobilePhone = mobilePhone;
+	}
+
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 
 	public Status getUserState() {
@@ -356,22 +439,6 @@ public class User implements Serializable{
 		this.status = status;
 	}
 	
-	public Status getIsMailSent() {
-		return isMailSent;
-	}
-
-	public void setIsMailSent(Status isMailSent) {
-		this.isMailSent = isMailSent;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
-	}
-
 	public String getFileContentType() {
 		return fileContentType;
 	}
@@ -473,14 +540,14 @@ public class User implements Serializable{
 		if(StringUtils.isNotEmpty(fullName))
 			return fullName;
 		else{
-			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName)){
+			if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isEmpty(middelName)){
 				fullName = firstName;
-			}
-			else if(StringUtils.isEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = lastName;
-			}
-			else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName)){
-				fullName = firstName+" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isEmpty(middelName)){
+				fullName = firstName +" "+lastName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName +" "+middelName;
+			}else if(StringUtils.isNotEmpty(firstName) && StringUtils.isNotEmpty(lastName) && StringUtils.isNotEmpty(middelName)){
+				fullName = firstName+" "+middelName+" "+lastName;
 			}
 			return fullName;
 		}
@@ -744,6 +811,192 @@ public class User implements Serializable{
 
 	public void setFileUrl(String fileUrl) {
 		this.fileUrl = fileUrl;
+	}
+
+	public String getIsMailSent() {
+		return isMailSent;
+	}
+
+	public void setIsMailSent(String isMailSent) {
+		this.isMailSent = isMailSent;
+	}
+
+	public String getSsn()
+	{
+		return ssn;
+	}
+
+	public void setSsn(String ssn)
+	{
+		this.ssn = ssn;
+	}
+
+	public String getVerificationUUID()
+	{
+		return verificationUUID;
+	}
+
+	public void setVerificationUUID(String verificationUUID)
+	{
+		this.verificationUUID = verificationUUID;
+	}
+
+	public String getIsVerified()
+	{
+		return isVerified;
+	}
+
+	public void setIsVerified(String isVerified)
+	{
+		this.isVerified = isVerified;
+	}
+
+	public Date getUrlSentTime()
+	{
+		return urlSentTime;
+	}
+
+	public void setUrlSentTime(Date urlSentTime)
+	{
+		this.urlSentTime = urlSentTime;
+	}
+
+	public String getLoginSecurity()
+	{
+		return loginSecurity;
+	}
+
+	public void setLoginSecurity(String loginSecurity)
+	{
+		this.loginSecurity = loginSecurity;
+	}
+
+	public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public String getVendorContactName() {
+		return vendorContactName;
+	}
+
+	public void setVendorContactName(String vendorContactName) {
+		this.vendorContactName = vendorContactName;
+	}
+
+	public String getMiddelName() {
+		return middelName;
+	}
+
+	public void setMiddelName(String middelName) {
+		this.middelName = middelName;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(String maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
+	public User getLinkUserId() {
+		return linkUserId;
+	}
+
+	public void setLinkUserId(User linkUserId) {
+		this.linkUserId = linkUserId;
+	}
+
+	public String getAssociateUserCode() {
+		return associateUserCode;
+	}
+
+	public void setAssociateUserCode(String associateUserCode) {
+		this.associateUserCode = associateUserCode;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public String getAssociateTags() {
+		return associateTags;
+	}
+
+	public void setAssociateTags(String associateTags) {
+		this.associateTags = associateTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getIsPayRollApprover() {
+		return isPayRollApprover;
+	}
+
+	public void setIsPayRollApprover(String isPayRollApprover) {
+		this.isPayRollApprover = isPayRollApprover;
+	}
+
+	public Status getAllowEmployeeToFill() {
+		return allowEmployeeToFill;
+	}
+
+	public void setAllowEmployeeToFill(Status allowEmployeeToFill) {
+		this.allowEmployeeToFill = allowEmployeeToFill;
+	}
+
+	public String getLocationCode() {
+		return locationCode;
+	}
+
+	public void setLocationCode(String locationCode) {
+		this.locationCode = locationCode;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	

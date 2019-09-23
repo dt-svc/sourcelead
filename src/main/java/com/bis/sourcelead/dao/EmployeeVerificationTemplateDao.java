@@ -1,0 +1,19 @@
+package com.bis.sourcelead.dao;
+
+import com.bis.sourcelead.dto.EmploymentVerificationTemplateDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.EmployeeVerificationTemplate;
+
+public interface EmployeeVerificationTemplateDao {
+
+	EmployeeVerificationTemplate saveEmployeeVerificationTemplate(EmployeeVerificationTemplate employeeVerificationTemplate);
+
+	ResponseList<EmployeeVerificationTemplate> getAllEmploymentVerificationListByOrgLocationId(Long orgLocationId, EmploymentVerificationTemplateDTO employmentVerificationTemplateDTO);
+
+	EmployeeVerificationTemplate getEmploymentVerificationtemplateByTemplateUUID(String tempUUID);
+
+	EmployeeVerificationTemplate getEmploymentVerificationtemplateByLocationId(Long orgLocationId);
+
+	EmployeeVerificationTemplate updateEmployMentTemplate(EmployeeVerificationTemplate empTemp);
+
+}

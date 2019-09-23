@@ -26,6 +26,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class JobAlertController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JobAlertController.class);

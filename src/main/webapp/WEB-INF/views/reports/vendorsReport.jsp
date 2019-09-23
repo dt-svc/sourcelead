@@ -1,17 +1,112 @@
+<jsp:include page="../masterHeader.jsp" />
+<jsp:include page="../masterSideNav.jsp" />
+
+
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<!-- end files for autocomplete with tagit -->
+
 
 <script type="text/javascript">
-window.onload = function() { 
+/* window.onload = function() { 
 	getVendorsReportList();
-	}
+	} */
 </script>
 
+
+
+<section class="content-wraper">
+
+<section class="content-header clearfix">
+			<div class="pull-left">
+				<h2>Vendor(s) Report</h2>
+			</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/performanceReportList'/>">Performance Reports</a> &raquo; Vendor(s) Report</div>
+</section>
+
+
+    <div class="positionRelative">
+    
+    
+<div class="reportHead">
+			<div class="listGridWrap reqListBtn">
+				<a title="Graphical View" id="graphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a> 
+				<a title="List View" id="listView" class="btn btn-default"><i class="fa fa-list"></i></a>
+			</div>
+    	<ul class="clearfix pull-right" id="listViewFilters" style="display: none;">
+    		<li>
+        <div class="dropdown-select positionRelative repSelWrap clearfix">
+			<select class="form-control repSelFiled" id="vendorreportTypeId" onChange="flushVendorCustomDates(); custVendorDates();">
+			  	 <option value="Last_7_days">Last 7 days</option>
+			  <option value="Last_15_days">Last 15 days</option>
+			  <option value="1_month">Last 1 month</option>
+			  <option value="3_months">Last 3 months</option>
+			  <option value='YTD' >YTD</option>
+	          <option value='Last_Year'>Last Year</option>
+			  <option value="custom">Custom</option>
+			</select>
+		<div id="RunDivId" class="repSelBtn"> <button type="button" class="btn btn-primary btn-sm" id="customize_btn" onclick="getVendorsReportList();">Run</button></div> 
+          
+          <div class="clearfix customLeaves repCustomDate" id="dateShow">
+			 <div class="repCustomDateInn">
+			 <input type="text" class="form-control calendar" value="" id="vendorStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date">
+			 <p id="vendorreportStartDate"></p>
+			 </div>
+			<div class="repCustomDateInn">
+			<input type="text"  class="form-control calendar" value="" id="vendorEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date">
+			<p id="vendorreportEndDate"></p>
+			</div>
+			<div class="repCustomDateBtn">
+				<button type="button" class="btn btn-primary btn-sm" onclick="getVendorCustomReports();"><i class="fa fa-search"></i></button>
+			</div>
+          </div>
+          
+        </div>    		
+    		</li>
+    		<li class="unVisable"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onclick=""></span></li>
+    	</ul>
+    </div>    
+    
+   
+ 
+<section class="candidate_wrap_table recruiterReports_table minHeight">
+<div id ="vendorLoderDiv"></div>
+<div id="vendorReportsDiv" class="datatable_filter repDataSearch repDataSearchFil"></div>
+<div id="vendorReportsChartDiv">
+	<jsp:include page="vendorPerformanceReport.jsp" flush="true"></jsp:include>
+</div>
+<div id="vendorSpocReportsDiv" class="repoPositiNoCount"></div>
+<div id="releasedJobsResultDiv"></div>
+<div id="releasedApplicantsDeclineDiv"></div>
+<div id="releasedApplicantsBackOutDiv"></div>
+<div id="releasedApplicantsHiredListDiv"></div>
+</section>   
+ 
+      
+
+
+
+  </div>
+</section>
 <script>
 function getVendorsReportList(){
-	$('#reportStartDate').empty();
-	$('#reportEndDate').empty();
+	$('#vendorreportStartDate').empty();
+	$('#vendorreportEndDate').empty();
+	document.getElementById("vendorreportStartDate").style.display="none";
+	document.getElementById("vendorreportEndDate").style.display="none";
 	var reportType = $("#vendorreportTypeId").val();
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
+	if(reportType != "custom"){
+	$("#vendorLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 	$.ajax({
          type : "POST",
           url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
@@ -20,6 +115,7 @@ function getVendorsReportList(){
          },
           
      }); 
+	}
 }
 </script>
 <script>
@@ -108,16 +204,18 @@ function prepareReportDataDiv(data){
 	result = result + '</table>';
 	$("#vendorReportsDiv").empty();
     $("#vendorReportsDiv").append(result);
+    $("#vendorLoderDiv").empty();
+    $("#vendorLoderDiv").removeAttr('style');
     vendorReportPagination();
 }
 
 </script>
 <script>
 function vendorReportPagination(){
-	$('#vendorReportPagination').DataTable({ 
+	$('#vendorReportPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -472,7 +570,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+ //   event.preventDefault(); commented the code not a valid palce to use.
 });
 
 $(".addSkills").click(function(){
@@ -584,10 +682,12 @@ function custVendorDates(){
 	if(reportType=="custom"){
 // 	    $("#dateShow").style("display: block");
 	    $("#dateShow").css("display", "block");
+	    document.getElementById("RunDivId").style.display="none";
 	}
 	if(reportType!="custom"){
 // 	    $("#dateShow").style("display: none");
 	    $("#dateShow").css("display", "none");
+	    document.getElementById("RunDivId").style.display="block";
 	}
 }
 </script>
@@ -598,12 +698,15 @@ function getVendorCustomReports(){
 	var startDate = $("#vendorStartDate").val();
 	var endDate = $("#vendorEndDate").val();
 	if(startDate == null || startDate == '' || startDate == 'undefined'){
+		document.getElementById("vendorreportStartDate").style.display="block";
 		$("#vendorreportStartDate").empty().append("Start Date is Required") ; 
 	}
 	if(endDate == null || endDate == '' || endDate == 'undefined'){
+		document.getElementById("vendorreportEndDate").style.display="block";
 		$("#vendorreportEndDate").empty().append("End Date is Required") ; 
 	}
 	else{
+		$("#vendorLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 		$.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getVendorRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&customStartDate="+startDate+"&customEndDate="+endDate,    
@@ -644,3 +747,4 @@ function getVendorCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
+<jsp:include page="../masterFooter.jsp" />

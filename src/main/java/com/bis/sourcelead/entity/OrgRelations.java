@@ -22,13 +22,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="ORG_RELATIONS")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="orgRelation")
 public class OrgRelations implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -38,14 +38,14 @@ public class OrgRelations implements Serializable{
 	@Column(name = "ID",nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne
     @JoinColumn(name="RESPONDER_LOCATION_ID", nullable=false )   
 	@JsonBackReference
     private OrgLocations responderLocationId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne
     @JoinColumn(name="LOCATION_ID", nullable=false )  
 	@JsonBackReference
     private OrgLocations locationId;
@@ -56,9 +56,6 @@ public class OrgRelations implements Serializable{
 	@Transient
 	private Long locationJsonId;
     
-    /*@Column(name="RELATION_TYPE")
-	private String relationType;*/
-	
 	@Column(name="INITIATOR_TYPE")
 	private String initiatorType;
 	
@@ -70,6 +67,56 @@ public class OrgRelations implements Serializable{
 	
 	@Column(name="RESPONDER_LEVEL")
 	private String responderLevel;
+	
+	@Column(name = "PAYMENT_TERM")
+	private String PaymentTerm;
+	
+	@Column(name="VENDOR_ONBOARD_TEMPLATE_ID")
+	@Type(type="text")
+	private String vendorOnboardTemplateId;
+	
+	@Column(name="VENDOR_RELATION_STATUS")
+	private String vendorRelationStatus;
+	
+	@Column(name="INDUSTRY_NAME")
+	private String industryName;
+	
+	@Column(name="IS_VENDOR_DETAILS_FILLED")
+	private String isVendorDetailsFilled;
+	
+	
+	@Column(name="IS_VENDOR_DOCUMENTS_FILLED")
+	private String isVendorDocumentsFilled;
+	
+	
+	@Column(name="IS_VENDOR_TASKS_FILLED")
+	private String isVendorTasksFilled;
+	
+	@Column(name="CURRENCY")
+	private String currency;
+	
+	@Column(name="SIC_CODE")
+	private String sicCode;
+	
+	@Column(name="NAICS_CODE")
+	private String naicsCode;
+	
+	@Column(name="EIN_CODE")
+	private String einCode;
+	
+	@Column(name="TAX_REGISTRATION_NUMBER")
+	private String taxRegistrationNumber;
+	
+	@Column(name="DUNS_NUMBER")
+	private String dunsNumber;
+	
+	
+    @ManyToOne
+    @JoinColumn(name = "BANK_DETAILS_ID")
+    private OrgBankDetails bankDetailsId;
+	
+	@Column(name="UUID")
+	private String UUID;
 	
 	@Column(name="STATUS")
 	private String status;
@@ -86,80 +133,155 @@ public class OrgRelations implements Serializable{
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 	
+
+	@Column(name = "IS_LAW_FIRM")
+	private String isLawFirm;
+	
+	@Column(name = "IS_ACCOUNTING_FIRM")
+	private String isAccountingFirm;
+
+	@Column(name="IS_OFFSHORE_RELATION")
+	private String isOffShoreRelation;
+	
+	@Column(name="GENERATE_INVOICE")
+	private String generateInvoice;
+	
+	@Column(name="GENERATE_BILL")
+	private String generateBill;
+
+	
 	@Transient
+	@JsonProperty
     private String orgName;
+	
+	@Transient
+	@JsonProperty
+    private Long immigrationRelatedId;
+	
+	@Transient
+	@JsonProperty
+    private String vendorOrgLocation;
 	
 	@Transient
     private String orgType;
 	
 	@Transient
+	@JsonProperty
     private Long orgid;
 	
 	@Transient
+	@JsonProperty
 	private String webSite;
 	
 	@Transient
+	@JsonProperty
 	private String country;
 	
 	@Transient
+	@JsonProperty
 	private String state;
 	
 	@Transient
+	@JsonProperty
 	private String city;
 	
 	@Transient
+	@JsonProperty
 	private String location;
 	
 	@Transient
+	@JsonProperty
 	private String zipCode;
 	
-	@Transient
-	private String phone;
 	
 	@Transient
+	@JsonProperty
+	private String phone;
+	
+	
+	@Transient
+	@JsonProperty
+	private String phoneNumber;
+	
+	@Transient
+	@JsonProperty
 	private String email;
+	
+	@Transient
+	@JsonProperty
+	private String vendorContactFirstName;
+	
+	
+	@Transient
+	@JsonProperty
+	private String vendorContactLastName;
+	
+	@Transient
+	@JsonProperty
+	private String spocStatus;
 	
 	@Transient
 	private Long projectsCont;
 	
 	
 	@Transient
+	@JsonProperty
 	private String vendorCreateduserName;
 	
 	@Transient
+	@JsonProperty
+	private String poEmail;
+	
+	@Transient
+	@JsonProperty
+	private String paymentRemittanceEmail;
+	
+	@Transient
+	@JsonProperty
 	private Integer noOfContatcs;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfContatcsForCampaign;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfReleasedJobs;
 	
 	@Transient
+	@JsonProperty
 	private Integer noOfNonReleasedContacts;
 	
 	@Transient
+	@JsonProperty
 	private String locationOrgname;
 	
 	@Transient
+	@JsonProperty
 	private String locationWebsite;
 	
 	@Transient
+	@JsonProperty
 	private String locationCountry;
 	
 	@Transient
+	@JsonProperty
 	private String locationState;
 	
 	@Transient
+	@JsonProperty
 	private String locationCity;
 	
 	@Transient
+	@JsonProperty
 	private String responderId;
 	
 	@Transient
+	@JsonProperty
 	private String locationID;
 	
 	@Transient
+	@JsonProperty
 	private String level;
 	
 	@Transient
@@ -196,12 +318,15 @@ public class OrgRelations implements Serializable{
 	private String vendorName;
 	
 	@Transient
+	@JsonProperty
 	private String address;
 	
 	@Transient
+	@JsonProperty
 	private String billingAddress;
 	
 	@Transient
+	@JsonProperty
 	private String paymentTerms;
 	
 	@Transient
@@ -214,14 +339,53 @@ public class OrgRelations implements Serializable{
 	@JsonProperty
 	private String clientName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+
+	@Transient
+	@JsonProperty
+	private String clientContactIds;
+	
+	
+	@JsonBackReference
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "orgRelations")
 	private Set<OrgSpoc> orgSpocList;
 	
 	 @Transient
 	 @JsonProperty
 	 private String clientCurrency;
+	 
+	 
+    @Transient
+	@JsonProperty
+	private String isVendorOnboardSubmitted;
+    
+    @Transient
+	@JsonProperty
+    private String accountName;
+    
+    @Transient
+	@JsonProperty
+    private String accountNumber;
+    
+    @Transient
+	@JsonProperty
+    private String bankName;
+    
+    @Transient
+	@JsonProperty
+    private String branchNumber;
 	
+    @Transient
+	@JsonProperty
+    private String bankAddress;
+    
+    @Transient
+	@JsonProperty
+    private String bankIdentifierCode;
+    
+    @Transient
+	@JsonProperty
+    private String vendorNameForList;
+    
 	public String getStringDate()
 	{
 		return stringDate;
@@ -249,6 +413,7 @@ public class OrgRelations implements Serializable{
 	}
 
 	@Transient
+	@JsonProperty
 	private Long vendorlocationId;
 	
 	
@@ -713,5 +878,318 @@ public class OrgRelations implements Serializable{
 	public void setClientCurrency(String clientCurrency) {
 		this.clientCurrency = clientCurrency;
 	}
+
 	
+
+	public String getVendorOnboardTemplateId() {
+		return vendorOnboardTemplateId;
+	}
+
+	public void setVendorOnboardTemplateId(String vendorOnboardTemplateId) {
+		this.vendorOnboardTemplateId = vendorOnboardTemplateId;
+	}
+
+	public String getVendorRelationStatus() {
+		return vendorRelationStatus;
+	}
+
+	public void setVendorRelationStatus(String vendorRelationStatus) {
+		this.vendorRelationStatus = vendorRelationStatus;
+	}
+
+	public String getUUID() {
+		return UUID;
+	}
+
+	public void setUUID(String uUID) {
+		UUID = uUID;
+	}
+
+	public String getIsVendorDetailsFilled() {
+		return isVendorDetailsFilled;
+	}
+
+	public void setIsVendorDetailsFilled(String isVendorDetailsFilled) {
+		this.isVendorDetailsFilled = isVendorDetailsFilled;
+	}
+
+	public String getIsVendorDocumentsFilled() {
+		return isVendorDocumentsFilled;
+	}
+
+	public void setIsVendorDocumentsFilled(String isVendorDocumentsFilled) {
+		this.isVendorDocumentsFilled = isVendorDocumentsFilled;
+	}
+
+	public String getIsVendorTasksFilled() {
+		return isVendorTasksFilled;
+	}
+
+	public void setIsVendorTasksFilled(String isVendorTasksFilled) {
+		this.isVendorTasksFilled = isVendorTasksFilled;
+	}
+
+	public String getVendorOrgLocation() {
+		return vendorOrgLocation;
+	}
+
+	public void setVendorOrgLocation(String vendorOrgLocation) {
+		this.vendorOrgLocation = vendorOrgLocation;
+	}
+
+	public String getClientContactIds() {
+		return clientContactIds;
+	}
+
+	public void setClientContactIds(String clientContactIds) {
+		this.clientContactIds = clientContactIds;
+	}
+
+	public String getVendorContactFirstName() {
+		return vendorContactFirstName;
+	}
+
+	public void setVendorContactFirstName(String vendorContactFirstName) {
+		this.vendorContactFirstName = vendorContactFirstName;
+	}
+
+	public String getVendorContactLastName() {
+		return vendorContactLastName;
+	}
+
+	public void setVendorContactLastName(String vendorContactLastName) {
+		this.vendorContactLastName = vendorContactLastName;
+	}
+
+	public String getSpocStatus() {
+		return spocStatus;
+	}
+
+	public void setSpocStatus(String spocStatus) {
+		this.spocStatus = spocStatus;
+	}
+
+	public String getPaymentTerm() {
+		return PaymentTerm;
+	}
+
+	public void setPaymentTerm(String paymentTerm) {
+		PaymentTerm = paymentTerm;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
+	}
+
+	public String getSicCode() {
+		return sicCode;
+	}
+
+	public void setSicCode(String sicCode) {
+		this.sicCode = sicCode;
+	}
+
+	public String getTaxRegistrationNumber() {
+		return taxRegistrationNumber;
+	}
+
+	public void setTaxRegistrationNumber(String taxRegistrationNumber) {
+		this.taxRegistrationNumber = taxRegistrationNumber;
+	}
+
+	public String getDunsNumber() {
+		return dunsNumber;
+	}
+
+	public void setDunsNumber(String dunsNumber) {
+		this.dunsNumber = dunsNumber;
+	}
+
+	public OrgBankDetails getBankDetailsId() {
+		return bankDetailsId;
+	}
+
+	public void setBankDetailsId(OrgBankDetails bankDetailsId) {
+		this.bankDetailsId = bankDetailsId;
+	}
+
+	public String getIndustryName() {
+		return industryName;
+	}
+
+	public void setIndustryName(String industryName) {
+		this.industryName = industryName;
+	}
+
+	public String getNaicsCode() {
+		return naicsCode;
+	}
+
+	public void setNaicsCode(String naicsCode) {
+		this.naicsCode = naicsCode;
+	}
+
+	public String getEinCode() {
+		return einCode;
+	}
+
+	public void setEinCode(String einCode) {
+		this.einCode = einCode;
+	}
+
+	public String getIsVendorOnboardSubmitted() {
+		return isVendorOnboardSubmitted;
+	}
+
+	public void setIsVendorOnboardSubmitted(String isVendorOnboardSubmitted) {
+		this.isVendorOnboardSubmitted = isVendorOnboardSubmitted;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public String getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(String accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBranchNumber() {
+		return branchNumber;
+	}
+
+	public void setBranchNumber(String branchNumber) {
+		this.branchNumber = branchNumber;
+	}
+
+	public String getBankAddress() {
+		return bankAddress;
+	}
+
+	public void setBankAddress(String bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public String getBankIdentifierCode() {
+		return bankIdentifierCode;
+	}
+
+	public void setBankIdentifierCode(String bankIdentifierCode) {
+		this.bankIdentifierCode = bankIdentifierCode;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getPoEmail() {
+		return poEmail;
+	}
+
+	public void setPoEmail(String poEmail) {
+		this.poEmail = poEmail;
+	}
+
+	public String getPaymentRemittanceEmail() {
+		return paymentRemittanceEmail;
+	}
+
+	public void setPaymentRemittanceEmail(String paymentRemittanceEmail) {
+		this.paymentRemittanceEmail = paymentRemittanceEmail;
+	}
+
+	public String getVendorNameForList()
+	{
+		return vendorNameForList;
+	}
+
+	public void setVendorNameForList(String vendorNameForList)
+	{
+		this.vendorNameForList = vendorNameForList;
+	}
+
+	public void setResponderJsonLocationId(Long responderJsonLocationId)
+	{
+		this.responderJsonLocationId = responderJsonLocationId;
+	}
+
+	public void setLocationJsonId(Long locationJsonId)
+	{
+		this.locationJsonId = locationJsonId;
+	}
+
+
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+
+	public Long getImmigrationRelatedId() {
+		return immigrationRelatedId;
+	}
+
+	public void setImmigrationRelatedId(Long immigrationRelatedId) {
+		this.immigrationRelatedId = immigrationRelatedId;
+	}
+	public String getIsOffShoreRelation() {
+		return isOffShoreRelation;
+	}
+
+	public void setIsOffShoreRelation(String isOffShoreRelation) {
+		this.isOffShoreRelation = isOffShoreRelation;
+
+	}
+
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+
+	public String getGenerateBill() {
+		return generateBill;
+	}
+
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+
+	
+
 }

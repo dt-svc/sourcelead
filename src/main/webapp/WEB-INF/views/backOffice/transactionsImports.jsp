@@ -2,23 +2,6 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<style type="text/css">
-.center-div{
-width:500px;
-height:30px;
-margin:0 auto;
-clear:both;
-display: inline-block;
-text-align: center;
-line-height: 30px;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
-  
   
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -68,7 +51,7 @@ line-height: 30px;
 			  <button class="btn btn-sm btn-primary" id="upload_button" type="submit" onclick = "check();uploadSave();checkFile();">
 				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
 			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/finance'/>'">
+			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/finance'/>'">
 				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
 			  </button>
 			  </div>
@@ -82,7 +65,7 @@ line-height: 30px;
         	</div>
         	
         	<div class="center-div">
-        	<input id="uploadFile" placeholder="" disabled="disabled"/>
+        		<input id="uploadFile" placeholder="" disabled="disabled"/>
         	</div>
         	
         	
@@ -106,7 +89,7 @@ line-height: 30px;
 		  <div id="errorFileDiv"  style="display: none;">
 		      <c:if test="${!empty errorMessage}">
 				   <div class="file-upload"> 
-				  <a href="<c:url value='/downloadFailedTransactions/${fileName}'/>" onclick="errorMsgAppend();"> 
+				  <a href="<c:url value='${appPath}/downloadFailedTransactions/${fileName}'/>" onclick="errorMsgAppend();"> 
 					<label class="btn btn-block">
 					<i class="fa fa-download" aria-hidden="true"></i> <br>
 		               ${errorMessage}
@@ -179,7 +162,7 @@ function errorMsgAppend(){
 function uploadSave() {
 	$('#upload_form').submit(function() {
           if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             	return true;  
           }
           else{

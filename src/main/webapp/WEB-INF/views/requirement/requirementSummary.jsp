@@ -6,17 +6,34 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<link href="resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
- 
+<link href="/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
 $(document).ready(function() {
-	 var requirementId = '${requirementId}'; 
+	 var requirementId = '${requirementId}';
+	 var submissionId = '${submissionId}';
+	 var candidateId = '${candidateId}';
+	 var submissionStatus='${submissionStatus}'
 	 var type = '${type}';
-	 assignedMemberList('${requirementId}');
+	 getJobsTagsList(requirementId)
 	 if(type != null && type != '' && type != 'undefined'){
-			sideBar(requirementId,type);
+		 sideBar(requirementId,type);
 	 }
-		 
+	 
+ if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
+	 if(type == 'applicants'){
+		 type = "all";
+	 }
+	 requirementPipeline(requirementId,type);
+	 }
+  else if(submissionStatus == 'all'){
+	 $("#detailsTab").removeClass("current");
+	 $('li[name=applicantNotification]').addClass("current");
+	 requirementStatusBar(requirementId);
+	 requirementPipeline(requirementId,"all");
+	 }  
+ else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
+	 requirementPipeline(requirementId,type);
+		 }
 });	
 </script>
 <script>
@@ -25,29 +42,26 @@ $(document).ready(function() {
 
 <script>
 function prepareAllCounts(requirementId){
-    $('#applicantli').load(allApplicantsCount(requirementId)); 
-    $('#duplicataplctli').load(duplicateCount(requirementId));
-    $('#requestSentli').load(requestSentCount(requirementId));
-    $('#shortListli').load(shortListCount(requirementId));
-    $('#submitToClientli').load(submitToClientCount(requirementId));
-    $('#interviewli').load(interviewsCount(requirementId));
-    $('#offerMadeli').load(offerMadeCount(requirementId));
-    $('#rejectedli').load(rejectedCount(requirementId)); 
-    $('#backoutli').load(backoutCount(requirementId)); 
-}
-</script>
-
-<script>
-function allApplicantsCount(requirementId){
+	$.ajax({
+	       type : "POST",
+	        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=ALL",        
+	        success :function(data) { 
+	       	 var json = data.object;
+	       	 $("#applicantsCount").html(json.applicantsCount);
+	       	 $("#requestSent").html(json.requestSent);
+	       	 $("#shortlistCount").html(json.shortlistCount);
+	       	 $("#submitToClientCount").html(json.submitToClientCount);
+	       	 $("#interviewCount").html(json.interviewCount);
+	       	 $("#offersCount").html(json.offersCount);
+	       	 $("#joinedCount").html(json.joinedCount);
+	       	 $("#rejectedCount").html(json.rejectedCount);
+	       	 $("#backoutCount").html(json.backoutCount);
+	        },
+		  });
 	
-	 $.ajax({
-       type : "POST",
-        url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=APPLICANTS",        
-        success :function(data) { 
-       	 var json = JSON.parse(data);
-       	 $("#applicantsCount").html(json);
-        },
-	  });
+	$('#duplicataplctli').load(duplicateCount(requirementId));
+    
+	
 }
 </script>
 
@@ -65,118 +79,52 @@ function duplicateCount(requirementId){
 }
 </script>
 
-<script>
-function requestSentCount(requirementId){
-	
-	 $.ajax({
-      type : "POST",
-       url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REQUESTSENT",        
-       success :function(data) { 
-      	    var json = JSON.parse(data);
-      	    $("#requestSent").html(json);
-         },
-	  });
-}
-</script>
-
-<script>
-function shortListCount(requirementId){
-	
-	 $.ajax({
-     type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SHORTLISTED",        
-      success :function(data) { 
-     	    var json = JSON.parse(data);
-     	    $("#shortlistCount").html(json);
-        },
-	  });
-}
-</script>
-
-<script>
-function submitToClientCount(requirementId){
-	
-	$.ajax({
-     type : "POST",
-     url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=SUBMIT_TO_CLIENT",        
-     success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#submitToClientCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function interviewsCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=INTERVIEWED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#interviewCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function offerMadeCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=OFFERED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#offersCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function rejectedCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=REJECTED",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#rejectedCount").html(json);
-       },
-	  });
-}
-</script>
-
-<script>
-function backoutCount(requirementId){
-	
-	$.ajax({
-      type : "POST",
-      url: sourceleadUrl+"/getSubmissionsCountBySubmissionStatus?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType=BACKOUT",        
-      success :function(data) { 
-    	    var json = JSON.parse(data);
-    	    $("#backoutCount").html(json);
-       },
-	  });
-}
-</script>
-
 <!-- Content Area -->
 <section class="content-wraper" onclick="popClose(); piplineexportClose();">
+
+
+<div class="success_pop" id="candSelector" style="display: none;"> 
+    	 <i class="fa fa-check-circle"></i><span id="candMsgDiv"></span> 
+   		</div>
+   		
   <section class="content-header clearfix">
     <div class="pull-left">
       <h2>Job Summary</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/requirementList'/>">Jobs List  </a>&raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;<a href="<c:url value='${appPath}/jobs'/>"> Jobs List  </a>&raquo; Job Details</div>
   </section>
-  <div class="timesheet_out">
+  
+
+ 
+  <div class="success_pop tagStyles" id="addJobTagAlert">
+		<i class="fa fa-check-circle"></i>
+   		<span></span>
+   </div>
+   <div class="remove_pop tagStyles" id="deleteJobTagAlert">
+		<i class="fa fa-times"></i>
+   		<span></span>
+   </div>
+   
+  <!-- <div class="timesheet_out"> -->
+  <div class="clearfix">
     
     
      <div class="clients_side_wrap_inn no_pad">
+     <div class="project_wrap">
         <div id="requirementSideDiv"> <jsp:include page="requirementQuickView.jsp" /> </div>
           <div id="loading"></div>
+          </div>
+          
+  <div class="cearfix">
+	  <div class="newTagsWrap">
+			<ul class="clearfix tagsWrap tagsWrapBor">
+			<select multiple class="chosen-select form-control" name="tagName" id="jobsTagName" data-placeholder="Add Tags" data-validation="validate_Space"  data-validation-optional="true">
+			</select>
+			</ul>
+			<div class="clearfix"></div>
+	  </div>
+ </div>          
+          
         <input type="hidden" id="emptyPipelinelist" name="emptyPipelinelist">
        <!--  <div id="requirementStatusDiv"> </div>  -->
       </div>   
@@ -196,7 +144,7 @@ function backoutCount(requirementId){
     
     
 <div class="side_mask">
-  <div class="proj_close" onClick="activeTab();"></div>
+  <div class="proj_close" onClick="activeTabs();"></div>
 </div>
    
 </section>
@@ -212,25 +160,118 @@ function backoutCount(requirementId){
   <textarea placeholder="Enter message"></textarea>
   <a class="close_color" href="javascript:void(0)">Yes</a><a href="javascript:void(0)">No</a> </div>
 
-
-  
-<!-- <script type="text/javascript">
-			var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-
+ 
+<script>
+var select, chosen;
+select = $("#jobsTagName");
+select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosen = select.data('chosen');
+chosen.search_field.on('keyup', function(e)
+{
+	var anyKeyword = this.value.replace(",","");
+    if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
+    {
+    	var par = this.parent;
+        var option = $("<option>").val(anyKeyword).text(anyKeyword);
+        select.append(option);
+        select.find(option).prop('selected', true);
+        $("#jobsTagName option").each(function(){
+              $(this).siblings("[value='"+ this.value+"']").remove();
+        });
+		$("#jobsTagName").trigger("chosen:updated");
+		saveJobsTags("add");
+    }
 });
-</script>  -->
+
+$('.chosen-select').chosen().on('change', function(evt, params) {
+	if (params.selected && params.selected != undefined) {
+		saveJobsTags("add");
+	}
+	if (params.deselected && params.deselected != undefined) {
+		saveJobsTags("delete");
+	}
+	
+});
+$("#jobsTagName_chosen").find('ul.chosen-choices > li input').attr("placeholder", "Add Tag")
+</script>
+<script>
+function getJobsTagsList(requirementId){
+	$.ajax({  
+        type : "POST",
+        url: sourceleadUrl+"/getJobsTags?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
+        success :function(json) {
+        	var result = "";
+			$.each( json.tagsList, function( i, tags ) {
+			  var existed = 0;
+                if(json.jobsTags != null && json.jobsTags != 'undefined' && json.jobsTags != '') {
+	                var res = [];
+	                res = json.jobsTags.split(",");
+	                res.forEach(function(item) {
+	                	if(tags == item){
+	                		existed = 1;
+	                		result = result + ' <option selected value="'+tags+'">'+tags+'</option>';
+	                	}
+	                });
+                }
+                if(existed == 0){
+                	result = result + ' <option value="'+tags+'">'+tags+'</option>';
+                }
+			});
+            
+            $("#jobsTagName").empty();
+            $("#jobsTagName").append(result);
+            $("#jobsTagName").chosen().trigger("chosen:updated")
+        },
+	});
+}
+</script>
+<script>
+function saveJobsTags(type){
+	 var requirementId = '${requirementId}';
+	 var tagName = $("#jobsTagName").val();
+	 var jsonData = encodeURIComponent(tagName);
+	 var loginUserId = '${SourceLeadWeb_userId}';
+	 if(tagName != null && tagName != '' && tagName !='undefined') {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+jsonData
+	 } else {
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByJobId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&requirementId="+requirementId+"&tagName="+""
+	 }
+	 $.ajax({  
+         type : "POST",
+         url: Urlcheck,        
+         success :function(result) {
+        	$("#editRoleLoading").removeAttr('style');
+			if(result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+        		showError(result.responseMessage);
+        	} else if (result.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (result.response === "SUCCESS") {
+        		if(type == "add"){
+        			showSuccessStatusPopup("Tag added successfully");
+        		}else if(type == "delete"){
+        			showDeleteStatusPopup("Tag deleted successfully");
+        		}
+        		getJobsTagsList(requirementId);
+        	} else if (result.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+       },
+    }); 
+}
+function showSuccessStatusPopup(status) {
+	$("#addJobTagAlert").css("display","block");
+	$("#addJobTagAlert span").html(status);
+    $('#addJobTagAlert').delay(2000).fadeOut('slow');
+}
+function showDeleteStatusPopup(status) {
+	$("#deleteJobTagAlert").css("display","block");
+	$("#deleteJobTagAlert span").html(status);
+    $('#deleteJobTagAlert').delay(2000).fadeOut('slow');
+}
+</script>
+
 
 <!-- Show success message after form submission script -->
 <script>
@@ -240,6 +281,14 @@ function backoutCount(requirementId){
 	}
 </script> 
 <!-- End -->
+
+
+  <script>
+	   function candMsgFadein() {
+			$("#candSelector").fadeIn(200);
+		    $('#candSelector').delay(2000).fadeOut('slow');
+		}
+   </script>
 
 <script>
 
@@ -294,6 +343,15 @@ $(document).ready(function() {
 		$(".clients_side_wrap").removeClass("clients_side_wrap_active");
 		$(".side_mask").fadeOut(200);
 		$("body").css('overflow-y', 'auto');
+		
+		clearCandAdvSearch();
+		$(".submission_side_wrap").removeClass("submission_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
+		
+		$(".import_submission_side_wrap").removeClass("import_submission_side_wrap_active");
+		$(".side_mask").fadeOut(200);
+		$("body").css('overflow-y', 'auto');
 	});	
 });
 
@@ -342,7 +400,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+  // event.preventDefault();
 });
 
 $(".addSkills").click(function(){
@@ -423,13 +481,13 @@ $(".reminder").click(function(){
    });
    });
 </script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
             $(function () {
                 $('#datetimepicker5').datetimepicker({
 					locale: 'ru'
                 });
             });
-</script>
+</script> -->
 </body>
 </html>
 
@@ -470,11 +528,29 @@ function sideBar(requirementId,type){
 				 	requirementPipeline(requirementId,type);	
 					requirementStatusBar(requirementId);
 					tabEnable('','interviewli');
+			 }else if(type == 'JOINED'){
+				 	requirementPipeline(requirementId,type);
+					requirementStatusBar(requirementId);
+					tabEnable('','joinedli');
 			 }
 			 else if(type == 'OFFERMADE'){
 				 	requirementPipeline(requirementId,type);
 					requirementStatusBar(requirementId);
 					tabEnable('','offerMadeli');
+			 }else if(type == 'APPLICANTS' || type == 'applicants'){
+				    
+				    requirementPipeline(requirementId,'all');
+					requirementStatusBar(requirementId,type);
+					
+					 var candidateId = '${candidateId}';
+					 var submissionId = '${submissionId}';
+					 
+					 if(candidateId != null && candidateId != '' && candidateId != 'undefined' && 
+							 submissionId != null && submissionId != '' && submissionId != 'undefined'){
+						 applicantQuickViewProfile(submissionId,candidateId); 
+						 getSubmissionDetailsSideBar(submissionId,candidateId,requirementId); 
+						 document.getElementById('detailedView').click();
+					 }
 			 }
 			 else{
 				    requirementPipeline(requirementId,'all');
@@ -509,7 +585,8 @@ function sideBar(requirementId,type){
 </script>
 
 <script type="text/javascript">
-function activeTab(){
+function activeTabs(){
+	document.getElementById("tab-1").style.display="none";
 	$("#quickviewTabsdetails").removeClass("active");
 	$("#quickviewTabsqv").addClass("active");
 	$("#quickresume_view").addClass("active in");
@@ -524,7 +601,7 @@ function activeTab(){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
@@ -550,8 +627,9 @@ function viewJobSummaryDocument(jobId,title){
 function updateReuqirementStatus(status){
 	
 	
-	var requirementId = '${requirementId}';
+	 var requirementId = '${requirementId}';
 	 var isLoginUserAsAdmin = '${isAdmin}';
+	 var requirementUUID = '${requirementUUID}';
 	 
 	 var reason;
 	 if ($('#rejectReason').length)
@@ -565,6 +643,7 @@ function updateReuqirementStatus(status){
      $("#approverbut").attr("disabled", "disabled");
  	
 	$('#reasonDiv').empty();
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
  	$.ajax({
       type : "POST",
       url: sourceleadUrl+"/requirementAcceptOrReject?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&status="+status+"&reason="+reason+"&isLoginUserAsAdmin="+isLoginUserAsAdmin, 
@@ -583,8 +662,10 @@ function updateReuqirementStatus(status){
           				$("#msgDiv").html("Job approved Successfully");
           			 }else{
           				$("#msgDiv").html("Job rejected Successfully");
-          			   }
-          			sideBar(requirementId)
+         			   }
+          			location.replace(sourceleadUrl+"/requirementSummary?requirementUUID="+requirementUUID);
+          			$("#selector11").fadeOut(3000);
+          			sideBar(requirementId);
              			msgFadein();
                	 }
             }
@@ -599,6 +680,8 @@ function cancelAlert12(){
 	$("#rejectRequirementAlert").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".remove_user_pop").hide();
+	$('#approverbut').show();
+	$('#rejectedbut').show();
 	
 }
 </script>
@@ -611,11 +694,11 @@ function cancelAlert12(){
 <script type="text/javascript">
 function rejectRequirementAlertMessage(status){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+/* 	result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	    <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
+	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-5000' name='rejectReason' value='' placeholder='Reject Reason' rows='2'></textarea>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onClick ='updateReuqirementStatusReject(\""+ status+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Reject' onClick ='updateReuqirementStatusReject(\""+status+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert12();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#rejectRequirementAlert").append(result);
@@ -649,14 +732,15 @@ function updateReuqirementStatusReject(status){
           			 $("#selector11").removeAttr("style");
            			 $("#selector11").css({ display: "block" });
           			 if(status == "APPROVED"){
-          				$("#msgDiv").html("Requirement approved Successfully");
+          				$("#msgDiv").html("JOb approved Successfully");
           			 }else{
-          				$("#msgDiv").html("Requirement rejected Successfully");
+          				$("#msgDiv").html("Job rejected Successfully");
           			   }
+          			$("#selector11").fadeOut(3000);
           			$("#rejectRequirementAlert").empty();
           			$(".project_inn_mask").fadeOut(200);
           			$(".remove_user_pop").hide();
-          			sideBar(requirementId)
+          			sideBar(requirementId);
              			msgFadein();
                	 }
             }
@@ -702,8 +786,7 @@ function requirementPipeline(requirementId,submissionType){
 
 <script>
 function requirementPipelineList(url, requirementId, submissionType){
-	  
-	  var clientSubmissions = '${clientSubmissions}';
+	var clientSubmissions = '${clientSubmissions}';
 	  var isSpocActive = '${isSpocActive}';
 	  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	  $("#status-data").removeAttr("style");
@@ -722,7 +805,7 @@ function requirementPipelineList(url, requirementId, submissionType){
  	 var result = "";
  	 
  	result = result +'<div class="side_mask"><div class="viewCandidate_close addApplicant_close addInterview_close submitToClient_close addOffer_close"></div></div>';
-	 	result = result +'<span class="applicant_export">';
+	 	result = result +'<span class="applicant_export mr">';
 		 '<sec:authorize access="hasAnyRole(\'ROLE_EXPORT_PIPELINE\')">';
 	      result = result +'<a title="Export" onClick="piplineexport();"class="Clo1"><i class="glyphicon glyphicon-export expIcon"></i></a>';
 	      result = result +'<div class="export_pipline" style="display:none">';
@@ -765,7 +848,7 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE'){
 	  result = result + '<th>Applied on  <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 	  }
-	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'SUBMIT_TO_CLIENT'){
+	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'SUBMIT_TO_CLIENT' && submissionType != 'JOINED'){
 	  result = result + '<th>Rate</th>';
 	  }
 	  if(submissionType == 'REJECTED' || submissionType == 'BACKOUT' || submissionType == 'SUBMIT_TO_CLIENT'){
@@ -773,6 +856,9 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  }
 	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE'){
 	  result = result + '<th>Source</th>';
+	  }
+	  if(submissionType == 'JOINED'){
+		  result = result + '<th>Join Date <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
 	  }
 	  if(submissionType == 'REJECTED'){
 		  result = result + '<th>Rejected On <br>(<small class="custom-small">'+requirementPipelineListDate+'</small>)</th>';
@@ -789,10 +875,10 @@ function requirementPipelineList(url, requirementId, submissionType){
 	  if(submissionType == 'SHORTLIST'){
 	      result = result + '<th>Shortlisted By</th>';
 	  }
-	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT'){
+	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT' && submissionType != 'JOINED'){
 	  result = result + '<th>Score</th>';
 	  }
-	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT'){
+	  if(submissionType != 'INTERVIEW' && submissionType != 'OFFERMADE' && submissionType != 'REJECTED' && submissionType != 'BACKOUT' && submissionType != 'JOINED'){
 	  result = result + '<th>Exp</th>';
 	  }
 	  if(submissionType == 'INTERVIEW'){
@@ -815,6 +901,8 @@ function requirementPipelineList(url, requirementId, submissionType){
     	requirementPipelinePaginationBackOut(url, requirementId, submissionType);
     }else if(submissionType == 'SUBMIT_TO_CLIENT'){
     	requirementPipelinePaginationSC(url, requirementId, submissionType);
+    }else if(submissionType == 'JOINED'){
+    	requirementPipelinePaginationJoined(url, requirementId, submissionType);
     }else{
     	requirementPipelinePagination(url, requirementId, submissionType);
     }
@@ -837,22 +925,62 @@ function viewOfferDocument(offerID,title){
 </script>
 
 
-<div class='project_inn_mask projectMask-zindex'></div>
+<!-- <div class='project_inn_mask projectMask-zindex'></div> -->
 <div id="popUp"></div>
+<div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
 function rejectApplicant(submissionId,requirementId,submissionType){
-    $("#reasonForApplicantDiv").empty();
+	//reject refresh
+	$("#reasonForApplicantDiv").empty();
     $("#reasonForReject").val("");
     $("#designationType").val('');
     //$("#rejectedCategory").val("");
     $("#rejectedCategory").selectpicker('refresh');
+    
+    //backOut refresh
+    $("#backOutForApplicantDiv").empty();
+    $("#backOutForReject").val("");
+    //$("#rejectedCategory").val("");
+    $("#backOutCategory").selectpicker('refresh');
     var subId = submissionId;
     var reqId = requirementId;
     var subType = submissionType;
     var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox == "backout"){
-        backOutApplicant(submissionId,requirementId,submissionType);
+        var result = "";
+        //result = result +"    <div class='project_inn_mask'></div>";
+        result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+        result = result +"<form id='backOut_form' name='backOut_form'>";
+        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
+        result = result +"    <div class='dropdown-select' id='backOutCategorytDiv'>";
+        result = result +"<select id='backOutCategory' name='backOutCategory' class='form-control' onchange='getBackOutCategory()' data-validation='required' field-name='Category' >";
+        result = result +"<option selected value=''>--Select Category--</option>";
+        result = result +"<option value='Current Company'>Current Company</option>";
+        result = result +"<option value='Compensation'>Compensation</option>";
+        result = result +"<option value='Better Offer'>Better Offer</option>";
+        result = result +"<option value='Cold Feet'>Cold Feet</option>";
+        result = result +"<option value='Personal'>Personal</option>";
+        result = result +"<option value='Other'>Other</option>";
+        result = result +"</select>";
+        result = result +"    </div>";
+        
+        result = result +" <div id='backOutOtherCategoryDiv' style='display: none' class='mt10'>";
+        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
+        result = result +" </div>";
+        
+        //result = result +"        <p>Applicant reject message here</p>";
+        result = result +"    <div class='clearfix'>";
+        result = result +"        <textarea class='form-control' id='reasonForbackOut' name='reasonForbackOut'  placeholder='Comments here' data-validation='required validate_Space validate_length length1-500' field-name='Reason'   onkeypress='reqRemoveSpacesForBackOutReason();'></textarea>";
+        result = result +"    </div>";
+        result = result +" </div>";
+        result = result + ' <div id="backOutForApplicantDiv"/>';
+        result = result +"        <input id='saveBackOut' type='button' class='btn' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
+        result = result +"</form>";
+        result = result +"    </div>";
+        $("#popUp").append(result);
+        $("#backOutApplicant"+submissionId).slideDown(200);
+        $(".project_inn_mask").fadeIn(200);
     }else if(selectBox == "Reject"){
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
@@ -881,13 +1009,124 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
-        result = result +"        <input id='saveReason' type='button' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
         $("#popUp").append(result);
         $("#rejectApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
+    }else if(selectBox == "Joined"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	success :function(data) { 
+    	    		if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var obj = data.object;
+    	            	var result = "";
+    	                result = result +"<div id='joinedApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    	                result = result +"<form id='joinedApplicant_form' name='joinedApplicant_form'>";
+    	                result = result +"	<div class='col-md-12 mt10 mb'>";
+    	                result = result +"    <div class='clearfix inputfiledColor'>";
+    	                if(obj != null && obj != 'undefined' && obj != ""){
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
+    	                }else{
+    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate'  readonly='readonly' value='' type='text' field-name='Join Date'>";
+    	                }
+    	                result = result +"    </div>";
+    	                result = result +"    <div id='joinDateErrorDiv'></div>";
+    	                result = result +"	</div>";
+    	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
+    	                result = result +"</form>";
+    	                result = result +"</div>";
+    	                $("#popUp").append(result);
+    	                $("#joinedApplicant"+submissionId).slideDown(200);
+    	                $(".project_inn_mask").fadeIn(200);
+    	                var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+    	            	  var jsDateFormat= '';
+    	            	  if(locationDate.match("yyyy-MM-dd")){
+    	            		  jsDateFormat = 'yy-mm-dd';
+    	            	  }if(locationDate.match("dd-MM-yyyy")){
+    	            		  jsDateFormat = 'dd-mm-yy'; 
+    	            	  }if(locationDate.match("MM-dd-yyyy")){
+    	            		  jsDateFormat = 'mm-dd-yy'; 
+    	            	  }if(locationDate.match("yyyy-dd-MM")){
+    	            		  jsDateFormat = 'yy-dd-mm'; 
+    	            	  }
+    	            	  $('#joinDate').datepicker({
+    	            	      dateFormat: jsDateFormat,
+    	            	      changeMonth: true,
+    	            	  	  changeYear: true,
+    	            	  });
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
+  				},
+    		  });
+    }else if(selectBox == "SelectedOnInterview"){
+    	$("tr").find("td.sorting_1").removeClass("sorting_1");
+    	$("#job_"+submissionId).addClass("row-success");
+    	
+    	$.ajax({
+  	      type : "POST",
+  	      url: sourceleadUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+  	    	success :function(data) {
+  	    		if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("tr").removeClass("row-success");
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+  	    	},
+		  });
+    	
+    }else if(selectBox == "shortlist"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
     }
+   
+    
+    else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
+    	$.ajax({
+    	      type : "POST",
+    	      url: sourceleadUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
+    	    	success :function(data) {
+    	    		if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		$("tr").removeClass("row-success");
+  		    		 requirementPipeline(requirementId,submissionType);
+  		    	}else if (data.indexOf('Sign In') !== -1) {
+  		    		location.replace(sourceleadUrl);
+  		    	} else {
+  		    		showError("Operation failed, please try again");
+  		    	}
+    	    	},
+  		  });
+    }
+      
 }
 </script>
 <script>
@@ -896,6 +1135,16 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 	    output = output.replace(/\s/g, "") 
 	    if(output.length != 0){
 	    $("#reasonForReject").removeAttr("data-validation");
+	    }
+	}
+</script>
+
+<script>
+   function reqRemoveSpacesForBackOutReason() {
+	    var output = document.getElementById("reasonForbackOut").value;
+	    output = output.replace(/\s/g, "") 
+	    if(output.length != 0){
+	    $("#reasonForbackOut").removeAttr("data-validation");
 	    }
 	}
 </script>
@@ -918,13 +1167,61 @@ function getRejectedCategory(){
 }
 </script>
 
+<script>
+function getBackOutCategory(){
+	var backOutCategory = document.getElementById("backOutCategory").value;
+	if(backOutCategory == 'Other'){
+		 document.getElementById("backOutOtherCategoryDiv").style.display="block";
+	    $("#backOutCategoryOther").removeAttr("data-validation-optional");
+		$('#backOutCategoryOther').attr("data-validation","required validate_Space validate_length length2-100 "); 
+		$('#backOutOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}else{
+		$("#backOutCategoryOther").attr("data-validation-optional","true");
+		$("#backOutCategoryOther").removeAttr("data-validation");
+		$("#backOutCategoryOther").val('');
+		document.getElementById("backOutOtherCategoryDiv").style.display="none";
+		$('#backOutOtherCategoryDiv').find('p.jquery_form_error_message').remove(); 
+	}
+}
+</script>
+
 <script type="text/javascript">
 function cancelRejectApplicant(submissionId,requirementId,submissionType){ 
-	$("#rejectApplicant"+submissionId).fadeOut(200);
+	//script for reject
+	$("#rejectApplicant"+submissionId).fadeOut(200);    
 	$(".project_inn_mask").fadeOut(200);
 	 $("#rejectedCategorytDiv").find('p.jquery_form_error_message').remove();
 	 document.getElementById("rejectOtherCategoryDiv").style.display="none";
 	 $("#rejectedCategory").val("");
+	 
+	 if(document.getElementById("backOutOtherCategoryDiv")!==null){
+		 //script for backOut
+		 $("#backOutApplicant"+submissionId).fadeOut(200);    
+		 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
+		 document.getElementById("backOutOtherCategoryDiv").style.display="none";
+		 $("#backOutCategory").val("");
+	 }
+	pipelineBySubmissionType(requirementId,submissionType);
+};
+
+function cancelBackOutApplicant(submissionId,requirementId,submissionType){ 
+	 //script for backOut
+	 $("#backOutApplicant"+submissionId).fadeOut(200);
+	 $(".project_inn_mask").fadeOut(200);
+	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
+	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
+	 $("#backOutCategory").val("");
+	 pipelineBySubmissionType(requirementId,submissionType);
+};
+
+function cancelJoinedRequest(submissionId,requirementId,submissionType){ 
+	 $("#joinedApplicant"+submissionId).fadeOut(200);
+	 $(".project_inn_mask").fadeOut(200);
+	 $("#joinDate").val("");
+	 pipelineBySubmissionType(requirementId,submissionType);
+};
+
+function pipelineBySubmissionType(requirementId,submissionType){
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
@@ -943,9 +1240,13 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 		requirementPipelineSC(requirementId,submissionType);
 	}else if(submissionType == 'BACKOUT'){
 		requirementPipelineBackout(requirementId,submissionType);
+	}else if(submissionType == 'JOINED'){
+		requirementPipelineJoined(requirementId,submissionType);
 	}
-};
+}
 </script>
+
+
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -958,25 +1259,26 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 function saveRejectApplicantReason(submissionId,requirementId,submissionType){
 	if ($('#rejected_form').validate(false, validationSettings)) {
 		
-		var frm = $('#rejected_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, "");
-		var form = $('#rejected_form')[0];
-  		var formData = new FormData(form); 
-		var jsonData = encodeURIComponent(con);
+		var formData =  getFormData('rejected_form'); 
+		$('#save_Reason').attr("disabled","disabled");
 		$.ajax({
 			type : "POST",
     	    data: formData,
-    	    contentType : 'application/json; charset=utf-8',
-    	    enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-    	    dataType : 'json',
-		    url: sourceleadUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId,	    	   
-		    success: function(data) {
+		    url: sourceleadUrl+"/rejectApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
+		    success: function(result) {
 		    	$("#popUp").empty();
-   			 	$(".project_inn_mask").fadeOut(200);
-   			    requirementPipeline(requirementId,submissionType);
+		    	$(".project_inn_mask").fadeOut(200);
+		    	if(result.response === "FAILED") {
+					showError("Invalid data");
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					requirementPipeline(requirementId,submissionType);
+				}else if (result.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
 		    }
 	   });
 		return true;
@@ -988,21 +1290,75 @@ $('body').on('blur', '#rejected_form', function() {
 	$("#rejected_form").showHelpOnFocus();
 	$("#rejected_form").validateOnBlur(false, validationSettings);
 });
-</script>
-<script>
-function backOutApplicant(submissionId,requirementId,submissionType){
-	
+
+function backOutApplicantSave(submissionId,requirementId,submissionType){
+	if ($('#backOut_form').validate(false, validationSettings)) {
+		var formData =  getFormData('backOut_form'); 
+		$("#saveBackOut").attr("disabled", true);
 		$.ajax({
-		   	type: "POST",
+			type : "POST",
+    	    data: formData,
 		    url: sourceleadUrl+"/backoutApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
 		    success: function(data) {
+		    	$("#popUp").empty();
+   			 	$(".project_inn_mask").fadeOut(200);
    			    requirementPipeline(requirementId,submissionType);
 		    }
 	   });
+		return true;
+	}else{
+		return false;
+	}
 }
+$('body').on('blur', '#backOut_form', function() {
+	$("#backOut_form").showHelpOnFocus();
+	$("#backOut_form").validateOnBlur(false, validationSettings);
+});
+
+function saveJoinedRequestForApplicant(submissionId,requirementId,submissionType){
+	if ($('#joinedApplicant_form').validate(false, validationSettings)) {
+		if($('#joinDate').val() != null && $('#joinDate').val() != ''){
+		var formData =  getFormData('joinedApplicant_form'); 
+		$("#saveBackOut").attr("disabled", true);
+		$.ajax({
+			type : "POST",
+    	    data: formData,
+		    url: sourceleadUrl+"/saveJoinedRequestForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId,	    	   
+		    success: function(data) {
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		$("#popUp").empty();
+	   			 	$(".project_inn_mask").fadeOut(200);
+	   			    requirementPipeline(requirementId,submissionType);
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+		    }
+	   });
+		return true;
+	}else{
+		$('#joinDateErrorDiv').append('<p class="jquery_form_error_message">Join Date is required</p>');
+		return false;
+	}
+		
+	}else{
+		return false;
+	}
+}
+$('body').on('blur', '#joinedApplicant_form', function() {
+	$("#joinedApplicant_form").showHelpOnFocus();
+	$("#joinedApplicant_form").validateOnBlur(false, validationSettings);
+});
 </script>
 
-<script>
+
+
+<!-- <script>
 function requirementSubmissionCount(requirementId){  
 	
 	 $.ajax({
@@ -1017,13 +1373,14 @@ function requirementSubmissionCount(requirementId){
         	 $("#submitToClientCount").html(report1.numOfSubmitToClient);
         	 $("#interviewCount").html(report1.numOfInterview);
         	 $("#offersCount").html(report1.numOfOffers);
+        	 $("#joinedCount").html(report1.numOfOffers);
         	 $("#rejectedCount").html(report1.numOfRejected);
         	 $("#requestSent").html(report1.numofrequestsent);
         	 //$("#duplicateApplicantsCount").html(report1.duplicateCount);
          },
 	  });
 }
-</script>
+</script> -->
 
 <%-- 
      @author : sarath kumar.
@@ -1034,58 +1391,27 @@ function requirementSubmissionCount(requirementId){
 --%>
 <script>  
 function assignedMemberList(requirementId){
-	  
-	  $.ajax({
-        type : "POST",
-         url: sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,        
-         success :function(data) {  
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-           				   	var json = JSON.parse(data);
-							var result = '';
-							result = result +'     <div class="clearfix mt5 mb">'; 
-						    result = result +'         <table class="table table-responsive table-hover clearfix mb">';
-						    result = result +'         <thead>';
-						    result = result +'         <tr>';
-						    result = result +'         <th>Name</th>';
-						    result = result +'         <th>Role</th>';
-						    result = result +'         <th>Team</th>';
-						    result = result +'         <th>No. of Applicants</th>';
-						    result = result +'         </tr>';
-						    result = result +'         </thead>';
-						    result = result +'         <tbody>';
-						    for (var i=0; i<json.length; i++)
-			   				{
-						    var report = json[i];
-						    result = result +'         <tr>';
-						    result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserName+'</div></td>';
-						    if(report.assignedUserRole != null && report.assignedUserRole !='' && report.assignedUserRole !='undefined'){
-						    	result = result +'         <td><div class="tbldata-dotdot">'+report.assignedUserRole+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						     
-						     if(report.teamName != null && report.teamName !='' && report.teamName !='undefined'){
-						    	 result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.teamName+'</div></td>';
-		                     }else{
-		                    	 result = result +"<td><div>-----</div></td>";
-		                     }
-						    result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.applicantCount+'</div></td>';
-						    result = result +'         </tr>';
-			   				}
-						     result = result +' </div> '; 
-						    
-						    $("#assignedMemberList").empty();
-						    $("#assignedMemberList").append(result);
-                 }else{
-						$("#assignedMemberList").removeAttr("style");
-       	    	          var result ="";
-      					 result = result+"   <div class='dataTables_empty'>"; 
-      					$("#assignedMemberList").empty();
-      				    $("#assignedMemberList").append(result); 
-                      }
-               },
-                 
-            }); 
+	var url = sourceleadUrl+"/getRequirementAssignedListByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId;
+	
+		var result = '';
+		result = result +'     <div class="clearfix mt5 mb project_wrap_table datatable_filter dataTablesPaginate">';
+		  /* result = result + " <div class='remove_search searchCustom'>";
+			result = result
+					+ " <input type='text' placeholder='Search' id='assignedToDataTableSearch'/>";
+			result = result + "</div>"; */
+	    result = result +'         <table id="requirementAssignedToPagination" class="clearfix mb">';
+	    result = result +'         <thead>';
+	    result = result +'         <tr>';
+	    result = result +'         <th>Name</th>';
+	    result = result +'         <th>Role</th>';
+	    result = result +'         <th>Team</th>';
+	    result = result +'         <th>No. of Applicants</th>';
+	    result = result +'         </tr>';
+	    result = result +'         </thead>';
+	    result = result +'         <tbody>';
+	    $("#assignedMemberList").empty();
+		$("#assignedMemberList").append(result);
+		requirementAssignedMembersList(url, requirementId);
 }
 </script>
 
@@ -1190,62 +1516,73 @@ function reqNotes(requirementId){
 	  $.ajax({
         type : "POST",
          url: sourceleadUrl+urlForm,        
-         success :function(data) {
-		var output = "";
-	    if(data != null && data != 'undefined' && data != "" && data != '[]'){
-    	var json = JSON.parse(data);
-	    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
-	    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
-     	for(var i=0;i<json.length;i++){
-       	var report = json[i];
-    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
-   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
-   	    output = output+'    <div class="commentsimg">';
-   	    output = output+'    <i class="fa fa-comments"></i>';
-   	    output = output+'        <div class="commentsimg-inner">';
-   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
-   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
-   	    }else{
-   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg"/>';
-   	    }
-   	    output = output+'        </div>';
-   	    output = output+'    </div>';
-   	    output = output+'     <div class="comments-content">';
-   	    output = output+'         <div class="commentsNotes_inner">';
-   	    output = output+'         <p class="comment-by">';
-   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
-   	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
-   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
-   	    }
-   	    
-   	    else if(report.contactName !=null && report.contactName != 'undefined'){
-   	    output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
-   	    }
-   	 	else if(report.contract !=null && report.contract != 'undefined'){
-   		output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
-   	    }
-   	    
-   	    else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
-   		output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
-   	    }
-   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
-   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
-   	    output = output+'         </div>';
-   	    output = output+'     </div>';
-   	    output = output+'</div>';
-    	}
-     }
-	}else{
-     var output ="";
-     output = output+"   <div class='dataTables_empty'>"; 
-	 output = output+"  </div> ";
-}
-	output  = output + '              </div>';
-	output  = output + '        </div>';
-	$("#clientNotesListDiv").empty(); 
-    $("#clientNotesListDiv").append(output);
- },
-      });
+		 success :function(result) {
+			 var json = result.data;
+	      	   if(result.response === "SESSION_TIMEDOUT") {
+						location.replace(sourceleadUrl);
+					} else if (result.response === "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						var output = "";
+					    if(json != null && json != 'undefined' && json != "" && json != '[]'){
+					    output  = output + '   <div class="project_tabs_inn_head addUser-org"> ';
+					    output  = output + '              <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+				     	for(var i=0;i<json.length;i++){
+				       	var report = json[i];
+				    	if(report.checkBox == 'Y' || (report.checkBox == 'N' && '${SourceLeadWeb_user.id}' == report.userIdStr)){
+				   	  	output = output+'<div class="comments-div comments-inner commentsNotes clearfix">';
+				   	    output = output+'    <div class="commentsimg">';
+				   	    output = output+'    <i class="fa fa-comments"></i>';
+				   	    output = output+'        <div class="commentsimg-inner">';
+				   	    if(report.commentAuthorImage != null && report.commentAuthorImage !='' && report.commentAuthorImage !='undefined'){
+				   	    output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="'+report.commentAuthorImage+'"/>';
+				   	    }else{
+				   	   	output = output+'        	<img data-id= "userProfileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg"/>';
+				   	    }
+				   	    output = output+'        </div>';
+				   	    output = output+'    </div>';
+				   	    output = output+'     <div class="comments-content">';
+				   	    output = output+'         <div class="commentsNotes_inner">';
+				   	    output = output+'         <p class="comment-by">';
+				   	    output = output+'            By <span class="text-danger" title = "'+report.userName+'">'+report.userName+'</span>';
+				   	    if(report.requirementTitle !=null && report.requirementTitle != 'undefined'){
+				   		 output = output+'          Job: <span class="text-danger" title = "'+report.requirementTitle+'"> '+report.requirementTitle+'</span>';
+				   	    }
+				   	    
+				   	    else if(report.contactName !=null && report.contactName != 'undefined'){
+				   	    output = output+'          Contact Name: <span class="text-danger" title = "'+report.contactName+'">'+report.contactName+'</span>';
+				   	    }
+				   	 	else if(report.contract !=null && report.contract != 'undefined'){
+				   		output = output+'         Contract:  <span class="text-danger" title = "'+report.contract+'">'+report.contract+'</span>';
+				   	    }
+				   	    
+				   	    else if(report.invoiceId !=null && report.invoiceId != 'undefined'){
+				   		output = output+'         Invoice Id:  <span class="text-danger" title = "'+report.invoiceId+'">'+report.invoiceId+'</span>';
+				   	    }
+				   	    output = output+'            <span class="small pull-right">'+report.createdDateString+'</span></p>';
+				   	    output = output+'         <p class="comment_text pull-left">'+report.comment+'</p>';
+				   	    output = output+'         </div>';
+				   	    output = output+'     </div>';
+				   	    output = output+'</div>';
+				    	}
+				     }
+					}else{
+				     var output ="";
+				     output = output+"   <div class='dataTables_empty'>"; 
+					 output = output+"  </div> ";
+					}
+					output  = output + '              </div>';
+					output  = output + '        </div>';
+					
+					$("#clientNotesListDiv").empty(); 
+				    $("#clientNotesListDiv").append(output);
+			} else if (result.indexOf('Sign In') !== -1) {
+				location.replace(sourceleadUrl);
+			} else {
+				showError("Operation failed, please try again");
+			}
+ 		},
+     });
 }
 </script>
 
@@ -1280,8 +1617,17 @@ function reqNotes(requirementId){
 						url : sourceleadUrl+"/storeNotes?"+tokenParamName+"="+tokenValue+"",
 						success : function(result) {
 							closeDocPopup();
-							reqNotes(requirementId);
-							
+							if(result.response === "FAILED") {
+								showError("Invalid data");
+							} else if (result.response === "AWKWARD") {
+								location.href = "/errorPage";
+							} else if (result.response === "SUCCESS") {
+								reqNotes(requirementId);
+							}else if (result.indexOf('Sign In') !== -1) {
+					    		location.replace(sourceleadUrl);
+					    	} else {
+					    		showError("Operation failed, please try again");
+					    	}
 						},
 					});
 					$('.add-comment').toggle(200);
@@ -1295,341 +1641,6 @@ function reqNotes(requirementId){
 		$("#clinetNotes_form").validateOnBlur(false, validationSettings);
 		
 	});
-</script>
-
-<script type="text/javascript">
-function requirementRecommendations(requirementId){
-	$("#actionsDiv" ).hide();
-	
-	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	$("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
-	  if(locationList.match("yyyy-MM-dd")){
-		  requirementRecommendationsDate = 'YYYY-MM-DD';
-	  }if(locationList.match("dd-MM-yyyy")){
-		  requirementRecommendationsDate = 'DD-MM-YYYY'; 
-	  }if(locationList.match("MM-dd-yyyy")){
-		  requirementRecommendationsDate = 'MM-DD-YYYY'; 
-	  }if(locationList.match("yyyy-dd-MM")){
-		  requirementRecommendationsDate = 'YYYY-DD-MM'; 
-	  }  
-	
-	$.ajax({
-    type : "POST",
-     //url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&count="+count,        
-     url: sourceleadUrl+"/getRequirementRecommendationsByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&orgLocationId="+orgLocationId,
-     success :function(json) {
-    	    var result = '';
-    	    
-    	     result = result +' <div class="clients_side_wrap">';
-			 result = result +'<div class="clients_side_wrap_inn quickviewTabs">';
-			 result = result +'<div id="candidateCompare" ></div>';
-			 result = result + '<ul class="nav nav-tabs">';
-			 result = result + '<input type="hidden"  id="requirementId" name="requirementId" value="'+requirementId+'"/>';
-			 result = result +' <li id="quickviewTabsqv" class="active"><a data-toggle="tab" href="#quickresume_view">Quickview</a></li>';
-			 result = result +'<li id="quickviewTabsdetails"><a data-toggle="tab" href="#detailrecommondations">Detailed view</a></li>';
-			 result = result +'</ul>';
-			 
-		     result = result +'<div class="tab-content">';
-			 
-			 result = result +'<div id="quickresume_view" class="tab-pane fade in active">';
-			 
-			 result = result +'<div id="recapplicantQuickViewDiv"></div>';
-			 
-			 result = result +'</div>';
-			 
-			 result = result +'<div id="detailrecommondations" class="tab-pane fade">';			 
-			 
-			 result = result +' <div class="project_side_wrap_inn_tabs"> ';
-			 result = result + '<div id="candidateSideDiv"></div>';
-			 result = result +'</div>';
-			 result = result +'</div>';
-			 result = result +'</div>';
-
-			 result = result +'</div>';
-			 result = result +'</div>';
-
-			 var map = new Object();
-    	    //--------------------------------
-    	    //result = result +'<div class="timesheet_head candidateHead recruitmentHead">';
-    	    result = result +'<div class="clearfix timesheetHead">';
-		    result = result +'<div class="rec_head">';
-
-		    result = result +'		   <div class="pull-left cand-advsrch">																							';
-		    result = result +'		    <a href="javascript:void(0)" class="btn btn-primary btn-sm" title="" onClick="openPop('+requirementId+')">Customize Score </a>            ';
-		    if(json.length>0){
-		    	result = result + '<input type="hidden"  id="compareCandListMap" name="compareCandListMap"/>';
-		    	result = result +'			<a class="comTextLi" title="Compare" onclick="compareRecommendedUsers('+requirementId+');" >Compare</a>            ';
-		    }
-		    result = result +'		        </div>';
-		    result = result +'                   <div id="customizeScoreDiv"></div>';
-		    
-		    result = result +'</div>';
-		    result = result +'</div>';
-		    result = result +'<div class="project_tabs_inn_table  clients_wrap_table">';
-		    result = result +'<table id="recommendationTable" class="display" cellspacing="0" width="100%"">';
-		    result = result +'<thead>';
-		    result = result +'<tr>';
-		    result = result +'<th></th>';
-		    result = result +'<th>Name</th>';
-		    result = result +'<th>Email</th>';
-		    result = result +'<th>City</th>';
-		    result = result +'<th>Phone</th>';
-		    result = result +'<th style="width:50px;">Resume</th>';
-		    result = result +'<th>Number Of Jobs</th>';
-		    result = result +'<th>Updated Date <br>(<small class="custom-small">'+requirementRecommendationsDate+'</small>)</th>';
-		    result = result +'<th>Score</th>';
-		    result = result +'<th>Action</th>';
-		    result = result +'</tr>';
-		    result = result +'</thead>';
-		    result = result +'<tbody>';
-		    
-    	 for (var i=0; i<json.length; i++)
-			{
-		    var report = json[i];
-		    if(report.firstName != null && report.firstName != '' && report.firstName != 'undefiend'){
-		    	firstName = report.firstName;
-		    }else{
-		    	firstName = "";
-		    } 
-		    if(report.lastName != null && report.lastName != '' && report.lastName != 'undefiend'){
-		    	lastName = report.lastName;
-		    }else{
-		    	lastName = "";
-		    } 
-		    map[report.candidateId] = firstName + lastName;
-		    
-		    result = result +'<tr>';
-		    result = result + '<td><input type="checkbox" value='+report.candidateId+' onclick="checkMaxCount(this);" name="compareCandi" id="compareCandiId" ></td>';
-		    result = result + '<td><div onclick="recomendcandidateQuickViewProfile('+report.candidateId+','+report.finalScore+'); clientSideBar('+report.candidateId+','+report.finalScore+');" class="proj_show tbldata-dotdot"><span title="'+firstName+" "+lastName+'">'+firstName+" "+lastName+'</span><i class="fa fa-binoculars"></i>';
-		    if(report.finalScore != null && report.finalScore != '' && report.finalScore != 'undefined'){
-				  if(report.finalScore >=50){ 
-				 	 result = result +'<small class="valid-profile validProfile fa fa-check-square text-success"></small>';        
-				  }
-			  } 
-		    result = result +' </div></td>';
-/* 		    result = result +'<td><div class="proj_show"><span>'+report.firstName+'</span><i class="fa fa-binoculars"></i></div></td>'; */
-		    if(report.email != null && report.email !='' && report.email !='undefined'){
-		    	result = result +'<td><div title='+report.email+' class="tbldata-dotdot-sm">'+report.email+'</div></td>';
-		    }else{
-		    	result = result +'<td><div><span>--</span></div></td>';
-		    }
-		    
-		    if(report.city != null && report.city !='' && report.city !='undefined'){
-		    	result = result +'<td><div><span>'+report.city+'</span></div></td>';
-		    }else{
-		    	result = result +'<td><div><span>--</span></div></td>';
-		    }
-		    
-		    if(report.mobilePhone != null && report.mobilePhone !='' && report.mobilePhone !='undefined'){
-		    	result = result +'<td><div><span>'+report.mobilePhone+'</span></div></td>';
-		    }else{
-		    	result = result +'<td><div><span>--</span></div></td>';
-		    }
-		   
-		  if(report.currentResumeId != null && report.currentResumeId !='' && report.currentResumeId !='undefined' ){
-			 var file =  report.currentResumeName;
-			  var fileName = file.substr(0,5);
-		  	   result = result +'<td class="text-center"><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadCandidateResume?candidateId='+report.candidateId+'\"></a><a class="fa fa-eye ml10" onclick="viewAssociateCandidateResumeDocView('+report.candidateId+',\''+report.currentResumeName+'\')"></a></span></div></td>';
-			  }else{
-				result = result +'<td class="text-center"><div><span>--</span></div></td>';
-			} 
-		   result = result +'<td class="text-center"><div class="show-tooltip"><span>'+report.noOfReq+'</span>';
-		    result = result +' </div></td>';
-		    
-		    if(report.updatedDate != null && report.updatedDate !='' && report.updatedDate !='undefined'){
-		    	result = result +'<td><div class="tblminwidth-100"><span>'+report.updatedDate+'</span></div></td>';
-		    }else{
-		    	result = result +'<td><div><span>--</span></div></td>';
-		    }
-		    
-		    result = result +'<td class="text-center"><div class="show_scroe"><span>'+report.finalScore+'%</span>';
-		    result = result +'<div class="scroe">';
-		    
-		    result = result +'<div class="clearfix row">';
-		    
-		    result = result +'<div class="col-md-6 paddingRight">';
-		    result = result +'<label>Skills</label>';
-		    result = result +'<div class="progress">';
-		    var skillGraph = (100 * report.skillPercentage)/report.totalSkillPercentage;
-		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+skillGraph+'%"> '+report.skillPercentage+'%';
-   	        result = result +'</div>';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    
-		    result = result +'<div class="col-md-6 paddingLeft">';
-		    result = result +'<label>Location</label>';
-		    result = result +'<div class="progress">';
-		    var locationGraph = (100 * report.locationPercentage)/report.totalLocationPercentage;
-		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+locationGraph+'%"> '+report.locationPercentage+'% ';
-		    result = result +'</div>';
-		    result = result +'</div>';
-		    result = result +' </div>';
-		    
-		    result = result +' </div>';
-		    
-		    result = result +'<div class="clearfix row">';
-		    
-		    result = result +'<div class="col-md-6 paddingRight">';
-		    result = result +'<label>Experience</label>';
-		    result = result +'<div class="progress">';
-		    var exGraph = (100 * report.expPercentage)/report.totalExpPercentage;
-		    result = result +'<div class="progress-bar progress-bar-info" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+exGraph+'%"> '+report.expPercentage+'% ';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    result = result +' </div>';
-		    
-		    result = result +'<div class="col-md-6 paddingLeft">';
-		    result = result +'<label>Rate</label>';
-		    result = result +'<div class="progress">';
-		    var rateGraph =  (100 * report.ratePercentage)/report.totalRatePercentage;
-		    result = result +'<div class="progress-bar progress-bar-warning" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+rateGraph+'%"> '+report.ratePercentage+'% ';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    result = result +' </div>';
-		    
-		    result = result +' </div>';
-		    
-		    result = result +'<div class="clearfix row">';
-		    
-		    result = result +'<div class="col-md-6 paddingRight">';
-		    result = result +'<label>Notice Period</label>';
-		    result = result +'<div class="progress">';
-		    var noticePeriodGraph = (100 * report.noticePeriodPercentage)/report.totalNoticePeriodPercentage;
-		    result = result +'<div class="progress-bar progress-bar-danger" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+noticePeriodGraph+'%"> '+report.noticePeriodPercentage+'% ';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    result = result +' </div>';
-		    
-		    result = result +'<div class="col-md-6 paddingLeft">';
-		    result = result +'<label>Keyword</label>';
-		    result = result +'<div class="progress">';
-		    var keywordGraph = (100 * report.totalKeyWordPerPercentage)/report.keyWordPerPercentage;
-		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+keywordGraph+'%"> '+report.totalKeyWordPerPercentage+'% ';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    result = result +' </div>';
-		    
-		    result = result +' </div>';
-		    
- 			result = result +'<div class="clearfix row">';
-		    
-		    result = result +'<div class="col-md-6 paddingRight">';
-		    result = result +'<label>Visa Type</label>';
-		    result = result +'<div class="progress">';
-		    var visaTypeGraph = (100 * report.visaTypePercentage)/report.totalVisaTypePercentage;
-		    result = result +'<div class="progress-bar progress-bar-success" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+visaTypeGraph+'%"> '+report.visaTypePercentage+'% ';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    result = result +' </div>';
-		    
-		    result = result +'<div class="col-md-6 paddingLeft">';
-		    result = result +'<label>Education</label>';
-		    result = result +'<div class="progress">';
-		    var educationGraph = (100 * report.educationPercentage)/report.totalEducationPercentage;
-		    result = result +'<div class="progress-bar progress-bar-primary" role="progressbar"  aria-valuemin="0" aria-valuemax="100" style="width:'+educationGraph+'%"> '+report.educationPercentage+'% ';
-   	        result = result +'</div>';
-		    result = result +' </div>';
-		    result = result +' </div>';
-		    
-		    result = result +' </div>';
-		  
-		    result = result +'</div>';		    
-		    result = result +'</div></td>';
-		    
-		    if(report.isCandidateSubmitted == 'N'){
-		    	result = result +'<td class="text-center"><div id="recommendedCandidate'+report.candidateId+'"><a href="javascript:void(0)" title="" onclick="submitRecomendedApplicant('+requirementId+','+report.candidateId+');" class="add-applicant">Add</a></div>';
-		    }else{
-		    	result = result +'<td class="text-center"><div class="text-success">Added</div>';
-		    }
-		    result = result +'</tr>';
-		   
-			}
-    	    result = result +'</tbody>';
-		    result = result +' </table>';
-		    result = result +'</div>';
-		    //$("#tab-1").empty();
-			$("#tab-2").empty(); 
-		    $("#tab-3").empty();
-		    $("#tab-4").empty();
-		    
-		    $("#recommendationsLoading").removeAttr("style");
-		    $("#status-div").empty();
-		    $("#status-data").empty();
-			$("#tab-3").append(result);
-			recommendationpagination();
-			 $("input[name='compareCandListMap']").val(JSON.stringify(map));
-// 			prepareCompareCandidateList(map);
-			
-			
-			$("#tab-3").show();
-			$(".project-tabs-menu a").click(function(event) {
-			     event.preventDefault();
-			     $(this).parent().addClass("current");
-			     $(this).parent().siblings().removeClass("current");
-			     var tab = $(this).attr("href");
-			     $(".project_tabs_inn").not(tab).css("display", "none");
-			     $(tab).fadeIn();
-			 });
-           },
-             
-        }); 
-}
-
-
-function checkMaxCount(id){
-	var compareCandidates = [];
-	$("input[name='compareCandi']").change(function(e){
-		if ($("input[name='compareCandi']:checked").length < 5) {
-	        $("input[name='compareCandi']:checked").each( function (i) {
-				  compareCandidates[i] = $(this).val();
-			});
-	    }else{
-		   $(this).prop('checked', false)
-		   alert("Allowed only 4");
-	    }
-	})
-}
-</script>
-<script>
-function viewAssociateCandidateResumeDocView(candidateId,title){
-	var sourceleadUrl ='${sourceleadUrl}';
-	if(candidateId != null && candidateId != ""){
-		window.open(sourceleadUrl+'/viewAssociateCandidateResumeDocView/'+title+'?candidateId='+candidateId,title,"height=600,width=600");
-	}  
-}
-</script>
-
-<script>
-function recommendationpagination(){  
-    $('#recommendationTable').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"aaSorting": [[7,'desc']],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
-    	'columnDefs': [
-            {
-               'targets': 0,
-               'checkboxes': {
-                  'selectRow': true
-               }
-            }
-         ],
-         
-    	"aoColumnDefs": [{
-	           'bSortable': false,
-	           'aTargets': 0
-			}],
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    });
-    	$("#recommendationTable").wrap("<div class='overflow_Auto' style='width:100%;'></div>"); 
-}
 </script>
 
 <script>
@@ -1652,277 +1663,313 @@ function clientSideBar(candidateId,recScore){
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) { 
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-              		 if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	 }
-              		 else if (data.indexOf('exception') >= 0) {
-              			 location.replace(sourceleadUrl+"/errorPage");
-              		 }
-              		 else{
-              			 candidateStatusGlobal = json.status;
-	                	 $("#candidateSideDiv").empty();
-			             
-			             var country = '';
-				         var state = '';
-				         var city = '';
-			             
-			             if(json.country != null && json.country != '' && json.country != 'undefined'){
-	         			 		country = json.country;
-	             			 	}else{
-	             			 		country = '';
-	             			 	}
-	         			 	
-	         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
-	         			 		state =json.state +',';
-	             			 	}else{
-	             			 		state = '';
-	             			 	}
-	         			 	
-	         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
-	         			 		city =json.city+',';
-	             			 	}else{
-	             			 		city = '';
-	             			 	}
-	         			 	
-	         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
-	         			 		currentRate = json.currentRate;
-	         			 	}else{
-	         			 		currentRate = '';
-	         			 	}
-	         			 	
-	         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
-	         			 		rateType = json.rateType;
-	         			 	}else{
-	         			 		rateType = '';
-	         			 	}
-	         			 	
-	         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
-	         			 		currentRateType = json.currentRateType;
-	         			 	}else{
-	         			 		currentRateType = '';
-	         			 	}
-	         			 	
-	         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
-	         			 		currentRateCurrency = json.currentRateCurrency;
-	         			 	}else{
-	         			 		currentRateCurrency = '';
-	         			 	}
-	         			 	
-	         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
-	         			 		expectedRate = json.expectedRate;
-	         			 	}else{
-	         			 		expectedRate = '';
-	         			 	}
-
-	         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
-	         			 		expectedRateCurrencey = json.expectedRateCurrencey;
-	         			 	}else{
-	         			 		expectedRateCurrencey = '';
-	         			 	}
-	         			 	
-	         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
-		                		 lastName  = json.lastName;
-		                	 }else{
-		                		 lastName = "";
-		                	 }
-			             if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
-			            	 mobilePhone = json.mobilePhone;
-			             }else{
-			            	 mobilePhone ="--";
-			             }
-	                	 var result = "";
-	                	 result = result+'<div id="popUp" ></div>  ';
-	                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
-			             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
-			             result = result+'               <div class="col-md-6">';
-			             result = result+'                   <div class="media">';
-			             
-			             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
-			             result = result+'<div id="candidateImageId">';
-			             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
-						 result = result+' <div class="profile-img-container profile-image text-center">';
-			               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-			               }else{
-						result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-	   
-			               }
-						if(recScore != null && recScore != '' && recScore != 'undefined'){
-							  if(recScore >=50){ 
-							 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+           success :function(result) {
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+	                if(json != null){ 
+	              			 candidateStatusGlobal = json.status;
+		                	 $("#candidateSideDiv").empty();
+				             
+				             var country = '';
+					         var state = '';
+					         var city = '';
+				             
+				             if(json.country != null && json.country != '' && json.country != 'undefined'){
+		         			 		country = json.country;
+		             			 	}else{
+		             			 		country = '';
+		             			 	}
+		         			 	
+		         			 	if(json.state != null && json.state != '' && json.state != 'undefined'){
+		         			 		state =json.state +',';
+		             			 	}else{
+		             			 		state = '';
+		             			 	}
+		         			 	
+		         			 	if(json.city != null && json.city != '' && json.city != 'undefined'){
+		         			 		city =json.city+',';
+		             			 	}else{
+		             			 		city = '';
+		             			 	}
+		         			 	
+		         			 	if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
+		         			 		currentRate = json.currentRate;
+		         			 	}else{
+		         			 		currentRate = '';
+		         			 	}
+		         			 	
+		         			 	if(json.rateType != null && json.rateType != '' && json.rateType != 'undefined'){
+		         			 		rateType = json.rateType;
+		         			 	}else{
+		         			 		rateType = '';
+		         			 	}
+		         			 	
+		         			 	if(json.currentRateType != null && json.currentRateType != '' && json.currentRateType != 'undefined'){
+		         			 		currentRateType = json.currentRateType;
+		         			 	}else{
+		         			 		currentRateType = '';
+		         			 	}
+		         			 	
+		         			 	if(json.currentRateCurrency != null && json.currentRateCurrency != '' && json.currentRateCurrency != 'undefined'){
+		         			 		currentRateCurrency = json.currentRateCurrency;
+		         			 	}else{
+		         			 		currentRateCurrency = '';
+		         			 	}
+		         			 	
+		         			 	if(json.expectedRate != null && json.expectedRate != '' && json.expectedRate != 'undefined'){
+		         			 		expectedRate = json.expectedRate;
+		         			 	}else{
+		         			 		expectedRate = '';
+		         			 	}
+	
+		         			 	if(json.expectedRateCurrencey != null && json.expectedRateCurrencey != '' && json.expectedRateCurrencey != 'undefined'){
+		         			 		expectedRateCurrencey = json.expectedRateCurrencey;
+		         			 	}else{
+		         			 		expectedRateCurrencey = '';
+		         			 	}
+		         			 	
+		         			 	if(json.lastName != null && json.lastName != '' && json.lastName != 'undefiend'){
+			                		 lastName  = json.lastName;
+			                	 }else{
+			                		 lastName = "";
+			                	 }
+				             if(json.mobilePhone != null && json.mobilePhone != '' && json.mobilePhone != 'undefined'){
+				            	 mobilePhone = json.mobilePhone;
+				             }else{
+				            	 mobilePhone ="--";
+				             }
+		                	 var result = "";
+		                	 result = result+'<div id="popUp" ></div>  ';
+		                	 result = result+'<form id="candidate_form" name="candidate_form" method="post" >';
+				             result = result+'  <div class="profile_details clearfix" style="margin-bottom:20px;">';
+				             result = result+'               <div class="col-md-6">';
+				             result = result+'                   <div class="media">';
+				             
+				             result = result+'<div class="col-xs-12 col-sm-5 col-md-5">';
+				             result = result+'<div id="candidateImageId">';
+				             result = result+'<div class="well well-sm text-center clearfix positionRelative">';
+							 result = result+' <div class="profile-img-container profile-image text-center">';
+				               if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+				               }else{
+							result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+		   
+				               }
+							if(recScore != null && recScore != '' && recScore != 'undefined'){
+								  if(recScore >=50){ 
+								 	 result = result +'                    <i class="valid-profile fa fa-check-square text-success"></i>';        
+								  }
 							  }
-						  }
-						 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';					     result = result+'  </label>';
-					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
-							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     } 
-					     
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 
-						 
-						 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
-							result = result+' <div class="progress nomr">  ';
-						if(json.profilePercentage>=50){ 
-							result = result+'   <div class="progress-bar  progress-bar-success  ';
-						}
-						else{
-							result = result+'   <div class="progress-bar  progress-bar-danger  ';
-						}
-						result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
-						result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
-						result = result+'   </div>  ';
-						result = result+' </div>                 ';                                                                                                                                                      
-						result = result+' </div> ';
-						
-						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
-						 result = result+' </div>';
-						 result = result+' </div>';
-						 result = result+'</form>';
-			             result = result+'                     <div class="media-body candidate-details">';
-			             
-			             result = result+' <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
-			            
-			             result = result+'<ul class="list-unstyled">';
-			             result = result+'<li>Type - '+json.candidateType+'</li>';
-			             if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
-				         result = result+'<li>Designation - '+json.designation+'</li>';
-	              		 }else{
-	              		 result = result+'<li>Designation - ----</li>';  
-	              		 }
-			             if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
-				         result = result+'<li>Employment Type - '+json.designationType+'</li>';
-	              		 }else{
-	              		 result = result+'<li>Employment Type - ----</li>';  
-	              		 }
-			             if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined'){
-			             result = result+'<li>Experience - '+json.experienceYears+' years '+json.experienceMonths+' months </li>';
-              		     }else{
-              		     result = result+'<li>Experience - ----</li>';  
-              		     }if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined'){
-                	     result = result+'  <li>Notice Period - '+json.noticePeriod+'</li>';
-                         }else{
-                         result = result+'<li>Notice Period - ----</li>';  
-                         }if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
-                	     result = result+'  <li>Primary Skill - '+json.primarySkill+'</li>';
-                         }else{
-                         result = result+'<li>Primary Skill - ----</li>';  
-                         }
-			             result = result+'                       </ul>';
-			             result = result+'                 <div class="clearfix">';
-			             result = result+'                 <div class="socialnetwork-details">';
-			             result = result+'                 <ul class="list-inline list-unstyled">';
-			             if(json.facebookUrl != null && json.facebookUrl != '' && json.facebookUrl != 'undefined'){
-			            	 result = result+'<li class="bg-facebook"><a href="'+json.facebookUrl+'"target="_blank"> <i class="fa fa-facebook-square"></i></a></li>';
-			            	 }
-			             if(json.linkedUrl != null && json.linkedUrl != '' && json.linkedUrl != 'undefined'){
-			            	 result = result+'<li class="bg-linked"><a href="'+json.linkedUrl+'"target="_blank"> <i class="fa fa-linkedin-square"></i></a></li>';
-			            	 }
-			             if(json.twitterUrl != null && json.twitterUrl != '' && json.twitterUrl != 'undefined'){
-			            	 result = result+'<li class="bg-twitter"><a href="'+json.twitterUrl+'"target="_blank"> <i class="fa fa-twitter-square"></i></a></li>';
-			            	 }
-			             
-			             result = result+'   </ul>';
-			             result = result+'                 </div>';
-			             result = result+'                 </div>';
-			             result = result+'               </div>';
-			             result = result+'                   </div>';
-			             result = result+'                 </div>';
-			             result = result+'               <div class="col-md-6">';
-			             result = result+'                 <ul class="list-unstyled can-perdt">';
-			             result = result+'                   <li title="'+json.email+'"><i class="fa fa-envelope-o" title="Email"></i>'+json.email+'</li>';
-			             result = result+'                   <li><i class="fa fa-phone" title="PhoneNo"></i>'+mobilePhone+'</li>';
-			                                                  
-			             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
-			             
-			             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
-			             
-			             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
-			             result = result+'                 </ul>';
-			             result = result+'               </div>';
-			             result = result+'			</div>';
-			             result = result+'   <div class="proj_close"></div>';
-			             result = result+'   <div class="project_side_wrap_inn_tabs">';
-			             result = result+'     <ul class="canreq-tabs-menu">';
-			             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
-			             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
-			             result = result+'       <li><a href="#tab-13" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
-			             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
-			             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
-			             
-			             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
-						 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
-			             
-			             result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
-			             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
-			             result = result+'       <div class="clearfix"></div>';
-			             result = result+'     </ul>';
-			             result = result+'     <div class="project_tabs">';
-				         result = result + ' <div id="tab-11" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-12" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-13" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + ' <div id="tab-14" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-15" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-17" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-18" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-						 result = result + '<div id="history" class="canreq-tabs-menu_inn">';
-						 result = result + '</div>';
-						 
-			             result = result+'     </div>';
-			             result = result+'   </div>';
-			             
-			             $("#candidateSideDiv").empty();  
-			 		     $("#candidateSideDiv").append(result);  
-				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
-						 $(".side_mask").fadeIn(200);
-						 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId);
-						 hilightTab();
-			    	} 
-                }else{
-               	 $("#candidateSideDiv").removeAttr("style");
- 	    	         var result ="";
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='content-area clearfix'>"; 
-					 result = result+"			<div class='blank-pages'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No Candidates Found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> "; 
-					$("#candidateSideDiv").empty();
-				    $("#candidateSideDiv").append(result); 
-                }
+							 result = result+'  <div class="btn-group uploadfile uploadbtn-custom">';
+							 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+							 result = result+'  <i class="fa fa-upload"></i></button>';
+							 result = result+'  <label class="btn btn-sm btn-primary">';
+							 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');"  style="display: none;">';					     result = result+'  </label>';
+						     if(json.fileUrl != null && json.fileUrl != '' && json.fileUrl != 'undefined'){
+							     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+								 result = result+'  <i class="fa fa-trash"></i></button>';
+						     } 
+						     
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 
+							 
+							 result = result+'  <div class="mb mt5 UsProBar">';                                                                                                                                        
+								result = result+' <div class="progress nomr">  ';
+							if(json.profilePercentage>=50){ 
+								result = result+'   <div class="progress-bar  progress-bar-success  ';
+							}
+							else{
+								result = result+'   <div class="progress-bar  progress-bar-danger  ';
+							}
+							result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%">  ';
+							result = result+'     <p id="disVal">'+json.profilePercentage+'%</p>                                                                                                                                                                      ';
+							result = result+'   </div>  ';
+							result = result+' </div>                 ';                                                                                                                                                      
+							result = result+' </div> ';
+							
+							 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+							/*  result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif are not support</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Size should not more than 200kb</p>';
+							 */ 
+							 result = result+' </div>';
+							 result = result+' </div>';
+							 result = result+'</form>';
+				             result = result+'                     <div class="media-body candidate-details candidateDetails">';
+				             
+				             result = result+' <h4 class="media-heading">'+json.firstName+' '+lastName+'</h4>';
+				            
+				             result = result+'<ul class="list-unstyled">';
+				             result = result+'<li>Type - '+json.candidateType+'</li>';
+				             
+				             if(json.designation != null && json.designation !='' && json.designation !="undefined"){
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+json.designation+'> '+json.designation+'</span></li>';
+				             }else{
+		                   	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+	
+				             }
+				             if(json.designationType != null && json.designationType !='' && json.designationType !="undefined"){
+	
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+json.designationType+'</span></li>';
+				             }else{
+			                  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+				             }
+							 
+		         			 if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
+	
+							 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title='+json.vendorName+'>'+json.vendorName+'</span></li>';
+		         			 }
+		         			 
+		         			if(json.vendorContactName != null && json.vendorContactName != '' && json.vendorContactName != 'undefined'){
+	
+							result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Vendor Contact</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title = '+json.vendorContactName+'>'+json.vendorContactName+'</span></li>';
+			         		}
+				             
+				              if(json.experienceYears != null && json.experienceYears != '' && json.experienceYears != 'undefined' && json.experienceYears != '0'){
+				            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+json.experienceYears+' Year(s) '+json.experienceMonths+' Month(s)</span></li>';
+	              		       }else{
+	                		   		 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">---</span></li>';  
+	              		       }
+				            
+				             
+				              if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod != 'Other'){
+			                    	 
+					               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+'(s)'+'</span></li>';
+					             
+		             		       }else if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod != 'undefined' && json.noticePeriod == 'Other'){
+		             		                                                	  
+		                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+json.noticePeriod+"---"+json.otherNoticePeriod+'</span></li>';  
+		             		     
+		             		       }else{
+		             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
+		             		       }
+				              result = result+'</ul>';
+				              result = result+'<div class="clearfix"></div>';
+				              result = result+'<div class="clearfix">';
+				              result = result+'<ul class="list-inline list-unstyled">';
+					             
+					             if(json.primarySkill != null && json.primarySkill != '' && json.primarySkill != 'undefined'){
+					            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="padding_left padding_right">'+json.primarySkill+'</span></li>';
+					             }else{
+					            	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Primary Skill</span><span class="col-md-7 padding_left padding_right">---</span</li>';  
+					             }
+				             result = result+'                       </ul>';
+				             result = result+'                       </div>';
+				             result = result+'                 <div class="clearfix">';
+				             result = result+'                 <div class="socialnetwork-details">';
+				             result = result+'                 <ul class="list-inline list-unstyled">';
+				             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
+					             result = result+'<li class="bg-facebook" title="Facebook"><a target="_blank" href=\"'+json.consultantUser.facebook+'\" > <i class="fa fa-facebook-square" ></i></a></li>';
+					             }
+					             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.twitter != null && json.consultantUser.twitter !="undefined" && json.consultantUser.twitter != ""){
+					             result = result+'<li class="bg-twitter" title="Twitter"><a target="_blank" href=\"'+json.consultantUser.twitter+'\"> <i class="fa fa-twitter-square" ></i></a></li>';
+					             }
+					             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.googlePlus != null && json.consultantUser.googlePlus !="undefined" && json.consultantUser.googlePlus != ""){
+					             result = result+'<li class="bg-google " title="Google-Plus"><a target="_blank" href=\"'+json.consultantUser.googlePlus+'\"> <i class="fa fa-google-plus-square" ></i></a></li>';
+					             }
+					             if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.linkedIn != null && json.consultantUser.linkedIn !="undefined" && json.consultantUser.linkedIn != ""){
+					             result = result+'<li class="bg-linked" title="Linkedin"><a target="_blank" href=\"'+json.consultantUser.linkedIn+'\"> <i class="fa fa-linkedin-square" ></i></a></li>';
+					             }
+				             
+				             result = result+'   </ul>';
+				             result = result+'                 </div>';
+				             result = result+'                 </div>';
+				             result = result+'               </div>';
+				             result = result+'                   </div>';
+				             result = result+'                 </div>';
+				             result = result+'               <div class="col-md-6">';
+				             result = result+'                 <ul class="list-unstyled can-perdt">';
+				             result = result+'                   <li title="'+json.email+'"><i class="fa fa-envelope-o" title="Email"></i>'+json.email+'</li>';
+				             result = result+'                   <li><i class="fa fa-phone" title="PhoneNo"></i>'+mobilePhone+'</li>';
+				                                                  
+				             result = result+'                   <li title="'+city+''+state+''+country+'"><i class="fa fa-location-arrow" title="Location"></i>'+city+''+state+''+country+'</li>';
+				             
+				             result = result+'                   <li><i class="fa fa-money" title="Current Rate"></i><b>Current Rate:</b>' +currentRate+'  '+currentRateType+' / '+currentRateCurrency+'</li>';
+				             
+				             result = result+'                   <li><i class="fa fa-money" title="Expected rate"></i><b>Expected Rate:</b>'+expectedRate+'  '+rateType+' / '+expectedRateCurrencey+'</li>';
+				             result = result+'                 </ul>';
+				             result = result+'               </div>';
+				             result = result+'			</div>';
+				             result = result+'   <div class="proj_close"></div>';
+				             result = result+'   <div class="project_side_wrap_inn_tabs ">';
+				             result = result+'     <ul class="canreq-tabs-menu">';
+				             result = result+'       <li class="current"><a href="#tab-11" onclick="candidateProfile('+candidateId+');">Profile</a></li>';
+				             result = result+'       <li><a href="#tab-12" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+');" >Resume</a></li>';
+				             result = result+'       <li><a href="#tab-13" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+				             result = result+'       <li><a href="#tab-14" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+				             result = result+'       <li><a href="#tab-15" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+				             
+				             result = result+'<li><a href="#tab-17" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+							 result = result+'<li><a href="#tab-18" onclick="candidateReferences('+candidateId+');">References</a></li>';
+				             
+				             //result = result+'       <li><a href="#tab-16" onclick="candidateActivities('+candidateId+');">Activities</a></li>'; 
+				             result = result+'       <li><a href="#history" onclick="candidateHistory('+candidateId+');">History</a></li>';
+				             result = result+'       <div class="clearfix"></div>';
+				             result = result+'     </ul>';
+				             result = result+'     <div class="project_tabs">';
+					         result = result + ' <div id="tab-11" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-12" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-13" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + ' <div id="tab-14" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-15" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-17" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-18" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="tab-16" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+							 result = result + '<div id="history" class="canreq-tabs-menu_inn">';
+							 result = result + '</div>';
+							 
+				             result = result+'     </div>';
+				             result = result+'   </div>';
+				             
+				             $("#candidateSideDiv").empty();  
+				 		     $("#candidateSideDiv").append(result);  
+					 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
+							 $(".side_mask").fadeIn(200);
+							 $("body").css('overflow-y', 'hidden');
+							 candidateProfile(candidateId);
+							 hilightTab();
+	                }else{
+	               	 $("#candidateSideDiv").removeAttr("style");
+	 	    	         var result ="";
+			    	     result = result+"   <div class='row'>"; 
+						 result = result+"	<div class='col-lg-12'>"; 
+						 result = result+"		<div class='content-area clearfix'>"; 
+						 result = result+"			<div class='blank-pages'>";
+						 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+						 result = result+"			        <p>No Candidates Found</p>";
+						 result = result+"			 </div>";
+						 result = result+"		</div>"; 
+						 result = result+"	</div>"; 
+						 result = result+"  </div> "; 
+						$("#candidateSideDiv").empty();
+					    $("#candidateSideDiv").append(result); 
+	                }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          },
       }); 
 }
@@ -1958,10 +2005,10 @@ function requirementStatusBar(requirementId){
        var clientSubmissions = '${clientSubmissions}';
        var isSpocActive = '${isSpocActive}';
        var duplicateApplicantCount = 'DUPLICATE_APPLICANTS';
-		
        var offerMade = 'OFFERMADE';
+       var joined = 'JOINED';
        
-        result = result + '<div class="reportsCount reportsCountNew reportsCountCustom" id="customLi">';
+        result = result + '<div class="reportsCount reportsCountNew reportsCountNewBig reportsCountCustom" id="customLi">';
 		result = result + '<ul>';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount">0</b>';
@@ -1985,6 +2032,9 @@ function requirementStatusBar(requirementId){
 		result = result + '</li>';
 		result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount">0</b>';
+		result = result + '</li>';
+		result = result + '<li title="Joined" id="joinedli" onclick="requirementPipeline('+requirementId+',\''+joined+'\');tabEnable(this);">';
+		result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount">0</b>';
 		result = result + '</li>';
 		result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
 		result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount">0</b>';
@@ -2065,140 +2115,188 @@ function getRateListDiv(submissionId, candidateId){
         type : "POST",
          url: sourceleadUrl+"/getRateHistoryBySubmissionId?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId,        
          success :function(data) {
-        	 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-            	 var json = JSON.parse(data);
-          		 if( data.indexOf('Sign In') >= 0){
-		    		location.replace(sourceleadUrl);
-		    	 }
-          		 /* else if (data.indexOf('exception') >= 0) {
-          			 location.replace(sourceleadUrl+"/errorPage");
-          		 } */else{
-          			var expectedRate = json[0].expectedRateRN;
-          			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
-          				expectedRate = expectedRate;
-          			}else{
-          				expectedRate = ""
-          			}
-          			var expectedRateType =json[0].expectedRateTypeRN;
-          			var toggleER = "";
-          			if(expectedRateType != null && expectedRateType != '' && expectedRateType != 'undefined'){
-          				expectedRateType = expectedRateType;
-          			}else{
-          				expectedRateType ="";
-          				toggleER = 'style="display: none"';
-          			}
-          			var expectedRatePer =json[0].expectedRatePerRN;
-          			if(expectedRatePer != null && expectedRatePer != '' && expectedRatePer != 'undefined'){
-          				expectedRatePer = expectedRatePer;
-          			}else{
-          				expectedRatePer = "";
-          			}
-          			     var result = "";
-      			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-      			         result = result + '<p><strong>Rate Negotiation History </strong> <span class="pull-right paddingRight" '+toggleER+'><strong>Expected Rate</strong>: '+expectedRateType+'&nbsp;'+expectedRate+'&nbsp;'+expectedRatePer+'<span></p>';
-         			     result = result + '<section class="tbl-scroll require_wrap_table">';
-	                     result = result + '  <table>';
-	                     result = result + '    <thead>';
-	                     result = result + '      <tr>';
-	                     result = result + '        <th>By</th>';
-	                     result = result + '        <th>Rate</th>';
-	                     result = result + '        <th>Rate Per Hourly</th>';
-	                     result = result + '        <th>Comment</th>';
-	                     result = result + '        <th>Date <br>(<small class="custom-small">'+rateListDate+'</small>)</th>';
-	                     result = result + '        <th>Action</th>';
-	                     result = result + '      </tr>';
-	                     result = result + '    </thead>';
-	                     result = result + '    <tbody>';
-	                     var divState = "";
-	                     var isLastNegotiator = "";
-	                     for (var i=0; i<json.length; i++)
-			   				{
-					    	 var report = json[i];
-					    	 if(i == json.length-1){
-		                    	 divState = report.rateInitiatorType;
-		                    	 if(report.rateInitiatorType != "CANDIDATE" && report.initiatorOrgLocationIdStr==orgLocationId && report.createdBy!='' && report.createdBy!='undefined' && report.createdBy!=null){
-		                    		 isLastNegotiator = "true";
-		                    	 }else{
-		                    		 isLastNegotiator = "false";
-		                    	 }
-	                    	 }
-					    	     
-						    	 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
-						    		var resultDtata = getRatePerHourly(report.rateAndType);
-						    		 rateAndType = report.rateAndType;
-						    	 }else{
-						    		 rateAndType = "---";
-						    	 }
-						    	 /*  if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){  */
-				                     result = result + '      <tr class="redtxt">';
-				                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
-				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
-				                     }else{
-				                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
-				                     }
-				                    
-				                     result = result + '        <td><div class="tblminwidth-75">'+rateAndType+'</div></td>';
-				                     
-				                    /*  if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
-				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.rateAndType+'</div></td>';
-				                     }else if(report.expectedRate != null && report.expectedRate != 'undefined' && report.expectedRate !=''){
-				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.expectedRate+'</div></td>';
-				                     }else{
-				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-				                     } */
-				                     if(resultDtata != null && resultDtata != 'undefined' && resultDtata !=''){
-				                    	 result = result + '        <td><div class="tblminwidth-75">'+resultDtata+'</div></td>';
-				                     }else{
-				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-				                     }
-				                    
-				                     
-				                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
-				                    	 result = result + '        <td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
-				                     }else{
-				                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
-				                     }
-				                     
-				                     if(report.createdDateStr != null && report.createdDateStr != 'undefined' && report.createdDateStr !=''){
-				                    	 result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
-				                     }else{
-				                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
-				                     }
-				                     result = result + '        <td id="loading">';
-				                     
-				                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
-				                    	 var Accepted = 'Accepted';
-				                    	 var Rejected = 'Rejected';
-				                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
-				                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
-				                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';	 
-				                    		 }else{
-				                    			 result = result + '--';
-				                    		 }
-				                    		 
+        	 
+        	 if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+        	 
+		        	 if(data.data != null && data.data != 'undefined' && data.data != "" && data.data != '[]'){
+		            	 var json = data.data;
+		          			var expectedRate = json[0].expectedRateRN;
+		          			if(expectedRate != null && expectedRate != '' && expectedRate != 'undefined'){
+		          				expectedRate = expectedRate;
+		          			}else{
+		          				expectedRate = ""
+		          			}
+		          			var expectedRateType =json[0].expectedRateTypeRN;
+		          			var toggleER = "";
+		          			if(expectedRateType != null && expectedRateType != '' && expectedRateType != 'undefined'){
+		          				expectedRateType = expectedRateType;
+		          			}else{
+		          				expectedRateType ="";
+		          				toggleER = 'style="display: none"';
+		          			}
+		          			var expectedRatePer =json[0].expectedRatePerRN;
+		          			if(expectedRatePer != null && expectedRatePer != '' && expectedRatePer != 'undefined'){
+		          				expectedRatePer = expectedRatePer;
+		          			}else{
+		          				expectedRatePer = "";
+		          			}
+		          			     var result = "";
+		      			         result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+		      			         result = result + '<p><strong>Rate Negotiation History </strong> <span class="pull-right paddingRight" '+toggleER+'><strong>Expected Rate</strong>: '+expectedRateType+'&nbsp;'+expectedRate+'&nbsp;'+expectedRatePer+'<span></p>';
+		         			     result = result + '<section class="tbl-scroll require_wrap_table">';
+			                     result = result + '  <table>';
+			                     result = result + '    <thead>';
+			                     result = result + '      <tr>';
+			                     result = result + '        <th>By</th>';
+			                     result = result + '        <th>Rate</th>';
+			                     result = result + '        <th>Rate Per Hourly</th>';
+			                     result = result + '        <th>Comment</th>';
+			                     result = result + '        <th>Date <br>(<small class="custom-small">'+rateListDate+'</small>)</th>';
+			                     result = result + '        <th>Action</th>';
+			                     result = result + '      </tr>';
+			                     result = result + '    </thead>';
+			                     result = result + '    <tbody>';
+			                     var divState = "";
+			                     var isLastNegotiator = "";
+			                     for (var i=0; i<json.length; i++)
+					   				{
+							    	 var report = json[i];
+							    	 if(i == json.length-1){
+				                    	 divState = report.rateInitiatorType;
+				                    	 if(report.rateInitiatorType != "CANDIDATE" && report.initiatorOrgLocationIdStr==orgLocationId && report.createdBy!='' && report.createdBy!='undefined' && report.createdBy!=null){
+				                    		 isLastNegotiator = "true";
+				                    	 }else{
+				                    		 isLastNegotiator = "false";
 				                    	 }
-				                     	
-				                     }else{
-				                    	 if(report.rateStage == 'ACCEPTED'){
-				                     		result = result + '<b class="text-primary"> Accepted </b>';
-				                     	}else if(report.rateStage == 'REJECTED'){
-				                     		result = result + '<b class="text-danger"> Rejected </b>';
-				                     	}
-				                  /*    } */
-				                     result = result + '		</td>';
-				                     result = result + '      </tr>';
-						    	  } 
-			   				}
-	                     result = result + '    </tbody>';
-	                     result = result + '  </table>';
-	                     result = result + '</section>';
-	                     if(report.submissionStatus != "REJECTED"){
-	                    	 /* if(report.isNeedApplicantPermit=="N" || (null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus)){ */
-	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
-		                     result = result + '<div class="clearfix row">';
-		                     result = result + '<form name="rate_form" id="rate_form" method="post">';
+			                    	 }
+							    	     
+								    	 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+								    		var resultDtata = getRatePerHourly(report.rateAndType);
+								    		 rateAndType = report.rateAndType;
+								    	 }else{
+								    		 rateAndType = "---";
+								    	 }
+								    	 /*  if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){  */
+						                     result = result + '      <tr class="redtxt">';
+						                     if(report.proposeByName != null && report.proposeByName != 'undefined' && report.proposeByName !=''){
+						                    	 result = result + '        <td><div class="tbldata-dotdot-sm">'+report.proposeByName+'</div></td>';
+						                     }else{
+						                    	 result = result + '        <td><div class="tbldata-dotdot-sm">---</div></td>';
+						                     }
+						                    
+						                     result = result + '        <td><div class="tblminwidth-75">'+rateAndType+'</div></td>';
+						                     if(resultDtata != null && resultDtata != 'undefined' && resultDtata !=''){
+						                    	 result = result + '        <td><div class="tblminwidth-75">'+resultDtata+'</div></td>';
+						                     }else{
+						                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+						                     }
+						                    
+						                     
+						                     if(report.rateReason != null && report.rateReason != 'undefined' && report.rateReason !=''){
+						                    	 result = result + '        <td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
+						                     }else{
+						                    	 result = result + '        <td><div class="tbldata-dotdot">---</div></td>';
+						                     }
+						                     
+						                     if(report.createdDateStr != null && report.createdDateStr != 'undefined' && report.createdDateStr !=''){
+						                    	 result = result + '        <td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+						                     }else{
+						                    	 result = result + '        <td><div class="tblminwidth-75">---</div></td>';
+						                     }
+						                     result = result + '        <td id="loading">';
+						                     
+						                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
+						                    	 var Accepted = 'Accepted';
+						                    	 var Rejected = 'Rejected';
+						                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
+						                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+						                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\');"><i class="fa fa-times"></i></a>';	 
+						                    		 }else{
+						                    			 result = result + '--';
+						                    		 }
+						                    		 
+						                    	 }
+						                     	
+						                     }else{
+						                    	 if(report.rateStage == 'ACCEPTED'){
+						                     		result = result + '<b class="text-primary"> Accepted </b>';
+						                     	}else if(report.rateStage == 'REJECTED'){
+						                     		result = result + '<b class="text-danger"> Rejected </b>';
+						                     	}
+						                  /*    } */
+						                     result = result + '		</td>';
+						                     result = result + '      </tr>';
+								    	  } 
+					   				}
+			                     result = result + '    </tbody>';
+			                     result = result + '  </table>';
+			                     result = result + '</section>';
+			                     if(report.submissionStatus != "REJECTED"){
+			                    	 /* if(report.isNeedApplicantPermit=="N" || (null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus)){ */
+			                    	 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';
+				                     result = result + '<div class="clearfix row formgroup-minheight">';
+				                     result = result + '<form name="rate_form" id="rate_form" method="post">';
+				                     result = result + '  <div class="form-group col-md-6">';
+				                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
+				                     result = result + '  </div>';
+				                     
+				                     result = result + '<div class="form-group col-md-6 select-field">';
+				                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
+				                     result = result + '	<option value="">Rate Per</option>';
+				                     result = result + '    <option>Hourly</option>';
+				                     result = result + '    <option>Weekly</option>';
+				                     result = result + '    <option>Bi-weekly</option>';
+				                     result = result + '    <option>Semi-Monthly</option>';
+				                     result = result + '    <option>Monthly</option>';
+				                     result = result + '    <option>Bi-Monthly</option>';
+				                     result = result + '    <option>Yearly</option>';
+				                     result = result + ' </select>';
+				                     result = result + ' </div>';
+				                     
+				                     result = result + '  <div class="form-group col-md-12">';
+				                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
+				                     result = result + '  </div>';
+				                     result = result + '  <div class="form-group col-md-12">';
+				                     result = result + '    <div class="pull-right">';
+				                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
+				                     result = result + '      <button type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">Cancel</button>';
+				                     result = result + '    </div>';
+				                     result = result + '  </div>';
+				                     result = result + '</form>';
+				                     result = result + '</div>';
+				                     '</sec:authorize>';
+			                    	/*  } */
+			                     }
+			                     result = result + '</i>';
+			                     $("#ratepop").empty();  
+			      	 		     $("#ratepop").append(result); 
+			      	 		 	 $("#ratepop").fadeIn(); 
+		        	 	}else{
+		        	 		$("#ratepop").removeAttr("style");
+				    	     var result ="";
+				    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
+				    	     result = result + '<p><strong>Rate Negotiation History</strong></p>';
+				    	     result = result+"   <div class='row'>"; 
+							 result = result+"	<div class='col-lg-12'>"; 
+							 result = result+"		<div class='clearfix'>"; 
+							 result = result+"			<div class='blank-data'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No rate history found</p>";
+							 result = result+"			 </div>";
+							 result = result+"		</div>"; 
+							 result = result+"	</div>"; 
+							 result = result+"  </div> ";
+							 if(report.submissionStatus != "REJECTED"){
+							 /* if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){ */
+							 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';	 
+				    	     result = result + '<div class="clearfix row">';
+				    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                     result = result + '  <div class="form-group col-md-6">';
-		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
+		                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
 		                     result = result + '  </div>';
 		                     
 		                     result = result + '<div class="form-group col-md-6 select-field">';
@@ -2215,7 +2313,7 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + ' </div>';
 		                     
 		                     result = result + '  <div class="form-group col-md-12">';
-		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
+		                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
 		                     result = result + '  </div>';
 		                     result = result + '  <div class="form-group col-md-12">';
 		                     result = result + '    <div class="pull-right">';
@@ -2226,69 +2324,18 @@ function getRateListDiv(submissionId, candidateId){
 		                     result = result + '</form>';
 		                     result = result + '</div>';
 		                     '</sec:authorize>';
-	                    	/*  } */
-	                     }
-	                     result = result + '</i>';
-	                     $("#ratepop").empty();  
-	      	 		     $("#ratepop").append(result); 
-	      	 		 	 $("#ratepop").fadeIn(); 
-          		 	}
-        	 	}else{
-        	 		$("#ratepop").removeAttr("style");
-		    	     var result ="";
-		    	     result = result + '<i class="fa fa-times text-danger close-ratepop" title="closediv" onClick="closeratediv();"></i>';
-		    	     result = result + '<p><strong>Rate Negotiation History</strong></p>';
-		    	     result = result+"   <div class='row'>"; 
-					 result = result+"	<div class='col-lg-12'>"; 
-					 result = result+"		<div class='clearfix'>"; 
-					 result = result+"			<div class='blank-data'>";
-					 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-					 result = result+"			        <p>No rate history found</p>";
-					 result = result+"			 </div>";
-					 result = result+"		</div>"; 
-					 result = result+"	</div>"; 
-					 result = result+"  </div> ";
-					 if(report.submissionStatus != "REJECTED"){
-					 /* if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){ */
-					 '<sec:authorize access="hasAnyRole(\'ROLE_RATE_NEGOTIATION\')">';	 
-		    	     result = result + '<div class="clearfix row">';
-		    	     result = result + '<form name="rate_form" id="rate_form" method="post">';
-                     result = result + '  <div class="form-group col-md-6">';
-                     result = result + '    <input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required">';
-                     result = result + '  </div>';
-                     
-                     result = result + '<div class="form-group col-md-6 select-field">';
-                     result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
-                     result = result + '	<option value="">Rate Per</option>';
-                     result = result + '    <option>Hourly</option>';
-                     result = result + '    <option>Weekly</option>';
-                     result = result + '    <option>Bi-weekly</option>';
-                     result = result + '    <option>Semi-Monthly</option>';
-                     result = result + '    <option>Monthly</option>';
-                     result = result + '    <option>Bi-Monthly</option>';
-                     result = result + '    <option>Yearly</option>';
-                     result = result + ' </select>';
-                     result = result + ' </div>';
-                     
-                     result = result + '  <div class="form-group col-md-12">';
-                     result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="rateComment" name="rateComment" field-name="Reason" data-validation="required"></textarea>';
-                     result = result + '  </div>';
-                     result = result + '  <div class="form-group col-md-12">';
-                     result = result + '    <div class="pull-right">';
-                     result = result + '      <input type="button" value="Add" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
-                     result = result + '      <input type="button" value="Cancel" class="btn btn-default btn-sm" onClick="closeratediv();">';
-                     result = result + '    </div>';
-                     result = result + '  </div>';
-                     result = result + '</form>';
-                     result = result + '</div>';
-                     '</sec:authorize>';
-        	 		 /* } */
-					 }
-                     result = result + '</i>';
-                     $("#ratepop").empty();  
-	      	 		 $("#ratepop").append(result); 
-	      	 		 $("#ratepop").fadeIn(); 
-            	}
+		        	 		 /* } */
+							 }
+		                     result = result + '</i>';
+		                     $("#ratepop").empty();  
+			      	 		 $("#ratepop").append(result); 
+			      	 		 $("#ratepop").fadeIn(); 
+		            	}
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
          	},
       	}); 
 	};
@@ -2299,17 +2346,24 @@ function getRateListDiv(submissionId, candidateId){
 	function proposeNewRate(submissionId, candidateId) {
 		 if ($('#rate_form').validate(false, validationSettings)){
 			var sourceleadUrl ='${sourceleadUrl}';
-			var frm = $('#rate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			//It will escape all the special characters
-		    var jsonData = encodeURIComponent(con);
+			var formData = getFormData("rate_form");
 		    $("#add_rate").attr("disabled", "disabled");
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/proposeRate?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&submissionId="+submissionId+"&candidateId="+candidateId,
+			data :formData,
+			url: sourceleadUrl+"/proposeRate?submissionId="+submissionId+"&candidateId="+candidateId,
 				success: function(data) {
-					 $("#ratepop").fadeOut();
+					if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		$("#ratepop").fadeOut();
+			    	}else if (json.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 				},
 			});
 			  return true;
@@ -2328,12 +2382,22 @@ function getRateListDiv(submissionId, candidateId){
 		$("#loading").empty();
 		$("#loading").prepend('<i class="fa fa-cog fa-spin"></i>');
 			var sourceleadUrl ='${sourceleadUrl}';
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+status,
 				success: function(data) {
-					 $("#ratepop").fadeOut();
+					if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		$("#ratepop").fadeOut();
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 				},
 			});
 			  return true;
@@ -2378,7 +2442,6 @@ function exportPipelineToExcel(requirementId,submissionType){
           window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2404,7 +2467,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 		  window.location.href = sourceleadUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
 	  }else{
 		  var result = "";
-			result = result +"	<div class='project_inn_mask'></div>";
+			/* result = result +"	<div class='project_inn_mask'></div>"; */
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -2422,7 +2485,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 
 <script>
 	// Close Advanced Search
-		function closePop(){
+		function closeCustomizePop(){
 			$("div.cand-advsrch-popup").hide();
 			$("#customizeScoreDiv").hide();
 		}
@@ -2441,526 +2504,448 @@ function cancel(){
 
 <script type="text/javascript">
 function customizeScore(requirementId){
+	multicities = {}; 
 	$("#customizeScoreDiv").show();
-	
+	var apiLocation = "apiLocation";
 	 $.ajax({
 		   	type: "GET",
 		    url: sourceleadUrl+"/getCustomizeScore?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId, 	   
 		    success: function(data) {
-		    	var json = JSON.parse(data);
-		    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
-		    		customizeMinExperience = json.customizeMinExperience;
-		    	}else{
-		    		customizeMinExperience = "";
-		    	}
-		    	
-		    	if(json.customizeMaxExperience != null && json.customizeMaxExperience != '' && json.customizeMaxExperience != 'undefiend'){
-		    		customizeMaxExperience = json.customizeMaxExperience;
-		    	}else{
-		    		customizeMaxExperience = "";
-		    	}
-		    	
-		    	if(json.customizeRate != null && json.customizeRate != '' && json.customizeRate != 'undefiend'){
-		    		customizeRate = json.customizeRate;
-		    	}else{
-		    		customizeRate = "";
-		    	}
-		    	
-		    	if(json.customizeCountry != null && json.customizeCountry !='' && json.customizeCountry !='undefined'){
-		    		var customizeCountry = json.customizeCountry;
-				}
-		    	
-				if(json.customizeState != null && json.customizeState !='' && json.customizeState !='undefined'){
-					var customizeState = json.customizeState;
-				}
-				if(json.customizeCity != null && json.customizeCity !='' && json.customizeCity !='undefined'){
-					var customizeCity = json.customizeCity;
-				}
-		    	
-		    	//lookupDB skills
-		    	var lookupSkills = json.dbSkills;
-		    	var dbskills = new Array();
-		    	dbskills = lookupSkills.split(",");
-		    	
-		    	
-		    	var result = "";
-		    	//result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
-		    	
-		    	result = result +'		          <div class="sideMask" style="display:block;"></div>';
-		    	result = result +'		          <div class="modal" style="display:block; z-index:9999">  ';
-		    	result = result +'		          <div class="modal-dialog modal-lg">  ';
-		    	result = result +'		          <div class="modal-content">  ';
-		    	result = result	+ ' <form id="updateCustomize_form"  name="updateCustomize_form" method="post">';
-		    	result = result +'		            <div class="row clearfix modal-body"> ';
-		        result = result +'		                <div class="clearfix mt">  ';
-		        
-		        result = result +'		                <div class="col-md-10 lblup paddingRight skills-chosen">    ';
-		        result = result +'		                   <label>Skills</label>';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple id="customizeSkills" name="customizeSkills"> ';
-		        
-		      //requitrement skills
-		    	if(json.customizeSkills != null  && json.customizeSkills != '' && json.customizeSkills != 'undefiend'){
-		    		var requirmentSkills = json.customizeSkills;
-			    	var customizeSkills = new Array();
-			    	customizeSkills = requirmentSkills.split(",");
-			        for (var i = 0; i < customizeSkills.length; i++) { 
-			        	 var customSkill = customizeSkills[i];
-			        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
+		    	var json = data.object;
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+			    	if(json.customizeMinExperience != null && json.customizeMinExperience != '' && json.customizeMinExperience != 'undefiend'){
+			    		customizeMinExperience = json.customizeMinExperience;
+			    	}else{
+			    		customizeMinExperience = "";
+			    	}
+			    	if(json.customizeMaxExperience != null && json.customizeMaxExperience != '' && json.customizeMaxExperience != 'undefiend'){
+			    		customizeMaxExperience = json.customizeMaxExperience;
+			    	}else{
+			    		customizeMaxExperience = "";
+			    	}
+			    	if(json.customizeRate != null && json.customizeRate != '' && json.customizeRate != 'undefiend'){
+			    		customizeRate = json.customizeRate;
+			    	}else{
+			    		customizeRate = "";
+			    	}
+			    	if(json.customizeCountry != null && json.customizeCountry !='' && json.customizeCountry !='undefined'){
+			    		var customizeCountry = json.customizeCountry;
+					}
+					if(json.customizeState != null && json.customizeState !='' && json.customizeState !='undefined'){
+						var customizeState = json.customizeState;
+					}
+					if(json.customizeCity != null && json.customizeCity !='' && json.customizeCity !='undefined'){
+						var customizeCity = json.customizeCity;
+					}
+			    	//lookupDB skills
+			    	var dbskills = new Array();
+			    	if(json.dbSkills != null && json.dbSkills !='' && json.dbSkills !='undefined'){
+				    	var lookupSkills = json.dbSkills;
+				    	dbskills = lookupSkills.split(",");
+			    	}
+			    	
+			    	var result = "";
+			    	//result = result +'		          <div class="cand-advsrch-popup customizescore-pop customscorePop">  ';
+			    	
+			    	result = result +'		          <div class="sideMask" style="display:block;"></div>';
+			    	result = result +'		          <div class="modal" style="display:block; z-index:9999">  ';
+			    	result = result +'		          <div class="modal-dialog modal-lg">  ';
+			    	result = result +'		          <div class="modal-content">  ';
+			    	result = result	+ ' <form id="updateCustomize_form"  name="updateCustomize_form" method="post">';
+			    	result = result +'		            <div class="row clearfix modal-body"> ';
+			        result = result +'		                <div class="clearfix mt">  ';
+			        
+			        result = result +'		                <div class="col-md-10 lblup paddingRight skills-chosen">    ';
+			        result = result +'		                   <label>Skills</label>';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" multiple id="customizeSkills" name="customizeSkills"> ';
+			        
+			      //requitrement skills
+			    	if(json.customizeSkills != null  && json.customizeSkills != '' && json.customizeSkills != 'undefiend'){
+			    		var requirmentSkills = json.customizeSkills;
+				    	var customizeSkills = new Array();
+				    	customizeSkills = requirmentSkills.split(",");
+				        for (var i = 0; i < customizeSkills.length; i++) { 
+				        	 var customSkill = customizeSkills[i];
+				        	 result = result +'	<option selected value=\''+customSkill+'\'>'+customSkill+'</option> ';
+				        }
+			    	}
+			         for (var i = 0; i < dbskills.length; i++) { 
+			        	 var skill1 = dbskills[i];
+			        	 result = result +'	<option  value=\''+skill1+'\'>'+skill1+'</option> ';
+			        } 
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>   ';
+			        
+			        result = result +'		                   <div class="col-md-2">';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" id="skillScore" name="skillScore"> ';
+			        result = result +'		                      <option disabled>Skills</option>  ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeSkillScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>              ';
+			        result = result +'		                  </div>                   ';
+			        result = result +'		           <div class="clearfix"></div>';
+			        //result = result +'		                </div> ';
+			      
+			        result = result +'		                <div class="clearfix mt">   ';
+			        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
+			        result = result +'		                   <label>Choose City</label>';
+			        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
+			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
+			        result = result +'		                  </div>  ';
+			        
+			        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   
+			        result = result +'		                   <label>Selected City</label>'; 
+			        result = result +'		                    <select class="chosen-select" multiple data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
+			     	if(json.customizeCity != null  && json.customizeCity != '' && json.customizeCity != 'undefiend'){
+			    		var cites = json.customizeCity;
+				    	var customizeCites = new Array();
+				    	customizeCites = cites.split(",");
+				        for (var i = 0; i < customizeCites.length; i++) { 
+				        	 var customCity = customizeCites[i];
+				        	 result = result +'	<option selected value=\''+customCity+'\'>'+customCity+'</option> ';
+				        }
+			    	}
+			        result = result +'		                    </select>                  ';
+			        result = result +'		                  </div>                       ';
+			        
+			        result = result +'                      <div class="col-md-2"> ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Location" id="locationScore" name="locationScore">';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeLocationScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>                 ';
+			        result = result +'		                  </div>                      ';
+			        result = result +'		           <div class="clearfix"></div>';
+	// 		        result = result +'		                </div>                        ';
+			        
+			        result = result +'				        <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
+			        result = result +'		                   <label>Notice Period</label>';
+			        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
+			      //split the noticeperiod
+			      var noticeperiod = new Array();
+			    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
+			    		var customizeNoticeperiod = json.customizeNoticeperiod;
+				    	noticeperiod =  customizeNoticeperiod.split(",");
+			    	}
+		        	 result = result  +' <option value="Immediately Available" '+(noticeperiod.indexOf("Immediately Available")>=0 ? "selected" : '') +'>Immediately available</option>';
+		        	 result = result  +' <option value="15 Days" '+(noticeperiod.indexOf("15 Days")>=0 ? "selected" : '') +'>15 Days</option>';
+		        	 result = result  +' <option value="1 Month" '+(noticeperiod.indexOf("1 Month")>=0 ? "selected" : '') +'>1 Month<s/option>';
+		        	 result = result  +' <option value="2 Months" '+(noticeperiod.indexOf("2 Months")>=0 ? "selected" : '') +'>2 Months</option>';
+		        	 result = result  +' <option value="3 Months" '+(noticeperiod.indexOf( "3 Months")>=0 ? "selected" : '') +'>3 Months</option>';
+		        	 $("#noticeperiod").empty();
+		        	 $("#noticeperiod").append(result);
+	   			     $("#noticeperiod").trigger('chosen:update');
+			        result = result +'		                    </select> ';
+			        result = result +'		                    </div>  ';
+			        
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>               ';
+			        result = result +'		                  </div>                    ';
+			        result = result +'		                </div>                      ';
+			        
+			        result = result +'		                <div class="clearfix mt">';
+			        result = result +'		                  <div class="col-md-5 lblup"> ';
+			        result = result +'		                   <label>Experience</label>';
+			        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperience" onblur="minMaxExperience();" field-name="Experience Years">';
+					result = result + '<option value="">Min Experience</option>';
+					<c:forEach var="i" begin="0" end="24" >
+						result = result  +'<option value="${i}" '  + (customizeMinExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
+					</c:forEach>
+					result = result + '</select>';
+			        result = result +'		                    </div> ';
+			        
+			        result = result +'		                  <div class="col-md-5 paddingRight"> ';
+			        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  onblur="minMaxExperience();" id="maxExperience" field-name="Experience Years">';
+					result = result + '<option value="">Max Experience</option>';
+					<c:forEach var="i" begin="0" end="25" >
+						result = result  +'<option value="${i}" '  + (customizeMaxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
+					</c:forEach>
+					result = result + '</select>';
+			        result = result +'		                    </div>  ';
+			        
+			        result = result +'		                    <div class="col-md-2"> ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Experience" id="experienceScore" name="experienceScore"> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeExperienceScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>              ';
+			        result = result +'		                  </div>                   ';
+			        result = result +'<p class="jquery_form_error_message" id="experiencevalidation"> </p>';
+			        
+			        result = result +'<div id="expId">';
+			        result = result +'<input type="hidden" name="expValidation" id="expValidation">';
+			        result = result +'</div>';		        
+			        result = result +'		                </div>                     ';
+			        
+			        result = result +'		                  <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+			        result = result +'		                   <label>Visa Type</label>';
+			        result = result +'		                     <select class="chosen-select" data-placeholder="Visa Type" multiple id="visaType" name="visaType">';
+			        if(json.customizeVisatype != null  && json.customizeVisatype != '' && json.customizeVisatype != 'undefiend'){
+			    		var visaType = json.customizeVisatype;
+				    	var customizeVisaType = new Array();
+				    	customizeVisaType = visaType.split(",");
+				        for (var i = 0; i < customizeVisaType.length; i++) { 
+				        	 var customizeVisaTypes = customizeVisaType[i];
+				        	 result = result +'	<option selected value=\''+customizeVisaTypes+'\'>'+customizeVisaTypes+'</option> ';
+				        }
+			    	}
+			        var dbVisaType = new Array();
+			        if(json.dbVisaType != null && json.dbVisaType !='' && json.dbVisaType !='undefined'){
+				        var lookupVisaType = json.dbVisaType;
+				    	dbVisaType = lookupVisaType.split(",");
 			        }
-		    	}
-		         for (var i = 0; i < dbskills.length; i++) { 
-		        	 var skill1 = dbskills[i];
-		        	 result = result +'	<option  value=\''+skill1+'\'>'+skill1+'</option> ';
-		        } 
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>   ';
-		        
-		        result = result +'		                   <div class="col-md-2">';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Skills" id="skillScore" name="skillScore"> ';
-		        result = result +'		                      <option disabled>Skills</option>  ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeSkillScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>              ';
-		        result = result +'		                  </div>                   ';
-		        result = result +'		           <div class="clearfix"></div>';
-		        //result = result +'		                </div> ';
-		        
-		        result = result +'		                <div class="clearfix mt">   ';
-		        result = result +'		                  <div class="col-md-3 paddingRight lblup">    ';
-		        result = result +'		                   <label>Location</label>';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Country" id="country" name="customizeCountry" value="'+customizeCountry+'" readonly="readonly"> ';
-		        result = result +'		                    </select>                ';
-		        result = result + '                        <input type="hidden"  id="existingCountry" value="'+customizeCountry+'" >';
-		        result = result +'		                  </div>                     ';
-		        
-		        
-		        result = result +'		                    <div class="col-md-4 paddingLeft paddingRight">   ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="State" name="customizeState" id="state" value="'+customizeState+'" readonly="readonly">';
-		        result = result +'		                    </select>                    ';
-		        result = result + '                         <input type="hidden"  id="existingState" value="'+customizeState+'" >';
-		        result = result +'		                  </div>  ';
-		        
-		        
-		        result = result +'		                  <div class="col-md-3 paddingLeft paddingRight">         ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="City" name="customizedCity" id="city" value="'+customizeCity+'" readonly="readonly">    ';
-		        result = result +'		                    </select>                  ';
-		        result = result +'                           <input type="hidden"  id="existingCity" value="'+customizeCity+'" >';
-		        result = result +'		                  </div>                       ';
-		        
-		       
-		        result = result +'                      <div class="col-md-2"> ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Location" id="locationScore" name="locationScore">';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeLocationScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>                 ';
-		        result = result +'		                  </div>                      ';
-		        result = result +'		           <div class="clearfix"></div>';
-// 		        result = result +'		                </div>                        ';
-		        
-		        result = result +'				        <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">    ';
-		        result = result +'		                   <label>Notice Period</label>';
-		        result = result +'		                      <select class="chosen-select" data-placeholder="Notice" multiple id="noticeperiod" name="noticeperiod">';
-		      //split the noticeperiod
-		      var noticeperiod = new Array();
-		    	if(json.customizeNoticeperiod != null && json.customizeNoticeperiod != '' && json.customizeNoticeperiod != 'undefined'){
-		    		var customizeNoticeperiod = json.customizeNoticeperiod;
-			    	noticeperiod =  customizeNoticeperiod.split(",");
-		    	}
-	        	 result = result  +' <option value="Immediately Available" '+(noticeperiod.includes("Immediately Available") ? "selected" : '') +'>Immediately available</option>';
-	        	 result = result  +' <option value="15 Days" '+(noticeperiod.includes("15 Days") ? "selected" : '') +'>15 Days</option>';
-	        	 result = result  +' <option value="1 Month" '+(noticeperiod.includes("1 Month") ? "selected" : '') +'>1 Month<s/option>';
-	        	 result = result  +' <option value="2 Months" '+(noticeperiod.includes("2 Months") ? "selected" : '') +'>2 Months</option>';
-	        	 result = result  +' <option value="3 Months" '+(noticeperiod.includes( "3 Months") ? "selected" : '') +'>3 Months</option>';
-	        	 $("#noticeperiod").empty();
-	        	 $("#noticeperiod").append(result);
-   			     $("#noticeperiod").trigger('chosen:update');
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="noticeperiodScore" name="noticeperiodScore">';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeNoticeperiodScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		        
-		        result = result +'		                <div class="clearfix mt">';
-		        result = result +'		                  <div class="col-md-5 lblup"> ';
-		        result = result +'		                   <label>Experience</label>';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Min Experience" name="minExperience"  id="minExperience" onblur="minMaxExperience();" field-name="Experience Years">';
-				result = result + '<option value="">Min Experience</option>';
-				<c:forEach var="i" begin="0" end="24" >
-					result = result  +'<option value="${i}" '  + (customizeMinExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
-				</c:forEach>
-				result = result + '</select>';
-		        result = result +'		                    </div> ';
-		        
-		        
-		        result = result +'		                  <div class="col-md-5 paddingRight"> ';
-		        result = result + '<select  class="chosen-select input-sm form-control" data-placeholder="Max Experience" name="maxExperience"  onblur="minMaxExperience();" id="maxExperience" field-name="Experience Years">';
-				result = result + '<option value="">Max Experience</option>';
-				<c:forEach var="i" begin="0" end="25" >
-					result = result  +'<option value="${i}" '  + (customizeMaxExperience == "${i}" ? "selected" : '') +  '>${i}</option>';
-				</c:forEach>
-				result = result + '</select>';
-		        result = result +'		                    </div>  ';
-		        
-		        result = result +'		                    <div class="col-md-2"> ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Experience" id="experienceScore" name="experienceScore"> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeExperienceScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>              ';
-		        result = result +'		                  </div>                   ';
-		        result = result +'<p class="jquery_form_error_message" id="experiencevalidation"> </p>';
-		        
-		        result = result +'<div id="expId">';
-		        result = result +'<input type="hidden" name="expValidation" id="expValidation">';
-		        result = result +'</div>';		        
-		        result = result +'		                </div>                     ';
-		        
-		        
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Visa Type</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Visa Type" multiple id="visaType" name="visaType">';
-		        if(json.customizeVisatype != null  && json.customizeVisatype != '' && json.customizeVisatype != 'undefiend'){
-		    		var visaType = json.customizeVisatype;
-			    	var customizeVisaType = new Array();
-			    	customizeVisaType = visaType.split(",");
-			        for (var i = 0; i < customizeVisaType.length; i++) { 
-			        	 var customizeVisaTypes = customizeVisaType[i];
-			        	 result = result +'	<option selected value=\''+customizeVisaTypes+'\'>'+customizeVisaTypes+'</option> ';
+			    	
+			    	 for (var i = 0; i < dbVisaType.length; i++) { 
+			        	 var visatype = dbVisaType[i];
+			        	 result = result +'	<option  value=\''+visatype+'\'>'+visatype+'</option> ';
+			        } 
+			        result = result +'	</select> ';
+			  
+			        result = result +'		                    </div>  ';
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Visa Type Score" id="visaTypeScore" name="visaTypeScore" > ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeVisatypecore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>  ';
+			        result = result +'		                </div>  ';
+			      
+			        result = result +'		                  <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+			        result = result +'		                   <label>Education</label>';
+			        result = result +'		                     <select class="chosen-select" data-placeholder="Education" multiple id="education" name="education">';
+			        if(json.customizeEducation != null  && json.customizeEducation != '' && json.customizeEducation != 'undefiend'){
+			    		var education = json.customizeEducation;
+				    	var customizeEducation = new Array();
+				    	customizeEducation = education.split(",");
+				        for (var i = 0; i < customizeEducation.length; i++) { 
+				        	 var customizeEducations = customizeEducation[i];
+				        	 result = result +'	<option selected value=\''+customizeEducations+'\'>'+customizeEducations+'</option> ';
+				        }
+			    	}
+			        var dbEducation = new Array();
+			        if(json.dbEducation != null && json.dbEducation !='' && json.dbEducation !='undefined'){
+				        var lookupEducation = json.dbEducation;
+				    	dbEducation = lookupEducation.split(",");
 			        }
-		    	}
-		        
-		        var lookupVisaType = json.dbVisaType;
-		    	var dbVisaType = new Array();
-		    	dbVisaType = lookupVisaType.split(",");
-		    	
-		    	 for (var i = 0; i < dbVisaType.length; i++) { 
-		        	 var visatype = dbVisaType[i];
-		        	 result = result +'	<option  value=\''+visatype+'\'>'+visatype+'</option> ';
-		        } 
-		        result = result +'	</select> ';
-		  
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Visa Type Score" id="visaTypeScore" name="visaTypeScore" > ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeVisatypecore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        
-		        
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Education</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Education" multiple id="education" name="education">';
-		        if(json.customizeEducation != null  && json.customizeEducation != '' && json.customizeEducation != 'undefiend'){
-		    		var education = json.customizeEducation;
-			    	var customizeEducation = new Array();
-			    	customizeEducation = education.split(",");
-			        for (var i = 0; i < customizeEducation.length; i++) { 
-			        	 var customizeEducations = customizeEducation[i];
-			        	 result = result +'	<option selected value=\''+customizeEducations+'\'>'+customizeEducations+'</option> ';
-			        }
-		    	}
-		        
-		        var lookupEducation = json.dbEducation;
-		    	var dbEducation = new Array();
-		    	dbEducation = lookupEducation.split(",");
-		    	
-		    	 for (var i = 0; i < dbEducation.length; i++) { 
-		        	 var education = dbEducation[i];
-		        	 result = result +'	<option  value=\''+education+'\'>'+education+'</option> ';
-		        } 
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Education" id="educationScore" name="educationScore" > ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeEducationScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        result = result +'		           <div class="clearfix mt">     ';
-		        
-		        
-		        result = result +'		                  <div class="col-md-5 lblup">   ';
-		        result = result +'		                   <label>Rate</label>';
-		        result = result +'		                    <input type="text" placeholder="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
-		        result = result +'		                    </div>   ';
-		        
-		        result = result +' <div class="col-md-5 paddingRight">   ';
-		        result = result + '<select  class="input-sm form-control" name="currentRateType"  id="currentRateType" field-name="Rate Type">';
-				result = result + '<option value="">Rate Per</option>';
-				result = result + ' <option '+(json.customizeRatetype == "Hourly" ? "selected" : '') +'>Hourly</option>';
-				result = result + '<option  '+ (json.customizeRatetype == "Weekly" ? "selected" : '') +'>Weekly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Monthly" ? "selected" : '') +'>Monthly</option>';
-				result = result + '<option  '+(json.customizeRatetype == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
-				result = result + '<option '+(json.customizeRatetype == "Yearly" ? "selected" : '') +'>Yearly</option>';
-				result = result + ' </select>';
-		        result = result +'	  </div>   ';
-		        
-		        result = result +'		                    <div class="col-md-2">      ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeRateScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select>               ';
-		        result = result +'		                  </div>                    ';
-		        result = result +'		                </div>                      ';
-		       
-		        result = result +'		                  <div class="clearfix mt"> ';
-		        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
-		        result = result +'		                   <label>Keywords</label>';
-		        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
-		      //Split the keyWords
-		    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
-		    		var customizeKeywords = json.customizeKeywords;
-			    	var Keywords = new Array();
-			    	Keywords =  customizeKeywords.split(",");
-			        for (var i = 0; i < Keywords.length; i++) { 
-			        	 var customKeywords = Keywords[i];
-			        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
-			        }
-		    	}
-		        result = result +'		                    </select> ';
-		        result = result +'		                    </div>  ';
-		        result = result +'		                    <div class="col-md-2">  ';
-		        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "0" ? "selected" : '') +' value="0">0%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "10" ? "selected" : '') +' value="10">10%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "20" ? "selected" : '') +' value="20">20%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "30" ? "selected" : '') +' value="30">30%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "40" ? "selected" : '') +' value="40">40%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "50" ? "selected" : '') +' value="50">50%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "60" ? "selected" : '') +' value="60">60%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "70" ? "selected" : '') +' value="70">70%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "80" ? "selected" : '') +' value="80">80%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "90" ? "selected" : '') +' value="90">90%</option> ';
-		        result = result +'		                      <option '+ (json.customizeKeywordsScore == "100" ? "selected" : '') +' value="100">100%</option>';
-		        result = result +'		                    </select> ';
-		        result = result +'		                  </div>  ';
-		        result = result +'		                </div>  ';
-		        result = result +'		                </div>  ';
-		        result = result +'		                </div>  ';
-		      
-		        
-		        
-		        
-// 		        =========================================================================================================================
-		        
-		        
-		        result = result +'		              </div>                          ';
-		        
-		        result = result +'		            <div class="form-footer clearfix">                                              ';
-		        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Customize</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
-		        result = result +'		            </div>'; 
-		        result = result	+ '               <form>';
-		        result = result +'		            </div>'; 
-		        
-		        $("#customizeScoreDiv").empty();
-		    	$("#customizeScoreDiv").append(result);
-		    	getAllCountries();
-		    	var config = {
-		    			  '.chosen-select'           : {},
-		    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-		    			  '.chosen-select-no-single' : {disable_search_threshold:10},
-		    			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-		    			  '.chosen-select-width'     : {width:"95%"}
-		    			}
-		    			for (var selector in config) {
-		    			  $(selector).chosen(config[selector]);
-		    			}
-		    	
-		    	    $("#country").chosen();
-		            $("#state").chosen();
-		            $("#city").chosen();
-		            
-		            $("#country").on('change', function (e) {
-		         	   getStates();
-		            });
-		           
-		            $("#state").on('change', function (e) {
-		         	   getCities();
-		            });
-		    			$('.chosen-select').each(function() {
-		    				var $this = $(this);
-		    				$this.next().css({'width': '100%'});
-		    		   });
+			    	
+			    	 for (var i = 0; i < dbEducation.length; i++) { 
+			        	 var education = dbEducation[i];
+			        	 result = result +'	<option  value=\''+education+'\'>'+education+'</option> ';
+			        } 
+			        result = result +'		                    </select> ';
+			        result = result +'		                    </div>  ';
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Education" id="educationScore" name="educationScore" > ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeEducationScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>  ';
+			        result = result +'		                </div>  ';
+			      
+			        
+			        result = result +'		           <div class="clearfix mt">     ';
+			        
+			        
+			        result = result +'		                  <div class="col-md-5 lblup">   ';
+			        result = result +'		                   <label>Rate</label>';
+			        result = result +'		                    <input type="text" placeholder="Rate" field-name="Rate" class="form-control input-sm" value="'+customizeRate+'" id="customizeRate" name="customizeRate" data-validation="validate_Space validate_float validate_length length1-8" data-validation-optional="true">  ';
+			        result = result +'		                    </div>   ';
+			        
+			        result = result +' <div class="col-md-5 paddingRight">   ';
+			        result = result + '<select  class="input-sm form-control" name="currentRateType"  id="currentRateType" field-name="Rate Type">';
+					result = result + '<option value="">Rate Per</option>';
+					result = result + ' <option '+(json.customizeRatetype == "Hourly" ? "selected" : '') +'>Hourly</option>';
+					result = result + '<option  '+ (json.customizeRatetype == "Weekly" ? "selected" : '') +'>Weekly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Monthly" ? "selected" : '') +'>Monthly</option>';
+					result = result + '<option  '+(json.customizeRatetype == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+					result = result + '<option '+(json.customizeRatetype == "Yearly" ? "selected" : '') +'>Yearly</option>';
+					result = result + ' </select>';
+			        result = result +'	  </div>   ';
+			        
+			        result = result +'		                    <div class="col-md-2">      ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="Rate" id="rateScore" name="rateScore"> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeRateScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select>               ';
+			        result = result +'		                  </div>                    ';
+			        result = result +'		                </div>                      ';
+			       
+			        result = result +'		                  <div class="clearfix mt"> ';
+			        result = result +'		                  <div class="col-md-10 lblup paddingRight">   ';
+			        result = result +'		                   <label>Keywords</label>';
+			        result = result +'		                     <select class="chosen-select" data-placeholder="Keywords" multiple id="anyKeyWord" name="anyKeyWord">';
+			      //Split the keyWords
+			    	if(json.customizeKeywords != null && json.customizeKeywords != '' && json.customizeKeywords != 'undefined'){
+			    		var customizeKeywords = json.customizeKeywords;
+				    	var Keywords = new Array();
+				    	Keywords =  customizeKeywords.split(",");
+				        for (var i = 0; i < Keywords.length; i++) { 
+				        	 var customKeywords = Keywords[i];
+				        	 result = result +'	<option selected value='+customKeywords+'>'+customKeywords+'</option> ';
+				        }
+			    	}
+			        result = result +'		                    </select> ';
+			        result = result +'		                    </div>  ';
+			        result = result +'		                    <div class="col-md-2">  ';
+			        result = result +'		                    <select class="chosen-select" data-placeholder="KeyWords" id="keywordScore" name="keywordScore" > ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "0" ? "selected" : '') +' value="0">0%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "10" ? "selected" : '') +' value="10">10%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "20" ? "selected" : '') +' value="20">20%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "30" ? "selected" : '') +' value="30">30%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "40" ? "selected" : '') +' value="40">40%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "50" ? "selected" : '') +' value="50">50%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "60" ? "selected" : '') +' value="60">60%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "70" ? "selected" : '') +' value="70">70%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "80" ? "selected" : '') +' value="80">80%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "90" ? "selected" : '') +' value="90">90%</option> ';
+			        result = result +'		                      <option '+ (json.customizeKeywordsScore == "100" ? "selected" : '') +' value="100">100%</option>';
+			        result = result +'		                    </select> ';
+			        result = result +'		                  </div>  ';
+			        result = result +'		                </div>  ';
+			        result = result +'		                </div>  ';
+			        result = result +'		                </div>  ';
+			      
+			        
+	// 		        =========================================================================================================================
+			        
+			        
+			        result = result +'		              </div>                          ';
+			        
+			        result = result +'		            <div class="form-footer clearfix">                                              ';
 
-		    			 // here call experience validation
-		 		       $("#maxExperience").on('change', function (e) {
-		 		    	   minMaxExperience();
-		 		       });
-		 		       
-		 		       $("#minExperience").on('change', function (e) {
-		 		    	   minMaxExperience();
-		 		       });
-		 		       
-		    			   //Adding Customized Skills to the list
-		    	        var select, chosen;
-		    		    select = $("#customizeSkills");
-		    		    select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Skill:' });
-		    		    chosen = select.data('chosen');
-		    		   
-		    		    chosen.search_field.on('keydown keyup', function(e)
-		    				    {
-		    				    	   var skillsArray = this.value.split(",");
-		    					    	 if(skillsArray.length > 1){
-		    				        		 for (var i=0; i < skillsArray.length; i++) {
-		    				        			 var option = $("<option>").val(skillsArray[i].replace(",","")).text(skillsArray[i].replace(",",""));
-		    				        			 select.append(option);
-		    				 		             select.find(option).prop('selected', true);
-		    				 		             select.find(option).siblings("[value='"+ skillsArray[i].replace(",","")+"']").remove();
-		    				 	        		 $("#customizeSkills").trigger("chosen:updated");
-		    				                 }
-		    					    	 }else{
-		    				    			var newSkill = this.value.replace(","," ");
-		    				    			 if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
-		    				                {
-		    				    				 preventTabkey(e);
-		    				    				 var isNewSkill = true;
-		    				                     $("#customizeSkills option:selected").each(function(){
-		    										 if(this.value.toUpperCase() === newSkill.toUpperCase()){
-		    												isNewSkill = false;
-		    												return false;
-		    										 }
-		    				                   });
-		    								   if(isNewSkill){
-		    										select.append(option);
-		    								   }
-		    				    				 
-		    				                   $("#customizeSkills").trigger("chosen:updated");
-		    				                }
-		    						       
-		    			    	         }
-		    		    	});
-		    		    
-		    		    //Adding Customized Skills to the list
-		    		    
-		    		    
-		    		  //Adding Customized Any Of Keyword to the list 
-		    		     var selectone, chosenone;
-		    		     selectone = $("#anyKeyWord");
-		    		     selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-		    		    chosenone = selectone.data('chosen');
-		    		    chosenone.search_field.on('keydown keyup', function(e5)
-		    		    {
-		    		    	var anyofKeyword = this.value.replace(",","");
-		    		        if (tagItBykeyForSkills(e5) && (anyofKeyword != null  && anyofKeyword != '' && anyofKeyword != 'undefined'))
-		    		        {
-		    		        	 preventTabkey(e5);
-		    		        	var par = this.parent;
-		    		            var option = $("<option>").val(anyofKeyword).text(anyofKeyword);
-		    		            selectone.append(option);
-		    		            selectone.find(option).prop('selected', true);
-		                        $("#anyKeyWord option").each(function(){
-		                              $(this).siblings("[value='"+ this.value+"']").remove();
-		                        });
-		    	        		$("#anyKeyWord").trigger("chosen:updated");
-		    	        		
-		    		        }
-		    		    }); 
-		    		    
-		    		    
-		    		    //Adding Customized Educations to the list 
-		    		    var selectTwo, chosenTwo;
-		    		    selectTwo = $("#education");
-		    		    selectTwo.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:' });
-		    		    chosenTwo = selectTwo.data('chosen');
-		    		    chosenTwo.search_field.on('keydown keyup', function(e1)
-		    		    {
-		    		    	var newEducation = this.value.replace("\'","");
-		    		    	   if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
-		    			        {
-		    		    		   preventTabkey(e1); 
-		    		    		   var par = this.parent;
-		    			            var option = $("<option>").val(newEducation).text(newEducation);
-		    			            selectTwo.append(option);
-		    			            selectTwo.find(option).prop('selected', true);
-		    			            
-		    			            $("#education option").each(function(){
-		    	                         $(this).siblings("[value='"+ this.value+"']").remove();
-		    	                   });
-		    			            
-		    			            $("#education").trigger("chosen:updated");
-		    			           
-		    			        }
-		    		    
-		    		    });
+	
+			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closeCustomizePop();">Cancel</a> </div>';
+
+			        result = result +'		            </div>'; 
+			        result = result	+ '               <form>';
+			        result = result +'		            </div>'; 
+			        
+			        $("#customizeScoreDiv").empty();
+			    	$("#customizeScoreDiv").append(result);
+	// 		    	getAllCountries();
+			    	var config = {
+			    			  '.chosen-select'           : {},
+			    			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			    			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			    			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			    			  '.chosen-select-width'     : {width:"95%"}
+			    			}
+			    			for (var selector in config) {
+			    			  $(selector).chosen(config[selector]);
+			    			}
+			    	
+			            $("#city").chosen();
+			            
+			         /*    $("#country").on('change', function (e) {
+			            	  getcites('apiLocation','city');
+					    	  $("#apiLocation").val('');
+					    	  $("#city").val('').trigger("chosen:updated");
+			            }); */
+						getcites('apiLocation','city','recommendation');
+						
+			    			$('.chosen-select').each(function() {
+			    				var $this = $(this);
+			    				$this.next().css({'width': '100%'});
+			    		   });
+	
+			    			 // here call experience validation
+			 		       $("#maxExperience").on('change', function (e) {
+			 		    	   minMaxExperience();
+			 		       });
+			 		       
+			 		       $("#minExperience").on('change', function (e) {
+			 		    	   minMaxExperience();
+			 		       });
+			 		       
+				          //Adding Customized Skills Keyword to the list 
+			 		      tagIt("customizeSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Skills');
+				          
+			    		  //Adding Customized Educaton to the list 
+			 		      tagIt("education", 'Press Enter-Key Or Comma(,) Or Tab To Add New Education:', 'tagItBykeyForSkills','skills','Education');
+	
+			 		       
+			    		  //Adding Customized Any Of Keyword to the list 
+			    		  tagIt("anyKeyWord", 'Press Enter-Key Or Comma(,) To Add Keyword:', 'tagItBykeyForSkills','skills','Keywords');
+			    		     
+			   		     tagIt("city", 'Press Enter-Key Or Comma(,) Or Space To Add New Cites:', 'tagItBykeyForSkills','skills','sletected cites');
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
 		    }
 	 });
 	
@@ -2987,131 +2972,30 @@ function minMaxExperience(){
 
 </script>
 
-<script type="text/javascript">
-function getAllCountries(){
-    setTimeout(function(){ 
-		var countryName = $("#existingCountry").val();
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/sourceLeadCountryAutoComplete?"+tokenParamName+"="+tokenValue+"",
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#country').empty();
-	        	$('#country').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == countryName){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}else if(json[i] == '${loginCountryName}'){
-	            		$('#country').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#country').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            	
-	            }
-	            getStates();
-	            $('#country').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-    }, 75);
-} 
-</script>
-
-
-<script>
-function getStates(){
-	var countryName = $("#country").val();
-	
-	//to set existing state value(Auto populate)
-	var stateName = $("#state").val();
-	if(stateName == null || stateName == 'undefined' || stateName == ''){
-		stateName = document.getElementById("existingState").value;
-	}
-	//end state Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined"){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getStatesByCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#state').empty();
-	        	$('#state').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == stateName){
-	            		$('#state').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#state').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#state').trigger("chosen:updated");
-	            getCities();
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#state').empty();
-    	$('#state').append('<option value="">---select---</option>');
-    	$('#state').trigger("chosen:updated");
-    	$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-        $('#city').trigger("chosen:updated");
-	}
-}
-</script> 
-
-
-<script>
-function getCities(){
-	var countryName = $("#country").val();
-	var stateName = $("#state").val();
-	
-	//to set existing city value(Auto populate)
-	var cityName = $("#city").val();
-	if(cityName == null || cityName == 'undefined' || cityName == ''){
-		cityName = document.getElementById("existingCity").value;
-	}
-	//end city Auto populate
-	
-	if(countryName != null && countryName != "" && countryName !="undefined" && stateName != null && stateName != "" && stateName !="undefined" ){
-		$.ajax({
-	    	type: "POST",
-	    	dataType: "json",
-	    	 url: '${sourceleadUrl}'+"/getCitiesByStateAndCountry?"+tokenParamName+"="+tokenValue+"&countryName="+countryName+"&stateName="+stateName, 
-	        success: function(data) {
-	        	var json = JSON.parse(data);
-	        	$('#city').empty();
-	        	$('#city').append('<option value="">---select---</option>');
-	            for(var i=0;i<json.length;i++){
-	            	if(json[i] == cityName){
-	            		$('#city').append('<option value="'+json[i]+'" selected>'+json[i]+'</option>');
-	            	}
-	            	else{ 
-	            		$('#city').append('<option value="'+json[i]+'">'+json[i]+'</option>');
-	            	} 
-	            }
-	            $('#city').trigger("chosen:updated");
-	        },
-	        error: function(e){
-	        }
-	    });
-	}else{
-		$('#city').empty();
-    	$('#city').append('<option value="">---select---</option>');
-    	$('#city').trigger("chosen:updated");
-	}
-}
-</script>
 
 <script>
 function updateCutomize(requirementId){
 	minMaxExperience();
+	
+	var RatePer = document.getElementById("currentRateType").value; 
+	if(RatePer != null && RatePer != ""){
+		$('#customizeRate').removeAttr('data-validation-optional');
+		$('#customizeRate').attr("data-validation","required validate_Space validate_float validate_length length1-8"); 
+	}else{
+		$('#customizeRate').removeAttr('data-validation');
+		$('#customizeRate').attr("data-validation-optional","true"); 
+	}
+	 
+	var Rate = document.getElementById("customizeRate").value; 
+	if(Rate != null && Rate != ""){
+		$('#currentRateType').removeAttr('data-validation-optional');
+		$('#currentRateType').attr("data-validation","required");
+		$('#customizeRate').attr("data-validation","required validate_Space validate_float validate_length length1-8");
+	}else{
+		$('#currentRateType').removeAttr('data-validation');
+		$('#currentRateType').attr("data-validation-optional","true"); 
+	}
+	
     var skillPerc = parseInt($("#skillScore").val());
     var expPerc = parseInt($("#experienceScore").val());
     var ratePerc = parseInt($("#rateScore").val());
@@ -3161,10 +3045,20 @@ function updateCutomize(requirementId){
     					type : "POST",
     					url : sourceleadUrl + "/updateCustomizeScore?"+tokenParamName+"="+tokenValue+"&json="+ jsonData + "&requirementId=" + requirementId,
     					success : function(data) {
-    						if(data == "success"){
-    							$("div.cand-advsrch-popup").hide();
-    							requirementRecommendations(requirementId);	
-    						}
+    						if (data.response === "FAILED") {
+    				    		showError(data.responseMessage);
+    				    	} else if (data.response === "AWKWARD") {
+    				    		location.href = "/errorPage";
+    				    	} else if (data.response === "SUCCESS") {
+	    						if(data.object == "success"){
+	    							$("div.cand-advsrch-popup").hide();
+	    							requirementRecommendations(requirementId);	
+	    						}
+    				    	}else if (data.indexOf('Sign In') !== -1) {
+    				    		location.replace(sourceleadUrl);
+    				    	} else {
+    				    		showError("Operation failed, please try again");
+    				    	}
     					}
     				}); 
     		 return true;
@@ -3180,6 +3074,11 @@ $('body').on('blur', '#updateCustomize_form', function() {
 });
 </script>
 <script>
+//to remove console errors added temporarily 
+function requirementRecommendations(requirementId, requirementSubmissionStatus){
+ 	
+	
+}
 function cancelCustomize(){
 	$(".project_inn_mask").fadeOut();
 	$("#customizePopUp").toggle();
@@ -3218,7 +3117,7 @@ function loadFile(event,candidateId){
 <script type="text/javascript">
 function recommendationAlertMessage(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3233,57 +3132,67 @@ function recommendationAlertMessage(message,candidateId){
 </script>
 
 <script>
-function refreshImageBlock(candidateId){   
+function refreshImageBlock(candidateId){  
 	var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
           type : "POST",
            url: sourceleadUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
-           success :function(data) {   
-                if(data != null && data != 'undefined' && data != ""){  
-                	 var json = JSON.parse(data);
-	                	 $("#candidateImageId").empty();
-	                	 var result = '';
-			             result = result+'<div class="well text-center clearfix">';
-						 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
-						 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-						 }else{
-						 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
-	 
-						 }
-						 result = result+'  <div class="btn-group uploadfile">';
-						 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
-						 result = result+'  <i class="fa fa-upload"></i></button>';
-						 result = result+'  <label class="btn btn-sm btn-primary">';
-						 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     
-						 result = result+'  </label>';
-					     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
-							 result = result+'  <i class="fa fa-trash"></i></button>';
-					     } 
-						 result = result+'  </div>';
-						 result = result+'  </div>';
-						 
-						 
-						 result = result+'  </div>';
-						 result = result+' <div class="mb mt5 UsProBar">';
-						 result = result+' <div class="progress nomr"> ';
-						 if(json.profilePercentage>=50){
-						 result = result+' <div class="progress-bar progress-bar-success ';
-						 }
-						 else{
-						 result = result+' <div class="progress-bar progress-bar-danger ';
-						 }
-						 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
-						 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
-						 result = result+' </div> ';
-						 result = result+' </div> ';
-						 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
-						 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
-						 result = result+' </div>';
-						 $("#candidateImageId").append(result);
-                }
+           success :function(result) { 
+        	   var json = result.object;
+        	   if(result.response === "SESSION_TIMEDOUT") {
+					location.replace(sourceleadUrl);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+	                	if(json != null && json != 'undefined' && json != ""){  
+		                	 $("#candidateImageId").empty();
+		                	 var result = '';
+				             result = result+'<div class="well text-center clearfix">';
+							 result = result+' <div class="profile-img-container profile-image text-center" style="position:relative;">';
+							 if(json.fileUrl != null && json.fileUrl !='' && json.fileUrl !="undefined"){
+							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="'+json.fileUrl+'" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+							 }else{
+							 result = result+'   <img  id="userImage" data-id="profileImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofileImg.jpg" alt="Profile Image" class=" img-responsive center-block img-circle">';						 
+		 
+							 }
+							 result = result+'  <div class="btn-group uploadfile">';
+							 result = result+'  <button type="button" class="btn btn-sm btn-primary">';
+							 result = result+'  <i class="fa fa-upload"></i></button>';
+							 result = result+'  <label class="btn btn-sm btn-primary">';
+							 result = result+'    Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+');" style="display: none;">';					     
+							 result = result+'  </label>';
+						     if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
+							     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+								 result = result+'  <i class="fa fa-trash"></i></button>';
+						     } 
+							 result = result+'  </div>';
+							 result = result+'  </div>';
+							 
+							 
+							 result = result+'  </div>';
+							 result = result+' <div class="mb mt5 UsProBar">';
+							 result = result+' <div class="progress nomr"> ';
+							 if(json.profilePercentage>=50){
+							 result = result+' <div class="progress-bar progress-bar-success ';
+							 }
+							 else{
+							 result = result+' <div class="progress-bar progress-bar-danger ';
+							 }
+							 result = result+' progress-bar-striped active" role="progressbar" id="perVal" aria-valuenow="'+json.profilePercentage+'" aria-valuemin="0" aria-valuemax="100" style="width:'+json.profilePercentage+'%"> ';
+							 result = result+' <p id="disVal">'+json.profilePercentage+'%</p> ';
+							 result = result+' </div> ';
+							 result = result+' </div> ';
+							 result = result+' <p class="text-danger small" style="font-size: 11px; display: none;" id="errorImage" >Invalid Image/Size</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;png, svg and gif images are not supported</p>';
+							 result = result+' <p class="text-muted small" style="font-size: 11px;"><i class="fa fa-info-circle"></i>&nbsp;Image size should not more than 200 KB</p>';
+							 result = result+' </div>';
+							 $("#candidateImageId").append(result);
+	                }
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
          	},
       }); 
    }
@@ -3292,9 +3201,9 @@ function refreshImageBlock(candidateId){
 <script type="text/javascript">
 function deleteImage(candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>";
+	/* result = result +"	<div class='project_inn_mask  projectMask-zindex'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteProfileImage("+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='recommendationAlertCancel("+candidateId+");'></b>";
 	result = result +"	</div>";
@@ -3309,14 +3218,24 @@ function deleteProfileImage(candidateId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var submissionId = '${submissionId}';
 	 $.ajax({
 		    type: "GET",
             url: sourceleadUrl+"/deleteCandidateImage?candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	        success: function(data) {
-	        	 var result = data;
-	        	 $("#popUp").empty();
-	        	 $(".project_inn_mask").fadeOut(200);
-	        	 refreshImageBlock(candidateId);
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+		        	 var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 refreshImageBlock(candidateId);
+		        	 applicantQuickViewProfile(candidateId,submissionId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	       },
 	        
      }); 
@@ -3326,7 +3245,7 @@ function deleteProfileImage(candidateId){
 <script type="text/javascript">
 function saveOrCancel(message,candidateId){
 	var result = "";
-	result = result +"	<div class='project_inn_mask'></div>";
+	/* result = result +"	<div class='project_inn_mask'></div>"; */
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>"+message+"</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
@@ -3341,38 +3260,45 @@ function saveOrCancel(message,candidateId){
 <script>
 function saveCandidateImage(candidateId){
 	            		
-          		var frm = $('#candidate_form').serializeFormJSON();
-              	var con = JSON.stringify(frm);
-  			    con = con.replace(/[{}]/g, ""); 
-  			    
-  		        var jsonData = encodeURIComponent(con);
-          		
-          		var sourceleadUrl ='${sourceleadUrl}';
-          		var loginUserId = '${SourceLeadWeb_userId}';
-          		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-          		var form = $('#candidate_form')[0];
-           		var formData = new FormData(form);
-	            		
-	            $.ajax({
-	                	      type: "POST",
-	                	      data: formData,
-	                	      contentType : 'application/json; charset=utf-8',
-	                	      enctype: 'multipart/form-data',
-	            	          processData: false,
-	            	          contentType:false,
-	                	      dataType : 'json',
-	                	      
-	                      	  url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
-	                          success: function(result) {
-	                        	  recommendationAlertCancel(candidateId);
-	    			          },  
-	            });
+	var frm = $('#candidate_form').serializeFormJSON();
+	var con = JSON.stringify(frm);
+	con = con.replace(/[{}]/g, ""); 
+
+   var jsonData = encodeURIComponent(con);
+ 		
+	var sourceleadUrl ='${sourceleadUrl}';
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	var form = $('#candidate_form')[0];
+	var formData = new FormData(form);
+    		
+    $.ajax({
+    	type: "POST",
+    	data: formData,
+    	contentType : 'application/json; charset=utf-8',
+    	enctype: 'multipart/form-data',
+	    processData: false,
+	    contentType:false,
+    	dataType : 'json',
+        url: sourceleadUrl+"/saveCandidateProfile?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+        success: function(response) {
+        	if (response.response === "AWKWARD") {
+        	    location.href = "/errorPage";
+        	} else if (response.response === "SUCCESS") {
+        		recommendationAlertCancel(candidateId);        		
+        	} else if (response.indexOf('Sign In') !== -1) {
+        		location.replace(sourceleadUrl);
+        	} else {
+        	    showError("Operation failed, please try again");
+        	}
+     	},  
+    });
 }
 </script> 
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -3420,11 +3346,22 @@ if(rateValue[1] == 'Yearly'){
 return result;
 }
 </script>
-
-
+ 
 <!-- Ends Script for Requirement recommendation profile saving , deleting -->
 
 
+<div class="submission_side_wrap ">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew pdtop datatable_filter">
+		    <div id="addJobApplicantsDivLoading"></div>
+			<div id="addJobApplicantsDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<jsp:include page="candidatesListForSubmission.jsp" />
 <jsp:include page="addApplicant.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
@@ -3435,6 +3372,7 @@ return result;
 <jsp:include page="requirementPipelinePaginationOffer.jsp" />
 <jsp:include page="requirementPipelinePaginationRejected.jsp" />
 <jsp:include page="requirementPipelinePaginationSC.jsp" />
+<jsp:include page="requirementPipelinePaginationJoined.jsp" />
 <jsp:include page="requirementPipelinePaginationSL.jsp" />
 
 <jsp:include page="addOffer.jsp" />
@@ -3451,7 +3389,6 @@ return result;
 <jsp:include page="recommendCandidatesQuickView.jsp"></jsp:include>
 <jsp:include page="applicantQuickView.jsp"></jsp:include>
 <jsp:include page="compareCandidatesProfile.jsp"></jsp:include>
-
-
-
+<jsp:include page="requirementAssignedToList.jsp"></jsp:include>
+ <jsp:include page="recommendationListTable.jsp"></jsp:include>
 

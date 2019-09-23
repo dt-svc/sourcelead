@@ -10,39 +10,31 @@
 $(document).ready(function(){
 	getAssetCategoryList();
 });
-</script> 
-
-<style>
-.table-wrap{
-      overflow-y: visible;
-  }
-</style>
-                         
-                         
+</script>
+                                                  
 <section class="content-wraper">
 <section class="content-header clearfix">
   <div class="pull-left">
     <h2>Category</h2>
   </div>
-  <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/assetManagement'/>">Asset Management</a> &raquo; Category</div>
+  <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/assetManagement'/>">Assets List</a> &raquo; Category</div>
 </section>
+
+
 <div class="timesheet_out">
-  <div class="vendor_wrap">
-    <div class="timesheet_head">
-      <ul>
-        <li> <a href="javascript:void(0)" class="addcon-pop" onClick="addCategoryDoc();"><i class="fa fa-plus"></i>Add Categories</a> 
+
+<div class="positionRelative reportHead reportHeadDataTab clearfix">
+      <ul class="pull-right list-unstyled list-inline">
+         <li> <a href="javascript:void(0)" class="newAdBtn addcon-pop" onClick="addCategoryDoc();">+ Categories</a> 
           <!-- Add Asset Popup -->
-           <div id="popUpDiv"> 
-           </div>
+           <div id="popUpDiv"> </div>
         </li>
-        <li>
-        </li>
-        <div class="clearfix"></div>
-      </ul>
-      <div class="clearfix"></div>
-    </div>
-    <div class="require_wrap_table table-wrap">
+        </ul>
+      </div>
+    
+    <div class="require_wrap_table table-wrap datatable_filter overflow_inherint dataSeaTop">
     <div id="popUp"></div>
+     <div id="assetCategoryLoderDiv"></div>
     <table id="assetCategoryList" class="display" cellspacing="0" width="100%"> </table>
      
     </div>
@@ -56,7 +48,8 @@ $(document).ready(function(){
   
   <script>
 	function getAssetCategoryList(){
-		  $.ajax({
+		$("#assetCategoryLoderDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getAssetCategoryList?"+tokenParamName+"="+tokenValue+"", 	   
 	   		    success: function(data) {
@@ -87,10 +80,10 @@ $(document).ready(function(){
 		   	     	    
 			    	    result = result+'<tr id="category'+report.id+'">';
 			   	     	result = result +'<td>';
-				   	    result = result +'<div class="proj_show"> <span class="tbldata-dotdot-sm">'+report.categoryName+'</span></div>';
+				   	    result = result +'<div class="tbldata-dotdot-vsm"> <span class="tbldata-dotdot-sm" title = "'+report.categoryName+'">'+report.categoryName+'</span></div>';
 					   	result = result +'</td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+description+'</div></td>';
-					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.createdUser+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm" title = "'+description+'">'+description+'</div></td>';
+					   	result = result +'<td><div class="tbldata-dotdot-vsm" title = "'+report.createdUser+'">'+report.createdUser+'</div></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm" title="'+report.dateStr+'">'+report.dateStr+'</div></td>';
 					   	result = result +'<td><div>';
 					   	if(report.defaultCategory !=1){
@@ -98,9 +91,13 @@ $(document).ready(function(){
 					   			result = result +'In-Active';
 					   		}
 					   		else{
-					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>';
+					   		 '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSET_CATEGORY\')">' 
+					   			result = result +'<a href="javascript:void(0)" class="addcon-pop1"  onClick="deleteCategory('+report.id+');"><i class="fa fa-trash removeIcon"></i>&nbsp;&nbsp;';
+					   		 '</sec:authorize>';
 					   		}
-					   		result = result +'&nbsp;|&nbsp;<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc();editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSET_CATEGORY\')">' 
+					   		result = result +'<a href="javascript:void(0)" class="addcon-pop1" onClick="addCategoryDoc('+report.id+');editCategory('+report.orgLocationId+','+report.id+');"><i class="glyphicon glyphicon-pencil" ></i></div>';
+					   		'</sec:authorize>';
 					   	}else{
 					   		result = result +'---';
 					   	}
@@ -113,7 +110,9 @@ $(document).ready(function(){
 	   	        	
 	   	        	result = result +'</tbody>';
 	   	    	    $("#assetCategoryList").empty();  
-	   	    	    $("#assetCategoryList").append(result)
+	   	    	    $("#assetCategoryList").append(result);
+	   	    	 	$("#assetCategoryLoderDiv").empty();
+	   	      		$("#assetCategoryLoderDiv").removeAttr('style');
 	   	    	    pagination();
 	   	    	 $(".addcon-pop1").click(function(){
 	   	    		 $(".collapse-div-adduser").toggleClass("show-div");
@@ -131,11 +130,12 @@ function pagination(){
     $('#assetCategoryList').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
-    	"ordering": false,
+    	"ordering": true,
     	"oLanguage": {
      		"sSearch": "",
+     		"sSearchPlaceholder": "Search",
      		 "sZeroRecords": "", "sEmptyTable": ""
      	}
     } );
@@ -177,45 +177,42 @@ $(".addcon-pop").click(function(){
 
 <script type="text/javascript">
 	function addCategory(catLocationId,categoryId){
-			var validationSettings = {
-			        errorMessagePosition : 'element',
-			        borderColorOnError : '',
-					scrollToTopOnError : true,
-					dateFormat : 'yyyy/mm/dd' 
-		         }; 
-			 if ($('#addCategory_form').validate(false, validationSettings)){
-				var frm = $('#addCategory_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-		        con = con.replace(/[{}]/g, "");
-		        var jsonData = encodeURIComponent(con);
-				$("#save_button").attr("disabled", "disabled");
-				$( "#save_button" ).addClass('button').val('Processing..');
-				$("#addCategory_form").attr("disabled", "disabled");
-				//It will escape all the special characters
-				$.ajax({
-						type : "POST",
-						url : sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&categoryId="+categoryId+"&catLocationId="+catLocationId,
-						success : function(result) {
-							 if(result.indexOf('Sign In') >= 0){
-					    		location.replace(sourceleadUrl);
-					    	 }
-		            		 else if (result.indexOf('exception') >= 0) {
-		            			 location.replace(sourceleadUrl+"/errorPage");
-		            		 }
-		            		 else{ 
-		            			  document.getElementById("popUpDiv").style.display="none"; 
-		            			 getAssetCategoryList();
-		            		  } 
-						},
-					});
+				var validationSettings = {
+				        errorMessagePosition : 'element',
+				        borderColorOnError : '',
+						scrollToTopOnError : true,
+						dateFormat : 'yyyy/mm/dd' 
+			         }; 
+				 if ($('#addCategory_form').validate(false, validationSettings)){
+			        var formData = getFormData("addCategory_form");
+					$("#save_button").attr("disabled", "disabled");
+					$( "#save_button" ).addClass('button').val('Processing..');
+					$("#addCategory_form").attr("disabled", "disabled");
+					$.post(sourceleadUrl+"/saveCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId+"&catLocationId="+catLocationId, formData, function(result) {
+						if (result && result.response === "INVALID_DATA") {
+							$("#blogLoading").hide();
+						    showError(result.responseMessage);
+						} else if (result.response === "AWKWARD") {
+						    location.href = "/errorPage";
+						} else if (result.response === "SUCCESS") {
+						document.getElementById("popUpDiv").style.display="none"; 
+	           			 getAssetCategoryList();
+						} else if (result.indexOf('Sign In') !== -1) {
+							location.replace(sourceleadUrl);
+						} else {
+						    showError("Operation failed, please try again");
+						}
+				
+			          }); 
+				
 					return true;
-			 }else{ 
-					return false;
-			 } 
-		}
-		$('body').on('blur', '#addCategory_form', function() {
-		$("#addCategory_form").showHelpOnFocus();
-		$("#addCategory_form").validateOnBlur(false, validationSettings);
+				 }else{ 
+						return false;
+				 } 
+		   }
+			$('body').on('blur', '#addCategory_form', function() {
+			$("#addCategory_form").showHelpOnFocus();
+			$("#addCategory_form").validateOnBlur(false, validationSettings);
 	});
 </script>
 <script>
@@ -247,13 +244,13 @@ function editCategory(catLocationId,categoryId){
     			 $("#update_button").show(); 
     			 $("#save_button").hide();
     			 
-    			 
     			 if(json.categoryName != null && json.categoryName != "undefined" && json.categoryName != ""){
     				 document.getElementById("categoryName").value = json.categoryName;
     			 }  			 
     			 
     			 if(json.description != null && json.description != "undefined" && json.description != ""){
-    				 document.getElementById("description").value = json.description;
+    				  $("textarea[name=description]").val(json['description']);
+    				 
     			 }
     			 
     			 $("#update_button").attr("onclick", "addCategory("+catLocationId+","+categoryId+");");
@@ -265,7 +262,7 @@ function editCategory(catLocationId,categoryId){
           
 
 <script>
-function addCategoryDoc(){
+function addCategoryDoc(categoryId){
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'	<form role="form"  id="addCategory_form" name="addCategory_form" method="post" > ';
@@ -284,7 +281,8 @@ function addCategoryDoc(){
 	result = result  +'	                    <textarea class="form-control" rows="2" data-validation-optional="true" placeholder="Description"  data-validation="validate_length length5-500" id="description" name="description"></textarea>';
 	result = result  +'	                  </div>';
 	result = result  +'	                </div>';
-		
+	result = result  +'	                    <input type="hidden" id= "catId" value ="'+categoryId+'" >';
+
 	result = result  +'	                <div class="clearfix mr">';
 	result = result  +'	                  <div class="pull-right">';
 	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-sm btn-primary ">Update</button>';
@@ -305,36 +303,30 @@ function addCategoryDoc(){
 function validateCategoryName(){
 	var categoryName = document.getElementById("categoryName").value;
 	$("#save_button").removeAttr("disabled");
-	$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
-	$('input#categoryName').attr('class','valid form-control');
-	$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
+	
+	var categoryId = document.getElementById("catId").value;
+	if(categoryId == 'undefined' || categoryId == null){
+		categoryId = '';
+	}
 	if (categoryName != null && categoryName != '') {
 		//$("#save_client").attr("disabled", "disabled");
 		// $( "#save_client" ).addClass('button').val('Processing..');
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName,
+			url : sourceleadUrl + "/validateCategoryName?"+tokenParamName+"="+tokenValue+"&categoryName="+categoryName+"&categoryId="+categoryId,
 			success : function(data) {
 				var result = data;
 				if (result == true) {
 					//duplicate client
-					$("#save_button").removeAttr("disabled");
-			        $("#save_button").attr("disabled", "disabled");
+					$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
 					$("input#categoryName").after( "<p class='jquery_form_error_message'>" + categoryName + " is already existed </span>");
-					document.getElementById("categoryName").setAttribute( 'record-exist', 'yes');
-					document.getElementById("categoryName").setAttribute( 'record-exist-errorMsg', categoryName +"  already existed ");
-					$('input#categoryName').removeAttr( "record-exist record-exist-errorMsg");
+					  document.getElementById("categoryName").setAttribute('record-exist','yes');
+					  document.getElementById("categoryName").setAttribute('record-exist-errorMsg',categoryName+' is Already Existed'); 
 					
 				}else {
-					//New WebSite class="form-control"
-					//$("#save_client").removeAttr("disabled");
-					$("#save_button").removeAttr("disabled");
-					$('input#categoryName').removeAttr("class record-exist record-exist-errormsg");
-					$('input#categoryName').attr('class','valid form-control');
-					$('#categoryNameDiv').find('p.jquery_form_error_message').remove();
-					$("#save_button").click(function() {
-						
-					});
+					
+					$('input#categoryName').removeAttr( "record-exist record-exist-errormsg");
+	        		 $('#categoryNameDiv').find('p.jquery_form_error_message').remove(); 
 				}
 			},
 
@@ -349,7 +341,7 @@ function deleteCategory(categoryId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_category' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure ?</p>";
+	result = result +"		<p>Are you sure to delete category?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='terminateCategory("+categoryId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
@@ -364,14 +356,24 @@ function deleteCategory(categoryId){
 function terminateCategory(categoryId){
 	if (categoryId != null && categoryId != '') {
 		$("#category"+categoryId).html("<td colspan='5'  id='loading"+categoryId+"'></td>");
-		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
+		$("#loading"+categoryId).attr('style',' height:40px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/linear-loader.gif"); background-position:center; background-repeat:no-repeat;');
 		$.ajax({
 			type : "GET",
 			url : sourceleadUrl + "/terminateCategory?"+tokenParamName+"="+tokenValue+"&categoryId="+categoryId,
-			success : function(data) {
-				$("#popUp").empty();
-				$(".project_inn_mask").fadeOut(200);
-					document.getElementById("category"+categoryId).remove();
+			success : function(result) {
+					if (result && result.response === "INVALID_DATA") {
+					    showError(result.responseMessage);
+					} else if (result.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						$("#popUp").empty();
+						$(".project_inn_mask").fadeOut(200);
+							document.getElementById("category"+categoryId).remove();
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 				},
 		});
 	}

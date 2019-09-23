@@ -3,6 +3,8 @@ package com.bis.sourcelead.elk.index.helper;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -15,12 +17,15 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementAssignTo;
+import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Component
 public class RequirementHelper {
@@ -35,6 +40,12 @@ public class RequirementHelper {
 	
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	private CommonUtil commonUtil; 
+	
+	@Autowired
+	RequirementLocationsService requirementLocationsService;
 	
 	/**
 	 * Prepares Requirement Index to store data into Elastic Search
@@ -55,7 +66,7 @@ public class RequirementHelper {
 		if (null != requirement) {
 			requirementIndex.setRequirementId(requirement.getId());
 			requirementIndex.setOrgLocationId(requirement.getOrgLocationId().getId());
-			requirementIndex.setJobTitle(requirement.getJobTitle());
+			requirementIndex.setJobTitle(commonUtil.firstLetterCapitalizedString(requirement.getJobTitle()));
 			requirementIndex.setJobType(requirement.getJobType());
 			requirementIndex.setOtherJobType(requirement.getOtherJobType());
 			requirementIndex.setIndustryName(requirement.getIndustryName());
@@ -65,7 +76,44 @@ public class RequirementHelper {
 			requirementIndex.setProjectDurationMonths(requirement.getProjectDurationMonths());
 			requirementIndex.setProjectDurationYears(requirement.getProjectDurationYears());
 			requirementIndex.setIsreceivingApplicants(requirement.getIsreceivingApplicants());
+			requirementIndex.setUrl(requirement.getUrl());
 			requirementIndex.setGeneratedId(requirement.getGeneratedId());
+			if(requirement.getIsClientJob() !=null){
+				requirementIndex.setIsClientJob(requirement.getIsClientJob());
+			}
+			if(requirement.getProcess() !=null){
+				requirementIndex.setProcess(requirement.getProcess());
+			}
+			if(requirement.getMedicalClearence() != null){
+			requirementIndex.setMedicalClearence(requirement.getMedicalClearence());
+			}
+			if(requirement.getSecurityClearance() != null){
+			requirementIndex.setSecurityClearance(requirement.getSecurityClearance());
+			}
+			if(requirement.getOverTime() != null){
+			requirementIndex.setOverTime(requirement.getOverTime());
+			}
+			if(requirement.getBackgroundCheck() != null){
+			requirementIndex.setBackgroundCheck(requirement.getBackgroundCheck());
+			}
+			if(requirement.getGender() != null){
+			requirementIndex.setGender(requirement.getGender());
+			}
+			if(requirement.getExperienceLevel() != null){
+			requirementIndex.setExperienceLevel(requirement.getExperienceLevel().toString());
+			}
+			
+			if(requirement.getProjectClientID() != null){
+				requirementIndex.setProjectClientID(requirement.getProjectClientID().getId().toString());
+				}
+				if(requirement.getClientId() != null && requirement.getClientId().getId() != null){
+			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
+				}
+
+			if(requirement.getClientId()!= null && requirement.getClientId().getId()!= null){
+			requirementIndex.setOrgRelationId(requirement.getClientId().getId().toString());
+			}
+
 			if (null != requirement.getDescription() && !"".equals(requirement.getDescription())) {
 				requirementIndex.setDescription(requirement.getDescription());
 			}
@@ -78,23 +126,108 @@ public class RequirementHelper {
 			if (null != requirement.getRateType() && !"".equals(requirement.getRateType())) {
 				requirementIndex.setRateType(requirement.getRateType());
 			}
-			if (null != requirement.getMinExp()) {
-				requirementIndex.setMinExperience(requirement.getMinExp());
+			if (StringUtils.isNotEmpty(requirement.getMinExp())) {
+				requirementIndex.setMinExperience(Float.parseFloat(requirement.getMinExp()));
 			}
-			if (null != requirement.getMaxExp()) {
-				requirementIndex.setMaxExperience(requirement.getMaxExp());
+			if (StringUtils.isNotEmpty(requirement.getMaxExp())) {
+				requirementIndex.setMaxExperience(Float.parseFloat(requirement.getMaxExp()));
 			}
+			if(null != requirement.getCurrencyCode() && !"".equalsIgnoreCase(requirement.getCurrencyCode())){
+				requirementIndex.setCurrentRateCurrency(requirement.getCurrencyCode());
+			}
+			if(null != requirement.getClientCurrencyCode() && !"".equalsIgnoreCase(requirement.getClientCurrencyCode())){
+				requirementIndex.setClientCurrencyCode(requirement.getClientCurrencyCode());
+			}
+			if(null != requirement.getClientMaxRate() && !"".equalsIgnoreCase(requirement.getClientMaxRate())){
+				requirementIndex.setClientMaxRate(Float.parseFloat(requirement.getClientMaxRate()));
+			}
+			if(null != requirement.getClientRate() && !"".equalsIgnoreCase(requirement.getClientRate())){
+				requirementIndex.setClientRate(Float.parseFloat(requirement.getClientRate()));
+			}
+			if(null != requirement.getClientRateType() && !"".equalsIgnoreCase(requirement.getClientRateType())){
+				requirementIndex.setClientRateType(requirement.getClientRateType());
+			}
+			
+			if(requirement.getJobsTags() != null && !requirement.getJobsTags().isEmpty()) {
+				requirementIndex.setTags(requirement.getJobsTags());
+			}
+			
 			requirementIndex.setRequirementStatus(requirement.getRequirementSubmissionStatus().toString());
 			// requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus().toString());
-			requirementIndex.setCountry(requirement.getCountry());
-			requirementIndex.setState(requirement.getState());
-			requirementIndex.setCity(requirement.getCity());
+			requirementIndex.setRequirementSubmissionPreviousStatus(requirement.getRequirementSubmissionPreviousStatus() != null ? requirement.getRequirementSubmissionPreviousStatus().name() : "");
+			
+			StringBuilder country = new StringBuilder();
+			StringBuilder state = new StringBuilder();
+			StringBuilder city = new StringBuilder();
+			
+			Set<String> countrySet = new HashSet<>();
+			Set<String> stateSet = new HashSet<>();
+			Set<String> citySet = new HashSet<>();
+			
+			List<RequirementLocations> locationsList = requirementLocationsService.getRequirementLocationsListByRequirementId(requirement.getId());
+			if(locationsList != null && !locationsList.isEmpty()) {
+				for(RequirementLocations locations : locationsList) {
+					if(StringUtils.isNotBlank(locations.getCountry())) {
+						countrySet.add(locations.getCountry());
+					}
+					
+					if(StringUtils.isNotBlank(locations.getState())) {
+						stateSet.add(locations.getState());
+					}
+					
+					if(StringUtils.isNotBlank(locations.getCity())) {
+						citySet.add(locations.getCity());
+					}
+				}
+			}
+			
+			if(countrySet != null && !countrySet.isEmpty()) {
+				for(String reqCountry : countrySet) {
+					country = country.append(reqCountry).append(",");
+				}
+			}
+			
+			if(stateSet != null && !stateSet.isEmpty()) {
+				for(String reqState : stateSet) {
+					state = state.append(reqState).append(",");
+				}
+			}
+			
+			if(citySet != null && !citySet.isEmpty()) {
+				for(String reqCity : citySet) {
+					city = city.append(reqCity).append(",");
+				}
+			}
+			
+			if(country.toString() != null && !country.toString().isEmpty()) {
+				String countryStr = country.toString();
+				countryStr = countryStr.substring(0, countryStr.length() - 1);
+				requirementIndex.setCountry(countryStr);
+			}
+			
+			if(state.toString() != null && !state.toString().isEmpty()) {
+				String stateStr = state.toString();
+				stateStr = stateStr.substring(0, stateStr.length() - 1);
+				requirementIndex.setState(stateStr);
+			}
+			
+			if(city.toString() != null && !city.toString().isEmpty()) {
+				String cityStr = city.toString();
+				cityStr = cityStr.substring(0, cityStr.length() - 1);
+				requirementIndex.setCity(cityStr);
+			}
+			
 			requirementIndex.setLocation(requirement.getLocation());
 			requirementIndex.setZipCode(requirement.getZipCode());
 			requirementIndex.setReqCreatedBy(requirement.getCreatedBy().getId());
 			requirementIndex.setReqUpdatedBy(requirement.getUpdatedBy());
 			if (requirement.getManagerUserId() != null) {
 				requirementIndex.setManagerUserId(requirement.getManagerUserId().getId().toString());
+			}
+			if (requirement.getPrimaryRecruiterUserId() != null) {
+				requirementIndex.setPrimaryRecruiterUserId(requirement.getPrimaryRecruiterUserId().getId().toString());
+			} else {
+				requirementIndex.setPrimaryRecruiterUserId("");
 			}
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if (null != requirement.getClosedDate()) {
@@ -129,6 +262,7 @@ public class RequirementHelper {
 				requirementIndex.setReqLevel1ApproverUserId(sequentialApprovers1.split(","));
 				requirementIndex.setReqLevel2ApproverUserId(sequentialApprovers2.split(","));
 			}
+		}
 			HashSet<String> teamOwnerUserId = new HashSet<>();
 			HashSet<String> teamAssignUserId = new HashSet<>();
 			if(requirement.getRequirementAssignTo() != null &&  !requirement.getRequirementAssignTo().isEmpty()){
@@ -149,7 +283,7 @@ public class RequirementHelper {
 			requirementIndex.setTeamOwnerUserId(teamOwnerUserId.toArray(new String[teamOwnerUserId.size()]));
 			requirementIndex.setTeamAssignUserId(teamAssignUserId.toArray(new String[teamAssignUserId.size()]));
 		     }
-		   }
+		   
 			// requirementIndex.setRequirementSubmissionStatus(requirement.getRequirementSubmissionStatus().toString());
 			requirementIndex.setIsTemplate(requirement.getIsTemplate());
 			// education

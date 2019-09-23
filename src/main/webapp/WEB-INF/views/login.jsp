@@ -1,127 +1,275 @@
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-    <%@page session="true"%>
-    <c:if test="${staticTime == null || staticTime == 0 }">
-    	<c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
-    </c:if>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>::. Sign In .::</title>
-    <link rel="icon" type="resources/image/png" href="resources/images/fav.png" />
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+ <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+ 
+ <meta charset="utf-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+ <link rel="icon" type="/resources/image/png" href="/resources/images/fav.png" />
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300italic,300,400italic,500,700,900" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/register-style.css?staticTime=${staticTime}" rel="stylesheet">
-    <link href="resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
-	
-</head>
-<body>
-<div class="regis_bg">
-	<div class="regis_logo">
-	  <img src="resources/images/SourceLead-logo.png" alt="SourceLead Logo" title="SourceLead Logo" class="img-responsive"/>
-	</div>
-    <div class="regis_wrap">
-    	<div class="signin_wrap" id="signin">
-        	<h1>Sign In</h1>
-	       	<c:if test="${not empty error}">
-				<div class="error">${error}</div>
-			</c:if>
-			
-			<c:if test="${!empty login_blocked_error}">
-					 <div class="error">Your user account is locked. Please contact your customer relationship manager</div>
-	      	</c:if>
-	      		
-	      	<c:if test="${!empty login_inActive_error}">
-	      			<div class="error"><font color="red">You are In active user</font></div>
-	    	</c:if>
-	        <c:if test="${!empty login_unRegistered_error}">
-	         		<div class="error"><font color="red">You are not registered user. Please get register.</font></div>
-	    	</c:if> 
-	       <c:if test="${!empty login_password_error}">
-	         		<div class="error"><font color="red">Invalid Username or Password.</font></div>
-	    	</c:if> 
-	    	<c:if test="${!empty login_blocked_user_error}">
-	         		<div class="error"><font color="red">Your User has blocked. Please contact your admin</font></div>
-	    	</c:if>
-	    	<c:if test="${not empty msg}">
-		        <div id="selector">
-			         <span><font color="green">${msg}</font></span>
-				</div>
-           </c:if> 
-        	 <form class="login-form clearfix" action="<c:url value='/login' />" method='POST'>
-	            <span>
-	            	<label>User name</label>
-	                <i class="fa fa-user"></i>
-	                <input type="text" name="username"  value="${username}" class="signin_fild" required />
-	                <b></b>
-	            </span>
-	            <span>
-	            	<label>Password</label>
-	                <i class="fa fa-key si-pass"></i>
-	                <input type="Password"  name="password"  value="${password}"  class="signin_fild" required />
-	                <b></b>
-	            </span>
-	            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-	            <input type="hidden" name="UUID" value="${UUID}" />
-	            <input type="hidden" name="spocUUID" value="${spocUUID}" />
-	            <input type="hidden" name="requirementUUID" value="${requirementUUID}" />
-	            <input type="hidden" name="referUUID" value="${referUUID}" />
-	            
-	            <div class="for-pas-text"><a href="<c:url value='/forgotPassword'/>">Forgot Password</a></div>
-	            <input type="submit" value="Submit" class="sign_btn" />
-	            <div class= "clearfix"></div>
-	            
-	            <c:if test="${!empty requirementUUID && empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}'/>">Sign up</a></h5></div>
-	            </c:if>
-	            
-	            <c:if test="${!empty requirementUUID && !empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register?requirementUUID=${requirementUUID}&referUUID=${referUUID}'/>">Sign up</a></h5></div>
-	            </c:if>
-	            
-	            <c:if test="${empty requirementUUID && empty referUUID}">
-	             <div class="for-pas-text pull-left"><h5>Don't have an account? &nbsp<a href="<c:url value='/register'/>">Sign up</a></h5></div>
-	            </c:if>
-	            
-            </form>          
-        </div>
-    </div>
-</div>  
-  
-	<script src="resources/js/jquery.min.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
-    <script src="resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
-    
-</body>
+    <link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}">
+    <link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/login.css?staticTime=${staticTime}" rel="stylesheet">
+    <link href="/resources/css/jquery-ui.css?staticTime=${staticTime}" rel="stylesheet">
+     <script src="/resources/js/jquery-2.1.4.min.js"></script>
+     
+     <script src="/resources/js/sourcelead.common.js"></script> 
 
-<script>
-$(function () {
-     applyInputSlide();
+ 
+   <%
+   
+   
+    if (request.getRequestURL().toString().indexOf("www.") == -1
+            && request.getRequestURL().toString().indexOf("localhost") == -1
+            && request.getRequestURL().toString().indexOf("qa.") == -1
+            && request.getRequestURL().toString().indexOf("staging.") == -1
+            && request.getRequestURL().toString().indexOf("dev.") == -1
+            && request.getRequestURL().toString().indexOf("demo.") == -1) {
+        response.sendRedirect("https://www.sourcelead.com/login");
+    } %>
+ 
+ <script>
+$(document).ready(function(){
+    if(window.location.href.indexOf("login") == -1) {
+        window.location.href = '/login';
+     }
 });
-
-function applyInputSlide() {
-    $(".signin_wrap span input").each(function (i) {
-        if ($(this).val().trim() !== "")
-            $(this).parent(".signin_wrap span").find('label').addClass('test');
-    });
-    $(".signin_wrap span input").on('focus', function () {
-        $(this).parent(".signin_wrap span").find('label').addClass('test');
-    });
-    $(".signin_wrap span input").on('blur', function () {
-        if ($(this).val().trim() === "")
-            $(this).parent(".signin_wrap span").find('label').removeClass('test');
-    });
+</script>
+<script>
+window.onload = function() {
+	var userName = '${username}';
+	var password = '';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = "";
+	if("${redirect_to_login_2_Step_Process}" != ''){
+		validateUserAlreadyAuthenticated(userRoleId,userName,password);
+	}
 }
 </script>
 
 <script>
-  $('#selector').delay(2000).fadeOut('slow');
-</script> 
+$(document).ready(function(){
+    if(window.location.href.indexOf("login") == -1) {
+        window.location.href = '/login';
+     }
+});
+</script>
+<script>
+$(document).ready(function(){
+	var location = window.location.origin;
+	 $.ajax({
+        url: location+"/getScheduleStatus",
+        success: function(data) {
+        	if(data !== ""){
+        		$("#maintenanceStatus").append(data.mainMessage);
+        		 $(".marQ").css({ display: "block" });
+        	}
+        }
+	}); 
+});
+</script>
+ 
+ 
+ <div id="slideit" class="bgImg" style="background-image: url(/resources/images/login-psd.jpg)"></div>
+ <div class="marQ">
+        <marquee behavior="scroll" direction="left">
+        <p id="maintenanceStatus"></p>
+        </marquee>
+    </div>
+ <div class="signWrap">
+<!--  <div id="loading"></div> -->
+ <c:if test="${!empty login_2_Step_Process_Enabled}">
+  <jsp:include page="twoStepVerification.jsp"></jsp:include>
+</c:if>
 
-</html>
+<div id="signinDiv">
+<c:if test="${empty login_2_Step_Process_Enabled}">
+    <jsp:include page="SignIn.jsp"></jsp:include>
+</c:if>
+</div>
+
+
+<div id="forgotPasswordDiv" style="display:none">
+<jsp:include page="forgotPasswords.jsp"></jsp:include>
+<!--  Forgot Pass  -->		
+<%-- <div class="signin_wrap ForPasSlide">
+	<div class="backBtn">
+		<a onclick="backToLogin();"><u class="fa fa-arrow-left OrBak"></u></a>
+	</div>
+		<h1>Forgot Password</h1>
+		<form:form class="login-form clearfix"  id="forgetPassword_form"  name="forgetPassword_form" method="post" >
+	            <div id="forgotPasswordDiv">
+	            <span>
+	                <i class="fa fa-user"></i>
+	                <input type="text" name="email" placeholder="Mail id"  value="${email}" id="email" class="signin_fild" required />
+	            </span>
+	            </div>
+	            <input type="submit" value="Submit" id="submit_button" class="sign_btn sign_btn_for" />
+	            <div class="cancel_for"><a href="<c:url value='/login'/>">Cancel</a></div>  
+            </form:form>     
+  </div>  --%>
+<!--  Forgot Pass  -->	
+</div>
+
+<div id="directtwoStepAuthDiv" style="display:none">
+   <jsp:include page="otpVerification.jsp"></jsp:include>
+</div>
+
+ </div>
+ 
+ <script>
+ 
+function validateUserAlreadyAuthenticated(userRoleId,userName,password){
+	var userName = '${username}';
+	var password = '';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = 0;
+	$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateUserAlreadyAuthenticated?userRoleId="+userRoleId+"&name="+userName,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 redirectToDashbord(userRoleId,userName,password);
+	    	 }else{
+	    		 directLoginValidateWhiteListIp(userRoleId,userName,password);
+	    	 }
+	      },
+	  }); 
+ }
+ 
+function directLoginValidateWhiteListIp(userRoleId,userName,password){
+	var userName = '${username}';
+	var password = '';
+	var sourceleadUrl ='${sourceleadUrl}';
+	var userRoleId = 0;
+// 		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	      type : "GET",
+	       url: sourceleadUrl+"/ws/validateWhitelistIp?userRoleId="+userRoleId+"&name="+userName,        
+	       success :function(result) {
+	    	 if(result == true){
+	    		 $('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
+	    		 $(".signWrap").addClass("orgOutWrap");
+	    		 getUserDetailsByUserRoleIdfromLogin(userRoleId,userName,password);
+	    	 }else{
+	    		$('#loginWhiteListDiv').find('p.jquery_form_error_message').remove();
+	 			$("#loginWhiteListDiv").append( "<p class='jquery_form_error_message'>You are not allowed to access this location</span>");
+// 	 			$("#loading").removeAttr('style');
+	    	 }
+	      },
+	  }); 
+}
+
+function redirectToDashbord(userRoleId,userName,password){
+	var sourceleadUrl ='${sourceleadUrl}';
+	 $.ajax({
+		      type : "POST",
+		       url: sourceleadUrl+"/ws/verificationDone?userName="+userName+"&password="+password+"&userRoleId="+userRoleId+"&verfDone=Y",        
+		       success :function(result) {
+		    	 if(result == "true"){
+		    		 location.replace(sourceleadUrl+"/dashboard");  
+		    	 }
+		      },
+		  });
+}
+</script>
+ 
+ <script>
+function getUserDetailsByUserRoleIdfromLogin(id,userName,password){
+	var sourceleadUrl ='${sourceleadUrl}';
+	$.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/ws/getUserDetailsByRoleId?id="+id+"&userName="+userName,        
+	       success :function(data) {
+	    	   if(data != null){
+	    		   $("#signinDiv").removeAttr("style");
+		    	   $("#signinDiv").attr("style","display : none");
+	    		   $("#directtwoStepAuthDiv").removeAttr("style");
+		    	   $("#directtwoStepAuthDiv").attr("style","display : block");
+	    		   $("#directtwoStepAuthDiv").empty();
+	    		   $("#directtwoStepAuthDiv").append(data);
+	    		   $("#resendOTP").attr("style","display:none");
+	    		   $("#backAnch").prop("onclick",null);
+	    		   $("#fromType").val("login");
+	    		   $("#backAnch").attr("onclick","logout('"+sourceleadUrl+"');");
+	    		   $("#sendOTP").attr("style","display:block");
+	    	   }
+	       },
+	  }); 
+}
+</script>
+
+<script>
+/* function backToLogin(){
+	$(".signWrap").removeClass("forPassOut");
+	$("#signinDiv").removeAttr("style");
+	$("#signinDiv").attr("style","display:block");
+	$("#forgotPasswordDiv").attr("style","display:none");
+	$(".ForPasSlide").attr("style","display:none");
+} */
+function logout(url){
+	location.href = "/logout";
+}
+</script>
+
+<!-- <script type="text/javascript">
+        $('#forgetPassword_form')
+           .submit(function(e) {
+        	    e.preventDefault(); 
+        		var form = $('#forgetPassword_form').serializeFormJSON();
+        		var sourceleadUrl ='${sourceleadUrl}';
+        		$('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
+//         		  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); 
+                $.ajax({
+            	      type: "POST",
+            	      data :JSON.stringify(form),
+            	      contentType : 'application/json; charset=utf-8',
+            	      dataType : 'json',
+                  	  url: "app/ws/resetPasswordWithUserName?${_csrf.parameterName}=${_csrf.token}",
+                    	success: function(json) {
+                    		if(json.status == 'Invalid'){
+	                   			 $('#forgotPasswordDiv').find('span.jquery_form_error_message').remove();
+	             		         document.getElementById("email").setAttribute('class','error signin_fild');
+	             		         $("input#email").after("<span class='jquery_form_error_message'> <font color='red'>Invalid User Name</font></span>");
+	             				 document.getElementById("email").setAttribute('pass-exist','yes');
+	             				 document.getElementById("email").setAttribute('pass-exist-errorMsg', ' Invalid User Name'); 
+	             				 $("input#email").removeAttr("style");
+// 	             				 $("#loading").removeAttr("style");
+    			        	}
+                    		else if(json.status == 'login'){
+    			        		  location.replace("/login"); 
+    			        	}
+                    		else{
+                    			  location.replace("/resetPassword"); 
+    			        	}
+			        },  
+                });
+            });
+</script>
+
+
+<script type="text/javascript">
+(function ($) {
+   $.fn.serializeFormJSON = function () {
+
+       var o = {};
+       var a = this.serializeArray();
+       $.each(a, function () {
+           if (o[this.name]) {
+               if (!o[this.name].push) {
+                   o[this.name] = [o[this.name]];
+               }
+               o[this.name].push(this.value || '');
+           } else {
+               o[this.name] = this.value || '';
+           }
+       });
+       return o;
+   };
+})(jQuery);
+</script> -->
+
+<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

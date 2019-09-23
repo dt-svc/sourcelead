@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgLocationDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -24,8 +25,10 @@ public interface OrgLocationService {
 	public Boolean isLoginUserIsSuperUser(Long userId,Long orgLocationId) throws Exception;
 
 	public List<OrgLocations> getAllOrgLocations() throws Exception;
+	
+	public List<OrgLocations> getAllOrgLocationsByOrgTypeCompany() throws Exception;
 
-	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
+	public OrgLocations getOrgLocationsByOrgLocationName(String orgLocationName) throws Exception;
 
 	public OrgLocations saveOrgLocations(OrgSettings orgSettings, OrgLocations orgLocations) throws Exception;
 
@@ -38,6 +41,8 @@ public interface OrgLocationService {
 	public List<OrgLocations> getAllOrgLocationsByOrgId(Long orgId) throws Exception;
 	
 	public List<OrgLocations> getAllOrgsStartsWithAlphabet(String alphabet);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsForClientProject(List<Long> orgLocationId) throws Exception;
 	
 	public List<OrgLocations> getAllRegisteredOrgLocations() throws Exception;
 	
@@ -52,6 +57,22 @@ public interface OrgLocationService {
 	public boolean validateOrgShortCode(String orgShortId);
 	
 	public List<OrgLocations> userList(Long orgId) throws Exception;
+	
+	public OrgLocations getOrgLocationsByLocationCode(String locationCode) throws Exception;
+
+	public Boolean isTwoStepVerificationEnabledForAllEnrolledOrgsByUserId(Long id);
+	
+	public List<OrgLocations> getAllRegisteredOrgLocationsExceptLoggedInLocation(Long orgLocationId,Long orgId) throws Exception;
+	
+	Integer getRegisteredOrgLoctionsCountByOrgId(Long orgId) throws Exception;
+	
+	public OrgLocationDTO getRegisteredOrgLocationDetails(Long id) throws Exception;
+	
+	List<Long> getOrgLocationsIdsListByOrgIdAndCountry(Long orgId,String country) throws Exception;
+	
+	public List<OrgLocations> getAllCurrentRegisteredOrgLocationsByOrgIdAndCountry(Long orgId,String country) throws Exception;
+	
+	public List<OrgLocations> getAllRegisteredWorkLocationsByOrgId(Long orgId) throws Exception;
 
 
 }

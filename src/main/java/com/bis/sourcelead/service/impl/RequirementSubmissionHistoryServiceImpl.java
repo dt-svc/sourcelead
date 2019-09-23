@@ -4,22 +4,39 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgRelationsDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementSubmissionHistoryDao;
 import com.bis.sourcelead.dao.TimeZoneDao;
+import com.bis.sourcelead.dto.OfferAcceptanceRateDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OfferAcceptanceRateView;
+import com.bis.sourcelead.entity.OfferAcceptanceRateViewForVendor;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.RecruiterJobsReportView;
+import com.bis.sourcelead.entity.RecruiterReportView;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.web.LoginSessionController;
 
 @Service
 public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmissionHistoryService {
@@ -31,7 +48,13 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	TimeZoneDao timeZoneDao;
 	
 	@Autowired
+	private OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	/**
 	 * updating the Requirement Submission Hostory
@@ -47,7 +70,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 	
 	@Override
-	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory)
+	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory, String masterUserCode)
 			throws Exception {
 		StringBuilder userName = new StringBuilder();
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
@@ -64,6 +87,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
 		requirementSubmissionHistory.setCreatedUser(userName.toString());
+		requirementSubmissionHistory.setMasterUserCode(masterUserCode);
 		
 		return requirementSubmissionHistoryDao.updateRequirementHistory(requirementSubmissionHistory);
 	}
@@ -156,16 +180,244 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 
 	@Override
-	public Long getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
-			String submissionStage, Date startDateUTC, Date endDateUTC) throws Exception {
+	public Integer getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, Date startDateUTC, Date endDateUTC,String isGlobalUser) throws Exception {
 		
-		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC);
+		return requirementSubmissionHistoryDao.getCountOfSubmissionsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC,isGlobalUser);
 	}
 
 	@Override
 	public List<RequirementSubmissionHistory> getRequirementHistoryByLocationIdAndSubId(Long orgLocationID, Long submissionId)
 	{
 		return requirementSubmissionHistoryDao.getRequirementHistoryByLocationIdAndSubId(orgLocationID, submissionId);
+	}
+
+	@Override
+	public RequirementSubmissionHistory addRequirementHistory(RequirementSubmissionHistory requirementSubmissionHistory)
+			throws Exception {
+		return requirementSubmissionHistoryDao.addRequirementHistory(requirementSubmissionHistory);
+	}
+
+	@Override
+	public RecruiterReportView getSubmissionCountsByStageAndCreatedUserAndOrglocationId(Long orgLocationId, User user,
+			String submissionStage, String startDateUTC, String endDateUTC, String isGlobalUser,Long orgId) throws Exception {
+		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserAndOrglocationId(orgLocationId, user, submissionStage, startDateUTC, endDateUTC, isGlobalUser,orgId);
+	}
+
+	@Override
+	public List<RecruiterReportView> getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(Long orgLocationId,
+			List<String> userCodeList, String startDateUTC, String endDateUTC,
+			String isGlobalUser, Long orgId) throws Exception {
+		return requirementSubmissionHistoryDao.getSubmissionCountsByStageAndCreatedUserListAndOrglocationId(orgLocationId, userCodeList, startDateUTC, endDateUTC, isGlobalUser, orgId);
+	}
+
+	@Override
+	public ResponseList<RequirementSubmissionHistory> getAllSubmissionHistoryApplicantsByOwner(RequirementSubmissionHistoryDTO sumissionHistoryDTO,String userCode, String stage,Date[] searchDates,Long locationId) throws Exception {
+		
+		return requirementSubmissionHistoryDao.getAllSubmissionHistoryApplicantsByOwner(sumissionHistoryDTO,userCode,stage,searchDates,locationId);
+	}
+
+	@Override
+	public int updateSourceUserCodeForSubmissionHistory() {
+		return requirementSubmissionHistoryDao.updateSourceUserCodeForSubmissionHistory();
+	}
+	
+	@Override
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateList(String userCode, long orgLocationId, String selectedClients, String filterType, String filteredDate) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		try {
+			int month = 0, year = 0;
+			boolean compare = false;
+			if(filterType != null && !filterType.isEmpty() && filteredDate != null && !filteredDate.isEmpty()) {
+				switch (filterType) {
+				case "month":
+					month = Integer.parseInt(filteredDate);
+					break;
+				case "year":
+					year = Integer.parseInt(filteredDate);
+					break;
+				case "compare":
+					compare = true;
+					break;
+				default:
+					break;
+				}
+			}
+			List<OfferAcceptanceRateView> offerAcceptanceRateViewList = requirementSubmissionHistoryDao.getOfferAcceptanceRateList(userCode, orgLocationId, selectedClients, month, year, compare);
+			responseList.setData(convertOfferAcceptanceRateListToDTOList(offerAcceptanceRateViewList, responseList, month, year, compare));
+			responseList.setResponse(Result.SUCCESS.name());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+	
+	@Override
+	public ResponseList<OfferAcceptanceRateDTO> getOfferAcceptanceRateListForVendor(List<Long> parentRequirementIdList, long orgRelationId, long spocId, String filterType, String filteredDate) {
+		ResponseList<OfferAcceptanceRateDTO> responseList = new ResponseList<>();
+		try {
+			int month = 0, year = 0;
+			boolean compare = false;
+			if(filterType != null && !filterType.isEmpty() && filteredDate != null && !filteredDate.isEmpty()) {
+				switch (filterType) {
+				case "month":
+					month = Integer.parseInt(filteredDate);
+					break;
+				case "year":
+					year = Integer.parseInt(filteredDate);
+					break;
+				case "compare":
+					compare = true;
+					break;
+				default:
+					break;
+				}
+			}
+			List<OfferAcceptanceRateViewForVendor> offerAcceptanceRateViewList = new LinkedList<>();
+			String masterUserCode = "";
+			if(orgRelationId > 0 && spocId > 0) {
+				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(spocId);
+				if(orgSpoc != null) {
+					masterUserCode = "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+				}
+			} else if(orgRelationId > 0) {
+				List<OrgSpoc> orgSpocList = orgSpocService.getAllContactsbyOrgId(orgRelationId);
+				if(orgSpocList != null && !orgSpocList.isEmpty()) {
+					for(OrgSpoc orgSpoc : orgSpocList) {
+						masterUserCode += (masterUserCode.isEmpty() ? "" : ",") + "'" + orgSpoc.getVendorUser().getUserCode() + "'";
+					}
+				}
+			}
+			offerAcceptanceRateViewList = requirementSubmissionHistoryDao.getOfferAcceptanceRateListForVendor(parentRequirementIdList, masterUserCode, month, year, compare);
+			responseList.setData(convertOfferAcceptanceRateForVendorListToDTOList(offerAcceptanceRateViewList, responseList, month, year, compare));
+			responseList.setResponse(Result.SUCCESS.name());
+		} catch (Exception e) {
+			responseList.setResponse(Result.AWKWARD.name());
+			responseList.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return responseList;
+	}
+	
+	private List<OfferAcceptanceRateDTO> convertOfferAcceptanceRateListToDTOList(List<OfferAcceptanceRateView> offerAcceptanceRateViewList, ResponseList<OfferAcceptanceRateDTO> responseList, int month, int year, boolean compare) {
+		List<OfferAcceptanceRateDTO> offerAcceptanceRateDTOList = new LinkedList<>();
+		try {
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				//Grouping & Sorting OfferAcceptanceRateViewList by CreatedYearMonthDate if month > 0 otherwise by CreatedYearMonth
+				Map<String, List<OfferAcceptanceRateView>> oarMap = offerAcceptanceRateViewList.stream()
+						.collect(Collectors.groupingBy(compare ? OfferAcceptanceRateView::getCreatedYear : month > 0 ? OfferAcceptanceRateView::getCreatedYearMonthDate : OfferAcceptanceRateView::getCreatedYearMonth))
+						.entrySet().stream().sorted(Map.Entry.comparingByKey())
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+				if((oarMap != null && oarMap.keySet().size() > 1) || compare) {
+					for(String date : oarMap.keySet()) {
+						offerAcceptanceRateDTOList.add(getOfferAcceptanceRateDTOByOfferAcceptanceRateViewList(oarMap.get(date), date));
+					}
+					responseList.setResponseMessage(compare ? "compare" : month > 0 ? "month" : "year");
+				} else if(oarMap != null && oarMap.keySet().size() == 1) {
+					Map<String, List<OfferAcceptanceRateView>> oarMap2 = oarMap.get(oarMap.keySet().iterator().next())
+							.stream().collect(Collectors.groupingBy(OfferAcceptanceRateView::getCreatedYearMonthDate))
+							.entrySet().stream().sorted(Map.Entry.comparingByKey())
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+									(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+					if (oarMap2 != null) {
+						for (String date : oarMap2.keySet()) {
+							offerAcceptanceRateDTOList.add(getOfferAcceptanceRateDTOByOfferAcceptanceRateViewList(oarMap2.get(date), date));
+						}
+						responseList.setResponseMessage("month");
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return offerAcceptanceRateDTOList;
+	}
+	
+	private OfferAcceptanceRateDTO getOfferAcceptanceRateDTOByOfferAcceptanceRateViewList(List<OfferAcceptanceRateView> oarList, String date) {
+		OfferAcceptanceRateDTO offerAcceptanceRateDTO = new OfferAcceptanceRateDTO();
+		try {
+			int offerCount = 0;
+			int offerAcceptedCount = 0;
+			int offerRejectedCount = 0;
+			for(OfferAcceptanceRateView oarView : oarList) {
+				offerCount += oarView.getOFFERMADE_COUNT().intValue();
+				offerAcceptedCount += oarView.getOFFERACCEPTED_COUNT().intValue();
+				offerRejectedCount += oarView.getOFFERREJECTED_COUNT().intValue();
+			}
+			offerAcceptanceRateDTO.setOfferDate(date);
+			offerAcceptanceRateDTO.setOfferCount(offerCount);
+			offerAcceptanceRateDTO.setAcceptedCount(offerAcceptedCount);
+			offerAcceptanceRateDTO.setRejectedCount(offerRejectedCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return offerAcceptanceRateDTO;
+	}
+	
+	private List<OfferAcceptanceRateDTO> convertOfferAcceptanceRateForVendorListToDTOList(List<OfferAcceptanceRateViewForVendor> offerAcceptanceRateViewList, ResponseList<OfferAcceptanceRateDTO> responseList, int month, int year, boolean compare) {
+		List<OfferAcceptanceRateDTO> offerAcceptanceRateDTOList = new LinkedList<>();
+		try {
+			if(offerAcceptanceRateViewList != null && !offerAcceptanceRateViewList.isEmpty()) {
+				//Grouping & Sorting OfferAcceptanceRateViewList by CreatedYearMonthDate if month > 0 otherwise by CreatedYearMonth
+				Map<String, List<OfferAcceptanceRateViewForVendor>> oarMap = offerAcceptanceRateViewList.stream()
+						.collect(Collectors.groupingBy(compare ? OfferAcceptanceRateViewForVendor::getCreatedYear : month > 0 ? OfferAcceptanceRateViewForVendor::getCreatedYearMonthDate : OfferAcceptanceRateViewForVendor::getCreatedYearMonth))
+						.entrySet().stream().sorted(Map.Entry.comparingByKey())
+						.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+								(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+				if((oarMap != null && oarMap.keySet().size() > 1) || compare) {
+					for(String date : oarMap.keySet()) {
+						offerAcceptanceRateDTOList.add(getOfferAcceptanceRateDTOByOfferAcceptanceRateForVendorViewList(oarMap.get(date), date));
+					}
+					responseList.setResponseMessage(compare ? "compare" : month > 0 ? "month" : "year");
+				} else if(oarMap != null && oarMap.keySet().size() == 1) {
+					Map<String, List<OfferAcceptanceRateViewForVendor>> oarMap2 = oarMap.get(oarMap.keySet().iterator().next())
+							.stream().collect(Collectors.groupingBy(OfferAcceptanceRateViewForVendor::getCreatedYearMonthDate))
+							.entrySet().stream().sorted(Map.Entry.comparingByKey())
+							.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+									(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+					if (oarMap2 != null) {
+						for (String date : oarMap2.keySet()) {
+							offerAcceptanceRateDTOList.add(getOfferAcceptanceRateDTOByOfferAcceptanceRateForVendorViewList(oarMap2.get(date), date));
+						}
+						responseList.setResponseMessage("month");
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return offerAcceptanceRateDTOList;
+	}
+	
+	private OfferAcceptanceRateDTO getOfferAcceptanceRateDTOByOfferAcceptanceRateForVendorViewList(List<OfferAcceptanceRateViewForVendor> oarList, String date) {
+		OfferAcceptanceRateDTO offerAcceptanceRateDTO = new OfferAcceptanceRateDTO();
+		try {
+			int offerCount = 0;
+			int offerAcceptedCount = 0;
+			int offerRejectedCount = 0;
+			for(OfferAcceptanceRateViewForVendor oarView : oarList) {
+				offerCount += oarView.getOFFERMADE_COUNT().intValue();
+				offerAcceptedCount += oarView.getOFFERACCEPTED_COUNT().intValue();
+				offerRejectedCount += oarView.getOFFERREJECTED_COUNT().intValue();
+			}
+			offerAcceptanceRateDTO.setOfferDate(date);
+			offerAcceptanceRateDTO.setOfferCount(offerCount);
+			offerAcceptanceRateDTO.setAcceptedCount(offerAcceptedCount);
+			offerAcceptanceRateDTO.setRejectedCount(offerRejectedCount);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return offerAcceptanceRateDTO;
+	}
+
+	@Override
+	public List<RecruiterJobsReportView> getSubmissionApplicantCountsForRecruiterJobreports(Long orgLocationId, User user,
+			Date[] searchDates, Long requirementId) throws Exception {
+		List<RecruiterJobsReportView> rjrvList = requirementSubmissionHistoryDao.getSubmissionApplicantCountsForRecruiterJobreports(orgLocationId,user,searchDates,requirementId);
+		return rjrvList;
 	}
 
 }

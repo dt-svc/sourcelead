@@ -200,19 +200,19 @@ function requirementReportPagination(){
 			<a title="Reports"><i class="fa fa-pie-chart"></i>Job Assign To</a>
 			<div class="RePop">
 				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
-				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li>
-				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
+					<li><a href="<c:url value='${appPath}/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
+					<li><a href="<c:url value='${appPath}/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
+					<li><a href="<c:url value='${appPath}/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li>
+				    <li><a href="<c:url value='${appPath}/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li>
+				    <li><a href="<c:url value='${appPath}/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
+				    <li><a href="<c:url value='${appPath}/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li>
+				    <li><a href="<c:url value='${appPath}/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
+				    <li><a href="<c:url value='${appPath}/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
 				</ul>
 			</div>
 		</div>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Job Assign To</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; Job Assigned Reports </div>
   </section>
   <div class="timesheet_out">
     <div class="vendor_wrap">
@@ -290,7 +290,7 @@ function requirementReportPagination(){
 				<span><i class="glyphicon glyphicon-send"></i></span><b id="submitToClientCount">0</b>
 			</li>
 			<li title="Interviews" id="interviewli" class="colorTwo">
-				<span><img src="resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
+				<span><img src="/resources/images/interview1.png" alt=""/></span><b id="interviewCount">0</b>
 			</li>
 			<li title="Offers" id="offermadeli">
 				<span><i class="fa fa-tags"></i></span><b id="offerCount">0</b>
@@ -358,7 +358,7 @@ function getAssignedRequirement(){
 		con = con.replace(/[{}]/g, "");
 		  //It will escape all the special characters
         var jsonData = encodeURIComponent(con);
-		/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); */
+		/* $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;'); */
  		 $.ajax({
 					type : "GET",
 					url: sourceleadUrl+"/getDayWiseAssignedReqReports?"+tokenParamName+"="+tokenValue+"&json="+jsonData,
@@ -697,13 +697,3 @@ function getCustomReports(){
 		$(".repTab1").show();
 	});		
 	</script>
-
-<script src="resources/reports/amcharts.js"></script>
-<script src="resources/reports/pie.js"></script>
-<link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" />
-<script src="resources/reports/light.js"></script>
-  
-     
-
-
-

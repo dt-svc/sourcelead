@@ -29,6 +29,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * 
@@ -38,7 +39,6 @@ import com.bis.sourcelead.enums.Status;
  */
 @Entity
 @Table(name="ORG")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="org")
 public class Org implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -49,6 +49,7 @@ public class Org implements Serializable{
 	private Long id;
 	
 	@Column(name = "ORG_NAME")
+	@JsonProperty
 	private String orgName;
 	
 	@Column(name = "WEBSITE")
@@ -64,8 +65,8 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRIMARY_CONTACT_USER_ID")
     private User user;
 	
@@ -88,6 +89,13 @@ public class Org implements Serializable{
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
+	@Column(name = "FILE_NAME")
+	private String fileName;
+	
+	
+	@Column(name = "FILE_URL")
+	private String fileUrl;
+	
 	@Column(name = "ORG_DESCRIPTION")
 	@Type(type="text")
 	private String orgDescription;
@@ -109,7 +117,7 @@ public class Org implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private Status timeSheet;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@OneToMany(mappedBy="org",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<OrgLocations> orgLocationsList;
@@ -118,14 +126,20 @@ public class Org implements Serializable{
 	@Type(type="text")
 	private String modulesId;
 	
-    @Column(name = "CLIENT_ADDRESS")
+    @Column(name = "CLIENT_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String clientAddress;
     
-    @Column(name = "CLIENT_BILLING_ADDRESS")
+    @Column(name = "CLIENT_BILLING_ADDRESS", columnDefinition = "LONGTEXT default NULL")
 	private String clientBillingAddress;
     
     @Column(name = "PAYMENT_TERM")
 	private String PaymentTerm;
+    
+    @Column(name = "CAREER_PAGE_KEY")
+    private String careerPageKey;
+    
+    @Column(name = "IS_CAREER_PAGE_KEY_ACTIVE")
+    private Boolean careerPageKeyActive;
 	
 	@Transient
 	private String email;
@@ -147,6 +161,10 @@ public class Org implements Serializable{
 	
 	@Transient
 	private Long primaryOrgLocationId;
+	
+	@Transient
+	@JsonProperty
+	private int noOfDays;
 	
 	public Long getId() {
 		return id;
@@ -392,6 +410,49 @@ public class Org implements Serializable{
 		this.primaryOrgLocationId = primaryOrgLocationId;
 	}
 
-	
+	public String getFileName() {
+		return fileName;
+	}
 
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileUrl() {
+		return fileUrl;
+	}
+
+	public void setFileUrl(String fileUrl) {
+		this.fileUrl = fileUrl;
+	}
+
+	public int getNoOfDays()
+	{
+		return noOfDays;
+	}
+
+	public void setNoOfDays(int noOfDays)
+	{
+		this.noOfDays = noOfDays;
+	}
+	
+	public String getCareerPageKey()
+	{
+		return careerPageKey;
+	}
+
+	public void setCareerPageKey(String careerPageKey)
+	{
+		this.careerPageKey = careerPageKey;
+	}
+
+	public Boolean getCareerPageKeyActive() {
+		return careerPageKeyActive;
+	}
+
+	public void setCareerPageKeyActive(Boolean careerPageKeyActive) {
+		this.careerPageKeyActive = careerPageKeyActive;
+	}
+
+	
 }

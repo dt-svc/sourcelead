@@ -63,7 +63,7 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnBoardingTemplateDocuments documents left join fetch documents.onboardingTemplateId where documents.onboardingTemplateId.id = :templateId "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).setCacheable(true).list();
+	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("templateId", templateId).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -73,7 +73,7 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 			throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).setCacheable(true).list();
+		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.documentUUID =:documentUUID" ).setString( "documentUUID", documentUUID ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {
@@ -89,7 +89,7 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnBoardingTemplateDocuments documents left join fetch documents.onboardingTemplateId where documents.onboardingTemplateId.id IN (:templateIds) "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIds", templateIds).setString("documentType", documentType).setCacheable(true).list();
+	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setParameterList("templateIds", templateIds).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -97,7 +97,7 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 	@Transactional
 	public OnBoardingTemplateDocuments getOnBoardingTemplateDocumentsById(Long Id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.id =:id" ).setLong( "id", Id ).setCacheable(true).list();
+		List<OnBoardingTemplateDocuments> documents = session.createQuery("from OnBoardingTemplateDocuments documents where documents.id =:id" ).setLong( "id", Id ).list();
 		if (documents.size() > 0) {
 			return documents.get(0);
 		} else {
@@ -128,7 +128,7 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from OnBoardingTemplateDocuments documents left join fetch documents.candidateOnBoardingId where documents.candidateOnBoardingId.id = :candidateOnBoardingId "
 	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
-	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setString("documentType", documentType).setCacheable(true).list();
+	    List<OnBoardingTemplateDocuments> documentsList = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setString("documentType", documentType).list();
         return documentsList;
 	}
 
@@ -162,6 +162,17 @@ public class OnBoardingTemplateDocumentsDaoImpl implements OnBoardingTemplateDoc
 					count = onboardCount.get(0).intValue();
 			}
 			return count;
+	}
+
+	@Override
+	@Transactional
+	public List<Long> getOnBoardingTemplateDocumentIdsByCandidateOnBoardingId(Long candidateOnBoardingId,
+			String documentType) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "select documents.id from OnBoardingTemplateDocuments documents  where documents.candidateOnBoardingId.id = :candidateOnBoardingId "
+	    		+ " and documents.documentType = :documentType and documents.status = '1' ";
+	    List<Long> onboardCount  = session.createQuery(query.toString()).setLong("candidateOnBoardingId", candidateOnBoardingId).setString("documentType", documentType).list();
+        return onboardCount;
 	}
 
 }

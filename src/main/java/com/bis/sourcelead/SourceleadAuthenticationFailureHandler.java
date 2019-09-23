@@ -33,7 +33,7 @@ public class SourceleadAuthenticationFailureHandler implements AuthenticationFai
 			request.setAttribute(exception.getMessage(),true);
 		   } 
 			ServletContext context = request.getServletContext();
-			RequestDispatcher rd = context.getRequestDispatcher("/sourcelead/login");
+			RequestDispatcher rd = context.getRequestDispatcher("/login");
 			rd.forward(request, response);
 		
 	}

@@ -24,6 +24,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class SourceleadDataBaseInstallation {
 
 	private ComboPooledDataSource comboPooledDataSource;
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 
 	public static void main(String args[]) throws Exception {
 		SourceleadDataBaseInstallation installer = new SourceleadDataBaseInstallation();
@@ -36,6 +38,7 @@ public class SourceleadDataBaseInstallation {
 		flyway.setDataSource(comboPooledDataSource());
 		flyway.setTable("schema_history");
 		flyway.setSqlMigrationSuffix(".sql");
+		flyway.setSchemas(dbconfig.getSchema());
 		/**
 		 * TODO Way to set migration folder location outside the classpath Using
 		 * 'filesystem' keyword we can able set file path..
@@ -55,9 +58,7 @@ public class SourceleadDataBaseInstallation {
 
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
+		
 
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {

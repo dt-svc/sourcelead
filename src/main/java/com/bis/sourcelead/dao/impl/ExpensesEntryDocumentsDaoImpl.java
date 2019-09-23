@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesEntryDocumentsDao;
 import com.bis.sourcelead.entity.ExpensesEntryDocuments;
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
@@ -58,9 +59,11 @@ public class ExpensesEntryDocumentsDaoImpl implements ExpensesEntryDocumentsDao 
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (null != id) {
-				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed where eed.id=:id" ).setLong( "id",id).setCacheable(true).list();
+				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed where eed.id=:id" ).setLong( "id",id).list();
 				if(null != eedList && !eedList.isEmpty()){
-					session.delete(eedList.get(0));
+					ExpensesEntryDocuments eed = eedList.get(0);
+					eed.setStatus(0);
+					session.update(eed);
 				}
 			}
 			logger.debug("Successfully deleted..!");
@@ -76,7 +79,7 @@ public class ExpensesEntryDocumentsDaoImpl implements ExpensesEntryDocumentsDao 
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (null != entryId) {
-				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed left join fetch eed.expensesEntriesId where eed.expensesEntriesId.id=:entryId" ).setLong( "entryId",entryId).setCacheable(true).list();
+				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed left join fetch eed.expensesEntriesId where eed.expensesEntriesId.id=:entryId" ).setLong( "entryId",entryId).list();
 				if(null != eedList && !eedList.isEmpty()){
 					for(ExpensesEntryDocuments eed:eedList){
 						session.delete(eed);
@@ -99,10 +102,10 @@ public class ExpensesEntryDocumentsDaoImpl implements ExpensesEntryDocumentsDao 
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			if (null != ids && !ids.isEmpty()) {
-				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed where eed.id IN(:ids)" ).setParameter("ids",ids).setCacheable(true).list();
+				List<ExpensesEntryDocuments> eedList = session.createQuery("from ExpensesEntryDocuments eed where eed.id IN "+ids+"" ).list();
 				if(null != eedList && !eedList.isEmpty()){
 					for(ExpensesEntryDocuments eed :eedList){
-						session.delete(eed);
+						//session.delete(eed);
 					}
 					
 				}

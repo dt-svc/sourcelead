@@ -14,73 +14,33 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Interview Template</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
  
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <style type="text/css">
-.paddingTop {
-padding-top: 55px;	
-}
-.viewTemplate .sjfb-field{
-margin: 0;
-}
-.positionRelative {
-position: relative;
-}
-.container.container-wraper{
-	padding: 15px; box-sizing: border-box; border: 1px solid #ccc; background: #fafafa; border-radius:5px;
-	margin-top: 80px;
-}
-.container-wraper h3 {
-margin: 0; margin-bottom: 10px; font-size: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field{
-display: inline-flex; margin-bottom: 20px;
-}
-.container-wraper .viewTemplate .sjfb-field label {
-font-size:14px !important; font-weight: 600;
-}
-.container-wraper viewTemplate .sjfb-field{
-width: 48.5%;
-}
-.ml{
-margin-left: 15px;
-}
 .choices label {
 width: auto !important; padding-right: 15px;
 }
 .choices input[type="checkbox"], .choices input[type="radio"]{
  margin-right: 10px; position: relative; top: 1px;
 }
-.stickyfooter {
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-	height: 40px;
-	line-height: 40px;
-	background-color: #f5f5f5;
-	padding:0;
-}
-.viewTemplate textarea + p{
-top:55px !important;
-} 
 </style>
 
 <script type="text/javascript">
@@ -88,8 +48,7 @@ window.onload = function () {
 	var requirementInterviewid = '${requirementInterviewid}';
 	var previousInterviewId = '${afterRequirementInterviewid}';
 	var feedbackStatus = '${feedbackStatus}';
-	
-	if(parseInt(requirementInterviewid) == parseInt(previousInterviewId)){
+	if(requirementInterviewid == previousInterviewId){
 		if(feedbackStatus == "N"){
 			viewTemplateNo();
 		}else{
@@ -188,7 +147,7 @@ function saveFeedbackNo(){
 	    var jsonData = encodeURIComponent(con);
 		$.ajax({
 			type : "GET",
-			url : sourceleadUrl + "/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
+			url :sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlateReason?jsonData="+jsonData+"&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 			success : function(data) {
 				$("#cancelFeedbackDiv").hide();
 				viewTemplateNo();
@@ -217,7 +176,7 @@ $('body').on('blur', '#cancelFunction_form', function() {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 		        	if(json.comment != null && json.comment != '' && json.comment != 'undefined'){
@@ -268,7 +227,7 @@ function interviewTemplateForm(){
 	$("#remove_user_pop").slideUp(200);
 	$(".project_inn_mask").hide();
 	$("#interviewTemplateFormDiv").show();
-	if(requirementInterviewid = previousInterviewId){
+	if(requirementInterviewid == previousInterviewId){
 		viewTemplate()
 	}else{
 		generateInterviewFeedbackForm1(sourceleadUrl,templateId)
@@ -288,7 +247,7 @@ function interviewTemplateForm(){
 		result = result + '</div>'; */
 		
 		result = result + '<div class="form-horizontal clearfix">';
-		result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
+		result = result + '<div id="interviewsjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
 		result = result + '</div>';
 		result = result + '</div>';
 		
@@ -315,12 +274,9 @@ function saveInterviewTemplate(){
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
 	      var templateId = '${templateId}';
 	  	  var requirementInterviewid = '${requirementInterviewid}';
-	  	var requirementInterviewid = '${requirementInterviewid}';
 	      var sourceleadUrl ='${sourceleadUrl}';
 	      var frm = $('#interviewTemplate_form').serializeFormJSON();
-	      var con1 = JSON.stringify(frm);
-	      con1= con1.replace(/[{}]/g, "");
-	      var jsonData = encodeURIComponent(con1);
+	      var jsonData = JSON.stringify(frm);
 	      var form = $('#interviewTemplate_form')[0];
 	      var formData = new FormData(form); 
 	      //Loop through fields and save field data to array
@@ -372,19 +328,17 @@ function saveInterviewTemplate(){
 	            });
 	       });
 	      var con = JSON.stringify(fields);
-	      con = encodeURIComponent(con);
-	      
-	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	      formData.append("jsonStringData",con);
+	      formData.append("jsonData",jsonData); 
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	      
 	  	     $.ajax({
-		    	type: "GET",
+		    	type: "POST",
 		    	data: formData,
-	 	        contentType : 'application/json; charset=utf-8',
-	 	        enctype: 'multipart/form-data',
 		        processData: false,
 		        contentType:false,
 	 	        dataType : 'json',
-	 	    	url : sourceleadUrl+"/savePublicInterviewFeddbackTemlate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid+"&jsonStringData="+con+"&jsonData="+jsonData,
+	 	    	url : sourceleadUrl+"/ws/savePublicInterviewFeddbackTemlate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&requirementInterviewid="+requirementInterviewid,
 		        success: function(result) {
 		        	$("#interviewTemplateFormDiv").hide();
 		        	viewTemplate(sourceleadUrl,templateId)
@@ -434,19 +388,19 @@ $('body').on('blur', '#interviewTemplate_form', function() {
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead" class="img-responsive mt5"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
     </nav>
    </header>
-   <div id="interviewTemplateFormDiv" class="container container-wraper positionRelative paddingTop" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container paddingTop container-wraper positionRelative" style="display: none;"> </div>
-   <div id="viewInterviewTemplateList" class="container paddingTop"></div>
-   <div id="viewInterviewTemplateNo" class="container paddingTop"></div>
+   <div id="interviewTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
+   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> </div>
+   <div id="viewInterviewTemplateList" class="container paddingTop55"></div>
+   <div id="viewInterviewTemplateNo" class="container paddingTop55"></div>
    
    
-   <footer class="clearfix stickyfooter">
+   <footer class="clearfix stickyfooterDiv">
    <div class="container">
     <div class="pull-left"> @ Copyright : Source Lead, All right reserved </div>
     <div class="pull-right"> Powered by: businessintelli.com </div>
@@ -464,7 +418,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
   
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getInterviewrsViewFeedbackList?templateId="+templateId, 
+        url:"/getInterviewrsViewFeedbackList?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 
@@ -538,6 +492,8 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 
             	 var datavalidation = '';	
             	 var novalidation = '';
+            	 var onBlurEvent = '';
+            	 var placeHolder = '';
             	 
         		 if(required == 1){
         			 
@@ -563,15 +519,17 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
             	 else{
             		 var uniqueID = Math.floor(Math.random()*999999)+1;
             	 }
-                
+            	 
+            	 if(label == 'Rating'){
+            		 options = '<option value="">--Select Rating--</option>';
+        		 }
 
                  switch (fieldType) {
-
                      case 'text':
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
                              '<label for="text-' + uniqueID + '"></label>' +
-                             '<input type="text" '+datavalidation+' '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
+                             '<input type="text" '+datavalidation+'  '+novalidation+' value="" field-name=\''+label+'\' name=\''+label.replace(/\s+/g, '')+'\' id="text-' + uniqueID + '">' +
                              '</div>';
 
                      case 'textarea':
@@ -585,7 +543,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
                          return '' +
                              '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
                              '<label for="select-' + uniqueID + '"></label>' +
-                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select"></select>' +
+                             '<select id="select-' + uniqueID + '" '+datavalidation+' '+novalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name=\''+label+'\' class="choices choices-select">'+options+'</select>' +
                              '</div>';
 
                      case 'radio':
@@ -622,7 +580,7 @@ function generateInterviewFeedbackForm1(sourceleadUrl,templateId) {
 		$("#interviewTemplateFormDiv").hide();
 		$.ajax({
 	    	type: "GET",
-	    	url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
+	    	url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId+"&requirementInterviewid="+requirementInterviewid, 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	 var submissionDetails = "";
@@ -671,7 +629,7 @@ function generateViewpublicpage(sourceleadUrl,templateId) {
     $("#interviewsjfb-fields").empty();
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/getPublicInterviewFeedbackTemplate?templateId="+templateId, 
+        url: sourceleadUrl+"/ws/getPublicInterviewFeedbackTemplate?templateId="+templateId, 
         success: function(data) {
         	 var data = eval(data);
         	 

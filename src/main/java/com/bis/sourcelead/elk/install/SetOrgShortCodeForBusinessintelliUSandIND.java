@@ -20,7 +20,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class SetOrgShortCodeForBusinessintelliUSandIND {
 private ComboPooledDataSource comboPooledDataSource;
-	
+ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	
 	public void addorgShortCodeForBusinessintelliIndAndUs() throws IOException, SQLException {
 		Connection conn = null ;
@@ -46,12 +47,12 @@ private ComboPooledDataSource comboPooledDataSource;
 						 finalProjectsGeneratedId = "BII";
 					 }
 					 
-					 String organisationShortCode = "SELECT * FROM sourcelead.ORG_LOCATIONS orglocations where orglocations.id = "+projectsOrgLocIds+" ";
+					 String organisationShortCode = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS orglocations where orglocations.id = "+projectsOrgLocIds+" ";
 					 ResultSet rSetorgShortCode = stmt1.executeQuery(organisationShortCode);
 					 while(rSetorgShortCode.next()){
 						 String  orgShortCode = rSetorgShortCode.getString("GENERATED_USER_ID");
 						 if(orgShortCode == null){
-									 String query = "update sourcelead.ORG_LOCATIONS set GENERATED_USER_ID = ? where ID = ? ";
+									 String query = "update "+dbconfig.getSchema()+".ORG_LOCATIONS set GENERATED_USER_ID = ? where ID = ? ";
 									 pstmt = conn.prepareStatement(query); // create a statement
 								     pstmt.setString(1,finalProjectsGeneratedId);
 								     pstmt.setLong(2, projectsOrgLocIds);
@@ -71,10 +72,6 @@ private ComboPooledDataSource comboPooledDataSource;
 	 * @return DataSource
 	 */ 
 	private DataSource comboPooledDataSource() {
-			@SuppressWarnings("resource")
-			ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-			DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 			this.comboPooledDataSource = new ComboPooledDataSource();
 			try {
 				comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

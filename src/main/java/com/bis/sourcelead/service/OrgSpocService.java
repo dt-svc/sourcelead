@@ -126,5 +126,20 @@ public interface OrgSpocService {
 	List<OrgSpoc> getSpoclistByDomain(Long id, String domain)throws Exception;
 	
 	boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId) throws Exception;
+	
+	OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId,Long assignUserId) throws Exception;
+	
+	OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception;
+	
+	List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
+	
+	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
+	
+	Integer getNumberOfContactCount(Long orgRelationId,Long userId,Long orgLocationId,String responderType) throws Exception;
+	
+	public void addClientVendorContactsELK(OrgSpoc orgSpoc) throws Exception;
+	
+	OrgSpoc getSpocByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
+
 
 }

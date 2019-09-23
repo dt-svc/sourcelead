@@ -1,20 +1,11 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
-
-<style type="text/css">
-.collapse-div-adduser select {
-	width: 100% !important;
-	padding-right: 10px !important;
-	padding-left: 10px !important;
-	border: 1px solid #ccc !important
-}
-</style>
-
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>
 <script type="text/javascript">
 //On document ready
 $(function(){
@@ -73,9 +64,9 @@ function vendorAssociatesList(orgRelationId){
 		$.ajax({
 	    	type: "POST",
 	    	   url: sourceleadUrl+"/getVendorAssociatesListForVendors?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationId, 	
-	    	success: function(data) {
+	    	success: function(json) {
 	        	
-	        	var json = JSON.parse(data);
+	        ///	var json = JSON.parse(data);
 	        
 	        	$("#vendorAssociatesListTab").empty();
 	    		
@@ -95,9 +86,9 @@ function vendorAssociatesList(orgRelationId){
 		            result = result +'</thead>';
 		            result = result + '<tbody>';
 		            
-			          for (var i=0; i<json.length; i++)
+			          for (var i=0; i<json.data.length; i++)
 					  { 
-			        	  var opt = json[i];
+			        	  var opt = json.data[i];
 			        	  result = result + "<tr>";
 			            	
 			        	  result = result +"<td><div title='"+opt.candidateName+"' class='tbldata-dotdot-100'>"+opt.candidateName+"</div></td>";
@@ -109,9 +100,10 @@ function vendorAssociatesList(orgRelationId){
 			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.city+', '+opt.state+', '+opt.country+"'>"+opt.city+', '+opt.state+', '+opt.country+"</span></div></td>";
 			                }else if(opt.state!=null && opt.state !='' && opt.state !='undefined'){
 			                    result = result +"<td><div class='tbldata-dotdot-100'><span title='"+opt.state+', '+opt.country+"'>"+opt.state+', '+opt.country+"</span></div></td>";
-
-			                }else{
+			                }else if(opt.country != null && opt.country !='' && opt.country !='undefined'){
 			                    result = result +"<td><div><span title='"+opt.country+"'>"+opt.country+"</span></div></td>";
+			                }else{
+			                	result = result +"<td><div><span>--</span></div></td>";
 			                }
 			               	
 			               	if(opt.primarySkill != null && opt.primarySkill != '' && opt.primarySkill !='undefined'){
@@ -122,7 +114,8 @@ function vendorAssociatesList(orgRelationId){
 	
 			               	}
 			               	if(opt.candidateResumeName != null && opt.candidateResumeName != '' && opt.candidateResumeName !='undefined'){
-		               		result = result +"<td title="+opt.candidateResumeName+"><a class='glyphicon glyphicon-download-alt' href=\'"+sourceleadUrl+"/candidateResumeDownload?candidateID="+opt.id+"\'></a>&nbsp;&nbsp;<a class='fa fa-eye' onclick='viewAssociateCandidateResume(\""+opt.id+"\",\""+opt.candidateResumeName+"\");'></a></td>";
+		               		result = result +'<td ><div title='+opt.candidateResumeName+' class="tblicons_4"><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileUrl+'\"></a>&nbsp;&nbsp;<a class="fa fa-eye"  href="javascript:void(0)" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.candidateResumeName+'\',\''+opt.candidateResumeFileType+'\');"></a></div></td>';
+			               	
 			               	}
 			               	else{
 				            	result = result +"<td><div> --- </div></td>";
@@ -166,7 +159,7 @@ function viewAssociateCandidateResume(candidateId,title){
 function vendorAssociatesPagination(){  
     $('#vendorAssociatePagination').DataTable( { 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,

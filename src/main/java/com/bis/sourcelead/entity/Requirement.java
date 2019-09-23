@@ -18,15 +18,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
@@ -42,8 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	 *
 	 */
 	@Entity
-	@Table(name = "REQUIREMENT", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirement1")
+	@Table(name = "REQUIREMENT")
 	public class Requirement implements Serializable{
 
 	
@@ -98,17 +94,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "APPRVER_HIERARCHY")
 	private String approverHierarchy;
 	
+	@Column(name = "URL")
+	private String url;
 	
-	@Column(name = "COUNTRY")
+	@Column(name = "COUNTRY", columnDefinition = "TEXT default NULL")
 	private String country;
 	
-	@Column(name = "STATE")
+	@Column(name = "STATE", columnDefinition = "TEXT default NULL")
 	private String state;
 	
-	@Column(name = "CITY")
+	@Column(name = "CITY", columnDefinition = "TEXT default NULL")
 	private String city;
 	
-	@Column(name = "LOCATION")
+	@Column(name = "LOCATION", columnDefinition = "TEXT default NULL")
 	private String location;
 	
 	@Column(name = "ZIPCODE")
@@ -117,16 +115,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "SKILLS", columnDefinition = "TEXT default NULL")
 	private String skills;
 	
-	@Column(name = "DESCRIPTION" , columnDefinition = "TEXT default NULL")
+	@Column(name = "DESCRIPTION" , columnDefinition = "LONGTEXT default NULL")
 	private String description;
 	
 	@Column(name = "NOTICEPERIOD", columnDefinition = "TEXT default NULL")
 	private String noticePeriod;
 	
-	@Column(name = "DOC_FILE",columnDefinition="mediumblob")
-	@Lob
-	private  byte[] docFile;
-		
 	@Column(name = "FILE_CONTENT_TYPE")
 	private String fileContentType;
 	
@@ -167,10 +161,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "CLIENT_RATE")
 	private String clientRate;
 	
+	@Column(name = "CLIENT_MAX_RATE")
+	private String clientMaxRate;
+	
 	@Column(name = "CLIENT_RATE_TYPE")
 	private String clientRateType;
 	
-
+	@Column(name = "JOB_RATE")
+	private String jobRate;
+	
+	@Column(name = "INCENTIVIZED")
+	private String incentivized;
+	
+	@Column(name = "PAY_OUT_PERIOD")
+	private String payOutPeriod;
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementIncentive> requirementIncentive = new HashSet<RequirementIncentive>(0);
+	
 	@Column(name = "TRAVEL_ALLOWANCE")
 	private String travelAllowance;
 	
@@ -209,15 +219,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
     @JoinColumn(name="MANAGER_USER_ID", nullable=false )        
     private User managerUserId;
 	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumn(name = "PRIMARY_RECRUITER_USER_ID", referencedColumnName = "id")
+	private User primaryRecruiterUserId;
+	
 	@Column(name="IS_Template")
 	private String isTemplate;
 	
 	@Column(name="STATUS")
 	private String status;
 	
+	@Column(name = "Process")
+	private String process;
 
 	@Column(name = "REQUIREMENT_SUBMISSION_STATUS")
 	@Enumerated(EnumType.STRING)
+	@JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementSubmissionStatus;
 	
 	@Column(name = "REQUIREMENT_SUBMISSION_PREVIOUS_STATUS")
@@ -233,7 +251,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	private String clientSubmissionTemplateJsonString;
 	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="PARENT_REQUIREMENT_ID")        
     private Requirement parentRequirement;
 	
@@ -290,226 +308,418 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@Column(name = "RELEASE_JOB_TO_ALL_USERS")
 	private String releaseJobToAllUsers;
 	
+	@Column(name = "MEDICAL_CLEARENCE")
+	private String medicalClearence;
+	
+	@Column(name = "SECURITY_CLEARANCE")
+	private String securityClearance;
+	
+
+	@Column(name = "OVER_TIME")
+	private String overTime;
+	
+	@Column(name = "BACKGROUNG_CHECK")
+	private String backgroundCheck;
+	
+	@Column(name = "GENDER")
+	private String gender;
+	
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="PROJECT_CLIENT_ID", nullable=true) 
+	private ProjectClients projectClientID;
+	
+	
+	@NotFound(action=NotFoundAction.IGNORE)
+	@ManyToOne
+    @JoinColumn(name="EXPERIENCE_LEVEL", nullable=true) 
+	private LookUpData experienceLevel;
+	
+	@Column(name = "IS_WALK_IN")
+	private boolean walkIn;
+	
+	@Column(name = "WALK_IN_DAYS", columnDefinition = "TEXT default NULL")
+	private String walkInDays;
+	
+	@Column(name = "REOPENED_DATE")
+	private Date repoenedDate;
+	
+	@Column(name = "PROFILE_PERCENTAGE")
+	private Integer profilePercentage;
+
 	@Transient
 	private String closedDateStringFormat;
-	
+
 	@Transient
 	private String clientSubmissionTemplate;
-	
+
 	@Transient
 	private String requirementCreatedDateToString;
 
 	@Transient
-	private  Long  requirementId;
-	
+	private Long requirementId;
+
 	@Transient
 	private String isJobApplied;
-	
+
+	@Transient
+	private String projectName;
+        
+        @Transient
+	private List<Long> jobBoardAccountIdList;
+        
+        @NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirement")
+	@Fetch(FetchMode.SELECT)
+	private List<RequirementJobBoardInfo> requirementJobBoardInfoList;
+
 	@Transient
 	private String msg;
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementAssignTo> requirementAssignTo = new HashSet<RequirementAssignTo>(0);
-	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@OneToMany(mappedBy = "requirementId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Fetch(FetchMode.SELECT)
 	private Set<RequirementApproverHierarchy> requirementApprover = new HashSet<RequirementApproverHierarchy>(0);
-	
+
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToMany(mappedBy = "requirementId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	private Set<RequirementLocations> requirementLocations = new HashSet<RequirementLocations>(0);
+
 	@Transient
 	private String searchType;;
-	
+
+	@Transient
+	@JsonProperty
+	private List<String> locationsList;
+
 	@Transient
 	@JsonProperty
 	private String clientName;
-	
+
 	@Transient
+	@JsonProperty
+	private String orgRelationUUID;
+
+	@Transient
+	@JsonProperty
+	private String spocUUID;
+
+	@Transient
+	@JsonProperty
 	private String requirementApproverHierarchyStatus;
-	
+
 	@Transient
 	private String spocName;
 	
 	@Transient
+	private String spocOwnerName;
+
+	@Transient
 	private String spocEmail;
-	
+
 	@Transient
 	private String spocMobilePhone;
-	
+
 	@Transient
 	private String[] reqEducationList;
-	
+
 	@Transient
 	private String reqEducationListString;
-	
+
 	@Transient
 	@JsonProperty
 	private String manager;
 	
 	@Transient
+	@JsonProperty
+	private String primaryRecruiter;
+
+	@Transient
 	private String[] reqSkillsList;
-	
+
 	@Transient
 	private String reqIndustryList;
-	
+
 	@Transient
 	private String reqSkillsListString;
-	
+
 	@Transient
 	private String industrySavedName;
-	
+
 	@Transient
 	private ArrayList<String> approverNames;
-	
+
 	@Transient
 	private Integer highestLevel;
-	
+
 	@Transient
+	@JsonProperty
 	private String noOfApplicants;
-	
+
 	@Transient
+	@JsonProperty
+	private String orgImageUrl;
+
+	@Transient
+	@JsonProperty
+	private String orgRelationId;
+
+	@Transient
+	@JsonProperty
 	private String noOfShortlistedApplicants;
-	
+
 	@Transient
+	@JsonProperty
 	private String noOfSubmittedApplicants;
-	
+
 	@Transient
+	@JsonProperty
 	private String noOfInterviewedApplicants;
-	
+
 	@Transient
+	@JsonProperty
 	private String noOfOfferedApplicants;
 	
 	@Transient
-	private String noOfBackOutApplicants;
-	
+	@JsonProperty
+	private String noOfJoinedApplicants;
+
 	@Transient
+	@JsonProperty
+	private String noOfBackOutApplicants;
+
+	@Transient
+	@JsonProperty
 	private String clientContactName;
-	
+
 	@Transient
 	private String clientContactEmail;
-	
+
 	@Transient
 	@JsonProperty
 	private String isLoginUserAsTeamMember;
-	
+
 	@Transient
 	@JsonProperty
 	private String isLoginUserAsApprover;
-	
+
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsManager;
-	
+
 	@Transient
+	@JsonProperty
 	private String isLoginUserAsInitiator;
-	
+
 	@Transient
+	@JsonProperty
 	private String mailBody;
-	
+
 	@Transient
+	@JsonProperty
 	private String submitToClientFromMailId;
-	
+
 	@Transient
+	@JsonProperty
 	private String submitToClientToMailId;
-	
+
 	@Transient
+	@JsonProperty
 	private String submitToClientMailSubject;
-	
+
 	@Transient
+	@JsonProperty
 	private Integer totalApplicantsForRequirement;
-	
+
 	@Transient
+	@JsonProperty
 	private String approvedBy;
-	
+
 	@Transient
 	private String createdByName;
-	
+
 	@Transient
-    private String[] level1ApproverUserId;
-	
+	@JsonProperty
+	private String[] level1ApproverUserId;
+
 	@Transient
+	@JsonProperty
 	private String[] level2ApproverUserId;
-	
+
 	@Transient
 	private String level1ApproverStatus;
-	
+
 	@Transient
 	private String level2ApproverStatus;
-	
+
 	@Transient
 	private String[] requirementAssignedToUsersId;
-	
+
 	@Transient
+	@JsonProperty
 	private String isRequirementReleasedByuser;
-	
+
 	@Transient
 	@JsonProperty
 	private String isRequirementReleased;
-	
+
 	@Transient
 	private String orgcode;
 
 	@Transient
 	private String isAllowStageAccess;
-	
+
 	@Transient
 	private String reqlevel1ApproverStatus;
-	
+
 	@Transient
 	private String reqlevel2ApproverStatus;
-	
+
 	@Transient
 	private String rejectReasonForRequirement;
-	
+
 	@Transient
 	private String approvalMechanismType;
-	
+
 	@Transient
 	private String postedDateStr;
-	
+
 	@Transient
 	private Long submissionId;
 
 	@Transient
 	private String requirementOrgName;
-	
+
 	@Column(name = "GENERATED_ID")
 	private String generatedId;
-	
+
 	@Transient
 	private String systemGeneratedId;
-	
+
 	@Transient
 	private Integer vendorInterviewsCount;
-	
+
 	@Transient
 	private Integer vendorBackoutCount;
-	
+
 	@Transient
 	private Integer vendorOfferedCount;
-	
+
 	@Transient
 	private Long referId;
-	
-    @Transient
-    @JsonProperty
-    private String isRequirementRelesedToPublic;
-	 
-    @Transient
+
+	@Transient
+	@JsonProperty
+	private String isRequirementRelesedToPublic;
+
+	@Transient
 	@JsonProperty
 	private List<Long> requirementReleasedUserIds;
 
 	@Transient
 	@JsonProperty
 	private String postedOnStr;
-	
+
 	@Transient
 	@JsonProperty
 	private String DT_RowId;
-	
+
 	@Column(name = "FILE_URL")
 	private String fileURL;
+
+	@Transient
+	@JsonProperty
+	private String assignedMembersCount;
+
+	@Transient
+	@JsonProperty
+	private String experienceLevelStr;
 	
+	@Transient
+	@JsonProperty
+	private List<JobFair> jobFairList;
+	
+	@Transient
+    @JsonProperty
+    private String jobsTags;
+	
+	@Transient
+	@JsonProperty
+    private Set<String> tagsList;
+
+	@Transient
+	@JsonProperty
+	private String jobFairDates;
+	
+	@Transient
+	@JsonProperty
+	private String shortlistCount;
+	 
+	@Transient
+	@JsonProperty
+	private String  interviewCount;
+	  
+	@Transient
+	@JsonProperty
+	private String submitToClientCount;
+	  
+	@Transient
+	@JsonProperty
+	private String offersCount;
+	 
+	@Transient
+	@JsonProperty
+	private String joinedCount;
+	
+	@Transient
+	@JsonProperty 
+	private String backoutCount;
+	
+	@Transient
+	@JsonProperty
+	private String rejectedCount;
+	
+	@Transient
+	@JsonProperty
+	private String onHoldCount;
+	
+	@Transient
+	@JsonProperty
+	private String noResponseCount;
+	
+	@Transient
+	@JsonProperty
+	private String jobOwner;
+	
+	@Transient
+	@JsonProperty
+	private String releasedDate;
+	
+	public String getJobFairDates() {
+		return jobFairDates;
+	}
+
+	public void setJobFairDates(String jobFairDates) {
+		this.jobFairDates = jobFairDates;
+	}
+
+
+	public List<JobFair> getJobFairList() {
+		return jobFairList;
+	}
+
+	public void setJobFairList(List<JobFair> jobFairList) {
+		this.jobFairList = jobFairList;
+	}
+
 	public String getRequirementOrgName() {
 		return requirementOrgName;
 	}
@@ -566,8 +776,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.jobType = jobType;
 	}
 
-	
-
 	public String getRejectReasonForRequirement() {
 		return rejectReasonForRequirement;
 	}
@@ -577,7 +785,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getClientSubmissionTemplate() {
-		if(submissionTemplateId != null){
+		if (submissionTemplateId != null) {
 			clientSubmissionTemplate = submissionTemplateId.getTemplateName();
 		}
 		return clientSubmissionTemplate;
@@ -611,8 +819,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.education = education;
 	}
 
-	
-
 	public String getMinExp() {
 		return minExp;
 	}
@@ -645,8 +851,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.clientCurrencyCode = clientCurrencyCode;
 	}
 
-
-
 	public String getIsJobApplied() {
 		return isJobApplied;
 	}
@@ -654,19 +858,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setIsJobApplied(String isJobApplied) {
 		this.isJobApplied = isJobApplied;
 	}
+
 	public String getClientName() {
-		if(clientId != null){
-			if(clientId.getResponderType().equalsIgnoreCase("Client")){
+		if (clientId != null) {
+			if (clientId.getResponderType().equalsIgnoreCase("Client")) {
 				clientName = clientId.getResponderLocationId().getOrg().getOrgName();
 			}
-			if(clientId.getResponderType().equalsIgnoreCase("Vendor")){
+			if (clientId.getResponderType().equalsIgnoreCase("Vendor")) {
 				clientName = clientId.getLocationId().getOrg().getOrgName();
 			}
 		}
-		
+
 		return clientName;
 	}
-	
+
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
@@ -710,7 +915,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setCity(String city) {
 		this.city = city;
 	}
-	
+
 	public String getLocation() {
 		return location;
 	}
@@ -741,14 +946,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public byte[] getDocFile() {
-		return docFile;
-	}
-
-	public void setDocFile(byte[] docFile) {
-		this.docFile = docFile;
 	}
 
 	public String getFileContentType() {
@@ -807,6 +1004,38 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.clientRateType = clientRateType;
 	}
 
+	public String getJobRate() {
+		return jobRate;
+	}
+
+	public void setJobRate(String jobRate) {
+		this.jobRate = jobRate;
+	}
+
+	public String getIncentivized() {
+		return incentivized;
+	}
+
+	public void setIncentivized(String incentivized) {
+		this.incentivized = incentivized;
+	}
+
+	public String getPayOutPeriod() {
+		return payOutPeriod;
+	}
+
+	public void setPayOutPeriod(String payOutPeriod) {
+		this.payOutPeriod = payOutPeriod;
+	}
+
+	public Set<RequirementIncentive> getRequirementIncentive() {
+		return requirementIncentive;
+	}
+
+	public void setRequirementIncentive(Set<RequirementIncentive> requirementIncentive) {
+		this.requirementIncentive = requirementIncentive;
+	}
+
 	public SubmissionTemplate getSubmissionTemplateId() {
 		return submissionTemplateId;
 	}
@@ -855,7 +1084,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.requirementSubmissionStatus = requirementSubmissionStatus;
 	}
 
-
 	public Requirement getParentRequirement() {
 		return parentRequirement;
 	}
@@ -873,7 +1101,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public Date getCreatedDate() {
-		
+
 		return createdDate;
 	}
 
@@ -881,7 +1109,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.createdDate = createdDate;
 	}
 
-	
 	public User getCreatedBy() {
 		return createdBy;
 	}
@@ -913,7 +1140,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setRequirementAssignTo(Set<RequirementAssignTo> requirementAssignTo) {
 		this.requirementAssignTo = requirementAssignTo;
 	}
-	
+
 	public Set<RequirementApproverHierarchy> getRequirementApprover() {
 		return requirementApprover;
 	}
@@ -928,6 +1155,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setSpocName(String spocName) {
 		this.spocName = spocName;
+	}
+
+	public String getSpocOwnerName() {
+		return spocOwnerName;
+	}
+
+	public void setSpocOwnerName(String spocOwnerName) {
+		this.spocOwnerName = spocOwnerName;
 	}
 
 	public String getSpocEmail() {
@@ -955,13 +1190,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getManager() {
-		if(managerUserId != null){
+		if (managerUserId != null) {
 			String managerFirstName = "";
-			if(StringUtils.isNotEmpty(managerUserId.getFirstName())){
+			if (StringUtils.isNotEmpty(managerUserId.getFirstName())) {
 				managerFirstName = managerUserId.getFirstName();
 			}
 			String managerLastName = "";
-			if(StringUtils.isNotEmpty(managerUserId.getLastName())){
+			if (StringUtils.isNotEmpty(managerUserId.getLastName())) {
 				managerLastName = managerUserId.getLastName();
 			}
 			StringBuilder name = new StringBuilder();
@@ -969,6 +1204,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		}
 		return manager;
 	}
+
 	public void setManager(String manager) {
 		this.manager = manager;
 	}
@@ -1085,6 +1321,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.noOfOfferedApplicants = noOfOfferedApplicants;
 	}
 
+	public String getNoOfJoinedApplicants() {
+		return noOfJoinedApplicants;
+	}
+
+	public void setNoOfJoinedApplicants(String noOfJoinedApplicants) {
+		this.noOfJoinedApplicants = noOfJoinedApplicants;
+	}
+
 	public String getClientContactName() {
 		return clientContactName;
 	}
@@ -1120,7 +1364,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public String getIsLoginUserAsManager() {
 		return isLoginUserAsManager;
 	}
-	
 
 	public String getMsg() {
 		return msg;
@@ -1134,13 +1377,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.isLoginUserAsManager = isLoginUserAsManager;
 	}
 
-	public String getIsLoginUserAsInitiator()
-	{
+	public String getIsLoginUserAsInitiator() {
 		return isLoginUserAsInitiator;
 	}
 
-	public void setIsLoginUserAsInitiator(String isLoginUserAsInitiator)
-	{
+	public void setIsLoginUserAsInitiator(String isLoginUserAsInitiator) {
 		this.isLoginUserAsInitiator = isLoginUserAsInitiator;
 	}
 
@@ -1148,7 +1389,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		return requirementSubmissionPreviousStatus;
 	}
 
-	public void setRequirementSubmissionPreviousStatus(REQUIREMENT_SUBMISSION_STATUS requirementSubmissionPreviousStatus) {
+	public void setRequirementSubmissionPreviousStatus(
+			REQUIREMENT_SUBMISSION_STATUS requirementSubmissionPreviousStatus) {
 		this.requirementSubmissionPreviousStatus = requirementSubmissionPreviousStatus;
 	}
 
@@ -1209,9 +1451,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getCreatedByName() {
-		if(StringUtils.isNotEmpty(createdBy.getLastName())){
-			createdByName = createdBy.getFirstName()+" "+createdBy.getLastName();
-		}else{
+		if (StringUtils.isNotEmpty(createdBy.getLastName())) {
+			createdByName = createdBy.getFirstName() + " " + createdBy.getLastName();
+		} else {
 			createdByName = createdBy.getFirstName();
 		}
 		return createdByName;
@@ -1324,7 +1566,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setOrgcode(String orgcode) {
 		this.orgcode = orgcode;
 	}
-	
+
 	public String getIsAllowStageAccess() {
 		return isAllowStageAccess;
 	}
@@ -1350,9 +1592,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getApprovalMechanismType() {
-		
-		if(getRequirementApprover() != null && !getRequirementApprover().isEmpty()){
-			RequirementApproverHierarchy  rah =getRequirementApprover().iterator().next();
+
+		if (getRequirementApprover() != null && !getRequirementApprover().isEmpty()) {
+			RequirementApproverHierarchy rah = getRequirementApprover().iterator().next();
 			approvalMechanismType = rah.getHierarchyType().toString();
 		}
 		return approvalMechanismType;
@@ -1401,7 +1643,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setRewardType(String rewardType) {
 		this.rewardType = rewardType;
 	}
-	
+
 	public String getPostedDateStr() {
 		return postedDateStr;
 	}
@@ -1417,7 +1659,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	public void setAppliedRecruiters(String appliedRecruiters) {
 		this.appliedRecruiters = appliedRecruiters;
 	}
-	
+
 	public Integer getTotalApplicants() {
 		return totalApplicants;
 	}
@@ -1434,7 +1676,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.submissionId = submissionId;
 	}
 
-
 	public String getReqCoolingOffPeriod() {
 		return reqCoolingOffPeriod;
 	}
@@ -1443,13 +1684,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.reqCoolingOffPeriod = reqCoolingOffPeriod;
 	}
 
-	public String getReleaseJobToAllUsers()
-	{
+	public String getReleaseJobToAllUsers() {
 		return releaseJobToAllUsers;
 	}
 
-	public void setReleaseJobToAllUsers(String releaseJobToAllUsers)
-	{
+	public void setReleaseJobToAllUsers(String releaseJobToAllUsers) {
 		this.releaseJobToAllUsers = releaseJobToAllUsers;
 	}
 
@@ -1461,155 +1700,123 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.noticePeriod = noticePeriod;
 	}
 
-	public String getIndustryName()
-	{
+	public String getIndustryName() {
 		return industryName;
 	}
 
-	public void setIndustryName(String industryName)
-	{
+	public void setIndustryName(String industryName) {
 		this.industryName = industryName;
 	}
 
-	public String getMaxRate()
-	{
+	public String getMaxRate() {
 		return maxRate;
 	}
 
-	public void setMaxRate(String maxRate)
-	{
+	public void setMaxRate(String maxRate) {
 		this.maxRate = maxRate;
 	}
 
-	public String getIndustrySavedName()
-	{
+	public String getIndustrySavedName() {
 		return industrySavedName;
 	}
 
-	public void setIndustrySavedName(String industrySavedName)
-	{
+	public void setIndustrySavedName(String industrySavedName) {
 		this.industrySavedName = industrySavedName;
 	}
 
-	public String getReqIndustryList()
-	{
+	public String getReqIndustryList() {
 		return reqIndustryList;
 	}
 
-	public void setReqIndustryList(String reqIndustryList)
-	{
+	public void setReqIndustryList(String reqIndustryList) {
 		this.reqIndustryList = reqIndustryList;
 	}
 
-	public String getTravelAllowance()
-	{
+	public String getTravelAllowance() {
 		return travelAllowance;
 	}
 
-	public void setTravelAllowance(String travelAllowance)
-	{
+	public void setTravelAllowance(String travelAllowance) {
 		this.travelAllowance = travelAllowance;
 	}
 
-	public String getProjectDurationYears()
-	{
+	public String getProjectDurationYears() {
 		return projectDurationYears;
 	}
 
-	public void setProjectDurationYears(String projectDurationYears)
-	{
+	public void setProjectDurationYears(String projectDurationYears) {
 		this.projectDurationYears = projectDurationYears;
 	}
 
-	public String getProjectDurationMonths()
-	{
+	public String getProjectDurationMonths() {
 		return projectDurationMonths;
 	}
 
-	public void setProjectDurationMonths(String projectDurationMonths)
-	{
+	public void setProjectDurationMonths(String projectDurationMonths) {
 		this.projectDurationMonths = projectDurationMonths;
 	}
 
-	public Date getClosedDate()
-	{
+	public Date getClosedDate() {
 		return closedDate;
 	}
 
-	public void setClosedDate(Date closedDate)
-	{
+	public void setClosedDate(Date closedDate) {
 		this.closedDate = closedDate;
 	}
 
-	public String getClosedDateStringFormat()
-	{
+	public String getClosedDateStringFormat() {
 		return closedDateStringFormat;
 	}
 
-	public void setClosedDateStringFormat(String closedDateStringFormat)
-	{
+	public void setClosedDateStringFormat(String closedDateStringFormat) {
 		this.closedDateStringFormat = closedDateStringFormat;
 	}
 
-	public String getIsreceivingApplicants()
-	{
+	public String getIsreceivingApplicants() {
 		return isreceivingApplicants;
 	}
 
-	public void setIsreceivingApplicants(String isreceivingApplicants)
-	{
+	public void setIsreceivingApplicants(String isreceivingApplicants) {
 		this.isreceivingApplicants = isreceivingApplicants;
 	}
 
-	public String getNoOfBackOutApplicants()
-	{
+	public String getNoOfBackOutApplicants() {
 		return noOfBackOutApplicants;
 	}
 
-	public void setNoOfBackOutApplicants(String noOfBackOutApplicants)
-	{
+	public void setNoOfBackOutApplicants(String noOfBackOutApplicants) {
 		this.noOfBackOutApplicants = noOfBackOutApplicants;
 	}
 
-	
-	
-	public Integer getVendorBackoutCount()
-	{
+	public Integer getVendorBackoutCount() {
 		return vendorBackoutCount;
 	}
 
-	public Integer getVendorInterviewsCount()
-	{
+	public Integer getVendorInterviewsCount() {
 		return vendorInterviewsCount;
 	}
 
-	public void setVendorInterviewsCount(Integer vendorInterviewsCount)
-	{
+	public void setVendorInterviewsCount(Integer vendorInterviewsCount) {
 		this.vendorInterviewsCount = vendorInterviewsCount;
 	}
 
-	public void setVendorBackoutCount(Integer vendorBackoutCount)
-	{
+	public void setVendorBackoutCount(Integer vendorBackoutCount) {
 		this.vendorBackoutCount = vendorBackoutCount;
 	}
 
-	public Integer getVendorOfferedCount()
-	{
+	public Integer getVendorOfferedCount() {
 		return vendorOfferedCount;
 	}
 
-	public void setVendorOfferedCount(Integer vendorOfferedCount)
-	{
+	public void setVendorOfferedCount(Integer vendorOfferedCount) {
 		this.vendorOfferedCount = vendorOfferedCount;
 	}
 
-	public Long getReferId()
-	{
+	public Long getReferId() {
 		return referId;
 	}
 
-	public void setReferId(Long referId)
-	{
+	public void setReferId(Long referId) {
 		this.referId = referId;
 	}
 
@@ -1625,8 +1832,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		return serialVersionUID;
 	}
 
-	public String getGeneratedId()
-	{
+	public String getGeneratedId() {
 		return generatedId;
 	}
 
@@ -1638,38 +1844,36 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.approverHierarchy = approverHierarchy;
 	}
 
-	public void setGeneratedId(String generatedId)
-	{
+	public void setGeneratedId(String generatedId) {
 		this.generatedId = generatedId;
 	}
 
-	public String getSystemGeneratedId()
-	{
+	public String getSystemGeneratedId() {
 		return systemGeneratedId;
 	}
 
-	public void setSystemGeneratedId(String systemGeneratedId)
-	{
+	public void setSystemGeneratedId(String systemGeneratedId) {
 		this.systemGeneratedId = systemGeneratedId;
 	}
 
 	public List<Long> getRequirementReleasedUserIds() {
-		if(StringUtils.isNotEmpty(releasedBy) && requirementReleasedUserIds != null){
-			for (String s : releasedBy.split(",")){
+		if (StringUtils.isNotEmpty(releasedBy) && requirementReleasedUserIds != null) {
+			for (String s : releasedBy.split(",")) {
 				requirementReleasedUserIds.add(Long.parseLong(s));
-			 }
+			}
 		}
 		return requirementReleasedUserIds;
 	}
+
 	public void setRequirementReleasedUserIds(List<Long> requirementReleasedUserIds) {
 		this.requirementReleasedUserIds = requirementReleasedUserIds;
 	}
 
 	public String getPostedOnStr() {
-		if(createdDate != null && orgLocationId != null){
+		if (createdDate != null && orgLocationId != null) {
 			SimpleDateFormat dateFormat = orgLocationId.getLocFullFormDateFormatter();
-			if(dateFormat != null)
-			postedOnStr = dateFormat.format(createdDate);	
+			if (dateFormat != null)
+				postedOnStr = dateFormat.format(createdDate);
 		}
 		return postedOnStr;
 	}
@@ -1679,10 +1883,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	}
 
 	public String getIsRequirementRelesedToPublic() {
-		
-		if(isPublic == null   && isCrowdSourcing == null ){
+
+		if (isPublic == null && isCrowdSourcing == null) {
 			isRequirementRelesedToPublic = Constants.NO;
-		}else{
+		} else {
 			isRequirementRelesedToPublic = Constants.YES;
 		}
 		return isRequirementRelesedToPublic;
@@ -1700,25 +1904,367 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 		this.isRequirementReleased = isRequirementReleased;
 	}
 
-	public String getDT_RowId()
-	{
+	public String getDT_RowId() {
 		return DT_RowId;
 	}
 
-	public void setDT_RowId(String dT_RowId)
-	{
+	public void setDT_RowId(String dT_RowId) {
 		DT_RowId = dT_RowId;
 	}
 
-	public String getFileURL()
-	{
+	public String getFileURL() {
 		return fileURL;
 	}
 
-	public void setFileURL(String fileURL)
-	{
+	public void setFileURL(String fileURL) {
 		this.fileURL = fileURL;
 	}
 
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getMedicalClearence() {
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence) {
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance() {
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance) {
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime() {
+		return overTime;
+	}
+
+	public void setOverTime(String overTime) {
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck() {
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck) {
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getClientMaxRate() {
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(String clientMaxRate) {
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	public ProjectClients getProjectClientID() {
+		return projectClientID;
+	}
+
+	public void setProjectClientID(ProjectClients projectClientID) {
+		this.projectClientID = projectClientID;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getOrgRelationUUID() {
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID) {
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getOrgRelationId() {
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId) {
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocUUID() {
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID) {
+		this.spocUUID = spocUUID;
+	}
+
+	public LookUpData getExperienceLevel() {
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(LookUpData experienceLevel) {
+		this.experienceLevel = experienceLevel;
+	}
+
+	public Set<RequirementLocations> getRequirementLocations() {
+		return requirementLocations;
+	}
+
+	public void setRequirementLocations(Set<RequirementLocations> requirementLocations) {
+		this.requirementLocations = requirementLocations;
+	}
+
+	public String getAssignedMembersCount() {
+		return assignedMembersCount;
+	}
+
+	public void setAssignedMembersCount(String assignedMembersCount) {
+		this.assignedMembersCount = assignedMembersCount;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+
+	public String getExperienceLevelStr() {
+		if (StringUtils.isNotEmpty(experienceLevelStr))
+			return experienceLevelStr;
+		else {
+			if (experienceLevel != null) {
+				experienceLevelStr = experienceLevel.getName();
+			}
+			return experienceLevelStr;
+		}
+	}
+
+	public void setExperienceLevelStr(String experienceLevelStr) {
+		this.experienceLevelStr = experienceLevelStr;
+	}
+
+	public String getOrgImageUrl() {
+		return orgImageUrl;
+	}
+
+	public void setOrgImageUrl(String orgImageUrl) {
+		this.orgImageUrl = orgImageUrl;
+	}
+
+	public boolean isWalkIn() {
+		return walkIn;
+	}
+
+	public void setWalkIn(boolean isDriveJob) {
+		this.walkIn = isDriveJob;
+	}
+
+	public String getWalkInDays() {
+		return walkInDays;
+	}
+
+	public void setWalkInDays(String driveDays) {
+		this.walkInDays = driveDays;
+	}
+
+	public User getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(User primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+
+	public String getPrimaryRecruiter() {
+		return primaryRecruiter;
+	}
+
+	public void setPrimaryRecruiter(String primaryRecruiter) {
+		this.primaryRecruiter = primaryRecruiter;
+	}
+
+    /**
+     * @return the jobBoardAccountIdList
+     */
+    public List<Long> getJobBoardAccountIdList() {
+        return jobBoardAccountIdList;
+    }
+
+    /**
+     * @param jobBoardAccountIdList the jobBoardAccountIdList to set
+     */
+    public void setJobBoardAccountIdList(List<Long> jobBoardAccountIdList) {
+        this.jobBoardAccountIdList = jobBoardAccountIdList;
+    }
+
+    /**
+     * @return the requirementJobBoardInfoList
+     */
+    public List<RequirementJobBoardInfo> getRequirementJobBoardInfoList() {
+        return requirementJobBoardInfoList;
+    }
+
+    /**
+     * @param requirementJobBoardInfoList the requirementJobBoardInfoList to set
+     */
+    public void setRequirementJobBoardInfoList(List<RequirementJobBoardInfo> requirementJobBoardInfoList) {
+        this.requirementJobBoardInfoList = requirementJobBoardInfoList;
+    }
+
+	public String getJobsTags() {
+		return jobsTags;
+	}
+
+	public Set<String> getTagsList() {
+		return tagsList;
+	}
+
+	public void setJobsTags(String jobsTags) {
+		this.jobsTags = jobsTags;
+	}
+
+	public void setTagsList(Set<String> tagsList) {
+		this.tagsList = tagsList;
+	}
+
+	public Integer getProfilePercentage() {
+		return profilePercentage;
+	}
+
+	public void setProfilePercentage(Integer profilePercentage) {
+		this.profilePercentage = profilePercentage;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+
+
+	public String getShortlistCount() {
+		return shortlistCount;
+	}
+
+	public void setShortlistCount(String shortlistCount) {
+		this.shortlistCount = shortlistCount;
+	}
+
+	public String getInterviewCount() {
+		return interviewCount;
+	}
+
+	public void setInterviewCount(String interviewCount) {
+		this.interviewCount = interviewCount;
+	}
+
+	public String getSubmitToClientCount() {
+		return submitToClientCount;
+	}
+
+	public void setSubmitToClientCount(String submitToClientCount) {
+		this.submitToClientCount = submitToClientCount;
+	}
+
+	public String getOffersCount() {
+		return offersCount;
+	}
+
+	public void setOffersCount(String offersCount) {
+		this.offersCount = offersCount;
+	}
+
+	public String getJoinedCount() {
+		return joinedCount;
+	}
+
+	public void setJoinedCount(String joinedCount) {
+		this.joinedCount = joinedCount;
+	}
+
+	public String getBackoutCount() {
+		return backoutCount;
+	}
+
+	public void setBackoutCount(String backoutCount) {
+		this.backoutCount = backoutCount;
+	}
+
+	public String getRejectedCount() {
+		return rejectedCount;
+	}
+
+	public void setRejectedCount(String rejectedCount) {
+		this.rejectedCount = rejectedCount;
+	}
+	public Date getRepoenedDate() {
+		return repoenedDate;
+	}
+
+	public void setRepoenedDate(Date repoenedDate) {
+		this.repoenedDate = repoenedDate;
+
+	}
+
+	public String getOnHoldCount()
+	{
+		return onHoldCount;
+	}
+
+	public void setOnHoldCount(String onHoldCount)
+	{
+		this.onHoldCount = onHoldCount;
+	}
+
+	public String getNoResponseCount()
+	{
+		return noResponseCount;
+	}
+
+	public void setNoResponseCount(String noResponseCount)
+	{
+		this.noResponseCount = noResponseCount;
+	}
+
+	public String getJobOwner() {
+		return jobOwner;
+	}
+
+	public void setJobOwner(String jobOwner) {
+		this.jobOwner = jobOwner;
+	}
+
+	public String getReleasedDate() {
+		return releasedDate;
+	}
+
+	public void setReleasedDate(String releasedDate) {
+		this.releasedDate = releasedDate;
+	}
+	
 	
 }

@@ -34,7 +34,8 @@ public class TimeZoneDaoImpl implements TimeZoneDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Timezone getTimezone(Long id) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		return (Timezone) session.get(Timezone.class, id);
+		Timezone timezone = (Timezone) session.get(Timezone.class, id);
+		return timezone;
 	}
 
 }

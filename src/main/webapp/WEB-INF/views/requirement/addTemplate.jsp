@@ -4,26 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
-<style type="text/css">
-.pras.req-title p{
-bottom:-14px;
-}
-.ratetype p {
-bottom: -14px !important;
-left:-20px !important;
-}
-.pras.req-title p{
-bottom:-2px;
-}
-.form-control {
-padding: 6px 12px !important; height: 34px !important;
-}
-.bootstrap-select {
-width: 100% !important;
-}
-</style>
-
-
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
 
 <script>
 	$(document).ready(function() {
@@ -32,8 +13,8 @@ width: 100% !important;
 		
 	});
 </script>
-<script src="resources/js/editor.js"></script>
-<link href="resources/css/editor.css" type="text/css" rel="stylesheet"/>
+<script src="/resources/js/editor.js"></script>
+<link href="/resources/css/editor.css" type="text/css" rel="stylesheet"/>
 		<script>
 			$(document).ready(function() {
 				$("#txtEditor").Editor();
@@ -47,10 +28,7 @@ width: 100% !important;
 		<div class="pull-left">
 			<h2>Job Template</h2>
 		</div>
-		<div class="pull-right brud-crum">
-			<a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo;<a
-				href="<c:url value='/template'/>">Job Template List </a>&raquo;
-			Add Job Template
+		<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/template'/>">Job Template List </a> &raquo; Add Job Template
 		</div>
 	</section>
 	<div class="content-area content-new clearfix">
@@ -63,75 +41,8 @@ width: 100% !important;
 					<div class="clearfix"></div>
 					<div class="mt pras">
 					
-					<div class="col-md-6">
+					<div class="col-md-12 myForm">
 					
-					<div class="form-group" id="jobTitleDiv">
-							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
-							<div class="col-md-9">
-									<input type="text" id="jobTitle" name="jobTitle"
-										value="${requirement.jobTitle}" field-name="Job Title"
-										data-validation="required validate_Space validate_length length2-250"
-										value="" class="form-control" >
-                                     <input type="hidden" value="${requirement.id}" name="requirementId">
-                                      <input type="hidden" value="Y" name="isTemplate">
-									<div class="input-group-btn selp-custom-min">
-									</div>
-							</div>
-					</div>
-						
-					<div class="form-group">
-								<label class="col-md-3">Employment Type</label>
-									<div class="col-md-9">
-										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
-											<option value="">Select</option>
-											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}><a href="#">C2C</a></option>
-											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}><a href="#">W-2</a></option>
-											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}><a href="#">C2H</a></option>
-											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}><a href="#">Contract</a></option>
-											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}><a href="#">Part Time</a></option>
-											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}><a href="#">Full Time</a></option>
-											<option ${requirement.jobType  == "Other" ? 'selected' : ''}><a href="#">Other</a></option>
-										</select>
-								</div>
-					</div>
-						<div class="form-group">
-								<label class="col-md-3">Experience</label>
-								<div class="col-md-9">
-									<div class="row">
-										<div class="col-md-6">
-											<input type="text" class="form-control" placeholder="MinExp"
-												id="minExp" name="minExp" value="${requirement.minExp}"
-												field-name="MinExp"
-												data-validation="validate_Space validate_float validate_length length1-5"
-												data-validation-optional="true" onblur="minMaxExperience();"
-												value="">
-										</div>
-										<div class="col-md-6">
-											<input type="text" class="form-control" id="maxExp"
-												name="maxExp" placeholder="MaxExp"
-												value="${requirement.maxExp}" field-name="MaxExp"
-												data-validation="validate_Space validate_float validate_length length1-5"
-												data-validation-optional="true" onblur="minMaxExperience();"
-												value="">
-										</div>
-									</div>
-									<div class="row" id="expId">
-										<input type="hidden" name="expValidation" id="expValidation">
-									</div>
-	
-								</div>
-							</div>
-
-					<div class="form-group" id="jobTypeDiv" style="display: none">
-							<label class="col-md-3">Employment Type</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
-								</div>
-					</div>
-					
-					</div>
-	
-	                  <div class="col-md-6">     
 	                       <div class="form-group">
 							<label class="col-md-3">Education</label>
 							<div class="col-md-9">
@@ -196,8 +107,227 @@ width: 100% !important;
 									data-validation-optional="true">${requirement.description}</textarea>
 							</div>
 						</div> --%>
+
+					<div class="form-group" id="jobTitleDiv">
+							<label class="col-md-3">Title<span class="text-danger paddingLeft">*</span></label>
+							<div class="col-md-9">
+									<input type="text" id="jobTitle" name="jobTitle"
+										value="${requirement.jobTitle}" field-name="Job Title"
+										data-validation="required validate_Space validate_length length2-250"
+										value="" class="form-control" >
+                                     <input type="hidden" value="${requirement.id}" name="requirementId">
+                                      <input type="hidden" value="Y" name="isTemplate">
+									<div class="input-group-btn selp-custom-min">
+									</div>
+							</div>
+					</div>
 						
-						</div>
+					<div class="form-group">
+								<label class="col-md-3">Employment Type</label>
+									<div class="col-md-9">
+										<select class="selectpicker" id="jobType" name="jobType" onChange="getJobType(this);">
+											<option value="" selected>--- Select Employment Type ---</option>
+											<option ${requirement.jobType  == "C2C" ? 'selected' : ''}>C2C</option>
+											<option ${requirement.jobType  == "W-2" ? 'selected' : ''}>W-2</option>
+											<option ${requirement.jobType  == "C2H" ? 'selected' : ''}>C2H</option>
+											<option ${requirement.jobType  == "Contract" ? 'selected' : ''}>Contract</option>
+											<option ${requirement.jobType  == "Part Time" ? 'selected' : ''}>Part Time</option>
+											<option ${requirement.jobType  == "Full Time" ? 'selected' : ''}>Full Time</option>
+											<option ${requirement.jobType  == "Other" ? 'selected' : ''}>Other</option>
+										</select>
+								</div>
+					</div>
+					
+					
+						<div class="form-group">
+								<label class="col-md-3">Experience</label>
+								<div class="col-md-9">
+									<div class="row">
+										<div class="col-md-6">
+											<input type="text" class="form-control" placeholder="MinExp"
+												id="minExp" name="minExp" value="${requirement.minExp}"
+												field-name="MinExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+										<div class="col-md-6">
+											<input type="text" class="form-control" id="maxExp"
+												name="maxExp" placeholder="MaxExp"
+												value="${requirement.maxExp}" field-name="MaxExp"
+												data-validation="validate_Space validate_float validate_length length1-5"
+												data-validation-optional="true" onblur="minMaxExperience();"
+												value="">
+										</div>
+									</div>
+									<div class="row" id="expId">
+										<input type="hidden" name="expValidation" id="expValidation">
+									</div>
+	
+								</div>
+							</div>
+							
+							
+							
+					  <div class="form-group jobTypeDiv" id="jobTypeDiv" style="display:none">
+            <label class="col-md-3">Other</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}"  field-name="Job Type" value="">
+            </div>
+          </div>
+          
+                       <div class="form-group" id="projectDurationYearsDiv" style="display:none">
+            <label class="col-md-3">Project Duration </label>
+            <div class="col-md-9">
+              <div class="row">
+	                <div class="col-md-6 dropdown-select">
+						<select class="form-control" id="projectDurationYears" name="projectDurationYears">
+							<option value="">--Select Years--</option>
+							<c:forEach var="durationYears" begin="0" end="30" >
+							    <option  ${requirement.projectDurationYears  == durationYears ? 'selected' : ''}>${durationYears}</option>
+							</c:forEach>
+	                   
+						</select>	                 
+	                </div>
+	                <div class="col-md-6 dropdown-select" id="projectDurationMonthsDiv" style="display:none">
+	                <select class="form-control" id="projectDurationMonths" name="projectDurationMonths">
+							<option value="">--Select Months--</option>
+							<c:forEach var="durationMonths" begin="0" end="11" >
+							    <option  ${requirement.projectDurationMonths  == durationMonths ? 'selected' : ''}>${durationMonths}</option>
+							</c:forEach>
+							 
+						</select>
+	                </div>
+              </div>
+            </div>
+          </div>
+    <div class="form-group" >
+            <label class="col-md-3">Experience Level</label>
+            <div class="col-md-9 dropdown-select"> 
+            <select name="experienceLevel">
+            	<option value="">--Select Level--</option>
+            	<c:forEach var="level" items="${experienceLevelList}">
+                   <option value="${level.uniqueKey}" ${requirement.experienceLevel.name  == level.name ? 'selected' : ''} >${level.name}</option>  
+            	</c:forEach>
+            </select>
+            
+            </div>
+          </div>
+           <!--  Verificaiton Radio Buttons -->
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Medical  Clearance </label>
+				<div class="col-md-9">
+				<c:if test="${requirement.medicalClearence == 'Y'}">
+				<span class="paddingRight"><input type="radio"  checked value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.medicalClearence == 'N'}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio" checked  value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.medicalClearence}">
+				<span class="paddingRight"><input type="radio"   value="Y" name="medicalClearence"><span class="mr5"></span>Yes</span>
+			    <span class="paddingLeft"><input type="radio"   value="N" name="medicalClearence"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Security Clearance</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.securityClearance == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.securityClearance == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				<c:if test="${empty requirement.securityClearance}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="securityClearance"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="securityClearance"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">OT</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.overTime == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.overTime == 'N'}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.overTime}">
+				<span class="paddingRight"><input type="radio" value="Y" name="overTime"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="overTime"><span class="mr5"></span>No</span>
+				</c:if>
+				
+				</div>
+		 </div>
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Background Check</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.backgroundCheck == 'Y'}">
+				<span class="paddingRight"><input type="radio" checked value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${requirement.backgroundCheck == 'N'}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio" checked value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				<c:if test="${empty requirement.backgroundCheck}">
+				<span class="paddingRight"><input type="radio"  value="Y" name="backgroundCheck"><span class="mr5"></span>Yes</span>
+				<span class="paddingLeft"><input type="radio"  value="N" name="backgroundCheck"><span class="mr5"></span>No</span>
+				</c:if>
+				</div>
+		 </div> 
+		 
+		 <div class="form-group">
+				<label class="col-md-3">Gender ${requirement.gender}</label>
+				<div class="col-md-9">
+				<c:if test="${requirement.gender == 'Male'}">
+				<span class="paddingRight"><input type="radio" checked value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'Female'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio" checked value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${requirement.gender == 'All'}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" checked value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				<c:if test="${empty requirement.gender}">
+				<span class="paddingRight"><input type="radio"  value="Male" name="gender"><span class="mr5"></span>Male</span>
+				<span class="paddingLeft paddingRight"><input type="radio"  value="Female" name="gender"><span class="mr5"></span>Female</span>
+				<span class="paddingLeft"><input type="radio" value="All" name="gender"><span class="mr5"></span>All</span>
+				</c:if>
+				
+				</div>
+		 </div> 
+		 
+		 
+		 <!--  Radio Buttons -->
+					<%-- <div class="form-group" id="jobTypeDiv" style="display: none">
+							<label class="col-md-3">Employment Type</label>
+								<div class="col-md-9">
+									<input type="text" class="form-control" id="jobOtherType" name="jobOtherType" value="${requirement.otherJobType}" field-name="Job Type" value="">
+								</div>
+					</div> --%>
+					
+					</div>
+	
+	                  
 						
 						<div class="clearfix"></div>
 						<div class="clearfix mb">
@@ -221,7 +351,7 @@ width: 100% !important;
 						<input type="button" value="Save" id="store_RequirementTemplate"
 							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
 						<input type="button" value="Cancel"
-							onClick="javascript:window.location.href = '<c:url value='/template'/>'"
+							onClick="javascript:window.location.href = '<c:url value='${appPath}/template'/>'"
 							class="btn btn-default ml">
 					</div>
 				</div>
@@ -254,7 +384,7 @@ width: 100% !important;
 				var sourceleadUrl = '${sourceleadUrl}';
 				$("#store_RequirementTemplate").attr("disabled", "disabled");
 				$("#store_RequirementTemplate").addClass('button').val('Processing..');
-		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		         $.ajax({
 					 type : "POST",
 					 data: formData,
@@ -316,6 +446,19 @@ width: 100% !important;
 				  $("#jobOtherType").val('');
 			}
 			
+			  if(jobType == 'C2C' || jobType == 'C2H' || jobType == 'Contract'){
+					 
+					
+					 document.getElementById("projectDurationYearsDiv").style.display="block";
+					 document.getElementById("projectDurationMonthsDiv").style.display="block";
+					 
+					 
+				  
+				}else{
+					document.getElementById("projectDurationYearsDiv").style.display="none";
+					document.getElementById("projectDurationMonthsDiv").style.display="none";
+					
+				}
 			
 		 };
 </script> 
@@ -340,10 +483,9 @@ width: 100% !important;
 	       $("#state").on('change', function (e) {
 	    	   getCities();
 	       });
-		       
 	       
            
-            //Adding Customized Educations to the list
+/*             //Adding Customized Educations to the list
 	        var selectone, chosenone;
 	        selectone = $("#education");
 	        selectone.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add New Education:' });
@@ -351,7 +493,7 @@ width: 100% !important;
 	        chosenone.search_field.on('keydown keyup', function(e1)
 		    {
 		    	var newEducation = this.value.replace(",","");
-		        if (tagItBykeyForSkills(e1) && (newEducation != null  && newEducation != '' && newEducation != 'undefined'))
+		        if ((newEducation != null  && newEducation != '' && newEducation != 'undefined') && tagItBykeyForSkills(e1))
 		        {
 		        	preventTabkey(e1);
 		        	var par = this.parent;
@@ -384,7 +526,7 @@ width: 100% !important;
 			    	var newSkill = this.value.replace(","," ");
 			    	
 			    	 
-			        if (tagItBykeyForSkills(e) && (newSkill != null  && newSkill != '' && newSkill != 'undefined'))
+			        if ((newSkill != null  && newSkill != '' && newSkill != 'undefined') && tagItBykeyForSkills(e))
 			        {
 			        	preventTabkey(e); 
 			        	var par = this.parent;
@@ -396,7 +538,7 @@ width: 100% !important;
 				        		
 			        }
 		    	 }
-		    });
+		    }); */
 		    
 			for (var selector in config) {
 			  $(selector).chosen(config[selector]);
@@ -407,6 +549,15 @@ width: 100% !important;
 			})
 			
 </script>
+
+
+ <script>
+	       $(function() { 
+	     	  tagIt("education", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills','skills','Select Education');
+	     	  tagIt("skills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills','skills','Select Skills');
+	     	});
+ </script>
+
 <!-- Eductions and Skills Autocomplete Scripts End Here -->
 
 <script>
@@ -433,16 +584,25 @@ function minMaxExperience(){
 function getJobType(jobType){
 	var existingJobType = '${requirement.jobType}';
 	if(jobType.value == 'Other'){
-		  document.getElementById("jobTypeDiv").style.display="";
+		  document.getElementById("jobTypeDiv").style.display="block";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobOtherType").attr("data-validation", "validate_Space validate_length length2-250");
+		  document.getElementById("projectDurationYearsDiv").style.display="none";
+		  document.getElementById("projectDurationMonthsDiv").style.display="none";
 	}else{
-		document.getElementById("jobTypeDiv").style.display="none";
+		  document.getElementById("jobTypeDiv").style.display="none";
 		  $("#jobOtherType").attr("data-validation-optional", "true");
 		  $("#jobTypeDiv").find('p.jquery_form_error_message').remove();
 		  if(existingJobType ==null || existingJobType == "" || existingJobType == "undefined" || existingJobType != 'Other'){
 			  $("#jobOtherType").val('');
 		  }
+		  if(jobType.value == 'C2C' || jobType.value == 'C2H' || jobType.value == 'Contract'){
+				 document.getElementById("projectDurationYearsDiv").style.display="block";
+				 document.getElementById("projectDurationMonthsDiv").style.display="block";
+			}else{
+				document.getElementById("projectDurationYearsDiv").style.display="none";
+				document.getElementById("projectDurationMonthsDiv").style.display="none";
+			}
 	}
 }
 </script>

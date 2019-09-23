@@ -1,3 +1,4 @@
+
 package com.bis.sourcelead.entity;
 
 import java.util.Date;
@@ -19,9 +20,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
-@Table(name = "INVOICE_LINE_ITEMS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "invoiceLineItems")
+@Table(name = "INVOICE_LINE_ITEMS")
 public class InvoiceLineItems {
 	
 	private static final long serialVersionUID = 1L;
@@ -36,39 +38,46 @@ public class InvoiceLineItems {
 	@Column(name = "END_DATE")
 	private Date endDate;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
 	private Candidate candidate;
 	
 	@Column(name = "INLINE_DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String inlineDescription;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONTRACT_ID", nullable = false)
 	private Contracts contract; 
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "INVOICE_ID", nullable = false)
 	private Invoice invoice;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocation;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_SUBMISSION_ID", nullable = false)
+	private RequirementSubmission requirementSubmissionId;
 	
 	@Column(name = "RATE")
 	private String rate;
 	
 	@Column(name = "TOTAL_HOURS")
 	private String totalHours;
+	
+	@Column(name = "BILL_RATE_TYPE")
+	private String billRateType;
 	
 	@Column(name = "EXPENSES")
 	private String expenses;
@@ -113,24 +122,34 @@ public class InvoiceLineItems {
 	}
 
 	@Transient
+	@JsonProperty
 	private String candidateName;
 	
 	@Transient
+	@JsonProperty
 	private String sowName;
 
 	@Transient
 	private Long candidateId;
+	
+	@Transient
+	private Long submissionId;
 		
 	@Transient
+	@JsonProperty
 	private String startDateStr;
 	
 	@Transient
-	private String endDtaeStr;
+	@JsonProperty
+	private String requirementName;
+	
 	
 	@Transient
+	@JsonProperty
 	private String employeeId;
 
 	@Transient
+	@JsonProperty 
 	private String endDateStr;
 	
 	@Transient
@@ -357,14 +376,6 @@ public class InvoiceLineItems {
 	}
 
 
-	public String getEndDtaeStr() {
-		return endDtaeStr;
-	}
-
-	public void setEndDtaeStr(String endDtaeStr) {
-		this.endDtaeStr = endDtaeStr;
-	}
-
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -430,6 +441,38 @@ public class InvoiceLineItems {
 
 	public void setExpenseCategory(String expenseCategory) {
 		this.expenseCategory = expenseCategory;
+	}
+
+	public String getBillRateType() {
+		return billRateType;
+	}
+
+	public void setBillRateType(String billRateType) {
+		this.billRateType = billRateType;
+	}
+
+	public RequirementSubmission getRequirementSubmissionId() {
+		return requirementSubmissionId;
+	}
+
+	public void setRequirementSubmissionId(RequirementSubmission requirementSubmissionId) {
+		this.requirementSubmissionId = requirementSubmissionId;
+	}
+
+	public Long getSubmissionId() {
+		return submissionId;
+	}
+
+	public void setSubmissionId(Long submissionId) {
+		this.submissionId = submissionId;
+	}
+
+	public String getRequirementName() {
+		return requirementName;
+	}
+
+	public void setRequirementName(String requirementName) {
+		this.requirementName = requirementName;
 	}
 	
 	

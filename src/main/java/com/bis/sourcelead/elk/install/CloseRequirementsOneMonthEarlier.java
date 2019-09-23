@@ -21,7 +21,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class CloseRequirementsOneMonthEarlier {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for update the RequirmentUUID	
@@ -45,7 +46,7 @@ public void closeRequirements() throws IOException, SQLException {
 		 Date date = new Date();
  	     String currentDate = formatter1.format(date);
 		
-			 String sql1 = "SELECT * FROM sourcelead.REQUIREMENT requirement where requirement.CREATED_DATE < '"+earlierDate+"' ";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT requirement where requirement.CREATED_DATE < '"+earlierDate+"' ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -59,7 +60,7 @@ public void closeRequirements() throws IOException, SQLException {
 				 
 				 if(currentStatus.equalsIgnoreCase("OPEN") || currentStatus.equalsIgnoreCase("NEW") 
 						 || currentStatus.equalsIgnoreCase("DRAFT") || currentStatus.equalsIgnoreCase("SUBMITTED") ){
-					 String query = " update sourcelead.REQUIREMENT set REQUIREMENT_SUBMISSION_STATUS = 'CLOSED', REQUIREMENT_SUBMISSION_PREVIOUS_STATUS = ?,UPDATED_DATE = ? where ID = ? ";
+					 String query = " update "+dbconfig.getSchema()+".REQUIREMENT set REQUIREMENT_SUBMISSION_STATUS = 'CLOSED', REQUIREMENT_SUBMISSION_PREVIOUS_STATUS = ?,UPDATED_DATE = ? where ID = ? ";
 					 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 					 pstmt.setString(1, currentStatus);
 					 pstmt.setString(2, currentDate);
@@ -88,10 +89,6 @@ public void closeRequirements() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

@@ -31,7 +31,8 @@ import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.impl.TimesheetSubmissionsServiceImpl;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.timesheet.service.impl.TimesheetSubmissionsServiceImpl;
 import com.bis.sourcelead.util.CommonUtil;
 
 import junit.framework.Assert;
@@ -68,7 +69,7 @@ public class TimesheetSubmissionsServiceTest {
 		//timesheetSubmissions.setId((long) 1);
 		timesheetSubmissions.setStatus("APPROVED");
 		timesheetSubmissions.setStartDate(new Date());
-		timesheetSubmissions.setDocFile(new byte[4096]);
+		//timesheetSubmissions.setDocFile(new byte[4096]);
 		timesheetSubmissions.setEndDate(new Date());
 		timesheetSubmissions.setTotalHours("20");
 		projectMemberId.setId(1l);
@@ -76,7 +77,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setRejectedReason("not logedin"); 
 		user.setId(3l);
 		timesheetSubmissions.setUserId("3");
-		timesheetSubmissions.setApproverUserId(user);
+		//timesheetSubmissions.setApproverUserId(user);
 		assertEquals(timesheetSubmissions,timesheetSubmissionsService.addTimesheetSubmissions(timesheetSubmissions));
 	}
 	
@@ -92,7 +93,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setId((long) 1);
 		timesheetSubmissions.setStatus("APPROVED");
 		timesheetSubmissions.setStartDate(new Date());
-		timesheetSubmissions.setDocFile(new byte[4096]);
+		//timesheetSubmissions.setDocFile(new byte[4096]);
 		timesheetSubmissions.setEndDate(new Date());
 		timesheetSubmissions.setTotalHours("20");
 		projectMemberId.setId(1l);
@@ -100,7 +101,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setRejectedReason("Registered");
 		user.setId(3l);
 		timesheetSubmissions.setUserId("1");
-		timesheetSubmissions.setApproverUserId(user);
+		//timesheetSubmissions.setApproverUserId(user);
 		assertEquals(timesheetSubmissions,timesheetSubmissionsService.updateTimesheetSubmissions(timesheetSubmissions));
 	}
 	
@@ -121,7 +122,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setFullName("AJITH");
 		User approverUserId = new User();
 		approverUserId.setId(3l);
-		timesheetSubmissions.setApproverUserId(approverUserId);
+		//timesheetSubmissions.setApproverUserId(approverUserId);
 		ProjectMembers projectMembers =  new ProjectMembers();
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
@@ -164,7 +165,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setId(userId);
 		User user = new User();
 		user.setId(1l);
-		timesheetSubmissions.setApproverUserId(user);
+		//timesheetSubmissions.setApproverUserId(user);
 		ProjectMembers projectMembers = new ProjectMembers();
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
@@ -226,7 +227,7 @@ public class TimesheetSubmissionsServiceTest {
 		timesheetSubmissions.setFullName("AJITH");
 		User approverUserId = new User();
 		approverUserId.setId(1l);
-		timesheetSubmissions.setApproverUserId(approverUserId);
+		//timesheetSubmissions.setApproverUserId(approverUserId);
 		ProjectMembers projectMembers =  new ProjectMembers();
 		projectMembers.setId(1l);
 		timesheetSubmissions.setProjectMembers(projectMembers);
@@ -255,11 +256,6 @@ public class TimesheetSubmissionsServiceTest {
 		logger.info(" getTimeSheetSubmissionsListByStatus"+timesheetSubmissionslist.size());
 	}*/
 	
-	//@Test
-	public void getTimeSheetSubmissionsCountByUserId() throws Exception{
-		TimeSheetSubmissionCount timesheetSubmissioncount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserId(3l);
-	    assertNotNull(timesheetSubmissioncount);
-	}
 	
 	/*@Test
 	public void getTotalDraftAndSubmittedHoursByuserId() throws Exception{
@@ -300,7 +296,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	//@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
-		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l);
+		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l,3l, 3l,"",null,false);
 		assertNotNull(getTimeSheetSubmissionsCount);
 	}
 	
@@ -389,9 +385,9 @@ public class TimesheetSubmissionsServiceTest {
 	
 	@Test 
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationId() throws Exception{
-		Long userId=1l;
+		Long masterCandidateId=1l;
 		Long orgLocationId=1l;
-		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationId(userId, orgLocationId);
+		TimeSheetSubmissionCount tms = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId,orgLocationId,0l,"All");
 		tms.getApprovalTimesheetsSubmissionsHoursCount();
 		assertNotNull(tms);
 		

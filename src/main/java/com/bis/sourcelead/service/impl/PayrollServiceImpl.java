@@ -2,12 +2,19 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.PayrollDao;
+import com.bis.sourcelead.dao.UserGroupDao;
 import com.bis.sourcelead.entity.Payroll;
+import com.bis.sourcelead.payroll.service.USPaysheetService;
+import com.bis.sourcelead.service.AssociateSalaryService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.PayrollService;
+import com.bis.sourcelead.util.CommonUtil;
 
 /**
  * @author Ajith Matta
@@ -16,10 +23,25 @@ import com.bis.sourcelead.service.PayrollService;
 @Service
 public class PayrollServiceImpl implements PayrollService {
 	
-
+	private static final Logger logger = LoggerFactory.getLogger(PayrollServiceImpl.class);
 	
 	@Autowired
 	private PayrollDao payrollDao;
+	
+	@Autowired
+	private UserGroupDao userGroupDao;
+	
+	@Autowired
+	private AssociateSalaryService associateSalaryService;
+	
+	@Autowired
+	USPaysheetService uSPaysheetService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 	
 
 	public static boolean isNullOrEmpty(String str) {
@@ -41,5 +63,6 @@ public class PayrollServiceImpl implements PayrollService {
 		return payrollDao.getAllPayroll();
 		
 	}
+
 	
 }

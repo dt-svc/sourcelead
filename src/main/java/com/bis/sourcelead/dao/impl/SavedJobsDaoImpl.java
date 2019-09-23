@@ -70,7 +70,7 @@ public class SavedJobsDaoImpl implements SavedJobsDao{
 		List<SavedJobs> savedJobs = new ArrayList<SavedJobs>();
 		logger.debug("getSavedJobsByrequirementIdAndUserId start");
 		savedJobs = session.createQuery("from SavedJobs savedJobs left join fetch savedJobs.requirementId requirement left join fetch savedJobs.userId user "
-				+ "where user.id = :userId and requirement.id = :requirementId " ).setLong("userId", userId).setLong("requirementId", requirementId).setCacheable(true).list();
+				+ "where user.id = :userId and requirement.id = :requirementId " ).setLong("userId", userId).setLong("requirementId", requirementId).list();
 		logger.debug("getSavedJobsByrequirementIdAndUserId end");
 		if (savedJobs.size() > 0) {
 			return savedJobs.get(0);
@@ -104,7 +104,7 @@ public class SavedJobsDaoImpl implements SavedJobsDao{
 		
 		String query = " from SavedJobs savedJobs left join fetch savedJobs.requirementId left join fetch savedJobs.userId user "
 				+ " left join fetch savedJobs.referId refer left join fetch refer.referFromUser where user.id = :userId "+subQuery1+" "+subQuery2+" "+postedOnSubQuery+" ";
-		List<SavedJobs> savedJobsList = session.createQuery(query.toString()).setLong("userId", userId).setCacheable(true).list();
+		List<SavedJobs> savedJobsList = session.createQuery(query.toString()).setLong("userId", userId).list();
         
 		
 		if(savedJobsList.size() >= offset){
@@ -126,7 +126,7 @@ public class SavedJobsDaoImpl implements SavedJobsDao{
 		List<SavedJobs> savedJobs = new ArrayList<SavedJobs>();
 		logger.debug("getSavedJobsByUUID start");
 		savedJobs = session.createQuery("from SavedJobs savedJobs left join fetch savedJobs.requirementId requirement left join fetch savedJobs.userId user "
-				+ "where savedJobs.savedJobUUID = :savedJobUUID  " ).setString("savedJobUUID", savedJobUUID).setCacheable(true).list();
+				+ "where savedJobs.savedJobUUID = :savedJobUUID  " ).setString("savedJobUUID", savedJobUUID).list();
 		logger.debug("getSavedJobsByUUID end");
 		if (savedJobs.size() > 0) {
 			return savedJobs.get(0);

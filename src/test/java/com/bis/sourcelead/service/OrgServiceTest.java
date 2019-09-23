@@ -165,7 +165,7 @@ public class OrgServiceTest {
 	@Test
 	public void getEnrolledOrgs() throws Exception{
 		List<Org> organization = new ArrayList<>();
-		organization = orgService.getEnrolledOrgs(2l, "Active", "srinivas");
+		organization = orgService.getEnrolledOrgs(2l, "Active", "srinivas",0);
 		logger.info("getEnrolledOrgs "+organization.size());
 		
 	}

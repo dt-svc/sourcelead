@@ -24,7 +24,6 @@ import com.bis.sourcelead.enums.REQUIREMENT_RELEASE_Status;
 
 @Entity
 @Table(name = "REQUIREMENT_RELEASE")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementRelease")
 public class RequirementRelease implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -34,13 +33,13 @@ public class RequirementRelease implements Serializable{
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="REQUIREMENT_ID", nullable=false )        
     private Requirement requirementId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORG_SPOC_ID", nullable=false )        
     private User orgSpocId;
 	

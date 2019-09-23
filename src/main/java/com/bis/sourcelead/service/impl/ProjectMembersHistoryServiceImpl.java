@@ -3,6 +3,7 @@ package com.bis.sourcelead.service.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,9 +51,9 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 	}
 
 	@Override
-	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId)
+	public HashMap<String, Date> getProjectMembersStartDateAndEndDateByProjectMemberId(Long projectMemberId,String reportFor)
 			throws Exception {
-		return projectMembersHistoryDao.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMemberId);
+		return projectMembersHistoryDao.getProjectMembersStartDateAndEndDateByProjectMemberId(projectMemberId,reportFor);
 	}
 
 	@Override
@@ -66,4 +67,39 @@ public class ProjectMembersHistoryServiceImpl implements ProjectMembersHistorySe
 		return projectMembersHistoryDao.getProjectMembersAllHistoryByProjectMemberId(projectMemberId);
 	}
 
+	@Override
+	public void deleteProjectMemberHistory(ProjectMembersHistory projectMembersHistory) throws Exception {
+		projectMembersHistoryDao.deleteProjectMemberHistory(projectMembersHistory);
+	}
+
+	@Override
+	public ProjectMembersHistory getProjectMembersOpenHistoryByProjectClientsId(Long projectClientsId,Long projectMemberId)
+			throws Exception {
+		return projectMembersHistoryDao.getProjectMembersOpenHistoryByProjectClientsId(projectClientsId,projectMemberId);
+	}
+
+	@Override
+	public List<ProjectMembersHistory> getProjectMembersHistoryListByProjectMemberId(Long projectMemberId)
+			throws Exception {
+		return projectMembersHistoryDao.getProjectMembersHistoryListByProjectMemberId(projectMemberId);
+	}
+
+	@Override
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(Long projectMemberId,
+			Long orgLocationId) throws Exception {
+		return projectMembersHistoryDao.getProjectMembersHistoryByProjectMemberIdAndOrgLoctionId(projectMemberId, orgLocationId);
+	}
+
+	@Override
+	public HashMap<String, Date> getAssignDateandEndDateByProjectMemberId(Long projectMemberId) {
+		return projectMembersHistoryDao.getAssignDateandEndDateByProjectMemberId(projectMemberId);
+	}
+
+	@Override
+	public ProjectMembersHistory getProjectMembersHistoryByProjectMemberIdAndOrgId(Long projectMemberId, Long orgId)
+			throws Exception {
+		return projectMembersHistoryDao.getProjectMembersHistoryByProjectMemberIdAndOrgId(projectMemberId,orgId);
+	}
+
+	
 }

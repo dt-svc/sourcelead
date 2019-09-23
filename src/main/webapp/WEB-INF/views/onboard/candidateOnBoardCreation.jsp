@@ -1,13 +1,15 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
+
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<script src="resources/js/chosen.jquery.min.js"></script> 
-<script src="resources/js/jquery-fun.js"></script> 
-<script src="resources/js/formvalidator.js"></script>
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/jquery-fun.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+
 
 
 <script> 
@@ -25,6 +27,7 @@
   	        $("#documentstemplateId").val(onBoardingId);
   	        
   	        loadOnboardingCandidate('${onBoardingUUID}');
+  	       shiftListFun();
   	        
 		}else{
 			var candidateId = '${candidateId}';
@@ -49,7 +52,7 @@
       <div class="pull-left">
         <h2>Employee Onboarding</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  &raquo; <a href="<c:url value='${appPath}/candidateOnBoardingList'/>">Onboard & Offboard List</a> &raquo; Employee Onboarding </div>
  </section>
  
  
@@ -78,10 +81,9 @@
                <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
                 <p><strong>Employee Details</strong></p>
                 <div class="form-group" id="onboardCandidatesDiv">
-                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger">*</span></label>
+                  <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
                   <div class="col-md-6">
-                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();" field-name="Candidate">
-                    </select>
+                    <select class="chosen-select" id="onboardCandiate" name="onboardCandiate" data-validation="required" onchange="addCandidateDetailsForOnboarding();validOnboardCandiate();getCandidateDetails();getOfferDetails();shiftListFun();"></select>
                   </div>
                 </div>
                
@@ -89,7 +91,7 @@
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
+                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
                   </div>
@@ -102,7 +104,7 @@
             <div class="tab-pane" id="documents">
               
             <div class="form-horizontal">
-              <form id='templateDocuments_form' name='templateDocuments_form' enctype='multipart/form-data' >
+              <form id='templateDocuments_form' name='templateDocuments_form' >
                  <input type="hidden" name="candidateonboardingId" id="documentstemplateId" value=""/>
                 <p><strong>Acceptance Documents</strong> <br>
                   <small class="text-muted">These documents need to be accepted by the new hire as part of acceptance step  - Learn more</small> </p>
@@ -163,7 +165,7 @@
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/sourcelead/candidateOnBoardingList'">
+                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='/app/candidateOnBoardingList'">
                     <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
                     <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
                   </div>
@@ -178,7 +180,7 @@
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -257,7 +259,7 @@
                                       Candidate </label>
                                     <label class="paddingLeft">
                                       <input type="radio" name="assignedToType"  onclick="validateAssignToType('assingToUser');">
-                                      User </label>
+                                      Associate </label>
                                   </div>
                                   
                                   <div id="assignToUserDiv" style="display: none;" class="mt10">
@@ -380,32 +382,33 @@
  </section>
  
   <jsp:include page="../masterFooter.jsp" />
+
   
   
 <div id="divAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Policies Document"  onchange='validateUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDdocFile' id='REPLACEROWIDdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Policies Document"  onchange='uploadPoliciesDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removePoliciesAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divSupportingAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDSupportingdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Supporting Document" onchange='validateSupportingUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDsupportingdocFile' id='REPLACEROWIDsupportingdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Supporting Document" onchange='uploadSupportingDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeSupportingAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divContractsAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDContractsdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDcontractsdocFile' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc"  field-name="Contract Document" onchange='validateContractsUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDcontractsdocFile' id='REPLACEROWIDcontractsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc"  field-name="Contract Document" onchange='uploadContractDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeContractsAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
 
 <div id="divFormsAttachmentTd1" style="display: none; float: left;">
 			<div id='REPLACEROWIDFormsdocFileuploadFileGroup'>
-	  			<input type='file' name='REPLACEROWIDformsdocFile' id='REPLACEROWIDformsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Forms Document"  onchange='validateFormsUploadFile(REPLACEROWID)'> 
+	  			<input type='file' name='REPLACEROWIDformsdocFile' id='REPLACEROWIDformsdocFile' class="timesheetAttachmentValidation" data-validation="required validatedoc" field-name="Forms Document"  onchange='uploadFormsDocument(REPLACEROWID)'> 
 	  			<i class="fa fa-times" onclick="removeFormsAttachmentRow(REPLACEROWID);"></i>
 	  		</div>
 </div>
@@ -424,8 +427,137 @@ function getEmploymentType(){
 		$("#employmentOtherType").attr("data-validation-optional", "true");
 		$('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
 	}
+	
+	
+	 if(employmentType == 'C2C'){
+		 document.getElementById("vendorsDiv").style.display="";
+		 document.getElementById("vendorContactsDiv").style.display="";
+		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+		
+		 $('#vendors').removeAttr("data-validation-optional"); 
+		 $('#vendorContact').removeAttr("data-validation-optional"); 
+		 
+		 $('#vendors').attr("data-validation","required"); 
+		 $('#vendorContact').attr("data-validation","required");  
+		 
+		 $('#employmentOtherType').removeAttr("data-validation"); 
+		 $('#employmentOtherType').attr("data-validation-optional", "true"); 
+		 $('#employmentOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+		 
+		 
+		  var onboardCandiate = document.getElementById("onboardCandiate").value;
+		  var candidate = onboardCandiate.split(",");
+		  var candidateId = candidate[0];
+		  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
+			  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			  $.ajax({
+				   	type: "POST",
+				    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
+				    success: function(response) {
+				    	if (response.response === "AWKWARD") {
+				    	    location.href = "/errorPage";
+				    	} else if (response.response === "SUCCESS") {
+				    		var json = response.object;
+				    		if(json['vendorOrgRelationId'] != null && json['vendorOrgRelationId'] != '' && json['vendorOrgRelationId'] != 'undefined' 
+			    				 && json['vendorSpocId'] != null && json['vendorSpocId'] != '' && json['vendorSpocId'] != 'undefined'){
+				    			 getVendorsByOrgLocationForAddApplicant(json['vendorOrgRelationId']);
+				    		     getAddApplicantVendorContactList(json['vendorOrgRelationId'],json['vendorSpocId']);
+				    		 }else{
+				    			 getVendorsByOrgLocationForAddApplicant();
+				    		 }
+				    	} else if (response.indexOf('Sign In') !== -1) {
+				    		location.replace(sourceleadUrl);
+				    	} else {
+				    	    showError("Operation failed, please try again");
+				    	}
+				    }
+			   });
+			  $("#loading").removeAttr("style");
+		  }
+	 }else{
+		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+		 document.getElementById("vendorsDiv").style.display="none";
+		 document.getElementById("vendorContactsDiv").style.display="none";
+		 
+		 $('#vendors').removeAttr("data-validation"); 
+		 $('#vendorContact').removeAttr("data-validation"); 
+		 
+		 $('#vendors').attr("data-validation-optional", "true"); 
+		 $('#vendorContact').attr("data-validation-optional", "true");   
+		 
+		 $('#employmentOtherType').removeAttr("data-validation"); 
+		 $('#employmentOtherType').attr("data-validation-optional", "true"); 
+		 $('#employmentOtherType').attr("data-validation","validate_Space validate_length length2-250"); 
+	 }
 }
 </script>
+
+<script>
+ function getVendorsByOrgLocationForAddApplicant(orgRelationId){
+	 $.ajax({
+	    	type: "GET",
+	        url: sourceleadUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>--Select Vendor--</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+		        		var opt = json[i];
+		        		var selected = "";
+		        		if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
+		        			if(opt.id == orgRelationId){
+		        				selected = "selected";
+		        			}
+		        			output = output + "<option value='" +opt.id+ "' "+selected+">"+opt.orgName+"</option>";
+		        		}else{
+		        			output = output + "<option value='" +opt.id+ "'>"+opt.orgName+"</option>";
+		        		}
+		        		
+				}
+	        	$("#vendors").empty();
+		        $("#vendors").append(output);
+		        $('#vendors').trigger("chosen:updated"); 
+		        
+	        },
+	    }); 
+	 
+ }
+ </script>
+ 
+ <script>
+ function getAddApplicantVendorContactList(orgRelationId,spocId){
+	 
+	 var orgRelationID = '';
+	 if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
+		 orgRelationID = orgRelationId;
+	 }else{
+		 orgRelationID = $('#vendors').val();
+	 }
+		 $.ajax({
+			    type: "POST",
+		        url: sourceleadUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(json) {
+		        	$('#vendorContact').empty();
+		        	$('#vendorContact').append('<option value="">--Select Vendor contact--</option>');
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
+		            	 if(spocId != null && spocId != 'undefined' && spocId != ''){
+		            		 if(opt.id == spocId){
+			        				selected = "selected";
+			        			}
+		        			 $('#vendorContact').append('<option value='+opt.id+' '+selected+'>'+opt.spocName+'</option>');
+		            	 }else{
+		            		 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            	 }
+		            	
+		            } 
+		            $('#vendorContact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+ 
 
 <!-- getEmployementTye -->
 
@@ -454,6 +586,7 @@ function addPoliciesAttachment(){
 	function removePoliciesAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentPoliciesRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentPoliciesRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"docFile']").remove();
 		 var  rId = "divAttachmentPoliciesRow"+rowId;
 		  var r = document.getElementById("policiesAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -490,6 +623,7 @@ function addSupportingAttachment(){
 	function removeSupportingAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentSupportingRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentSupportingRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"supportingdocFile']").remove();
 		 var  rId = "divAttachmentSupportingRow"+rowId;
 		  var r = document.getElementById("supportingAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -521,13 +655,27 @@ function addContractsAttachment(){
 			cell0.innerHTML = divAttachmentTdStr;
 			
 			
-}			
+}	
+function uploadContractDocument(id){
+	fileUpload(""+id+"contractsdocFile", "Candidate-Onboard-Contracts", "templateDocuments_form","contractsFileInfo");
+}
+function uploadFormsDocument(id){
+	fileUpload(""+id+"formsdocFile", "Candidate-Onboard-Forms", "templateDocuments_form","formsFileInfo");
+}
+function uploadPoliciesDocument(id){
+	fileUpload(""+id+"docFile", "Candidate-Onboard-Policies", "templateDocuments_form","polaciesFileInfo");
+}
+function uploadSupportingDocument(id){
+	fileUpload(""+id+"supportingdocFile", "Candidate-Onboard-Supporting", "templateDocuments_form","supportingFileInfo");
+}
+ 
 </script>
 	
 <script type="text/javascript">
 	function removeContractsAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentContractsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentContractsRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"contractsdocFile']").remove();
 		 var  rId = "divAttachmentContractsRow"+rowId;
 		  var r = document.getElementById("contractsAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -537,37 +685,6 @@ function addContractsAttachment(){
 		 
 	}
 </script>
-
-
-
-<!-- <script type="text/javascript">
-function validateContractsUploadFile(id)
-{
-	 var selectedFile = $('#'+id+'contractsdocFile').val();
-	  if(validate_fileupload(selectedFile)){
-		   var docSize = $('#'+id+'contractsdocFile')[0].files[0].size;
-	       $("#"+id+"ContractsdocFileuploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-	    	  $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </span>");
-			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
-			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Limit is exceeded than 2MB'); 
-	      }else{
-	    	 $('input#'+id+'contractsdocFile').removeAttr( "record-exist record-exist-errormsg");
-   		 $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove(); 
-	      }
-	  }
-	  else{
-		      $('#'+id+'ContractsdocFileuploadFileGroup').find('p.jquery_form_error_message').remove();
-		      $('#'+id+'ContractsdocFileuploadFileGroup').find('i').after("<p class='jquery_form_error_message'>Invalid Format</span>");
-			  $('#'+id+'contractsdocFile').attr('record-exist','yes');
-			  $('#'+id+'contractsdocFile').attr('record-exist-errorMsg','Invalid Format'); 
-	  }
-	
-}
-</script> -->
-
-
 
 <script>
 function addFormsAttachment(){  
@@ -594,6 +711,7 @@ function addFormsAttachment(){
 	function removeFormsAttachmentRow(rowId) {
 		 document.getElementById("divAttachmentFormsRow"+rowId).style.display = 'none';
 		 document.getElementById("divAttachmentFormsRow"+rowId).value= '';
+		 $("#templateDocuments_form input[data-id='"+rowId+"formsdocFile']").remove();
 		 var  rId = "divAttachmentFormsRow"+rowId;
 		  var r = document.getElementById("formsAttachmentTable").rows[rId];
           var count = 2*(r.cells.length);
@@ -722,30 +840,37 @@ function validateUploadFile(id)
   
   <script>
   function loadOfferAcceptedCandidates(candidateId){
-		var sourceleadUrl = '${sourceleadUrl}';
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getOfferAcceptedCandidatesForOnBoard?${_csrf.parameterName}=${_csrf.token}",	    	   
-		    success: function(data) {
-		    	 var json = JSON.parse(data);
-	        	 var result = "";
-	        	
-	        	result = result +'<option disabled selected>--Select Candidate--</option>';
-	        	for (var i=0; i<json.length; i++)
-				{
-	        		var report = json[i];
-	        		var selected = '';
-	        		if(candidateId != null && candidateId != '' && candidateId != 'undefind'){
-	        			if(candidateId == report.candidateId){
-	        				selected = 'selected';
-	        			}
-	        		}
-	        		result = result +'<option value='+report.candidateId+","+report.id+' '+selected+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
-				}
-	        	 
-	        	 $("#onboardCandiate").empty();
-	           	 $("#onboardCandiate").append(result); 
-	           	 $('#onboardCandiate').trigger("chosen:updated");
+		    success: function(response) {
+		    	if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		 var json = JSON.parse(response.object);
+		        	 var result = "";
+		        	
+		        	result = result +'<option disabled selected>--Select Candidate--</option>';
+		        	for (var i=0; i<json.length; i++)
+					{
+		        		var report = json[i];
+		        		var selected = '';
+		        		if(candidateId != null && candidateId != '' && candidateId != 'undefind'){
+		        			if(candidateId == report.candidateId){
+		        				selected = 'selected';
+		        			}
+		        		}
+		        		result = result +'<option value='+report.candidateId+","+report.id+' '+selected+' >'+report.candidateName+' ('+report.jobTitle+')</option>';
+					}
+		        	 
+		        	 $("#onboardCandiate").empty();
+		           	 $("#onboardCandiate").append(result); 
+		           	 $('#onboardCandiate').trigger("chosen:updated");
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
+		    	}
 		    }
 	   });
 	  
@@ -759,42 +884,60 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
-			    success: function(data) {
-			    	 var json = JSON.parse(data);
-		        	
-			    	 $("#firstName").val(json['firstName']);
-			    	 $("#lastName").val(json['lastName']);
-			    	 $("#mobileNumber").val(json['mobilePhone']);
-			    	 $("#personalEmail").val(json['email']);
-			    	 $("#offBoardLocation").val(json['location']);
-			    	 $("#country").val(json['country']);
-			    	 $("#state").val(json['state']);
-			    	 $("#city").val(json['city']);
-			    	 $("#zipCode").val(json['zipCode']);
-			    	 
-			    	 /* $("#employmentType").val(json['designationType']);
-			    	 $("#employmentType").trigger("chosen:updated"); */
-			    	/*  getOnBoardCandidateCountry(json['country'])
-			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
-			    	 
-			    	 validateOnboardCandidate(json['email']);
+			    success: function(response) {
+			    	if (response.response === "AWKWARD") {
+			    	    location.href = "/errorPage";
+			    	} else if (response.response === "SUCCESS") {
+			    		var json = response.object;
+			    		$("#firstName").val(json['firstName']);
+				    	 $("#lastName").val(json['lastName']);
+				    	 
+				    	 if(json.defaultOrgProbationPeriod != "" && json.defaultOrgProbationPeriod != null && json.defaultOrgProbationPeriod !="undefined"){
+					    	 $("#probationNotice").val(json.defaultOrgProbationPeriod);
+					    	 $('#probationNotice').trigger("chosen:updated");
+				    	 }
+				    	 
+				    	 if(json['mobilePhone'] != "" && json['mobilePhone'] != null && json['mobilePhone'] !="undefined"){
+				        		$("#mobileNumber").val(json['mobilePhone']);
+				        		$("#mobileNumber").attr("readonly","readonly");
+				        	}else{
+				        		$("#mobileNumber").removeAttr("readonly");
+				        	}
+				    	 
+				    	 if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    		 
+				    	 }	 
+				    	 
+				    	 if(json['dateofBirth'] != null && json['dateofBirth'] != "" && json['dateofBirth'] != "undefined"){
+				    		 $("#employeeDateOfBirth").val(json['dateofBirth']); 
+				    	 }
+				    	 
+				    	 $("#personalEmail").val(json['email']);
+				    	 $("#offBoardLocation").val(json['location']);
+				    	 $("#country").val(json['country']);
+				    	 $("#state").val(json['state']);
+				    	 $("#city").val(json['city']);
+				    	 $("#zipCode").val(json['zipcode']);
+				    	 
+				    	 validateOnboardCandidate(json['email']);
+			    	} else if (response.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    	    showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 	  }
-	  
-	  
   }
   </script>
-  
-  
   
   <script>
   function getDashboardCandidateDetails(){
@@ -803,29 +946,68 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,	    	   
-			    success: function(data) {
-			    	 var json = JSON.parse(data);
-		        	
-			    	 $("#firstName").val(json['firstName']);
-			    	 $("#lastName").val(json['lastName']);
-			    	 $("#mobileNumber").val(json['mobilePhone']);
-			    	 $("#personalEmail").val(json['email']);
-			    	 getOnBoardCandidateCountry(json['country'])
-			    	 getOnBoardCandidateStates(json['country'],json['state']);
-			    	 getOnBoardCandidateCities(json['country'],json['state'],json['city']);
-			    	 
+			    success: function(response) {
+			    	if (response.response === "AWKWARD") {
+			    	    location.href = "/errorPage";
+			    	} else if (response.response === "SUCCESS") {
+			    		var json = response.object;
+			    		$("#firstName").val(json['firstName']);
+				    	 $("#lastName").val(json['lastName']);
+				    	
+				    	 
+				    	 if(json['mobilePhone'] != null && json['mobilePhone'] != "" && json['mobilePhone'] !="undefined"){
+				        		$("#mobileNumber").val(json['mobilePhone']);
+				        		$("#mobileNumber").attr("readonly","readonly");
+				        	}else{
+				        		$("#mobileNumber").removeAttr("readonly");
+				        	}
+				    	
+				    	 if(json['gender'] != null && json['gender'] != "" && json['gender'] != "undefined"){
+				    		 $("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+				    		 $("#genderValue").val(json['gender']);
+				    	 }
+				    	 
+				    	 if(json['dateofBirth'] != null && json['dateofBirth'] != "" && json['dateofBirth'] != "undefined"){
+				    		 $("#employeeDateOfBirth").val(json['dateofBirth']); 
+				    	 }
+				    	
+				    	 $("#personalEmail").val(json['email']);
+				    	 if(json['country'] != null && json['country'] != "" && json['country'] != "undefined"){
+					    	 $("#country").val(json['country']);
+				    	 }else{
+					    	 $("#country").removeAttr('readonly');
+				    	 }
+				    	 if(json['state'] != null && json['state'] != "" && json['state'] != "undefined"){
+					    	 $("#state").val(json['state']);
+				    	 }else{
+					    	 $("#state").removeAttr('readonly');
+				    	 }
+				    	 if(json['city'] != null && json['city'] != "" && json['city'] != "undefined"){
+					    	 $("#city").val(json['city']);
+				    	 }else{
+					    	 $("#city").removeAttr('readonly');
+				    	 }
+				    	 if(json['location'] != null && json['location'] != "" && json['location'] != "undefined"){
+					    	 $("#offBoardLocation").val(json['location']);
+				    	 } 
+				    	 if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] != "undefined"){
+					    	 $("#zipCode").val(json['zipCode']);
+				    	 } 
+			    	} else if (response.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    	    showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 	  }
-	  
-	  
   }
   </script>
   
@@ -836,7 +1018,7 @@ function validateUploadFile(id)
 	  var offer = onboardCandiate.split(",");
 	  var offerId = offer[1];
 	  
-	  var sourceleadUrl = '${sourceleadUrl}';
+	  
 	  
 	  var locationCode ='${SourceLeadWeb_locationCode}';
 	  
@@ -845,47 +1027,63 @@ function validateUploadFile(id)
 		  $.ajax({
 			   	type: "POST",
 			    url: sourceleadUrl+"/getOnBoardingCandidateOfferDetails?${_csrf.parameterName}=${_csrf.token}&offerId="+offerId+"&locationCode="+locationCode,	    	   
-			    success: function(data) {
-			    	 var json = JSON.parse(data);
-		        	
-			    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
-			    		 $("#salaryRate").val(json['amount']);
-			    		 $("#paymentType").val(json['paymentType']);
-				    	 $('#paymentType').trigger("chosen:updated");
-				    	 $("#paymentMode").val(json['paymentMode']);
-				    	 $('#paymentMode').trigger("chosen:updated");
-			    	 }
-						if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
-			    		 if(json['positionType'] == 'Other'){
-			    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
-			    			 $("#employmentOtherType").val(json['otherPositionType']);
-			    			 $("#employmentOtherType").attr("data-validation", "required");
-			    			 $("#employmentOtherType").removeAttr("data-validation-optional");
-			    		 }else{
-			    			 $("#employmentOtherType").removeAttr("data-validation");
-			    			 $("#employmentOtherType").attr("data-validation-optional","true");
-			    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-			    		 }
-			    		
-		    		     $("#employmentType").val(json['positionType']);
-				    	 $('#employmentType').trigger("chosen:updated");
-			    		
-			    	 }else{
-			    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
-			    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-			    	 } 
-			    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
-			    		 $("#startDate").val(json['dateOfJoiningStr']);
-			    		 var dt = $(this).datepicker("#startDate");
-			 			 dt.setDate(dt.getDate() + 1);
-			 			 $("#endDate").datepicker("option", "minDate", dt);
-			    	 }
-			    	 
-			    	 
+			    success: function(response) {
+			    	if (response.response === "AWKWARD") {
+			    	    location.href = "/errorPage";
+			    	} else if (response.response === "SUCCESS") {
+			    		var json = JSON.parse(response.object);
+			        	
+				    	 if(json['amount'] != null && json['amount'] != "" && json['amount'] != 'undefined'){
+				    		 $("#salaryRate").val(json['amount']);
+				    		 $("#paymentType").val(json['paymentType']);
+					    	 $('#paymentType').trigger("chosen:updated");
+					    	 $("#paymentMode").val(json['paymentMode']);
+					    	 $('#paymentMode').trigger("chosen:updated");
+				    	 }
+							if(json['positionType'] != null && json['positionType'] != "" && json['positionType'] != 'undefined'){
+				    		 if(json['positionType'] == 'Other'){
+				    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+				    			 $("#employmentOtherType").val(json['otherPositionType']);
+				    			 $("#employmentOtherType").attr("data-validation", "required");
+				    			 $("#employmentOtherType").removeAttr("data-validation-optional");
+				    		 }else{
+				    			 $("#employmentOtherType").removeAttr("data-validation");
+				    			 $("#employmentOtherType").attr("data-validation-optional","true");
+				    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+				    		 }
+				    		 
+			    		     $("#employmentType").val(json['positionType']);
+					    	 $('#employmentType').trigger("chosen:updated");
+					    	 
+					    	 if(json['positionType'] = 'C2C'){
+					    		 getEmploymentType();
+					    		 
+					    		 if(json['orgRelationId'] != null && json['orgRelationId'] != '' && json['orgRelationId'] != 'undefined' 
+				    				 && json['spocId'] != null && json['spocId'] != '' && json['spocId'] != 'undefined'){
+					    			 getVendorsByOrgLocationForAddApplicant(json['orgRelationId']);
+					    		     getAddApplicantVendorContactList(json['orgRelationId'],json['spocId']);
+					    		 }
+				    			
+					    	 }
+				    		
+				    	 }else{
+				    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+				    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+				    	 } 
+				    	 if(json['dateOfJoiningStr'] != null && json['dateOfJoiningStr'] != "" && json['dateOfJoiningStr'] != 'undefined'){
+				    		 $("#startDate").val(json['dateOfJoiningStr']);
+				    		 var dt = getJSDate(json['dateOfJoiningStr'],'${SourceLeadWeb_orgLocations.dateFormat}');
+				 			 dt.setDate(dt.getDate() + 1);
+				 			 $("#endDate").datepicker("option", "minDate", dt);
+				    	 }
+			    	} else if (response.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    	    showError("Operation failed, please try again");
+			    	}
 			    }
 		   });
 	  }
-	  
   }
   </script> 
   
@@ -1003,28 +1201,34 @@ function getOnBoardCandidateCities(country,state,city){
 <script>
 function loadCandidateRoles(onBoardRoleId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getRolesListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	
-        	result = result +'<option  selected value="">--Select Role--</option>';
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		var selected = '';
-        		if(onBoardRoleId != null && onBoardRoleId != "" && onBoardRoleId !="undefined" && onBoardRoleId == report.id){
-            		selected = 'selected';
-            	}
-        		result = result +'<option value='+report.id+' '+selected+' >'+report.displayName+'</option>';
-			}
-        	 
-        	 $("#onboardCandidateRole").empty();
-           	 $("#onboardCandidateRole").append(result); 
-           	 $('#onboardCandidateRole').trigger("chosen:updated");
+	    success: function(response) {
+	    	 var json = JSON.parse(response.object);
+	    	 if (response.response === "AWKWARD") {
+		    	    location.href = "/errorPage";
+		    	} else if (response.response === "SUCCESS") {
+		    		var json = JSON.parse(response.object);
+		    		var result = "";
+		        	result = result +'<option  selected value="">--Select Role--</option>';
+		        	for (var i=0; i<json.length; i++) {
+		        		var report = json[i];
+		        		var selected = '';
+		        		if(onBoardRoleId != null && onBoardRoleId != "" && onBoardRoleId !="undefined" && onBoardRoleId == report.id){
+		            		selected = 'selected';
+		            	}
+		        		result = result +'<option value='+report.id+' '+selected+' >'+report.displayName+'</option>';
+					}
+		        	 $("#onboardCandidateRole").empty();
+		           	 $("#onboardCandidateRole").append(result); 
+		           	 $('#onboardCandidateRole').trigger("chosen:updated");
+		    	} else if (response.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    	    showError("Operation failed, please try again");
+		    	}
 	    }
    });
 }
@@ -1033,28 +1237,34 @@ function loadCandidateRoles(onBoardRoleId){
 <script>
 function loadTeams(onboardTeamId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getTeamsListForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	
-        	result = result +'<option selected value="">--Select Team--</option>';
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		var selected = '';
-        		if(onboardTeamId != null && onboardTeamId != "" && onboardTeamId !="undefined" && onboardTeamId == report.id){
-            		selected = 'selected';
-            	}
-        		result = result +'<option value='+report.id+' '+selected+' >'+report.name+'</option>';
-			}
-        	 
-        	 $("#team").empty();
-           	 $("#team").append(result); 
-           	 $('#team').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    	 	var json = JSON.parse(response.object);
+	    	 	var result = "";
+	        	result = result +'<option selected value="">--Select Team--</option>';
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		var selected = '';
+	        		if(onboardTeamId != null && onboardTeamId != "" && onboardTeamId !="undefined" && onboardTeamId == report.id){
+	            		selected = 'selected';
+	            	}
+	        		result = result +'<option value='+report.id+' '+selected+' >'+report.name+'</option>';
+				}
+	        	 
+	        	 $("#team").empty();
+	           	 $("#team").append(result); 
+	           	 $('#team').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    });
 }
@@ -1064,34 +1274,38 @@ function loadTeams(onboardTeamId){
 <script>
 function loadOnBoardingTemplates(onboardTemplateId){
 	
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardingTemplatesForCandidateOnBoarding?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		if(onboardTemplateId != null && onboardTemplateId != "" && onboardTemplateId !="undefined"){
-        			var templateId = onboardTemplateId.split(",");
-        			var selected = '';
-        			for(var j=0; j<templateId.length; j++){
-        				if(templateId[j] == report.id){
-        					selected = 'selected';
-        				}
-        			}
-        			
-        		}
-        		
-        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
-			}
-        	 
-        	 $("#onboardingTemplate").empty();
-           	 $("#onboardingTemplate").append(result); 
-           	 $('#onboardingTemplate').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var json = JSON.parse(response.object);
+	    		var result = "";
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		if(onboardTemplateId != null && onboardTemplateId != "" && onboardTemplateId !="undefined"){
+	        			var templateId = onboardTemplateId.split(",");
+	        			var selected = '';
+	        			for(var j=0; j<templateId.length; j++){
+	        				if(templateId[j] == report.id){
+	        					selected = 'selected';
+	        				}
+	        			}
+	        		}
+	        		result = result +'<option value='+report.id+' '+selected+'>'+report.templateName+'</option>';
+				}
+	        	 $("#onboardingTemplate").empty();
+	           	 $("#onboardingTemplate").append(result); 
+	           	 $('#onboardingTemplate').trigger("chosen:updated");
+	           	$('#onboardingTemplate_chosen').find(".chosen-choices").css({"min-height":"34px"});
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    });
 }
@@ -1110,9 +1324,8 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 if(role != null && role != "" && role != 'undefined'){
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
-		        success: function(data) {
-		        	var json = JSON.parse(data);
+		        url: sourceleadUrl+"/getAssociateReportingManager?${_csrf.parameterName}=${_csrf.token}&role="+role, 
+		        success: function(json) {
 		        	var output = "";
 		        	output = output + "<option value=''>-- Select Manager --</option>"; 
 		        	for (var i=0; i<json.length; i++)
@@ -1154,48 +1367,45 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	         }; 
 	 
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
-		    var frm = $('#onboardCandidate_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
 	        var sourceleadUrl ='${sourceleadUrl}';
-	        
 	        $("#save_onboardUser").attr("disabled", "disabled");
 	        $("#saveAndContinue_onboardUser").attr("disabled", "disabled");
-	        
-	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        var formData = getFormData1("onboardCandidate_form");
+	        $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	         $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(onboardId) {
-		        	
-		        	if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateDocs").disabled = false;
-		     	        
-		     	       getTemplatePolicyDocumentsDetails(onboardId);
-		     	       getTemplateSupportingDocumentsDetails(onboardId);
-		     	       getTemplateContractsDocumentsDetails(onboardId);
-		     	       getTemplateFormsDocumentsDetails(onboardId);
-		     	       
-		     	       $("#documentstemplateId").val(onboardId);
+		    	 data: formData,
+		 		processData: false, 
+		 		contentType: false,
+		    	 url: sourceleadUrl+"/saveOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}", 
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		var json = response.object;
+			        	if(saveType == 'saveAndContinue'){
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateDocs").disabled = false;
+			     	       getTemplatePolicyDocumentsDetails(json.id);
+			     	       getTemplateSupportingDocumentsDetails(json.id);
+			     	       getTemplateContractsDocumentsDetails(json.id);
+			     	       getTemplateFormsDocumentsDetails(json.id);
+			     	       $("#documentstemplateId").val(json.id);
+			        	}
+		     	        $("#candidateOnBoardId").val(json.id);
+		     	        $("#savedonboardId").val(json.id);
+		     	        $("#save_onboardUser").removeAttr("disabled");
+		   	            $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		     	        $("#loading").removeAttr("style");
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	
-	     	        $("#candidateOnBoardId").val(onboardId);
-	     	        $("#savedonboardId").val(onboardId);
-	     	        
-	     	       $("#save_onboardUser").removeAttr("disabled");
-	   	           $("#saveAndContinue_onboardUser").removeAttr("disabled");
-	   	        
-	     	        $("#loading").removeAttr("style");
 		        },
 		    }); 
 	        return true;
-		
 	  }else{
 		return false;
 	  }
@@ -1215,7 +1425,6 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 }else{
 		 onBoardingUUID = document.getElementById("candidateOnBoardUUID").value;
 	 }
-	 
 	 if(onBoardingUUID){
 		 
 	 addCandidateDetailsForOnboarding();
@@ -1223,159 +1432,168 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 var sourceleadUrl ='${sourceleadUrl}';
 	 var locationCode ='${SourceLeadWeb_locationCode}';
 	 
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
-	        success: function(data) {
-	        	
-	        	 var json = JSON.parse(data);
-	        	
-	        	 var result = "";
-	        	 var selected = 'selected';
-	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
-	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
-	        	 $("#onboardCandiate").empty();
-	           	 $("#onboardCandiate").append(result); 
-	           	 $('#onboardCandiate').trigger("chosen:updated");
-	        	
-	        	$("#firstName").val(json['firstName']);
-	        	
-	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
-	        		$("#lastName").val(json['lastName']);
-	        	}
-	        	
-	        	$("#address1").val(json['address1']);
-	        	
-	        	if(json['address2'] != null && json['address2'] != "" && json['address2'] !="undefined"){
-	        		$("#address2").val(json['address2']);
-	        	}
-	        	
-	        	
-	        	$("#mobileNumber").val(json['mobileNumber']);
-		    	$("#personalEmail").val(json['personalEmail']);
-		    	
-		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
-		    		$("#companyEmail").val(json['companyEmail']);
-		    	}
-		    	
-		    	if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] !="undefined"){
-		    		$("#zipCode").val(json['zipCode']);
-		    	}
-		    	
-		    	if(json['country'] != null && json['country'] != "" && json['country'] !="undefined"){
-		    		$("#country").val(json['country']);
-		    	}
-		    	
-		    	if(json['state'] != null && json['state'] != "" && json['state'] !="undefined"){
-		    		$("#state").val(json['state']);
-		    	}
-		    	
-		    	if(json['city'] != null && json['city'] != "" && json['city'] !="undefined"){
-		    		$("#city").val(json['city']);
-		    	}
-		    	
-		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
-		    		$("#offBoardLocation").val(json['location']);
-		    	}
-		    	
-		    	
-		    	/* getOnBoardCandidateCountry(json['country']);
-		    	getOnBoardCandidateStates(json['country'],json['state']);
-		    	getOnBoardCandidateCities(json['country'],json['state'],json['city']); */
-		    	
-		    	loadCandidateRoles(json['onBoardRoleId']);
-		    	$("#startDate").val(json['joiningDateStr']);
-		    	
-		    	 var dt = toDate("#startDate");
-	 			 dt.setDate(dt.getDate() + 1);
-	 			 $("#endDate").datepicker("option", "minDate", dt);
-	 			 $("#dueDate").datepicker("option", "minDate", dt);
-		    	
-		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
-		    		$("#endDate").val(json['endDateStr']);
-		    	}
-		    	$("#paymentType").val(json['paymentType']);
-		    	 $('#paymentType').trigger("chosen:updated");
-		    	$("#salaryRate").val(json['salaryRate']);
-		    	$("#paymentMode").val(json['paymentMode']);
-		    	 $('#paymentMode').trigger("chosen:updated");
-		    	
-		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
-		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
-		    	}else{
-		    		getReportingManager(json['onBoardRoleId']);
-		    	}
-		    	
-		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
-		    		loadTeams(json['onBoardTeamId']);
-		    	}
-		    	
-		    	
-		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
-		    		 
-		    		 if(json['employmentType'] == 'Other'){
-		    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
-		    			 $("#employmentOtherType").val(json['employmentOtherType']);
-		    			 $("#employmentOtherType").attr("data-validation", "required");
-		    			 $("#employmentOtherType").removeAttr("data-validation-optional");
-		    		 }else{
-		    			 $("#employmentOtherType").removeAttr("data-validation");
-		    			 $("#employmentOtherType").attr("data-validation-optional","true");
-		    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-		    		 }
-		    		
-	    		     $("#employmentType").val(json['employmentType']);
-			    	 $('#employmentType').trigger("chosen:updated");
-		    		
-		    	 }else{
-		    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
-		    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
-		    	 }
-		    	 
-		    	 
-		    	
-		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
-		    		$("#probationNotice").val(json['probationNotice']);
-			    	$('#probationNotice').trigger("chosen:updated");
-		    	}
-		    	
-		    	
-		    	if(json['terminationNotice'] != null && json['terminationNotice'] != "" && json['terminationNotice'] !="undefined"){
-		    		$("#terminationNotice").val(json['terminationNotice']);
-			    	$('#terminationNotice').trigger("chosen:updated");
-		    	}
-		    	
-		    	
-		    	if(json['dueDateStr'] != null && json['dueDateStr'] != "" && json['dueDateStr'] !="undefined"){
-		    		$("#dueDate").val(json['dueDateStr']);
-		    	}
-		    	
-		    	if(json['specialConditions'] != null && json['specialConditions'] != "" && json['specialConditions'] !="undefined"){
-		    		$("#specialConditions").val(json['specialConditions']);
-		    	}
-		    	
-		    	if(json['onboardTemplateId'] != null && json['onboardTemplateId'] != "" && json['onboardTemplateId'] !="undefined"){
-		    		loadOnBoardingTemplates(json['onboardTemplateId']);
-		    	}
-		    	
-		    	$("#savedonboardId").val(json['id']);
-		    	
-		    	$("#loading").removeAttr("style");
+	    	url: sourceleadUrl+"/loadOnboardingCandidateDetails?${_csrf.parameterName}=${_csrf.token}&onBoardingUUID="+onBoardingUUID+"&locationCode="+locationCode, 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			var json = response.object;
+        			var result = "";
+   	        	 var selected = 'selected';
+   	        	 result = result +'<option disabled selected>--Select Candidate--</option>';
+   	        	 result = result +'<option value='+json['onBoardCandidateId']+","+json['onBoardOfferId']+' '+selected+' >'+json['candidateName']+' ('+json['jobTitle']+')</option>';
+   	        	 $("#onboardCandiate").empty();
+   	           	 $("#onboardCandiate").append(result); 
+   	           	 $('#onboardCandiate').trigger("chosen:updated");
+   	        	$("#firstName").val(json['firstName']);
+   	        	if(json['lastName'] != null && json['lastName'] != "" && json['lastName'] !="undefined"){
+   	        		$("#lastName").val(json['lastName']);
+   	        	}
+   	        	$("#address1").val(json['address1']);
+   	        	if(json['address2'] != null && json['address2'] != "" && json['address2'] !="undefined"){
+   	        		$("#address2").val(json['address2']);
+   	        	}
+   	        	if(json['mobileNumber'] != null && json['mobileNumber'] != "" && json['mobileNumber'] !="undefined"){
+   	        		$("#mobileNumber").val(json['mobileNumber']);
+   	        		$("#mobileNumber").attr("readonly","readonly");
+   	        	}else{
+   	        		$("#mobileNumber").remveAttr("readonly");
+   	        	}
+   		    	$("#personalEmail").val(json['personalEmail']);
+   		    	if(json['companyEmail'] != null && json['companyEmail'] != "" && json['companyEmail'] !="undefined"){
+   		    		$("#companyEmail").val(json['companyEmail']);
+   		    	}
+   		    	if(json['zipCode'] != null && json['zipCode'] != "" && json['zipCode'] !="undefined"){
+   		    		$("#zipCode").val(json['zipCode']);
+   		    	}
+   		    	if(json['country'] != null && json['country'] != "" && json['country'] !="undefined"){
+   		    		$("#country").val(json['country']);
+   		    	}
+   		    	if(json['state'] != null && json['state'] != "" && json['state'] !="undefined"){
+   		    		$("#state").val(json['state']);
+   		    	}
+   		    	if(json['city'] != null && json['city'] != "" && json['city'] !="undefined"){
+   		    		$("#city").val(json['city']);
+   		    	}
+   		    	if(json['location'] != null && json['location'] != "" && json['location'] !="undefined"){
+   		    		$("#offBoardLocation").val(json['location']);
+   		    	}
+   		    	
+   		    	if(json['dateOfBirth'] != null && json['dateOfBirth'] != "" && json['dateOfBirth'] !="undefined"){
+   		    		$("#employeeDateOfBirth").val(json['dateOfBirth']);
+   		    	}
+   		    	if(json['gender'] != null && json['gender'] != "" && json['gender'] !="undefined"){
+   		    		if(json['gender'] == 'Male'){
+   		    			$("#male").prop("checked",true);
+   		    		}else if(json['gender'] == 'Female'){
+   		    			$("#female").prop("checked",true);
+   		    		}else if(json['gender'] == 'Transgender'){
+   		    			$("#transgender").prop("checked",true);
+   		    		}
+   		    		$("input[name='gender'][value='"+json['gender']+"']").prop('checked', true); 
+		    		$("#genderValue").val(json['gender']);
+   		    	}
+   		    	if(json['shift'] != null && json['shift'] != "" && json['shift'] !="undefined"){
+   		    		shiftListFun(json['shift']);
+   		    	}
+   		    	
+   		    	if(json['employmentEligibility'] != null && json['employmentEligibility'] != "" && json['employmentEligibility'] !="undefined"){
+   		    	     $("#employmentEligibility").val(json['employmentEligibility']);
+			    	 $('#employmentEligibility').trigger("chosen:updated");
+			    	 changeCitizenShip()
+   		    	}
+   		    	if(json['authorizedWorkUntil'] != null && json['authorizedWorkUntil'] != "" && json['authorizedWorkUntil'] !="undefined"){
+   		    		$("#authorizedDate").val(json['authorizedWorkUntil']);
+   		    	}
+   		    	
+   		    	if(json['uscisAlien'] != null && json['uscisAlien'] != "" && json['uscisAlien'] !="undefined"){
+   		    		$("#uscisAlien").val(json['uscisAlien']);
+   		    	}
+   		    			
+   		    	
+   		    	 
+   		    	loadCandidateRoles(json['onBoardRoleId']);
+   		    	$("#startDate").val(json['joiningDateStr']);
+   		    	 var dt = toDate("#startDate");
+   	 			 dt.setDate(dt.getDate() + 1);
+   	 			 $("#endDate").datepicker("option", "minDate", dt);
+   	 			 $("#dueDate").datepicker("option", "minDate", dt);
+   		    	if(json['endDateStr'] != null && json['endDateStr'] != "" && json['endDateStr'] !="undefined"){
+   		    		$("#endDate").val(json['endDateStr']);
+   		    	}
+   		    	$("#paymentType").val(json['paymentType']);
+   		    	 $('#paymentType').trigger("chosen:updated");
+   		    	$("#salaryRate").val(json['salaryRate']);
+   		    	$("#paymentMode").val(json['paymentMode']);
+   		    	 $('#paymentMode').trigger("chosen:updated");
+   		    	if(json['onBoardManagerId'] != null && json['onBoardManagerId'] != "" && json['onBoardManagerId'] !="undefined"){
+   		    		getReportingManager(json['onBoardRoleId'],json['onBoardManagerId']);
+   		    	}else{
+   		    		getReportingManager(json['onBoardRoleId']);
+   		    	}
+   		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
+   		    		loadTeams(json['onBoardTeamId']);
+   		    	}
+   		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
+   		    		 if(json['employmentType'] == 'Other'){
+   		    			 document.getElementById("otherEmploymentTypeDiv").style.display="block";
+   		    			 $("#employmentOtherType").val(json['employmentOtherType']);
+   		    			 $("#employmentOtherType").attr("data-validation", "required");
+   		    			 $("#employmentOtherType").removeAttr("data-validation-optional");
+   		    		 }else{
+   		    			 $("#employmentOtherType").removeAttr("data-validation");
+   		    			 $("#employmentOtherType").attr("data-validation-optional","true");
+   		    			 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+   		    		 }
+   	    		     $("#employmentType").val(json['employmentType']);
+   			    	 $('#employmentType').trigger("chosen:updated");
+   			    	 if(json['employmentType'] == 'C2C'){
+   			    		  getEmploymentType();
+   			    		  getVendorsByOrgLocationForAddApplicant(json['vendors']);
+   			    		  getAddApplicantVendorContactList(json['vendors'],json['vendorContact']);
+   			    	 }
+   		    	 }else{
+   		    		 document.getElementById("otherEmploymentTypeDiv").style.display="none";
+   		    		 $('#otherEmploymentTypeDiv').find('p.jquery_form_error_message').remove(); 
+   		    	 }
+   		    	if(json['probationNotice'] != null && json['probationNotice'] != "" && json['probationNotice'] !="undefined"){
+   		    		$("#probationNotice").val(json['probationNotice']);
+   			    	$('#probationNotice').trigger("chosen:updated");
+   		    	}
+   		    	if(json['terminationNotice'] != null && json['terminationNotice'] != "" && json['terminationNotice'] !="undefined"){
+   		    		$("#terminationNotice").val(json['terminationNotice']);
+   			    	$('#terminationNotice').trigger("chosen:updated");
+   		    	}
+   		    	if(json['dueDateStr'] != null && json['dueDateStr'] != "" && json['dueDateStr'] !="undefined"){
+   		    		$("#dueDate").val(json['dueDateStr']);
+   		    	}
+   		    	if(json['specialConditions'] != null && json['specialConditions'] != "" && json['specialConditions'] !="undefined"){
+   		    		$("#specialConditions").val(json['specialConditions']);
+   		    	}
+   		    	if(json['onboardTemplateId'] != null && json['onboardTemplateId'] != "" && json['onboardTemplateId'] !="undefined"){
+   		    		loadOnBoardingTemplates(json['onboardTemplateId']);
+   		    	}
+   		    	$("#savedonboardId").val(json['id']);
+   		    	$("#loading").removeAttr("style");
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
 	        },
 	    });
 	 }
  }
  </script>
  
- 
- 
  <script>
  function loadOnboardCandidateFormDashobard(candidateId,offerId){
 	 var candidateName = '${candidateName}';
 	 var jobTitle = '${jobTitle}';
 	 var candidateEmail ='${candidateEmail}';
-	 
 	 var result = "";
 	 var selected = 'selected';
 	 result = result +'<option disabled selected>--Select Candidate--</option>';
@@ -1383,19 +1601,20 @@ function loadOnBoardingTemplates(onboardTemplateId){
 	 $("#onboardCandiate").empty();
    	 $("#onboardCandiate").append(result); 
    	 $('#onboardCandiate').trigger("chosen:updated");
-   	 
    	 getDashboardCandidateDetails();
      validateOnbardUserByCandidateId(candidateId,candidateName);
    	 getOfferDetails();
-     addCandidateDetailsForOnboarding();
-	 
-	
+     addCandidateDetailsForOnboarding(); 	
  }
- </script>
- 
+ </script> 
  
  <script>
 function getTemplatePolicyDocumentsDetails(onboardId){
+	$("#templateDocuments_form input[name*='contractsFileInfo']").remove();
+	$("#templateDocuments_form input[name*='formsFileInfo']").remove();
+	$("#templateDocuments_form input[name*='polaciesFileInfo']").remove();
+	$("#templateDocuments_form input[name*='supportingFileInfo']").remove();
+	
 	if(onboardId == '' || onboardId == null || onboardId =='undefined'){
 		onboardId = document.getElementById("candidateOnBoardId").value;
 	}
@@ -1405,17 +1624,17 @@ function getTemplatePolicyDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='policydocument"+opt.id+"'>";
-           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+           				 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
+           				 
            				
            				 if(opt.onboardDocumentType != 'Candidate Documents'){
            					result = result +"<input class='dele' type='button' onClick='deleteTemplateDocument("+opt.id+",\""+documentType+"\");' >"; 
@@ -1434,7 +1653,7 @@ function getTemplatePolicyDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='policiesAttcahmentMaxRowNumber'  id='policiesAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='policiesAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file' name='0docFile' id='0docFile' field-name='Attachment' onchange='validateUploadFile(0)' data-validation='validatedoc' data-validation-optional='true' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0docFileuploadFileGroup'><input type='file'  id='0docFile' field-name='Attachment' onchange='uploadPoliciesDocument(0)' data-validation='validatedoc' data-validation-optional='true' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addPoliciesAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedPociliesAttachments").empty();
@@ -1461,15 +1680,14 @@ function getTemplateSupportingDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='supportdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1490,7 +1708,7 @@ function getTemplateSupportingDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='supportingAttcahmentMaxRowNumber'  id='supportingAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='supportingAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' name='0supportingdocFile' id='0supportingdocFile' data-validation='validatedoc' data-validation-optional='true' field-name='Attachment' onchange='validateSupportingUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0SupportingdocFileuploadFileGroup'><input type='file' id='0supportingdocFile' data-validation='validatedoc' data-validation-optional='true' field-name='Attachment' onchange='uploadSupportingDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addSupportingAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedSupportedAttachments").empty();
@@ -1518,15 +1736,14 @@ function getTemplateContractsDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='contractsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1547,7 +1764,7 @@ function getTemplateContractsDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='contractsAttcahmentMaxRowNumber'  id='contractsAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='contractsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file' name='0contractsdocFile' id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateContractsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0ContractsdocFileuploadFileGroup'><input type='file'  id='0contractsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true'    onChange='uploadContractDocument(0);' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addContractsAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedContractsAttachments").empty();
@@ -1577,15 +1794,14 @@ function getTemplateFormsDocumentsDetails(onboardId){
 	     $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/getCandidateOnboardTemplateDocumentByOnboardId?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&documentType="+documentType, 
-		        success: function(data) {
+		        success: function(json) {
 		        	
-		        	 var json = JSON.parse(data);
 		        	 var result = "";
 		        	 
                 	 for (var i = 0; i < json.length; i++) { 
                 		 var opt = json[i]; 
                 		 result = result +"<strong id='formsdocument"+opt.id+"'>";
-                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+sourceleadUrl+"/downloadTemplateDocument?documentUUID="+opt.documentUUID+"\"></a></i>";
+                		 result = result +"<i class=''><a class='glyphicon glyphicon-save' href=\""+opt.fileURL+"\"></a></i>";
            				 result = result +"<input type='button' value='"+opt.fileName+"'>";
            				 result = result +"</a>";
            				
@@ -1606,7 +1822,7 @@ function getTemplateFormsDocumentsDetails(onboardId){
                 	 result = result +"<input type='hidden' name='formsAttcahmentMaxRowNumber'  id='formsAttcahmentMaxRowNumber' value='1' />";
                 	 result = result +"<table class='timesheetAttachment' id='formsAttachmentTable' cellpadding='0' cellspacing='0'>";
                 	 result = result +"<tr id='divAttachmentTsRow0'>";
-                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' name='0formsdocFile' id='0formsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='validateFormsUploadFile(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment()'></i></div></td>";
+                	 result = result +"<td><div id='0FormsdocFileuploadFileGroup'><input type='file' id='0formsdocFile' field-name='Attachment' data-validation='validatedoc' data-validation-optional='true' onchange='uploadFormsDocument(0)'  class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addFormsAttachment()'></i></div></td>";
                 	 result = result +"</tr>";
                 	 result = result +"</table>";
                 	 $("#savedFormsAttachments").empty();
@@ -1656,8 +1872,12 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	   $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(data) {
-	        	if(data == 'success'){
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
 	        		if(documentType == 'Policies'){
 	        			document.getElementById("policydocument"+documentId).remove();
 	        		}
@@ -1670,18 +1890,15 @@ function deleteCandidateOnboardDocument(documentUUID,documentId,documentType){
 	        		else if(documentType == 'Forms'){
 	        			document.getElementById("formsdocument"+documentId).remove();
 	        		}
-	        		
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
 	        	}
 	        },
 	    });
-	 
 }
 </script>
-
-
-
-
-
 
 <script>
 function createTemplateDocs(saveType){
@@ -1693,68 +1910,52 @@ function createTemplateDocs(saveType){
          }; 
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
-	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
-		  var frm = $('#templateDocuments_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#templateDocuments_form')[0];
-		   var formData = new FormData(form); 
-		   
-		   
 		   $("#save_docs_button").attr("disabled", "disabled");
 		   $("#save_continue_docs_button").attr("disabled", "disabled");
-		
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+		   var formData = getFormData1("templateDocuments_form");
+	       $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		   $.ajax({
 	        type : "POST",
 		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
-	        processData: false,
-	        contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
-		      success :function(result) {
-		    	  
-		    	  if(saveType == 'saveAndContinue'){
-		        		var $tabs = $('.tabbable li');
-		     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
-		     	        document.getElementById("templateTasks").disabled = false;
-		     	        getOnboardingTasksList();
-		        	}else{
-		        		getTemplatePolicyDocumentsDetails();
-		        		getTemplateSupportingDocumentsDetails();
-		        		getTemplateContractsDocumentsDetails();
-			     	    getTemplateFormsDocumentsDetails();
-		        	}
-		    	  
-		    	  $("#save_docs_button").removeAttr("disabled");
-		   	      $("#save_continue_docs_button").removeAttr("disabled");
-		    	  $("#loading").removeAttr("style");
-		    	  
+		      processData: false, 
+		 	  contentType: false,
+	    	  url: sourceleadUrl+"/saveCandidatedOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
+		      success :function(response) {
+		    	  	if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    	  	} else if (response.response === "SUCCESS") {
+		    	  		if(saveType == 'saveAndContinue') {
+			        		var $tabs = $('.tabbable li');
+			     	        $tabs.filter('.active').next('li').find('a[data-toggle="tab"]').tab('show');
+			     	        document.getElementById("templateTasks").disabled = false;
+			     	        getOnboardingTasksList();
+			        	} else {
+			        		getTemplatePolicyDocumentsDetails();
+			        		getTemplateSupportingDocumentsDetails();
+			        		getTemplateContractsDocumentsDetails();
+				     	    getTemplateFormsDocumentsDetails();
+			        	}
+			    	  $("#save_docs_button").removeAttr("disabled");
+			   	      $("#save_continue_docs_button").removeAttr("disabled");
+			    	  $("#loading").removeAttr("style");
+		    	  	} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 		      }
-	    	  
 	  });
 		return true;
-	  }else{
+	  } else {
 		  return false;
 	  }
-	  
 	  $('body').on('blur', '#templateDocuments_form', function() {
 			$("#templateDocuments_form").showHelpOnFocus();
 			$("#templateDocuments_form").validateOnBlur(false, validationSettings);  
 	   });
-	  
-	  
 }
 </script>
-
-
 
 <script>
   function validateTaskEmail(){
@@ -1764,7 +1965,6 @@ function createTemplateDocs(saveType){
 	  }else{
 		  document.getElementById("taskEmail").value = 'N';
 	  }
-	  
   }
   </script>
   
@@ -1840,22 +2040,27 @@ function createTemplateDocs(saveType){
 function getAssignToUsersList(){
 	var candidateOnBoardId = document.getElementById("candidateOnBoardId").value;
     $("#candidateOnboardTaskId").val(candidateOnBoardId);
-    
-	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getOnboardTasksAssignToUsersList?${_csrf.parameterName}=${_csrf.token}",	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
-        	 var result = "";
-        	for (var i=0; i<json.length; i++)
-			{
-        		var report = json[i];
-        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
-			}
-        	 $("#onboardAssignedTo").empty();
-           	 $("#onboardAssignedTo").append(result); 
-           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+	    		var json = response.data;
+	    		var result = "";
+	        	for (var i=0; i<json.length; i++) {
+	        		var report = json[i];
+	        		result = result +'<option value='+report.userId+' >'+report.userName+'</option>';
+				}
+	        	 $("#onboardAssignedTo").empty();
+	           	 $("#onboardAssignedTo").append(result); 
+	           	 $('#onboardAssignedTo').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
    }); 
 }
@@ -1872,15 +2077,8 @@ function saveOnboardTask(){
          }; 
 	
 	  if ($('#addonboardTask_form').validate(false, validationSettings)){ 
-		    var frm = $('#addonboardTask_form').serializeFormJSON();
-	        var con = JSON.stringify(frm);
-	        con = con.replace(/[{}]/g, "");
-	        
-	        //It will escape all the special characters
-	        var jsonData = encodeURIComponent(con);
-	        
-	        var sourceleadUrl ='${sourceleadUrl}';
-	        
+		    var sourceleadUrl ='${sourceleadUrl}';
+	        var formData = getFormData1("addonboardTask_form");
 	    	var tasksIds = document.getElementsByName("savedTemplateTask");
 	    	var tasks = '';
 	    	for(var i=0; i < tasksIds.length; i++){
@@ -1888,29 +2086,34 @@ function saveOnboardTask(){
 	    	}
 	    	
 	    	tasks = tasks.substring(0, tasks.length - 1);
-	        
 	       
-	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	        $("#onboardtasksLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	        $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&tasks="+tasks, 
-		        success: function(result) {
-		        	if(result == 'success'){
+		    	 data: formData,
+		    	 processData: false,
+			     contentType:false,
+		    	 url: sourceleadUrl+"/saveCandidateOnBoardTasks?${_csrf.parameterName}=${_csrf.token}&tasks="+tasks, 
+		        success: function(response) {
+		        	if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
 		        		$("#onboardtasksLoading").removeAttr("style");
 			        	flushOnboardTask();
 			        	getAssignToUsersList();
 			        	getOnboardingTasksList();
-			        	
 			        	document.getElementById("selector").style.display = 'block';
 			        	$("#selector").fadeIn(150);
 			        	$('#selector').delay(1000).fadeOut('slow');
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
-		        	
 		        },
 		    });   
 	        return true;
-		
-	  }else{
+	  } else {
 		return false;
 	  }
 }
@@ -1924,17 +2127,16 @@ $('body').on('blur', '#addonboardTask_form', function() {
 <script>
 function getOnboardingTasksList(){
 	var onboardId = document.getElementById("candidateOnBoardId").value;
-	var sourceleadUrl = '${sourceleadUrl}';
+	
 	var locationId = '${SourceLeadWeb_orgLocationId}';
 	
 	if(onboardId != null && onboardId != '' && onboardId!= 'undefined'){
 	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/getCandidateOnboardTasksList?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId,	    	   
-	    success: function(data) {
-	    	 var json = JSON.parse(data);
+	    success: function(json) {
         	 var result = "";
         	 
         	if(json.length > 0){ 
@@ -2014,21 +2216,26 @@ function getOnboardingTasksList(){
 
 <script>
 function deleteTask(taskId,taskType){
-	
 	if(taskType != 'Candidate Task'){
 		document.getElementById("onboardTask"+taskId).remove();
 		document.getElementById("templateTask"+taskId).remove()
 	}else{
-		
 		var sourceleadUrl ='${sourceleadUrl}';
 		   $.ajax({
 		    	type: "POST",
 		    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
-		        success: function(data) {
-		        	if(data == 'success'){
-		        		document.getElementById("onboardTask"+taskId).remove();
-		        		
-		        	}
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_DATA") {
+	        		    showError(response.responseMessage);
+	        		} else if (response.response === "AWKWARD") {
+	        		    location.href = "/errorPage";
+	        		} else if (response.response === "SUCCESS") {
+	        			document.getElementById("onboardTask"+taskId).remove();
+	        		} else if (response.indexOf('Sign In') !== -1) {
+	        			location.replace(sourceleadUrl);
+	        		} else {
+	        		    showError("Operation failed, please try again");
+	        		}
 		        },
 		    });
 	}
@@ -2049,18 +2256,24 @@ function saveAndFinishOnboardTemplate(onboardId){
 	
 	tasks = tasks.substring(0, tasks.length - 1);
 	
-	var sourceleadUrl = '${sourceleadUrl}';
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
 	    url: sourceleadUrl+"/saveAndFinishCandidateOnboard?${_csrf.parameterName}=${_csrf.token}&onboardId="+onboardId+"&tasks="+tasks, 	    	   
-	    success: function(data) {
-	    	$("#finish_task").removeAttr("disabled");
-	    	location.replace(sourceleadUrl+"/candidateOnBoardingList");  
+	    success: function(response) {
+	    	if (response.response === "AWKWARD") {
+	    	    location.href = "/errorPage";
+	    	} else if (response.response === "SUCCESS") {
+		    	$("#finish_task").removeAttr("disabled");
+		    	location.replace(sourceleadUrl+"/candidateOnBoardingList"); 
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
 	    }
   });   
-	
-
 }
 </script>
 
@@ -2076,24 +2289,34 @@ function saveAndFinishOnboardTemplate(onboardId){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateOnboardCandidateEmail?${_csrf.parameterName}=${_csrf.token}&email="+email, 
-		        success: function(data) {
-		        	if(data == 'Invalid User Email'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as user</span>");
-						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
-						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
-		        	}
-		        	else if(data == 'Invalid OnboardUser Email'){
-		        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
-						  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as onboard user</span>");
-						  document.getElementById("companyEmail").setAttribute('record-exist','yes');
-						  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
-		        	}
-		        	else{
-		        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
-                         $("#save_onboardUser").removeAttr("disabled");
-                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+		        success: function(response) {
+		        	if (response && response.response === "INVALID_USER") {
+		        	    showError(response.responseMessage);
+		        	} else if (response.response === "AWKWARD") {
+		        	    location.href = "/errorPage";
+		        	} else if (response.response === "SUCCESS") {
+		        		if(response.object == 'Invalid User Email'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as user</span>");
+							  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+							  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
+			        	}
+			        	else if(response.object == 'Invalid OnboardUser Email'){
+			        		  $('#emailDiv').find('p.jquery_form_error_message').remove();
+							  $("input#companyEmail").after("<p class='jquery_form_error_message'>"+email+" is Already as onboard user</span>");
+							  document.getElementById("companyEmail").setAttribute('record-exist','yes');
+							  document.getElementById("companyEmail").setAttribute('record-exist-errorMsg',email+' is as user'); 
+			        	}
+			        	else{
+			        		 $('input#companyEmail').removeAttr( "record-exist record-exist-errormsg");
+			        		 $('#emailDiv').find('p.jquery_form_error_message').remove(); 
+	                         $("#save_onboardUser").removeAttr("disabled");
+	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+			        	}
+		        	} else if (response.indexOf('Sign In') !== -1) {
+		        		location.replace(sourceleadUrl);
+		        	} else {
+		        	    showError("Operation failed, please try again");
 		        	}
 		        },
 		    });
@@ -2111,18 +2334,24 @@ function saveAndFinishOnboardTemplate(onboardId){
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/validateOnboardCandidate?${_csrf.parameterName}=${_csrf.token}&email="+email, 
-			        success: function(result) {
-			        	if(result == 'Invalid'){
-			        		alertMessage(email+" is Already exists as user")
-			        	}
-			        	else{
-	                         $("#save_onboardUser").removeAttr("disabled");
-	                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		if(response.object == 'Invalid'){
+				        		alertMessage(email+" is Already exists as user")
+				        	} else{
+		                         $("#save_onboardUser").removeAttr("disabled");
+		                         $("#saveAndContinue_onboardUser").removeAttr("disabled");
+				        	}
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
 			        	}
 			        },
 			    });
 	  }
-	  
  }
  </script>
  
@@ -2134,17 +2363,21 @@ function saveAndFinishOnboardTemplate(onboardId){
 			 $.ajax({
 			    	type: "POST",
 			        url: sourceleadUrl+"/validateOnboardCandidateFromDashboard?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, 
-			        success: function(result) {
-			        	if(result == 'Invalid'){
+			        success: function(response) {
+			        	if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "FAILED") {
 			        		 $("#save_onboardUser").attr("disabled", "disabled");
 			    			 $("#saveAndContinue_onboardUser" ).attr("disabled", "disabled");
-			        		 alertMessage(candidateName+" is Already exists as onboard user");
+			        		 alertMessage(candidateName+" is Already exists as onboard user");	
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
 			        	}
-			        	
 			        },
 			    });
 	  }
-	  
  }
  </script>
  
@@ -2174,11 +2407,9 @@ function cancel(){
 
 <script>
 function addCandidateDetailsForOnboarding(){
-	
-	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	
+	var loginCountry = "${SourceLeadWeb_orgLocations.country}";
+	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var result = "";
-	
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">First Name <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
@@ -2192,9 +2423,9 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Street Address 1 <span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">Street Address 1</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation="required validate_Space">';
+	 result = result +'<input type="text" class="form-control input-sm" id="address1" name="address1" field-name="Street Address 1" data-validation-optional="true" data-validation="validate_Space">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
@@ -2207,7 +2438,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Location <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Locatin" data-validation="required" >';
+	 result = result +'<input type="text" class="form-control input-sm" name="location"  id="offBoardLocation" placeholder="Location" field-name="Location" data-validation="required" >';
 	 result = result + '<i class="fa fa-refresh btn btn-primary profilerefresh-icon" title="Refresh" onclick="refreshGoogleApiLocation(\'offBoardLocation\',\'country\',\'state\',\'city\',\'zipCode\');"></i>';
 	 result = result +'</div>';
 	 result = result +'</div>';
@@ -2243,7 +2474,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Mobile Number <span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" >';
+	 result = result +'<input type="text" class="form-control input-sm" id="mobileNumber" name="mobileNumber" field-name="Mobile Number" data-validation="required validate_Space validate_length length9-20 validate_phone" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
@@ -2255,33 +2486,98 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
      
-	 result = result +'<div class="form-group" id="emailDiv">';
-	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Date of Birth</label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail" data-validation-optional="true" onblur="validateUserEmail();"  data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" id="employeeDateOfBirth" name="dateOfBirth" readonly="readonly">';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="clearfix"></div>';
+	 
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">Gender <span class="text-danger">*</span></label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<label class="paddingRight"><input type="radio" id="male" value="Male"  name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Male</label>';
+	 result = result +'<label class="paddingLeft paddingRight"><input type="radio" id="female"  value="Female" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Female</label>';
+	 result = result +'<label class="paddingRight"><input type="radio"  value="Transgender" id="transgender" name="gender" onblur="genderCheckValidation(this)"><span class="mr5"></span>Transgender</label>';
+	 result = result +'<input type="hidden"  id="genderValue" name="genderValue"  field-name="Gender" data-validation="required"/>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 
+	 result = result +'<div class="form-group" id="emailDiv">';
+	 result = result +'<label class="col-md-3 control-label">Company Email</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="companyEmail" name="companyEmail"  data-validation-optional="true"   data-validation="validate_Space validate_length length2-100 validate_email">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 if(loginCountry == 'United States'){
+		 result = result +'<div class="form-group">';
+		 result = result +'<label class="col-md-3 control-label">Employment Eligibility</label>';
+		 result = result +'<div class="col-md-6">';
+		 result = result +'<select class="chosen-select" data-placeholder="Select Citizenship" name="employmentEligibility" id="employmentEligibility"   onchange="changeCitizenShip();" field-name="Role">';
+		 result = result +'<option value="">-- Select Citizenship --</option>';
+		 result = result +'<option >Citizenship of United States</option>';
+		 result = result +'<option >Resident Card</option>';
+		 result = result +'<option >An alien authorized to work</option>';
+		 result = result +'<option >Non-citizen</option>';
+		 result = result +'</select>';
+		 result = result +'</div>';
+		 result = result +'</div>';
+		 result = result +'<div class="clearfix"></div>';
+	 }
+	 
+	 result = result +'<div class="form-group" id="residentCardId" style="display:none">';
+	 result = result +'<label class="col-md-3 control-label">USCIS /Alien registration Number</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm" id="uscisAlien" name="uscisAlien"  data-validation-optional="true"   data-validation="validate_length length9-13 validate_int">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 result = result +'<div class="form-group" id="nonCittizenId" style="display:none">';
+	 result = result +'<label class="col-md-3 control-label">Authorized work until </label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<input type="text" class="form-control input-sm calendar" id="authorizedDate" name="authorizedWorkUntil" readonly="readonly">';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'<div class="clearfix"></div>';
+	 
+	 
+	 
 	 result = result +'<p><strong>Position Details</strong></p>';
 
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Role<span class="text-danger">*</span></label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Role" onchange="getReportingManager();"  id="onboardCandidateRole" name="onboardCandidateRole" data-validation="required"  field-name="Role">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick=" refreshRoleList(); "><i class="fa fa-refresh "></i></span>';
+	 result = result +' </div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ENROLL_NEW_ROLE\')">';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/orgRolesList" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
 	 result = result +' </div>';
 	 result = result +'</div>';
-
+	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="dojDiv">';
-	 result = result +'<label class="col-md-3 control-label">Date Of Join<span class="text-danger">*</span></label>';
+	 result = result +'<label class="col-md-3 control-label">Date of Joining<span class="text-danger">*</span></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation="required" field-name="Date Of Join" id="startDate" name="startDate" readonly="readonly">';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 result = result +'</div>';
 	 result = result +'<div class="form-group" id="endDateDiv">';
-	 result = result +'<label class="col-md-3 control-label">End Date</label>';
+	 result = result +'<label class="col-md-3 control-label">End Date <i class="fa fa-info-circle" title="The employment end date for the contract employee"></i></label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" data-validation-optional="true" id="endDate" name="endDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearEndDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
@@ -2301,25 +2597,33 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Manager</label>';
+	 result = result +'<label class="col-md-3 control-label">Manager<span class="text-danger">* </span><i class="fa fa-info-circle" title="The person who is the reporting manager for the onboarded candidate in the organisation"></i></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" data-validation-optional="true">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select Manager" id="reportingManager" name="reportingManager" field-name="Manager" data-validation="required">';
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Team</label>';
-	 result = result +'<div class="col-md-6">';
+	 result = result +'<label class="col-md-3 control-label">Team <i class="fa fa-info-circle" title="The respective team of the onboarded candidate"></i></label>';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Team" id="team" name="team">';
 	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadTeams(); "><i class="fa fa-refresh "></i></span>';
+	 result = result +'</div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TEAM\')">';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="/app/team" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
    
 	 result = result +'<div class="form-group" id="employmentTypeDiv">';
-	 result = result +'<label class="col-md-3 control-label">Employment Type</label>';
+	 result = result +'<label class="col-md-3 control-label">Employment Type<span class="text-danger">* </span></label>';
 	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" data-placeholder="Select Employment Type" id="employmentType" onchange="getEmploymentType();" name="employmentType">';
+	 result = result +'<select class="chosen-select" data-validation="required" id="employmentType" onchange="getEmploymentType();" name="employmentType" field-name="Employment Type">';
 	 result = result +'<option value=""  selected="selected">Select Employment Type</option>';
+	 result = result +'<option value="C2C">C2C</option>';
 	 result = result +'<option value="W-2">W-2</option>';
 	 result = result +'<option value="C2H">C2H</option>';
 	 result = result +'<option value="Part Time">Part Time</option>';
@@ -2329,6 +2633,15 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</select>';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
+	 result = result +'<div class="form-group" >';
+	 result = result +'<label class="col-md-3 control-label">Shift</label>';
+	 result = result +'<div class="col-md-6">';
+	 result = result +'<select class="chosen-select"  id="shiftList"  name="shift">';
+	 result = result +'</select>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 
    
 	 result = result +'<div class="form-group" id="otherEmploymentTypeDiv" style="display: none">';
 	 result = result +'<label class="col-md-3 control-label">Other Type<span class="text-danger">*</span></label>';
@@ -2336,9 +2649,26 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'<input type="text" class="form-control input-sm" id="employmentOtherType" field-name="Other Type" name="employmentOtherType" >';
 	 result = result +'</div>';
 	 result = result +'</div>';
+	 
+    result = result +'<div class="form-group" id="vendorsDiv" style="display: none;">';
+	result = result + '<label class="col-md-3  control-label">Vendors<span class="text-danger">* </span></label>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<select class="chosen-select form-control" id="vendors" data-validation-optional="true" name="vendors" onchange="getAddApplicantVendorContactList();" field-name="Vendors">';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	
+    result = result + '	<div class="form-group" id="vendorContactsDiv" style="display: none;">';
+	result = result + '<label class="col-md-3  control-label">Vendor Contacts<span class="text-danger">* </span></label>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<select class="chosen-select form-control" id="vendorContact" data-validation-optional="true" name="vendorContact"  field-name="vendor Contacts">';
+	result = result + '<option value="">--Select Vendor Contacts--</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>'; 
      
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Probation Notice</label>';
+	 result = result +'<label class="col-md-3 control-label">Probation Period</label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Probation Notice" id="probationNotice" name="probationNotice">';
 	 result = result +'<option selected="selected" value="">Select Probation Notice</option>';
@@ -2350,7 +2680,7 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Termination Notice</label>';
+	 result = result +'<label class="col-md-3 control-label">Notice Period</label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<select class="chosen-select" data-placeholder="Select Termination Notice" id="terminationNotice" name="terminationNotice">';
 	 result = result +'<option selected="selected" value="">Select Termination Notice</option>';
@@ -2362,28 +2692,36 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
      
-     
 	 result = result +'<div class="form-group" id="dueDateDiv">';
-	 result = result +'<label class="col-md-3 control-label">Due Date</label>';
+	 result = result +'<label class="col-md-3 control-label">Due Date <i class="fa fa-info-circle" title="The due date for the onboarding process of the selected candidate"></i></label>';
 	 result = result +'<div class="col-md-6">';
+	 result = result +'<div class="input-group">';
 	 result = result +'<input type="text" class="form-control input-sm calendar" id="dueDate" name="dueDate" readonly="readonly">';
+	 result = result +'<span class="input-group-addon" onClick="clearDueDate();"><i class="colorRed fa fa-times cursorPointer"></i></span>';
+	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Special Conditions</label>';
+	 result = result +'<label class="col-md-3 control-label">Special Conditions <i class="fa fa-info-circle" title="Any special conditions laid by the company"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>';
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'<div class="form-group">';
-	 result = result +'<label class="col-md-3 control-label">Onboard Template</label>';
-	 result = result +'<div class="col-md-6">';
-	 result = result +'<select class="chosen-select" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
+	 result = result +'<label class="col-md-3 control-label">Onboard Template <i class="fa fa-info-circle" title="The default template for the candidate onboarding process"></i></label>';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="row">';
+	 result = result +'<div class="col-md-9 padding_right">';
+	 result = result +'<select class="chosen-select form-control" multiple data-placeholder="Select Template" data-validation-optional="true" id="onboardingTemplate" name="onboardingTemplate" data-validation="required">';
 	 result = result +'</select>';
 	 result = result +'</div>';
+	 result = result +'<span class="cursorPointer btn btn-primary col-md-1 padding_left" onclick="loadOnBoardingTemplates();"><i class="fa fa-refresh"></i></span>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_ON_BOARD_TEMPLATE\')">';
+	 result = result +'<span class="col-md-2 clearfix"><a href="<c:url value="/app/addNewOnboardTemplate" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
 	 result = result +'</div>';
-	 
+	 result = result +'</sec:authorize>';
+	 result = result +'</div>';
 	 
 	 $("#onboardingCandidateDetailsDiv").empty();
    	 $("#onboardingCandidateDetailsDiv").append(result); 
@@ -2396,25 +2734,38 @@ function addCandidateDetailsForOnboarding(){
 	 getDatesScript();
    	 $("#loading").removeAttr("style");
    	 
-   	 
    	var config = {
-			  '.chosen-select'           : {},
-			  '.chosen-select-deselect'  : {allow_single_deselect:true},
-			  '.chosen-select-no-single' : {disable_search_threshold:10},
-			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-			  '.chosen-select-width'     : {width:"95%"}
-			}
-			for (var selector in config) {
-			  $(selector).chosen(config[selector]);
-			}
-			$('.chosen-select').each(function() {
-				var $this = $(this);
-				$this.next().css({'width': '100%'});
-				});
-	
+		  '.chosen-select'           : {},
+		  '.chosen-select-deselect'  : {allow_single_deselect:true},
+		  '.chosen-select-no-single' : {disable_search_threshold:10},
+		  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+		  '.chosen-select-width'     : {width:"95%"}
+	}
+	for (var selector in config) {
+	  $(selector).chosen(config[selector]);
+	}
+	$('.chosen-select').each(function() {
+		var $this = $(this);
+		$this.next().css({'width': '100%'});
+	});
 }
-
 </script>
+
+ <script type="text/javascript">
+	function genderCheckValidation(id){
+		 var gendersList = [];
+ 		 $("input[name='gender']:checked").each( function (i) {
+ 			gendersList[i] = $(this).val();
+ 		});
+ 		 
+		if (gendersList.length > 0) { 
+		document.getElementById("genderValue").value = id.value;
+		}else{
+			$('#genderValue').val(''); 
+		}
+	} 
+</script>
+
 
 <script>
   function getDatesScript(){
@@ -2430,6 +2781,20 @@ function addCandidateDetailsForOnboarding(){
 	  }if(locationDate.match("yyyy-dd-MM")){
 		  finalDateFormat = 'yy-dd-mm'; 
 	  }
+	  
+	  $('#authorizedDate').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  });
+	  
+	  $('#employeeDateOfBirth').datepicker({
+	      dateFormat: finalDateFormat,
+	      changeMonth: true,
+	  	  changeYear: true, 
+	  	  yearRange: "-100:+0",
+	  	  maxDate:0
+	  });
 	  
 	  $('#startDate').datepicker({
 	      dateFormat: finalDateFormat,
@@ -2449,7 +2814,6 @@ function addCandidateDetailsForOnboarding(){
 	      dateFormat: finalDateFormat,
 	      changeMonth: true,
 	  	  changeYear: true, 
-	  	  
 	  	   onSelect : function(selected) {
 	  		var dt = $(this).datepicker('getDate', '-1d');
 			dt.setDate(dt.getDate() - 1);
@@ -2513,4 +2877,82 @@ function toDate(selector) {
     return new Date(from[2], from[1] - 1, from[0]);
 }
 </script>
+<script>
+function refreshRoleList(){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/refreshRoleList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Role</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	       			output = output + "<option value='"+opt.id+"'>"+opt.displayName+"</option>";
+				}
+	        	$("#onboardCandidateRole").empty();
+		        $("#onboardCandidateRole").append(output);
+		        $('#onboardCandidateRole').trigger("chosen:updated");
+	        }
+		 });
+	
+}
+</script>
   
+<script>
+/* function clearStartDate(){
+	$("#startDate").val("");
+	}; */
+function clearEndDate(){
+	$("#endDate").val("");
+	};
+function clearDueDate(){
+	$("#dueDate").val("");
+	};
+</script>
+<script>
+function changeCitizenShip(){
+	var eligibility = $("#employmentEligibility").val();
+	if(eligibility == 'Resident Card'){
+		document.getElementById("residentCardId").style.display="block";
+		document.getElementById("nonCittizenId").style.display="none";
+		$("#authorizedDate").val('');
+	}else if(eligibility == 'An alien authorized to work'){
+		document.getElementById("nonCittizenId").style.display="block";
+		document.getElementById("residentCardId").style.display="block";
+	}else{
+		document.getElementById("nonCittizenId").style.display="none";
+		document.getElementById("residentCardId").style.display="none";
+		$("#authorizedDate").val('');
+		$("#uscisAlien").val('');
+
+	}
+}
+</script>
+ <script>
+function shiftListFun(shiftId){
+		 $.ajax({
+	      type : "POST",
+	       url: sourceleadUrl+"/shiftList",       
+	       success: function(json) {
+	        	var output = "";
+	        	output = output + "<option value=''>Select Shift</option>"; 
+	        	if(json != null && json !='' && json !="undefined"){
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		if(shiftId != null && shiftId != '' && shiftId != 'undefined' && shiftId == opt.id){
+		       			output = output + "<option value='"+opt.id+"' selected >"+opt.shiftName+"</option>";
+	        		}else{
+		       			output = output + "<option value='"+opt.id+"'>"+opt.shiftName+"</option>";
+	        		}
+				}
+	        	}
+	        	$("#shiftList").empty();
+		        $("#shiftList").append(output);
+		        $('#shiftList').trigger("chosen:updated");
+	        }
+		 });
+	
+}
+</script>

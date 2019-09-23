@@ -21,7 +21,7 @@
 							"ajax" : $.fn.dataTable.pipeline({
 								url : url,
 								method : 'POST',
-								pages : 2
+								pages : 1
 							}),
 							"columns" : [ {
 								"data" : "name"
@@ -148,7 +148,7 @@
 													&& opt.resumeId != ''
 													&& opt.resumeId != 'undefined') {
 												result = result
-												+ '         <td><div><span><a class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
+												+ '         <td><div><span><a download class="glyphicon glyphicon-download-alt" href=\"'+opt.fileURL+'\"></a><a class="fa fa-eye ml10" onclick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"></a></span></div></td>';
 											} else {
 												result = result
 														+ '         <td><div>--</div></td>';
@@ -504,7 +504,7 @@
 												if (opt.submissionStatus == 'REJECTED') {
 													result = result
 															+ '<td><div class="tblwidth-150"><span>'
-															+ opt.submissionStatus
+															+ opt.submissionDisplayStatus
 															+ '</span>';
 													if (opt.rejectedReason != null
 															&& opt.rejectedReason != ''
@@ -515,20 +515,6 @@
 																+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
 																+ "<font color='red'>Category</font>: "
 																+ opt.rejectedCategoryType
-																+ '<br>'
-																+ "Reason: "
-																+ opt.rejectedReason
-																+ '</p></div></i></div></td>';
-													}
-
-													if (opt.rejectedReason != null
-															&& opt.rejectedReason != ''
-															&& opt.rejectedReason != 'undefined'
-															&& opt.rejectedCategoryType == null) {
-														result = result
-																+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
-																+ "<font color='red'>Category</font>: "
-																+ "Bad Fit"
 																+ '<br>'
 																+ "Reason: "
 																+ opt.rejectedReason
@@ -552,7 +538,43 @@
 																+ opt.rejectedReason
 																+ '</p></div></i></div></td>';
 													}
-												} else {
+												} else if (opt.submissionStatus == 'BACKOUT') {
+													result = result
+													+ '<td><div class="tblwidth-150"><span>'
+													+ opt.submissionStatus
+													+ '</span>';
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+													&& opt.backOutReason != 'undefined'
+													&& opt.backOutCategoryType != null
+													&& opt.backOutCategoryType != 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>: "
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ "Reason: "
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
+											if (opt.backOutReason != null
+													&& opt.backOutReason != ''
+													&& opt.backOutReason != 'undefined'
+													&& opt.backOutCategoryType != null
+													&& opt.backOutCategoryType == 'Other') {
+												result = result
+														+ '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'
+														+ "<font color='red'>Category</font>:"
+														+ opt.backOutCategoryType
+														+ '<br>'
+														+ "Other: "
+														+ opt.backOutCategoryOther
+														+ '<br>'
+														+ "Reason: "
+														+ opt.backOutReason
+														+ '</p></div></i></div></td>';
+											}
+										}else {
 													result = result
 															+ '<td><div class="tblwidth-150">';
 													result = result
@@ -564,14 +586,18 @@
 															+ ',\''
 															+ submissionType
 															+ '\')";>';
-													result = result
-															+ "<option value='Status'>"
-															+ opt.submissionStatus
-															+ "</option><option value='Reject'>Reject</option>";
-													if (opt.submissionStatus == 'OFFERACCEPTED'
-															|| opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
+													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
+													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='On Hold'>On Hold</option>";
+														}
+													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
+														result = result + "<option value='NoResponse'>NoResponse</option>";
+														}
+													result = result + "<option value='Reject'>Reject</option>";
+													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
+														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {
 														result = result
-																+ '<option value="backout">Back-Out</option>';
+																+ '<option value="backout">BackOut</option>';
 													}
 													result = result
 															+ '</select>';
@@ -581,7 +607,7 @@
 											} else {
 												result = result
 														+ '<td><div class="tblwidth-150"><span>'
-														+ opt.submissionStatus
+														+ opt.submissionDisplayStatus
 														+ '</span>';
 											}
 											return result;
@@ -600,7 +626,7 @@
 								"sSearch" : "",
 								"sZeroRecords" : "",
 								"sEmptyTable" : "",
-								"sProcessing" : "<img src='resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+								"sProcessing" : "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
 							}
 						});
 		$("#requirementsPagination").wrap(

@@ -3,19 +3,13 @@
 <meta http-equiv="Expires" content="0">
 <!-- these files for autocomplete with tagit -->
 
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
 <style>
-.addUser-org {
-	overflow-x: auto;
-}
-
-.validation_p p.jquery_form_error_message {
-	bottom: -25px !important;
-}
+.addUser-org { overflow-x: auto; }
 </style>
 <%-- 
      @author : prasadK.
@@ -86,21 +80,21 @@ function candReferencesList(candidateId){
              			/*  var json = JSON.parse(data);  */
 	                	 $("#candidateReferencesList").empty();
 	                	 var result = "";
-	                	 result = result +"<table id='candidateReferencesPagination' class='display' cellspacing='0' width='100%' >"; 
+	                	 result = result +"<table id='candidateReferencesPaginationId' class='display' cellspacing='0' width='100%' >"; 
 	                     result = result +"<thead>"; 
 	                     result = result +"  <tr>"; 
 	                     result  = result + '<th>Name </th>';
 	                 	 result  = result + '<th>Email</th>';
 	                 	 result  = result + '<th>Phone</th>';
 	                 	 result  = result + '<th>Relation </th>';
+	                 	result = result + '<th>Designation </th>';
 	                 	 result  = result + '<th>Comment </th>';
 	                 	 result  = result + '<th>Action </th>';
 	                     result = result +"  </tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
-	                     
-	                      for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
+	                      for (var i = 0; i < json.data.length; i++) { 
+	                    	 var opt = json.data[i];  
 	                    	 result  = result + ' <tr>';
 	                    	 if(opt.name != null && opt.name != '' && opt.name != "undefined")
 	    	             	 {
@@ -126,6 +120,11 @@ function candReferencesList(candidateId){
 		                    	 }else{
 		                    		 result  = result + ' <td><div><span>----</span></div></td>';
 		                    	 }
+	                    	 if (opt.designation != null && opt.designation != ''&& opt.designation != 'undefined') {
+	 							result = result	+ ' <td><div><span title="'+opt.designation+'">'+ opt.designation + '</span></div></td>';
+	 						   } else {
+	 							result = result	+ ' <td><div><span>----</span></div></td>';
+	 						   }
 	                    	 
 	                    	 if(opt.comment != null && opt.comment != '' && opt.comment != 'undefined'){
 		                    	 result  = result + ' <td><div><span title="'+opt.comment+'">'+opt.comment+'</span></div></td>';
@@ -176,17 +175,19 @@ function candidateReferencesList(candidateId){
 
 <script>
 function candidateReferencesPagination(){  
-    $('#candidateReferencesPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[5, 15, 20, -1], [5, 15, 20, "All"]],
-    	"bLengthChange": false,
-    	"bDestroy": true,
-    	"ordering": false,
-    	"oLanguage": {
-     		"sSearch": "",
-     		 "sZeroRecords": "", "sEmptyTable": ""
-     	}
-    } );
+	
+	$('#candidateReferencesPaginationId').DataTable({
+		"scrollCollapse" : false,
+		"lengthMenu" : [ [ 10, 15, 20, -1 ], [ 10, 15, 20, "All" ] ],
+		"bLengthChange" : true,
+		"bDestroy" : true,
+		"ordering" : true,
+		"oLanguage" : {
+			"sSearch" : "",
+			"sZeroRecords" : "",
+			"sEmptyTable" : ""
+		}
+	});
 }
 </script>
 
@@ -222,11 +223,19 @@ function addReference(candidateId) {
 	result = result  +'</div>';
 	result = result  +'</div>';    
 	
-	result = result  +'<div class="clearfix mb10">';
-	result = result  +'<div class="col-md-12">';
-	result = result  +'<input type="text" name="email" field-name="Email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
-	result = result  +'</div>';
-	result = result  +'</div>'; 
+	result = result + '<div class="clearfix mb">';
+	result = result + '<div class="col-md-12" id="emailDivId">';
+	
+	result = result + '<div class="input-group errorInptgroup">';
+	result = result+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+');">';
+	result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+	result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+	result = result + '</i>';
+	result = result + '</span>';
+  	result = result + '</div>';
+	
+	result = result + '</div>';
+	result = result + '</div>';
 	
 	result = result  +'<div class="clearfix mb10">';
 	result = result  +'<div class="col-md-12">';
@@ -319,41 +328,40 @@ function addReference(candidateId) {
 					scrollToTopOnError : true,
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
-			 if ($('#canReference_form').validate(false, validationSettings)){
-				var frm = $('#canReference_form').serializeFormJSON();
-				var con = JSON.stringify(frm);
-				
-				var form = $('#canReference_form')[0];
-	      		var formData = new FormData(form); 
-			  	formData.append("json",con);
-			  	formData.append("candidateId",candidateId);
-			  	formData.append("userId",'${SourceLeadWeb_user.id}');
-			  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
-				$("#save_ref").attr("disabled", "disabled");
-         		$("#save_ref" ).addClass('button').val('Processing..');
-				//It will escape all the special characters
-		        var jsonData = encodeURIComponent(con);
-				$.ajax({
-						type : "POST",
-		        	    data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"",
-						success : function(result) {
-								closePopup();
-								$("#popUpDiv").removeClass("edit-details-active");
-		            			$("#selector10").removeAttr("style");
-		            			$("#selector10").css({ display: "block" });
-	            				$("#refMsgDiv").html("Success!! New Candidate References added");
-		             			candReferencesList(candidateId);
-						 		refMsgFadein();
-		            		 
-						},
-					});
-					return true;
-			 }else{ 
+		
+			 if ($('#canReference_form').validate(false, validationSettings)) {
+					
+				    var formData = getFormData("canReference_form");
+				    var userId = '${SourceLeadWeb_user.id}';
+				    var locationCode = '${SourceLeadWeb_locationCode}';
+					
+					 $("#save_ref").attr("disabled", "disabled");
+					$("#save_ref").addClass('button').val('Processing..'); 
+			        $.post(sourceleadUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(response) {
+			        	if (response && response.response === "INVALID_DATA") {
+			        	    showError(response.responseMessage);
+			        	} else if (response && response.response === "INVALID_USER") {
+			        	    showError(response.responseMessage);
+			        	} else if (response.response === "AWKWARD") {
+			        	    location.href = "/errorPage";
+			        	} else if (response.response === "SUCCESS") {
+			        		closePopup();
+							$("#popUpDiv").removeClass("edit-details-active");
+	            			$("#selector10").removeAttr("style");
+	            			$("#selector10").css({ display: "block" });
+	        				$("#refMsgDiv").html("Success!! New Candidate References added");
+	             			candReferencesList(candidateId);
+					 		refMsgFadein();s
+			        	} else if (response.indexOf('Sign In') !== -1) {
+			        		location.replace(sourceleadUrl);
+			        	} else {
+			        	    showError("Operation failed, please try again");
+			        	}
+			        });
+			        
+				return true;
+			}
+			 else{ 
 					return false;
 			 } 
 		}
@@ -422,19 +430,24 @@ function deleteReference(candidateId,refId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateReference?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&refId="+refId+"&userCode="+userCode, 	   
-   		    success: function(data) {
-   		    	if(data != null && data != 'undefined' && data != ""){
-        			 $("#selector10").removeAttr("style");
+   		    success: function(response) {
+   		    	if (response.response === "AWKWARD") {
+                    location.href = "/errorPage";
+                } else if (response.response === "SUCCESS") {
+                	 $("#selector10").removeAttr("style");
          			 $("#selector10").css({ display: "block" });
          			 $("#refMsgDiv").html("Reference deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
         			 $("#remove_user_pop_reference, .project_inn_mask").fadeOut();
         			 candReferencesList(candidateId);
-        		     refMsgFadein();
-   		    	}
+        		     refMsgFadein();               
+                } else if (response.indexOf('Sign In') !== -1) {
+                    location.replace(sourceleadUrl);
+                } else {
+                    showError("Operation failed, please try again");
+                }
    		    },
 	     });
-
 }
 </script>
 
@@ -447,38 +460,32 @@ function deleteReference(candidateId,refId){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd'
 		};
-		if ($('#canReferenceEdit_form').validate(false,
-				validationSettings)) {
+		if ($('#canReferenceEdit_form').validate(false,	validationSettings)) {
 
-			var frm = $('#canReferenceEdit_form').serializeFormJSON();
-
-			var con = JSON.stringify(frm);
+			var formData = getFormData("canReferenceEdit_form");
+		    var userId = '${SourceLeadWeb_user.id}';
+		    var locationCode = '${SourceLeadWeb_locationCode}';
 			
-			var form = $('#canReference_form')[0];
-      		var formData = new FormData(form); 
-      		formData.append("json",con);
-      		formData.append("candidateId",candidateId);
-      		formData.append("refId",refId);
-      		formData.append("userId",'${SourceLeadWeb_user.id}');
-		  	formData.append("locationCode",'${SourceLeadWeb_locationCode}');
-			//It will escape all the special characters
-			$.ajax({
-						type : "POST",
-					     data: formData,
-		        	    contentType : 'application/json; charset=utf-8',
-		    	        processData: false,
-		    	        contentType:false,
-		        	    dataType : 'json',
-						url : sourceleadUrl+ "/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"",
-						success : function(data) {
-	            			$("#selector10").removeAttr("style");
-	            			$("#selector10").css({ display: "block" });
-	            			$("#refMsgDiv").html("Reference details updated");
-	            			closePopup();
-	            			candReferencesList(candidateId);
-							refMsgFadein();
-						},
-					});
+			 $("#save_ref").attr("disabled", "disabled");
+			$("#save_ref").addClass('button').val('Processing..'); 
+	        $.post(sourceleadUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
+	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
+	    		    showError(result.responseMessage);
+	    		} else if (result.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (result.response === "SUCCESS") {
+	    			$("#selector10").removeAttr("style");
+					$("#selector10").css({display : "block"});
+					$("#refMsgDiv").html("Reference details updated");
+					closePopup();
+					candReferencesList(candidateId);
+					refMsgFadein();
+	    		} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+	        });
 			return true;
 		} else {
 			return false;
@@ -495,175 +502,173 @@ function deleteReference(candidateId,refId){
 <script>
 	function editCandidateReference(candidateId, refId) {
 
-		$.ajax(
-						{
-							type : "POST",
-							url : sourceleadUrl
+		$.ajax({
+				type : "POST",
+				url : sourceleadUrl
 									+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
 									+ candidateId + "&refId=" + refId,
-							success : function(data) {
+				success : function(response) {
+					if (response && response.response === "INVALID_DATA") {
+					    showError(response.responseMessage);
+					} else if (response.response === "AWKWARD") {
+					    location.href = "/errorPage";
+					} else if (response.response === "SUCCESS") {
+						var json = response.object;
+						var result = '';
+						result = result
+								+ '     <!-- Popup Div -->                                                                                         ';
+						result = result
+								+ '         <form id="canReferenceEdit_form" name="canReferenceEdit_form" method="post">        ';
+						result = result
+								+ '<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
+						result = result
+								+ '<div class="form-horizontal clearfix"> ';
+						result = result + '   ';
 
-								if (data != null && data != 'undefined'
-										&& data != "") {
+						result = result
+								+ '<div class="clearfix mb10">';
+						result = result
+								+ '<div class="col-md-12">';
+						result = result
+								+ '<input type="text" name="name" field-name="Name" value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
+						result = result + '</div>';
+						result = result + '</div>';
 
-									var json = JSON.parse(data);
+						result = result+ '<div class="clearfix mb10">';
+						result = result+ '<div class="col-md-12" id="emailDivId">';
+						result = result + '<div class="input-group errorInptgroup">';
+						result = result+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
+						result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
+						result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
+						result = result + '</i>';
+						result = result + '</span>';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</div>';
 
-									if (data.indexOf('Sign In') >= 0) {
-										location.replace(sourceleadUrl);
-									} else if (data.indexOf('exception') >= 0) {
-										location.replace(sourceleadUrl
-												+ "/errorPage");
-									} else {
-										var result = '';
-										result = result
-												+ '     <!-- Popup Div -->                                                                                         ';
-										result = result
-												+ '         <form id="canReferenceEdit_form" name="canReferenceEdit_form" method="post">        ';
-										result = result
-												+ '<i class="fa fa-close close-div"  onClick="closePopup();"></i> ';
-										result = result
-												+ '<div class="form-horizontal clearfix"> ';
-										result = result + '   ';
+						result = result
+								+ '<div class="clearfix mb10">';
+						result = result
+								+ '<div class="col-md-12">';
+						result = result
+								+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
+						result = result + '</div>';
+						result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="name" field-name="Name" value="'+json.name+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Name *">';
-										result = result + '</div>';
-										result = result + '</div>';
+						result = result
+								+ '<div class="clearfix mb10">';
+						result = result
+								+ '<div class="col-md-12">';
+						result = result
+								+ '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);" onkeyup="editRelation(this);">';
+						result = result
+								+ '<option value="">--Select Relation--</option>';
+						result = result
+								+ ' <option '
+								+ (json.relation == "Work Related" ? "selected"
+										: '')
+								+ '>Work Related</option>';
+						result = result
+								+ '<option  '
+								+ (json.relation == "Family Related" ? "selected"
+										: '')
+								+ '>Family Related</option>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *">';
-										result = result + '</div>';
-										result = result + '</div>';
+						result = result
+								+ '<option  '
+								+ (json.relation == "Friend" ? "selected"
+										: '')
+								+ '>Friend</option>';
+								
+						result = result
+								+ '<option  '
+								+ (json.relation == "Neighbour" ? "selected"
+										: '')
+								+ '>Neighbour</option>';
+						result = result + ' </select>';
+						result = result + '</div>';
+						result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="mobilePhone" field-name="MobilePhone" value="'+json.mobilePhone+'" data-validation="validate_length length9-20 validate_phone" data-validation-optional="true" class="form-control input-sm" value="" placeholder="Mobile Phone">';
-										result = result + '</div>';
-										result = result + '</div>';
+						result = result
+								+ '<div class="clearfix mb10" id="dvDesignationEdit" style="display:none">';
+						result = result
+								+ '<div class="col-md-12">';
+						result = result
+								+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
+						result = result + '</div>';
+						result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<select class="form-control width100percnt" id="relation" name="relation" field-name="Relation" onChange="editRelation(this);" onkeyup="editRelation(this);">';
-										result = result
-												+ '<option value="">--Select Relation--</option>';
-										result = result
-												+ ' <option '
-												+ (json.relation == "Work Related" ? "selected"
-														: '')
-												+ '>Work Related</option>';
-										result = result
-												+ '<option  '
-												+ (json.relation == "Family Related" ? "selected"
-														: '')
-												+ '>Family Related</option>';
-										
-										result = result
-												+ '<option  '
-												+ (json.relation == "Friend" ? "selected"
-														: '')
-												+ '>Friend</option>';
-												
-										result = result
-												+ '<option  '
-												+ (json.relation == "Neighbour" ? "selected"
-														: '')
-												+ '>Neighbour</option>';
-										result = result + ' </select>';
-										result = result + '</div>';
-										result = result + '</div>';
+						result = result
+								+ '<div class="clearfix mb10 mt25">';
+						result = result
+								+ '<div class="col-md-12">';
+						result = result
+								+ '<textarea rows="2" placeholder="Comment" value="+json.comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length1-500"  field-name="comment" class="form-control">'
+								+ json.comment + '</textarea>';
+						result = result + '</div>';
+						result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10" id="dvDesignationEdit" style="display:none">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<input type="text" name="designation" id="designationValEdit" field-name="Designation" value="'+json.designation+'" data-validation="required validate_Space validate_length length2-100" class="form-control input-sm" value="" placeholder="Designation *">';
-										result = result + '</div>';
-										result = result + '</div>';
+						result = result
+								+ '<div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
+						result = result
+								+ '<button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
+						result = result + '</div>';
 
-										result = result
-												+ '<div class="clearfix mb10 mt25">';
-										result = result
-												+ '<div class="col-md-12">';
-										result = result
-												+ '<textarea rows="2" placeholder="Comment" value="+json.comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length1-500"  field-name="comment" class="form-control">'
-												+ json.comment + '</textarea>';
-										result = result + '</div>';
-										result = result + '</div>';
+						result = result
+								+ '<div class="clearfix mr" id="docAddButton">';
+						result = result
+								+ '<input type="hidden"  value="'+refId+'" id="refId" name="refId">';
+						result = result
+								+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
 
-										result = result
-												+ '<div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
-										result = result
-												+ '<button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
-										result = result + '</div>';
+						result = result
+								+ '<button type="button"  id="addCandidate"  onClick ="updateCandidateReference('
+								+ candidateId
+								+ ','
+								+ refId
+								+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
 
-										result = result
-												+ '<div class="clearfix mr" id="docAddButton">';
-										result = result
-												+ '<input type="hidden"  value="'+refId+'" id="refId" name="refId">';
-										result = result
-												+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
+						result = result + '</div>';
+						result = result + '</div>';
+						result = result + '</form>';
+						$("#popUpDiv").empty();
+						if(json.relation == "Work Related"){
+							$("#dvDesignationEdit").show();
+						  }
+						$("#popUpDiv").append(result);
 
-										result = result
-												+ '<button type="button"  id="addCandidate"  onClick ="updateCandidateReference('
-												+ candidateId
-												+ ','
-												+ refId
-												+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
+						$(".edit-details").toggleClass(
+								"edit-details-active");
+						$(".close-div")
+								.click(
+										function() {
+											$(this)
+													.parent(
+															"div.edit-details")
+													.removeClass(
+															"edit-details-active");
+										});
+						$(
+								".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
+								.click(function(e) {
+									e.stopPropagation();
+								});
 
-										result = result + '</div>';
-										result = result + '</div>';
-										result = result + '</form>';
-										$("#popUpDiv").empty();
-										$("#popUpDiv").append(result);
-
-										$(".edit-details").toggleClass(
-												"edit-details-active");
-										$(".close-div")
-												.click(
-														function() {
-															$(this)
-																	.parent(
-																			"div.edit-details")
-																	.removeClass(
-																			"edit-details-active");
-														});
-										$(
-												".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details")
-												.click(function(e) {
-													e.stopPropagation();
-												});
-
-										/* if(json.relation == "Family Related"){
-										    $("#dvDesignationEdit").remove();
-											$("#dvDesignationEdit").css("display", "none");
-											$("#designationValEdit").removeAttr("data-validation");
-											$("#designationValEdit").attr("data-validation-optional", "true");
-										} */
-
-									}
-
-								}
-							},
-
-						}).done(function() {
-					editRelation(this);
-				});
-
+						/* if(json.relation == "Family Related"){
+						    $("#dvDesignationEdit").remove();
+							$("#dvDesignationEdit").css("display", "none");
+							$("#designationValEdit").removeAttr("data-validation");
+							$("#designationValEdit").attr("data-validation-optional", "true");
+						} */
+					} else if (response.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
+				},
+		}).done(function() {
+			editRelation(this); 
+		});
 	}
 </script>
 
@@ -674,45 +679,72 @@ function deleteReference(candidateId,refId){
 		
 		if (relation == 'Work Related') {
 			$('#designationVal').val('');
-			$('#designationVal').attr("data-validation",
-					"required validate_Space validate_length length2-100");
+			$('#designationVal').attr("data-validation","required validate_Space validate_length length2-100");
 			$("#dvDesignation").show();
-		} else if (relation == 'Family Related') {
-
+		} else{
 			$('#designationVal').val('');
 			$("#designationVal").attr("data-validation-optional", "true");
 			$("#dvDesignation").hide();
-		}else {
-			$("#dvDesignationEdit").hide();
-			$("#designationVal").remove();
-			$('#dvDesignation').find('p.jquery_form_error_message').remove();
-			$('#designationVal').removeAttr("data-validation");
 		}
 	}
 </script>
 
 <script>
 	function editRelation(e) {
-		if (e.value == 'Work Related') {
+		var type  = $("#relation").val();
+		if (type == 'Work Related') {
 			document.getElementById("dvDesignationEdit").style.display = "block";
 			$("#designationValEdit").removeAttr("data-validation-optional");
-			$('#designationValEdit').attr("data-validation",
-					"required validate_Space validate_length length2-100"); 
+			$('#designationValEdit').attr("data-validation","required validate_Space validate_length length2-100"); 
 			$("#designationValEdit").show();
-		} else if (e.value == 'Family Related') {
-			document.getElementById("dvDesignationEdit").style.display = "none";
-
-			$("#designationValEdit").val('');
-			$('#designationValEdit').find('p.jquery_form_error_message')
-					.remove();
-			$('#designationValEdit').removeAttr("data-validation");
 		} else {
-			$("#dvDesignationEdit").removeAttr("style");
-			$("#dvDesignationEdit").hide();
+			document.getElementById("dvDesignationEdit").style.display = "none";
 			$("#designationValEdit").val('');
-			$('#dvDesignationEdit').find('p.jquery_form_error_message')
-					.remove();
+			$('#designationValEdit').find('p.jquery_form_error_message').remove();
 			$('#designationValEdit').removeAttr("data-validation");
-		}
+		} 
 	}
 </script>
+
+<script>
+function validateReferenceEmail(candidateId,referId){
+	if(referId != null && referId != "" && referId != "undefined"){
+		referId = referId;
+	}else{
+		referId = "";
+	}
+	var email = $("#email").val();
+	 $('#emailDivId').find('p.jquery_form_error_message').remove();
+	 if (email != null && email != "") {
+	$.ajax({
+			type : "POST",
+			url : sourceleadUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
+			success : function(response) {
+				if (response.response === "AWKWARD") {
+				    location.href = "/errorPage";
+				} else if (response.response === "SUCCESS") {
+					if(response.object == true){
+		        		  $('#emailDivId').find('p.jquery_form_error_message').remove();
+						  $("input#email").after("<p class='jquery_form_error_message'>"+email+" is Already Existed</span>");
+						  document.getElementById("email").setAttribute('record-exist','yes');
+						  document.getElementById("email").setAttribute('record-exist-errorMsg',email+' is Already Existed'); 
+		        	} else {
+		        		 $('input#email').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#emailDivId').find('p.jquery_form_error_message').remove(); 
+		        		 validateEmailForExistenceUniversally(email, "input#email");
+		        	}
+				} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			},
+		});
+	
+      }else{
+		 $("#emailStatusIconDiv").find("i").remove();
+   		 $("#emailStatusIconDiv").append('<i class="fa fa-check text-muted" style="color:#f6f6f6"></i>');
+	 }
+}
+</script>
+

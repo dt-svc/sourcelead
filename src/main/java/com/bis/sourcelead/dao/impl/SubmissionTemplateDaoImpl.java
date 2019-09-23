@@ -63,7 +63,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		logger.debug("getSubmissionTemplateByClientLocationIdAndOrgLocationId start");
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.templateType = :templateType";
-	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgLocationId", orgLocationId ).setString("templateType", templateType).setCacheable(true).list();
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "clientLocationId", clientLocationId ).setLong( "orgLocationId", orgLocationId ).setString("templateType", templateType).list();
         return submissionTemplateList;
         
 	}
@@ -76,7 +76,24 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
 		logger.debug("getSubmissionTemplateById start");
-		submissionTemplate = session.createQuery("from SubmissionTemplate where id=:id" ).setCacheable(true).setLong( "id", Id ).setCacheable(true).list();
+		submissionTemplate = session.createQuery("from SubmissionTemplate where id=:id" ).setLong( "id", Id ).list();
+		logger.debug("getSubmissionTemplateById end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
+	
+	
+	@Override
+	@Transactional
+	public SubmissionTemplate getDefaultSubmissionTemplateByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateById start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.orgLocationId.id=:orgLocationId and st.isDefault='Y' and st.templateType='Submission' and st.clientLocationId IS NULL " ).setLong( "orgLocationId", orgLocationId ).list();
 		logger.debug("getSubmissionTemplateById end");
 		if (submissionTemplate.size() > 0) {
 			return submissionTemplate.get(0);
@@ -95,7 +112,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
 		logger.debug("getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId start");
 		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.isDefault = 'Y' " ).setLong( "clientLocationId", clientLocationId)
-				.setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+				.setLong( "orgLocationId", orgLocationId ).list();
 		logger.debug("getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId end");
 		if (submissionTemplate.size() > 0) {
 			return submissionTemplate.get(0);
@@ -114,7 +131,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
 		logger.debug("getSubmissionTemplateByTemplateName start");
 		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.clientLocationId.id = :clientLocationId and st.orgLocationId.id = :orgLocationId and st.templateName = :templateName " ).setLong( "clientLocationId", clientLocationId)
-				.setLong( "orgLocationId", orgLocationId ).setString("templateName", templateName).setCacheable(true).list();
+				.setLong( "orgLocationId", orgLocationId ).setString("templateName", templateName).list();
 		logger.debug("getSubmissionTemplateByTemplateName end");
 		if (submissionTemplate.size() > 0) {
 			return submissionTemplate.get(0);
@@ -131,7 +148,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
 		logger.debug("getSubmissionTemplateByLabelName start");
-		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.id = :templateId and st.jsonString like '%"+labelName+"%' " ).setLong( "templateId", templateId ).setCacheable(true).list();
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.id = :templateId and st.jsonString like '%"+labelName+"%' " ).setLong( "templateId", templateId ).list();
 		logger.debug("getSubmissionTemplateByLabelName end");
 		if (submissionTemplate.size() > 0) {
 			return submissionTemplate.get(0);
@@ -147,7 +164,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		logger.debug("getOrgSubmissionTemplatesByOrgLocationId start");
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and st.templateType = :templateType and st.clientLocationId IS NULL";
-	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setString("templateType", templateType).setCacheable(true).list();
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setString("templateType", templateType).list();
         return submissionTemplateList;
         
 	}
@@ -158,7 +175,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		logger.debug("getOrgSubmissionTemplatesByOrgLocationId start");
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and st.templateType = 'Feedback' ORDER BY st.id DESC";
-	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).setCacheable(true).list();
+	    List<SubmissionTemplate> submissionTemplateList = session.createQuery(query).setLong( "orgLocationId", orgLocationId ).list();
         return submissionTemplateList;
         
 	}
@@ -172,7 +189,7 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
 		logger.debug("getSubmissionTemplateByTemplateNameByOrg start");
 		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.orgLocationId.id = :orgLocationId and st.templateName = :templateName " )
-				.setLong( "orgLocationId", orgLocationId ).setString("templateName", templateName).setCacheable(true).list();
+				.setLong( "orgLocationId", orgLocationId ).setString("templateName", templateName).list();
 		logger.debug("getSubmissionTemplateByTemplateName end");
 		if (submissionTemplate.size() > 0) {
 			return submissionTemplate.get(0);
@@ -180,5 +197,24 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
 			return null;
 		}
    	}
+
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getSubmissionTemplateByUUID(String uuid) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateByUUID start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.uuid = :uuid " )
+				.setString("uuid", uuid).list();
+		logger.debug("getSubmissionTemplateByUUID end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	
+	}
 
 }

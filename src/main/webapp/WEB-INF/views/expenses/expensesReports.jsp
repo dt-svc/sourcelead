@@ -16,41 +16,42 @@
 <section class="content-wraper">
 	<section class="content-header clearfix">
 		<div class="pull-left">
-			<h2>Expenses Reports</h2>
+			<h2>Expense(s)</h2>
 		</div>
-		<div class="pull-right brud-crum">Home &raquo; List by status</div>
+        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Expense(s)</div>
 	</section>
-
+	<div id="loadingId"></div>
 	<div class="content-area content-new clearfix">
+	
+	
 		<form:form id="expenses_Reports_form" name="expenses_Reports_form"	enctype='multipart/form-data'>
-			<div class="timesheet_head timesheetRep">
-				<div class="timeReFi">
+		
+		
+		
+		<div class="reportHead">
+    	<ul class="clearfix pull-right">
+    		<li>
+				<div class="timeReFi noPad mr10">
 					<div id="selectYearDropDownId"></div>
 				</div>
-				<div class="timeReFi">
+				<div class="timeReFi noPad">
 					<div id="selectQuarterDropDownId"></div>
 				</div>
-				<div class="timeReFi">
-					<input type="button" class="btn btn-success" value="View"	onclick="expensesReportList();">
-				</div>
-				<ul>
-					<li id="export-pop"><i class="glyphicon glyphicon-export"></i>
-						<div class="export_pop">
-							<ul>
-								<li onclick="exportExpensesReports('pdf')"><i class="fa fa-file-pdf-o"></i>PDF</li>
-								<li onclick="exportExpensesReports('excel')"><i class="fa fa-file-excel-o"></i>Excel</li>
-							</ul>
-						</div></li>
-				</ul>
-				<div class="clearfix"></div>
-				<!-- <div class="remove_search">
-					<input placeholder="search" type="text">
-				</div> -->
-
-			</div>
+				<div class="repSelBtn"><button type="button" class="btn btn-primary btn-sm" onclick="expensesReportList();">Run</button></div>
+          
+    		</li>
+    		<li class="staPdfExl"><i onclick="exportExpensesReports('pdf')" title="PDF" class="fa fa-file-pdf-o text-danger"></i><i onclick="exportExpensesReports('excel')" title="Excel" class="fa fa-file-excel-o text-primary"></i></li>
+    		<li class="unVisable"><input type="text" class="repSearchBar" placeholder='Search' id='usersDataTableSearch'/><span class="repSearchIcon" onclick=""></span></li>
+    	</ul>
+    </div> 
+		
+	
 		</form:form>
+		
+		
+		
 		<div id="YearQuartersDiv" style="display: none;" ></div>
-		<div class="timesheetRepTab expensestable datatable_filter mt5 overflow_inherint">
+		<div class="timesheetRepTab expensestable datatable_filter overflow_inherint repDataSearch repDataSearchFil">
 			<div id="expensesReportsListDiv"></div>
 		</div>
 	</div>
@@ -167,11 +168,13 @@ function getQuaters(){
  <script>
 function expensesReportList(){
 var datequarterly = $("#selectedQuarter").val();
+$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
     type : "POST",
      url: sourceleadUrl+"/getExpensesReportList?"+tokenParamName+"="+tokenValue+"&datequarterly="+datequarterly,       
-     success :function(data) {
-    	 	var json = JSON.parse(data);
+     success :function(json) {
+    	 $("#loadingId").removeAttr('style');
+    	 	//var json = JSON.parse(data);
     	 if(json != null && json != '' && json != 'undefined'){
     	 	var result = '';
     	 	var  dateresult="";
@@ -184,9 +187,11 @@ $.ajax({
  			var months = [];
  			for (var i = 0; i < 1; i++) {
  				var opt = json[i].monthsStringFormat;
- 				for (var j = 0; j < opt.length; j++) {
- 					result=result+'<th>'+opt[j]+'</th>';
- 					months.push(opt[j]);
+ 				if(opt != null && opt!='' && opt !='undefined'){
+ 					for (var j = 0; j < opt.length; j++) {
+ 	 					result=result+'<th>'+opt[j]+'</th>';
+ 	 					months.push(opt[j]);
+ 	 				}
  				}
 		    	 /* for (var key in optMap.monthsStringFormat) {
 		    		  if (optMap.monthsStringFormat.hasOwnProperty(key)) {
@@ -208,32 +213,34 @@ $.ajax({
     		result = result +'<tr>';
  			result = result +'<td>';
  			result = result +'<div class="lg clearfix">';
- 			//result = result +'<div class="uimg"><img src="images/23.jpg" alt=""/></div>';
- 			result = result +'<div class="Utext">';
+ 			result = result +'<div class="time_appr_user">';
+ 			result = result +'<img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png" alt="Profile Image" class="img-circle img-responsive">'; 
+ 			result = result +'<span>';
  			if(opt.employeeIdForExpenses != null && opt.employeeIdForExpenses !='' && opt.employeeIdForExpenses!='Undefined'){
- 			result = result +'<i title="User name here">'+opt.employeeIdForExpenses+'</i>';	
+ 			result = result +'<i title="'+opt.employeeIdForExpenses+'">'+opt.employeeIdForExpenses+'</i>';	
  			}
  			if(opt.userName != null && opt.userName !='' && opt.userName!='Undefined'){
- 			result = result +'<i title="User name here">'+opt.userName+'</i>';	
+ 			result = result +'<i title="'+opt.userName+'">'+opt.userName+'</i>';	
  	 		}
  			if(opt.userEmail != null && opt.userEmail !='' && opt.userEmail!='Undefined'){
- 			result = result +'<i title="Email id here">'+opt.userEmail+'</i>';
+ 			result = result +'<i title="'+opt.userEmail+'">'+opt.userEmail+'</i>';
  	 		}
+ 			result = result +'</span>';
  			result = result +'</div>';
  			result = result +'</div>';
  			result = result +'</td>';
  			if(opt.employmentTypeVendors != null && opt.employmentTypeVendors !='' && opt.employmentTypeVendors!='Undefined' && opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="'+opt.employementType+'">'+opt.employementType+'</i><i title="client name">'+opt.employmentTypeVendors+'</i></div></td>';	
  			}else if(opt.employementType != null && opt.employementType !='' && opt.employementType!='Undefined'){
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.employementType+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="'+opt.employementType+'">'+opt.employementType+'</i></div></td>';	
  			}else{
- 			result = result +'<td><div class="md"><i title="Project name">--</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="--">--</i></div></td>';	
  			}
  			
  			if(opt.clientNameExpenses != null && opt.clientNameExpenses !='' && opt.clientNameExpenses!='Undefined'){
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i><i title="client name">'+opt.clientNameExpenses+'</i></div></td>';
+ 			result = result +'<td><div class="md"><i title="'+opt.projectName+'">'+opt.projectName+'</i><i title="client name">'+opt.clientNameExpenses+'</i></div></td>';
  			}else{
- 			result = result +'<td><div class="md"><i title="Project name">'+opt.projectName+'</i></div></td>';	
+ 			result = result +'<td><div class="md"><i title="'+opt.projectName+'">'+opt.projectName+'</i></div></td>';	
  			}
  			
  			if(months.indexOf("January") > -1){

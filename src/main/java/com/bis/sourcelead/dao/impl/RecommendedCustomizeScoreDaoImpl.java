@@ -53,7 +53,7 @@ public class RecommendedCustomizeScoreDaoImpl implements RecommendedCustomizeSco
 	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(Long requirementId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from RecommendedCustomizeScore rcs  where rcs.reqirementId.id =:requirementId and rcs.orgLocationId =:orgLocationId ";
-		List<RecommendedCustomizeScore> recommendedCustomizeScoreLIst = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<RecommendedCustomizeScore> recommendedCustomizeScoreLIst = session.createQuery(query).setLong("requirementId", requirementId).setLong("orgLocationId", orgLocationId).list();
 		
 		RecommendedCustomizeScore recommendedCustomizeScore = null;
 		if(recommendedCustomizeScoreLIst != null && !recommendedCustomizeScoreLIst.isEmpty())
@@ -70,7 +70,7 @@ public class RecommendedCustomizeScoreDaoImpl implements RecommendedCustomizeSco
 	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementId(Long requirementId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query ="from RecommendedCustomizeScore rcs where rcs.reqirementId.id = :requirementId";
-		List<RecommendedCustomizeScore> recommendedCustomizeScoreList = session.createQuery(query).setLong("requirementId",requirementId).setCacheable(true).list();
+		List<RecommendedCustomizeScore> recommendedCustomizeScoreList = session.createQuery(query).setLong("requirementId",requirementId).list();
 				
 		RecommendedCustomizeScore customizeScore = null;
 		if (null != recommendedCustomizeScoreList && recommendedCustomizeScoreList.size() > 0) {

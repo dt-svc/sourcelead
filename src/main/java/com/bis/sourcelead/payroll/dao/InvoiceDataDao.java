@@ -11,10 +11,14 @@ public interface InvoiceDataDao {
 
 	InvoiceData saveInvoiceData(InvoiceData invoiceData);
 
-	List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations)throws Exception;
+	ResponseList<InvoiceData> getInvoiceDetailsByEmpId(OrgLocations orgLocations, InvoiceDetailsDTO invoiceDetailsDTO)throws Exception;
 
 	int getInvoiceDataVersionByOrgLocationId(Long orgLocationId);
 
 	ResponseList<InvoiceData> getInvoiceDetails(InvoiceDetailsDTO invoiceDetailsDTO, OrgLocations orgLocation) throws Exception;
+
+	ResponseList<InvoiceData> getAllEmployeeInvoiceDetailsByEmpIdAndOrgLocationId(Long orgLocationId, Long userId);
+
+	List<InvoiceData> getInvoiceDetailsByEmpId(Long empId, OrgLocations orgLocations);
 
 }

@@ -22,8 +22,7 @@ import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 @Entity
-@Table(name = "ONBOARD_TASKS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="onboardTasks")
+@Table(name = "ONBOARD_TASKS")
 public class OnboardTasks implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -36,12 +35,12 @@ private static final long serialVersionUID = 1L;
 	@Column(name = "TASK_NAME")
    	private String taskName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ON_BOARDING_TEMPLATE_ID", nullable = false)
 	private OnBoardingTemplate onboardingTemplateId;
     
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
    	@JoinColumn(name = "CANDIDATE_ON_BOARDING_ID", nullable = false)
    	private CandidateOnBoarding candidateOnBoardingId;

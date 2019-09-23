@@ -1,5 +1,6 @@
 package com.bis.sourcelead.elk.index;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,8 +10,10 @@ import javax.persistence.Column;
  * @author Rajashekar and Prasanna
  * @date 11th jan 2017
  */
-public class RequirementIndex {
+public class RequirementIndex implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private Long requirementId;
 	
 	private Long orgLocationId;
@@ -31,9 +34,17 @@ public class RequirementIndex {
 	
 	private String rateType;
 	
-	private String minExperience;
+	private String clientCurrencyCode;
 	
-	private String maxExperience;
+	private Float clientRate;
+	
+	private Float clientMaxRate;
+	
+	private String clientRateType;
+	
+	private Float minExperience;
+	
+	private Float maxExperience;
 	
 	private String requirementStatus;
 	
@@ -47,9 +58,28 @@ public class RequirementIndex {
 	
 	private String zipCode;
 	
+	private String medicalClearence;
+	
+	private String securityClearance;
+	
+	private String overTime;
+	
+	private String backgroundCheck;
+	
+	private String gender;
+	
+	private String experienceLevel;
+	
+	private String projectClientID;
+	
+	
 	private String[] education;
 	
 	private String client;
+	
+	private String orgRelationId;
+	
+	private String spocId;
 	
 	private String[] skills;
 	
@@ -168,9 +198,29 @@ public class RequirementIndex {
 	private String referUUID;
 	
 	private String[] visaTypes;
-	
+	private String url;
 	private String generatedId;
 	
+	private List<String> locationsList;
+	
+	private String isClientJob;
+	
+	private String primaryRecruiterUserId;
+	
+	private String tags;
+	
+	private String process;
+	
+	private Long workflowId;
+	
+	public String getPrimaryRecruiterUserId() {
+		return primaryRecruiterUserId;
+	}
+
+	public void setPrimaryRecruiterUserId(String primaryRecruiterUserId) {
+		this.primaryRecruiterUserId = primaryRecruiterUserId;
+	}
+
 	public String getManagerUserId() {
 		return managerUserId;
 	}
@@ -294,19 +344,59 @@ public class RequirementIndex {
 		this.rateType = rateType;
 	}
 	
-	public String getMinExperience() {
+	public String getClientCurrencyCode()
+	{
+		return clientCurrencyCode;
+	}
+
+	public void setClientCurrencyCode(String clientCurrencyCode)
+	{
+		this.clientCurrencyCode = clientCurrencyCode;
+	}
+
+	public Float getClientRate()
+	{
+		return clientRate;
+	}
+
+	public void setClientRate(Float clientRate)
+	{
+		this.clientRate = clientRate;
+	}
+
+	public Float getClientMaxRate()
+	{
+		return clientMaxRate;
+	}
+
+	public void setClientMaxRate(Float clientMaxRate)
+	{
+		this.clientMaxRate = clientMaxRate;
+	}
+
+	public String getClientRateType()
+	{
+		return clientRateType;
+	}
+
+	public void setClientRateType(String clientRateType)
+	{
+		this.clientRateType = clientRateType;
+	}
+
+	public Float getMinExperience() {
 		return minExperience;
 	}
 
-	public void setMinExperience(String minExperience) {
+	public void setMinExperience(Float minExperience) {
 		this.minExperience = minExperience;
 	}
 
-	public String getMaxExperience() {
+	public Float getMaxExperience() {
 		return maxExperience;
 	}
 
-	public void setMaxExperience(String maxExperience) {
+	public void setMaxExperience(Float maxExperience) {
 		this.maxExperience = maxExperience;
 	}
 
@@ -850,6 +940,147 @@ public class RequirementIndex {
 		this.generatedId = generatedId;
 	}
 
-	
+	public String getUrl()
+	{
+		return url;
+	}
+
+	public void setUrl(String url)
+	{
+		this.url = url;
+	}
+
+	public String getMedicalClearence()
+	{
+		return medicalClearence;
+	}
+
+	public void setMedicalClearence(String medicalClearence)
+	{
+		this.medicalClearence = medicalClearence;
+	}
+
+	public String getSecurityClearance()
+	{
+		return securityClearance;
+	}
+
+	public void setSecurityClearance(String securityClearance)
+	{
+		this.securityClearance = securityClearance;
+	}
+
+	public String getOverTime()
+	{
+		return overTime;
+	}
+
+	public void setOverTime(String overTime)
+	{
+		this.overTime = overTime;
+	}
+
+	public String getBackgroundCheck()
+	{
+		return backgroundCheck;
+	}
+
+	public void setBackgroundCheck(String backgroundCheck)
+	{
+		this.backgroundCheck = backgroundCheck;
+	}
+
+	public String getGender()
+	{
+		return gender;
+	}
+
+	public void setGender(String gender)
+	{
+		this.gender = gender;
+	}
+
+	public String getExperienceLevel()
+	{
+		return experienceLevel;
+	}
+
+	public void setExperienceLevel(String experienceLevel)
+	{
+		this.experienceLevel = experienceLevel;
+	}
+
+	public String getProjectClientID()
+	{
+		return projectClientID;
+	}
+
+	public void setProjectClientID(String projectClientID)
+	{
+		this.projectClientID = projectClientID;
+	}
+
+	public String getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(String orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public String getSpocId()
+	{
+		return spocId;
+	}
+
+	public void setSpocId(String spocId)
+	{
+		this.spocId = spocId;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+
+	public String getIsClientJob() {
+		return isClientJob;
+	}
+
+	public void setIsClientJob(String isClientJob) {
+		this.isClientJob = isClientJob;
+	}
+
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(String process)
+	{
+		this.process = process;
+	}
+
+	public Long getWorkflowId() {
+		return workflowId;
+	}
+
+	public void setWorkflowId(Long workflowId) {
+		this.workflowId = workflowId;
+	}
+
 	
 }

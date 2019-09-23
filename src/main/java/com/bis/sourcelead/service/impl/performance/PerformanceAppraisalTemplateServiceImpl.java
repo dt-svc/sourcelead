@@ -1,0 +1,231 @@
+package com.bis.sourcelead.service.impl.performance;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.performance.PerformanceAppraisalTemplateDao;
+import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.performance.PerformanceAppraisalTemplateDTO;
+import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.performance.PerformanceAppraisalTemplate;
+import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.performance.PerformanceAppraisalTemplateService;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+
+@Service
+public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppraisalTemplateService{
+	
+	@Autowired
+	PerformanceAppraisalTemplateDao performanceAppraisalTemplateDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+	
+	
+	@Override
+	public PerformanceAppraisalTemplate savePerformanceAppraisalTemplate(
+			PerformanceAppraisalTemplate performanceAppraisalTemplate) throws Exception {
+		return performanceAppraisalTemplateDao.savePerformanceAppraisalTemplate(performanceAppraisalTemplate);
+	}
+
+	@Override
+	public PerformanceAppraisalTemplate storePerformanceAppraisalTemplate(
+			PerformanceAppraisalTemplateDTO performanceAppraisalTemplateDTO, Long orgLocationId, Long userId, String dateFormat)
+			throws Exception {
+		
+		OrgLocations orgLocations = new OrgLocations();
+		orgLocations.setId(orgLocationId);
+		User user = new User();
+		user.setId(userId);
+		
+		PerformanceAppraisalTemplate template = null;
+		if(performanceAppraisalTemplateDTO.getAppraisalTemplateId() != null) {
+			template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(performanceAppraisalTemplateDTO.getAppraisalTemplateId());
+			template.setUpdatedBy(user);
+			template.setUpdatedDate(new Date());
+		}else {
+			template = new PerformanceAppraisalTemplate();
+			template.setCreatedBy(user);
+			template.setCreatedDate(new Date());
+			template.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+		}
+		
+		template.setName(performanceAppraisalTemplateDTO.getName());
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalStartDate())) {
+			template.setAppraisalStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalStartDate()));
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalEndDate())) {
+			template.setAppraisalEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalEndDate()));
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalDepartment())) {
+			template.setDepartment(performanceAppraisalTemplateDTO.getAppraisalDepartment());
+		}else {
+			template.setDepartment(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalRoles())) {
+			template.setRoles(performanceAppraisalTemplateDTO.getAppraisalRoles());
+		}else {
+			template.setRoles(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalEmpType())) {
+			template.setEmployeeType(performanceAppraisalTemplateDTO.getAppraisalEmpType());
+		}else {
+			template.setEmployeeType(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getSelfAppraisalStartDate())) {
+			template.setSelfAppraisalStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getSelfAppraisalStartDate()));
+		}else {
+			template.setSelfAppraisalStartDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getSelfAppraisalEndDate())) {
+			template.setSelfAppraisalEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getSelfAppraisalEndDate()));
+		}else {
+			template.setSelfAppraisalEndDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalApprovingStartDate())) {
+			template.setApprovingFromStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalApprovingStartDate()));
+		}else {
+			template.setApprovingFromStartDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalApprovingEndDate())) {
+			template.setApprovingFromEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalApprovingEndDate()));
+		}else {
+			template.setApprovingFromEndDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalProcessStartDate())) {
+			template.setProcessPeriodStartDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalProcessStartDate()));
+		}else {
+			template.setProcessPeriodStartDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalProcessEndDate())) {
+			template.setProcessPeriodEndDate(commonUtil.orgLocationDateFormat(dateFormat,performanceAppraisalTemplateDTO.getAppraisalProcessEndDate()));
+		}else {
+			template.setProcessPeriodEndDate(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescriptionDisplay())) {
+			template.setDescriptionDisplay(performanceAppraisalTemplateDTO.getDescriptionDisplay());
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescription())) {
+			template.setDescription(performanceAppraisalTemplateDTO.getDescription());
+		}else {
+			template.setDescription(null);
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalCategories())) {
+			template.setCategories(performanceAppraisalTemplateDTO.getAppraisalCategories());
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getComptencyCategories())) {
+			template.setCompetencies(performanceAppraisalTemplateDTO.getComptencyCategories());
+		}
+		
+		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getJsonCategoriesString())) {
+			template.setCategoriesJsonString(performanceAppraisalTemplateDTO.getJsonCategoriesString());
+		}
+		template.setOrgLocationId(orgLocations);
+		template.setStatus(Constants.RECORD_ACTIVE);
+		performanceAppraisalTemplateDao.savePerformanceAppraisalTemplate(template);
+		return template;
+	}
+
+	@Override
+	public List<PerformanceAppraisalTemplate> getPerformanceAppraisalTemplateList(Long orgLocationId) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateList(orgLocationId);
+	}
+
+	@Override
+	public PerformanceAppraisalTemplateDTO getPerformanceAppraisalTemplateDTOById(Long id) throws Exception {
+		   PerformanceAppraisalTemplateDTO templateDTO = new PerformanceAppraisalTemplateDTO();
+		   PerformanceAppraisalTemplate template = performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
+		   templateDTO.setAppraisalTemplateId(template.getId());
+		   templateDTO.setName(template.getName());
+		   templateDTO.setAppraisalStartDate(template.getAppraisalStartDateStr());
+		   templateDTO.setAppraisalEndDate(template.getAppraisalEndDateStr());
+		   if(StringUtils.isNotBlank(template.getDepartment())) {
+			   templateDTO.setAppraisalDepartment(template.getDepartment());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getRoles())) {
+			   templateDTO.setAppraisalRoles(template.getRoles());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getEmployeeType())) {
+			   templateDTO.setAppraisalEmpType(template.getEmployeeType());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getSelfAppraisalStartDateStr())) {
+			   templateDTO.setSelfAppraisalStartDate(template.getSelfAppraisalStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getSelfAppraisalEndDateStr())) {
+			   templateDTO.setSelfAppraisalEndDate(template.getSelfAppraisalStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getApprovingFromStartDateStr())) {
+			   templateDTO.setAppraisalApprovingStartDate(template.getApprovingFromStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getApprovingFromEndDateStr())) {
+			   templateDTO.setAppraisalApprovingEndDate(template.getApprovingFromEndDateStr());
+		   }
+		   
+		   
+		   if(StringUtils.isNotBlank(template.getProcessPeriodStartDateStr())) {
+			   templateDTO.setAppraisalProcessStartDate(template.getProcessPeriodStartDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getProcessPeriodEndDateStr())) {
+			   templateDTO.setAppraisalProcessEndDate(template.getProcessPeriodEndDateStr());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getDescriptionDisplay())) {
+			   templateDTO.setDescriptionDisplay(template.getDescriptionDisplay());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getDescription())) {
+			   templateDTO.setDescription(template.getDescription());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCategories())) {
+			   templateDTO.setAppraisalCategories(template.getCategories());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCompetencies())) {
+			   templateDTO.setComptencyCategories(template.getCompetencies());
+		   }
+		   
+		   if(StringUtils.isNotBlank(template.getCategoriesJsonString())) {
+			   templateDTO.setJsonCategoriesString(template.getCategoriesJsonString());
+		   }
+		   
+		   
+		   return templateDTO;
+	}
+
+	@Override
+	public PerformanceAppraisalTemplate getPerformanceAppraisalTemplateById(Long id) throws Exception {
+		return performanceAppraisalTemplateDao.getPerformanceAppraisalTemplateById(id);
+	}
+
+}

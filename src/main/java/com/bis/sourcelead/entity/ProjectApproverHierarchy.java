@@ -24,9 +24,10 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "PROJECT_APPROVER_HIERARCHY")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="projectApproverHierarchy")
 public class ProjectApproverHierarchy implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -36,18 +37,26 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="PROJECT_ID", nullable=false )	
 	private Projects projectId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch=FetchType.EAGER)
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="APPROVER_USER_ID", nullable=false )	
 	private User approverUserId;
+	
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "PROJECT_CLIENTS_ID")
+    private ProjectClients projectClientsId;
  	
     @Column(name = "LEVEL")
     private Integer level;
+    
+    @Column(name = "APPROVAL_MECHANISM_TYPE")
+    private String approvalMechanismType;
  
     @Column(name = "STATUS")
     private String status;
@@ -64,10 +73,15 @@ public class ProjectApproverHierarchy implements Serializable{
     @Column(name = "UPDATED_BY")
     private String updatedBy;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(mappedBy="projects",cascade = CascadeType.ALL,fetch=FetchType.LAZY)
     @Fetch(FetchMode.SELECT)
     private Set<ProjectMembers> projectMembers;
+    
+    @Transient
+    @JsonProperty
+    private Long  projectApproverUserId;
+    
     
     @Transient
     private String fullName;
@@ -97,6 +111,14 @@ public class ProjectApproverHierarchy implements Serializable{
 		this.approverUserId = approverUserId;
 	}
 
+
+	public ProjectClients getProjectClientsId() {
+		return projectClientsId;
+	}
+
+	public void setProjectClientsId(ProjectClients projectClientsId) {
+		this.projectClientsId = projectClientsId;
+	}
 
 	public Integer getLevel() {
 		return level;
@@ -161,6 +183,24 @@ public class ProjectApproverHierarchy implements Serializable{
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-	
+
+	public Long getProjectApproverUserId() {
+		if(approverUserId != null){
+			projectApproverUserId = approverUserId.getId();
+		}
+		return projectApproverUserId;
+	}
+
+	public void setProjectApproverUserId(Long projectApproverUserId) {
+		this.projectApproverUserId = projectApproverUserId;
+	}
+
+	public String getApprovalMechanismType() {
+		return approvalMechanismType;
+	}
+
+	public void setApprovalMechanismType(String approvalMechanismType) {
+		this.approvalMechanismType = approvalMechanismType;
+	}
 	
 }

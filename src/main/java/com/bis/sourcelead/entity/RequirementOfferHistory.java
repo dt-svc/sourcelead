@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -19,9 +20,10 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 	@Entity
-	@Table(name = "REQUIREMENT_OFFER_HISTORY", catalog = "sourcelead")
-	@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "requirmentOfferHistory")
+	@Table(name = "REQUIREMENT_OFFER_HISTORY")
 	public class RequirementOfferHistory implements Serializable{
 
 	
@@ -32,18 +34,18 @@ import org.hibernate.annotations.NotFoundAction;
     @Column(name = "ID", nullable = false)
 	private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="OFFER_ID", nullable=false )        
     private RequirementOffers offerId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="SUBMISSION_ID", nullable=false )        
     private RequirementSubmission submissionId;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocationId;
 	
@@ -85,6 +87,29 @@ import org.hibernate.annotations.NotFoundAction;
 	
 	@Transient
     private Long offerResumeId;
+	
+	@Transient
+	@JsonProperty
+    private String submissionStatusStr;
+	
+	@Transient
+	@Lob
+    private  byte[] docFile;
+	
+	@Transient
+    private String fileContentType;
+	
+	@Transient
+    private String templateUUID;
+	
+	@Transient
+    private String templateName;
+	
+	@Transient
+    private String offerExpireDate;
+	
+	@Transient
+    private String offerUUID;
 
 	public Long getId() {
 		return id;
@@ -220,5 +245,67 @@ import org.hibernate.annotations.NotFoundAction;
 
 	public void setOfferResumeId(Long offerResumeId) {
 		this.offerResumeId = offerResumeId;
+	}
+
+	public String getSubmissionStatusStr()
+	{
+		return submissionStatusStr;
+	}
+
+	public void setSubmissionStatusStr(String submissionStatusStr)
+	{
+		this.submissionStatusStr = submissionStatusStr;
+	}
+
+	public byte[] getDocFile()
+	{
+		return docFile;
+	}
+
+	public void setDocFile(byte[] docFile)
+	{
+		this.docFile = docFile;
+	}
+
+	public String getFileContentType()
+	{
+		return fileContentType;
+	}
+
+	public void setFileContentType(String fileContentType)
+	{
+		this.fileContentType = fileContentType;
+	}
+
+	public String getTemplateUUID() {
+		return templateUUID;
+	}
+
+	public void setTemplateUUID(String templateUUID) {
+		this.templateUUID = templateUUID;
+	}
+
+	public String getTemplateName() {
+		return templateName;
+	}
+
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
+	}
+
+	public String getOfferExpireDate() {
+		return offerExpireDate;
+	}
+
+	public void setOfferExpireDate(String offerExpireDate) {
+		this.offerExpireDate = offerExpireDate;
+	}
+
+	public String getOfferUUID() {
+		return offerUUID;
+	}
+
+	public void setOfferUUID(String offerUUID) {
+		this.offerUUID = offerUUID;
 	}
 }

@@ -17,33 +17,26 @@
 		         <i class="fa fa-check-circle"></i><span>${msg}</span>
 			</div>
 	     </c:if>
-    <div class="pull-left">
-      <h2>Job Templates</h2>
-    </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Job Templates</div>
+    <div class="pull-left"><h2>Job Templates</h2></div>
+	<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Job Templates</div>
   </section>
-  <div class="timesheet_out overflow_Auto">
-    <div class="vendor_wrap">
-      <div class="timesheet_head">
-        <ul>
+  
+  <div class="overflow_Auto vendor_wrap">
+    <div class="clearfix">
+    
+	 <div class="reportHead reportHeadDataTab clearfix">
+	    <ul class="pull-right list-unstyled list-inline">
           <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT_TEMPLATE')">
-          	<li> <a href="<c:url value='/addTemplate'/>"><i class="fa fa-plus"></i>Add Job Template</a></li>
-         </sec:authorize>
-         
-          <div class="clearfix"></div>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
+          	<li> <a href="<c:url value='${appPath}/addTemplate'/>" class="newAdBtn">+ Job Template</a></li>
+         </sec:authorize>	    
+		</ul>
+	</div>	    
       
-      <!-- list requirement -->
-      <div class="require_wrap_table overflow_inherint">
-     
-          <div id="requirementTemplateList" class="datatable_filter"></div>
+      <div class="project_tabs_inn_table">
+          <div id="requirementTemplateList" class="datatable_filter dataSeaTop"></div>
       </div>
     </div>
    
-   
-    <!-- Project --> 
   </div>
 </section>
 
@@ -83,7 +76,7 @@ function requirementTemplateList(){
 	                    	 result = result +"<tr>"; 
 	                    	 result = result +"<td>";
 	                    	 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
-		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="<c:url value="/requirementTemplateSummary?requirementId='+opt.id+'"/>"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
+		                     	result = result +'<div class="proj_show tbldata-dotdot"><a href="<c:url value="/app/requirementTemplateSummary?requirementId='+opt.id+'"/>"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span><i class="fa fa-binoculars"></i></div></a>';
 		                     '</sec:authorize>';
 		                     '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_REQUIREMENT_TEMPLATE\',\'ROLE_VIEW_DELETE_REQUIREMENT_TEMPLATE\')">'; 
 		                     	result = result +'<div class="tbldata-dotdot"><span class="pull-left" title="'+opt.jobTitle+'">'+opt.jobTitle+'</span></div>';
@@ -91,7 +84,13 @@ function requirementTemplateList(){
 		                     result = result +"</td>";
 		                     if(null != opt.jobType && opt.jobType !='' && opt.jobType !='undefined'){
 		                    	 if(opt.jobType=='Other'){
+		                    		   if(null != opt.otherJobType && opt.otherJobType !='' && opt.otherJobType !='undefined'){
 		                    		 result = result +"<td><div><span title="+opt.otherJobType+">"+opt.otherJobType+"</span></div></td>";
+		                    		   }
+		                    		   else
+		                    			   {
+		                    			   result = result +"<td><div>-----</div></td>";
+		                    			   }
 		                    	 }else{
 		                    		 result = result +"<td><div>"+opt.jobType+"</div></td>";
 		                    	 }

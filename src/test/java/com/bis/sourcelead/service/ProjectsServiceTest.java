@@ -37,6 +37,8 @@ import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.TimesheetFrequencyGeneratorUtil;
@@ -255,17 +257,17 @@ public class ProjectsServiceTest {
 	 */
 	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatus() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY,1l);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
 			for(ProjectMembers projectMember : ProjectMembersList){
-				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjects().getOrgLocationsId().getId());
+				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(projectMember.getEmployee().getUser().getId(), projectMember.getProjectClientsId().getOrgLocationsId().getId());
 				if("Admin".equalsIgnoreCase(userRole.getUserType()))
 					continue;
 					String level ="";
 					DateFormat format = Constants.DF_STD_FORMAT;
 					String dateFormart = "MM-dd-yyyy";
-					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,"scheduler");
+					Map<String,String>  timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMember,projectMember.getProjectClientsId().getOrgLocationsId(),"scheduler");
 					LinkedHashMap<String,String> finalTFMap = new LinkedHashMap<>();
 					if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 						for (Map.Entry<String, String> entry : timesheetFrequencyMap.entrySet()) {
@@ -284,7 +286,7 @@ public class ProjectsServiceTest {
 				            	 flag = false;
 				             }*/
 							
-						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId()) && (flag)){
+						    if(submissionApproverHierarchyService.getCronRemainderForEmployeeByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getMasterCandidateId().getId(),projectMember.getProjects().getId()) && (flag)){
 						    	finalTFMap.put(key, value);
 							}
 						}
@@ -302,7 +304,7 @@ public class ProjectsServiceTest {
 	
 	//@Test
 	public void getPreviousWeekTimeShhetSubmissionStatusToLevel2() throws Exception{
-		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY);
+		HashSet<ProjectMembers> ProjectMembersList  = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.WEEKLY,1l);
 		logger.info("getPreviousWeekTimeShhetSubmissionStatus addded successfully"+ProjectMembersList.size());
 		Map<UserRole,HashSet<TimesheetSubmissions>> timesheetSubmissionsMap = new HashMap<>();
 		if(ProjectMembersList !=null && ProjectMembersList.size() > 0){
@@ -439,11 +441,11 @@ public class ProjectsServiceTest {
 						   
 						     for (ProjectApproverHierarchy pah : projectApproverHierarchyList) {
 						    	
-						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(Constants.BI_WEEKLY,pah.getApproverUserId().getId());
+						    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatusByApproverUserId(Constants.BI_WEEKLY,pah.getApproverUserId().getId(),1L);
 								
 						    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 									for (ProjectMembers projectMembers : projectMembersList) {
-										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+										timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,projectMembers.getProjectClientsId().getOrgLocationsId(),"approverScheduler");
 										  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 										            LinkedList<String> frequency = new LinkedList<>();
 													 tempHTML.append("<tr>");
@@ -522,11 +524,11 @@ public class ProjectsServiceTest {
 									count++;
 						   }
 					    	
-					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY);
+					    	 HashSet<ProjectMembers> projectMembersList = userRoleService.getAllUserPrevoiusWeekTimeSheetSubmissionStatus(Constants.SEMI_MONTHLY,1l);
 							
 					    	 if(null != projectMembersList && !projectMembersList.isEmpty()){
 								for (ProjectMembers projectMembers : projectMembersList) {
-									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,"approverScheduler");
+									timesheetFrequencyMap = timesheetFrequencyGeneratorUtil.getTimesheetFrequencyListFromProjectInvoiceFrequency(projectMembers,projectMembers.getProjectClientsId().getOrgLocationsId(),"approverScheduler");
 									  if(null != timesheetFrequencyMap && !timesheetFrequencyMap.isEmpty()){
 									            LinkedList<String> frequency = new LinkedList<>();
 												 tempHTML.append("<tr>");

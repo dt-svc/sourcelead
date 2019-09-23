@@ -2,7 +2,10 @@ package com.bis.sourcelead.dao;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateOffBoardingDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
+import com.bis.sourcelead.entity.OrgLocations;
 
 public interface CandidateOffBoardingDao {
 	
@@ -17,5 +20,9 @@ public interface CandidateOffBoardingDao {
 	CandidateOffBoarding getCandidateOffBoardingByOffboardUUID(String offboardUUID) throws Exception;
 	
 	CandidateOffBoarding getCandidateOffBoardingByUserIdAndLocationId(Long offboardingUser,Long orgLocationId) throws Exception;
+
+	List<CandidateOffBoarding> candidateOffboringDelayMail();
+	
+	ResponseList<CandidateOffBoardingDTO> getCandidateOffBoardingList(CandidateOffBoardingDTO candidateOffBoardingDTO,OrgLocations orgLocations) throws Exception;
 
 }

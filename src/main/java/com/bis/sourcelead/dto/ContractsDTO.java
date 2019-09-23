@@ -1,9 +1,12 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
+import javax.persistence.Transient;
+import com.bis.sourcelead.annotations.CleanHtml;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ContractsDTO {
+public class ContractsDTO extends SearchDTO implements Serializable {
 	private String staticPath;
 	private String contrId;
 	private String contractType;
@@ -22,6 +25,7 @@ public class ContractsDTO {
 	private String candiRateType;
 	private String candiFlatReward;
 	private String candiRatePer;
+	@CleanHtml(escape=false)
 	private String description;
 	private String workLocation;
 	private String joinDate;
@@ -46,7 +50,45 @@ public class ContractsDTO {
 	private String percentageReward;
 	private String flatRateType;
 	
+	private List<VendorContractsDTO> vendorcontractsList;
+	private List<ClientContractsDTO> clientcontractsList;
+	private List<FullTimeContractsDTO> fullTimeoffercontractsList;
+	
 	private List<FileInfo> reqDocs;
+	
+	private String orgRelationUUID;
+	
+	private String spocUUID;
+	
+	private List<CustomFormFieldDTO> customFormData;
+	
+	private String joinedDateStr;
+	
+	private String ownersType;
+	
+	private Long sequentialOwner1;
+	
+	private Long sequentialOwner2;
+	
+	private String saveType;
+	
+	private List<Long> parallelOwner;
+	
+	private String contractUUID;
+	
+	private String revisedReason;
+	
+	private String typeOfContract;
+	
+	private String contractSubmissionType;
+	
+	private String tabType;
+	
+	private String contractsType;
+	
+	private String contractStatus;
+	
+	private String userRoleName;
 	
 	public String getStaticPath()
 	{
@@ -470,6 +512,204 @@ public class ContractsDTO {
 
 	public void setReqDocs(List<FileInfo> reqDocs) {
 		this.reqDocs = reqDocs;
+	}
+
+	public List<VendorContractsDTO> getVendorcontractsList()
+	{
+		return vendorcontractsList;
+	}
+
+	public void setVendorcontractsList(List<VendorContractsDTO> vendorcontractsList)
+	{
+		this.vendorcontractsList = vendorcontractsList;
+	}
+
+	public List<ClientContractsDTO> getClientcontractsList()
+	{
+		return clientcontractsList;
+	}
+
+	public void setClientcontractsList(List<ClientContractsDTO> clientcontractsList)
+	{
+		this.clientcontractsList = clientcontractsList;
+	}
+
+	public List<FullTimeContractsDTO> getFullTimeoffercontractsList()
+	{
+		return fullTimeoffercontractsList;
+	}
+
+	public void setFullTimeoffercontractsList(List<FullTimeContractsDTO> fullTimeoffercontractsList)
+	{
+		this.fullTimeoffercontractsList = fullTimeoffercontractsList;
+	}
+
+	public String getOrgRelationUUID()
+	{
+		return orgRelationUUID;
+	}
+
+	public void setOrgRelationUUID(String orgRelationUUID)
+	{
+		this.orgRelationUUID = orgRelationUUID;
+	}
+
+	public String getSpocUUID()
+	{
+		return spocUUID;
+	}
+
+	public void setSpocUUID(String spocUUID)
+	{
+		this.spocUUID = spocUUID;
+	}
+
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+
+	public String getJoinedDateStr()
+	{
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr)
+	{
+		this.joinedDateStr = joinedDateStr;
+	}
+
+	public Long getSequentialOwner1()
+	{
+		return sequentialOwner1;
+	}
+
+	public void setSequentialOwner1(Long sequentialOwner1)
+	{
+		this.sequentialOwner1 = sequentialOwner1;
+	}
+
+	public Long getSequentialOwner2()
+	{
+		return sequentialOwner2;
+	}
+
+	public void setSequentialOwner2(Long sequentialOwner2)
+	{
+		this.sequentialOwner2 = sequentialOwner2;
+	}
+
+	public List<Long> getParallelOwner()
+	{
+		return parallelOwner;
+	}
+
+	public void setParallelOwner(List<Long> parallelOwner)
+	{
+		this.parallelOwner = parallelOwner;
+	}
+
+	public String getOwnersType()
+	{
+		return ownersType;
+	}
+
+	public void setOwnersType(String ownersType)
+	{
+		this.ownersType = ownersType;
+	}
+
+	public String getSaveType()
+	{
+		return saveType;
+	}
+
+	public void setSaveType(String saveType)
+	{
+		this.saveType = saveType;
+	}
+
+	public String getContractUUID()
+	{
+		return contractUUID;
+	}
+
+	public void setContractUUID(String contractUUID)
+	{
+		this.contractUUID = contractUUID;
+	}
+
+	public String getRevisedReason()
+	{
+		return revisedReason;
+	}
+
+	public void setRevisedReason(String revisedReason)
+	{
+		this.revisedReason = revisedReason;
+	}
+
+	public String getTypeOfContract()
+	{
+		return typeOfContract;
+	}
+
+	public void setTypeOfContract(String typeOfContract)
+	{
+		this.typeOfContract = typeOfContract;
+	}
+
+	public String getContractSubmissionType()
+	{
+		return contractSubmissionType;
+	}
+
+	public void setContractSubmissionType(String contractSubmissionType)
+	{
+		this.contractSubmissionType = contractSubmissionType;
+	}
+
+	public String getTabType()
+	{
+		return tabType;
+	}
+
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
+	}
+
+	public String getContractsType()
+	{
+		return contractsType;
+	}
+
+	public void setContractsType(String contractsType)
+	{
+		this.contractsType = contractsType;
+	}
+
+	public String getContractStatus()
+	{
+		return contractStatus;
+	}
+
+	public void setContractStatus(String contractStatus)
+	{
+		this.contractStatus = contractStatus;
+	}
+
+	public String getUserRoleName()
+	{
+		return userRoleName;
+	}
+
+	public void setUserRoleName(String userRoleName)
+	{
+		this.userRoleName = userRoleName;
 	}
 	
 	

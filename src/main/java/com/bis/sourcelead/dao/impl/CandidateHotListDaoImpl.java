@@ -63,7 +63,7 @@ public class CandidateHotListDaoImpl implements CandidateHotListDao{
 	public Boolean isCandidateIsFavourite(Long candidateId, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from CandidateHotList hotList where hotList.candidateId.id = :candidateId and hotList.orgLocationId.id = :orgLocationId and hotList.status = '1' "; 
-		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
          boolean isCategoryFound = false;
 		if (candidateHotList != null && !candidateHotList.isEmpty()) {
          	isCategoryFound = true;
@@ -76,7 +76,7 @@ public class CandidateHotListDaoImpl implements CandidateHotListDao{
 	public CandidateHotList getCandidateHotListByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId) {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from CandidateHotList hotList where hotList.candidateId.id = :candidateId and hotList.orgLocationId.id = :orgLocationId"; 
-		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("candidateId", candidateId).setLong("orgLocationId", orgLocationId).list();
 		if (candidateHotList.size() > 0) {
 			return candidateHotList.get(0);
 		} else {
@@ -92,7 +92,7 @@ public class CandidateHotListDaoImpl implements CandidateHotListDao{
 
 		 Session session = this.sessionFactory.getCurrentSession();
 		 String query = "from CandidateHotList hotList where hotList.teamId.id =:teamId and hotList.orgLocationId.id =:orgLocationsId  ";
-		 List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationsId", orgLocationsId).setCacheable(true).list();
+		 List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong( "teamId", teamId).setLong( "orgLocationsId", orgLocationsId).list();
 		 return candidateHotList;
 	}
 
@@ -101,7 +101,7 @@ public class CandidateHotListDaoImpl implements CandidateHotListDao{
 	public CandidateHotList getCandidateHotListById(Long id) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
 		String query = "from CandidateHotList hotList where hotList.id = :id"; 
-		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("id", id).setCacheable(true).list();
+		List<CandidateHotList> candidateHotList = session.createQuery(query.toString()).setLong("id", id).list();
 		if (candidateHotList.size() > 0) {
 			return candidateHotList.get(0);
 		} else {

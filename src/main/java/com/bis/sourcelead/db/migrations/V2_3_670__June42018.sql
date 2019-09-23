@@ -1,0 +1,52 @@
+CALL AlterTableAddColumn ('ASSOCIATE_BALANCE_LEAVES','ORG_LOCATION_ID','BIGINT(20) NULL AFTER `USER_ID`');
+
+
+DROP PROCEDURE associateBalanceLeave;  
+
+DELIMITER //
+
+CREATE PROCEDURE associateBalanceLeave 
+(
+    IN userid bigint,
+    IN locationId bigint,
+    IN leaveTypeId bigint,
+    IN totalLeaves varchar(50),
+	IN assBalLeaveUUID varchar(50),
+    IN status INT(10),
+    IN createdBy bigint,
+    IN createdDate date,
+    IN updatedBy bigint,
+    IN updatedDate date
+) 
+BEGIN
+	   INSERT INTO ASSOCIATE_BALANCE_LEAVES(USER_ID,ORG_LOCATION_ID, LEAVE_TYPE_ID, TOTAL_LEAVES, ASSO_BAL_LEAVE_UUID, STATUS, CREATED_BY,CREATED_DATE,UPDATED_BY,UPDATED_DATE)
+       values (userid,locationId, leaveTypeId, totalLeaves, assBalLeaveUUID, status, createdBy,createdDate,updatedBy,updatedDate); 
+
+
+END; //
+
+DELIMITER ;
+
+
+# Associate Balance Leave view
+CREATE OR REPLACE VIEW ASSOCIATE_BAL_LEAVE_VIEW AS
+SELECT BAL_LEAVE.ID,
+       BAL_LEAVE.USER_ID,
+       BAL_LEAVE.TOTAL_LEAVES,
+       BAL_LEAVE.ASSO_BAL_LEAVE_UUID,
+       BAL_LEAVE.STATUS,
+	   BAL_LEAVE.CREATED_DATE,
+	   BAL_LEAVE.UPDATED_DATE,
+	   BAL_LEAVE.LEAVE_TYPE_ID,
+	   BAL_LEAVE.ORG_LOCATION_ID,
+	(SELECT NAME FROM LEAVE_TYPE
+            WHERE
+                ID = BAL_LEAVE.LEAVE_TYPE_ID) AS LEAVE_TYPE_NAME,
+	(SELECT FIRST_NAME FROM USER
+            WHERE
+		ID = BAL_LEAVE.CREATED_BY) AS CREATED_BY_FIRST_NAME,
+	(SELECT LAST_NAME FROM USER
+            WHERE
+		ID = BAL_LEAVE.CREATED_BY) AS CREATED_BY_LAST_NAME
+FROM
+        ASSOCIATE_BALANCE_LEAVES BAL_LEAVE

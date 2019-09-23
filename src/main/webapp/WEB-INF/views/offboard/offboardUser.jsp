@@ -1,19 +1,19 @@
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
 <!-- Bootstrap -->
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css">
+<link rel="stylesheet" href="/resources/css/chosen.min.css">
+<link href="/resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css" rel="stylesheet">
 
-<link rel="stylesheet" href="resources/css/bootstrap-select.min.css">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="/resources/css/bootstrap-select.min.css">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 
 
 
@@ -37,7 +37,7 @@
 				                <div class="clearfix">
 				                   <div class="pull-left image-parent positionRelative">
 				                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-				                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
+				                     <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}">
 				                     </div>
 				                   </div>
 				                   <div class="pull-left mt5">
@@ -56,7 +56,7 @@
           
               <div class="blank-pages-tech">
                 <p class="text-center text-danger permissondenied mb">
-                    <img src="resources/images/SourceLead-logo.png" alt="Source Lead" title="Source Lead">
+                    <img src="/resources/images/SourceLead-logo.png" alt="Source Lead" title="Source Lead">
                 </p>
                 <p class="big-txt mt">You are offboard user</p>
                 <p class="text-muted">You don't have permission to access this page.</p>
@@ -108,7 +108,7 @@
   
  <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 

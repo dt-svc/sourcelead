@@ -12,4 +12,6 @@ import com.bis.sourcelead.entity.Webgeocities;
 public interface WebgeocitiesDao {
 
 	List<Webgeocities> getAllCitiesByStateCodeCountryCode(List<String> stateCode, String countryCode) throws Exception;
+	
+	List<Webgeocities> getAllCitiesByCountryCode(String countryCode) throws Exception;
 }

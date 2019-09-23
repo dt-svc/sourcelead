@@ -4,15 +4,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style>
-.ratetype p {
-    left: -45px !important;
-    position: absolute;
-    bottom: -14px;
-}
-</style>
-
 <script>
 	function alertMsgFadeinFunction() {
 		$("#jobAlert1").fadeIn(200);
@@ -32,6 +23,7 @@
           <div class="pull-left">
             <h2>Job Alert List</h2>
           </div>
+           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; Job Alerts</div>
     </section>
     
     <div class="timesheet_out">
@@ -69,7 +61,7 @@ function alertClose(){
 	$(".modal.modal_createalert").fadeOut();
 }
 </script>
-<script src="resources/js/jobs/js/bootstrap-select.min.js"></script>
+<script src="/resources/js/jobs/js/bootstrap-select.min.js"></script>
 <script>
 function createAlert(){
 	var email = '${SourceLeadWeb_user.email}';
@@ -154,7 +146,7 @@ function createAlert(){
 					 result = result +'         <div class="form-group clearfix">';
 					 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
 					 result = result +'	<div class="col-md-9">';
-					 result = result +'            <div class="input-group er ratetype">';
+					 result = result +'            <div class="input-group er ratetype-validation">';
 					 result = result +'               <div class="input-group-btn tblminwidth-75">';
 					 result = result +'                 <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
 					 result = result +'                <option ${currencyCode  == "INR" ? "selected" : ''}>INR</option>';
@@ -167,7 +159,7 @@ function createAlert(){
 					 result = result +'               </div>';
 					 
 					 result = result +'              <input type="text" id="currentRate" name="rate" field-name="rate" onblur="getRate();" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="" class="form-control" placeholder="Rate">';
-					 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype">';
+					 result = result +'               <div class="input-group-btn tblminwidth-75 ratetype-validation">';
 					 result = result +'                 <select class="btn-primary select_picker form-control" id="rateType" name="rateType" data-validation-optional="true" field-name="Rate Type">';
 					 result = result +'                   <option value="">Rate Per</option>';
 					 result = result +'                   <option >Hourly</option>';
@@ -210,10 +202,12 @@ function createAlert(){
 					 result = result +'         	<label class="col-md-3">Keywords / Skills <span class="text-danger paddingLeft">*</span></label>';
 					 result = result +'         	<div class="col-md-9">';
 					 result = result +'			<select class="form-control chosen-select" data-placeholder="Keywords/Skills"  multiple id="skills" name="skills" data-validation="required" field-name="Keywords/Skills">';
-					 result = result +'         			<c:forEach var="skill" items="${skillsList}">';
-					 result = result +'         			<option value="${skill.name}">${skill.name}</option>';
-					 result = result +'         			</c:forEach>';
-					 result = result +'         		</select>';
+					 
+					          		 <c:forEach var="skill" items="${skillsList}">
+											result = result + "<option value='${skill.name}'>${skill.name}</option>";
+						             </c:forEach>
+						            
+					 result = result +'       </select>';
 					 result = result +'         	</div>';
 					 result = result +'         </div>';
 					 result = result +'       </div>';
@@ -252,10 +246,17 @@ function createAlert(){
 					    	$.ajax({
 						    	type: "POST",
 						        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-						        success: function(data) {
-						        	var primarySkill = data;
-						        	      $("#primarySkill").val(primarySkill);
-						        	
+						        success: function(response) {
+						        	if (response.response === "AWKWARD") {
+						        	    location.href = "/errorPage";
+						        	} else if (response.response === "SUCCESS") {
+						        		var primarySkill = response.object;
+							        	$("#primarySkill").val(primarySkill);
+						        	} else if (response.indexOf('Sign In') !== -1) {
+						        		location.replace(sourceleadUrl);
+						        	} else {
+						        	    showError("Operation failed, please try again");
+						        	}
 						        },
 						    });
 					    	
@@ -324,15 +325,16 @@ function createAlert(){
 function saveAlert(){
 	var jobAlertUUID = $("#jobAlertUUID").val();
 	if ($('#create_alert_form').validate(false, validationSettings)){ 
-		var frm = $('#create_alert_form').serializeFormJSON();
-		var con = JSON.stringify(frm);
-		con = con.replace(/[{}]/g, ""); 
-		//It will escape all the special characters
-	    var jsonData = encodeURIComponent(con);
+
+		var sourceleadUrl = '${sourceleadUrl}';
+	    var formData = getFormData1("create_alert_form");
 
 		$.ajax({
 					type : "POST",
-					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,
+					data: formData,
+	  		         processData: false,
+	  		         contentType:false, 
+					url : sourceleadUrl+"/storeJobAlert?${_csrf.parameterName}=${_csrf.token}",
 					success : function(result) {
 						 if(jobAlertUUID != null && jobAlertUUID != '' && jobAlertUUID != 'undefined'){
 							$("#jobAlert2").removeAttr("style");
@@ -571,7 +573,7 @@ function editAlert(jobAlertUUID){
         		 result = result +'         <div class="form-group clearfix">';
         		 result = result +'         	<label class="col-md-3">Salary/Rate</label>';
         		 result = result +'	<div class="col-md-9">';
-        		 result = result +'            <div class="input-group er ratetype">';
+        		 result = result +'            <div class="input-group er ratetype-validation">';
         		 result = result +'               <div class="input-group-btn tblminwidth-75">';
         		 result = result +'                <select class="btn-primary select_picker form-control" id="rateCurrency" name="rateCurrency">';
         		 
@@ -615,7 +617,7 @@ function editAlert(jobAlertUUID){
         		 result = result +'               </div>';
         		 
         		 result = result +'<input type="text" id="currentRate" name="rate" onblur="getRate();" field-name="rate" data-validation="validate_Space validate_float validate_length length2-8" data-validation-optional="true" value="'+rate+'" class="form-control" placeholder="Rate">';
-        		 result = result +'<div class="input-group-btn tblminwidth-75 ratetype">';
+        		 result = result +'<div class="input-group-btn tblminwidth-75 ratetype-validation">';
         		 result = result +'<select class="btn-primary select_picker form-control" id="rateType" data-validation-optional="true" name="rateType" field-name="Rate Type">';
         		 result = result +'<option value="">Rate Per</option>';
         		 
@@ -761,17 +763,22 @@ function editAlert(jobAlertUUID){
         		    	$.ajax({
         			    	type: "POST",
         			        url: sourceleadUrl+"/profileBySkillSet?${_csrf.parameterName}=${_csrf.token}&allSkills="+allSkills, 
-        			        success: function(data) {
-        			        	var primarySkill = data;
-        			        	      $("#primarySkill").val(primarySkill);
-        			        	
+        			        success: function(response) {
+        			        	if (response.response === "AWKWARD") {
+        			        	    location.href = "/errorPage";
+        			        	} else if (response.response === "SUCCESS") {
+        			        		var primarySkill = response.object;
+            			        	$("#primarySkill").val(primarySkill);
+        			        	} else if (response.indexOf('Sign In') !== -1) {
+        			        		location.replace(sourceleadUrl);
+        			        	} else {
+        			        	    showError("Operation failed, please try again");
+        			        	}
         			        },
         			    });
-        		    	
         		    });
         		    
         		    if(json['skillsName'] != 'undefined' && json['skillsName'] != null && json['skillsName'] != ''){
-        		    
         		      var alertSkillsList = json['skillsName'].split(',');
                    	  if(alertSkillsList.length > 1){
                    		 for (var i=0; i < alertSkillsList.length; i++) {

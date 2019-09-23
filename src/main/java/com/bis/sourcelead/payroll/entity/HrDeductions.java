@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,16 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.bis.sourcelead.entity.InvoiceLineItems;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "HR_DEDUCTIONS", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "hrDeductions")
+@Table(name = "HR_DEDUCTIONS")
 public class HrDeductions implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +31,7 @@ public class HrDeductions implements Serializable {
 	@Column(name = "ID", nullable = false)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 
@@ -86,6 +82,9 @@ public class HrDeductions implements Serializable {
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
+	
+	@Column(name = "UUID")
+	private String uuid;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "hrDeductions")
 	private Set<HrDeductionsDetails> hrDeductionsDetails;
@@ -272,6 +271,13 @@ public class HrDeductions implements Serializable {
 		this.version = version;
 	}
 
+	public String getUuid()
+	{
+		return uuid;
+	}
+
+	public void setUuid(String uuid)
+	{
+		this.uuid = uuid;
+	}
 }
-
-

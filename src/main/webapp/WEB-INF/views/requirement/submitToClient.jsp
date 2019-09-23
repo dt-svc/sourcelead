@@ -10,14 +10,17 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
 </c:if>
 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<link href="resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
-<script src="resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/summernote.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<link href="/resources/css/summernote.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/bootstrap3-wysihtml5.min.css?staticTime=${staticTime}">
+<script src="/resources/js/bootstrap3-wysihtml5.all.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/summernote.js?staticTime=${staticTime}"></script>
 
-<!-- newly added end -->
-
+<style type="text/css">
+ul.tagit li.tagit-choice .tagit-close .text-icon { visibility: hidden; }
+ul.tagit li.tagit-choice .tagit-close:before { content:"x"; z-index: 999; position: absolute; right: 0; top: -5px; color: red;
+}
+</style>
 <script>
 function submitToClient(requirementId){
 	$('.action-pop').slideUp();
@@ -31,144 +34,146 @@ function submitToClient(requirementId){
 	 $.ajax({ 
 	    	type: "POST",
 	    	url: sourceleadUrl+"/getShortListedCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId,
-	    			
 	    	success: function(data) {
+	    		if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
 	    		
-	    		if(data != null && data != 'undefined' && data != "" && data != '[]' && data != 'failed'){
-		       
-	    	   var json = JSON.parse(data);
-		        
-	           result = result + '     <div class="clearfix"></div>';
-	           result = result + '   </div>';
-	           result = result + '   <div class="require_wrap_table scroll_table mt40">';
-	           result = result + '     <table id="SCPagination"  class="display" cellspacing="0" width="100%">';
-	           result = result + '       <thead>';
-	           result = result + '         <tr>';
-	           result = result + ' <th><input type="checkbox" onclick="selectAllSubmitToClient();"  id="selectallSTC" ></th>';
-	           result = result + '           <th>Name</th>';
-	           result = result + '           <th>Email</th>';
-	           result = result + '           <th>Ph. No</th>';
-	           result = result + '           <th>Resume</th>';
-	           result = result + '           <th>Applied on</th>';
-	           result = result + '           <th>Rate</th>';
-	           result = result + '           <th>Submission Rate</th>';
-	           result = result + '           <th>Rate Per</th>';
-	           result = result + '           <th>Source</th>';
-	           result = result + '           <th>Experience</th>';
-	           result = result + '         </tr>';
-	           result = result + '       </thead>';
-	           result = result + '       <tbody>';
-	           
-		        
-		    	if(json.length > 0)
-		   		{
-		    		for(var i=0; i<json.length; i++){
-		    			var report = json[i];
-		    			
-		    			if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
-	   	        			orgName = "("+report.orgName+")";
-	   	        		}else{
-	   	        			orgName = "";
-	   	        		}
-		    			
-	    			    result = result + '<tr>';
-	    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
-	    			    
-			            result = result + '<td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
-			           
-			           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
-			        	   result = result + '<td><div><span title="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
-				           }
-				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
-			    	     }
-			           
-			           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.phoneNumber+'</span></div></td>';
-				           }
-				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
-			    	     }
-			           
-			           if(report.candidateResumes != null && report.candidateResumes != '' && report.candidateResumes != 'undefined'){
- 			        	   result = result + '<td><div><span><a href="javascript:void(0)"><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadResume?resumeUUID='+report.candidateResumes.resumeUUID+'\"></a></span></div></td>';
-				           }
-				       else{
-				    	   result = result + '<td><div>--</div></td>';
-			    	     }
-			           
-			           if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.createdDateStr+'</span></div></td>';
-				           }
-				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
-			    	     }
-			           
-			           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
-				         	}else if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
-				         	}else{
-				        	result = result + '<td><div><span>--</span></div></td>';
-			    	     }
-			           
-			           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
-			        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
-				           }
-				       else{
-				    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
-			    	     }
-							result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
-							result = result + '<option value="">Rate Per</option>';
-							result = result + '<option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
-							result = result + '<option  '+(report.submitToClientRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
-							result = result + '<option  '+(report.submitToClientRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
-							result = result + '<option  '+(report.submitToClientRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
-							result = result + '<option  '+(report.submitToClientRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
-							result = result + '<option  '+(report.submitToClientRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
-							result = result + '<option  '+(report.submitToClientRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
-							result = result + ' </select></td>';
-			           
-			           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
-			        	   result = result + '<td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'</span></div></td>';
-				           }
-				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
-			    	     }
-			           
-			           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
-			        	   result = result + '<td><div><span>'+report.workExperience+'</span></div></td>';
-				           }
-				       else{
-				        	result = result + '<td><div><span>--</span></div></td>';
-			    	     }
-			           
-			           result = result + '       </tr>';
-		    		}
-		    		
-
-			           result = result + '       </tbody>';
-			           result = result + '       </table>';
-			           result = result + '</div><div id="loading">';
-			           result = result + '</div><div id="popUp">';
-		    			
-		    			$("#submitToClientDiv").empty();
-		    			$("#submitToClientDiv").append(result);
-		    			SCpagination();
-		   		}
-		   		}else if(data != 'failed'){
-		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
-		    		$('#submitToClientDiv').empty();
-		    		$('#submitToClientDiv').append(result);
-		    	}else if(data == 'failed'){
-		    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client Job was Closed/Onhold/Canceled. </h3></div>";
-		    		$('#submitToClientDiv').empty();
-		    		$('#submitToClientDiv').append(result);
-		    	}
-	    	}
-	    	
-	    		
-	    }); 
+	    		if(data.data != null && data.data != 'undefined' && data.data != "" && data.data != '[]' && data.data != 'failed'){
+		    	   var json = data.data;
+		           result = result + '     <div class="clearfix"></div>';
+		           result = result + '   </div>';
+		           result = result + '   <div class="require_wrap_table scroll_table mt40 tableData">';
+		           result = result + '     <table id="SCPagination"  class="display" cellspacing="0" width="100%">';
+		           result = result + '       <thead>';
+		           result = result + '         <tr>';
+		           result = result + ' <th><input type="checkbox" onclick="selectAllSubmitToClient();"  id="selectallSTC" ></th>';
+		           result = result + '           <th>Name</th>';
+		           result = result + '           <th>Email</th>';
+		           result = result + '           <th>Ph. No</th>';
+		           result = result + '           <th>Resume</th>';
+		           result = result + '           <th>Applied on</th>';
+		           result = result + '           <th>Rate</th>';
+		           result = result + '           <th>Submission Rate</th>';
+		           result = result + '           <th>Rate Per</th>';
+		           result = result + '           <th>Source</th>';
+		           result = result + '           <th>Experience</th>';
+		           result = result + '         </tr>';
+		           result = result + '       </thead>';
+		           result = result + '       <tbody>';
+		           
+			    	if(json.length > 0)
+			   		{
+			    		for(var i=0; i<json.length; i++){
+			    			var report = json[i];
+			    			
+			    			if(report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
+		   	        			orgName = "("+report.orgName+")";
+		   	        		}else{
+		   	        			orgName = "";
+		   	        		}
+			    			
+		    			    result = result + '<tr>';
+		    			    result = result + '<td><input type="checkbox" onclick="getSubmitToClientCheckedCandidatesCount();"  class="shortlistedChecks" value='+report.id+' name="shortlist[]" ></td>';
+		    			    
+				            result = result + '<td><div><span title="'+report.candidateName+'">'+report.candidateName+'</span></div></td>';
+				           
+				           if(report.candidateEmail != null && report.candidateEmail != '' && report.candidateEmail != 'undefined'){
+				        	   result = result + '<td><div><span title="'+report.candidateEmail+'">'+report.candidateEmail+'</span></div></td>';
+					           }
+					       else{
+					        	result = result + '<td><div><span>--</span></div></td>';
+				    	     }
+				           
+				           if(report.phoneNumber != null && report.phoneNumber != '' && report.phoneNumber != 'undefined'){
+				        	   result = result + '<td><div><span>'+report.phoneNumber+'</span></div></td>';
+					           }
+					       else{
+					        	result = result + '<td><div><span>--</span></div></td>';
+				    	     }
+				            if(report.fileURL != null && report.fileURL != '' && report.fileURL != 'undefined'){
+				        	   result = result + '<td><div><span><a href="javascript:void(0)"><a download class="glyphicon glyphicon-download-alt" href=\"'+report.fileURL+'\" title="Download"></a></span></div></td>';
+				           } 
+				           
+					       else{
+					    	   result = result + '<td><div>--</div></td>';
+				    	     }
+				           
+				           if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+				        	   result = result + '<td><div><span>'+report.createdDateStr+'</span></div></td>';
+					           }
+					       else{
+					        	result = result + '<td><div><span>--</span></div></td>';
+				    	     }
+				           
+				           if(report.finalizedRate != null && report.finalizedRate != '' && report.finalizedRate != 'undefined'){
+				        	   result = result + '<td><div><span>'+report.finalizedRate+'</span></div></td>';
+					         	}else if(report.expectedCTC != null && report.expectedCTC != '' && report.expectedCTC != 'undefined'){
+				        	   result = result + '<td><div><span>'+report.expectedCTC+'</span></div></td>';
+					         	}else{
+					        	result = result + '<td><div><span>--</span></div></td>';
+				    	     }
+				           
+				           if(report.submitToClientRate != null && report.submitToClientRate != '' && report.submitToClientRate != 'undefined'){
+				        	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" data-validation="validate_length length1-10" data-validation-optional="true" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value="'+report.submitToClientRate+'"></div></td>';
+					           }
+					       else{
+					    	   result = result + '<td><div><input type="text" class="form-control quantity" maxlength="10" onkeypress="validateRate(event,'+report.id+')" id="submissionRate'+report.id+'" name="submissionRate'+report.id+'" value=""></div></td>';
+				    	     }
+								result = result + '<td><select class="selct-picker" id="submissionRateType'+report.id+'" name="submissionRateType" field-name="Rate Type" data-validation-optional="true">';
+								result = result + '<option value="">Rate Per</option>';
+								result = result + '<option '+(report.submitToClientRateType == "Hourly" ? "selected" : '') +'>Hourly</option>';
+								result = result + '<option  '+(report.submitToClientRateType == "Weekly" ? "selected" : '') +'>Weekly</option>';
+								result = result + '<option  '+(report.submitToClientRateType == "Bi-weekly" ? "selected" : '') +'>Bi-weekly</option>';
+								result = result + '<option  '+(report.submitToClientRateType == "Semi-Monthly" ? "selected" : '') +'>Semi-Monthly</option>';
+								result = result + '<option  '+(report.submitToClientRateType == "Monthly" ? "selected" : '') +'>Monthly</option>';
+								result = result + '<option  '+(report.submitToClientRateType == "Bi-Monthly" ? "selected" : '') +'>Bi-Monthly</option>';
+								result = result + '<option  '+(report.submitToClientRateType == "Yearly" ? "selected" : '') +'>Yearly</option>';
+								result = result + ' </select></td>';
+				           
+				           if(report.createdUser != null && report.createdUser != '' && report.createdUser != 'undefined'){
+				        	   result = result + '<td><div><span title="'+report.createdUser+''+orgName+'">'+report.createdUser+''+orgName+'</span></div></td>';
+					           }
+					       else{
+					        	result = result + '<td><div><span>--</span></div></td>';
+				    	     }
+				           
+				           if(report.workExperience != null && report.workExperience != '' && report.workExperience != 'undefined'){
+				        	   result = result + '<td><div><span>'+report.workExperience+'</span></div></td>';
+					           }
+					       else{
+					        	result = result + '<td><div><span>--</span></div></td>';
+				    	     }
+				           
+				           result = result + '       </tr>';
+			    		}
+				           result = result + '       </tbody>';
+				           result = result + '       </table>';
+				           result = result + '</div><div id="loading">';
+				           result = result + '</div><div id="popUp">';
+			    			
+			    			$("#submitToClientDiv").empty();
+			    			$("#submitToClientDiv").append(result);
+			    			SCpagination();
+			   			}
+			   		}else if(data.error != 'failed'){
+			    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-user'></i><h3>Shortlisted List is Empty</h3></div>";
+			    		$('#submitToClientDiv').empty();
+			    		$('#submitToClientDiv').append(result);
+			    	}else if(data.error == 'failed'){
+			    		result = "<div class='content-area mt text-center text-muted'><i class='mt fa fa-5x fa-briefcase'></i><h3>Client Job was Closed/Onhold/Canceled. </h3></div>";
+			    		$('#submitToClientDiv').empty();
+			    		$('#submitToClientDiv').append(result);
+			    	} 
+				 }else if (data.indexOf('Sign In') !== -1) {
+			 		location.replace(sourceleadUrl);
+			 	} else {
+			 		showError("Operation failed, please try again");
+			 	}
+	    	} 		
+	 }); 
 	
 
 	$(".submitnew-wrap").addClass("submitnew-wrap_active");
@@ -207,7 +212,6 @@ function validateRate(evt, rateId) {
 function SCpagination(){  
     $('#SCPagination').DataTable( { 
     	"scrollCollapse": false,
-    	"scrollX": true,
     	"bPaginate": false,
     	"bLengthChange": false,
     	"bDestroy": true,
@@ -222,7 +226,8 @@ function SCpagination(){
      	 "sZeroRecords": "", "sEmptyTable": ""
      	}
 		
-    } );
+    });
+    $('#SCPagination').wrap("<div class='overflow_Auto width100Percnt'></div>")
 }
 </script>
 
@@ -287,7 +292,7 @@ function clientSubmissions(requirementId){
 	 
 	 if(selectedShortlists.length > 0){
 		 if(selectedShortlists.length <= 50){
-			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			 $.ajax({ 
 			    	type: "POST",
 			    	url: sourceleadUrl+"/submitShortlistedToClient?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionsList="+selectedShortlists+"&selectedShortlistsRate="+selectedShortlistsRate,
@@ -332,12 +337,14 @@ function cancelSumitToClient(){
 	$("#popUp").empty();
 	$(".project_inn_mask").fadeOut(200);
 	$(".sideMask").fadeOut(200);
+	$(".comMask").fadeOut(200);
 }
 </script>
 
 
 <script>
 function addEmailtemplate(requirementId){
+	
 	var result ="";
 		 var selectedShortlists = [];
 		 var selectedShortlistsRate = [];
@@ -352,9 +359,9 @@ function addEmailtemplate(requirementId){
 			 var selectedRatePer =  $("#submissionRateType"+rateIdper).val();
 			 selectedShortlistsRatePer[i] = selectedRatePer;
 			 
-			 if(selectedRate != '' && selectedRatePer == ''){
+			 if(selectedRate != '' && selectedRate != null && selectedRate != 'undefined' && (selectedRatePer == '' || selectedRatePer == null || selectedRatePer == 'undefined')){
 				 isCountinue = false;
-			 }else if(selectedRate == '' && selectedRatePer != ''){
+			 }else if((selectedRate == '' || selectedRate == null || selectedRate == 'undefined') && selectedRatePer != '' && selectedRatePer != null && selectedRatePer != 'undefined'){
 				 isCountinue = false;
 			 }
 		});
@@ -365,136 +372,146 @@ function addEmailtemplate(requirementId){
 		    	type: "GET",
 		    	url: sourceleadUrl+"/addEmailtemplate?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&selectedShortlistsCount="+selectedShortlists,
 		        success: function(data) {
-		        	 var json = JSON.parse(data);
-		        	result = result +'<section class="clearfix">';
-		        	result = result +'<div id="loadingDiv"></div>';
-		        	result = result +'<form id="submitToClientMailTemplate" name="submitToClient" enctype="multipart/form-data">';
-		        	result = result +'<section class="content-header clearfix">';	
-					result = result +'  <div class="pull-left">';
-				 	result = result +'    <h2>Mail Box</h2>';
-					result = result +'  </div>';	
-					result = result +'</section>';
-					result = result +'	<div class="content-area clearfix">';
-					result = result +'		<div class="form-horizontal compose-mail col-md-10 col-md-offset-1">';
-					result = result +'			<div class="col-md-12 clearfix">';
-					result = result +'				<label class="col-md-2 control-label text-muted small">From</label>';
-					result = result +'				<div class="col-md-10">';
-					result = result +'					<input type="text" value="'+json.submitToClientFromMailId+'" class="form-control input-sm" name="fromMailId" readonly>';
-					result = result +'				</div>';
-					result = result +'			</div>';
-					result = result +'			<div class="col-md-12 clearfix">';
-					result = result +'				<label class="col-md-2 control-label text-primary small">To</label>';
-					result = result +'				<div class="col-md-10" id="toMailIdDiv">';
-					result = result +'					<input type="text" value="'+json.submitToClientToMailId+'" class="form-control input-sm" name="toMailId" id="toMailId" readonly>';
-					result = result +'				</div>';
-					result = result +'			</div>';
-					result = result +'			<div class="col-md-12 clearfix" id="othersMailIdDiv">';
-					result = result +'				<label class="col-md-2 control-label text-warning small">Others</label>';
-					result = result +'				<div class="col-md-10 mail-tagit">';
-					result = result +'					<input type="hidden" value="" class="form-control input-sm" id="othersMailId" name="othersMail">';
-					result = result +'					<ul id="mailsTagit"></ul>';
-					result = result +'				</div>';
-					result = result +'			</div>';
-					result = result +'			<div class="col-md-12 clearfix">';
-					result = result +'				<label class="col-md-2 control-label text-danger small">Subject</label>';
-					result = result +'				<div class="col-md-10">';
-					result = result +'					<input type="text" class="form-control input-sm" value="'+json.submitToClientMailSubject+'" name="mailSubject" data-validation="required" field-name="Subject">';
-					result = result +'				</div>';
-					result = result +'			</div>';
-					result = result +'			<!-- Text Area -->';
-					result = result +'			<div class="col-md-12 clearfix mb10 mt10">';
-					result = result +'				<div class="col-md-12">';
-					result = result +'					<div class="clearfix txt-area">';
-					result = result +'						<textarea id="compose-textarea"  class="form-control" rows="2" placeholder="Message" style="height: 250px" name="mailBody" data-validation-optional="true" data-validation="validate_length length2-1000">'+json.mailBody+'</textarea>';
-					result = result +'					</div>';
-					result = result +'				</div>';
-					result = result +'			</div>';
-					result = result +'			 <div class="clearfix mb12" id="uploadResumeDiv">';
-					result = result +'                 <div class="col-md-9">';
-					result = result +'						<div class="timesheet_week_comm mail-attach" id="uploadFileGroup">';
-					result = result +'	                          <table class="timesheetAttachment" id="attachmentTable">';
-					result = result +'							  <tr id="divAttachmentTsRow0">';
-					result = result +'							  		<td>';
-					result = result +'							  		<div id="0docFileuploadFileGroup">';
-					result = result +'							  		<span>';
-					result = result +'							  		<input type="file" name="0docFile" id="0docFile" class="timesheetAttachmentValidation">';
-					result = result +'							  		<i class="fa fa-plus" onClick="addAttachment()"></i></span>';
-					result = result +'							  		</div>';
-					result = result +'							  		</td>';         
-					result = result +'							  </tr>';
-					result = result +'							  </table>';
-					result = result +'	                          <input type="hidden" name="attcahmentMaxRowNumber"  id="attcahmentMaxRowNumber" value="1" />';
-					result = result +'							  <div id="divAttachmentTd1" style="display: none; float: left;">';
-					result = result +'										<div id="REPLACEROWIDdocFileuploadFileGroup">';
-					result = result +'								  			<span><input type="file" name="REPLACEROWIDdocFile" id="REPLACEROWIDdocFile" class="timesheetAttachmentValidation">'; 
-					result = result +'								  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i></span>';
-					result = result +'								  		</div>';
-					result = result +'							   </div>';
-					result = result +'							</div>';
-					result = result +'	                    </div>'; 
-					result = result +'                 <div class="col-md-3">';
-					result = result +'	                  <lable><input type="checkbox" name="sendTracker" checked>&nbsp;Send tracker</label>';
-					result = result +'	                  </div>';
-					
-					result = result +'                 <div class="col-md-3">';
-					result = result +'	                  <lable><input type="checkbox" name="sendResumes" checked>&nbsp;Send resumes</label>';
-					result = result +'	                  </div>';
-					
-					
-					result = result +'	                  </div>';
-					result = result +'			<div class="col-md-12 clearfix mt">';
-					result = result +'				<div class="col-md-6">';
-					result = result +'				</div>';
-					result = result +'				<div class="col-md-6">';
-					result = result +'					<div class="pull-right">';
-					result = result +'						<button type="button" id="sendMail"';
-					result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\',\''+selectedShortlistsRatePer+'\');">';
-					result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
-					result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
-					result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
-					result = result +'						</button>';
-					result = result +'					</div>';
-					result = result +'				</div>';
-					result = result +'			</div>';
-					result = result +'		</div>';
-					result = result +'	</div>'; 
-					result = result +'</form>';
-					result = result +'</section>';
-                    $("#submitToClientDiv").empty();
-                    $("#emailTemplateDiv").empty();
-                    $("#emailTemplateDiv").append(result);
-                    $('#compose-textarea').summernote({
-  					  toolbar: [
-  					    // [groupName, [list of button]]
-  					    ['style', ['bold', 'italic', 'underline', 'clear']],
-  					    ['font', ['strikethrough', 'superscript', 'subscript']],
-  					    ['fontsize', ['fontsize']],
-  					    ['color', ['color']],
-  					    ['para', ['ul', 'ol', 'paragraph']],
-  						['table',['table']],
-  					    ['height', ['height']]
-    					]});
-					$("#create-signature").wysihtml5();
-                    $('#mailsTagit').tagit({
-                        singleField: true,
-                        singleFieldNode: $('#othersMailId')
-                        ,placeholderText:"Enter emails"
-                        ,allowDuplicates: false
-                     	,afterTagAdded: function(evt, ui){
-                    	              checkEmailsForSubmitToClient();
-                    	              return false;
-                    	    }
-                        ,afterTagRemoved: function(evt, ui){
-                           checkEmailsForSubmitToClient();
-                           return false;
-                      }
-                    });
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			        	var json = data.object;
+			        	result = result +'<section class="clearfix">';
+			        	result = result +'<div id="loadingDiv"></div>';
+			        	result = result +'<form id="submitToClientMailTemplate" name="submitToClient" enctype="multipart/form-data">';
+			        	result = result +'<section class="content-header clearfix">';	
+						result = result +'  <div class="pull-left">';
+					 	result = result +'    <h2>Mail Box</h2>';
+						result = result +'  </div>';	
+						result = result +'</section>';
+						result = result +'	<div class="content-area clearfix">';
+						result = result +'		<div class="form-horizontal compose-mail col-md-10 col-md-offset-1">';
+						result = result +'			<div class="col-md-12 clearfix">';
+						result = result +'				<label class="col-md-2 control-label text-muted small">From</label>';
+						result = result +'				<div class="col-md-10">';
+						result = result +'					<input type="text" value="'+json.submitToClientFromMailId+'" class="form-control input-sm" name="fromMailId" readonly>';
+						result = result +'				</div>';
+						result = result +'			</div>';
+						result = result +'			<div class="col-md-12 clearfix">';
+						result = result +'				<label class="col-md-2 control-label text-primary small">To</label>';
+						result = result +'				<div class="col-md-10" id="toMailIdDiv">';
+						result = result +'					<input type="text" value="'+json.submitToClientToMailId+'" class="form-control input-sm" name="toMailId" id="toMailId" readonly>';
+						result = result +'				</div>';
+						result = result +'			</div>';
+						result = result +'			<div class="col-md-12 clearfix" id="othersMailIdDiv">';
+						result = result +'				<label class="col-md-2 control-label text-warning small">Others</label>';
+						result = result +'				<div class="col-md-10 mail-tagit">';
+						result = result +'					<input type="hidden" value="" class="form-control input-sm" id="othersMailId" name="othersMail">';
+						result = result +'					<ul id="mailsTagit"></ul>';
+						result = result +'				</div>';
+						result = result +'			</div>';
+						result = result +'			<div class="col-md-12 clearfix">';
+						result = result +'				<label class="col-md-2 control-label text-danger small">Subject</label>';
+						result = result +'				<div class="col-md-10">';
+						result = result +'					<input type="text" class="form-control input-sm" value="'+json.submitToClientMailSubject+'" name="mailSubject" data-validation="required" field-name="Subject">';
+						result = result +'				</div>';
+						result = result +'			</div>';
+						result = result +'			<!-- Text Area -->';
+						result = result +'			<div class="col-md-12 clearfix mb10 mt10">';
+						result = result +'				<div class="col-md-12">';
+						result = result +'					<div class="clearfix txt-area">';
+						result = result +'						<textarea id="compose-textarea"  class="form-control" rows="2" placeholder="Message" style="height: 250px" name="mailBody" data-validation-optional="true" data-validation="validate_length length2-1000">'+json.mailBody+'</textarea>';
+						result = result +'					</div>';
+						result = result +'				</div>';
+						result = result +'			</div>';
+						result = result +'			 <div class="clearfix mb12" id="uploadResumeDiv">';
+						result = result +'                 <div class="col-md-9">';
+						result = result +'						<div class="timesheet_week_comm mail-attach timesheet_week_comm_div" id="uploadFileGroup">';
+						result = result +'	                          <table class="timesheetAttachment" id="attachmentTable">';
+						result = result +'							  <tr id="divAttachmentTsRow0">';
+						result = result +'							  		<td>';
+						result = result +'							  		<div id="0docFileuploadFileGroup">';
+						result = result +'							  		<span>';
+						result = result +'							  		<input type="file" name="0docFile" id="0docFile" class="timesheetAttachmentValidation">';
+						result = result +'							  		<i class="fa fa-plus" onClick="addAttachment()"></i></span>';
+						result = result +'							  		</div>';
+						result = result +'							  		</td>';         
+						result = result +'							  </tr>';
+						result = result +'							  </table>';
+						result = result +'	                          <input type="hidden" name="attcahmentMaxRowNumber"  id="attcahmentMaxRowNumber" value="1" />';
+						result = result +'							  <div id="divAttachmentTd1" style="display: none; float: left;">';
+						result = result +'										<div id="REPLACEROWIDdocFileuploadFileGroup">';
+						result = result +'								  			<span><input type="file" name="REPLACEROWIDdocFile" id="REPLACEROWIDdocFile" class="timesheetAttachmentValidation">'; 
+						result = result +'								  			<i class="fa fa-times" onclick="removeAttachmentRow(REPLACEROWID);"></i></span>';
+						result = result +'								  		</div>';
+						result = result +'							   </div>';
+						result = result +'							</div>';
+						result = result +'	                    </div>'; 
+						result = result +'                 <div class="col-md-3">';
+						result = result +'	                  <lable><input type="checkbox" name="sendTracker" checked>&nbsp;Send tracker</label>';
+						result = result +'	                  </div>';
+						
+						result = result +'                 <div class="col-md-3">';
+						result = result +'	                  <lable><input type="checkbox" name="sendResumes" checked>&nbsp;Send resumes</label>';
+						result = result +'	                  </div>';
+						
+						
+						result = result +'	                  </div>';
+						result = result +'			<div class="col-md-12 clearfix mt">';
+						result = result +'				<div class="col-md-6">';
+						result = result +'				</div>';
+						result = result +'				<div class="col-md-6">';
+						result = result +'					<div class="pull-right">';
+						result = result +'						<button type="button" id="sendMail"';
+						result = result +'							class="btn btn-sm btn-success" onclick="submitToClientMail(\''+selectedShortlists+'\',\''+json.id+'\',\''+selectedShortlistsRate+'\',\''+selectedShortlistsRatePer+'\');">';
+						result = result +'							<i class="fa fa-envelope-o"></i>&nbsp;Send</button>';
+						result = result +'						<button type="button" class="btn btn-sm btn-default" onclick="cancelSubmit();">';
+						result = result +'							<i class="fa fa-times" ></i>&nbsp;Cancel';
+						result = result +'						</button>';
+						result = result +'					</div>';
+						result = result +'				</div>';
+						result = result +'			</div>';
+						result = result +'		</div>';
+						result = result +'	</div>'; 
+						result = result +'</form>';
+						result = result +'</section>';
+	                    $("#submitToClientDiv").empty();
+	                    $("#emailTemplateDiv").empty();
+	                    $("#emailTemplateDiv").append(result);
+	                    $('#compose-textarea').summernote({
+	  					  toolbar: [
+	  					    // [groupName, [list of button]]
+	  					    ['style', ['bold', 'italic', 'underline', 'clear']],
+	  					    ['font', ['strikethrough', 'superscript', 'subscript']],
+	  					    ['fontsize', ['fontsize']],
+	  					    ['color', ['color']],
+	  					    ['para', ['ul', 'ol', 'paragraph']],
+	  						['table',['table']],
+	  					    ['height', ['height']]
+	    					]});
+						$("#create-signature").wysihtml5();
+	                    $('#mailsTagit').tagit({
+	                        singleField: true,
+	                        singleFieldNode: $('#othersMailId')
+	                        ,placeholderText:"Enter emails"
+	                        ,allowDuplicates: false
+	                     	,afterTagAdded: function(evt, ui){
+	                    	              checkEmailsForSubmitToClient();
+	                    	              return false;
+	                    	    }
+	                        ,afterTagRemoved: function(evt, ui){
+	                           checkEmailsForSubmitToClient();
+	                           return false;
+	                      }
+	                    });
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        },
 		 }); 
 }else{
 	var result = "";
-	result = result +"	<div class='sideMask'></div>";
-	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"	<div class='comMask zInMask'></div>";
+	result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 	result = result +"		<p>Please select atleast one candidate</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -502,6 +519,7 @@ function addEmailtemplate(requirementId){
 	$("#popUp").append(result);
 	$("#pipeline_user_pop").slideDown(200);
 	//$(".sideMask").fadeIn(200);
+	$(".comMask").fadeIn(200);
  }
 		 
  }else{
@@ -519,8 +537,8 @@ function addEmailtemplate(requirementId){
 	  
 		 if(selectedRate != '' && selectedRatePer == ''){
 		 var result = "";
-		result = result +"	<div class='comMask'></div>";
-		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+		result = result +"	<div class='comMask zInMask'></div>";
+		result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 		result = result +"		<p>Rate Per is Required for given Rate</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -531,8 +549,8 @@ function addEmailtemplate(requirementId){
 		
 		}else if(selectedRate == '' && selectedRatePer != ''){
 		 var result = "";
-			result = result +"	<div class='comMask'></div>";
-			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
+			result = result +"	<div class='comMask zInMask'></div>";
+			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a zInPop'>";
 			result = result +"		<p>Submission Rate is Required</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelSumitToClient();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSumitToClient();'></b>";
@@ -647,7 +665,7 @@ function submitToClientMail(selectedIds,requirementId,selectedShortlistsRate,sel
 			var form = $('#submitToClientMailTemplate')[0];
     		var formData = new FormData(form); 
 			$("#sendMail").addClass('button').val('Processing..');
-     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+     		$("#loadingDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				$.ajax({
 					 type : "POST",
 					 data: formData,

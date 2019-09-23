@@ -29,6 +29,8 @@ public class CandidateCompareDTO implements Serializable{
 	@JsonProperty
 	private String jobLocation;
 	@JsonProperty
+	private List<String> jobLocationList;
+	@JsonProperty
 	private String jobNoticePeriod;
 	@JsonProperty
 	private String jobEducation;
@@ -88,6 +90,14 @@ public class CandidateCompareDTO implements Serializable{
 	public void setJobLocation(String jobLocation)
 	{
 		this.jobLocation = jobLocation;
+	}
+	public List<String> getJobLocationList()
+	{
+		return jobLocationList;
+	}
+	public void setJobLocationList(List<String> jobLocationList)
+	{
+		this.jobLocationList = jobLocationList;
 	}
 	public String getJobNoticePeriod()
 	{

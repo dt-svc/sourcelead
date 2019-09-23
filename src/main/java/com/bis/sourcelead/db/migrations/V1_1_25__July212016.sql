@@ -1,2 +1,2 @@
-UPDATE `sourcelead`.`CLASS_FIELD` SET `FIELD_NAME`='lastName', `DELIM_STR`='{{ForgotPassword.LastName}}' WHERE `ID`='5';
+UPDATE `CLASS_FIELD` SET `FIELD_NAME`='lastName', `DELIM_STR`='{{ForgotPassword.LastName}}' WHERE `ID`='5';
 

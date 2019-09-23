@@ -18,7 +18,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class ApproverHierarchyToRequirement {
 	private ComboPooledDataSource comboPooledDataSource;
-	
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 /**
  * @author Venkat I
  * this method is using for update the Approver hierarchy	
@@ -34,7 +35,7 @@ public void dumpApproverHierarchy() throws IOException, SQLException {
 		conn = dataSource.getConnection();
 			
 		
-			 String sql1 = "SELECT * FROM sourcelead.REQUIREMENT requirement ";
+			 String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".REQUIREMENT requirement ";
 			 stmt1 = conn.createStatement();
 			 ResultSet rs1 = stmt1.executeQuery(sql1);
 			
@@ -45,20 +46,20 @@ public void dumpApproverHierarchy() throws IOException, SQLException {
 				 String query = null;
 				 ResultSet rs2 = null;
 				 
-				 query = "SELECT distinct REQUIREMENT_ID from sourcelead.REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = '"+requirementId+"' ";
+				 query = "SELECT distinct REQUIREMENT_ID from "+dbconfig.getSchema()+".REQUIREMENT_APPROVER_HIERARCHY where REQUIREMENT_ID = '"+requirementId+"' ";
 				 java.sql.PreparedStatement pstmt = conn.prepareStatement(query); 
 				 rs2 = pstmt.executeQuery();
 				 
 				 
 				 if (rs2.next()) {
 					    do {
-					    	String query1 = " update sourcelead.REQUIREMENT set APPRVER_HIERARCHY = 'Y' where ID = '"+requirementId+"' ";
+					    	String query1 = " update "+dbconfig.getSchema()+".REQUIREMENT set APPRVER_HIERARCHY = 'Y' where ID = '"+requirementId+"' ";
 					    	java.sql.PreparedStatement pstmt2 = conn.prepareStatement(query1); 
 							pstmt2.executeUpdate(); 
 				    		
 			    	    } while(rs2.next());
 			    	} else {
-			    			String query1 = " update sourcelead.REQUIREMENT set APPRVER_HIERARCHY = 'N' where ID = '"+requirementId+"' ";
+			    			String query1 = " update "+dbconfig.getSchema()+".REQUIREMENT set APPRVER_HIERARCHY = 'N' where ID = '"+requirementId+"' ";
 			    			java.sql.PreparedStatement	 pstmt2 = conn.prepareStatement(query1); 
 			    			pstmt2.executeUpdate(); 
 			    	
@@ -85,10 +86,6 @@ public void dumpApproverHierarchy() throws IOException, SQLException {
  * @return DataSource
  */ 
 private DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());

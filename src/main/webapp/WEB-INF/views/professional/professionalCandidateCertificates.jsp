@@ -4,11 +4,6 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
  
-<style>
-.clsDatePicker {
-	z-index: 100000 !important;
-}
-</style>
 <script>
 function closeCertificatePopup(){
 	 $("#popUpDivEmp").removeClass("edit-details-active");
@@ -104,37 +99,26 @@ function storeCertificate(candidateId){
 			 $("#Candidate_certification_form").attr("disabled", "disabled");
 			 $("#addCandidate").attr("disabled", "disabled");
 			 
-			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
-				 closeCertificatePopup();
-				 candidateCertificateList(candidateId);
-            		//cerMsgFadein();
-            		qwikCertificates(candidateId);
+			 $.post(sourceleadUrl+"/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(response) {
+				 	if (response && response.response === "INVALID_DATA") {
+		    		    showError(response.responseMessage);
+		    		} else if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			closeCertificatePopup();
+						 $("#selector5").removeAttr("style");
+		     			 $("#selector5").css({ display: "block" });
+		     			 $("#cerMsgDiv").html("Success!! New Certification added");
+		            		candidateCertificateList(candidateId);
+						 candidateCertificateList(candidateId);
+		            		cerMsgFadein();
+		            		qwikCertificates(candidateId);
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
 			 });
-				/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/storeCandidateCertifications?${_csrf.parameterName}=${_csrf.token}&json="
-								+ jsonData + "&candidateId=" + candidateId,
-						success : function(data) {
-							if (data != null && data != 'undefined'
-									&& data != "") {
-								if (data.indexOf('Sign In') >= 0) {
-									location.replace(sourceleadUrl);
-								} else if (data.indexOf('exception') >= 0) {
-									location.replace(sourceleadUrl+ "/errorPage");
-								}
-								else{
-									$("#popUpDivEmp").removeClass("edit-details-active");
-			            			$("#selector5").removeAttr("style");
-			            			$("#selector5").css({ display: "block" });
-			            			$("#cerMsgDiv").html("Success!! New Certification added");
-				               		candidateCertificateList(candidateId);
-				               		cerMsgFadein();
-				               		qwikCertificates(candidateId);
-							    	}
-							   }
-						},
-					}); */
 			return true;
 		} else {
 			return false;
@@ -196,125 +180,117 @@ function candidateCertificateList(candidateId){
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId,        
-          success :function(data) {
-        	  var json = JSON.parse(data);
-               /* if(data != null && data != 'undefined' && data != "" && data != '[]'){ */
-             			 
-             			/* var json = JSON.parse(data);
-	                      for (var i = 0; i < 1; i++) {
-	                             var val= json[i];
-	                             var opt = "";
-	                                     if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-	                                             opt  = opt + '<div class="success_pop" id="selector1" style="display: block;">';
-	                                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-	                                             opt  = opt + '</div>';
-	                                             }
-	                                     $("#msgDiv").empty();
-	                                     $("#msgDiv").append(opt);
-	                             } */
-	                      
-	                	 $("#candidateCertificateList").empty();
-	                	 var result = "";
-	                	
-	                	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
-	                     result = result +"<thead>"; 
-	                     result = result +"  <tr>"; 
-	                     result  = result +"           <th>Name</th>";
-	                 	result  = result + "           <th>Provider</th>";
-	                 	result  = result + "           <th>Score</th>";
-	                 	result  = result + "           <th>Score Type</th>";
-	                 	result  = result + "           <th>Description</th>";
-	                 	result  = result + "           <th>Valid from<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
-	                 	result  = result + "           <th>Valid to<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
-	                 	result  = result + "           <th>Action</th>";
-	                     result = result +"  </tr>"; 
-	                     result = result +"</thead>";
-	                     result = result +"<tbody>"; 
-	                      
-	                     for (var i = 0; i < json.length; i++) { 
-	                    	 var opt = json[i];  
-	                    	 var score = "";
-	                    	 var scoreType ="";
-	                    	 var description ="";
-	                    	 var candidatevalidFromDateToString ="";
-	                    	 var candidatevalidToDateToString ="";
-				            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
-				            		score = opt.score;
-				            	}else{
-				            		score = "----";
-				            	}
-				            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
-				            		scoreType = opt.scoreType;
-				            	}else{
-				            		scoreType = "----";
-				            	}
-				            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
-				            		description = opt.description;
-				            	}else{
-				            		description = "----";
-				            	}
-				            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
-				            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
-				            	}else{
-				            		candidatevalidFromDateToString = "----";
-				            	}
-				            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
-				            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
-				            	}else{
-				            		candidatevalidToDateToString = "----";
-				            	}
-	                    	 result  = result + '         <tr>';
-	                    	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
-	                    	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
-	                    	 
-	                    	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
-	                    	 
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 if(candidateType == "Candidates"){
-		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-	                    		 }else{
-		                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
-	                    		 }
-	                    		 
-	                    	 }else{
-	                    		 if(candidateType == "Candidates"){
-	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	                    		 }else{
-	 	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
-	                    		 }
-	                    		
-	                    	 }
-	                    	 
-	                    	 if(window.candidateStatusGlobal == '0'){
-	                    		 if(candidateType == "Candidates"){
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-	                    		 }else{
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
-	                    		 }
-	                    		 
-	                    	}else{
-	                    		if(candidateType == "Candidates"){
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-	                    		}else{
-		                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
-	                    		}
-	                    		
-	                    	}
-	                    	 result  = result + '           </div></td>';
-	                    	 result  = result + '         </tr>';
-	                      } 
-	                     result = result +" </tbody>";
-	                     result = result +"</table>";
-	                     $("#candidateCertificateList").append(result); 
-	                     certificationPagination(); 
-	                     msgFadein(); 
+          success :function(response) {
+        	 	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
+        		    showError(response.responseMessage);
+        		} else if (response.response === "AWKWARD") {
+        		    location.href = "/errorPage";
+        		} else if (response.response === "SUCCESS") {
+        			$("#candidateCertificateList").empty();
+               	 var result = "";
+               	 result = result +"<table id='candidateCertificatePagination' class='display' cellspacing='0' width='100%' >"; 
+                    result = result +"<thead>"; 
+                    result = result +"  <tr>"; 
+                    result  = result +"           <th>Name</th>";
+                	result  = result + "           <th>Provider</th>";
+                	result  = result + "           <th>Score</th>";
+                	result  = result + "           <th>Score Type</th>";
+                	result  = result + "           <th>Description</th>";
+                	result  = result + "           <th>Valid from<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
+                	result  = result + "           <th>Valid to<br>(<small class='custom-small'>"+candidateCertificateListDate+"</small>)</th>";
+                	result  = result + "           <th>Action</th>";
+                    result = result +"  </tr>"; 
+                    result = result +"</thead>";
+                    result = result +"<tbody>"; 
+                     
+                    for (var i = 0; i < response.data.length; i++) { 
+                   	 var opt = response.data[i];  
+                   	 var score = "";
+                   	 var scoreType ="";
+                   	 var description ="";
+                   	 var candidatevalidFromDateToString ="";
+                   	 var candidatevalidToDateToString ="";
+			            	if(opt.score != null && opt.score != 'undefined' && opt.score != ""){
+			            		score = opt.score;
+			            	}else{
+			            		score = "----";
+			            	}
+			            	if(opt.scoreType != null && opt.scoreType != 'undefined' && opt.scoreType != ""){
+			            		scoreType = opt.scoreType;
+			            	}else{
+			            		scoreType = "----";
+			            	}
+			            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+			            		description = opt.description;
+			            	}else{
+			            		description = "----";
+			            	}
+			            	if(opt.candidatevalidFromDateToString != null && opt.candidatevalidFromDateToString != 'undefined' && opt.candidatevalidFromDateToString != ""){
+			            		candidatevalidFromDateToString = opt.candidatevalidFromDateToString;
+			            	}else{
+			            		candidatevalidFromDateToString = "----";
+			            	}
+			            	if(opt.candidatevalidToDateToString != null && opt.candidatevalidToDateToString != 'undefined' && opt.candidatevalidToDateToString != ""){
+			            		candidatevalidToDateToString = opt.candidatevalidToDateToString;
+			            	}else{
+			            		candidatevalidToDateToString = "----";
+			            	}
+                   	 result  = result + '         <tr>';
+                   	 result  = result + '           <td><div><span title = "'+opt.name+'">'+opt.name+'</span></div></td>';
+                   	 result  = result + '           <td><div><span title = "'+opt.provider+'">'+opt.provider+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+score+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+scoreType+'</span></div></td>';
+                   	 result  = result + '           <td><div><span title = "'+description+'">'+description+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+candidatevalidFromDateToString+'</span></div></td>';
+                   	 result  = result + '           <td><div><span>'+candidatevalidToDateToString+'</span></div></td>';
+                   	 
+                   	 result  = result + '           <td><div class="tblicons tblminwidth-75">';
+                   	 
+                   	 if(window.candidateStatusGlobal == '0'){
+                   		 if(candidateType == "Candidates"){
+	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
+                   		 }else{
+	                    		 result = result  +'	            <a href="javascript:void(0)" disabled="disabled" class="glyphicon glyphicon-pencil" id="editCandidateCertificate"></a>';
+                   		 }
+                   		 
+                   	 }else{
+                   		 if(candidateType == "Candidates"){
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
+                   		 }else{
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
+                   		 }
+                   		
+                   	 }
+                   	 
+                   	 if(window.candidateStatusGlobal == '0'){
+                   		 if(candidateType == "Candidates"){
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
+                   		 }else{
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash"></i>';
+                   		 }
+                   		 
+                   	}else{
+                   		if(candidateType == "Candidates"){
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
+                   		}else{
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
+                   		}
+                   		
+                   	}
+                   	 result  = result + '           </div></td>';
+                   	 result  = result + '         </tr>';
+                     } 
+                    result = result +" </tbody>";
+                    result = result +"</table>";
+                    $("#candidateCertificateList").append(result); 
+                    certificationPagination(); 
+                    msgFadein();
+        		} else if (response.indexOf('Sign In') !== -1) {
+        			location.replace(sourceleadUrl);
+        		} else {
+        		    showError("Operation failed, please try again");
+        		}
         },
-          
      }); 
 }
 </script>
@@ -327,6 +303,10 @@ function certificationPagination(){
     	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
+    	"aoColumnDefs": [{
+	           'bSortable': false,
+	           'aTargets': 7
+			}],
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
@@ -384,15 +364,21 @@ function addCertification(candidateId) {
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mb10">';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
 		result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearProfCertFromtDate();"></div>';
 		result  = result + '                   </div>';
-		result  = result + '                   <div class="col-md-6 positionRelative">';
+		result  = result + '                   </div>';
+		result  = result + '                   <div class="col-md-6">';
+		result  = result + '                   <div>';
 		result  = result + '                     <input type="text" class="form-control input-sm" value="" name="validTo" placeholder="Valid To" ';
 		result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDate" readonly>';
 		result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+		result  = result + '					<div class="clearDate" onClick="clearProfCertEndDate();"></div>';
+		result  = result + '                   </div>';
 		result  = result + '                   </div>';
 		result  = result + '                 </div>';
 		result  = result + '                 <div class="clearfix mr">';
@@ -421,16 +407,8 @@ function addCertification(candidateId) {
 		 
 
 		 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatCerAdd = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatCerAdd = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatCerAdd = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatCerAdd = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatCerAdd = 'yy-dd-mm'; 
-		  }
+		  var finalDateFormatCerAdd = getJSDateFormat(locationDate);
+		  
 		  $('#StartDate').datepicker({
 		      dateFormat: finalDateFormatCerAdd,
 		      changeMonth: true,
@@ -468,231 +446,158 @@ function addCertification(candidateId) {
 	function editCertification(candidateCertificationId, candidateId) {
 
 		$.ajax({
-					type : "POST",
-					url : sourceleadUrl
-							+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
-							+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
-					success : function(data) {
-
-						var json = JSON.parse(data);
-
-						if (data != null && data != 'undefined' && data != "") {
-
-							if (data.indexOf('Sign In') >= 0) {
-								location.replace(sourceleadUrl);
-							} else if (data.indexOf('exception') >= 0) {
-								location.replace(sourceleadUrl + "/errorPage");
-							} else {
-								var result = '';
-							 	result  = result + '     <!-- Popup Div -->                                                                                         ';
-								result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
-								result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
-								result  = result + '               <div class="form-horizontal clearfix">';
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.name+ '" name="name"  placeholder="Namedfds *" id="candidateName" ';
-								result  = result + '                      data-validation="required validate_length length2-250" field-name="Name" >';
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
-								result  = result + '                      data-validation="required validate_Space validate_length length2-250" field-name="Provider">';
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								
-								result  = result + '                 <div class="clearfix mb10">';
-								result = result  +'	                     <div class="col-md-4" positionRelative>';
-								result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
-								result = result  +' 					   <option value="" selected="selected">Score Type</option>';
-								if (json.scoreType == "Percentage") {
-									result = result + '<option selected value="Percentage">Percentage</option>';
-								} else {
-									result = result	+ '<option value="Percentage">Percentage</option>';
-								}
-								if (json.scoreType == "CGPA") {
-									result = result	+ '<option selected value="CGPA">CGPA</option>';
-								} else {
-									result = result	+ '<option value="CGPA">CGPA</option>';
-								}
-								if (json.scoreType == "GRADE") {
-									result = result	+ '<option selected value="GRADE">GRADE</option>';
-								} else {
-									result = result + '<option value="GRADE">GRADE</option>';
-								}
-								result = result  +'	                      </select>';
-								result = result  +'	                   </div>';
-								result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
-								result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
-								result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
-								result  = result + '                 	 </div>';
-								result = result  +'	                   </div>';
-								
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-12">';
-								result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+ json.description+ '"  placeholder="Description" id="candidateDescription"';
-								result  = result + '                     data-validation-optional="true" data-validation="required">';
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								result  = result + '                 <div class="clearfix mb10">';
-								result  = result + '                   <div class="col-md-6 positionRelative">';
-								if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
-									
-									result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
-									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-								}else{
-									
-									result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
-									result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-									
-								}
-								
-								result  = result + '                   </div>';
-								result  = result + '                   <div class="col-md-6 positionRelative">';
-								if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
-									
-									result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
-									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-								}else{
-									
-									result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
-									result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
-									result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
-								}
-								
-								
-								result  = result + '                   </div>';
-								result  = result + '                 </div>';
-								result  = result + '                 <div class="clearfix mr">';
-								result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
-								result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-							
-								result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
-								result  = result + '                 </div>';
-								result  = result + '               </div>';
-								result  = result + '              </form>';
-								$("#popUpDivEmp").empty();
-								$("#popUpDivEmp").append(result);
-								
-								$(".edit-details").toggleClass("edit-details-active");
-								
-								$(".close-div").click(function(){
-									 $(this).parent("div.edit-details").removeClass("edit-details-active");
-									 });
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 });
-					 
-								 
-								 
-								/*  $('html').click(function(){
-									$(".edit-details").removeClass("edit-details-active");
-								   });	
-								 */
-								
-								/*  $(".addUser-org").click(function(){
-									 $(".edit-details").toggleClass("edit-details-active");
-								 });  */
-								/* $(".edit-details").toggleClass("edit-details-active");
-								 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
-									 e.stopPropagation();
-								 }); */
-							 /* $('html').click(function(){
-								$(".edit-details").removeClass("edit-details-active");
-							   });	 */
-
-							    var proCertificateStartDate = $("#StartDateEdit").val();
-								var proCertificateEndDate = $("#EndDateEdit").val(); 
-
-								 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-								 var proCertificateStartDateSplit = proCertificateStartDate.split("-");
-								 var proCertificateEndDateSplit = proCertificateEndDate.split("-");
-								 
-								 var finalDateFormatEduEditOneSave = '';
-								  var proCertificateStartDateEdit = '';
-								  var proCertificateEndDateEdit = '';
-								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[2])+parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[1])-parseInt(1), parseInt(proCertificateStartDateSplit[0])+parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[2], parseInt(proCertificateStartDateSplit[0])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-									  proCertificateStartDateEdit = new Date(proCertificateStartDateSplit[0], parseInt(proCertificateStartDateSplit[2])-parseInt(1), parseInt(proCertificateStartDateSplit[1])+parseInt(1));
-								  }
-								  
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatEduEditOneSave = 'yy-mm-dd';
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[2])-parseInt(1));
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatEduEditOneSave = 'dd-mm-yy'; 
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[1])-parseInt(1), parseInt(proCertificateEndDateSplit[0])-parseInt(1));
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatEduEditOneSave = 'mm-dd-yy'; 
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[2], parseInt(proCertificateEndDateSplit[0])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatEduEditOneSave = 'yy-dd-mm';
-									  proCertificateEndDateEdit = new Date(proCertificateEndDateSplit[0], parseInt(proCertificateEndDateSplit[2])-parseInt(1), parseInt(proCertificateEndDateSplit[1])-parseInt(1));
-								  }
-								  var finalDateFormatCerEdit = '';
-								  if(locationDate.match("yyyy-MM-dd")){
-									  finalDateFormatCerEdit = 'yy-mm-dd';
-								  }if(locationDate.match("dd-MM-yyyy")){
-									  finalDateFormatCerEdit = 'dd-mm-yy'; 
-								  }if(locationDate.match("MM-dd-yyyy")){
-									  finalDateFormatCerEdit = 'mm-dd-yy'; 
-								  }if(locationDate.match("yyyy-dd-MM")){
-									  finalDateFormatCerEdit = 'yy-dd-mm'; 
-								  }
-								 
-								/* var datepickerStartDate = toDate("#StartDateEdit");
-								datepickerStartDate.setDate(datepickerStartDate.getDate() + 1);
-								
-								var datepickerEndDate = toDate("#EndDateEdit");
-								datepickerEndDate.setDate(datepickerEndDate.getDate() - 1); */
-							   
-							  $('#StartDateEdit').datepicker({
-							      dateFormat: finalDateFormatCerEdit,
-							      changeMonth: true,
-							  	  changeYear: true, 
-							  	  maxDate: proCertificateEndDateEdit,
-							      onSelect: function (selected) {
-							            var dt = $(this).datepicker('getDate', '+1d');
-							            //var dt = toDate("#StartDateEdit");
-							            dt.setDate(dt.getDate() + 1);
-							            $("#EndDateEdit").datepicker("option", "minDate", dt);
-							        }
-							  });
-							  
-							  $('#EndDateEdit').datepicker({
-							      dateFormat: finalDateFormatCerEdit,
-							      changeMonth: true,
-							  	  changeYear: true,
-							  	  minDate: proCertificateStartDateEdit,
-							      onSelect: function (selected) {
-							            var dt = $(this).datepicker('getDate', '-1d');
-							            //var dt = toDate("#EndDateEdit");
-							            dt.setDate(dt.getDate() - 1);
-							            $("#StartDateEdit").datepicker("option", "maxDate", dt);
-							        }
-							  });
-																
-							}
-						
-						}
-					},
-
-				});
-
-	}
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getCandidateCertificateBycandidateIdandCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="
+					+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
+			success : function(response) {
+				if (response && response.response === "INVALID_DATA") {
+	    		    showError(response.responseMessage);
+	    		} else if (response.response === "AWKWARD") {
+	    		    location.href = "/errorPage";
+	    		} else if (response.response === "SUCCESS") {
+					var json = response.object;
+					var result = '';
+				 	result  = result + '     <!-- Popup Div -->                                                                                         ';
+					result  = result + '         <form id="candidateCertificationEdit_form" name="candidateCertificationEdit_form" method="post">        ';
+					result = result+'	           <i class="fa fa-close close-div" onClick="closeCertificatePopup();"></i>';
+					result  = result + '               <div class="form-horizontal clearfix">';
+					result  = result + '                 <div class="clearfix mb10">';
+					result  = result + '                   <div class="col-md-12" id="candidatenameDiv">';
+					result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.name+ '" name="name"  placeholder="Namedfds *" id="candidateName" ';
+					result  = result + '                      data-validation="required validate_length length2-250" field-name="Name" >';
+					result  = result + '                   </div>';
+					result  = result + '                 </div>';
+					result  = result + '                 <div class="clearfix mb10">';
+					result  = result + '                   <div class="col-md-12">';
+					result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.provider+ '" name="provider" placeholder="Provider *" id="candidateProvider"';
+					result  = result + '                      data-validation="required validate_Space validate_length length2-250" field-name="Provider">';
+					result  = result + '                   </div>';
+					result  = result + '                 </div>';
+					result  = result + '                 <div class="clearfix mb10">';
+					result = result  +'	                     <div class="col-md-4" positionRelative>';
+					result = result  +'	                     <select class="chosen-select"  name="scoreType"  value="'+ json.scoreType+ '"  id="scoreType" onchange="selectScoreType();clearSearchKey();"  >';
+					result = result  +' 					   <option value="" selected="selected">Score Type</option>';
+					if (json.scoreType == "Percentage") {
+						result = result + '<option selected value="Percentage">Percentage</option>';
+					} else {
+						result = result	+ '<option value="Percentage">Percentage</option>';
+					}
+					if (json.scoreType == "CGPA") {
+						result = result	+ '<option selected value="CGPA">CGPA</option>';
+					} else {
+						result = result	+ '<option value="CGPA">CGPA</option>';
+					}
+					if (json.scoreType == "GRADE") {
+						result = result	+ '<option selected value="GRADE">GRADE</option>';
+					} else {
+						result = result + '<option value="GRADE">GRADE</option>';
+					}
+					result = result  +'	                      </select>';
+					result = result  +'	                   </div>';
+					result  = result + '                   <div class="col-md-8" positionRelative id="candidateScoreDiv">';
+					result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.score+ '" name="score" placeholder="Score" id="candidateScore" onkeyup="selectScoreType();scoreAndScoreType();"';
+					result  = result + '                     data-validation-optional="true" data-validation="required validate_length length1-5" field-name="score">';
+					result  = result + '                 	 </div>';
+					result = result  +'	                   </div>';
+					result  = result + '                 <div class="clearfix mb10">';
+					result  = result + '                   <div class="col-md-12">';
+					result  = result + '                     <input type="text" class="form-control" rows="1" name ="description" value="'+ json.description+ '"  placeholder="Description" id="candidateDescription"';
+					result  = result + '                     data-validation-optional="true" data-validation="required">';
+					result  = result + '                   </div>';
+					result  = result + '                 </div>';
+					result  = result + '                 <div class="clearfix mb10">';
+					result  = result + '                   <div class="col-md-6 positionRelative">';
+					if(json.candidatevalidFromDateToString !=null && json.candidatevalidFromDateToString!='undefined'&& json.candidatevalidFromDateToString !=''){
+						result  = result + '                   <div>';
+						result  = result + '                     <input type="text" class="form-control input-sm"  value="'+ json.candidatevalidFromDateToString+ '" name ="validFrom" placeholder="Valid From" ';
+						result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
+						result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+						result  = result + '					<div class="clearDate" onClick="editProfCandCertStartDate();"></div>';
+						result  = result + '                   </div>';
+					}else{
+						result  = result + '                   <div>';
+						result  = result + '                     <input type="text" class="form-control input-sm"  value="" name ="validFrom" placeholder="Valid From" ';
+						result  = result + '                      data-validation-optional="true" data-validation="required" field-name="Valid From" id="StartDateEdit" readonly>';
+						result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+						result  = result + '					<div class="clearDate" onClick="editProfCandCertStartDate();"></div>';
+						result  = result + '                   </div>';
+					}
+					result  = result + '                   </div>';
+					result  = result + '                   <div class="col-md-6 positionRelative">';
+					if(json.candidatevalidToDateToString !=null && json.candidatevalidToDateToString!='undefined'&& json.candidatevalidToDateToString !=''){
+						result  = result + '                   <div>';
+						result  = result + '                     <input type="text" class="form-control input-sm" value="'+ json.candidatevalidToDateToString+ '" name="validTo" placeholder="Valid To" ';
+						result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
+						result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+						result  = result + '					<div class="clearDate" onClick="editProfCandCertEndDate();"></div>';
+						result  = result + '                   </div>';
+					}else{
+						result  = result + '                   <div>';
+						result  = result + '                     <input type="text" class="form-control input-sm" value = "" name="validTo" placeholder="Valid To" ';
+						result  = result + '                     data-validation-optional="true" data-validation="required" field-name="Valid To" id="EndDateEdit" readonly>';
+						result  = result + '                     <span class="input-group-addon input-groupAddon"><i class="fa fa-calendar"></i></span>';
+						result  = result + '					<div class="clearDate" onClick="editProfCandCertEndDate();"></div>';
+						result  = result + '                   </div>';
+					}
+					result  = result + '                   </div>';
+					result  = result + '                 </div>';
+					result  = result + '                 <div class="clearfix mr">';
+					result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
+					result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
+					result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
+					result  = result + '                 </div>';
+					result  = result + '               </div>';
+					result  = result + '              </form>';
+					$("#popUpDivEmp").empty();
+					$("#popUpDivEmp").append(result);
+					$(".edit-details").toggleClass("edit-details-active");
+					$(".close-div").click(function(){
+						 $(this).parent("div.edit-details").removeClass("edit-details-active");
+						 });
+					 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
+						 e.stopPropagation();
+					 });
+				    var proCertificateStartDate = $("#StartDateEdit").val();
+					var proCertificateEndDate = $("#EndDateEdit").val(); 
+					 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+					 // written common method in slead-common.js for date formats start
+					  var proCertificateStartDateEdit = getJSDate(proCertificateStartDate,locationDate);
+					  var proCertificateEndDateEdit = getJSDate(proCertificateEndDate,locationDate);
+					  var finalDateFormatCerEdit = getJSDateFormat(locationDate);
+					  // end
+				  $('#StartDateEdit').datepicker({
+				      dateFormat: finalDateFormatCerEdit,
+				      changeMonth: true,
+				  	  changeYear: true, 
+				  	  maxDate: proCertificateEndDateEdit,
+				      onSelect: function (selected) {
+				            var dt = $(this).datepicker('getDate', '+1d');
+				            //var dt = toDate("#StartDateEdit");
+				            dt.setDate(dt.getDate() + 1);
+				            $("#EndDateEdit").datepicker("option", "minDate", dt);
+				        }
+				  });
+				  $('#EndDateEdit').datepicker({
+				      dateFormat: finalDateFormatCerEdit,
+				      changeMonth: true,
+				  	  changeYear: true,
+				  	  minDate: proCertificateStartDateEdit,
+				      onSelect: function (selected) {
+				            var dt = $(this).datepicker('getDate', '-1d');
+				            //var dt = toDate("#EndDateEdit");
+				            dt.setDate(dt.getDate() - 1);
+				            $("#StartDateEdit").datepicker("option", "maxDate", dt);
+				        }
+				  });
+	    		} else if (response.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+				    showError("Operation failed, please try again");
+				}
+			}
+	});
+}
 </script>
 
 <%-- 
@@ -724,30 +629,26 @@ function addCertification(candidateId) {
 		
 		if ($('#candidateCertificationEdit_form').validate(false,
 				validationSettings)) {
-
 			 var formData = getFormData("candidateCertificationEdit_form");
-			 
-			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(data) {
-				 closeCertificatePopup();
-				 candidateCertificateList(candidateId);
-            		//cerMsgFadein();
-            		qwikCertificates(candidateId);
+			 $.post(sourceleadUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&candidateId="+candidateId, formData, function(result) {
+				 	if (result && result.response === "INVALID_DATA") {
+		    		    showError(result.responseMessage);
+		    		} else if (result.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (result.response === "SUCCESS") {
+		    			closeCertificatePopup();
+						 $("#selector5").removeAttr("style");
+		     			 $("#selector5").css({ display: "block" });
+		     			 $("#cerMsgDiv").html("Certification details updated");
+						 candidateCertificateList(candidateId);
+		            		cerMsgFadein();
+		            		qwikCertificates(candidateId);
+		    		} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+					    showError("Operation failed, please try again");
+					}
 			 });
-
-			/* $.ajax({
-						type : "POST",
-						url : sourceleadUrl
-								+ "/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&json="+ jsonData + "&candidateId=" + candidateId	+ "&candidateCertificationId"+ candidateCertificationId,
-						success : function(data) {
-							closeCertificatePopup();
-	            			$("#selector5").removeAttr("style");
-	            			$("#selector5").css({ display: "block" });
-	            			$("#cerMsgDiv").html("Certification details updated");
-							candidateCertificateList(candidateId);
-							cerMsgFadein();
-							qwikCertificates(candidateId);
-						},
-					}); */
 			return true;
 		} else {
 			return false;
@@ -797,33 +698,28 @@ function removeCertification(candidateCertificationId, candidateId){
       
 <script>
 function  deleteSelectedCertification(candidateCertificationId,candidateId){
-	
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
           url: sourceleadUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?${_csrf.parameterName}=${_csrf.token}&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
-          success :function(data) {
-
-				if(data != null && data != 'undefined' && data != ""){
-             		if( data.indexOf('Sign In') >= 0){
-			    		location.replace(sourceleadUrl);
-			    	}
-             		else if (data.indexOf('exception') >= 0) {
-             			 location.replace(sourceleadUrl+"/errorPage");
-             		}
-             		else{
-             		     $("#popUpDivEmp").removeClass("edit-details-active");
-            			 $("#selector5").removeAttr("style");
-             			 $("#selector5").css({ display: "block" });
-             			 $("#cerMsgDiv").html("Certification deleted");
-             			$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-             			candidateCertificateList(candidateId);
-             			cerMsgFadein();
-			    	}
-               } 
+          success :function(response) {
+        	  if (response.response === "AWKWARD") {
+                  location.href = "/errorPage";
+              } else if (response.response === "SUCCESS") {
+                  $("#popUpDivEmp").removeClass("edit-details-active");
+                  $("#selector5").removeAttr("style");
+                  $("#selector5").css({ display: "block" });
+                  $("#cerMsgDiv").html("Certification deleted");
+                  $("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
+                  candidateCertificateList(candidateId);
+                  cerMsgFadein();                  
+              } else if (response.indexOf('Sign In') !== -1) {
+                  location.replace(sourceleadUrl);
+              } else {
+                  showError("Operation failed, please try again");
+              }
         },
-          
      }); 
 }
 </script> 
@@ -854,7 +750,11 @@ function  deleteSelectedCertification(candidateCertificationId,candidateId){
 --%>
 <script type="text/javascript">
 function selectScoreType(){
-	
+	var str = document.getElementById("candidateScore").value;
+	if (str == 'a' || str == 'b' || str == 'c' || str == 'd' || str == 'e') {
+		var strToUpper = str.toUpperCase();
+		$('#candidateScore').val(strToUpper);
+	}
 	 var selectedText = document.getElementById("scoreType").value;
 	 var canScore = document.getElementById("candidateScore").value;
 	 $('#candidateScoreDiv').parent().find('p.jquery_form_error_message').remove(); 
@@ -957,4 +857,20 @@ function toDate(selector) {
 }
 </script>
 
-<!-- script for dateformat in datepicker End -->             
+<!-- script for dateformat in datepicker End -->     
+<script>
+function clearProfCertFromtDate(){
+	$("#StartDate").val("");
+	};
+function clearProfCertEndDate(){
+	$("#EndDate").val("");
+	};
+</script>  
+<script>
+function editProfCandCertStartDate(){
+	$("#StartDateEdit").val("");
+	};
+ function editProfCandCertEndDate(){
+	$("#EndDateEdit").val("");
+	}; 
+</script>      

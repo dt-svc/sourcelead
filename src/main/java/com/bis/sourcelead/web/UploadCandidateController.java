@@ -37,6 +37,7 @@ import com.bis.sourcelead.validation.FileValidator;
  * Handles uploads
  */
 @Controller
+@RequestMapping("/app")
 public class UploadCandidateController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UploadCandidateController.class);
@@ -57,9 +58,18 @@ public class UploadCandidateController {
 		@RequestMapping(value = "/downloadCreateCandidateTemplate", method = RequestMethod.GET)
 		public void downloadCreateCandidateTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
 			
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			
 			File file = null;
-			String fn;	
-			fn = "/templates/Candidate_import_Template.xlsx";
+			String fn;
+			
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+				fn = "/templates/Candidate_import_Template.xlsx";
+			}else {
+				fn = "/templates/Candidate_import_US_Template.xlsx";
+			}
+			
 			URL url = getClass().getResource(fn);
 		     file = new File(url.toURI());
 
@@ -121,7 +131,7 @@ public class UploadCandidateController {
 				model.addAttribute("msg", "successfully uploaded");
 				 model.addAttribute("fileName", "");
 				 SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Successfully you have created a Candidate");
-				return "redirect:/candidatesList";
+				return "redirect:/app/candidatesList";
 			}
 			
 			

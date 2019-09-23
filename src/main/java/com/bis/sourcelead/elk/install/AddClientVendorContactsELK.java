@@ -3,7 +3,6 @@ package com.bis.sourcelead.elk.install;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,14 +10,14 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.engine.DocumentMissingException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -29,8 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
-import com.bis.sourcelead.elk.index.ClientVendorIndex;
-import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.elk.setup.SourceleadELKTC;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -45,7 +43,9 @@ public class AddClientVendorContactsELK {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorContactsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private TransportClient client;
+	 private SourceleadELKTC<ClientVendorContactsIndex> client;
+	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
+		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
 	 protected boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
@@ -56,7 +56,7 @@ public class AddClientVendorContactsELK {
 		if(elkclientVendorIndexList != null && !elkclientVendorIndexList.isEmpty()){
 			for (ClientVendorContactsIndex clientVendorContactsIndex :elkclientVendorIndexList) {
 				
-				saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,clientVendorContactsIndex.getId().toString());
+				client.saveOrUpdateElkDocument(clientVendorContactsIndex, Constants.ELK_CLIENTVENDOR_CONTACT_INDEX, Constants.ELK_CLIENTVENDOR_CONTACT_TYPE,clientVendorContactsIndex.getId().toString());
 					
 
 			}
@@ -70,7 +70,7 @@ public class AddClientVendorContactsELK {
 		Connection conn = dataSource.getConnection(); 
 		try {
 				
-				String sql = "SELECT * FROM sourcelead.ORG_SPOC orgSpock";
+				String sql = "SELECT * FROM "+dbconfig.getSchema()+".ORG_SPOC orgSpock";
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 			    while(rs.next()){
@@ -101,14 +101,14 @@ public class AddClientVendorContactsELK {
 				    	
 						
 						// saving responderLocationId and  Org Name
-						String sql1 = "SELECT * FROM sourcelead.ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
+						String sql1 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  responderLocationId where responderLocationId.ID = '"+responderLocationId+"' ";
 						
 						Statement stmt1 = conn.createStatement();
 						ResultSet rs1 = stmt1.executeQuery(sql1);
 						if(rs1 != null){
 							 while(rs1.next()){
 								   Long responderorgId = rs1.getLong("ORG_ID");
-								   String sql2 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+responderorgId+"' ";
+								   String sql2 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+responderorgId+"' ";
 									Statement stmt2 = conn.createStatement();
 									ResultSet rs2 = stmt2.executeQuery(sql2);
 									if(rs2 != null){
@@ -124,13 +124,13 @@ public class AddClientVendorContactsELK {
 	    	           }
 						
 						// saving  the Initiator Location id and Org Name
-						String sql5 = "SELECT * FROM sourcelead.ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
+						String sql5 = "SELECT * FROM "+dbconfig.getSchema()+".ORG_LOCATIONS  initiatorLocationId where initiatorLocationId.ID = '"+initiatorLocationId+"' ";
 						Statement stmt5 = conn.createStatement();
 						ResultSet rs5 = stmt5.executeQuery(sql5);
 						if(rs5 != null){
 							 while(rs5.next()){
 								   Long initiatororgId = rs5.getLong("ORG_ID");
-								   String sql6 = "SELECT * FROM sourcelead.ORG  org where  org.ID = '"+initiatororgId+"' ";
+								   String sql6 = "SELECT * FROM "+dbconfig.getSchema()+".ORG  org where  org.ID = '"+initiatororgId+"' ";
 									Statement stmt6 = conn.createStatement();
 									ResultSet rs6 = stmt6.executeQuery(sql6);
 									if(rs6 != null){
@@ -145,7 +145,7 @@ public class AddClientVendorContactsELK {
 			           }
 						
 					//  Storing the value of OrgRelations InitiatorType and ResponderType
-						String sql7= "SELECT * FROM sourcelead.ORG_RELATIONS relation where relation.ID = '"+orgRelationId+"' ";
+						String sql7= "SELECT * FROM "+dbconfig.getSchema()+".ORG_RELATIONS relation where relation.ID = '"+orgRelationId+"' ";
 						Statement stmt7 = conn.createStatement();
 						ResultSet rs7 = stmt7.executeQuery(sql7);
 						if(rs7 != null){
@@ -161,7 +161,7 @@ public class AddClientVendorContactsELK {
 						
 						
 						// Saving  the OwnerUserId in ELk Search
-  						String sql3 = "SELECT * FROM sourcelead.USER  user where user.ID = '"+ownerUserId+"' ";
+  						String sql3 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where user.ID = '"+ownerUserId+"' ";
   						Statement stmt3 = conn.createStatement();
 						ResultSet rs3 = stmt3.executeQuery(sql3);
 						if(rs3 != null){
@@ -174,6 +174,13 @@ public class AddClientVendorContactsELK {
 									if(null != rs3.getString("MOBILE_PHONE")){
 										clientVendorContactsIndex.setVendorUserPhNo(rs3.getString("MOBILE_PHONE"));
 									}
+									
+									if(!isNullOrEmpty(rs3.getString("LAST_NAME"))){
+										clientVendorContactsIndex.setVendorUserName(rs3.getString("FIRST_NAME")+" "+rs3.getString("LAST_NAME"));
+									}else {
+										clientVendorContactsIndex.setVendorUserName(rs3.getString("FIRST_NAME"));
+									}
+									
 									clientVendorContactsIndex.setVendorUserId(rs3.getLong("ID"));
 									clientVendorContactsIndex.setVendorUserEmail(rs3.getString("EMAIL"));
 							        }
@@ -181,7 +188,7 @@ public class AddClientVendorContactsELK {
 						
 						
 						// Saving  the spockUserId in ELk Search
-  						String sql4 = "SELECT * FROM sourcelead.USER  user where user.ID = '"+spockUserId+"' ";
+  						String sql4 = "SELECT * FROM "+dbconfig.getSchema()+".USER  user where user.ID = '"+spockUserId+"' ";
   						Statement stmt4 = conn.createStatement();
 						ResultSet rs4 = stmt4.executeQuery(sql4);
 							 while(rs4.next()){
@@ -189,6 +196,13 @@ public class AddClientVendorContactsELK {
 									if(null != rs4.getString("LAST_NAME")){
 										clientVendorContactsIndex.setClientUserLastName(rs4.getString("LAST_NAME"));
 									}
+									
+									if(!isNullOrEmpty(rs4.getString("LAST_NAME"))){
+										clientVendorContactsIndex.setClientUserName(rs4.getString("FIRST_NAME")+" "+rs4.getString("LAST_NAME"));
+									}else {
+										clientVendorContactsIndex.setClientUserName(rs4.getString("FIRST_NAME"));
+									}
+									
 									if(null != rs4.getString("MOBILE_PHONE")){
 										clientVendorContactsIndex.setClientUserPhNo(rs4.getString("MOBILE_PHONE"));
 									}
@@ -212,20 +226,27 @@ public class AddClientVendorContactsELK {
 	
 	public void saveOrUpdateElkDocument(ClientVendorContactsIndex contactsIndex,String index,String type,String id) {
 		String entityInJson = null;
+		 Map<String, Object> d = new HashMap<>();
 		try {
 		    entityInJson = toJSON(contactsIndex);
-		    client.prepareUpdate(index, type,id).setDoc(entityInJson).get();
+		    JSONObject json = new JSONObject(entityInJson);
+		   
+		    Iterator<String> it = json.keys();
+		    while(it.hasNext()) {
+		    	String key = it.next();
+		    		d.put(key, json.isNull(key) ? null : json.get(key));
+		    }
+		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
 		    logger.info(type+" has been updated.");
 		} 
-        catch(DocumentMissingException e){
-        	client.prepareIndex(index, type,id)
-		    .setSource(entityInJson).execute().actionGet();
+       catch(DocumentMissingException e){
+       		client.getClient().prepareIndex(index, type,id)
+		    .setSource(d).execute().actionGet();
 		    logger.info(type+" has been indexed.");
 		}
 		catch (Exception e) {
 			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
 		}
-		
      }
 	
 	 public String toJSON(Object obj){
@@ -240,10 +261,6 @@ public class AddClientVendorContactsELK {
 	 
 	@Bean
 	public DataSource comboPooledDataSource() {
-		@SuppressWarnings("resource")
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
-		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
-
 		this.comboPooledDataSource = new ComboPooledDataSource();
 		try {
 			comboPooledDataSource.setDriverClass(dbconfig.getDriverClass());
@@ -254,25 +271,15 @@ public class AddClientVendorContactsELK {
 		comboPooledDataSource.setUser(dbconfig.getUser());
 		comboPooledDataSource.setPassword(dbconfig.getPassword());
 		
-		try {
-	    	  Settings settings = Settings.settingsBuilder()
-	    			  .put("cluster.name", dbconfig.getCluster())
-	                  .put("node.name", dbconfig.getNode())
-	         		  .put("path.home", dbconfig.getPath())
-	                  .build();
-			client = TransportClient.builder().settings(settings).build().
-			      addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(dbconfig.getHost()), 9300));
-	     } catch (Exception exception) {
-			logger.error(ExceptionUtils.getFullStackTrace(exception));
-		}
-		
 		return comboPooledDataSource;
 	}
 	public static void main(String[] args) throws IOException {
 			
 		try {
 			   AddClientVendorContactsELK addCampaignELK = new AddClientVendorContactsELK();
+			   addCampaignELK.client = new SourceleadELKTC();
 			   addCampaignELK.addCampaignELK();
+			   addCampaignELK.client.shutdown();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

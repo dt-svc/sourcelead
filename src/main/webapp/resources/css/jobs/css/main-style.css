@@ -9,6 +9,12 @@
     position:absolute; width: 100%; background-attachment: fixed; background-position: cover;
 	background-repeat: no-repeat; height:100%; background-size: cover; min-height: 550px; background-color: #000;
 	}
+.background.background-searchjob {
+	min-height: 450px; background-size:cover;
+	background-image:url(/resources/static-web/images/jobSearch.jpg);
+	background-repeat: no-repeat; background-position: top;
+}
+
 content {
 	width:1100px; margin: 0px auto; position: absolute; z-index: 10; display: block; top:0px; left: 0px; right: 0px;
 	padding: 50px 0px;
@@ -27,7 +33,7 @@ content p i {
 	display:inline-block; padding: 0px 10px 0px 0px;
 }
 .searchWrap {
-	 background-color: rgba(255,255,255,0.5); padding: 25px 25px 22px; border-radius: 2px;
+	 background-color: rgba(255,255,255,0.5); padding: 25px 25px 25px; border-radius: 2px;
 }
 .searchWrap span {
 	display:block; float: left; position: relative; width:40%;
@@ -56,7 +62,7 @@ content p i {
 }
 .searchHome.searchHomeE {
 	width:100%; font-size: 14px; color: 666; -webkit-appearance: none; -moz-appearance: none; appearance: none;
-	text-align: 0.0px; overflow: hidden; background-image: url(../images/arrow.png); background-repeat: no-repeat;
+	text-align: 0.0px; overflow: hidden; background-image: url(../images/arrow-d-g.png); background-repeat: no-repeat;
 	background-position: 90% center; background-size: 10px;
 }
 .searchBtn{
@@ -492,21 +498,10 @@ content p i {
 		100%{background-position:0% 50%}
 	}
 
-/* Create JobAlert Styles - June5th,2017 srinivas lankalapalli */
-a.alertBtn {
-	background-color:transparent; color:#2c82d2; border:1px solid #2c82d2; padding:7px 15px;
-}
-a.alertBtn:hover{
-	background-color:#eee;
-}
-.modal.modal_createalert {
-    display: none;
-}
-.modal_createalert .btn-primary option {
-	color:#333;
-}
-/* Create JobAlert Styles - June5th,2017 srinivas lankalapalli */
+
+
 /*    Responsive CSS   */
+
 @media screen and (max-width: 1155px){
 	.innerContent {
 		width: auto; padding: 20px 15px 30px;
@@ -699,7 +694,7 @@ a.alertBtn:hover{
 		top: 11px;
 	}
 	.searchWrap span i.fa-briefcase {
-		top: 14px;
+		top: 14px; left: 25px;
 	}
 	.adSearch {
 		width: 90%;
@@ -781,7 +776,6 @@ a.alertBtn:hover{
 	color:#368ee0;
 }
 
-
 .LettSelec {
 	text-align: center; padding: 10px 0px 0px 0px;
 }
@@ -796,14 +790,44 @@ a.alertBtn:hover{
 .selectCountry .chosen-container  {
 width: 150px !important;
 }
+
 .noResults {
 	width: auto; padding: 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.15); background-color: #fff; margin-bottom: 13px;
 	border-radius: 2px; position: relative; cursor: pointer; min-height: 200px; background-image: url(../../images/norecords.jpg);
 	background-repeat: no-repeat; background-position: center; background-size: 300px;
 }
-
 .jobResultsNoRecords {
     width: auto; padding: 0px; box-shadow: 0px 0px 3px rgba(0,0,0,0.15); background-color: #fff; margin-bottom: 13px;
     border-radius: 2px; position: relative; cursor: pointer; background-image:url(../images/norecords.jpg); background-repeat: no-repeat;
     background-position: center; background-size: 260px; min-height: 180px; display: none;
+}
+
+.compaBann {
+	width: 1150px; margin: 0px auto; background-color: #fff; padding: 5px 5px 1px; border-radius: 0px 0px 2px 2px;
+	box-shadow: 0px 0px 2px rgba(0,0,0,0.1); position: relative;
+}
+.compaBann span {
+	display: block; vertical-align: top !important;
+}
+.compaBann span img {
+	width: 100%;
+}
+.compaBannLogo {
+	position: absolute; width: 160px; height: 90px; background-color: rgba(255,255,255,0.5); left: 10px; bottom: 10px;
+	padding: 5px; vertical-align: middle; text-align: center; background-size: 90%; display: none;
+	background-position: center; background-repeat: no-repeat; border-radius: 2px;
+}
+.compaBannLogoText {
+	position: absolute; width: auto; background-color: rgba(255,255,255,0.8); left: 10px; bottom: 10px;
+	vertical-align: middle; text-align: center; padding: 12px 30px; font-size: 20px; font-weight: 500; color: #454545;
+	border-radius: 2px;
+}
+
+/* job location styles */
+ul.joblocations-li {
+position: relative; top:-5px;
+}
+ul.joblocations-li li {
+float:left; padding:5px 10px; background-color: rgba(3, 169, 244, 0.1); margin: 0px 10px 10px 0;
+border-radius: 5px; border: 1px solid rgba(3, 169, 244, 0.17); font-size: 12px;
 }

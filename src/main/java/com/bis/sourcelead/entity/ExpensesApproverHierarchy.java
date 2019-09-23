@@ -3,6 +3,7 @@ package com.bis.sourcelead.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,12 +19,15 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
 * This class is used to keep track of the approver hierarchy for Expenses.
@@ -42,8 +46,7 @@ import com.bis.sourcelead.enums.Submission_Status;
  *
  */
 @Entity
-@Table(name = "EXPENSES_APPROVER_HIERARCHY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "ExpensesApproverHierarchy")
+@Table(name = "EXPENSES_APPROVER_HIERARCHY")
 public class ExpensesApproverHierarchy implements Serializable {
 private static final long serialVersionUID = 1L;
 
@@ -53,15 +56,16 @@ private static final long serialVersionUID = 1L;
 private Long id;
 
 @NotFound(action=NotFoundAction.IGNORE)
-@ManyToOne(fetch = FetchType.LAZY)
+@ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="HIERARCHY_ID", nullable=false )        
-private ProjectApproverHierarchy hierarchyId;
+private ExpenseProjectApproverHierarchy hierarchyId;
 
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name="EXPENSESID", nullable=false )        
 private Expenses expenseId;
-
 
 @Column(name = "EXPENSE_STATUS")
 @Enumerated(EnumType.STRING)
@@ -93,8 +97,12 @@ private Date updatedDate;
 @Column(name = "UPDATED_BY")
 private String updatedBy;
 
+@Column(name = "ACTION_BY_ORGLOC_ID")
+private Long actionbyorglocid;
+
 @NotFound(action=NotFoundAction.IGNORE)
 @ManyToOne
+@Fetch(FetchMode.SELECT)
 @JoinColumn(name = "REOPENED_USER_ID", nullable = false)
 private User reopenedUser;
 
@@ -107,34 +115,55 @@ private String reopenReason;
 private String reopenRejectedReason;
 
 @Transient
+@JsonProperty
 private long expensesUserid;
 
 @Transient
+@JsonProperty
 private String expenseStartDateString;
 
 @Transient
+@JsonProperty
 private String expenseEndDateString;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserFirstNameLastName;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserEmail;
 
 @Transient
+@JsonProperty
 private String expensesEmployeeUserId;
 
 @Transient
+@JsonProperty
 private String expenseEmpUserType;
 
 @Transient
+@JsonProperty
 private String expensesProjectName; 
 
 @Transient
+@JsonProperty
 private String userTypeVendorName;
 
 @Transient
+@JsonProperty
 private String expensesApproverHierarchyPurpose; 
+
+@Transient
+@JsonProperty
+private String expenseLocationCode;
+
+@Transient
+@JsonProperty
+private String userFileUrl; 
+
+@Transient
+private String empType; 
 
 public Long getId()
 {
@@ -146,12 +175,12 @@ public void setId(Long id)
 	this.id = id;
 }
 
-public ProjectApproverHierarchy getHierarchyId()
+public ExpenseProjectApproverHierarchy getHierarchyId()
 {
 	return hierarchyId;
 }
 
-public void setHierarchyId(ProjectApproverHierarchy hierarchyId)
+public void setHierarchyId(ExpenseProjectApproverHierarchy hierarchyId)
 {
 	this.hierarchyId = hierarchyId;
 }
@@ -353,6 +382,38 @@ public String getExpensesApproverHierarchyPurpose() {
 
 public void setExpensesApproverHierarchyPurpose(String expensesApproverHierarchyPurpose) {
 	this.expensesApproverHierarchyPurpose = expensesApproverHierarchyPurpose;
+}
+
+public String getUserFileUrl() {
+	return userFileUrl;
+}
+
+public void setUserFileUrl(String userFileUrl) {
+	this.userFileUrl = userFileUrl;
+}
+
+public String getExpenseLocationCode() {
+	return expenseLocationCode;
+}
+
+public void setExpenseLocationCode(String expenseLocationCode) {
+	this.expenseLocationCode = expenseLocationCode;
+}
+
+public Long getActionbyorglocid() {
+	return actionbyorglocid;
+}
+
+public void setActionbyorglocid(Long actionbyorglocid) {
+	this.actionbyorglocid = actionbyorglocid;
+}
+
+public String getEmpType() {
+	return empType;
+}
+
+public void setEmpType(String empType) {
+	this.empType = empType;
 }
 
 

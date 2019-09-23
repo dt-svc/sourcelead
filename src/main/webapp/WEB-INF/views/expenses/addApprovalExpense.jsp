@@ -9,18 +9,28 @@
  
  <script type="text/javascript">
 		window.onload = function () {
-			var entrySize = '${expenses.expensesEntries.size()}';
+			 if('${AWKWARD}' == "true"){
+				window.location.href =  "/errorPage";
+			}else{ 
+			var entrySize = '${expenses.expenseEntry.size()}';
 			if(entrySize>0){
-				$('#maxRecCount').val('${2*expenses.expensesEntries.size()+1}');
+				$('#maxRecCount').val('${2*expenses.expenseEntry.size()+1}');
 			}
 			else{
 				$('#maxRecCount').val('1');
 			}
 			calculateTotalamount();
 			getClientBasedOnSelectedProject();
+			 }
 		 };
 </script>
-
+ <script>
+$(document).ready(function(){
+	if('${AWKWARD}' == "true"){
+		   window.location.href =  "/errorPage";
+	 }
+});
+</script>
 <div class="wraper"> 
 <!-- View Content Area Starts-->
 <c:if test = "${type == 'view'}">
@@ -34,10 +44,10 @@
       </div>
       <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>">View Expenses Approval</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
-	       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='/expensesApprovalList'/>">Expenses Approval</a> &raquo; Add Expense</div> 
+	       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${appPath}/expensesApprovalList'/>">Expenses Approval</a> &raquo; Add Expense</div> 
 	    </c:otherwise>
 	</c:choose>
     </section>
@@ -47,190 +57,293 @@
           <div class="clearfix form-horizontal inner-content">
             <div class="row">
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 myForm">
-              
                 <div class="form-group">
-                  <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
-                  <div class="col-md-9">
-                    <input type="text" class="form-control" name="ExpenseAutoId" value="${expenses != null ? expenses.expenseId : ExpensesId}" readonly="readonly">
-                    <input type="hidden"  class="form-control" name="expenseId" value="${expenses.id}">
-                  </div>
-                </div>  
+					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
+					<div class="col-md-9" id="errProject">
+					<c:if test="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'and submissionStatus ne 'REOPENED'}">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();flushDetailsExpenses();" id="projectId" name="projectId" field-name="Project" data-validation="required">
+
+							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
+								<option value="">Select Project</option>
+							</c:if>
+							<c:forEach var="projects" items="${expEntry.projectsList}">
+							       <option  ${expenses.projectId == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+					<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'or submissionStatus eq 'REOPENED'}">
+						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject();" id="projectId" name="projectId" field-name="Project" disabled="disabled" >
+							 <c:if test="${fn:length(expEntry.projectsList) gt 0}">
+								<option value="">Select Project</option>
+							</c:if>
+							<c:forEach var="projects" items="${expEntry.projectsList}">
+							       <option  ${expenses.projectId == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
+							</c:forEach>
+						</select>
+					</c:if>
+					<input type="hidden" id="projectIdHidden" value="" name="projectId">
+					</div>
+				</div> 
                 <div class="form-group">
                   <label class="col-md-3">Purpose</label>
                   <div class="col-md-9">
-                    <input type="text" class="form-control" autocomplete="off" id="expensePurpose" name="expensePurpose" value="${expenses.purpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
+                    <input type="text" class="form-control" autocomplete="off" name="expensePurpose" value="${expenses.expensePurpose}" data-validation-optional="true" data-validation="validate_Space validate_length length1-100">
                   </div>
-                </div>                                          
+                </div> 
+                
+                
 				<div class="form-group">
-					<label class="col-md-3">Select Project <span class="text-danger">&nbsp;*</span></label>
-					<div class="col-md-9" id="errProject">
-						<select class="chosen-select form-control" autocomplete="off" onchange="getClientBasedOnSelectedProject(); getMembersForSelectedProject();removeErrProject();flushOnchange();" id="projectId" name="projectId" field-name="Project" data-validation="required">
-
-							 <c:if test="${fn:length(projectsList) gt 0}">
-								<option value="">Select Project</option>
-							</c:if>
-							<c:forEach var="projects" items="${projectsList}">
-							       <option  ${expenses.projectMembers.projects.id == projects.id ? 'selected' : '' } value="${projects.id}">${projects.projectName}</option>
-							</c:forEach>
-						</select>
-					</div>
-				</div>
+                  <label class="col-md-3">Expenses Id<span class="text-danger" >&nbsp;*</span></label>
+                  <div class="col-md-9">
+                    <input type="text" class="form-control" id="expenseAutoId" name="expenseAutoId" value="${expenses != null ? expenses.expenseAutoId : ''}" readonly="readonly">
+                    <input type="hidden"  class="form-control" name="id" value="${expenses.id}">
+                  </div>
+                </div>
+                 
 				<div class="form-group">
 					<label class="col-md-3">Client</label>
 	                  <div class="col-md-9">
-	                    <input type="text" class="form-control" autocomplete="off" name="clientNameExpense" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
+	                    <input type="text" class="form-control" autocomplete="off" name="clientName" value="${expenses.clientName}" id="clientNameId" readonly="readonly">
 	                  </div>
-				</div>               
+				</div> 
+				
+				<!--  removeErrProject();flushOnchange();removeErrProjectEmployee(); -->
+				 <div class="form-group" id="errEmployeeRemove">
+				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
+				<div class="col-md-9">
+					<c:if test="${not empty expenses}">
+						<input type="hidden" name="projectMemberId" id="projectMemberIdHidden" />
+						<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="getProjectMemberStartDateAndEndDate();" disabled="disabled">
+						</select>
+					</c:if>
+					<c:if test="${empty expenses}">
+						<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="getProjectMemberStartDateAndEndDate();">
+						</select>
+					</c:if>
+				</div>
+			   </div>              
 	            <div class="form-group">
 	              <label class="col-md-3">Start & End date<span class="text-danger">&nbsp;*</span></label>
 	              <div class="col-md-9" >
-						<div class="row">
-						  <div class="col-lg-6 evDaPa" id="dateDiv">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDateStr}" field-name="Start Date" name="startDateExpense" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
-						  </div>
-						  <div class="col-lg-6" id="errEnd">
-							  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDateStr}" name="endDateExpense"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">
-						  </div>					  
-						</div>
+						<c:if test ="${submissionStatus ne 'SUBMITTED' and submissionStatus ne 'REJECTED'}">
+							<div class="row">
+							  <div class="col-lg-6 evDaPa" id="dateDiv">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly">
+							  </div>
+							  <div class="col-lg-6" id="errEnd">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly">						 
+							  </div>					  
+							</div>
+						</c:if>
+						<c:if test ="${submissionStatus eq 'SUBMITTED' or submissionStatus eq 'REJECTED'}">
+							<div class="row">
+							  <div class="col-lg-6 evDaPa" id="dateDiv">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.startDate}" field-name="Start Date" name="startDate" id="projectStartDateExpensesId" placeholder="Start Date" readonly="readonly" onclick="getProjectMemberStartDateAndEndDate();">
+							  </div>
+							  <div class="col-lg-6" id="errEnd">
+								  <input type="text" autocomplete="off" class="form-control calendar" data-validation="required" value="${expenses.endDate}" name="endDate"  field-name="End Date" id="projectEndDateExpensesId" placeholder="End Date" readonly="readonly" onclick="getProjectMemberStartDateAndEndDate();">						 
+							  </div>					  
+							</div>
+						</c:if>
 	              </div>
 	            </div>
-	             <div class="form-group" id="errEmployeeRemove">
-				<label class="col-md-3">Select Employee<span class="text-danger">&nbsp;*</span></label>
-				<div class="col-md-9">
-					<select class="chosen-select form-control" autocomplete="off" id="projectMemberId" name="projectMemberId"  field-name="Employee" data-validation="required" onchange="removeErrProjectEmployee();">
-					    <c:forEach var="projectMember" items="${projectMembers}">
-							       <option  ${expenses.projectMembers.id == projectMember.id ? 'selected' : '' } value="${projectMember.id}">${projectMember.employee.user.fullName}</option>
-					   </c:forEach>
-					   
-					</select>
-				</div>
-			   </div>
-               
 		</div>
 	</div>
 </div>
 <div class="expensHead">
 <div class="form-group col-md-6 mt5 mb5 noPad">
-<span class="col-md-6 noPad">Expenses Amount Total:</span>
+<span class="col-md-6 noPad">Amount :</span>
 <div class="col-md-6">
-<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="00.00" class="ReadTextFli valid" readonly="readonly">
+<input type="text" id="expenseAmountDivId" name="expenseAmountDivId" value="${entry.amountRoundOff}" class="ReadTextFli valid" readonly="readonly">
 </div>
+<div class="pull-left" id="exceedSpan"></div>
 </div>
-	<div class="pull-left" id="exceedSpan"></div>
-	<a href="javascript:void(0)" class="btn btn-primary btn-sm AddRow" onclick='addExpenseRow();'><i class="fa fa-plus"></i>&nbsp; Add Item</a>
+	<a href="javascript:addExpenseRow('approver');"  data-id="approver" id="addExpenseItemButton" class="btn btn-primary btn-sm AddRow" ><i class="fa fa-plus"></i>&nbsp; Add Item</a>
 	<div class="clearfix"></div>
 </div>
 <div class="project_wrap_table expensTableView">
- <input type="hidden"  name="maxRecCount" id="maxRecCount" value="${2*expenses.expensesEntries.size()+1}">
+ <input type="hidden"  name="maxRecCount" id="maxRecCount" value="${2*expenses.expenseEntry.size()+1}">
 	<table id="categoryTable">
 	    <thead>
 			<tr id="divEntityTsRow0">
 				<th>Date</th>
 				<th>Exp Category</th>
 				<th>Description</th>
-				<th>Amount</th>
+				<th>Submitted Amount</th>
+				<th>Approved Amount</th>
 				<th>Currency</th>
 				<th>Payment Mode</th>
+				<th>Billable Type</th>
+				<th>Paid By</th>
 				<th>Action</th>
 			</tr>
 		</thead>	
 			<tbody>
-			     <c:forEach var="entry" items="${expenses.expensesEntries}" varStatus="entryCount">
-			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div id="categoryDateDiv${entryCount.count}">${entry.expenseDateStr}</div></td>
-			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.expensesCategoryId.expensesName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot-me">${entry.description}</div></td>
- 			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>
-			           <td><div id="expenseRateType${entryCount.count}">${entry.currencyType}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode.value}</div></td>
-			           <td><div id="hideAndShowDetailsDiv${entryCount.count}">
-			                <i class="fa fa-pencil-square-o AddRow"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
-			                <i class="glyphicon glyphicon-trash" onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
+			     <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
+			         <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
+			           <td>
+			                <input type='hidden' id="categoryDateDivInput${(2*(entryCount.count))-1}" value="${entry.dateOccurred}"/>
+			                <div id="categoryDateDiv${(2*(entryCount.count))-1}"> ${entry.dateOccurred}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="categoryTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryTypeId},${entry.allowedAmount}"/>
+			               <div id="categoryTypeDiv${(2*(entryCount.count))-1}" title="${entry.categoryName}">${entry.categoryName}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="receiptIssuedByDivInput${(2*(entryCount.count))-1}" value="${entry.receiptIssuedBy}"/>
+			               <input type='hidden' id="entryDesDivInput${(2*(entryCount.count))-1}" value="${entry.entryDescription}"/>
+			               <div id="entryDesDiv${(2*(entryCount.count))-1}" class="tbldata-dotdot-me" title="${entry.entryDescription}">${entry.entryDescription}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="submittedAmountDivInput${(2*(entryCount.count))-1}" value="${entry.submittedamount}"/>
+			               <div id="submittedAmountDiv${(2*(entryCount.count))-1}">${entry.submittedamount}</div>
+			          </td>
+			          
+			           <td>
+			           <c:choose>
+		               	<c:when test="${submissionStatus == 'APPROVED'}">
+		           			 <input type='hidden' id="expenseAmountDivInput${(2*(entryCount.count))-1}" value="${entry.amountRoundOff}"/>
+		               	</c:when>
+		               	<c:otherwise>
+		                    	<div id="expenseAmountDivInput${(2*(entryCount.count))-1}">---</div>
+		               	</c:otherwise>
+		               </c:choose>
+			          </td>
+			          
+			          <td>
+			              <input type='hidden' id="expenseRateTypeDivInput${(2*(entryCount.count))-1}" value="${entry.categoryAmountType}"/>
+			              <div id="expenseRateTypeDiv${(2*(entryCount.count))-1}">${entry.categoryAmountType}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="paymentModeDivInput${(2*(entryCount.count))-1}" value="${entry.paymentMode}"/>
+			               <div id="paymentModeDiv${(2*(entryCount.count))-1}">${entry.paymentMode}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="billableTypeDivInput${(2*(entryCount.count))-1}" value="${entry.billable == false ? 'Non-Billable' : 'Billable'}"/>
+			               <div id="billableTypeDiv${(2*(entryCount.count))-1}">${entry.billable == false ? 'Non-Billable' : 'Billable'}</div>
+			          </td>
+			           <td>
+			               <input type='hidden' id="paidByDivInput${(2*(entryCount.count))-1}" value="${entry.paidBy}"/>
+			               <div id="paidByDiv${(2*(entryCount.count))-1}">${entry.paidBy}</div>
+			          </td>
+			           <td><div id="hideAndShowDetailsDiv${(2*(entryCount.count))-1}">
+			                <i class="fa fa-pencil-square-o AddRow" title="Edit Expenses"  onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>
+			                <i class="glyphicon glyphicon-trash Cred" title="Delete Expenses"  onclick="removeExpenseRow(${(2*(entryCount.count))-1},${2*(entryCount.count)})"></i>
 			              </div>
 			          </td>
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-			          <td colspan="7">
+			          <td colspan="10">
 				         <div class="expDetails">
-				         <input type="hidden" id="expenseEntryId${entryCount.count}" name="categoryDTO[${entryCount.index}].expenseEntryId" value='${entry.id}'/>
+				         <input type="hidden" id="expenseEntryId${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].id" value='${entry.id}'/>
 				          <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">            
-							<div class="col-md-4 mb10 chosen-custom minHe">
-							<label>Category Type<span class="text-danger">&nbsp;*</span></label>
-								<select id="categoryType${entryCount.count}" name="categoryDTO[${entryCount.index}].categoryType" class="chosen-select form-control" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${entryCount.count});">
-								   <option value="">Select Category Type</option>				 							   
-								   <c:forEach var="expCat" items="${expEntry.expenseCategoryList}">
-						                 <option value="${expCat.id},${expCat.allowedAmount}" ${entry.expensesCategoryId.id == expCat.id ? 'selected' : ''}>${expCat.expensesName}</option>
-		                	       </c:forEach>
-								</select>
+							<div class="col-md-4 minHeight chosen-custom">
+							
+															
+						<label>Category Type<span class="text-danger">&nbsp;*</span></label>
+						<select class="chosen-select form-control" id="categoryType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].categoryType" field-name="Category Type" data-validation="required" onchange="getAmountValueCategory(${(2*(entryCount.count))-1});">
+						<option value="">Select Category Type</option>
+						<c:set var="isAttachmentRequired" value="Y"/>
+						<c:forEach var="project" items="${expEntry.projectsList}">
+						   <c:if test="${project.id == expenses.projectId}">
+					 	    	 <c:forEach var="expCat" items="${project.expenseCategoryList}">
+					 	    	      <c:set var="isAttachmentRequired" value="${!empty expCat.isAttachemtRequired && expCat.isAttachemtRequired == 'Y' ? 'Y' :'N'}"/>
+					 	    	      <option ${entry.categoryTypeId == expCat.id ? 'selected' : ''} value="${expCat.id},${expCat.allowedAmount}">${expCat.categoryName}</option>
+					 	    	 </c:forEach>
+						  </c:if>
+						</c:forEach>
+						</select>
+					</div>
+							<div class="col-md-4 minHeight">
+								<label>Date Occurred<span class="text-danger">&nbsp;*</span></label>
+								<input type="text" id="categoryDate${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].dateOccurred"  class="form-control calendar" value="${entry.dateOccurred}" placeholder="Date" field-name="Date" data-validation="required"> 
 							</div>
-							<div class="col-md-4 mb10 minHe">
-								<label>Date<span class="text-danger">&nbsp;*</span></label>
-								<input type="text" id="categoryDate${entryCount.count}" name="categoryDTO[${entryCount.index}].categoryDate" readonly="readonly" onclick="displayCalendar('${entryCount.count}')" class="form-control calendar" value="${entry.expenseDateStr}" placeholder="Date" field-name="Date" data-validation="required"> 
-							</div>
-							<div class="col-md-4 mb10 minHe">
+							<div class="col-md-4 minHeight">
 								<label>Receipt Issued by</label>
-								<input type="text" id="receiptIssuedBy${entryCount.count}" name="categoryDTO[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
+								<input type="text" id="receiptIssuedBy${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].receiptIssuedBy" class="form-control" value="${entry.receiptIssuedBy}"  placeholder="Receipt Issued By" field-name="Receipt Issued By" data-validation-optional="true" data-validation="validate_length length1-100"> 
 							</div>
-							<div class="col-md-4 mb10 minHe">
-								<label>Payment Mode</label>
-								<select id="paymentMode${entryCount.count}" name="categoryDTO[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation-optional="true">
+							<div class="col-md-4 minHeight">
+								<label>Payment Mode<span class="text-danger">&nbsp;*</span></label>
+								<select id="paymentMode${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paymentMode" class="form-control" field-name="Payment Mode" data-validation="required">
 								         <option value="">Select Mode</option>
-		                                 <option  value="Credit Card" ${entry.paymentMode.value == 'Credit Card' ? 'selected' : ''}>Credit Card</option>
-		                                 <option  value="Debit Card" ${entry.paymentMode.value == 'Debit Card' ? 'selected' : ''}>Debit Card</option>
-		                                 <option  value="Cash" ${entry.paymentMode.value == 'Cash' ? 'selected' : ''}>Cash</option>
-		                                 <option  value="Cheque" ${entry.paymentMode.value == 'Cheque' ? 'selected' : ''}>Cheque</option>
-		                                 <option  value="e-Wallet" ${entry.paymentMode.value == 'e-Wallet' ? 'selected' : ''}>e-Wallet</option>
+								         <c:forEach var="paymentMode" items="${expEntry.paymentModes}">
+							                  <option  ${entry.paymentMode == paymentMode ? 'selected' : ''} value="${paymentMode}">${paymentMode}</option>
+							             </c:forEach>
 								</select>
 							</div>	
-		                  <div id="amountDiv${entryCount.count}" class="col-md-4 mb10 valid_ation">
-			                   <label>Amount<span class="text-danger">&nbsp;*</span></label>
-								  <div class="input-group positionRelative ">
-										<div class="input-group-btn tblminwidth-75 select-field dropdown_inr" style="min-width: 65px !important;">
-												  <select class="btn btn-info" id="expenseRateType${entryCount.count}" name="categoryDTO[${entryCount.index}].expenseRateType" field-name="Rate Type" field-name="Rate Type" data-validation="required">
-												  	<option value="INR" ${entry.currencyType == 'INR' ? 'selected' : ''}>INR</option>
-												  	<option value="AUD" ${entry.currencyType == 'AUD' ? 'selected' : ''}>AUD</option>
-												  	<option value="USD" ${entry.currencyType == 'USD' ? 'selected' : ''}>USD</option>
-												  	<option value="GBP" ${entry.currencyType == 'GBP' ? 'selected' : ''}>GBP</option>
-												  	<option value="SGD" ${entry.currencyType == 'SGD' ? 'selected' : ''}>SGD</option>
-												  	<option value="EUR" ${entry.currencyType == 'EUR' ? 'selected' : ''}>EUR</option>
-												  </select>
+							
+							
+							 <div id="submittedamountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
+			                   <label>Submitted Amount<span class='text-danger'>&nbsp;*</span></label>
+								  <div class='input-group positionRelative'>
+										<div class='input-group-btn tblminwidth-75 select-field dropdown_inr' style='min-width: 65px !important;'>
+											 <select class='btn btn-info' id='submittedexpenseRateType${(2*(entryCount.count))-1}' name='expenseEntry[${entryCount.index}].categoryAmountType' field-name='Rate Type' field-name='Rate Type' data-validation='required'>
+												   <c:forEach var="currencyType" items="${expEntry.currencyCodeList}">
+									                  <option  ${entry.categoryAmountType == currencyType ? 'selected' : ''} value="${currencyType}">${currencyType}</option>
+									              </c:forEach>
+										     </select>
 									</div>
-								         <input type="text" class="form-control allownumericwithdecimal"  placeholder="Amount"  name="categoryDTO[${entryCount.index}].expenseAmount" id="expenseAmount${entryCount.count}" value="${entry.amount}" field-name="Amount" data-validation="required validate_float validate_length length1-10" onkeyup="getAmountValue(${entryCount.count});">
+								         <input type='text' Readonly class='form-control allownumericwithdecimal'  placeholder='Submitted Amount'  name='expenseEntry[${entryCount.index}].categoryAmount' id='submittedexpenseAmount${(2*(entryCount.count))-1}' value='${entry.submittedamount}' field-name='Submitted Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
 									</div>
 		                 </div>
-						<div class="col-md-4 mb10 minHe">
+							
+		                  <div id="amountDiv${(2*(entryCount.count))-1}" class='col-md-4 minHeight valid_ation'>
+			                   <label>Approved Amount<span class='text-danger'>&nbsp;*</span></label>
+								  <div class='input-group positionRelative'>
+								         <input type='text' class='form-control allownumericwithdecimal'  placeholder='Approved Amount'  name='expenseEntry[${entryCount.index}].categoryApprovedAmount' id='expenseAmount${(2*(entryCount.count))-1}' value='${entry.amount}' field-name='Approved Amount' data-validation='required validate_float validate_length length1-10' onkeyup="getAmountValue(${(2*(entryCount.count))-1});">
+									</div>
+		                 </div>
+		                 
+		                 <div class="col-md-4 minHeight">
+								<label>Paid by<span class="text-danger">&nbsp;*</span></label>
+								<select class="chosen-select form-control" id="paidBy${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].paidBy" class="form-control" field-name="Paid By" data-validation="required">
+								         <option value="" disabled>Select Paid By</option>
+								          <c:forEach var="expEntrypaidBy" items="${expEntry.paidByType}">
+							                   <option  ${entry.paidBy == expEntrypaidBy ? 'selected' : ''} value="${expEntrypaidBy}">${expEntrypaidBy}</option>
+							             </c:forEach>
+								</select>
+						</div>
+						<div class="col-md-4 minHeight">
+								<label>Billable Type</label>
+								<select class="chosen-select form-control" id="billableType${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].billable" class="form-control" field-name="Billable" >
+								          <option value="">Select BillableType</option>
+					                      <option  ${true == entry.billable ? 'selected' : ''} value="1">Billable</option>
+					                      <option  ${false == entry.billable ? 'selected' : ''} value="0">Non-Billable</option>
+								</select>
+						</div>
+						<div class="col-md-12 minHeight mb">
 							<label>Description<span class='text-danger'>&nbsp;*</span></label>
-							<textarea rows="2"  id="entryDes${entryCount.count}" name="categoryDTO[${entryCount.index}].entryDes" class="form-control" placeholder="Description" field-name="Description" data-validation="required validate_Space validate_length length1-5000" onblur="removeWhiteSpaces('${entryCount.count}');">${entry.description}</textarea>
+							<textarea rows="3"  id="entryDes${(2*(entryCount.count))-1}" name="expenseEntry[${entryCount.index}].entryDescription" class="form-control" placeholder="Description" field-name="Description" data-validation="required ">${entry.entryDescription}</textarea>
 						</div>		
-		                   <div id='attachmentSection' class='col-md-4 mb10 minHe'>
-		                   <div class="uploadFile timesheet_week_comm">
-		                     <input type='hidden' name='dbAttachmentMaxRowNumber${entryCount.count}'  id='dbAttachmentMaxRowNumber${entryCount.count}' value='${entry.expensesEntryDocuments.size()}' />
-			                 <input type='hidden' name='attcahmentMaxRowNumber${entryCount.count}'  id='attcahmentMaxRowNumber${entryCount.count}' value='1' />
+		                    <div id='attachmentSection' class='col-md-4 minHeight minHe'>
+		                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
+			                  <input type='hidden' name='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}'  id='dbAttachmentMaxRowNumber${(2*(entryCount.count))-1}' value='${entry.fileInfo.size()}' />
+			                 <input type='hidden' name='attcahmentMaxRowNumber${(2*(entryCount.count))-1}'  id='attcahmentMaxRowNumber${(2*(entryCount.count))-1}' value='1' />
 			                 <div id='timesheetDocumentsId' class=''>
-			                       <c:forEach var="entryDoc" items="${entry.expensesEntryDocuments}" varStatus="entryDocCount">
+			                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
 			                       <c:if test = '${entryDoc.status == 1}'>
-			                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
-			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${entryCount.count}' id='${entryDocCount.index}DbdocFileId${entryCount.count}' value='${entryDoc.id}'/>
-			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' id='${entryDocCount.index}DbdocFileIsDeleted${entryCount.count}' value='N'/>
-			                             <a class='downicon' href='<c:url value="/downloadExpensesEntryDocument?entryDocumentId=${entryDoc.id}"/>'>
+			                         <strong class='proDown' id='${entryDocCount.index}document${(2*(entryCount.count))-1}'>
+			                          <input type='hidden' name='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileId${(2*(entryCount.count))-1}' value='${entryDoc.fileDbId}'/>
+			                          <input type='hidden' name='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' id='${entryDocCount.index}DbdocFileIsDeleted${(2*(entryCount.count))-1}' value='N'/>
+			                             <a class='downicon' href='${entryDoc.fileURL}' download>
 			                                 <i class='glyphicon glyphicon-save'></i>
 								             <input type='button' value='${entryDoc.fileName}'/>
 								        </a>
-								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${entryCount.count});deleteAttchment(${entryDoc.id})" />
+								        <input class='dele' type='button' onclick="removeDbAttachment(${entryDocCount.index},${(2*(entryCount.count))-1});deleteAttchment(${entryDoc.fileDbId})" />
 			                         </strong>
 			                         </c:if>
 			                       </c:forEach>
 			                 </div> 
-			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,  zip,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps      Allowed Size : 2MB '></i>
+			                 <i class='fa fa-info-circle' title='Allowed File Formats: ppt,pptx,pps,ppsx,doc,docx,pdf,rtf,odt,xls,xlsx,csv,txt,jpg,jpeg,bmp,png,gif,eps,tiff,TGA,psd,svg,msg,wpd,wps  Allowed Size : 2MB '></i>
 			                 <span> 
-			                     <table class='timesheetAttachment' id='attachmentTable${entryCount.count}' cellpadding='0' cellspacing='0' width="100%">
-			                       <tr id='${entryCount.count}divAttachmentTsRow0'>
-			                           <td><div id='0docFileuploadFileGroup${entryCount.count}'><input type='file' name='0docFile${entryCount.count}' id='0docFile${entryCount.count}' field-name='Attachment' onchange='validateUploadFile(0,${entryCount.count})' class='timesheetAttachmentValidation'><i class='fa fa-plus' onClick='addAttachment(${entryCount.count},"EDIT")'></i></div></td> 
+			                     <table class='timesheetAttachment' id='attachmentTable${(2*(entryCount.count))-1}' cellpadding='0' cellspacing='0' width="100%">
+			                       <tr id='${(2*(entryCount.count))-1}divAttachmentTsRow0'>
+			                           <td><div id='0docFileuploadFileGroup${(2*(entryCount.count))-1}'><input type='file' name='0docFile${(2*(entryCount.count))-1}' id='0docFile${(2*(entryCount.count))-1}' field-name='Attachment' onchange='validateUploadFile(0,${(2*(entryCount.count))-1})' ><i class='fa fa-plus' onClick='addAttachment(${(2*(entryCount.count))-1},"EDIT")'></i></div></td> 
 			                       </tr>
 			                   </table>
 			                 </span>
 			             </div>
-			             </div>   						  						  
+			             </div>     						  						  
 						</div>
 						      <div class="col-xs-12 col-sm-12 col-md-12 expAddRo myForm noPad clearfix">
 							      <div class="pull-right  mr mt10">
@@ -251,10 +364,15 @@
 		
 		
 			<div class="pull-right">
-			<!-- <input type="button" value="Save" class="btn btn-sm btn-primary"> -->
+			<!--  <input type="button" value="Save" class="btn btn-sm btn-primary">  -->
 			<input type="button" id ="submitForApprovalExpensesId"value="Submit" class="btn btn-sm btn-primary" onclick="saveAddExpensesData('submitted');">
 			<input type="button" id ="submitForApprovalExpensesId"value="Approve" class="btn btn-sm btn-success ml10" onclick="saveAddExpensesData('approved');">
-			<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='/addApprovalExpense?expenseId=${expenses.expenseId}&type=view'/>' "  >
+			<c:if test ="${!empty expenses.id}">
+				 <input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view'/>' "  >
+			</c:if>
+			<c:if test ="${empty expenses.id}">
+				<input type="button" value="Cancel" id="cancelForApprovalExpensesId" class="btn btn-sm btn-default ml10" onclick="location.href='<c:url value='${appPath}/expensesApprovalList'/>' "  >
+			</c:if>
 		</div>
    </div>
   </div>
@@ -266,23 +384,33 @@
 
 <script>
 function deleteAttchment(documentId){
-$.ajax({
-	type : "POST",
-	url : sourceleadUrl+"/deleteDocumentByDocumentId?"+tokenParamName+"="+tokenValue+"&documentId="+documentId,
-	success : function(data) {
-		return true;
-	},
-});
+	if($("#timesheetDocumentsId input[name*='removedDocumentIds'][data-id=removedDocumentIds]").length > 0) {
+		$("#timesheetDocumentsId input[name*='removedDocumentIds'][data-id=removedDocumentIds]").remove();
+	}
+	var i = $("#timesheetDocumentsId input[type=hidden][name*='removedDocumentIds']").length;
+	var html = "<input type='hidden' name='removedDocumentIds["+i+"]' data-id='removedDocument' value='"+documentId+"'/>";
+	$("#timesheetDocumentsId").append(html);
 }
 </script>
 
 <script>
-$(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
+/* $(".allownumericwithdecimal").on("keypress keyup blur",function (event) {
     $(this).val($(this).val().replace(/[^0-9\.]/g,''));
         if ((event.which != 46 || $(this).val().indexOf('.') != -1) && (event.which < 48 || event.which > 57)) {
             event.preventDefault();
         }
-    });	
+    });	 */
+    $('.allownumericwithdecimal').keydown(function (event) {
+        if (event.shiftKey == true) {
+            event.preventDefault();
+        }
+        if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+        } else {
+            event.preventDefault();
+        }
+        if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+            event.preventDefault();
+    });    
 </script>
 
 <script>
@@ -294,9 +422,9 @@ function acceptReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	var accept = 'accept';
 	$.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
+		url : sourceleadUrl+"/ws/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type="+accept+"&userId="+userId+"&orgLocationId="+orgLocationId,
 		success : function(data) {
-			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+			 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		},
 	});
 }
@@ -306,10 +434,10 @@ function rejectReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
+	result = result +"		<p>Re-open Reject message here</p>";
+	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
 	result = result +"	</div>";
 	$("#reOpenRejectedPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -328,13 +456,13 @@ function storeReopenRejectedReason(expenseId,reOpenedUserId){
 	var userId = '${SourceLeadWeb_user.id}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	var reason = document.getElementById("reOpenRejectedReason").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	if(reason !== ""){
 		$("#reOpenRejectedReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		   	url : sourceleadUrl+"/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+reason+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
+		   	url : sourceleadUrl+"/ws/acceptOrRejectReopenExpenseBySuperUser?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reOpenedUserId="+reOpenedUserId+"&type=reject&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>'))+"&userId="+userId+"&orgLocationId="+orgLocationId,	    	   
 		    success: function(data) {
-		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		    }
 	   });
 	}else{
@@ -353,40 +481,37 @@ function reOpenMyExpense(expenseId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open message here</p>";
-	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here' onkeydown='return (event.keyCode!=13);'></textarea>";
+	result = result +"		<p>Re-open Reject message here</p>";
+	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
-</script>
 
+</script>
 
 
 <script>
 function notifyReopenExpense(expenseId){
 	var reason = document.getElementById("reOpenReason").value;
-	if(reason.match(/^[^\s-](.*)*$/) != null){
+	if(reason !== ""){
 		$("#reOpenReasonDiv").empty();
 		$.ajax({
 		   	type: "POST",
-		    url: sourceleadUrl+"/notifyReopenExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reason="+reason,	    	   
+		    url: sourceleadUrl+"/notifyReopenExpense?"+tokenParamName+"="+tokenValue+"&expenseId="+expenseId+"&reason="+(reason.replace(/\n/g,'<br/>').replace(/\r/g,'<br/>')),	    	   
 		    success: function(data) {
-		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseId}'+"&type=view"); 
+		    	 location.replace(sourceleadUrl+"/addApprovalExpense?expenseId="+'${expenses.expenseAutoId}'+"&expenseLocationCode="+'${expenses.expenseLocationCode}'+"&type=view"); 
 		    }
 	   });
 	}else{
-		if(reason){
-			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
-		}else{
+		
 			$("#reOpenReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
 		}
 	}
-	  
-}
+
 </script>
 
 <script>
@@ -396,20 +521,25 @@ $(".project_inn_mask").fadeOut(200);
 }
 </script>
 
-<script>
+<!-- <script>
 function getMembersForSelectedProject(){
 	var projectId = document.getElementById("projectId").value;
 	$.ajax({
 	      type : "GET",
 	       url: sourceleadUrl+"/getMembersForSelectedProject?projectId="+projectId,       
-	       success :function(data) {
-	    	   if(data != null && data !='undefined' && data !=''){
-	    	   var json = JSON.parse(data);
+	       success :function(json) {
+	    	   if(json != null && json !='undefined' && json !=''){
+	    	   /* var json = JSON.parse(data); */
 	    	   var result = "";
+	    	   var projectStartDate = '';
+	  		   var projectEndDate = '';
 	    	   result = result + '<option value="">Select Employee</option>';
 			       	for (var i=0; i<json.length; i++){
 				        var opt = json[i];
 				        result = result + '<option  value="'+opt.id+'">'+opt.empName+'</option>';
+				        projectStartDate = opt.projectAssignedDateStr;
+			 			projectEndDate = opt.projectEndDateStr;
+			 			expensesDatePickerStartDate(projectStartDate,projectEndDate);
 			       	}
 				$("#projectMemberId").empty();
 				$("#projectMemberId").append(result);
@@ -418,7 +548,58 @@ function getMembersForSelectedProject(){
 	       },
 	});
 }
+</script> -->
+
+
+
+<script>
+function getClientBasedOnSelectedProject(){
+	$('#clientNameId').val('');
+	$('#expenseAutoId').val('');
+	 var projectId = $("#projectId").val();
+	 var result = "";
+	 if(projectId != null && projectId !='undefined' && projectId !=''){
+		 result = result + '<option value="">Select Employee</option>';
+		 <c:forEach var="project" items="${expEntry.projectsList}">
+		 if('${project.id}' == projectId){
+			 $('#clientNameId').val('${project.client}');
+			 $('#expenseAutoId').val('${project.expenseId}');
+			 <c:forEach var="pm" items="${project.projectMembersList}">
+			     result = result + '<option ${expenses.masterCandidateId == pm.masterCandidateId ? "selected" : " " }  value="${pm.id}">${pm.name}</option>';
+			 </c:forEach>
+		 }  
+ 	    </c:forEach>
+	 }
+	 $("#projectMemberId").empty();
+	 $("#projectMemberId").append(result);
+	 var pmId = $("#projectMemberId").val();
+	 $("#projectMemberIdHidden").val(pmId);
+  	 $("#projectMemberId").trigger("chosen:updated");
+}
 </script>
+<script>
+function getProjectMemberStartDateAndEndDate(){
+	var projectId =$("#projectId").val();
+	var projectMemberId = $("#projectMemberId").val();
+	 if(projectId != null && projectId !='undefined' && projectId !='' 
+			 && projectMemberId != null && projectMemberId !='undefined' && projectMemberId !=''){
+		 var projectStartDate = '';
+		 var projectEndDate = '';
+		 <c:forEach var="project" items="${expEntry.projectsList}">
+		 if('${project.id}' == projectId){
+			 <c:forEach var="pm" items="${project.projectMembersList}">
+			 if('${pm.id}' == projectMemberId){
+				   projectStartDate = '${pm.memberStartDate}';
+	 			   projectEndDate = '${pm.memberEndDate}';
+	 			  expensesDatePickerStartDate(projectStartDate,projectEndDate);
+			 }  
+			 </c:forEach>
+		 }
+ 	    </c:forEach>
+	 }
+}
+</script>
+
 
 <script type="text/javascript">
 function removeWhiteSpaces(rowCount){
@@ -432,21 +613,41 @@ function removeWhiteSpaces(rowCount){
 <script>
 	function saveAddExpensesData(status) {
 		if ($('#add_expenses_form').validate(false, validationSettings)){
+			var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+			var projectStartDate = $("#projectStartDateExpensesId").val();
+			var projectEndDate = $("#projectEndDateExpensesId").val();
+			var d1= getJSDate(projectStartDate,locationDate);
+     		var d2= getJSDate(projectEndDate,locationDate);
 			var entriesCount = $('#categoryTable >thead >tr').length;
 			var maxRecCount = $('#maxRecCount').val();
 			var validation_required = "true";
+			var date_validation = "true";
 			if(maxRecCount != null && maxRecCount != '' && maxRecCount != 'undefined'){
 				for(var i = 1; i < maxRecCount; i++){
+					var categoryDate = $("#categoryDate"+i).val();
+				    if(categoryDate != null && categoryDate != '' && categoryDate != 'undefined'){
+				    	    var d3= getJSDate(categoryDate,locationDate);
+						    if(d1<=d3 && d3<=d2){
+						    	date_validation = "false";
+						    }
+				    }
+				    
 				   if($("#divEntityTsRow"+i).is(':visible'))
 				   {
 					   validation_required = "false";
 				   }
 				}
 			}
+			var  pmIdValue = $("#projectId option").eq($("#projectId").prop("selectedIndex")).val();
+			$("#projectIdHidden").val(pmIdValue);
 			if(validation_required == "true"){
-				$("#exceedSpan") .html( "<p class='textWarning small'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
+				$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i> Minimum one category is required</p>");
 				return false;
 			}
+			 else if(date_validation == "true"){
+					$("#exceedSpan") .html( "<p class='jquery_form_error_message noPad'><i class='fa fa-exclamation-triangle paddingRight mt5'></i>Item duration should be between Expense StartDate and EndDate</p>");
+					return false;
+				} 
 			else{
 				//$("#submitForApprovalExpensesId").prop('disabled', true);
 				//$("#cancelForApprovalExpensesId").prop('disabled', true);
@@ -463,7 +664,7 @@ function removeWhiteSpaces(rowCount){
 			$.ajax({
        	        type : "POST",
         	    data: formData,
-				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&status="+status,
+				url : sourceleadUrl+"/storeAddExpensesData?"+tokenParamName+"="+tokenValue+"&expenseStatus="+status,
 				success : function(data) {
 					$( "#submitForApprovalExpensesId" ).addClass('button').val('Sub for Approval');
 					window.location.replace(sourceleadUrl+'/expensesApprovalList');
@@ -520,41 +721,7 @@ function removeWhiteSpaces(rowCount){
 </script>
 
 
-<script>
-function getClientBasedOnSelectedProject(){
-	 var locationCode ='${SourceLeadWeb_locationCode}'; 
-	var projectId = document.getElementById("projectId").value;
-	$.ajax({
-	      type : "GET",
-	       url: sourceleadUrl+"/getClientByProjectId?projectId="+projectId+"&locationCode="+locationCode,       
-	       success :function(data) {
-	    	   if(data != null && data !='undefined' && data !=''){
-	    	   var json = JSON.parse(data);
-		    	  if(json.expensesClientName != null && json.expensesClientName !='undefined' && json.expensesClientName !=''){
-		    	   		$('#clientNameId').val(json.expensesClientName);
-		    	   }else{
-		    	   		$('#clientNameId').val('');   
-		    	   }
-		    	  if(json.startDateStr != null && json.startDateStr !='undefined' && json.startDateStr !='' && json.endDateStr != null && json.endDateStr !='undefined' && json.endDateStr !=''){
-		    		  	var projectStartDate = json.startDateStr;
-		    			var projectEndDate = json.endDateStr;
-		    			expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }else{
-					  var projectStartDate = json.startDateStr;
-					  var projectEndDate = json.endDateStr;
-					  expensesDatePickerStartDate(projectStartDate,projectEndDate);
-		    	  }	
 
-		    	  $('#expensePurpose').val('');
-		    	  //$('#projectStartDateExpensesId').val('');
-		    	 // $('#projectEndDateExpensesId').val('');
-		    	    
-
-	    	   }
-	       },
-	});
-}
-</script>
 
 <script type="text/javascript">
 function flushOnchange(){
@@ -566,48 +733,6 @@ $('#projectEndDateExpensesId').val('');
 $("#projectMemberId").val('')
 }
 </script>
-
-<script>
-	function expensesDatePickerStartDate(projectStartDate, projectEndDate) {
-		
-		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-		  var finalDateFormatEduUpdate = '';
-		  if(locationDate.match("yyyy-MM-dd")){
-			  finalDateFormatEduUpdate = 'yy-mm-dd';
-		  }if(locationDate.match("dd-MM-yyyy")){
-			  finalDateFormatEduUpdate = 'dd-mm-yy'; 
-		  }if(locationDate.match("MM-dd-yyyy")){
-			  finalDateFormatEduUpdate = 'mm-dd-yy'; 
-		  }if(locationDate.match("yyyy-dd-MM")){
-			  finalDateFormatEduUpdate = 'yy-dd-mm'; 
-		  }
-		$("#projectStartDateExpensesId").datepicker("destroy");
-		$("#projectEndDateExpensesId").datepicker("destroy");
-		$('#projectStartDateExpensesId').datepicker({
-					dateFormat : finalDateFormatEduUpdate,
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-					onSelect : function(selected) {
-						$("#projectEndDateExpensesId").datepicker("option","minDate", selected);
-						removeErrStr();
-					}
-				});
-		$('#projectEndDateExpensesId').datepicker({
-					dateFormat : finalDateFormatEduUpdate,
-					changeMonth : true,
-					changeYear : true,
-					minDate : projectStartDate,
-					maxDate : projectEndDate,
-					onSelect : function(selected) {
-						$("#projectStartDateExpensesId").datepicker("option","maxDate", selected);
-						removeErrEnd();
-					}
-				});
-	}
-</script>
-
 <script>
 function expensesDateCheck(){
 	$('#dateError').remove();
@@ -665,13 +790,30 @@ function getAmountValueCategory(rowId){
 if(expenseAmount !=null && expenseAmount !='' && expenseAmount!='Undefined'){
 	var amountArray = categoryAmount.split("\,");
 	if(amountArray[1] != parseFloat(0)){
-	if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
-		$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
-	}else{
-		$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
-	}
-   }	
+		if(parseFloat(expenseAmount) > parseFloat(amountArray[1])){
+			$("#expenseAmount"+rowId).after("<p class='jquery_form_error_message fa fa-exclamation-triangle' style='color:sandybrown'> Amount Exceeded than Allocated-(Allocated Amount:"+amountArray[1]+")");
+		}else{
+			$("#amountDiv"+rowId).find('p.jquery_form_error_message').remove();
+		}
+     }	
   }
+}
+
+</script>
+
+<script>
+function flushDetailsExpenses(){
+	$('#projectStartDateExpensesId').val('');
+	$('#projectEndDateExpensesId').val('');
+	 var maxRowNum = parseInt($("input[name = 'maxRecCount']").val());
+	maxRowNum = maxRowNum - 1;
+	if(maxRowNum != null && maxRowNum != '' && maxRowNum != 'undefined' && maxRowNum != 0){
+		for(var i = 1; i < maxRowNum; i=i+2){
+			var rowId = i;
+			var detailsRowId = rowId+1;
+			removeExpenseRow(rowId,detailsRowId);
+		}
+	} 
 }
 </script>
 

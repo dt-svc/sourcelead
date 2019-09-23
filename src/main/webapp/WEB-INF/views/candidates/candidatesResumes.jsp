@@ -8,51 +8,14 @@
      2.parameter : candidateId.
 --%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style>
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-	.tblicons_4 {
-	width:100px;
-	}
-	.tblicons_4 a {
-	margin: 0 2px;
-	}
-</style>
-
 <script>
 function candidateResume(candidateId){
 	var candidateType = '${candidateType}';
 	var result ="";
-	
-	result = result+'	    <div class="project_tabs_inn_head addUser-org">';
-	
+	result = result+'<div class="project_tabs_inn_head addUser-org">';
 	result  = result + '<div class="success_pop" id="selector2" style="display: none;">';
     result  = result + '<i class="fa fa-check-circle"></i><span id="resMsgDiv"></span>';
     result  = result + '</div>';
-    
 	result = result +' <div id="msgDiv3" ></div>';
 	
 	if(window.candidateStatusGlobal == '0'){
@@ -93,7 +56,6 @@ function candidateResume(candidateId){
     $("#tab-5").empty();  
     $("#tab-6").empty();  
     $("#tab-2").append(result); 
-   
     
 }
 </script>
@@ -107,7 +69,6 @@ function candidateResume(candidateId){
 </script> 
 <!-- End -->
 
-
 <%-- 
      @author : Venkat Kesav
      this script is for refresh Resume List
@@ -116,9 +77,9 @@ function candidateResume(candidateId){
 <script>
 function closeResumePopup(){
 	 $("#popUpDivResume").removeClass("edit-details-active");
+	 $(".location-alert").fadeOut();
 }
 </script>
-
 
 <%-- 
      @author : Venkat Kesav
@@ -132,8 +93,6 @@ function refreshResumeList(candidateId){
 </script>
 
 <div id="deleteResumePopUp"></div> 
-
-
 
 <%-- 
      @author : Venkat Kesav
@@ -149,7 +108,7 @@ function addResume(candidateId) {
 	result = result+'	                <div class="form-horizontal clearfix" id="newResumeDiv">';
 	result = result+'	                  <div class="clearfix mb10">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_Space validate_Description validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
+	result = result+'	                      <input type="text" class="form-control input-sm" id="title" name="title" data-validation="validate_length length2-100" data-validation-optional="true" field-name="Title" value="" placeholder="Title">';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10">';
@@ -159,7 +118,7 @@ function addResume(candidateId) {
 	result = result+'	                  </div>';
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+	result = result+'							<div class="input-group" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload" >';
 	result = result+'	                            </span> </label>';
@@ -167,8 +126,6 @@ function addResume(candidateId) {
 	result = result+'	                        </div>';
 	result = result+'	                    </div>  ';  
 	result = result+'	                  </div>   ';  
-	
-	
 	
 	result = result+'	                  <div class="clearfix mb10" id="resumeNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
@@ -179,12 +136,6 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mr mt" id="resumeUpdateButton" style="display: none;">';
 	result = result+'	                    <button type="button" id="update_resume" class="btn btn-sm btn-primary pull-right">Update</button>';
 	result = result+'	                  </div>';
-	
-	
-	
-	
-	
-	
 	
 	result = result+'	                  <div class="clearfix mr mt" id="resumeAddButton">';
 	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+',null);">Add</button>';
@@ -202,9 +153,6 @@ function addResume(candidateId) {
 	 $(".addUser-org, .assign-org, .collapse-div-adduser, .collapse-div, .edit-details").click(function(e){
 		 e.stopPropagation();
 	 });
-	/*  $('html').click(function(){
-		$(".edit-details").removeClass("edit-details-active");
-	   }); */	
 	 
 	 	/* upload file script to show selected file name*/
 	    document.getElementById("uploadBtn").onchange = function () {
@@ -213,18 +161,6 @@ function addResume(candidateId) {
 	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
 	  
 	   }; 
-	    
-	    /* upload file script for size validation 2MB*/
-	    var selectedFile = document.getElementById("uploadBtn");
-	    selectedFile.addEventListener("change", function() {
-	      var docSize = this.files[0].size;
-	      $("#uploadFileGroup").find('p.jquery_form_error_message').remove();
-	      if(docSize > 2097152){
-	    	  document.getElementById("uploadFile").value = '';
-	    	  $("#uploadFileGroup").append("<p class='jquery_form_error_message'>Limit is exceeded than 2MB </p>");
-	      }
-	    });
-	    
 }
 </script>
 	
@@ -239,77 +175,81 @@ function addResume(candidateId) {
 --%>
 <script type="text/javascript">
 	function storeCandidateResume(candidateId,resumeId){
-			var validationSettings = {
+		var validationSettings = {
 			        errorMessagePosition : 'element',
 			        borderColorOnError : '',
 					scrollToTopOnError : true,
 					dateFormat : 'yyyy/mm/dd' 
 		         }; 
-			 if ($('#candidateResume_form').validate(false, validationSettings)){
+			 if ($('#candidateResume_form').validate(false, validationSettings)) {
+				 if($("#uploadFile").length > 0 && (resumeId==null ? ($("#uploadFileGroup").length && $("#uploadFileGroup label").length && $("#uploadFileGroup span").length && $("#uploadBtn").length > 0 && $("#uploadFile").length > 0) : ($("#resumeNameDiv").length > 0 && $("#resumeName").length > 0))) {
+					 var formData =  getFormData('candidateResume_form'); 
+						$("#candidateResume_form").attr("disabled", "disabled");
+					    $("#add_resume").attr("disabled", "disabled");
+						$.ajax({
+							type : "POST",
+			        	    data: formData,
+							url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
+							success : function(result) {
+								 if(result.response === "SESSION_TIMEDOUT") {
+						    		location.replace(sourceleadUrl);
+						    	 } else if (result.response === "AWKWARD") {
+				                        location.href = "/errorPage";
+//				                        showError(result.responseMessage);
+						    	 } else if (result.response === "SUCCESS") {
+			            			$('#perVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+				          			if(result.object<50){
+					          			$("#perVal").removeClass('progress-bar-success');
+					          			$("#perVal").addClass("progress-bar-danger");
+					          		}
+					          		if(result.object>=50) {
+					          			$("#perVal").removeClass('progress-bar-danger');
+					          			$("#perVal").addClass("progress-bar-success");
+					          		}
+			            			$("#disVal").empty();
+			            			$("#disVal").append(result.object+'%');
+			            			// for quick view bar update
+			            			$('#quickPerVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+			          			 	if(result.object<50) {
+				          				$("#quickPerVal").removeClass('progress-bar-success');
+				          				$("#quickPerVal").addClass("progress-bar-danger");
+				          			}
+				          			if(result.object>=50) {
+				          				$("#quickPerVal").removeClass('progress-bar-danger');
+				          				$("#quickPerVal").addClass("progress-bar-success");
+				          			}
 
-				var formData =  getFormData('candidateResume_form'); 
-
-				$("#candidateResume_form").attr("disabled", "disabled");
-			    $("#add_resume").attr("disabled", "disabled");
-
-				$.ajax({
-					type : "POST",
-	        	    data: formData,
-					url : sourceleadUrl+"/saveCandidateResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId,
-					success : function(result) {
-						 if( result.indexOf('Sign In') >= 0){
-				    		location.replace(sourceleadUrl);
-				    	 }
-	            		 else if (result.indexOf('exception') >= 0) {
-	            			 location.replace(sourceleadUrl+"/errorPage");
-	            		 }
-	            		 else{
-	            			$('#perVal').attr('aria-valuenow', result).css('width',result+'%');
-		          			 if(result<50){
-			          			   $("#perVal").removeClass('progress-bar-success');
-			          			   $("#perVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#perVal").removeClass('progress-bar-danger');
-			          				 $("#perVal").addClass("progress-bar-success");
-			          			 }
-
-	            			$("#disVal").empty();
-	            			$("#disVal").append(result+'%');
-	            			// for quick view bar update
-	            			$('#quickPerVal').attr('aria-valuenow', result).css('width',result+'%');
-		          			 if(result<50){
-			          			   $("#quickPerVal").removeClass('progress-bar-success');
-			          			   $("#quickPerVal").addClass("progress-bar-danger");
-			          			 }
-			          			 if(result>=50){
-			          				 $("#quickPerVal").removeClass('progress-bar-danger');
-			          				 $("#quickPerVal").addClass("progress-bar-success");
-			          			 }
-
-	            			$("#quickDisVal").empty();
-	            			$("#quickDisVal").append(result+'%');
-	            			
-	            			
-						 	$("#popUpDivResume").removeClass("edit-details-active");
-	             			$("#selector2").removeAttr("style");
-	             			$("#selector2").css({ display: "block" });
-	             			if(resumeId != null){
-	             				$("#resMsgDiv").html("Resume details updated");
-	             			}else{
-	             				$("#resMsgDiv").html("Success!! New Resume added");
-	             			}		             			
-					 		candidateResumesList(candidateId);
-					 		resMsgFadeinResumes();
-	            		 }
-						 /* $("#conMsg").fadeIn(200);
-						 $('#conMsg').delay(2000).fadeOut('slow'); */
-					},
-				});
+			            			$("#quickDisVal").empty();
+			            			$("#quickDisVal").append(result.object+'%');
+			            			
+								 	$("#popUpDivResume").removeClass("edit-details-active");
+			             			$("#selector2").removeAttr("style");
+			             			$("#selector2").css({ display: "block" });
+			             			if(resumeId != null) {
+			             				$("#resMsgDiv").html("Resume details updated");
+			             			} else {
+			             				$("#resMsgDiv").html("Success!! New Resume added");
+			             			}		             			
+							 		candidateResumesList(candidateId);
+							 		resMsgFadeinResumes();
+							 		setTimeout(function() {
+							 			candidateList();					 			
+							 		},100);
+			            		} else if (result.indexOf('Sign In') !== -1) {
+			     					location.replace(sourceleadUrl);
+			     				} else {
+			     				    showError("Operation failed, please try again");
+			     				}
+								 /* $("#conMsg").fadeIn(200);
+								 $('#conMsg').delay(2000).fadeOut('slow'); */
+							},
+						});
 					return true;
-			 }else{ 
-					return false;
-			 } 
+				 } else {
+					 showError("Resume file is missing");
+				 }
+			 }
+			 return false;
 		}
 		$('body').on('blur', '#candidateResume_form', function() {
 		$("#candidateResume_form").showHelpOnFocus();
@@ -345,20 +285,10 @@ function addResume(candidateId) {
 	  $.ajax({
 			type : "POST",
 			url : sourceleadUrl+"/candidateResumesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
-			success : function(data) {
-				if (data != null && data != 'undefined' && data != "" && data != '[]') {
-					var json = JSON.parse(data);
-        			 /* for (var i = 0; i < 1; i++) {
-                         var val= json[i];
-                         var opt = "";
-                         if(val.msg != null && val.msg != '' && val.msg != 'undefined'){
-                             opt  = opt + '<div class="success_pop" id="selector2" style="display: block;">';
-                             opt  = opt + '<i class="fa fa-check-circle"></i><span>'+val.msg+'</span>';
-                             opt  = opt + '</div>';
-                             }                                
-                                 $("#msgDiv3").empty();
-                                 $("#msgDiv3").append(opt);
-                         } */
+			success : function(json) {
+// 				if (json != null && json != 'undefined' && json != "" && json != '[]') {
+// 					var json = JSON.parse(data);
+				if(json.data.length > 0 ){
 							result = result+'	      <table>';
 							result = result+'	        <tbody>';
 							result = result+'	          <tr>';
@@ -372,61 +302,66 @@ function addResume(candidateId) {
 							result = result+'	          </tr>';
 							
 							
-				             for (var i = 0; i < json.length; i++) {
-				            	 	resumesCount = json.length;
-					            	var opt = json[i];
-					            	console.log(opt);
-					            	var title = "";
-					            	var description = "";
-					            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
-					            		title = opt.title;
-					            	}else{
-					            		title = opt.fileName;
-					            	}
-					            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
-					            		description = opt.description;
-					            	}else{
-					            		description = '----';
-					            	}
-					            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
-					            		createdBy = opt.createdBy;
-					            	}else{
-					            		createdBy = '----';
-					            	}
-					            	
-					            	
-					            	if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != 'undefined' && opt.candidateResumeUpdateDateToString != ""){
-					            		candidateResumeUpdateDateToString = opt.candidateResumeUpdateDateToString; 
-					            	}else{
-					            		candidateResumeUpdateDateToString = "---";
-					            	} 
-					            	
-					            	result = result+'<tr>';
-					           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
-					           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
-					           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
-					           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
+								 for (var i = 0; i < json.data.length; i++) {
+					            	 	resumesCount = json.data.length;
+						            	var opt = json.data[i];
+						            	console.log(opt);
+						            	var title = "";
+						            	var description = "";
+						            	if(opt.title != null && opt.title != 'undefined' && opt.title != ""){
+						            		title = opt.title;
+						            	}else{
+						            		title = opt.fileName;
+						            	}
+						            	if(opt.description != null && opt.description != 'undefined' && opt.description != ""){
+						            		description = opt.description;
+						            	}else{
+						            		description = '----';
+						            	}
+						            	if(opt.createdBy != null && opt.createdBy != 'undefined' && opt.createdBy != ""){
+						            		createdBy = opt.createdBy;
+						            	}else{
+						            		createdBy = '----';
+						            	}
+						            	
+						            	if(opt.candidateResumeUpdateDateToString != null && opt.candidateResumeUpdateDateToString != 'undefined' && opt.candidateResumeUpdateDateToString != ""){
+						            		candidateResumeUpdateDateToString = opt.candidateResumeUpdateDateToString; 
+						            	}else{
+						            		candidateResumeUpdateDateToString = "---";
+						            	} 
+						            	
+						            	result = result+'<tr>';
+						           		result = result+'<td><div><span title = "'+title+'">'+title+'</span></div></td>';
+						           		result = result+'<td><div><span title ="'+opt.fileName+'">'+opt.fileName+'</span></div></td>';
+						           		result = result+'<td><div><span title="'+description+'">'+description+'</span></div></td>';
+						           		result = result+'<td><div><span>'+createdBy+'</span></div></td>';
 
-									result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
-					           		result = result+'<td><div class="tblicons_4"> <a class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileURL+'\" title="Download"></a>';
-					           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
-					           		if(window.candidateStatusGlobal == 0){
-					           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
-						           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
-					           		}else{
-					           			if(candidateType == "Candidates"){
-					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
-					           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
-					           			}else{
-					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
-					           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
-					           			}
-					           		}
-					           		result = result+'</div></td>';
-					           		result = result+'</tr>';
-				             }
-				            result = result+'	          </tbody>';
+										result = result+'<td><div><span>'+candidateResumeUpdateDateToString+'</span></div></td>';
+						           		result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt"  href=\"'+opt.fileURL+'\" download title="Download"></a>';
+						           		result = result+' <a class="fa fa-eye" href="javascript:void(0)" onClick="viewFile(\''+opt.fileURL+'\',\''+opt.fileName+'\',\''+opt.fileContentType+'\');"title="preview"></a>';		           						          
+						           		if(window.candidateStatusGlobal == 0){
+						           			result = result+'<a class="glyphicon glyphicon-pencil" href="javascript:void(0)"></a>';
+							           		result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
+						           		}else{
+						           			if(candidateType == "Candidates"){
+						           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
+						           				result = result+'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
+						           			}else{
+						           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\')">  <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addResume('+candidateId+'); getResume('+candidateId+', '+opt.id+');"title="Edit"></a></sec:authorize>';
+						           				result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\')"><i class="glyphicon glyphicon-trash" onclick="removeresumePopUp('+candidateId+','+opt.id+');" title="Remove"></i></sec:authorize>';
+						           			}
+						           		}
+						           		result = result+'</div></td>';
+						           		result = result+'</tr>';
+					             }
+							result = result+'	          </tbody>';
 				       		result = result+'	      </table>';
+							}else{
+								result = result + "   <div class='dataTables_empty'>";
+				 				result = result + "  </div> ";
+							}
+				            
+				            
 					if(resumesCount>4){
 						$("#addCandidateResume").hide();
 						closeResumePopup();
@@ -435,20 +370,20 @@ function addResume(candidateId) {
 					}
 					$("#resumesList").empty();
 					$("#resumesList").append(result);
-				}else{
-				result = result + "   <div class='row'>";
-				result = result + "	<div class='col-lg-12'>";
-				result = result + "		<div class='content-area clearfix'>";
-				result = result + "			<div class='blank-pages'>";
-				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-				result = result + "			        <p>No resumes Found</p>";
-				result = result + "			 </div>";
-				result = result + "		</div>";
-				result = result + "	</div>";
-				result = result + "  </div> ";
-				$("#resumesList").empty();
-				$("#resumesList").append(result);
-			}
+// 				}else{
+// 				result = result + "   <div class='row'>";
+// 				result = result + "	<div class='col-lg-12'>";
+// 				result = result + "		<div class='content-area clearfix'>";
+// 				result = result + "			<div class='blank-pages'>";
+// 				result = result + "			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+// 				result = result + "			        <p>No resumes Found</p>";
+// 				result = result + "			 </div>";
+// 				result = result + "		</div>";
+// 				result = result + "	</div>";
+// 				result = result + "  </div> ";
+// 				$("#resumesList").empty();
+// 				$("#resumesList").append(result);
+// 			}
 	
 				},
 		});
@@ -500,7 +435,7 @@ function deleteResumePopup(){
 <div id="deleteEduPopUp"></div> 
 
 <script type="text/javascript">
-function removeresumePopUp(candidateId, resumeId){
+function removeresumePopUp(candidateId, resumeId) {
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop_resume' class='remove_user_pop remove_user_pop_a'>";
@@ -516,18 +451,63 @@ function removeresumePopUp(candidateId, resumeId){
 }
 </script>
 <script>
-function deleteResume(candidateId, resumeId){
+function deleteResume(candidateId, resumeId) {
 	var loginUserId = '${SourceLeadWeb_userId}';
-	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-		$.ajax({
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	$.post(sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId,{},function(result){
+	if (result && result.response === "INVALID_DATA") {
+	    showError(result.responseMessage);
+	} else if (result.response === "AWKWARD") {
+	    location.href = "/errorPage";
+	} else if (result.response === "SUCCESS") {
+		$('#perVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	 	if(result.object < 50) {
+			$("#perVal").removeClass('progress-bar-success');
+	      	$("#perVal").addClass("progress-bar-danger");
+	    }
+	    if(result.object >= 50) {
+	    	$("#perVal").removeClass('progress-bar-danger');
+	      	$("#perVal").addClass("progress-bar-success");
+	    }
+	 	$("#disVal").empty();
+		$("#disVal").append(result.object+'%');
+		// for quick view bar update
+		$('#quickPerVal').attr('aria-valuenow', result.object).css('width',result.object+'%');
+	  	if(result.object < 50) {
+	    	$("#quickPerVal").removeClass('progress-bar-success');
+	      	$("#quickPerVal").addClass("progress-bar-danger");
+	    }
+	    if(result.object >= 50) {
+	    	$("#quickPerVal").removeClass('progress-bar-danger');
+	      	$("#quickPerVal").addClass("progress-bar-success");
+	    }
+	
+		$("#quickDisVal").empty();
+		$("#quickDisVal").append(result.object+'%');
+		
+		$("#selector2").removeAttr("style");
+	 	$("#selector2").css({ display: "block" });
+	 	$("#resMsgDiv").html("Resume deleted");
+		$("#popUpDivResume").removeClass("edit-details-active");
+		candidateResumesList(candidateId);
+		$("#remove_user_pop_resume, .project_inn_mask").fadeOut();
+		resMsgFadeinResumes();
+		setTimeout(function(){
+	 		candidateList();					 			
+	 	},100);
+	} else if (result.indexOf('Sign In') !== -1) {
+		location.replace(sourceleadUrl);
+	} else {
+	    showError("Operation failed, please try again");
+	}
+	 }); 
+	  /* $.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/terminateResume?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
    		    success: function(data) {
-   		    	
    		    	if(data != null && data != 'undefined' && data != ""){
    		    	 	$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
          			 if(data<50){
-	          			  /* $("#perVal").removeClass("progress-bar-success"); */
 	          			   $("#perVal").removeClass('progress-bar-success');
 	          			  $("#perVal").addClass("progress-bar-danger");
 	          			 }
@@ -561,12 +541,12 @@ function deleteResume(candidateId, resumeId){
         		     candidateResumesList(candidateId);
         		     $("#remove_user_pop_resume, .project_inn_mask").fadeOut();
         		     resMsgFadeinResumes();
+        		     setTimeout(function(){
+				 			candidateList();					 			
+				 	 },100);
    		    	}
    		    },
-	     });
-
-	
-	
+	     }); */
 }
 </script>
 
@@ -585,22 +565,30 @@ function getResume(candidateId, resumeId){
 		$.ajax({
 		   	type: "POST",
 		    url: sourceleadUrl+"/getResume?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&resumeId="+resumeId, 	   
-   		    success: function(data) {
-   		    	var json = JSON.parse(data);
-        			 $("#uploadResumeDiv").hide();
-        			 $("#resumeAddButton").hide();
-        			 $("#uploadFile").removeAttr("data-validation");
-        			 $("#resumeNameDiv").show();
-        			 $("#resumeName").append(json.fileName);
-        			 $("#resumeUpdateButton").show();
-        			 
-        			 if(json.title != null && json.title != "undefined" && json.title != ""){
-        				 document.getElementById("title").value = json.title;
-        			 }
-        			 if(json.description != null && json.description != "undefined" && json.description != ""){
-        				 $("textarea#description").val(json.description);
-        			 }
-        			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    success: function(response) {
+   		    	if (response.response === "AWKWARD") {
+   		    	    location.href = "/errorPage";
+   		    	} else if (response.response === "SUCCESS") {
+   		    		 var json = response.object;
+	       			 $("#uploadResumeDiv").hide();
+	       			 $("#resumeAddButton").hide();
+	       			 $("#uploadFile").removeAttr("data-validation");
+	       			 $("#resumeNameDiv").show();
+	       			 $("#resumeName").append(json.fileName);
+	       			 $("#resumeUpdateButton").show();
+	       			 
+	       			 if(json.title != null && json.title != "undefined" && json.title != ""){
+	       				 document.getElementById("title").value = json.title;
+	       			 }
+	       			 if(json.description != null && json.description != "undefined" && json.description != ""){
+	       				 $("textarea#description").val(json.description);
+	       			 }
+	       			 $("#update_resume").attr("onclick", "storeCandidateResume("+json.candidateId.id+","+json.id+");");
+   		    	} else if (response.indexOf('Sign In') !== -1) {
+   		    		location.replace(sourceleadUrl);
+   		    	} else {
+   		    	    showError("Operation failed, please try again");
+   		    	}
    		    }
 	     });
 }
@@ -612,9 +600,14 @@ this script is for remove Resume in edit mode to upload new resume
 1.usage     : onclick
 --%>
 function removeResumeNameDiv(){
+	var resTitle = $("#title").val();
+	var resDocName =  $("#resumeName").text();
 	$("#resumeNameDiv").hide();
 	$("#uploadResumeDiv").show();
 	$("#uploadFile").attr("data-validation", "required validate_Space validatedoc");
+	if(resTitle == resDocName){
+		$("#title").val("");
+	}
 }
 
 
@@ -644,3 +637,9 @@ function uploadFile(){
 		};
 	})(jQuery);
 </script>
+
+<!-- <script>
+	function clearUpload(){
+		$("#uploadFile").val("");
+	}
+</script> -->

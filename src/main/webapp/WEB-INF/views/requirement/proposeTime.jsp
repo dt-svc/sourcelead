@@ -4,63 +4,39 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link rel="stylesheet" href="resources/css/jquery.timepicker.css">
-<link href="resources/css/jquery-ui.css" rel="stylesheet">
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery.timepicker.css">
+<link href="/resources/css/jquery-ui.css" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css" rel="stylesheet">
+<link href="/resources/css/timesheet.css" rel="stylesheet">
 </head>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
- <script src="resources/js/jquery.dataTables.min.js"></script>
+ <script src="/resources/js/jquery.dataTables.min.js"></script>
  
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<script src="resources/js/bootstrap.min.js"></script>  
-<script src="resources/js/chosen.jquery.min.js"></script>
-<script src="resources/js/jquery-ui.js"></script>
-<script src="resources/js/jquery-fun.js"></script>
-<script src="resources/js/jquery.timepicker.js"></script>
-<script src="resources/js/bootstrap-select.min.js"></script>
-<script src="resources/js/themeswitcher.js"></script>
-<script src="resources/js/moment.min.js"></script>
-<script src="resources/js/datetime-moment.js"></script>
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+<script src="/resources/js/bootstrap.min.js"></script>  
+<script src="/resources/js/chosen.jquery.min.js"></script>
+<script src="/resources/js/jquery-ui.js"></script>
+<script src="/resources/js/jquery-fun.js"></script>
+<script src="/resources/js/jquery.timepicker.js"></script>
+<script src="/resources/js/bootstrap-select.min.js"></script>
+<script src="/resources/js/themeswitcher.js"></script>
+<script src="/resources/js/moment.min.js"></script>
+<script src="/resources/js/datetime-moment.js"></script>
 
-
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-.tentative-user{
-	 background-color:#f0ad4e;
-	 border: 1px solid #f0ad4e;
-	 -webkit-box-shadow: 0 8px 6px -8px #505050;
-	-moz-box-shadow: 0 8px 6px -8px #505050;
-	box-shadow: 0 8px 6px -8px #505050;
-}
-.ui-timepicker-wrapper {
-width: 8%;
-}
-</style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
     <h1>Source Lead</h1>
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"></i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"></i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -201,7 +177,7 @@ width: 8%;
 			var result = "";
      		result = result +"	<div class='project_inn_mask'></div>";
      		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
-     		result = result +"		<p>Only can Add 5 Rows</p>";
+     		result = result +"		<p>Only you can add 5 Rows</p>";
      		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
      		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
      		result = result +"	</div>";
@@ -316,7 +292,8 @@ function cancel(){
  <script>
 function saveProposeTime(){
 	if ($('#proposeTime_form').validate(false, validationSettings)){ 
-		var sourceleadUrl = '${sourceleadUrl}';
+		var sourceleadUrl ='${sourceleadUrl}';
+		sourceleadUrl = sourceleadUrl.split("/app")[0];
 		var frm = $('#proposeTime_form').serializeFormJSON();
 		var con = JSON.stringify(frm);
 		con = con.replace(/[{}]/g, ""); 
@@ -392,7 +369,7 @@ window.onload = function() {
 	  }
 	};
 </script>
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js"></script>
   <!-- Footer Area -->
   <footer class="footer-publicpages clearfix">
   <div class="container">

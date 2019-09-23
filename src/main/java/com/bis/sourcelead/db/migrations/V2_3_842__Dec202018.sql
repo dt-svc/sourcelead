@@ -1,0 +1,1 @@
+CALL AlterTableAddColumn ('EXPENSES','BILLING_STATUS','VARCHAR(10) NULL AFTER `Total_Submitted_Amount`');

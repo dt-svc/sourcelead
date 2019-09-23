@@ -1,0 +1,5 @@
+INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_NAME`, `DESCRIPTION`, `SUBJECT`, `TEMPLATE_TYPE`, `SIGNATURE`, `BODY`,`IS_TEMPLATE_MODIFIED`,`CREATED_BY`, `ORG_CODE`,`LOCATION_CODE`) VALUES
+('Notification To Immigration Beneficiary', 'Notification', 'notificationToImmigrationBeneficiary', '[Immigration_Id] - [Petition_Type] Immigration process initiated', '[Immigration_Id] - [Petition_Type] Immigration process initiated', 'sourcelead', '', '[Immigration_Id] - [Petition_Type] Immigration process initiated','N','SLADMIN', 'slead', 'sleadIN');
+
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`, `EMAIL_SCENARIO_ID`, `DELIMITER_STR`) VALUES (null, 'immigrationId', null, (SELECT MAX( ID ) FROM `EMAIL_SCENARIO`) , '[Immigration_Id]');  
+INSERT INTO `CLASS_FIELD` (`ENTITY_TYPE_ID`, `FIELD_NAME`, `DELIM_STR`, `EMAIL_SCENARIO_ID`, `DELIMITER_STR`) VALUES (null, 'petitionType', null, (SELECT MAX( ID ) FROM `EMAIL_SCENARIO`) , '[Petition_Type]'); 

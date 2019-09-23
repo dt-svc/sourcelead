@@ -27,7 +27,8 @@ public class TimeZoneServiceImpl implements TimeZoneService {
 
 	@Override
 	public Timezone getTimezone(Long id) throws Exception {
-		return timeZoneDao.getTimezone(id);
+		Timezone timezone = timeZoneDao.getTimezone(id); 
+		return timezone;
 	}
 
 

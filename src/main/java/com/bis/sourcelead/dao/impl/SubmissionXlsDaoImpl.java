@@ -60,7 +60,7 @@ public class SubmissionXlsDaoImpl implements SubmissionXlsDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<SubmissionXls> submissionXls = new ArrayList<SubmissionXls>();
 		logger.debug("getSubmissionXlsByUUID  start");
-		submissionXls = session.createQuery("from SubmissionXls xls where xls.uuid = :uuid" ).setString( "uuid", UUID ).setCacheable(true).list();
+		submissionXls = session.createQuery("from SubmissionXls xls where xls.uuid = :uuid" ).setString( "uuid", UUID ).list();
 		logger.debug("getSubmissionXlsByUUID end");
 		if (submissionXls.size() > 0) {
 			return submissionXls.get(0);

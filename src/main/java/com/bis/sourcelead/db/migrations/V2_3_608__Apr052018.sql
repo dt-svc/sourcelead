@@ -1,0 +1,11 @@
+
+INSERT INTO `ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('568', 'Add New Blog', 'addBlog');
+
+INSERT INTO `ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('569', 'Add New Blog Category', 'addBlogCategory');
+
+INSERT INTO `ACTION_NAMES` (`ID`, `ACTION_NAME`, `METHOD_NAME`) VALUES ('570', 'Add New User Manual', 'storeUserManuals');
+
+SET SQL_SAFE_UPDATES=0;
+DELETE FROM `ACTION_NAMES` WHERE `ACTION_NAME`='Crowd Sourcing Candidates';
+SET SQL_SAFE_UPDATES=1;
+

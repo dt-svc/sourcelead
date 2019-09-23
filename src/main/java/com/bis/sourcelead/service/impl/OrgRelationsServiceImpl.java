@@ -2,6 +2,7 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -12,15 +13,23 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dto.ClientDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
+import com.bis.sourcelead.dto.OrgSpocDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.OrgBankDetails;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.VendorOnboarding;
+import com.bis.sourcelead.service.OrgBankDetailsService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.VendorOnboardService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class OrgRelationsServiceImpl implements OrgRelationsService {
@@ -39,6 +48,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	
 	@Autowired
 	private OrgSpocService orgSpocService;
+	
+	@Autowired
+	VendorOnboardService vendorOnboardService;
+	
+	@Autowired
+	OrgBankDetailsService orgBankDetailsService;
 
 	@Override
 	public OrgRelations addOrgRelations(OrgRelations orgRelations) throws Exception {
@@ -58,6 +73,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public List<OrgRelations> getAllClientsByOrgLocationId(Long orgLocationId) throws Exception {
 		List<OrgRelations> emplist= orgRelationsDao.getAllClientsByOrgLocationId(orgLocationId);
 		return emplist;
+	}
+	
+	@Override
+	public OrgRelations getClientsByOrgLocationIdAndName(Long orgLocationId, String name) throws Exception {
+		OrgRelations client= orgRelationsDao.getClientsByOrgLocationIdAndName(orgLocationId, name);
+		return client;
 	}
 
 	@Override
@@ -108,23 +129,66 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		orgRelations.setCreatedDate(commonUtil.currentDate());
 		orgRelations.setUpdatedDate(commonUtil.currentDate());
 		
+		if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
+			orgRelations.setPaymentTerm(clientDTO.getPaymentTerms());
+		}
+		
 		if(null != responderType  && !responderType.isEmpty()){
 			if("Client".equalsIgnoreCase(responderType)){
 				orgRelations.setInitiatorType("Vendor"); 
 				orgRelations.setResponderType("Client");
+				if(StringUtils.isNotBlank(clientDTO.getGenerateInvoice())){
+				orgRelations.setGenerateInvoice(clientDTO.getGenerateInvoice());
+				}
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
+				if(StringUtils.isNotBlank(clientDTO.getGenerateBill())){
+				orgRelations.setGenerateBill(clientDTO.getGenerateBill());
+				}
+				if (StringUtils.isNotBlank(clientDTO.getIsLawFirm()) && clientDTO.getIsLawFirm().equalsIgnoreCase("Y")) {
+						orgRelations.setIsLawFirm(Constants.YES);
+				} else {
+					orgRelations.setIsLawFirm(Constants.NO);
+				}
+				if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+						orgRelations.setIsAccountingFirm(Constants.YES);
+				} else {
+					orgRelations.setIsAccountingFirm(Constants.NO);
+				}
+				if(StringUtils.isNotBlank(clientDTO.getClientSaveFromType()) && "BulkVendorSaving".equalsIgnoreCase(clientDTO.getClientSaveFromType())){
+					orgRelations.setVendorRelationStatus("Sent");
+					orgRelations.setIsVendorDetailsFilled(Constants.YES);
+					orgRelations.setIsVendorDocumentsFilled(Constants.YES);
+					orgRelations.setIsVendorTasksFilled(Constants.YES);
+					}else{
+					orgRelations.setVendorRelationStatus("Draft");
+					orgRelations.setIsVendorDetailsFilled(Constants.YES);
+					orgRelations.setIsVendorDocumentsFilled(Constants.NO);
+					orgRelations.setIsVendorTasksFilled(Constants.NO);
+					}
+				
+				 if(clientDTO.getTemplateId() != null && clientDTO.getTemplateId().size() > 0){
+				    	StringBuilder templateIds = new StringBuilder();
+				    	for(String templateId : clientDTO.getTemplateId()){
+				    		templateIds.append(templateId.trim()).append(",");
+				    	}
+				    	String templateIdsStr = templateIds.toString();
+				    	
+				    	orgRelations.setVendorOnboardTemplateId(templateIdsStr.substring(0, templateIdsStr.length()-1)); 
+				    }else{
+				    	orgRelations.setVendorOnboardTemplateId(null);
+				    }
 			}
 		  }
 		if(StringUtils.isNotBlank(clientDTO.getLevel())){
-			//orgRelations.setLevel(jsonObj.getString("level"));
 			orgRelations.setInitiatorLevel(clientDTO.getLevel());
 			orgRelations.setResponderLevel("Tier-5");
 		}else{
 			orgRelations.setInitiatorLevel("Tier-5");
 			orgRelations.setResponderLevel("Tier-5");
 		}
+		orgRelations.setUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		orgRelationsList.add(orgRelations);
 		return orgRelationsList;
 	}
@@ -135,13 +199,38 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
+	public List<OrgRelationDTO> getAllVendorsDTOListByOrgLocationId(Long orgLocationId) {
+		List<OrgRelationDTO> orgRelationDTOList = new LinkedList<>();
+		try {
+			List<OrgRelations> vendorList = orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
+			if (vendorList != null && !vendorList.isEmpty()) {
+				for (OrgRelations orgRelations : vendorList) {
+					OrgRelationDTO orgRelationDTO = new OrgRelationDTO();
+					orgRelationDTO.setId(orgRelations.getId());
+					if (orgRelations.getResponderLocationId().getId().longValue() == orgLocationId) {
+						orgRelationDTO.setOrgName(orgRelations.getLocationId().getOrgLocationName());
+					}
+					if (orgRelations.getLocationId().getId().longValue() == orgLocationId) {
+						orgRelationDTO.setOrgName(orgRelations.getResponderLocationId().getOrgLocationName());
+					}
+					orgRelationDTO.setOrgLocationId(orgRelations.getLocationId().getId());
+					orgRelationDTOList.add(orgRelationDTO);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return orgRelationDTOList;
+	}
+
+	@Override
 	public OrgRelations getClientAndVendorOrgDeatilsById(Long orgLocationId, Long orgRelationId) {
 		
 		return orgRelationsDao.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
 	}
 	
 	@Override
-	public OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId) {
+	public OrgRelations getClientAndVendorOrgDeatilsByResponderLocationdIdAndOrgRelationId(Long orgLocationId, Long orgRelationId, Long loginOrgLocationId) throws Exception {
 		
 		OrgRelations orgRelation =  orgRelationsDao.getClientAndVendorOrgDeatilsById(orgLocationId,orgRelationId);
 		if(orgRelation != null){
@@ -149,7 +238,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			 if(orgRelation.getLocationId() != null && orgRelation.getLocationId().getId() != null && orgRelation.getLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getResponderLocationId() !=  null){
 						orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
-						orgRelation.setWebSite(orgRelation.getResponderLocationId().getOrg().getWebSite());
+						if(StringUtils.isNotBlank(orgRelation.getResponderLocationId().getWebsite())) {
+							orgRelation.setWebSite(orgRelation.getResponderLocationId().getWebsite());
+						}
+						
 						orgRelation.setCountry(orgRelation.getResponderLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getResponderLocationId().getCity());
 						orgRelation.setLocation(orgRelation.getResponderLocationId().getLocation());
@@ -158,9 +250,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setPhone(orgRelation.getResponderLocationId().getPhone());
 						orgRelation.setEmail(orgRelation.getResponderLocationId().getEmail());
 						orgRelation.setOrgType(orgRelation.getResponderLocationId().getOrg().getOrgType());
-						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
-						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));
-						orgRelation.setPaymentTerms((orgRelation.getResponderLocationId().getOrg().getPaymentTerm()));
+						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrgLocationAddress()));
+						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getBillingAddress()));
+						orgRelation.setPaymentTerms((orgRelation.getPaymentTerm()));
 					}
 					orgRelation.setLevel(orgRelation.getInitiatorLevel());
 			 }
@@ -173,7 +265,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			 if(orgRelation.getResponderLocationId() != null && orgRelation.getResponderLocationId().getId() != null && orgRelation.getResponderLocationId().getId().longValue()== loginOrgLocationId.longValue()){ 
 					if(orgRelation.getLocationId() != null){
 						orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
-						orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						if(StringUtils.isNotBlank(orgRelation.getLocationId().getOrg().getWebSite())) {
+							orgRelation.setWebSite(orgRelation.getLocationId().getOrg().getWebSite());
+						}
 						orgRelation.setCountry(orgRelation.getLocationId().getCountry());
 						orgRelation.setCity(orgRelation.getLocationId().getCity());
 						orgRelation.setState(orgRelation.getLocationId().getState());
@@ -182,12 +276,31 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 						orgRelation.setEmail(orgRelation.getLocationId().getEmail());
 						orgRelation.setZipCode(orgRelation.getLocationId().getZipCode());
 						orgRelation.setOrgType(orgRelation.getLocationId().getOrg().getOrgType());
-						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrg().getClientAddress()));
-						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getOrg().getClientBillingAddress()));
-						orgRelation.setPaymentTerms((orgRelation.getResponderLocationId().getOrg().getPaymentTerm()));
+						orgRelation.setAddress((orgRelation.getResponderLocationId().getOrgLocationAddress()));
+						orgRelation.setBillingAddress((orgRelation.getResponderLocationId().getBillingAddress()));
+						orgRelation.setPaymentTerms((orgRelation.getPaymentTerm()));
 					}
 					orgRelation.setLevel(orgRelation.getResponderLevel());
 			 } 
+			 
+			 
+			 VendorOnboarding onboarding = vendorOnboardService.getVendorOnboardingByOrgRelationId(orgRelationId);
+			 if(onboarding != null) {
+				 orgRelation.setIsVendorOnboardSubmitted(onboarding.getOnboardSubmitted());
+					 if(onboarding.getOnboardSubmitted().equalsIgnoreCase(Constants.YES)) {
+						 OrgBankDetails bankDetails = orgBankDetailsService.getOrgBankDetailsById(orgRelation.getBankDetailsId().getId());
+						 if(bankDetails != null) {
+							 orgRelation.setAccountName(bankDetails.getAccountName());
+							 orgRelation.setAccountNumber(bankDetails.getAccountNumber());
+							 orgRelation.setBankName(bankDetails.getBankName());
+							 orgRelation.setBranchNumber(bankDetails.getBranchNumber());
+							 orgRelation.setBankIdentifierCode(bankDetails.getBankIdentifierCode());
+							 orgRelation.setBankAddress(bankDetails.getBankAddress());
+							 orgRelation.setPoEmail(bankDetails.getPoEmail());
+							 orgRelation.setPaymentRemittanceEmail(bankDetails.getPaymentRemittanceEmail());
+						 }
+					 }
+				 }
 		}
 		return orgRelation;
 	}
@@ -302,10 +415,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				 }else{
 					 StringBuilder spocNameSB = new StringBuilder();
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 if(null != orgSpoc.getClientUser().getFirstName() && null != orgSpoc.getClientUser().getLastName()){
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString(); 
+					 if(null != orgSpoc.getVendorUser().getFirstName() && null != orgSpoc.getVendorUser().getLastName()){
+							spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString(); 
 						 }else{
-							spocNameSB.append(orgSpoc.getClientUser().getFirstName());
+							spocNameSB.append(orgSpoc.getVendorUser().getFirstName());
 						 }
 					 orgSpoc.setSpocName(spocNameSB.toString());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
@@ -354,14 +467,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		List<OrgSpoc> vandorsContactsList =  orgRelationsDao.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUserId,userIds,orgLocationId, relationType,status,vendorIds,invitationStatus, Long.valueOf(Constants.TAB_REQUIREMENT), vendorOrgLocationsIds);
 		if(vandorsContactsList != null && !vandorsContactsList.isEmpty()){
 		   for (OrgSpoc orgSpoc : vandorsContactsList) {
-			     StringBuilder spocNameSB = new StringBuilder();
-				 StringBuilder ownerNameSB = new StringBuilder();
 				 
 				 if("Vendor".equalsIgnoreCase(relationType)){
 					 orgSpoc.setSpocEmail(orgSpoc.getClientUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 orgSpoc.setSpocName(orgSpoc.getClientUser().getFullName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getClientUser().getMobilePhone());
-					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(orgSpoc.getVendorUser().getFullName());
 					
 					 orgSpoc.setTempOwnerId(orgSpoc.getVendorUser().getId());
 					 orgSpoc.setUserId(orgSpoc.getClientUser().getId());
@@ -370,9 +481,9 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 					 orgSpoc.setOrgName(orgSpoc.getClientLocationId().getOrgLocationName());
 				 }else{
 					 orgSpoc.setSpocEmail(orgSpoc.getVendorUser().getEmail());
-					 orgSpoc.setSpocName(spocNameSB.append(orgSpoc.getVendorUser().getFirstName()).append(" ").append(orgSpoc.getVendorUser().getLastName()).toString());
+					 orgSpoc.setSpocName(orgSpoc.getVendorUser().getFullName());
 					 orgSpoc.setSpocMobilePhone(orgSpoc.getVendorUser().getMobilePhone());
-					 orgSpoc.setOwnerName(ownerNameSB.append(orgSpoc.getClientUser().getFirstName()).append(" ").append(orgSpoc.getClientUser().getLastName()).toString());
+					 orgSpoc.setOwnerName(orgSpoc.getClientUser().getFullName());
 					 
 					 orgSpoc.setTempOwnerId(orgSpoc.getClientUser().getId());
 					 orgSpoc.setUserId(orgSpoc.getVendorUser().getId());
@@ -476,6 +587,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public List<OrgRelations> getClientOrVendorListByOrgLocationId(Long orgLocationId, String type) {
 		return orgRelationsDao.getClientOrVendorListByOrgLocationId(orgLocationId, type);
 	}
+	
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId, String type) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForImmigration(orgLocationId, type);
+	}
 
 	@Override
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception {
@@ -500,9 +616,54 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+	public OrgRelations getVendorOrgRelationByResponderLocationIdAndLocationId(Long locationId, Long responderLocationId)
 			throws Exception {
-		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
+		return orgRelationsDao.getVendorOrgRelationByResponderLocationIdAndLocationId(locationId, responderLocationId);
+	}
+
+	@Override
+	public OrgRelations getOrgRelationsByUUID(String UUID) throws Exception {
+		return orgRelationsDao.getOrgRelationsByUUID(UUID);
+	}
+
+	@Override
+	public ResponseList<OrgRelations> getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(OrgRelationDTO orgRelationDTO,
+			Long id, String status, String vendorsRelationId) throws Exception {
+		return orgRelationsDao.getAllVendorsFilterByOrgLocationIdAndOrgRelationDTO(orgRelationDTO, id, status, vendorsRelationId);
+	}
+
+	@Override
+	public ResponseList<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccessAndDTO(OrgSpocDTO orgSpocDTO,Long loginUserId, Long orgLocationId, String relationType, String vendorStatus, List<Long> vendorOrgLocationsIds)throws Exception {
+		List<Long> userIds = userRoleService.getAllUserIdsByReportingManagerId(loginUserId);
+		ResponseList<OrgSpoc> vandorContactList = orgRelationsDao.getAllVendorsContactFilterListByOrgLocationIdAndTabAccessDTO(orgSpocDTO,loginUserId, userIds, orgLocationId, relationType, vendorStatus, Long.valueOf(Constants.TAB_REQUIREMENT), vendorOrgLocationsIds);
+		return vandorContactList;
+	 
+	}
+
+	@Override
+	public OrgRelations getOrgRelationByResponderLocationIdAndLocationId(Long responderLocationId, Long locationId)
+			throws Exception {
+		return orgRelationsDao.getOrgRelationByResponderLocationIdAndLocationId(responderLocationId, locationId);
+	}
+
+	@Override
+	public List<OrgRelations> getAllVendorsByOrgLocationId(Long orgLocationId) {
+		return orgRelationsDao.getAllVendorsByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<OrgRelationDTO> getAllClientsListOrgLocationId(Long orgLocationId) throws Exception {
+		return orgRelationsDao.getAllClientsListOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<OrgRelationDTO> getAllVendorsListOrgLocationId(Long orgLocationId) throws Exception {
+		return orgRelationsDao.getAllVendorsListOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public int updatePaymentTermsInOrgrelations() {
+		return orgRelationsDao.updatePaymentTermsInOrgrelations();
 	}
 	
 }

@@ -19,8 +19,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 @Entity
-@Table(name = "INVITE_COMPANY", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="inviteCompany")
+@Table(name = "INVITE_COMPANY")
 public class InviteCompany implements Serializable{
 	
 private static final long serialVersionUID = 1L;
@@ -30,21 +29,21 @@ private static final long serialVersionUID = 1L;
     @Column(name = "ID", nullable = false)
     private Long id;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User userId;
     
-    @Column(name = "LOCATION")
+    @Column(name = "LOCATION", columnDefinition = "LONGTEXT default NULL")
    	private String location;
     
-    @Column(name = "COUNTRY")
+    @Column(name = "COUNTRY", columnDefinition = "LONGTEXT default NULL")
    	private String country;
     
-    @Column(name = "STATE")
+    @Column(name = "STATE", columnDefinition = "LONGTEXT default NULL")
    	private String state;
     
-    @Column(name = "CITY")
+    @Column(name = "CITY", columnDefinition = "LONGTEXT default NULL")
    	private String city;
     
     @Column(name = "COMPANY_NAME")

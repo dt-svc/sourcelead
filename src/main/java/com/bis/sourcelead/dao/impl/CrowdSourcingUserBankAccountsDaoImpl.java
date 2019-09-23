@@ -69,7 +69,7 @@ public class CrowdSourcingUserBankAccountsDaoImpl implements CrowdSourcingUserBa
 		List<CrowdSourcingUserBankAccounts> bankAccount = new ArrayList<CrowdSourcingUserBankAccounts>();
 		logger.debug("getUserBankAccountByUserId start");
 		bankAccount = session.createQuery("from CrowdSourcingUserBankAccounts account left join fetch account.accountUserId user  "
-				+ "where user.id = :userId" ).setLong("userId", userId).setCacheable(true).list();
+				+ "where user.id = :userId" ).setLong("userId", userId).list();
 		logger.debug("getUserBankAccountByUserId end");
 		if (bankAccount.size() > 0) {
 			return bankAccount.get(0);

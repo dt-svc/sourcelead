@@ -2,6 +2,7 @@ package com.bis.sourcelead.dto;
 
 import java.util.List;
 
+import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 
@@ -45,9 +46,12 @@ public class ClientDTO {
 	
 	private String address;
 	
+	@CleanHtml(escape=false)
 	private String billingAddress;
 	
-	private String PaymentTerm;
+	private String paymentTerms;
+	
+	private String type;
 	
 	@Required(desc = "email")
 	@Email
@@ -60,15 +64,23 @@ public class ClientDTO {
 	
 	private String phoneNumber;
 	
+	private String extensionNumber;
+	
 	private String spocStatus;
 	
 	private List<String> owner;
+	
+	private List<String> templateId;
 	
 	private String OwnerUserId;
 	
 	private String existingSpocUserId;
 	
 	private String isMailSent;
+	
+	private String invoiceOrBillSent;
+	
+	private String apOrArSent;
 	
 	private String userRoleText;
 	
@@ -98,6 +110,27 @@ public class ClientDTO {
 	
 	private CandidateDTO candidateDTO;
 	
+	private String isLawFirm;
+	
+	private String isAccountingFirm;
+	
+	private String generateBill;
+	
+	private String generateInvoice;
+	
+	public String getClientSaveFromType()
+	{
+		return clientSaveFromType;
+	}
+	public void setClientSaveFromType(String clientSaveFromType)
+	{
+		this.clientSaveFromType = clientSaveFromType;
+	}
+	private String UUID;
+	
+	private String clientSaveFromType;
+	
+	private List<CustomFormFieldDTO> customFormData;
 	
 	public String getOrgName() {
 		return orgName;
@@ -213,11 +246,14 @@ public class ClientDTO {
 	public void setBillingAddress(String billingAddress) {
 		this.billingAddress = billingAddress;
 	}
-	public String getPaymentTerm() {
-		return PaymentTerm;
+
+	public String getPaymentTerms()
+	{
+		return paymentTerms;
 	}
-	public void setPaymentTerm(String paymentTerm) {
-		PaymentTerm = paymentTerm;
+	public void setPaymentTerms(String paymentTerms)
+	{
+		this.paymentTerms = paymentTerms;
 	}
 	public String getEmail() {
 		return email;
@@ -242,6 +278,15 @@ public class ClientDTO {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public String getExtensionNumber()
+	{
+		return extensionNumber;
+	}
+	public void setExtensionNumber(String extensionNumber)
+	{
+		this.extensionNumber = extensionNumber;
 	}
 	public String getSpocStatus() {
 		return spocStatus;
@@ -358,5 +403,66 @@ public class ClientDTO {
 	public void setExistingSpocUserId(String existingSpocUserId) {
 		this.existingSpocUserId = existingSpocUserId;
 	}
+	public List<String> getTemplateId() {
+		return templateId;
+	}
+	public void setTemplateId(List<String> templateId) {
+		this.templateId = templateId;
+	}
+	public String getUUID() {
+		return UUID;
+	}
+	public void setUUID(String uUID) {
+		UUID = uUID;
+	}
+	public List<CustomFormFieldDTO> getCustomFormData() {
+		return customFormData;
+	}
+	public void setCustomFormData(List<CustomFormFieldDTO> customFormData) {
+		this.customFormData = customFormData;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getIsLawFirm() {
+		return isLawFirm;
+	}
+	public void setIsLawFirm(String isLawFirm) {
+		this.isLawFirm = isLawFirm;
+	}
+	public String getIsAccountingFirm() {
+		return isAccountingFirm;
+	}
+	public void setIsAccountingFirm(String isAccountingFirm) {
+		this.isAccountingFirm = isAccountingFirm;
+	}
+	public String getInvoiceOrBillSent() {
+		return invoiceOrBillSent;
+	}
+	public void setInvoiceOrBillSent(String invoiceOrBillSent) {
+		this.invoiceOrBillSent = invoiceOrBillSent;
+	}
+	public String getApOrArSent() {
+		return apOrArSent;
+	}
+	public void setApOrArSent(String apOrArSent) {
+		this.apOrArSent = apOrArSent;
+	}
+	public String getGenerateBill() {
+		return generateBill;
+	}
+	public void setGenerateBill(String generateBill) {
+		this.generateBill = generateBill;
+	}
+	public String getGenerateInvoice() {
+		return generateInvoice;
+	}
+	public void setGenerateInvoice(String generateInvoice) {
+		this.generateInvoice = generateInvoice;
+	}
+	
 	
 }

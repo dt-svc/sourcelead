@@ -28,7 +28,7 @@ $(document).ready(function(){
           <div class="col-md-12 clearfix">
             <ul>
               <li> <a href="javascript:void(0)" onClick="advancedsearch()"> <i class="glyphicon glyphicon-search"></i>&nbsp;&nbsp;Advanced Search </a> </li>
-              <li> <a href="<c:url value='/transactionsImports'/>"> <i class="fa fa-upload"></i>&nbsp;&nbsp;Import</a> </li>
+              <li> <a href="<c:url value='${appPath}/transactionsImports'/>"> <i class="fa fa-upload"></i>&nbsp;&nbsp;Import</a> </li>
               <!-- <li> <a href="paymenttype.html"><i class="glyphicon glyphicon-plus"></i>&nbsp;&nbsp;Payment Type</a> </li> -->
             </ul>
           </div>
@@ -150,7 +150,7 @@ $(document).ready(function(){
 		   	     	    
 		   	     	    
 			   	     	result = result+'<tr>';
-			   	        result = result +'<td><a href="<c:url value="/financialInstituteSummary?financialInstitute='+report.identity+'"/>" class="tbldata-dotdot-big">';
+			   	        result = result +'<td><a href="<c:url value="/app/financialInstituteSummary?financialInstitute='+report.identity+'"/>" class="tbldata-dotdot-big">';
 					   	result = result +'<div class="proj_show"> <span class="tbldata-dotdot-me">'+report.financialInstituteName+'</span> <i class="fa fa-binoculars"></i> </div>';
 					   	result = result +'</a></td>';
 					   	result = result +'<td><div class="tbldata-dotdot-vsm">'+report.debitAmount+'</div></td>';

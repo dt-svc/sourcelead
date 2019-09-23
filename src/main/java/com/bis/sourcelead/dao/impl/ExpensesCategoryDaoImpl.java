@@ -2,6 +2,7 @@ package com.bis.sourcelead.dao.impl;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
@@ -46,18 +47,25 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 				
 		Session session = this.sessionFactory.getCurrentSession();
 	    String query = "from ExpensesCategory ec where ec.orgLocationId.id = :orgLocationId  ORDER BY ec.id DESC";
-	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setCacheable(true).list();
+	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
         return documentsList;
 	}
 	
 	@Override
 	@Transactional
-	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status) {
+	public List<ExpensesCategory> getAllExpensesCategoryByLocationIdAndStatus(Long orgLocationId, String status,String isGlobalUser) {
 		
-				
 		Session session = this.sessionFactory.getCurrentSession();
-	    String query = "from ExpensesCategory ec where ec.orgLocationId.id = :orgLocationId and ec.status =:status ORDER BY ec.id DESC";
-	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("status", status).setCacheable(true).list();
+		
+		String globalUserQuery = "";
+		 if(StringUtils.isNotEmpty(isGlobalUser) && isGlobalUser.equalsIgnoreCase("Y")) {
+		    	globalUserQuery = " ec.orgLocationId.org.id IN (select ol.org.id from OrgLocations ol where ol.id = :orgLocationId)";
+		    }else {
+		    	globalUserQuery = " ec.orgLocationId.id = :orgLocationId";
+		    }
+		 
+	    String query = "from ExpensesCategory ec where "+globalUserQuery+" and ec.status =:status ORDER BY ec.id DESC";
+	    List<ExpensesCategory> documentsList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("status", status).list();
         return documentsList;
 	}
 
@@ -86,7 +94,7 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 	public ExpensesCategory getExpensesCategoryByExpensesCategoryIdAndOrgLocationId(Long expCategoryId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from ExpensesCategory expCat  where expCat.id = :expCategoryId";  
-		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("expCategoryId", expCategoryId).setCacheable(true).list();
+		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("expCategoryId", expCategoryId).list();
 		ExpensesCategory expensesCategory = null;
 		if(expensesCategoryList != null && !expensesCategoryList.isEmpty()){
 			expensesCategory = expensesCategoryList.iterator().next();
@@ -101,13 +109,27 @@ public class ExpensesCategoryDaoImpl implements ExpensesCategoryDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
 		String query ="from ExpensesCategory ec where ec.expensesName = :categoryName and ec.orgLocationId.id = :orgLocationId  ";
-		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("categoryName", categoryName).setCacheable(true).list();
+		List<ExpensesCategory> expensesCategoryList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("categoryName", categoryName).list();
 		if(expensesCategoryList !=null && expensesCategoryList.size() >0){
 			flag = true;
 			return flag;
 		}else{
 			return flag;
 		}
+	}
+
+
+	@Override
+	@Transactional
+	public String getExpenseAttachmentStatusByCategoryId(Long categoryId) {
+		String attachment = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query ="select ec.isAttachemtRequired from ExpensesCategory ec where ec.id = :categoryId";
+		List<String> expensesCategoryList = session.createQuery(query).setLong("categoryId", categoryId).list();
+		if(expensesCategoryList != null && !expensesCategoryList.isEmpty()) {
+			attachment = expensesCategoryList.get(0);
+		}
+		return attachment;
 	}
 	
 	

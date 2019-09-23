@@ -2,6 +2,8 @@ package com.bis.sourcelead.service;
 
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
@@ -19,6 +21,6 @@ public interface RecommendationsService {
 
     String getCandidateScore(Candidate candidate,Requirement requirement, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception;
     
-    List<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId,RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId, String candidatesSelected) throws Exception;
+    ResponseList<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId,RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId, String candidatesSelected, CandidateDTO candidateDTO) throws Exception;
     
 }

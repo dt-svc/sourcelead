@@ -38,7 +38,6 @@ function getVendorContactList(){
 	var sourceleadUrl ='${sourceleadUrl}';
 	var loginOrgLocId = '${loginOrgLocId}';
 	var responderType = "Vendor";
-	
 	var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -238,7 +237,7 @@ function getVendorContactList(){
 				    	  	"render": function(data, type, report, meta) {
 				    	  		 var result = "";
 				    	  		'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';
-						   	    result = result + '<td><div class="tblminwidth-50"><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\')"; title="Remove vendor contact"></i></div></td>';
+						   	    result = result + '<td><div class="tblminwidth-50"><i title="Remove vendor contact" class="glyphicon glyphicon-trash" onClick="terminateSpoc1('+report.id+'\,\''+report.orgRelationId+'\',\''+report.spocEmail+'\')"; title="Remove vendor contact"></i></div></td>';
 						   	 '</sec:authorize>';
 						   	 
 						   	'<sec:authorize access="!hasAnyRole(\'ROLE_DELETE_VENDOR_CONTACT\')">';

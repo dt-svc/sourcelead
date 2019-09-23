@@ -1,13 +1,28 @@
 package com.bis.sourcelead.dto;
 
+import java.math.BigInteger;
+
+import com.bis.sourcelead.annotations.Required;
+
 public class TeamDTO extends TeamMemberDTO{
 
+	@Required(desc="name")
 	private String name;
+	
+	@Required(desc="editOwnerUserId", dependsOn = "tabType", parentValue = "editTeamForm")
 	private String editOwnerUserId;
+	
+	@Required(desc="memberUserId", dependsOn = "tabType", parentValue = "teamForm")
 	private String memberUserId;
+	
+	@Required(desc="ownerUserId", dependsOn = "tabType", parentValue = "teamForm")
 	private String ownerUserId;
+	
 	private String teamId;
-	//private String teamMemberUserId;
+	
+	private String tabType;
+	
+	private BigInteger id;
 	
 	public String getName()
 	{
@@ -48,6 +63,20 @@ public class TeamDTO extends TeamMemberDTO{
 	public void setTeamId(String teamId)
 	{
 		this.teamId = teamId;
+	}
+	public String getTabType()
+	{
+		return tabType;
+	}
+	public void setTabType(String tabType)
+	{
+		this.tabType = tabType;
+	}
+	public BigInteger getId() {
+		return id;
+	}
+	public void setId(BigInteger id) {
+		this.id = id;
 	}
 	
 }

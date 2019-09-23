@@ -1,7 +1,6 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
@@ -12,8 +11,8 @@
 .timesheet_head .glyphicon-play {
 right: 15px;
 }
-.vendor_wrap .timesheet_head ul li b{
-color: #333;
+.repDataSearch .dt-buttons {
+	top: -116px !important;
 }
 </style>
 
@@ -22,17 +21,28 @@ color: #333;
 <script type="text/javascript">
 window.onload = function() { 
 	getRequirementList();
-	getRequirementStageCounts();
 	}
 </script>
 
 <script>
+$("#reqStagesReportsTableSearch").keydown(function(e) {
+	   if(e.which === 13) {
+		   getRequirementList();
+	   }
+	});
+
 function getRequirementList(){
-	    var status = "";
-	    var clients = "";
-		$.ajax({
+	var searchValue = $("#reqStagesReportsTableSearch").val();
+	searchValue = searchValue ? searchValue : "";
+	    var status = [];
+		$('input:checkbox[name=requirementStatus]:checked').each(function() 
+	    {
+			status.push($(this).val());
+	    });
+		$("#reqStagesLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+	    $.ajax({
 	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&clients="+clients,    
+	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&status="+status+"&searchValue="+searchValue,    
 	          success :function(data) {
 	        	 prepareReportDataDiv(data);
 	         },
@@ -57,29 +67,80 @@ function prepareReportDataDiv(data){
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
 	var json = JSON.parse(data);
+	var draftCount = 0;
+	var submittedCount = 0;
+	var rejectedCount = 0;
+	var openCount = 0;
+	var onHoldCount = 0;
+	var filledClosedCount = 0;
+	var cancelCount = 0;
+	var unfilledClosedCount = 0;
+	var closedCount = 0;
+	var newCount = 0;
     for (var i = 0; i < json.length; i++) {
     	var report= json[i];
+    	if(report.requirementSubmissionStatus=='DRAFT'){
+    		draftCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='SUBMITTED'){
+    		submittedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='REJECTED'){
+    		rejectedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='OPEN'){
+    		openCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='ONHOLD'){
+    		onHoldCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='FILLEDCLOSED'){
+    		filledClosedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='CANCEL'){
+    		cancelCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='UNFILLEDCLOSED'){
+    		unfilledClosedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='CLOSED'){
+    		closedCount++;
+    	}
+    	if(report.requirementSubmissionStatus=='NEW'){
+    		newCount++;
+    	}
     	result = result + '<tr>';
         result = result + '<td>';
-        result = result + '<div><span title="'+report.jobTitle+'">'+report.jobTitle+'</span></div> ';
+        result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.generatedId+" - "+report.jobTitle+'">'+report.generatedId+" - "+report.jobTitle+'</span></div> ';
         result = result + '</td>';
 
         result = result + '<td>';
         if(report.clientName != null && report.clientName != '' && report.clientName !='undefined'&& report.clientName != null && report.clientName != ''){
-       	result = result + '<div><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
+       	result = result + '<div class="tbldata-dotdot-sm"><span title="'+report.clientName+'">'+report.clientName+'</span></div>';
  		} else{
-		result = result + '<div><span>---</span></div>';
+		result = result + '<div class="tbldata-dotdot-sm"><span>---</span></div>';
 		    }
         result = result + '</td>';
         
-       	 result = result + '<td>';
-        if(report.country != null && report.country != '' && report.country !='undefined'&& report.country != null && report.country != ''){
-       	 result = result + "<div><span>"+report.country+"</span></div>";
+       	result = result + '<td>';
+        if(report.locationsList) {
+		    result = result + '	<div class="positionRelative">';
+		    for(var k=0; k<1; k++){
+	        	result = result + '	<p class="tbldata-dotdot-me pull-left">'+report.locationsList[k]+'</p>';
+	        }
+        	result = result +'		<div class="show_Empdetails showjoblist">';
+			result = result +'			<i class="fa fa-ellipsis-v"></i>';
+			result = result +'			<div class="emailvalues emailvaluesNew">';
+			for(var k=0; k<report.locationsList.length; k++){
+				result = result +'			<p><i class="fa fa-map-marker"></i>'+report.locationsList[k]+'</p>';
+			}
+		    result = result +'			</div>';
+		    result = result +'		</div>';
+		  	result = result +'	</div>'; 
+        } else {
+        	result = result + '<div>------</div>';
         }
-        else{
-		 result = result + "<div><span>---</span></div>";
-		    }
-         result = result + '</td>';
+        result = result + '</td>';
         
          result = result + '<td>';
         if(report.positions != null && report.positions != '' && report.positions !='undefined'&& report.positions != null && report.positions != ''){
@@ -113,8 +174,23 @@ function prepareReportDataDiv(data){
     }
 	result = result + '	</tbody>';
 	result = result + '</table>';
+	var countObj = {
+			"draftCount" : draftCount,
+			"submittedCount" : submittedCount,
+			"rejectedCount" : rejectedCount,
+			"openCount" : openCount,
+			"onHoldCount" : onHoldCount,
+			"filledClosedCount" : filledClosedCount,
+			"cancelCount" : cancelCount,
+			"unfilledClosedCount" : unfilledClosedCount,
+			"closedCount": closedCount,
+			"newCount" : newCount
+	}
+	getRequirementStageCounts(countObj);
 	  $("#requirementReportsDiv12").empty();
     $("#requirementReportsDiv12").append(result);
+    $("#reqStagesLoderDiv").empty();
+    $("#reqStagesLoderDiv").removeAttr('style');
     requirementReportPagination(SourceLeadWeb_loginOrg);
 }
 
@@ -150,25 +226,24 @@ function requirementReportPagination(SourceLeadWeb_loginOrg){
 </script>
 
 <script>
-function getRequirementStageCounts(){
-		$.ajax({
+function getRequirementStageCounts(countObj){
+		/* $.ajax({
 	         type : "POST",
 	          url: sourceleadUrl+"/getRequirementCountBasedOnStatus?"+tokenParamName+"="+tokenValue+"",    
 	          success :function(data) {
 	          
-	        	  var json = JSON.parse(data);
-		        	
-		        	var  newRequirementCount = json.newRequirementsCount;
-		        	var  draftRequirementCount = json.draftRequirementsCount;
-		        	var  submittedRequirementCount = json.submittedRequirementsCount;
-		        	var  openRequirementCount = json.openRequirementsCount; 
-		        	var  onHoldRequirementCount = json.onholdRequirementsCount;
-		        	var  cancelRequirementCount = json.cancelRequirementsCount;
+	        	  var json = JSON.parse(data);*/
+		        	var  newRequirementCount = countObj.newCount;
+		        	var  draftRequirementCount = countObj.draftCount;
+		        	var  submittedRequirementCount = countObj.submittedCount;
+		        	var  openRequirementCount = countObj.openCount; 
+		        	var  onHoldRequirementCount = countObj.onHoldCount;
+		        	var  cancelRequirementCount = countObj.cancelCount;
 // 		        	var  approvedRequirementCount = json.approvedRequirementsCount;
-		        	var  filledclosedRequirementsCount = json.filledclosedRequirementsCount;
-		        	var  unfilledclosedRequirementsCount = json.unfilledclosedRequirementsCount;
-		        	var  rejectedRequirementsCount = json.rejectedRequirementsCount;
-		        	
+		        	var  filledclosedRequirementsCount = countObj.filledClosedCount;
+		        	var  unfilledclosedRequirementsCount = countObj.unfilledClosedCount;
+		        	var  rejectedRequirementsCount = countObj.rejectedCount;
+		        	var  closedRequirementsCount = countObj.closedCount; 
 		        	
 		        	if(newRequirementCount>0){
 	                      $("#newRequirementCount").text(("("+newRequirementCount+")"));
@@ -214,33 +289,18 @@ function getRequirementStageCounts(){
 	                      $("#unfilledclosedRequirementsCount").text("("+unfilledclosedRequirementsCount+")");
 	                  }else{
 	                      $("#unfilledclosedRequirementsCount").html("(0)");
+	                  }if(closedRequirementsCount>0){
+	                      $("#closedRequirementsCount").text("("+closedRequirementsCount+")");
+	                  }else{
+	                      $("#closedRequirementsCount").html("(0)");
 	                  }
 	        	  
-		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount);
-	          },
+		        	getrequirementStagePieChat(newRequirementCount,draftRequirementCount,submittedRequirementCount,openRequirementCount,onHoldRequirementCount,cancelRequirementCount,filledclosedRequirementsCount,unfilledclosedRequirementsCount,rejectedRequirementsCount,closedRequirementsCount);
+	         /*  },
 	          
-	     }); 
+	     }); */ 
 }
 </script>
-
-<script>
-function getRequirementStageList(){
-		var status = [];
-		$('input:checkbox[name=requirementStatus]:checked').each(function() 
-	    {
-			status.push($(this).val());
-	    });
-		$.ajax({
-	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementListBasedOnStatus?"+tokenParamName+"="+tokenValue+"&status="+status,    
-	          success :function(data) {
-	        	  prepareReportDataDiv(data);
-	          },
-	          
-	     }); 
-}
-</script>
-
 
 <script>
 	$(function() {
@@ -278,85 +338,49 @@ function getRequirementStageList(){
 <section class="content-wraper">
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2 class="pull-left">Reports</h2>
-		<div class=" pull-left reportsH">
-			<a title="Reports"><i class="fa fa-pie-chart"></i>Jobs Stages</a>
-			<div class="RePop">
-				<ul>
-					<li><a href="<c:url value='/requirementListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Posted</a></li>
-					<li><a href="<c:url value='/requirementStagesListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Jobs Stages</a></li>
-<%-- 					<li><a href="<c:url value='/applicantsReceivedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Received</a></li> --%>
-<%-- 				    <li><a href="<c:url value='/applicantsListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants</a></li> --%>
-				    <li><a href="<c:url value='/applicantsSubmittedListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Applicants Submitted</a></li>
-<%-- 				    <li><a href="<c:url value='/requirementAssignToReports'/>"><span><i class="fa fa-briefcase"></i></span>Job Assign To</a></li> --%>
-				    <li><a href="<c:url value='/candidateListForReports'/>"><span><i class="fa fa-briefcase"></i></span>Added Candidates</a></li>
-				    <li><a href="<c:url value='/timeSheetReports'/>"><span><i class="fa fa-briefcase"></i></span>TimeSheet Reports</a></li>
-				</ul>
-			</div>
-		</div>
+      <h2 class="pull-left">Job(s) Stage</h2>
+		
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='/recruitersReports'/>">Reports</a>&nbsp;&raquo; Jobs Stages</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&nbsp;&raquo;&nbsp;<a href="<c:url value='${appPath}/reportsDashboard'/>">Reports Dashboard</a> &raquo; <a href="<c:url value='${appPath}/performanceReportList'/>">Performance Reports</a> &raquo; Job(s) Stage</div>
   </section>
-  <div class="timesheet_out">
+  
     <div class="vendor_wrap">
      
-      <div class="timesheet_head">
-
-<div class="pull-left reportBtns">
-	  <!-- <div class="reportBtn">
-		<select class="form-control select-bg" id="reportTypeId" onChange="flushCustomDates(); getDayWiseReports(); custDates();">
-		  <option value="">select</option>
-		  <option value="today">Today</option>
-		  <option value="yesterday">Yesterday</option>
-		  <option value="week">1 week</option>
-		  <option value="twoweeks">2 weeks</option>
-		  <option value="month">1 month</option>
-		  <option value="twomonths">2 months</option>
-		  <option value="custom">Custom</option> 
-		</select>
-	 </div>	 -->
-	 <!-- <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker"><i class="fa fa-calendar"></i></span>
-	 <span class="dashboard-datepkr"><input type="text" class="input-sm hasDatepicker" id="datepicker1"><i class="fa fa-calendar"></i></span>	 -->
-	 <span class="dashboard-datepkr cusShow">
-	 <input type="text" class="form-control" value="" id="ExportStartDate" name="StartDate" field-name="Start Date" data-validation="required" readonly="readonly" placeholder="Start Date"> <i class="fa fa-calendar"></i>
-	 <p id="reportStartDate" class="ReError"></p>
-	 </span>
-	<span class="dashboard-datepkr cusShow">
-	<input type="text"  class="form-control" value="" id="ExportEndDate" name="EndDate" field-name="End Date" data-validation="required" readonly="readonly" placeholder="End Date"><i class="fa fa-calendar"></i>
-	<p id="reportEndDate" class="ReError"></p>
-	</span>
-	<span class="cusShow"><input type="button" value="Submit" class="btn btn-primary repBtn" onclick="getCustomReports();" /></span>
+     
+     
+<div class="reportHead clearfix">
+	<div class="listGridWrap reqListBtn">
+		<a id="listView" class="btn btn-default rAct" title="Grid List"><i class="fa fa-list"></i></a>
+		<a id="gridView" class="btn btn-default" onclick="getRequirementStageCounts();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>	
+	</div>
 	
-		<span class="repoBtns">
-		<a href="javascript:void(0)" class="oneA actRE" title="Grid List"><i class="fa fa-list"></i></a>
-		<a href="javascript:void(0)" class="oneB" onclick="getRequirementStageCounts();" title="Pie chart"><i class="fa fa-pie-chart"></i></a>
-	</span>
-</div>
-                     
-        <ul style="padding: 0px 310px 0px 0px;" id="statusDiv" style="display: block">
-        <li>
-        	<b id="filter2ApprovePop"><i class="fa fa-filter paddingRight"></i>Status<span class="padFil"></span> <i class="glyphicon glyphicon-play" id="status-pop"></i></b>
-        	<div id="filter2ApprovedPop" class="approved_pop">
-		              <ul>
-                		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementStageList();">New</li>
-							<li><input type="checkbox" name="requirementStatus"  value ="DRAFT"  onclick="getRequirementStageList();">Draft</li>
-							<li><input type="checkbox" name="requirementStatus"  value ="SUBMITTED"  onclick="getRequirementStageList();">Submitted</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="OPEN"  onclick="getRequirementStageList();">Open</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="ONHOLD"  onclick="getRequirementStageList();">On Hold</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="CANCEL"  onclick="getRequirementStageList();">Cancel</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementStageList();">Filled Closed</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementStageList();">Unfilled Closed</li>
-               				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementStageList();">Rejected</li>
-		              </ul>
-		    </div>
-        </li>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
+    	<ul class="clearfix pull-right" id="statusDiv">
+	        <li class="">
+	        	<span id="filter2ApprovePop" class="filRep"><i class="fa fa-filter"></i></span>
+	        	<div id="filter2ApprovedPop" class="approved_pop">
+			              <ul>
+	                		    <li><input type="checkbox" name="requirementStatus"  value ="NEW"  onclick="getRequirementList();">New</li>
+								<li><input type="checkbox" name="requirementStatus"  value ="DRAFT"  onclick="getRequirementList();">Draft</li>
+								<li><input type="checkbox" name="requirementStatus"  value ="SUBMITTED"  onclick="getRequirementList();">Submitted</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="OPEN"  onclick="getRequirementList();">Open</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="ONHOLD"  onclick="getRequirementList();">On Hold</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="CANCEL"  onclick="getRequirementList();">Cancel</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="FILLEDCLOSED"  onclick="getRequirementList();">Filled Closed</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="UNFILLEDCLOSED"  onclick="getRequirementList();">Unfilled Closed</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="REJECTED"  onclick="getRequirementList();">Rejected</li>
+	               				<li><input type="checkbox" name="requirementStatus"  value ="CLOSED"  onclick="getRequirementList();">Closed</li>
+	               				
+			              </ul>
+			    </div>
+	        </li>    	
+    		<li class="dataTabPdf">&nbsp;</li> 
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='reqStagesReportsTableSearch'/><span class="repSearchIcon" onClick="getRequirementList();"></span></li>
+    	</ul>
+    </div>      
   
  <div class="repTab1">  
       
-	<div class="reportsCount reportsCountNew">
+	<div class="reportsCount reportsCountNew reportsCount_New">
 		<ul>
 			<li title="NEW">
 				<span><i class="fa fa-pencil"></i></span><b id="newRequirementCount"></b>
@@ -385,12 +409,16 @@ function getRequirementStageList(){
 			<li title="REJECTED">
 				<span><i class="fa fa-ban"></i></span><b id="rejectedRequirementsCount"></b>
 			</li>
+			<li title="CLOSED" class="colorTwo">
+				<span><i class="fa fa-window-close"></i></span><b id="closedRequirementsCount"></b>
+			</li>
 					<div class="clearfix"></div>
 		</ul>
 	</div>
 
-  <div class="project_tabs_inn_table vendor_wrap_inn_table">
-                 <div id="requirementReportsDiv12" class="repoPositi"></div>
+  <div class="project_tabs_inn_table"> 
+  <div id="reqStagesLoderDiv"></div>
+                 <div id="requirementReportsDiv12" class="repDataSearch"></div>
                 </div>      
 </div>
 
@@ -401,7 +429,6 @@ function getRequirementStageList(){
  </div>
 
 
-  </div>
 </section>
 
 
@@ -505,7 +532,7 @@ $(".addUser-org").click(function(){
    $("#endDate").click(function(){
 	   $(".endDate").toggle(200);
    });
-   event.preventDefault();
+ //  event.preventDefault(); commnted for the script issue in console.
 });
 
 $(".addSkills").click(function(){
@@ -611,27 +638,7 @@ $(".reminder").click(function(){
 		$.datepicker._clearDate('#ExportEndDate');
 	}
 	</script>
-<script>
-function getDayWiseReports(){
-	$('#reportStartDate').empty();
-	$('#reportEndDate').empty(); 
-	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
-	if(reportType!="custom"){
-	$.ajax({
-         type : "POST",
-         url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,     
-          success :function(data) {
-        	 prepareReportDataDiv(data);
-         },
-          
-     });  
-	}
-	
-}
 
-</script>
 <script>
 function custDates(){
 	var reportType = $("#reportTypeId").val();
@@ -644,30 +651,6 @@ function custDates(){
 }
 </script>
 
-<script>
-function getCustomReports(){
-	var reportType = $("#reportTypeId").val();
-	var startDate = $("#ExportStartDate").val();
-	var endDate = $("#ExportEndDate").val();
-	if(startDate == null || startDate == '' || startDate == 'undefined'){
-		$("#reportStartDate").empty().append("Start Date is Required") ; 
-	}
-	if(endDate == null || endDate == '' || endDate == 'undefined'){
-		$("#reportEndDate").empty().append("End Date is Required") ; 
-	}
-	else{
-		$.ajax({
-	         type : "POST",
-	          url: sourceleadUrl+"/getRequirementReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate,    
-	          success :function(data) {
-	        	 prepareReportDataDiv(data);
-	         },
-	          
-	     }); 
-	}
-	 
-}
-</script>
 <script type="text/javascript"> 
 	function addValidClass(){
 		 var StartDate = document.getElementById("ExportStartDate").value;
@@ -683,30 +666,32 @@ function getCustomReports(){
 </script>
 <script>
 // Reports Active
-	$(".oneB").click(function(){
-		$(".oneA").removeClass("actRE");
-		$(".oneB").addClass("actRE");
+	$("#gridView").click(function(){
+		$("#listView").removeClass("rAct");
+		$("#gridView").addClass("rAct");
 		$(".repTab1").hide();
 		$(".repTab2").show();
 		$("#statusDiv").css("display", "none");
 	});
-	$(".oneA").click(function(){
-		$(".oneB").removeClass("actRE");
-		$(".oneA").addClass("actRE");
+	$("#listView").click(function(){
+		$("#gridView").removeClass("rAct");
+		$("#listView").addClass("rAct");
 		$(".repTab2").hide();
 		$(".repTab1").show();
 		$("#statusDiv").css("display", "block");
 	});		
 	</script>
 	
-<script src="resources/reports/amcharts.js"></script>
+	
+	
+<!-- <script src="resources/reports/amcharts.js"></script>
 <script src="resources/reports/piechart.js"></script>
 <script src="resources/reports/export.min.js"></script>
 <link rel="stylesheet" href="resources/reports/export.css" type="text/css" media="all" /> 
-<script src="resources/reports/light.js"></script> 
+<script src="resources/reports/light.js"></script>  -->
 
 <script>
-function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount){
+function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount,onHoldCount,cancelCount,filledclosedCount,unfilledclosedCount,rejectedCount,closedCount){
 	var chart = AmCharts.makeChart( "chartdiva", {
 		  "type": "pie",
 		  "theme": "light",
@@ -755,6 +740,11 @@ function getrequirementStagePieChat(newCount,draftCount,submittedCount,openCount
 			  "value": rejectedCount,
 			  "color":"#da3838",
 			  "black":"#000"
+		  },{
+			  "Stage": "Closed ("+closedCount+")",
+			  "value": closedCount,
+			  "color":"#C62828",
+			  "black":"#000"
 		  } ],
 		  "valueField": "value",
 		  "titleField": "Stage",
@@ -785,3 +775,4 @@ $("#filter2ApprovedPop, #filter2ApprovePop").click(function(e) {
     e.stopPropagation();
 });	
 </script>  	
+<jsp:include page="../masterFooter.jsp" />

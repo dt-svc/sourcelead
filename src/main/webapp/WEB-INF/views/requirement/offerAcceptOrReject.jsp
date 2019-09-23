@@ -13,16 +13,16 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Account List</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
  <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
 </head>
@@ -38,26 +38,12 @@
 			}
 		});
 </script>
-
-<style>
-body {
-background-color:#e1e6fa;
-}
-.project_wrap_table table {
-	border: 1px solid #fff;
-	border-bottom: 1px solid #909090;
-	margin-bottom: 10px;
-}
-.project_wrap_table table tr td:last-child {
-width: auto;
-}
-</style>
 <body>
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -138,7 +124,7 @@ width: auto;
 			
 			$.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/acceptOrRejectOffer?${_csrf.parameterName}=${_csrf.token}&offerStatus="+offerStatus+"&offerId="+offerId+"&rejectedReason="+rejectedReason,
+						url : sourceleadUrl+"/ws/acceptOrRejectOffer?${_csrf.parameterName}=${_csrf.token}&offerStatus="+offerStatus+"&offerId="+offerId+"&rejectedReason="+rejectedReason,
 						success : function(data) {
 							if("success"){
 								$('#rejectIdDiv').empty();

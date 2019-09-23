@@ -51,7 +51,7 @@
           	    								value: client.responderLocationId.id,
           	    								label: client.clientName,
           	    								 desc: "the official user interface library for jQuery",
-          	    								 img : "resources/images/at.png", 
+          	    								 img : "/resources/images/at.png", 
           	    		 			    } 
           	    						clients.push(temp);
           	    					}
@@ -116,7 +116,7 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<script src="resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/csc.js" type="text/javascript" charset="utf-8"></script>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
@@ -124,9 +124,9 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
 
-<link href="resources/css/jquery-tagit.css" rel="stylesheet">
-<script src="resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-<script src="resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
+<link href="/resources/css/jquery-tagit.css" rel="stylesheet">
+<script src="/resources/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+<script src="/resources/js/tag-it.min.js" type="text/javascript" charset="utf-8"></script>
 
 
 

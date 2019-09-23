@@ -1,0 +1,2 @@
+CALL AlterTableAddColumn ('ASSET','MAC_ADDRESS','VARCHAR(50) NULL AFTER `MEMRORY`');
+

@@ -17,7 +17,7 @@
 <script>
 function getAllInvoice(){  
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllInvoice?"+tokenParamName+"="+tokenValue+"",    
@@ -98,7 +98,7 @@ function getAllInvoice(){
 <script>
 function getAllCustomers(){  
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllCustomers?"+tokenParamName+"="+tokenValue+"",    
@@ -171,7 +171,7 @@ function customerInvoice(){
 <script>
 function getAllVendors(){  
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllvendors?"+tokenParamName+"="+tokenValue+"",    
@@ -239,7 +239,7 @@ function getAllVendors(){
 <script>
 function getAllEmployees(){  
 	  $("#requirementList").empty();
-	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	  $("#requirementList").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	  $.ajax({
            type : "POST",
            url: sourceleadUrl+"/getAllEmoloyees?"+tokenParamName+"="+tokenValue+"",    
@@ -437,7 +437,7 @@ function check(){
     <div class="pull-left">
       <h2>QuickBooks</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; QuickBooks List</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; QuickBooks List</div>
   </section>
   <form id="abc_form" name="abc_form"  enctype='multipart/form-data' method="post">
   <div class="timesheet_out">

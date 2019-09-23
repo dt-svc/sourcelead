@@ -4,19 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.center-div{
-width:300px;
-height:30px;
-margin:10px 220px 0;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
-  
   
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -27,7 +14,7 @@ margin:10px 220px 0;
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
       <%-- <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Client & Contact Import </div> --%>
-    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
+    <div class="pull-right brud-crum"><a href="#">Home</a> &raquo; <a href="${appPath}/clientDashboard">Client & Contact List</a> &raquo; Import Client & Contacts </div>
     </section>
     <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -38,21 +25,10 @@ margin:10px 220px 0;
           <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 		  <!-- Download File button -->
 		  <div class="clearfix mb row">
-		 <%--  <sec:authorize access="hasAnyRole('ROLE_CLIENT_BULK_IMPORTS')"> --%>
-		<%-- 	<div class="col-xs-12 col-md-6 hidden">
-			 <a href="<c:url value='/downloadClientTemplate?name=client'/>">
-			 <button class="btn btn-success btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
-			</button>
-			</a>
-			</div> --%>
-			<%-- </sec:authorize> --%>
-			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
+
 			<div class="col-xs-8 col-md-8">
-			 <a href="<c:url value='/downloadClientTemplate?name=Contact'/>">
-			 <button class="btn btn-success btn-block" type="button">
+			 <a href="<c:url value='${appPath}/downloadClientTemplate?name=Contact'/>" class="btn btn-success btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
-			</button>
 			</a>
 			</div>
 			<div class="col-xs-4 col-md-4">
@@ -61,7 +37,7 @@ margin:10px 220px 0;
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadClientForm'/>'">
 				</div>
 			  </div>
 			</div>
@@ -71,16 +47,9 @@ margin:10px 220px 0;
 			
 			<div class="dropzone">
 			  <div class="clearfix">
-			<%--   <div class="btn-group pull-right hidden">
-			  <button class="btn btn-sm btn-primary" id="upload_button1" type="submit" onclick = "saveBulkImport(); check();uploadSave();checkFile()">
-				<i aria-hidden="true" class="fa fa-upload"></i>&nbsp;&nbsp;&nbsp;Import
-			  </button>
-			  <button class="btn btn-sm btn-danger" type="reset" onClick="javascript:window.location.href = '<c:url value='/clientDashboard'/>'">
-				<i aria-hidden="true" class="fa fa-times"></i>&nbsp;&nbsp;&nbsp;Cancel
-			  </button>
-			  </div> --%>
+		
 			  </div>
-			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
+			<div class="file-upload clearfix text-center" id="fileDiv">
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>
@@ -94,10 +63,7 @@ margin:10px 220px 0;
         	
         	
 			</div>
-			<!-- <p class="text-danger text-center mt hidden">Please Select the file &hellip;</p> -->
-			<%-- <p class="text-danger text-center mt" id="fileExist"><form:errors path="file" /></p> --%>
-			<%-- <p class="text-danger text-center mt" id="success">${msg}</p> 
-			<div><span class="text-danger"><strong>${fileNameWrong}</strong></span></div> --%>
+		
 		   	 
 		   	 <!--  Downloaded File show here -->
 		   	   <div class="col-xs-3 alert alert-success fade in hidden" style="position:absolute; top:10px;" id="fileAttached">
@@ -122,8 +88,8 @@ margin:10px 220px 0;
 			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox hidden">
-				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
+            <div class="panel-body checkBox">
+				  <label><input type="checkbox" id="sendEmailsCheck" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -142,7 +108,7 @@ margin:10px 220px 0;
             </div>
 		  </div>
         </div>
-        <div class="require_wrap_table filter-position mt25">
+        <div class="require_wrap_table filter-position mt25 datatable_filter">
         
         	<div id="excelimportData"></div>
         	
@@ -181,17 +147,7 @@ margin:10px 220px 0;
 	<p><i class="fa fa-info-circle"></i>The user will be created in the selected client</p>	
   </section> 
   
-  
- <script>
-/* $(document).ready(function(){
-	document.getElementById("uploadFile").value = '';
-	var errormsg = '${errorMessage}';
-	$("#fileAttached").hide();
-	if(errormsg){
-		$("#errorFileDiv").show();
-	}
-}); */
-</script>
+
 
 
 
@@ -208,12 +164,19 @@ if ($('#upload_form').validate(false, validationSettings)){
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
 	
+	var isMailCheck = $('#sendEmailsCheck');
+    if (isMailCheck.is(':checked')) {
+          isMailCheck = "Y";
+    }else{
+          isMailCheck = "N";
+    }
+	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
 	var form = $('#upload_form')[0];
 	var formData = new FormData(form); 
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -222,42 +185,41 @@ if ($('#upload_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client", 	   
- 		    success : function(data) {
- 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 		    	if(data == "empty"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Mandatory fields are required");
- 		    		msgFadein();
- 		    	}else if(data == "invalid"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Please import valid Template");
- 		    		msgFadein();
- 		    	}else if(data == "success"){
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Inserted successfully");
- 		    		msgFadein();
- 		    	}else{
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Processed successfully");
- 		    		msgFadein();
- 		    		prepareExcelDataDiv(data);
- 		    	}
- 		    },
- 		   error: function(e){
- 			  alert(e);
-	        }
-	 });
-	 
-}
+		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Client&isMailCheck="+isMailCheck, 	   
+ 		    success : function(json) {
+ 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+ 		    	
+ 		    	var statusCode = "";
+ 				if(json != null){
+ 					statusCode = json.statusCode;
+ 				}
+ 				if(json != null && json != ''){
+ 					if(statusCode == "success"){
+ 						$("#selector").removeClass("remove_pop");
+ 				 		$("#selector").addClass("success_pop");
+ 				 		$("#selector").removeAttr("style");
+ 						$("#selector").css({ display: "block" });
+ 				 		$("#msgDiv").html("Processed successfully");
+ 				 		msgFadein();
+ 				 		prepareExcelDataDiv(json);
+ 					}else if(statusCode == "invalid"){
+ 						$("#selector").removeAttr("style");
+ 						$("#selector").css({ display: "block" });
+ 						$("#msgDiv").html("Please fill mandatory fields");
+ 						msgFadein();
+ 					}
+ 				}else if(statusCode == ""){
+ 					$("#selector").removeAttr("style");
+ 					$("#selector").css({ display: "block" });
+ 					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
+ 					msgFadein();
+ 				}
+		 		    },
+		 		   error: function(e){
+			        }
+			 });
+			 
+		}
 }
 </script>
 
@@ -269,7 +231,7 @@ if ($('#upload_form').validate(false, validationSettings)){
 </script>  
 
 <script>
-function prepareExcelDataDiv(data){
+function prepareExcelDataDiv(json){
 	var result = '';
 	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -286,9 +248,9 @@ function prepareExcelDataDiv(data){
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
-	var json = JSON.parse(data);
-    for (var i = 0; i < json.length; i++) {
-    	var report= json[i];
+// 	var json = JSON.parse(data);
+    for (var i = 0; i < json.data.length; i++) {
+    	var report= json.data[i];
     	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
         if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'){
@@ -350,8 +312,8 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-        if(report.reason != null && report.reason != '' && report.reason !='undefined'){
-       		 result = result + "<div><a class='text-danger' title='"+report.reason+"'>"+report.reason+"</a></div>";
+        if(report.fileReason != null && report.fileReason != '' && report.fileReason !='undefined'){
+       		 result = result + "<div><a class='text-danger' title='"+report.fileReason+"'>"+report.fileReason+"</a></div>";
         }
         else{
 		    	result = result + "<div><span>---</span></div>";
@@ -360,7 +322,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Client name is mandatory' || report.reason ==  'Client name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number' || report.reason ==  'First Name is mandatory' || report.reason ==  'Email is Mandatory'){
+         if(report.fileReason == 'Spoc existed' || report.fileReason == 'Current org user' || report.fileReason ==  'Client name is mandatory' || report.fileReason ==  'Client name should contain above 2 char' || report.fileReason ==  'Invalid email' || report.fileReason ==  'Invalid moblie number' || report.fileReason ==  'First Name is mandatory' || report.fileReason ==  'Email is Mandatory'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
@@ -505,8 +467,8 @@ function mergeclose(){
 function excelimportDataPagination(){
 	$('#excelimportDataTable').DataTable({ 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -525,98 +487,7 @@ document.getElementById("uploadBtn").onchange = function () {
 }
 </script>
 
-<!-- <script>
-function check(){
-	var errormsg = '${errorMessage}';
-		$("#errorFileDiv").hide();
-		$("#fileExist").empty();
-		$("#success").empty();
-		$('#fileDiv').find('p.jquery_form_error_message').remove();
-}
 
-</script>
-
-<script>
-function errorMsgAppend(){
-	var errormsg = '${errorMessage}';
-	if(errormsg){
-	    $("#errorFileDiv").hide();
-	 	$("#fileExist").empty();
-		$("#success").empty();
-	}
-	
-}
-
-</script>
-
-<script type="text/javascript">
-function uploadSave() {
-	$('#upload_form').submit(function() {
-          if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-            	return true;  
-          }
-          else{
-        	  return false;	
-          }
-          	
-          })
-}
-	$('body').on('blur', '#upload_form', function() {
-		$("#upload_form").showHelpOnFocus();
-		$("#upload_form").validateOnBlur(false, validationSettings);
-		
-	});
-</script>
-
-<script type="text/javascript">
-        var validationSettings = {
-            errorMessagePosition : 'element',
-            borderColorOnError : '',
-			scrollToTopOnError : true,
-			dateFormat : 'yyyy/mm/dd' 
-            };
-</script> 
-
-
-<script language="javascript" type="text/javascript">
- function checkFile()
-    {
-     var fsize = $('#uploadBtn')[0].files[0].size;
-     $('#clientNameDiv').find('p.jquery_form_error_message').remove();
-     var res_field = document.upload_form.elements["uploadFile"].value;   
-     var extension = res_field.substr(res_field.lastIndexOf('.') + 1).toLowerCase();
-     var allowedExtensions = ['xls', 'xlsx'];
-     if (res_field.length > 0)
-        {
-             if (allowedExtensions.indexOf(extension) === -1) 
-                {
-                  //alert('Invalid file Format. Only ' + allowedExtensions.join(', ') + ' are allowed.');
-                   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               	   document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               	   document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"Invalid file Format. Only " + allowedExtensions.join(', ') + " are allowed.");
-                    return false;
-                  return false;
-                }
-                	if (fsize < 4000 || fsize > 5120000)
-                    {
-                   	   $("input#uploadBtn").after("<p class='jquery_form_error_message'>");
-               			document.getElementById("uploadBtn").setAttribute('record-exist', 'yes');
-               			document.getElementById("uploadBtn").setAttribute('record-exist-errorMsg',"File size should between above 50kb & below 500 KB");
-                        return false;
-                    }  
-                
-       }
-		$('input#uploadBtn').removeAttr("class record-exist record-exist-errormsg");
-		$('input#uploadBtn').attr('class','valid form-control');
-		$('#clientNameDiv').find('p.jquery_form_error_message').remove();
-		$("#upload_form").click(function() {
-			if ($(this).validate(false, validationSettings)) {
-			}
-		});
-	   
-    }
-</script>  -->
 
   <!-- Footer Area -->
   <jsp:include page="../masterFooter.jsp" />

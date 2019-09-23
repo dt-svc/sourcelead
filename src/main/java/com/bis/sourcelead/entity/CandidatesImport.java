@@ -60,6 +60,16 @@ private String primarySkill;
 
 private String reason;
 
+private String vendor;
+
+private String vendorContact;
+
+private String panNumber;
+
+private String aadharNumber;
+
+private String ssnNumber;
+
 public String getFirstName() {
 	return firstName;
 }
@@ -256,6 +266,45 @@ public void setReason(String reason) {
 	this.reason = reason;
 }
 
+public String getVendor() {
+	return vendor;
+}
+
+public void setVendor(String vendor) {
+	this.vendor = vendor;
+}
+
+public String getVendorContact() {
+	return vendorContact;
+}
+
+public void setVendorContact(String vendorContact) {
+	this.vendorContact = vendorContact;
+}
+
+public String getPanNumber() {
+	return panNumber;
+}
+
+public void setPanNumber(String panNumber) {
+	this.panNumber = panNumber;
+}
+
+public String getAadharNumber() {
+	return aadharNumber;
+}
+
+public void setAadharNumber(String aadharNumber) {
+	this.aadharNumber = aadharNumber;
+}
+
+public String getSsnNumber() {
+	return ssnNumber;
+}
+
+public void setSsnNumber(String ssnNumber) {
+	this.ssnNumber = ssnNumber;
+}
 
 
 }

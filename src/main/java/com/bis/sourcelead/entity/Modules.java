@@ -23,8 +23,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.bis.sourcelead.enums.Status;
 
 @Entity
-@Table(name = "MODULES", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="modules")
+@Table(name = "MODULES")
 public class Modules implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -39,12 +38,12 @@ public class Modules implements Serializable{
 	@Column(name = "MODULE_NAME")
 	private String moduleName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORG_ID", nullable = false)
 	private Org org;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PARENT_MODULE_ID")
 	private Modules parentModule;

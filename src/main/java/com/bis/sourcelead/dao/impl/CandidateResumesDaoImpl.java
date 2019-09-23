@@ -1,11 +1,14 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateResumesDao;
+import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 
@@ -97,7 +102,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		logger.debug("In get Resumes list by candidateid and status method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId where candidateResumes.candidateId =:candidateId and candidateResumes.status = :status ORDER BY candidateResumes.id DESC";  
-		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
+		List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).list();
 		return candidateResumesList;
 		
 	}
@@ -109,7 +114,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		logger.debug("In get Resumes list by candidateid and status method");
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from CandidateResumes candidateResumes where candidateResumes.id IN (:submissionResumeIds)";  
-		List<CandidateResumes> candidateResumesList = session.createQuery(query).setParameterList("submissionResumeIds", submissionResumeIds).setCacheable(true).list();
+		List<CandidateResumes> candidateResumesList = session.createQuery(query).setParameterList("submissionResumeIds", submissionResumeIds).list();
 		return candidateResumesList;
 	}
 
@@ -165,8 +170,9 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 	public CandidateResumes getCandidateResumeByResumeId(Long resumeId) throws Exception {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateResumes candidateResumes where candidateResumes.id = :resumeId" ;
-		List<CandidateResumes> candidateResumesList =session.createQuery(query).setLong("resumeId", resumeId).setCacheable(true).list(); 
+
+		String query = " from CandidateResumes candidateResumes   where candidateResumes.id = :resumeId" ;
+		List<CandidateResumes> candidateResumesList =session.createQuery(query).setLong("resumeId", resumeId).list(); 
 		CandidateResumes candidateResumes = null;
 		if(candidateResumesList != null && !candidateResumesList.isEmpty()){
 			candidateResumes = candidateResumesList.iterator().next();
@@ -182,7 +188,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		public CandidateResumes getCandidateLatesResumes(Long candidateId, int status) throws Exception {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.orgLocationId  left join fetch candidateResumes.candidateId  where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId) and candidateResumes.status = :status";  
-			List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).setCacheable(true).list();
+			List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).list();
 			CandidateResumes candidateResumes = null;
 			if(candidateResumesList != null && !candidateResumesList.isEmpty()){
 				candidateResumes = candidateResumesList.iterator().next();
@@ -197,7 +203,7 @@ public CandidateResumes getCandidateResumeByResumeUUID(String resumeUUID) throws
 	logger.debug("In Candidate Resume By ResumeId");
 	Session session = this.sessionFactory.getCurrentSession();
 	String query = " from CandidateResumes candidateResumes where candidateResumes.resumeUUID = :resumeUUID" ;
-	List<CandidateResumes> candidateResumesList = session.createQuery(query).setString("resumeUUID", resumeUUID).setCacheable(true).list(); 
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setString("resumeUUID", resumeUUID).list(); 
 	CandidateResumes candidateResumes = null;
 	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
 		candidateResumes = candidateResumesList.iterator().next();
@@ -213,7 +219,7 @@ public Integer getCandidateResumeCountByResumeId(Long candidateId) throws Except
 	Integer count= 0;
 	Session session = this.sessionFactory.getCurrentSession();
 	String query = " from CandidateResumes candidateResumes where candidateId.id = :candidateId and status = '1' " ;
-	List<Long> candidateResumesCount =session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list(); 
+	List<Long> candidateResumesCount =session.createQuery(query).setLong("candidateId", candidateId).list(); 
 	if(candidateResumesCount != null){
 	count = candidateResumesCount.size();
 	}
@@ -228,7 +234,7 @@ public Integer getCandidateResumeCountByCandidateId(Long candidateId) throws Exc
 	Integer count= 0;
 	Session session = this.sessionFactory.getCurrentSession();
 	String query = " from CandidateResumes candidateResumes where candidateId.id = :candidateId and status = '1' " ;
-	List<Long> candidateResumesCount =session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list(); 
+	List<Long> candidateResumesCount =session.createQuery(query).setLong("candidateId", candidateId).list(); 
 	if(candidateResumesCount != null){
 	count = candidateResumesCount.size();
 	}
@@ -241,7 +247,7 @@ public Integer getCandidateResumeCountByCandidateId(Long candidateId) throws Exc
 public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
 	Session session = this.sessionFactory.getCurrentSession();
 	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.orgLocationId  left join fetch candidateResumes.candidateId  where candidateResumes.createdDate IN (SELECT max(canresume.createdDate) FROM CandidateResumes canresume where canresume.candidateId.id =:candidateId)";  
-	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).list();
 	CandidateResumes candidateResumes = null;
 	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
 		candidateResumes = candidateResumesList.iterator().next();
@@ -255,13 +261,99 @@ public CandidateResumes getCandidateResumesListByCandidateId(Long candidateId) {
 public CandidateResumes getCandidateResumeByCandidateId(Long candidateId) throws Exception {
 	
 	Session session = this.sessionFactory.getCurrentSession();
-	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ";  
-	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setCacheable(true).list();
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.candidateId.id =:candidateId and candidateResumes.status = '1' ORDER BY candidateResumes.updatedDate DESC";  
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).list();
 	CandidateResumes candidateResumes = null;
 	if(candidateResumesList != null && !candidateResumesList.isEmpty()){
 		candidateResumes = candidateResumesList.iterator().next();
 	}
 	return candidateResumes;
 }
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumesDTO getCandidateResumesDTOByCandidateId(Long candidateId) throws Exception {
+	
+	List<CandidateResumesDTO> candidateResumesDTOList = null;
+	CandidateResumesDTO candidateResumesDTO = null;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = null;
+			query ="SELECT "
+			+" CR.ID AS resumeId, "
+			+" CR.TITLE AS title, "
+			+" CR.CANDIDATE_ID AS candidateId, "
+			+" CR.ORG_LOCATION_ID AS orgLocationId, "
+			+" DATE_FORMAT(CR.CREATED_DATE ,\"%Y-%m-%d\") AS createdDate, " 
+			+" DATE_FORMAT(CR.UPDATED_DATE ,\"%Y-%m-%d\") AS updatedDate " 
+			+" FROM CANDIDATE_RESUMES CR "
+			+" WHERE "
+			+" CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' "
+			+" ORDER BY DATE_FORMAT(CR.UPDATED_DATE ,\"%Y-%m-%d\") DESC ";
+			
+        Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateResumesDTO.class));
+		candidateResumesDTOList = queryObj.list();
+		if(candidateResumesDTOList != null && !candidateResumesDTOList.isEmpty()) {
+			candidateResumesDTO = candidateResumesDTOList.get(0);
+		}
+		
+		return candidateResumesDTO;
+
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+	Session session = this.sessionFactory.getCurrentSession();
+	Integer educationsCount = 0;
+	
+	String countQuery ="SELECT"
+			+ " COUNT(CR.ID) AS RESUMES_COUNT"
+			+ " FROM "
+			    + " CANDIDATE_RESUMES CR "
+				+ " WHERE CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' ";
+	
+	
+	Query countqueryString = session.createSQLQuery(countQuery);
+	countqueryString.setParameter("candidateId", candidateId);
+	BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+	educationsCount = filterCount.intValue();
+	return educationsCount;
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumesDTO getCandidateLatesResumeDetails(Long candidateId) throws Exception {
+	
+	List<CandidateResumesDTO> candidateResumesDTOList = null;
+	CandidateResumesDTO candidateResumesDTO = null;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = null;
+			query ="SELECT "
+			+" CR.ID AS resumeId, "
+			+" CR.FILE_NAME AS resumeName, "
+			+" CR.FILE_CONTENT_TYPE AS fileContentType, "
+			+" CR.FILE_URL AS fileUrl "
+			+" FROM CANDIDATE_RESUMES CR "
+			+" WHERE "
+			+" CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' "
+			+" ORDER BY CR.CREATED_DATE DESC ";
+			
+        Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateResumesDTO.class));
+		candidateResumesDTOList = queryObj.list();
+		if(candidateResumesDTOList != null && !candidateResumesDTOList.isEmpty()) {
+			candidateResumesDTO = candidateResumesDTOList.get(0);
+		}
+		
+		return candidateResumesDTO;
+
+}
+
 
 }

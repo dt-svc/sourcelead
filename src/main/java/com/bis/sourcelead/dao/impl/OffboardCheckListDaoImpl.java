@@ -42,7 +42,7 @@ public class OffboardCheckListDaoImpl implements OffboardCheckListDao{
 	public OffboardCheckList getOffboardCheckListByTemplateId(Long templateId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OffboardCheckList> offboardCheckList = session.createQuery("from OffboardCheckList checkList left join fetch checkList.offboardingTemplateId  where checkList.offboardingTemplateId.id = :templateId" ).setLong( "templateId", templateId ).setCacheable(true).list();
+		List<OffboardCheckList> offboardCheckList = session.createQuery("from OffboardCheckList checkList left join fetch checkList.offboardingTemplateId  where checkList.offboardingTemplateId.id = :templateId" ).setLong( "templateId", templateId ).list();
 		if (offboardCheckList.size() > 0) {
 			return offboardCheckList.get(0);
 		} else {
@@ -86,7 +86,7 @@ public class OffboardCheckListDaoImpl implements OffboardCheckListDao{
 	public OffboardCheckList getOffboardCheckListByOffboardingId(Long candidateOffBoardingId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		List<OffboardCheckList> offboardCheckList = session.createQuery("from OffboardCheckList checkList left join fetch checkList.candidateOffBoardingId  where checkList.candidateOffBoardingId.id = :candidateOffBoardingId" ).setLong( "candidateOffBoardingId", candidateOffBoardingId ).setCacheable(true).list();
+		List<OffboardCheckList> offboardCheckList = session.createQuery("from OffboardCheckList checkList left join fetch checkList.candidateOffBoardingId  where checkList.candidateOffBoardingId.id = :candidateOffBoardingId" ).setLong( "candidateOffBoardingId", candidateOffBoardingId ).list();
 		if (offboardCheckList.size() > 0) {
 			return offboardCheckList.get(0);
 		} else {

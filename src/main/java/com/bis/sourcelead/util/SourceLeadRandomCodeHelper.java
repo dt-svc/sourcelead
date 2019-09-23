@@ -33,6 +33,11 @@ public class SourceLeadRandomCodeHelper {
 		return UUID;
 	}
 	
+	public static String generateNotificationUUID() {
+		String UUID = RandomStringUtils.randomAlphabetic(32);
+		return UUID;
+	}
+	
 	public static String generateRandomUUID() {
 		String UUID = RandomStringUtils.randomAlphanumeric(8);
 		return UUID;
@@ -51,5 +56,25 @@ public class SourceLeadRandomCodeHelper {
 	public static String generateRandomExpensesIdCode() {
 		String expensesIdCode = RandomStringUtils.randomAlphanumeric(6);
 		return expensesIdCode;
+	}
+	
+	public static String generateRandomTransactionOrderId() {
+		String UUID = RandomStringUtils.randomNumeric(8);
+		return UUID;
+	}
+	
+	public static String generateRandomTaxId() {
+		String UUID = RandomStringUtils.randomAlphanumeric(8);
+		return UUID;
+	}
+	
+	public static String generateRandomBulkSubmissionId() {
+		String UUID = RandomStringUtils.randomNumeric(5);
+		return UUID;
+	}
+	
+	public static String generateRandomCustomToken() {
+		String UUID = RandomStringUtils.randomAlphanumeric(15);
+		return UUID;
 	}
 }

@@ -3,19 +3,6 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
-<style type="text/css">
-.center-div{
-width:300px;
-height:30px;
-margin:10px 220px 0;
-}
-.center-div input {
-	border:none;
-	background:transparent
-}
-</style>
-  
   
 <section class="content-wraper">
     <section class="content-header clearfix">
@@ -25,7 +12,7 @@ margin:10px 220px 0;
       <div class="remove_pop" id="selector"  style="display: none;">
 	         <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
 		</div>
-      <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
+      <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${appPath}/vendorsList">Vendor & Contact List</a> &raquo; Import Vendor & Contacts </div>
     </section>
      <form:form id="upload_form" name="upload_form" enctype="multipart/form-data">
     <%-- <form:form id="upload_form" name="upload_form" method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="clientFileUpload?${_csrf.parameterName}=${_csrf.token}&type=Client"> --%>
@@ -46,20 +33,29 @@ margin:10px 220px 0;
 			</div> --%>
 			<%-- </sec:authorize> --%>
 			<%-- <sec:authorize access="hasAnyRole('ROLE_CLIENT_CONTACT_BULK_IMPORTS')"> --%>
-			<div class="col-xs-8 col-md-8">
-			 <a href="<c:url value='/downloadVendorTemplate?name=Contact'/>">
-			 <button class="btn btn-success btn-block" type="button">
-					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Vendor Template
-			</button>
+			<div class="col-xs-3 col-md-3">
+			 <a href="<c:url value='${appPath}/downloadVendorTemplate?name=Contact'/>"  class="btn btn-success btn-block" >
+					<i class="fa fa-download"></i>&nbsp;&nbsp;Vendor Template
 			</a>
 			</div>
-			<div class="col-xs-4 col-md-4">
+			
+				<div class="col-md-6 candAdvsrch">
+					<select data-placeholder="Select Onboard Templates" multiple
+						class="form-control" name="templateId" id="templateId"
+						field-name="Template" data-validation-optional="true">
+						<c:forEach var="template" items="${templatesList}">
+							<option value="${template.id}" ${template.isDefaultTemplate  == 'Y' ? 'selected' : ''}>${template.templateName}</option>
+						</c:forEach>
+					</select>
+			</div>
+						 
+			<div class="col-xs-3 col-md-3">
 			<div class="btn-group btn-group-justified">
 			  <div class="btn-group">
 			  <input type="button" class="btn btn-primary" id="upload_button" name="upload_button"  onclick = "saveBulkImport();" value="Import">
 				</div>
 				<div class="btn-group">
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='/vendorsList'/>'">
+			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadVendorForm'/>'">
 				</div>
 			  </div>
 			</div>
@@ -78,7 +74,7 @@ margin:10px 220px 0;
 			  </button>
 			  </div> --%>
 			  </div>
-			<div class="file-upload clearfix text-center" id="fileDiv" onclick = "check();">
+			<div class="file-upload clearfix text-center" id="fileDiv" >
 		<div class="col-md-12" id="clientNameDiv">
 			<label class="bg-default">
 			<i aria-hidden="true" class="fa fa-paperclip" title="Attach file"></i> <br/>
@@ -120,8 +116,8 @@ margin:10px 220px 0;
  -->			  </p>
 			  </span>
             </div>
-            <div class="panel-body checkbox div-checkbox hidden">
-				  <label><input type="checkbox" checked="checked" value="Y" name="email"></label><span>Send Emails</span>
+            <div class="panel-body checkBox">
+				  <label><input type="checkbox" value="Y" name="email"></label><span>Send Emails</span>
 		    </div>
           </div>
 		  <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -140,7 +136,7 @@ margin:10px 220px 0;
             </div>
 		  </div>
         </div>
-        <div class="require_wrap_table filter-position mt25">
+        <div class="require_wrap_table datatable_filter filter-position mt25">
         
         	<div id="excelimportData"></div>
         	
@@ -208,7 +204,9 @@ function saveBulkImport(){
 	var form = $('#upload_form')[0];
 	var formData = new FormData(form); 
 	
-	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	
+	
+	$("#loadinggif").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 		   	type: "POST",
 		   	data: formData,
@@ -218,34 +216,35 @@ function saveBulkImport(){
 	        contentType:false,
     	    dataType : 'json',
 		    url : sourceleadUrl+"/clientExcelFileUpload?"+tokenParamName+"="+tokenValue+"&responderType=Vendor", 	   
- 		    success : function(data) {
- 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
- 		    	if(data == "empty"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Mandatory fields are required");
- 		    		msgFadein();
- 		    	}else if(data == "invalid"){
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Please import valid Template");
- 		    		msgFadein();
- 		    	}else if(data == "success"){
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Inserted successfully");
- 		    		msgFadein();
- 		    	}else{
- 		    		$("#selector").removeClass("remove_pop");
- 		    		$("#selector").addClass("success_pop");
- 		    		$("#selector").removeAttr("style");
- 	    			$("#selector").css({ display: "block" });
- 		    		$("#msgDiv").html("Processed successfully");
- 		    		msgFadein();
- 		    		prepareExcelDataDiv(data);
- 		    	}
+ 		    success : function(json) {
+ 		    	$("#loadinggif").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+
+ 		    	var statusCode = "";
+ 				if(json != null){
+ 					statusCode = json.statusCode;
+ 				}
+ 				if(json != null && json != ''){
+ 					if(statusCode == "success"){
+ 						$("#selector").removeClass("remove_pop");
+ 				 		$("#selector").addClass("success_pop");
+ 				 		$("#selector").removeAttr("style");
+ 						$("#selector").css({ display: "block" });
+ 				 		$("#msgDiv").html("Processed successfully");
+ 				 		msgFadein();
+ 				 		prepareExcelDataDiv(json);
+ 					}else if(statusCode == "invalid"){
+ 						$("#selector").removeAttr("style");
+ 						$("#selector").css({ display: "block" });
+ 						$("#msgDiv").html("Please fill mandatory fields");
+ 						msgFadein();
+ 					}
+ 				}else if(statusCode == ""){
+ 					$("#selector").removeAttr("style");
+ 					$("#selector").css({ display: "block" });
+ 					$("#msgDiv").html("Please import valid Template or fill mandatory fields");
+ 					msgFadein();
+ 				}
+ 		    		
  		    },
  		   error: function(e){
  			  alert(e);
@@ -264,7 +263,7 @@ function saveBulkImport(){
 </script> 
 
 <script>
-function prepareExcelDataDiv(data){
+function prepareExcelDataDiv(json){
 	var result = '';
 	result = result +  '<table id="excelimportDataTable" class="display" cellspacing="0" width="100%" >';
 	result = result + '	<thead>';
@@ -281,9 +280,9 @@ function prepareExcelDataDiv(data){
 	result = result + '   </tr>';
 	result = result + '	</thead>';
 	result = result + '	<tbody>';
-	var json = JSON.parse(data);
-    for (var i = 0; i < json.length; i++) {
-    	var report= json[i];
+// 	var json = JSON.parse(data);
+    for (var i = 0; i < json.data.length; i++) {
+    	var report= json.data[i];
     	result = result + '<tr id="row'+report.id+'">';
         result = result + '<td>';
         if(report.orgName != null && report.orgName != '' && report.orgName !='undefined'){
@@ -345,8 +344,8 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
         result = result + '<td>';
-        if(report.reason != null && report.reason != '' && report.reason !='undefined'){
-       		 result = result + "<div><a class='text-danger' title='"+report.reason+"'>"+report.reason+"</a></div>";
+        if(report.fileReason != null && report.fileReason != '' && report.fileReason !='undefined'){
+       		 result = result + "<div><a class='text-danger' title='"+report.fileReason+"'>"+report.fileReason+"</a></div>";
         }
         else{
 		    	result = result + "<div><span>---</span></div>";
@@ -355,7 +354,7 @@ function prepareExcelDataDiv(data){
         result = result + '</td>';
         
          result = result + '<td>';
-         if(report.reason == 'Spoc existed' || report.reason == 'Current org user' || report.reason ==  'Vendor name is mandatory' || report.reason ==  'Vendor name should contain above 2 char' || report.reason ==  'Invalid email' || report.reason ==  'Invalid moblie number' || report.reason ==  'First Name is mandatory' || report.reason ==  'Email is Mandatory'){
+         if(report.fileReason == 'Spoc existed' || report.fileReason == 'Current org user' || report.fileReason ==  'Vendor name is mandatory' || report.fileReason ==  'Vendor name should contain above 2 char' || report.fileReason ==  'Invalid email' || report.fileReason ==  'Invalid moblie number' || report.fileReason ==  'First Name is mandatory' || report.fileReason ==  'Email is Mandatory'){
         	 result = result + '<div class="proj_active" id="removeStatus'+report.id+'"><a class="text-danger fa fa-trash" title="Remove" onclick="removeRecord('+report.id+');"></a></div>';  
          }else{
         	 result = result + '<div class="tbldata-dotdot-100" id="recordStatus'+report.id+'"><a class="text-success fa fa-object-group paddingRight aa" title="Merge" onclick="mergeRecord('+report.id+');"></a> <small>|</small> <a class="text-primary fa fa-plus paddingRight" title="Add" onclick="addRecord('+report.id+');"></a> <small>|</small> <a class="text-danger fa fa-trash" title="Remove" onclick="terminateRecord('+report.id+');"></a></div>';
@@ -407,9 +406,10 @@ function terminateRecord(recordId){
 <script>
 function addRecord(recordId){
 	var rowHtmlContent =  $("#row"+recordId).html();
+	var templateId = $("#templateId").val();
 	 $.ajax({
        type : "POST",
-        url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor",       
+       url: sourceleadUrl+"/addRecordFromBulk?"+tokenParamName+"="+tokenValue+"&recordId="+recordId+"&responderType=Vendor&templateId="+templateId,       
         success :function(data) {
         	$("#row"+recordId).empty();
 	    	$("#row"+recordId).html(rowHtmlContent);
@@ -498,8 +498,8 @@ function mergeclose(){
 function excelimportDataPagination(){
 	$('#excelimportDataTable').DataTable({ 
     	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": false,
+    	"lengthMenu": [[10, 15, 20], [10, 15, 20]],
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -549,7 +549,7 @@ function errorMsgAppend(){
 function uploadSave() {
 	$('#upload_form').submit(function() {
           if (($(this).validate(false, validationSettings))){
-        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+        	  $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
             	return true;  
           }
           else{
@@ -614,10 +614,30 @@ function uploadSave() {
     }
 </script>  -->
 
+
+<script type="text/javascript">
+$(function(){
+	       var config = {
+			  '.chosen-select'           : {},
+			  '.chosen-select-deselect'  : {allow_single_deselect:true},
+			  '.chosen-select-no-single' : {disable_search_threshold:10},
+			  '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+			  '.chosen-select-width'     : {width:"95%"}
+			}
+	       $("#templateId").chosen();
+	       $('#templateId').trigger("chosen:updated");
+	      
+	       $('.chosen-select').each(function() {
+				var $this = $(this);
+				$this.next().css({'width': '100%'});
+		  })
+		  
+});
+</script>
+
   <!-- Footer Area -->
   <footer class="footer-area clearfix">
     <div class="copyright"> @ Copyright : Source Lead, All right reserved </div>
-    <div class="powered-by"> Powered by: businessintelli.com </div>
   </footer>
   <!-- Footer Area -->
 

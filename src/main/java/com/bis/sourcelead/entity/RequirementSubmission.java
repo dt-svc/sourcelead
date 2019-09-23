@@ -35,7 +35,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "REQUIREMENT_SUBMISSION")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL,region="requirementSubmission")
 public class RequirementSubmission implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -45,6 +44,7 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "ID", nullable = false)
     private Long id;
  	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "REQUIREMENT_ID")
@@ -55,25 +55,30 @@ public class RequirementSubmission implements Serializable{
 	@JoinColumn(name = "CANDIDATE_ID")
    	private Candidate candidate;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
    	private Candidate vendorCandidateId;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne 
+	@ManyToOne
 	@JoinColumn(name = "SOURCE_SUBMISSION_ID") 
    	private RequirementSubmission sourceSubmission;
+	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_RESUEME_ID")
    	private CandidateResumes candidateResumes;
 	
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
    	private OrgLocations orgLocations;
+	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
@@ -136,6 +141,12 @@ public class RequirementSubmission implements Serializable{
 	@Column(name = "REASON_TYPE")
     private String rejectedCategoryType;
 	
+	@Column(name = "BACKOUT_REASON", columnDefinition = "TEXT default NULL")
+    private String backOutReason;
+	
+	@Column(name = "BACKOUT_TYPE")
+    private String backOutCategoryType;
+	
     
 	@Column(name = "FINALIZED_RATE")
 	private String finalizedRate;
@@ -173,10 +184,17 @@ public class RequirementSubmission implements Serializable{
 	@Type(type="text")
 	private String updatedUser;
     
+    
     @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
     @JoinColumn(name="RECRUITER_USER_ID")        
     private User recruiterUserId;
+    
+    @Column(name = "JOINED_DATE")
+    private Date joinedDate;
+    
+    @Column(name = "INVOICE_GENERATED")
+    private String invoiceGenerated;
 	
     @Transient
     @JsonProperty
@@ -209,6 +227,10 @@ public class RequirementSubmission implements Serializable{
     @Transient
     @JsonProperty
    	private String upDatedStr;
+    
+    @Transient
+    @JsonProperty
+   	private String joinedDateStr;
     
     @Transient
     @JsonProperty
@@ -380,6 +402,15 @@ public class RequirementSubmission implements Serializable{
 	private int duplicateCount;
 	
 	@Transient
+    @JsonProperty
+   	private Long reqManagerId;
+	
+	
+	@Transient
+    @JsonProperty
+   	private String reqReleaseAllJobUserStatus;
+	
+	@Transient
 	@JsonProperty
 	private Long requirementId;
 	
@@ -392,6 +423,7 @@ public class RequirementSubmission implements Serializable{
 	private String submitToClientRate;
 	
 	@Transient
+	@JsonProperty
 	private RequirementSubmissionTemplateFields requirementSubmissionTemplateFields;
 	
 	@Transient
@@ -493,6 +525,9 @@ public class RequirementSubmission implements Serializable{
     @Column(name = "REASON_OTHER_TYPE")
     private String rejectedCategoryOther;
     
+    @Column(name = "BACKOUT_OTHER_TYPE")
+    private String backOutCategoryOther;
+    
     @Transient
     @JsonProperty
    	private String referUUID;
@@ -515,31 +550,52 @@ public class RequirementSubmission implements Serializable{
     
     @Transient
     @JsonProperty
+	private String submissionDisplayStatus;
+    
+    @Transient
+    @JsonProperty
+	private String candidateCommentsCount;
+    
+    @Transient
+    @JsonProperty
 	private REQUIREMENT_SUBMISSION_STATUS requirementCurrentStatus;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementSubmission")
 	private Set<RequirementSubmissionTemplateFields> requirementSubmissionTemplateFieldsList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementSubmissionHistory> requirementSubmissionHistoryList;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementInterviewHistory> requirementInterviewHistory;
     
     @JsonBackReference
-    @NotFound(action=NotFoundAction.IGNORE)
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOffers> requirementOffersList;
     
-    @NotFound(action=NotFoundAction.IGNORE)
+    @JsonBackReference
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "submissionId")
    	private Set<RequirementOfferHistory> requirementOfferHistoryList;
     
+    @Transient
+    @JsonProperty
+	private Long orgRelationId;
+    
+    @Transient
+	@JsonProperty
+	private List<String> locationsList;
+    
+    @Transient
+	@JsonProperty
+	private String invoiceGenerateDate;
 
+    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1114,6 +1170,14 @@ public class RequirementSubmission implements Serializable{
 		this.upDatedStr = upDatedStr;
 	}
 
+	public String getJoinedDateStr() {
+		return joinedDateStr;
+	}
+
+	public void setJoinedDateStr(String joinedDateStr) {
+		this.joinedDateStr = joinedDateStr;
+	}
+
 	public String getCreatedTimeStr() {
 		return createdTimeStr;
 	}
@@ -1313,6 +1377,14 @@ public class RequirementSubmission implements Serializable{
 
 	public void setRecruiterUserId(User recruiterUserId) {
 		this.recruiterUserId = recruiterUserId;
+	}
+
+	public Date getJoinedDate() {
+		return joinedDate;
+	}
+
+	public void setJoinedDate(Date joinedDate) {
+		this.joinedDate = joinedDate;
 	}
 
 	public String getLoginOrgLOcationName() {
@@ -1588,5 +1660,100 @@ public class RequirementSubmission implements Serializable{
 		this.docURL = docURL;
 	}
 
+	public String getBackOutReason() {
+		return backOutReason;
+	}
+
+	public void setBackOutReason(String backOutReason) {
+		this.backOutReason = backOutReason;
+	}
+
+	public String getBackOutCategoryType() {
+		return backOutCategoryType;
+	}
+
+	public void setBackOutCategoryType(String backOutCategoryType) {
+		this.backOutCategoryType = backOutCategoryType;
+	}
+
+	public String getBackOutCategoryOther() {
+		return backOutCategoryOther;
+	}
+
+	public void setBackOutCategoryOther(String backOutCategoryOther) {
+		this.backOutCategoryOther = backOutCategoryOther;
+	}
+
+	public String getSubmissionDisplayStatus() {
+		return submissionDisplayStatus;
+	}
+
+	public void setSubmissionDisplayStatus(String submissionDisplayStatus) {
+		this.submissionDisplayStatus = submissionDisplayStatus;
+	}
+
+	public String getCandidateCommentsCount()
+	{
+		return candidateCommentsCount;
+	}
+
+	public void setCandidateCommentsCount(String candidateCommentsCount)
+	{
+		this.candidateCommentsCount = candidateCommentsCount;
+	}
+
+	public Long getOrgRelationId()
+	{
+		return orgRelationId;
+	}
+
+	public void setOrgRelationId(Long orgRelationId)
+	{
+		this.orgRelationId = orgRelationId;
+	}
+
+	public Long getReqManagerId()
+	{
+		return reqManagerId;
+	}
+
+	public void setReqManagerId(Long reqManagerId)
+	{
+		this.reqManagerId = reqManagerId;
+	}
+
+	public String getReqReleaseAllJobUserStatus()
+	{
+		return reqReleaseAllJobUserStatus;
+	}
+
+	public void setReqReleaseAllJobUserStatus(String reqReleaseAllJobUserStatus)
+	{
+		this.reqReleaseAllJobUserStatus = reqReleaseAllJobUserStatus;
+	}
+
+	public List<String> getLocationsList() {
+		return locationsList;
+	}
+	public void setLocationsList(List<String> locationsList) {
+		this.locationsList = locationsList;
+	}
+
+	public String getInvoiceGenerated() {
+		return invoiceGenerated;
+	}
+
+	public void setInvoiceGenerated(String invoiceGenerated) {
+		this.invoiceGenerated = invoiceGenerated;
+	}
+
+	public String getInvoiceGenerateDate() {
+		return invoiceGenerateDate;
+	}
+
+	public void setInvoiceGenerateDate(String invoiceGenerateDate) {
+		this.invoiceGenerateDate = invoiceGenerateDate;
+	}
+	
 	
 }

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 
@@ -97,7 +98,8 @@ public interface OrgSpocDao {
 	OrgSpoc getValidateOwnersBySpocUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId, String responderType) throws Exception;
 
 	List<OrgSpoc> getOrgSpocContactEmailsByOrgRelationIdAndUserId(Long userId,Long orgRelationId,Long orgLocationId) throws Exception;
-
+	
+	OrgSpoc getGusetClientOrgSpocByOrgRelationId(Long orgRelationId);
 
 	OrgSpoc getValidateOwnersByVendorUserIdAndSpocOwnerUserId(Long spocUserId, Long spocOwnderUserId, Long responderLocationId)throws Exception;
 
@@ -109,4 +111,17 @@ public interface OrgSpocDao {
 	
 	boolean getOwnerUserExistedByOrgRelationIdAndOwnerUserId(Long orgRelationId, Long ownerUserId) throws Exception;
 	
+	OrgSpoc getClientUserByOrgRelationIdAndOwnerUserId(Long orgRelationId,Long clientUserId) throws Exception;
+	
+	OrgSpoc getSpocByOrgRelationIdAndAssignedUserId(Long orgRelationId,Long assignUserId) throws Exception;
+	
+	List<OrgSpoc> getSpocListByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
+	
+	OrgSpoc getSpocByOrgRelationIdForNewVendor(Long orgRelationId) throws Exception;
+	
+	OrgSpoc getOrgSpocByUUID(String UUID) throws Exception;
+	
+	Integer getNumberOfContactCount(Long orgRelationId,Long userId,List<Long> userIds,Long orgLocationId,String responderType) throws Exception;
+
+	OrgSpoc getSpocByVendorUserIdAndOrgRelationId(Long orgRelationId,Long vendorUserId)throws Exception;
 }

@@ -1,105 +1,118 @@
 package com.bis.sourcelead.beans;
 
+import java.math.BigDecimal;
+
 public class RequirementStagesReport {
 	
-	private Integer newRequirementsCount;
+	private BigDecimal newRequirementsCount;
 	
-	private Integer draftRequirementsCount;
+	private BigDecimal draftRequirementsCount;
 	
-	private Integer submittedRequirementsCount;
+	private BigDecimal submittedRequirementsCount;
 	
-	private Integer openRequirementsCount;
+	private BigDecimal openRequirementsCount;
 	
-	private Integer cancelRequirementsCount;
+	private BigDecimal cancelRequirementsCount;
 	
-	private Integer onholdRequirementsCount;
+	private BigDecimal onholdRequirementsCount;
 	
-	private Integer filledclosedRequirementsCount;
+	private BigDecimal filledclosedRequirementsCount;
 	
-	private Integer unfilledclosedRequirementsCount;
+	private BigDecimal unfilledclosedRequirementsCount;
 	
-	private Integer approvedRequirementsCount;
+	private BigDecimal approvedRequirementsCount;
 	
-	private Integer rejectedRequirementsCount;
+	private BigDecimal rejectedRequirementsCount;
+	
+	private BigDecimal closedRequirementsCount;
 
-	public Integer getNewRequirementsCount() {
+	public BigDecimal getNewRequirementsCount() {
 		return newRequirementsCount;
 	}
 
-	public void setNewRequirementsCount(Integer newRequirementsCount) {
+	public void setNewRequirementsCount(BigDecimal newRequirementsCount) {
 		this.newRequirementsCount = newRequirementsCount;
 	}
 
-	public Integer getDraftRequirementsCount() {
+	public BigDecimal getDraftRequirementsCount() {
 		return draftRequirementsCount;
 	}
 
-	public void setDraftRequirementsCount(Integer draftRequirementsCount) {
+	public void setDraftRequirementsCount(BigDecimal draftRequirementsCount) {
 		this.draftRequirementsCount = draftRequirementsCount;
 	}
 
-	public Integer getSubmittedRequirementsCount() {
+	public BigDecimal getSubmittedRequirementsCount() {
 		return submittedRequirementsCount;
 	}
 
-	public void setSubmittedRequirementsCount(Integer submittedRequirementsCount) {
+	public void setSubmittedRequirementsCount(BigDecimal submittedRequirementsCount) {
 		this.submittedRequirementsCount = submittedRequirementsCount;
 	}
 
-	public Integer getOpenRequirementsCount() {
+	public BigDecimal getOpenRequirementsCount() {
 		return openRequirementsCount;
 	}
 
-	public void setOpenRequirementsCount(Integer openRequirementsCount) {
+	public void setOpenRequirementsCount(BigDecimal openRequirementsCount) {
 		this.openRequirementsCount = openRequirementsCount;
 	}
 
-	public Integer getCancelRequirementsCount() {
+	public BigDecimal getCancelRequirementsCount() {
 		return cancelRequirementsCount;
 	}
 
-	public void setCancelRequirementsCount(Integer cancelRequirementsCount) {
+	public void setCancelRequirementsCount(BigDecimal cancelRequirementsCount) {
 		this.cancelRequirementsCount = cancelRequirementsCount;
 	}
 
-	public Integer getOnholdRequirementsCount() {
+	public BigDecimal getOnholdRequirementsCount() {
 		return onholdRequirementsCount;
 	}
 
-	public void setOnholdRequirementsCount(Integer onholdRequirementsCount) {
+	public void setOnholdRequirementsCount(BigDecimal onholdRequirementsCount) {
 		this.onholdRequirementsCount = onholdRequirementsCount;
 	}
 
-	public Integer getFilledclosedRequirementsCount() {
+	public BigDecimal getFilledclosedRequirementsCount() {
 		return filledclosedRequirementsCount;
 	}
 
-	public void setFilledclosedRequirementsCount(Integer filledclosedRequirementsCount) {
+	public void setFilledclosedRequirementsCount(BigDecimal filledclosedRequirementsCount) {
 		this.filledclosedRequirementsCount = filledclosedRequirementsCount;
 	}
 
-	public Integer getUnfilledclosedRequirementsCount() {
+	public BigDecimal getUnfilledclosedRequirementsCount() {
 		return unfilledclosedRequirementsCount;
 	}
 
-	public void setUnfilledclosedRequirementsCount(Integer unfilledclosedRequirementsCount) {
+	public void setUnfilledclosedRequirementsCount(BigDecimal unfilledclosedRequirementsCount) {
 		this.unfilledclosedRequirementsCount = unfilledclosedRequirementsCount;
 	}
 
-	public Integer getApprovedRequirementsCount() {
+	public BigDecimal getApprovedRequirementsCount() {
 		return approvedRequirementsCount;
 	}
 
-	public void setApprovedRequirementsCount(Integer approvedRequirementsCount) {
+	public void setApprovedRequirementsCount(BigDecimal approvedRequirementsCount) {
 		this.approvedRequirementsCount = approvedRequirementsCount;
 	}
 
-	public Integer getRejectedRequirementsCount() {
+	public BigDecimal getRejectedRequirementsCount() {
 		return rejectedRequirementsCount;
 	}
 
-	public void setRejectedRequirementsCount(Integer rejectedRequirementsCount) {
+	public void setRejectedRequirementsCount(BigDecimal rejectedRequirementsCount) {
 		this.rejectedRequirementsCount = rejectedRequirementsCount;
 	}
+
+	public BigDecimal getClosedRequirementsCount() {
+		return closedRequirementsCount;
+	}
+
+	public void setClosedRequirementsCount(BigDecimal closedRequirementsCount) {
+		this.closedRequirementsCount = closedRequirementsCount;
+	}
+
 	
 }

@@ -3,32 +3,34 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
-<title>Welcome to Source Lead :: The Recruitment Application</title>
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="resources/css/bootstrap-select.css" rel="stylesheet">
-<link href="resources/css/jquery.dataTables.min.css" rel="stylesheet">
-<link rel="stylesheet" href="resources/css/jquery-ui.css">
-<link rel="stylesheet" href="resources/css/chosen.min.css">
-<link href="resources/css/font-awesome.min.css" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css" rel="stylesheet" id="myStyleSheet">
-<link href="resources/css/timesheet.css" rel="stylesheet">
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="resources/js/jquery-1.11.1.min.js"></script>
-<style type="text/css">
-    .require_wrap_table.overflowVisible{
-        overflow: visible !important;
-    }
-    </style>
+<c:if test="${staticTime == null || staticTime == 0 }">
+    <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
+ </c:if>
+ 
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
+<title>Welcome to Source Lead :: The Recruitment Application</title>
+<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+<!-- Bootstrap -->
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap-select.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/jquery.dataTables.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet" id="myStyleSheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/jquery-1.11.1.min.js"></script>
+
 </head>
 
-
+<script>
+ var sourceleadUrl ='${sourceleadUrl}';
+</script>
 <div class="wraper"> 
 
   
@@ -38,37 +40,11 @@
 		<section class="welcoInn">
 		  <div class="welcoHead">
 				
-			<c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
-			<div class="offOrg">
-	             <a href="javascript:void(0)" title="Spoc Links" id="spoclinks" onclick="JavaScript: navtoggle(this);"> <i class="fa fa-globe"></i> </a>
-		              <div id="spockLinksList" style="display: none;">
-		              <ul class="list-unstyled">
-		              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
-			              <li>
-				              <a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}'/>" class="sopcSwith">
-					                <div class="clearfix">
-					                   <div class="pull-left image-parent positionRelative">
-					                   <div class="imageParent org-imagelink ${links.orgLocations.id == SourceLeadWeb_orgLocationId ? 'active-comp' : ''}">
-					                     <img onerror='predefineOrgImage(this);' src="${sourceleadUrl}/displayOrgImage/${links.orgLocations.org.orgCode}">
-					                     </div>
-					                   </div>
-					                   <div class="pull-left mt5">
-					                     <p class="tbldata-dotdot"><i class="fa fa-building"></i>&nbsp;${links.orgLocations.org.orgName}</p>
-					                     <p class="tbldata-dotdot"><i class="fa fa-map-marker"></i>&nbsp;${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</p>
-					                     <p><i class="fa fa-user"></i>&nbsp;${links.roles.displayName}</p>
-					                   </div>
-					                </div>
-				                </a>
-			              </li>
-		              </c:forEach>
-		              </ul>
-		            </div>
-		            </div>
-	          </c:if>
+			 <jsp:include page="../userManageAccounts.jsp" />
 				
 				<c:if test="${!empty SourceLeadWeb_org.fileContentType}">
 					<div class="welLogo">
-					<img class="logo" src="<c:url value='/displayOrgImage/${SourceLeadWeb_orgCode}'/>" title="${SourceLeadWeb_orgName}" />
+					<img class="logo" data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_orgName}" />
 					</div>
 				</c:if>
 				
@@ -82,14 +58,17 @@
 			  <ul>
 				  <li class="actLi"><span class="fill">1</span><b>Welcome</b><i class="line"></i></li>
 				  <li class="actLi"><span class="fill">2</span><b>Step two</b><i class="line"></i></li>
-				  <li class="actLi"><span>3</span><b>Step three</b><i class="line"></i></li>
-				  <li><span>4</span><b>Finish</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">3</span><b>Step three</b><i class="line"></i></li>
+				  <li class="actLi"><span class="fill">4</span><b>Step four</b><i class="line"></i></li>
+				  <li class="actLi"><span>5</span><b>Step five</b><i class="line"></i></li>
+				  <li><span>6</span><b>Finish</b><i class="line"></i></li>
+				  
 				  <div class="clearfix"></div>
 			  </ul>
 			  <div class="clearfix"></div>
 		  </div>
 	
-	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form" enctype='multipart/form-data' >	  
+	<form:form class="login-form clearfix"  id="onboardCandidateDocs_form"  name="onboardCandidateDocs_form">	  
 		<div id="loading"></div>
 		<div class="welCo1">
         <input type="hidden" name="candidateOnboardId" id="candidateOnboardId" value="${candidateOnboardId}"/>
@@ -98,7 +77,12 @@
 				<c:if test="${contractDocsListSize > 0}">
 				<c:forEach var="contractDocs" items="${contractDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${contractDocs.documentUUID}" class="fa fa-file-text"></a></span>
+				<c:if test="${!empty contractDocs.uploadFileURL && !empty contractDocs.fileURL}">
+				<span><a href="${contractDocs.uploadFileURL}"  class="fa fa-file-text"></a></span>
+				</c:if>
+				<c:if test="${!empty contractDocs.fileURL && empty contractDocs.uploadFileURL}">
+				<span><a href="${contractDocs.fileURL}"  class="fa fa-file-text"></a></span>
+				</c:if>
 					<strong>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
@@ -110,7 +94,7 @@
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus != 'ACCEPTED'}">
-						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" name="docFile${contractDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						<input type="file"  class="form-control welFile" readonly id="uploadContractsFile${contractDocs.id}" placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc"  onChange="uploadContract(${contractDocs.id});"   data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${contractDocs.documentStatus == 'ACCEPTED'}">
@@ -136,7 +120,12 @@
 				<c:if test="${formsDocsListSize > 0}">
 				<c:forEach var="formsDocs" items="${formsDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${formsDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<c:if test="${!empty formsDocs.uploadFileURL && !empty formsDocs.fileURL}">
+						<span><a href="${formsDocs.uploadFileURL}"  class="fa fa-file-text"></a></span>
+					</c:if>
+					<c:if test="${!empty formsDocs.fileURL && empty formsDocs.uploadFileURL}">
+						<span><a href="${formsDocs.fileURL}"  class="fa fa-file-text"></a></span>
+					</c:if>
 					<strong>
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
 						   <p>${formsDocs.fileName}</p>
@@ -148,7 +137,7 @@
 						
 						
 						<c:if test="${formsDocs.documentStatus != 'ACCEPTED'}">
-						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"  name="docFile${formsDocs.id}"  placeholder="Upload Resume ..." field-name="Upload Resume" data-validation="validatedoc" data-validation-optional="true" >
+						<input  type="file" class="form-control welFile" readonly id="uploadFormsFile${formsDocs.id}"   placeholder="Upload Resume ..." field-name="Upload Resume" onChange="uploadForms(${formsDocs.id})" data-validation="validatedoc" data-validation-optional="true" >
 						</c:if>
 						
 						<c:if test="${formsDocs.documentStatus == 'ACCEPTED'}">
@@ -177,12 +166,12 @@
 				<c:if test="${policiesDocsListSize > 0}">
 				<c:forEach var="policiesDocs" items="${policiesDocsList}">
 				<div class="step3">
-					<span><a href="${sourceleadUrl}/downloadTemplateDocument?documentUUID=${policiesDocs.documentUUID}" class="fa fa-file-text"></a></span>
+					<span><a href="${policiesDocs.fileURL}"  class="fa fa-file-text"></a></span>
 					<strong>
 						<p>${policiesDocs.fileName}</p>
 				
 					<div>
-	                    <input id="policyCheck${policiesDocs.id}" class="checkbox-custom" ${policiesDocs.documentStatus  == 'ACCEPTED' ? 'checked' : ''}  onclick="acceptPolicy('${policiesDocs.documentUUID}')" type="checkbox" checked="checked">
+	                    <input id="policyCheck${policiesDocs.id}" class="checkbox-custom" ${policiesDocs.documentStatus  == 'ACCEPTED' ? 'checked' : ''}  onclick="acceptPolicy('${policiesDocs.documentUUID}')" type="checkbox">
 	                    
 	                    <label for="policyCheck${policiesDocs.id}" class="checkbox-custom-label">&nbsp;&nbsp;<b>Accept Policy</b></label>
 	                </div>
@@ -203,7 +192,8 @@
   </div>		  
 		  
 <div class="welBtns">
-	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='/onboardingCandidateSetp2'/>'" >
+
+	<input type="button"  value="Previous" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/onboardingCandidateTaxDetails'/>'" >
 	<input type="button"  value="Proceed to next step" id="save_button"  onclick="saveOnboardingCandidateDocs();" class="Brig">
 	<div class="clearfix"></div>
 </div>
@@ -213,14 +203,14 @@
   
   </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> 
-  <script src="resources/js/jquery.dataTables.min.js"></script> 
-  <script src="resources/js/moment.min.js"></script> 
-  <script src="resources/js/jquery-ui.min.js"></script> 
-  <script src="resources/js/bootstrap-select.min.js"></script> 
-  <script src="resources/js/bootstrap.min.js"></script> 
-  <script src="resources/js/masterHeaderAction.js"></script> 
-  <script src="resources/js/chosen.jquery.min.js"></script> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/moment.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/jquery-ui.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/masterHeaderAction.js?staticTime=${staticTime}"></script> 
+  <script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script> 
   
   <script type="text/javascript">
 			var config = {
@@ -243,13 +233,23 @@
 
 <script>
 function deleteDocument(documentUUID){
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/deleteOnboardCandidateUploadedDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(result) {
-	        	location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        success: function(response) {
+	        	if (response && response.response === "INVALID_DATA") {
+	        	    showError(response.responseMessage);
+	        	} else if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		location.replace(sourceleadUrl+"/onboardingCandidateSetp3");  
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
 }
@@ -258,13 +258,21 @@ function deleteDocument(documentUUID){
 
 <script>
 function acceptPolicy(documentUUID){
-	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
 	    	type: "POST",
 	    	 url: sourceleadUrl+"/acceptCandidatePolicyDocument?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
-	        success: function(result) {
-	        	$("#loading").removeAttr("style"); 
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		$("#loading").removeAttr("style"); 
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(sourceleadUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
 	        },
 	    });
 }
@@ -283,33 +291,28 @@ function saveOnboardingCandidateDocs(saveType){
 	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  if ($('#onboardCandidateDocs_form').validate(false, validationSettings)){ 
-		  var frm = $('#onboardCandidateDocs_form').serializeFormJSON();
-	      var con = JSON.stringify(frm);
-	      con = con.replace(/[{}]/g, "");
-	      
-	      //It will escape all the special characters
-	      var jsonData = encodeURIComponent(con);
-	      
-		   var form = $('#onboardCandidateDocs_form')[0];
-		   var formData = new FormData(form); 
-		
-	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$.ajax({
+		 var formData = getFormData1("onboardCandidateDocs_form");
+	   $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	   $.ajax({
 	        type : "POST",
 		      data: formData,
-		      contentType : 'application/json; charset=utf-8',
-		      enctype: 'multipart/form-data',
 	          processData: false,
 	          contentType:false,
-		      dataType : 'json',
-	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}&json="+jsonData,		
-		      success :function(result) {
-		    	  location.replace(sourceleadUrl+"/onboardingCandidateSetp4");  
-	      }
-	    	  
+	    	  url: sourceleadUrl+"/storeOnboardingCandidateDocsStep3?${_csrf.parameterName}=${_csrf.token}",		
+		      success :function(response) {
+		    	  if (response.response === "AWKWARD") {
+		    		    location.href = "/errorPage";
+		    		} else if (response.response === "SUCCESS") {
+		    			 location.replace(sourceleadUrl+"/onboardingCandidateStep4");  
+		    		} else if (response.indexOf('Sign In') !== -1) {
+		    			location.replace(sourceleadUrl);
+		    		} else {
+		    		    showError("Operation failed, please try again");
+		    		}
+	      	}
 	  });
 		return true;
-	  }else{
+	  } else {
 		  return false;
 	  }
 }
@@ -351,8 +354,16 @@ function saveOnboardingCandidateDocs(saveType){
 
 
 <script>
+
+
+function uploadContract(id){ 
+	fileUpload("uploadContractsFile"+id+"", "Welcome-Onboarding-Contract-Documents", "onboardCandidateDocs_form","uploadContractsFile");
+}
+function uploadForms(id){
+	fileUpload("uploadFormsFile"+id+"", "Welcome-Onboarding-Forms-Documents", "onboardCandidateDocs_form","uploadFormsFile");
+}
+ 
 function uploadFormFile(id){
-	 
 	 $("#uploadFormsFile"+id+"").val($("#uploadFormsBtn"+id+"").val().replace(/C:\\fakepath\\/i, ''));
 }
 
@@ -367,7 +378,7 @@ function uploadPoliciesFile(id){
 }
 	 
 </script>
-
+<script src="/resources/js/slead-common.js"></script>
 <script>
   function navtoggle(elementRef){
 	  
@@ -392,24 +403,11 @@ function uploadPoliciesFile(id){
   
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
 
-<script>
-		function logoutFormSubmit() {
-			document.getElementById("logoutForm").submit();
-		}
-</script>
 
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
 
-<form action="${logoutUrl}" method="post" id="logoutForm">
- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-</form>
-
-<script src="resources/js/formvalidator.js"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>

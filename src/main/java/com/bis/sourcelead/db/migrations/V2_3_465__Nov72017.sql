@@ -1,0 +1,3 @@
+set SQL_SAFE_UPDATES=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`= 'Dear {{ProposeNewTime.interviewerName}},\n\nPlease accept our sincere apologies as our applicant {{VendorProposeNewTime.applicantName}} unable to attend interview,the time you have scheduled. We request you to reschedule the interview based on applicant availability slots if possible. Applicant availability slots are below \n  Applicant Name : {{VendorProposeNewTime.applicantName}} \n  Job title : {{VendorProposeNewTime.requirementTitle}} \n Scheduled date : {{ProposeNewTime.interviewDate}} \n Scheduled Time : {{ProposeNewTime.interviewTime}} .\n {{VendorProposeNewTime.proposeNewTimeList}} ' WHERE `UNIQUE_SCENARIO_NAME`='VendorProposeNewTime' and `ENTITY_TYPE`='Email';
+set SQL_SAFE_UPDATES=1;

@@ -11,55 +11,26 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
 
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 
 <script type="text/javascript">
 //On document ready
 $(function(){
 	interViewTemplateList();
+	if('${type}' != 'undefined' && '${type}' != '' && '${type}' != null && '${type}' == 'addInterViewFeedBackTemplate'){
+		$("#add-tm").click();
+	}
 });
 </script>
 
 <style>
-.viewTemplate .sjfb-field {
-float: left; min-height: 36px; margin-bottom: 15px;
-}
-.viewTemplate .sjfb-field textarea {
-max-height: 65px;
-}
-.viewTemplate .sjfb-field  {
-width: 80%;
-margin: 0 0 10px 15px;
-}
-.viewTemplate .sjfb-field:nth-child(2n+2) {
-    margin-left: 15px;
-}
-.viewTemplate .sjfb-field label {
-float: left; width: 30%;
-}
-.sjfb-radio .choices-radio, .sjfb-checkbox .choices-checkbox {
-float: left; width: 70%;
-}
-.sjfb-radio .choices-radio label, .sjfb-checkbox .choices-checkbox label {
-	min-width: 20%;
-	width: 25%;
-	max-width: 50%;
-	position:relative;
-	padding-right: 10px;
-	padding-left: 30px;
-}
 .choices input[type="checkbox"], .choices input[type="radio"] {
-float: left;
-position: absolute;
-left:0;
+	float: left; position: absolute; left:0;
 }
-.viewTemplate .sjfb-field select {
--webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
-}
-.viewTemplate .sjfb-field select::-ms-expand {
-    display: none;
+.viewTemplate.viewTemplate_interviewfbt .sjfb-field select {
+ 	-webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; -o-appearance: none;
 }
 </style>
 
@@ -71,56 +42,63 @@ left:0;
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?"+tokenParamName+"="+tokenValue+"", 
 	        success: function(data) {
-	        var json = JSON.parse(data);
-			var result = "";
-	      
-				var result = "";
-				result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
-	        	result = result +'<thead>';
-	        	result = result +'<tr>';
-	        	result = result + '<th>Template Name</th>';
-	            result = result + '<th>Description</th>';
-	            result = result + '<th style="width:100px;">Action</th>';
-	        	result = result +'</tr>';
-	        	result = result +'</thead>';
-	        	result = result +'<tbody>';
-
-	        	for (var i=0; i<json.length; i++)
-				  {	        		
-	        		var opt = json[i];
-	        		result = result + '<tr>';
-	                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
-	                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
-	                result = result + '<td><div>';
-	                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
-	                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')">View</a>&nbsp;|&nbsp;';
-	                 '</sec:authorize>';
-	                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
-	                    result = result + '<a href="javascript:void(0)" >View</a>&nbsp;|&nbsp;';
-	                 '</sec:authorize>'; 
+	        	if (data.response === "FAILED") {
+  		    		showError(data.responseMessage);
+  		    	} else if (data.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (data.response === "SUCCESS") {
+  		    		var json = data.data;
+					var result = "";
+					result = result +"<table id='templatePagination' class='display' cellspacing='0' width='100%' >"; 
+		        	result = result +'<thead>';
+		        	result = result +'<tr>';
+		        	result = result + '<th>Template Name</th>';
+		            result = result + '<th>Description</th>';
+		            result = result + '<th style="width:100px;">Action</th>';
+		        	result = result +'</tr>';
+		        	result = result +'</thead>';
+		        	result = result +'<tbody>';
+	
+		        	for (var i=0; i<json.length; i++)
+					  {	        		
+		        		var opt = json[i];
+		        		result = result + '<tr>';
+		                result = result + '<td><div><span class="mid-span">'+opt.templateName+'</span></a></div></td>';
+		                result = result + '<td><div class="tbldata-dotdot" title="'+opt.description+'"><span class="mid-span">'+opt.description+'</span></div></td>';
+		                
+		                result = result + '<td><div>';
+		                 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
+		                    result = result + '<a href="javascript:void(0)" onclick="viewInterviewFeedbackTemplate('+opt.id+',\''+opt.templateName+'\')" title="View" class="mr10"><i class="fa fa-eye text-primary"></i></a>';
+		                 '</sec:authorize>';
+		                 
+		                 '<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+		                    result = result + '<a href="javascript:void(0)" title="View" class="mr10"><i class="fa fa-eye text-primary"></i></a>';
+		                 '</sec:authorize>'; 
+		                    
+	                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
+		                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')" title="Edit"><i class="fa fa-pencil"></i></a>';
+		                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
+	                    '</sec:authorize>';
 	                    
-                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">' 
-	                    result = result + '&nbsp;<a href="javascript:void(0)" onclick="addSubmissionTemplateFields('+opt.id+',\''+opt.templateName+'\')">Edit</a>';
-	                    result = result + '<input type="hidden" name="description" id="description'+opt.id+'" value="'+opt.description+'" >';
-                    '</sec:authorize>';
-                    '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
-                    result = result + '&nbsp;<a href="javascript:void(0)">Edit</a>';
-                  '</sec:authorize>'; 
-	                result = result +'</div></td>';
-	                result = result + '	 </tr>';
-				}  
-	        		
-	        	result = result +'</tbody>';
-	        	result = result +"</table>";
-    	       $("#clientSubmissionTemplateList").append(result); 
-    	       templatepagination();
-    	  
+	                    '<sec:authorize access="!hasAnyRole(\'ROLE_EDIT_INTEVIEW_FEEDBACK_TEMPLATE\')">'
+	                    result = result + '&nbsp;<a href="javascript:void(0)" title="Edit"><i class="fa fa-pencil"></i></a>';
+	                  '</sec:authorize>'; 
+	                  
+		                result = result +'</div></td>';
+		                result = result + '	 </tr>';
+					}  
+		        		
+		        	result = result +'</tbody>';
+		        	result = result +"</table>";
+	    	       $("#clientSubmissionTemplateList").append(result); 
+	    	       templatepagination();
+  		    	}else {
+		    		showError("Operation failed, please try again");
+		    	}
 	        },
 	    });
 	}
 </script>
-
-
 
 <script type="text/javascript">
 	function viewInterviewFeedbackTemplate(templateId,templateName) {
@@ -131,7 +109,7 @@ left:0;
 		result = result + '<h2>'+templateName+'</h2>';
         result = result + '</div>';
 
-        result = result + '<div id="interviewsjfb-fields" class="viewTemplate">';
+        result = result + '<div id="interviewsjfb-fields" class="viewTemplate viewTemplate_interviewfbt">';
         
         result = result + '</div>';
         result = result + '<div class="form-footer clearfix">';
@@ -145,9 +123,6 @@ left:0;
         
 	}
 </script>
-
-
-
 
 <script>
 function templatepagination(){  
@@ -259,8 +234,6 @@ function templatepagination(){
 	}
 </script>	
 
-
-
 <script type="text/javascript">
 function alertMessage(message){
 	var result = "";
@@ -284,15 +257,15 @@ function cancelPop(){
 }
 </script>
 
-
 <script type="text/javascript">
    	$('body').on('submit', '#sjfb', function(e){
 	  if ($(this).validate(false, validationSettings)){
         e.preventDefault();
         var frm = $('#sjfb').serializeFormJSON();
-        var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
-        var jsonData = encodeURIComponent(con);
+        var jsonData = JSON.stringify(frm);
+        
+        var form = $('#sjfb')[0];
+	    var formData = new FormData(form); 
         var isRemoved = '';
         var isLabelModified = 'N';
         //Loop through fields and save field data to array
@@ -378,15 +351,19 @@ function cancelPop(){
         var sourceleadUrl ='${sourceleadUrl}';
         //Save form to database
         //Demo doesn't actually save. Download project files for save
-        var con2 = JSON.stringify(fields);
-        var jsonStringData = encodeURIComponent(con2);
+        var jsonStringData = JSON.stringify(fields);
+        formData.append("jsonStringData",jsonStringData);
+	      formData.append("jsonData",jsonData); 
         if( myArray.length > 0){
             if(submitTemplate){
             	$("#save_button").attr("disabled", "disabled");
             	$( "#save_button" ).addClass('button').val('Processing..');
             	  $.ajax({
           	    	type: "POST",
-          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+          	    	data: formData,
+          	    	 processData: false,
+ 	    	        contentType:false,
+          	        url: sourceleadUrl+"/saveInterviewFeedBackTemplate?"+tokenParamName+"="+tokenValue+"&templateId="+templateId, 
           	        success: function(result) {
           	        	if((result == 'interViewFeedBackTemplate')){
           	        		location.replace(sourceleadUrl+"/interViewFeedBackTemplate"); 
@@ -419,6 +396,7 @@ function cancelPop(){
     $('#sjfb').validateOnBlur(false, validationSettings); 
   
   </script>
+
   <script type="text/javascript">
 function cancel(){
 	$("#popUp").empty();
@@ -458,7 +436,6 @@ function validateTemplateName(){
 }
 </script>
  
- 
  <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
@@ -467,7 +444,6 @@ function validateTemplateName(){
 			dateFormat : 'yyyy/mm/dd' 
             };
 </script> 
-
 
 <script type="text/javascript">
 	(function($) {
@@ -496,33 +472,26 @@ function validateTemplateName(){
     <div class="pull-left">
       <h2>Interview Templates</h2>
     </div>
-    <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Interview Templates</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo;  <a href="<c:url value='${appPath}/settings'/>">Settings</a>&raquo; <a href="<c:url value='${appPath}/orgTemplates'/>"> Templates</a> &raquo; Interview Templates</div>
   </section>
-  <div class="timesheet_out">
-    <div class="vendor_wrap">
-	      <div class="timesheet_head timesheet_head_11"  id="addTemplate" style="min-height:35px">
-	        <ul>
-	        <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE')">
-	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm"><i class="fa fa-plus"></i>Add Interview Template</a></li>
-	        </sec:authorize>
-	          <div class="clearfix"></div>
-	        </ul>
-	        <div class="clearfix"></div>
-	      </div>
-	       <div class="project_tabs_inn_table vendor_wrap_inn_table">
-	          <div id="clientSubmissionTemplateList" class="datatable_filter"></div>
-	       </div> 
-	       
-	       <div id="templateList"></div>
-	            
-       </div>
-	    <!-- <div class="side_mask">
-	      <div class="proj_close"></div>
-	    </div> -->
-    
-    <!-- Project --> 
-  </div>
   
+    <div class="vendor_wrap">
+    
+	 <div class="reportHead reportHeadDataTab clearfix" id="addTemplate">
+	    <ul class="pull-right list-unstyled list-inline">
+	        <sec:authorize access="hasAnyRole('ROLE_CREATE_INTEVIEW_FEEDBACK_TEMPLATE')">
+	          <li><a onClick="addSubmissionTemplateFields();" id="add-tm" class="newAdBtn">+ Interview Template</a></li>
+	        </sec:authorize>         
+		</ul>
+	</div>	    
+	      
+      <div class="project_tabs_inn_table">
+         <div id="clientSubmissionTemplateList" class="datatable_filter dataSeaTop"></div>
+      </div> 
+      
+      <div id="templateList"></div>
+           
+</div>
 </section>
 
 <script>
@@ -552,7 +521,7 @@ function scrollToBottom(){
 </body>
 
 
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div>  
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 </html>
 <%-- <jsp:include page="masterFooter.jsp" /> --%>
 
@@ -691,14 +660,14 @@ function generateTemplateForm(sourceleadUrl,templateId) {
 
                      case 'radio':
                          return '' +
-                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
+                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio sjfbRadio">' +
                              '<label></label>' +
                              '<div class="choices choices-radio"></div>' +
                              '</div>';
 
                      case 'checkbox':
                          return '' +
-                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
+                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox sjfbCheckbox">' +
                              '<label class="sjfb-label"></label>' +
                              '<div class="choices choices-checkbox"></div>' +
                              '</div>';
@@ -710,7 +679,5 @@ function generateTemplateForm(sourceleadUrl,templateId) {
     
     
 }
-
-
 </script>
 <jsp:include page="../masterFooter.jsp" />	

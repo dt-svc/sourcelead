@@ -4,17 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 /**
  * Entity for CONTRACTS_TEMPLATE
@@ -23,8 +19,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 
 @Entity
-@Table(name = "CONTRACTS_TEMPLATE", catalog = "sourcelead")
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "contractsTemplate")
+@Table(name = "CONTRACTS_TEMPLATE")
 public class ContractsTemplate {
 	
 	private static final long serialVersionUID = 1L;
@@ -37,21 +32,22 @@ public class ContractsTemplate {
 	@Column(name = "TEMPLATE_NAME")
 	private String templateName;
 	
-	@NotFound(action=NotFoundAction.IGNORE)
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ORGLOCATION_ID", nullable=false )     
 	private OrgLocations orgLocationId;
 	
 	@Column(name = "TEMPLATE_TYPE")
 	private String templateType;
 	
-	@Column(name = "LETTER_HEAD")
-	private String letterHead;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "LETTER_HEAD")
+	private LetterHead letterHead;
 	
 	@Column(name = "DESCRIPTION",columnDefinition = "TEXT default NULL")
 	private String description;
 	
-	@Column(name = "TEMPLATE_CONTENT",columnDefinition = "TEXT default NULL")
+	@Column(name = "TEMPLATE_CONTENT",columnDefinition = "LONGTEXT default NULL")
 	private String templateContent;
 	
 	@Column(name = "TEMPLATE_UUID")
@@ -121,13 +117,12 @@ public class ContractsTemplate {
 		this.templateType = templateType;
 	}
 
-	public String getLetterHead()
-	{
+
+	public LetterHead getLetterHead() {
 		return letterHead;
 	}
 
-	public void setLetterHead(String letterHead)
-	{
+	public void setLetterHead(LetterHead letterHead) {
 		this.letterHead = letterHead;
 	}
 
