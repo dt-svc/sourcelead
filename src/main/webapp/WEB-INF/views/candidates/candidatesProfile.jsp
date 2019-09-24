@@ -1034,11 +1034,11 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 							result = result +'		          <h2 class="education  pull-left">Immigration Status:</h2>';
 							if(candidateType == "Candidates"){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
+								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Visa</button></span>';
 								 '</sec:authorize>';
 							}else{
 								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
+								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Visa</button></span>';
 								'</sec:authorize>';
 							}
 							result = result +'		          <span id="saveVisaBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
@@ -2080,29 +2080,26 @@ function  removeValiationVendorContact() {
  
  <!-- Visa Type Script View/edit script start here -->
  <script>
-	function editVisa(candidateId){
+	function editVisa(candidateId,isAssociate,candType){
 		$("#visaName").prop('disabled', false).trigger("chosen:updated");
 		$("#editVisaBtn").remove();
 		$("#editVisaBtnSpan").hide();
 // 		window.visaCountBefore = $("#visaName :selected").length;
 		var result = '';
-		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+');">Save Visa</button>';
+		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Save Visa</button>';
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 	    
 	}
 
-	function saveVisa(candidateId){
+	function saveVisa(candidateId,isAssociate,candType){
 		$("#visaName").prop('disabled', true).trigger("chosen:updated");
-// 		window.visaCountAfter = $("#visaName :selected").length;
-// 		if(visaCountBefore != visaCountAfter){
-		saveVisas(candidateId);
-// 		}
+		saveVisas(candidateId,isAssociate,candType);
 		$("#saveVisaBtn").remove();
 		$("#saveVisaBtnSpan").hide();
 		var result = '';
-		result = result + '<button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button>';
+		result = result + '<button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Visa</button>';
 		$("#editVisaBtnSpan").empty();
 		$("#editVisaBtnSpan").append(result);
 		$("#editVisaBtnSpan").show();
@@ -2113,15 +2110,15 @@ function  removeValiationVendorContact() {
 
 
 <script>  
- function saveVisas(candidateId) {
+ function saveVisas(candidateId,isAssociate,candType) {
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&visaName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -2136,8 +2133,8 @@ function  removeValiationVendorContact() {
               		} else if (result.response === "SUCCESS") {
               			showSuccessStatusPopup("Visa details updated successfully");
               			var candidateType = "Candidates";
-              	  	  	candidateProfile(candidateId,candidateType);
-               	  	//candidateQuickViewProfile(candidateId);
+              			candidateProfile(candidateId,candidateType,isAssociate,candType);
+                  	  	candidateQuickViewProfile(candidateId,candType);
               		} else if (result.indexOf('Sign In') !== -1) {
 	              		location.replace(sourceleadUrl);
 	              	} else {

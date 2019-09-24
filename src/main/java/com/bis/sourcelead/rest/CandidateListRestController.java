@@ -2057,26 +2057,42 @@ public class CandidateListRestController {
 	@RequestMapping(value = {"/saveOrUpdateOnlyVisaBycandidateId","/rest/saveOrUpdateOnlyVisaBycandidateId"})
 	public Response<String> saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
+			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
-				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
-				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
-				StringBuffer activitySummary = new StringBuffer();
-//				if (null != can && StringUtils.isNotEmpty(visaName)) {
-					activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
-							.append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
-							.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
-					can.setVisaType(visaName);
-					candidateService.saveOrUpdateCandidate(can);
-					candidateService.saveOrUpdateCandidateElkDocument(can);
-					candidateActivityCommonUtil.storeCandidateHistory(can, user);
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
-							activitySummary.toString(), "CANDIDATE");
-					// return "success";
-//				}
+				
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+					OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+					StringBuffer activitySummary = new StringBuffer();
+						activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
+								.append(candidateGlobal.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
+								.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
+						candidateGlobal.setVisaType(visaName);
+						candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+						CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
+						candidateActivityCommonUtil.storeCandidateGlobalHistory(candidateGlobal, user);	
+						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_VISA_UPDATED,
+								activitySummary.toString(), "CANDIDATE");
+				}else {
+					Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+					OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
+					StringBuffer activitySummary = new StringBuffer();
+						activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
+								.append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
+								.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
+						can.setVisaType(visaName);
+						candidateService.saveOrUpdateCandidate(can);
+						candidateService.saveOrUpdateCandidateElkDocument(can);
+						candidateActivityCommonUtil.storeCandidateHistory(can, user);
+						candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
+								activitySummary.toString(), "CANDIDATE");
+				}
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
