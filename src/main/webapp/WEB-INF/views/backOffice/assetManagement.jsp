@@ -773,11 +773,11 @@ function projectAssetPaginations(url){
 	   				 var selected4 = '';
 	   				 var selected5 = '';
 	   				 
-			  		 if(report.workingStatus == 'Assigned '){
+			  		 if(report.workingStatus == 'Assigned'){
 						selected1 = 'selected';
 					 } 
 			  		 
-			  		if(report.workingStatus == 'unassigned '){
+			  		if(report.workingStatus == 'unassigned'){
 						selected2 = 'selected';
 					 } 
 				
