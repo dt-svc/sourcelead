@@ -3261,4 +3261,13 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 	public List<LcaDTO> getAssociateLcaDetails(Long candidateId) {
 		return immigrationCommonDao.getAssociateLcaDetails(candidateId);
 	}
+	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate) throws Exception {
+		return immigrationCommonDao.getAllPassportList(expectedExpiryDate);
+	}
+
+	@Override
+	public List<CandidateVisaHistory> getAllVisaHistoryList(Date expectedExpiryDate) throws Exception {
+		return immigrationCommonDao.getAllVisaHistoryList(expectedExpiryDate);
+	}
+
 }
