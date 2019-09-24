@@ -855,7 +855,6 @@ public class RequirementWorkflowController {
 				paramsMap.put("candidate", candidate);
 				paramsMap.put("orgLocations", orgLocations);
 				paramsMap.put("loginUser", loginUser);
-				paramsMap.put("templateId", quesionnaireId);
 				paramsMap.put("templateUuid", questionnaireUuid);
 				paramsMap.put("stageName", stageName);
 				paramsMap.put("jobTitle", jobTitle);

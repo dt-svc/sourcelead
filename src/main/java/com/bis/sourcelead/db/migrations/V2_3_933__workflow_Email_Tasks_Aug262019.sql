@@ -6,10 +6,10 @@ VALUES('workflowStageTaskMail',
 			'Email', 
 			'workflowStageTaskMail', 
 			'NULL', 
-			'TASK_TITLE',
+			'New workflow task assigned',
 			'org', 
 			'Best Regards, \n [LOGIN_USER]\n [LOGIN_ORG]', 
-			'Dear [ASSIGNED_USER],\n[TASK_DESCRIPTION]\n\nFor more details please login to SourceLead\n\n[LOGIN_LINK]',
+			'Dear [ASSIGNED_USER],\nNew workflow [TASK_DESCRIPTION] assigned. \n\nFor more details please login to SourceLead\n\n[LOGIN_LINK]',
 			'N', 'SLADMIN', 'slead', 'sleadIN', 34,1,'Y');
 			
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'taskDescription', '[TASK_DESCRIPTION]');		
