@@ -154,7 +154,7 @@ public class AssetDaoImpl implements AssetDao{
 		}
 		
 		if (Arrays.asList(status).contains("Assigned ")) {
-			subquery2 = subquery2 + "asset.workingStatus = 'Assigned ' OR ";
+			subquery2 = subquery2 + "asset.workingStatus = 'Assigned' OR ";
 		}
 		
 		if (Arrays.asList(status).contains("unassigned")) {
@@ -251,7 +251,7 @@ public class AssetDaoImpl implements AssetDao{
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
 		 if (Arrays.asList(status).contains("Assigned ")) {
-				subquery2 = subquery2 + "asset.workingStatus = 'Assigned ' OR ";
+				subquery2 = subquery2 + "asset.workingStatus = 'Assigned' OR ";
 			}
 		 
 		 if (Arrays.asList(status).contains("unassigned")) {
@@ -544,7 +544,7 @@ public class AssetDaoImpl implements AssetDao{
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
 		 if (Arrays.asList(status).contains("Assigned ")) {
-				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Assigned ' OR ";
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Assigned' OR ";
 			}
 		 
 		 if (Arrays.asList(status).contains("unassigned")) {
