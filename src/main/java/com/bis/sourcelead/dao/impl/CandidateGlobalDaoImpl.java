@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateGlobalDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
@@ -169,6 +170,52 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 		candidatehistoryList.add(candidateHistory);
 		return candidatehistoryList;
 	
+	}
+
+
+	@Override
+	public CandidateGlobal getCandidateGlobalByEmailAndRecruiterUserId(String email, Long recruiterUserId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateGlobal candidate  where candidate.email = :email and candidate.candidateType = 'Candidate' and candidate.recruiterUserId.id = :recruiterUserId ";
+		List<CandidateGlobal> candidateList = session.createQuery(query).setLong("recruiterUserId", recruiterUserId)
+				.setString("email", email).list();
+		CandidateGlobal candidate = null;
+		if (candidateList != null && candidateList.size() > 0) {
+			candidate = (CandidateGlobal) candidateList.iterator().next();
+		}
+		return candidate;
+	}
+
+
+	@Override
+	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateGlobal cnadidate left join fetch cnadidate.parentCandidateId  where cnadidate.id = :candidateId and cnadidate.orgLocationId.id =:orgLocationId";
+		List<CandidateGlobal> candidateList = session.createQuery(query).setLong("candidateId", candidateId)
+				.setLong("orgLocationId", orgLocationId).list();
+		CandidateGlobal candidate = null;
+		if (candidateList != null && !candidateList.isEmpty()) {
+			candidate = candidateList.iterator().next();
+		}
+		return candidate;
+	}
+
+
+	@Override
+	public CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateGlobal> candidate = new ArrayList<CandidateGlobal>();
+		logger.debug("getCandidateGlobalByUUID start");
+		candidate = session.createQuery("from CandidateGlobal candidate where candidate.candidateUUID = :candidateUUID")
+				.setString("candidateUUID", candidateUUID).list();
+		logger.debug("getCandidateGlobalByUUID end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
 	}
 
 }

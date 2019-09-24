@@ -14,6 +14,9 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateGlobalDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateGlobalIndexHelper;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
@@ -30,6 +33,12 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	
 	@Autowired
 	CandidateGlobalDao candidateGlobalDao;
+	
+	@Autowired
+    private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	CandidateGlobalIndexHelper candidateGlobalIndexHelper;
 
 	@Override
 	public CandidateGlobal getCandidateGlobalByCandidateId(Long candidateGlobalId) throws Exception {
@@ -148,6 +157,24 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	@Override
 	public HashSet<CandidateHistory> getCandidateGlobalHistoryDetails(CandidateGlobal candidate, User user) throws Exception {
 		return candidateGlobalDao.getCandidateGlobalHistoryDetails(candidate, user);
+	}
+
+	@Override
+	public void saveOrUpdateCandidateGlobalElkDocument(CandidateGlobal candidateGlobal) throws Exception {
+		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
+		
+	}
+
+	@Override
+	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId, Long orgLocationId)
+			throws Exception {
+		return candidateGlobalDao.getCandidateGlobalByCandidateIdAndOrgLocationId(candidateId, orgLocationId);
+	}
+
+	@Override
+	public CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception {
+		return candidateGlobalDao.getCandidateGlobalByUUID(candidateUUID);
 	}
 
 }

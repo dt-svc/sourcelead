@@ -22,7 +22,7 @@ public interface RequirementRateSubmissionNegotiationService {
 	
 	public List<RequirementRateSubmissionNegotiation> getAllRateHistoryBySubmissionIdAndCandidateId(Long submissionId, Long candidateId) throws Exception;
 	
-	public StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception;
+	public StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation>  negotiationList, Requirement requirement, Long submissionId, String type) throws Exception;
 
 	public RequirementRateSubmissionNegotiation getRequirementRateSubmissionByMaxId(Long submissionId);
 }

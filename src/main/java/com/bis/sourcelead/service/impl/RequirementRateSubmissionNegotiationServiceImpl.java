@@ -73,7 +73,7 @@ public class RequirementRateSubmissionNegotiationServiceImpl implements Requirem
 
 	@Override
 	public StringBuilder buildNegotiationHistory(List<RequirementRateSubmissionNegotiation> negotiationList,
-			Requirement requirement, Candidate candidate, Long submissionId, String type) throws Exception {
+			Requirement requirement,  Long submissionId, String type) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		

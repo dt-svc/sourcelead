@@ -6,6 +6,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 
@@ -22,5 +23,7 @@ public interface RecommendationsService {
     String getCandidateScore(Candidate candidate,Requirement requirement, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception;
     
     ResponseList<CandidateIndex> getRecommendationsUpdateWithScoreByUsingElk(Long orgLocationId,RecommendedCustomizeScore recommendedCustomizeScore,Long requirementId, String candidatesSelected, CandidateDTO candidateDTO) throws Exception;
+    
+    String getCandidateGlobalScore(CandidateGlobal candidate,Requirement requirement, RecommendedCustomizeScore recommendedCustomizeScore) throws Exception;
     
 }

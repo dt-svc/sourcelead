@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
@@ -27,7 +28,7 @@ import com.bis.sourcelead.util.CommonUtil;
 public class CandidateGlobalIndexHelper {
 	
 	@Autowired
-    CandidateResumesService candidateResumesService;
+    CandidateResumesDao candidateResumesDao;
 	
 	@Autowired
 	UserService userService;
@@ -128,7 +129,7 @@ public class CandidateGlobalIndexHelper {
 				}
 			}
 			
-			CandidateResumesDTO candidateResumes = candidateResumesService.getCandidateGlobalLatesResumeDetails(candidate.getId());
+			CandidateResumesDTO candidateResumes = candidateResumesDao.getCandidateGlobalLatesResumeDetails(candidate.getId());
 			if(null != candidateResumes){
 				candidateIndex.setCurrentResumeId(candidateResumes.getResumeId().longValue());
 				candidateIndex.setCurrentResumeName(candidateResumes.getResumeName());

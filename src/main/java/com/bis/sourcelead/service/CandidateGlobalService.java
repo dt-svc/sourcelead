@@ -30,4 +30,10 @@ public interface CandidateGlobalService {
 	public CandidateGlobal findByCandidateGlobalEmail(String email,Long orgLocationId) throws Exception;
 	
 	HashSet<CandidateHistory> getCandidateGlobalHistoryDetails(CandidateGlobal candidate,User user) throws Exception;
+	
+	public void saveOrUpdateCandidateGlobalElkDocument(CandidateGlobal candidateGlobal) throws Exception;
+	
+	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
+	
+	CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception ;
 }

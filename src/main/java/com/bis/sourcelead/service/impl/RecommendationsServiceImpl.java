@@ -35,6 +35,7 @@ import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
@@ -581,6 +582,25 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	}
 
 	private CandidateIndex getCandidateIndex(Candidate candidate) {
+		CandidateIndex canIndex = new CandidateIndex();
+		if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
+			canIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));
+		}
+		if(StringUtils.isNotEmpty(candidate.getExperienceYears())){
+			canIndex.setExperienceYears(Integer.parseInt(candidate.getExperienceYears()));
+		}
+		canIndex.setRateType(candidate.getRateType());
+		if(null != candidate.getExpectedRate() && !"".equalsIgnoreCase(candidate.getExpectedRate())){
+			canIndex.setExpectedRate(Float.parseFloat(candidate.getExpectedRate()));
+		}
+		canIndex.setNoticePriod(candidate.getNoticePeriod());
+		canIndex.setCity(candidate.getCity());
+		canIndex.setState(candidate.getState());
+		canIndex.setCountry(candidate.getCountry());
+		return canIndex;
+	}
+	
+	private CandidateIndex getCandidateGlobalIndex(CandidateGlobal candidate) {
 		CandidateIndex canIndex = new CandidateIndex();
 		if(StringUtils.isNotEmpty(candidate.getExperienceMonths())){
 			canIndex.setExperienceMonths(Integer.parseInt(candidate.getExperienceMonths()));
@@ -1220,5 +1240,133 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 		}
 
 		return QueryBuilderList;
+	}
+
+	@Override
+	public String getCandidateGlobalScore(CandidateGlobal candidate, Requirement requirement,
+			RecommendedCustomizeScore recommendedCustomizeScore) throws Exception {
+
+		float locationPercentage = 0; // location 10%
+		float ratePercentage = 0;    // rate 10 %
+		float skillPercentage = 0; // skill = 20%
+		float percentPerSkill = 0;
+		float percentPerkeyword = 0; //keyword 20%
+		float noticePeriod = 0; // notice 10%
+		float expPercentage = 0; //  experience = 10%
+		float eduPer = 0; // 10 %
+		float visaPer = 0; // 10%
+		String reqSkills = "";
+		String candidateScore = null; 
+		if(null != recommendedCustomizeScore && null != recommendedCustomizeScore.getCustomizeSkills() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeSkills())){
+		     reqSkills = recommendedCustomizeScore.getCustomizeSkills();
+		     String visaType = null;
+		     if(recommendedCustomizeScore.getCustomizeVisatype() !=null){
+		    	  visaType = recommendedCustomizeScore.getCustomizeVisatype();
+		     }
+		     String education = null;
+		    if(recommendedCustomizeScore.getCustomizeEducation() !=null){
+		    	education = recommendedCustomizeScore.getCustomizeEducation();	
+		    }
+		     
+		     String [] numOfKeyWords = null;
+		     if(null != recommendedCustomizeScore.getCustomizeKeywords()){
+		    	 numOfKeyWords =  recommendedCustomizeScore.getCustomizeKeywords().split(",");
+		    	 percentPerkeyword = Integer.parseInt(recommendedCustomizeScore.getCustomizeKeywordsScore())/(float)numOfKeyWords.length;
+		     }
+		     
+		    	String [] reqMaxSkills = reqSkills.split(",");
+		    	String [] visatypeArr = null;
+		    	String [] educationsArr = null;
+		    	if(visatypeArr !=null){
+		    		visatypeArr = visaType.split(",");
+    			}
+		    	if(education !=null){
+		    		educationsArr = education.split(",");
+		    	}
+		    	
+				percentPerSkill = Integer.parseInt(recommendedCustomizeScore.getCustomizeSkillScore())/(float)reqMaxSkills.length;
+				float visaTypePercentage = 0;
+				float educationPercentage = 0;
+				if(visatypeArr !=null){
+					 visaTypePercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeVisatypecore())/(float)visatypeArr.length;
+				}
+				if(educationsArr !=null){
+					 educationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeEducationScore())/(float)educationsArr.length;
+				}
+				 
+				
+				int reqMinExp = 0;
+				int reqMaxExp = 0;
+				float percentPerMonthExp = 0;
+				String reqCity = "";
+				if(null != recommendedCustomizeScore.getCustomizeCity() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeCity())){
+					 reqCity = recommendedCustomizeScore.getCustomizeCity();
+				}
+				float requirementHourlyRate = 0;
+				// changed rate logic
+				if(null != recommendedCustomizeScore.getCustomizeRate() && !"".equalsIgnoreCase(recommendedCustomizeScore.getCustomizeRate())){
+					requirementHourlyRate = conversionUtil.getHourlyRate(recommendedCustomizeScore.getCustomizeRate(), recommendedCustomizeScore.getCustomizeRatetype());
+				}
+				// rate logic end
+		    	    CandidateIndex candidateIndex = getCandidateGlobalIndex(candidate);
+					int matchedSkillCount = 0;
+					int matchedVisaTypeCount = 0;
+					int matchedEducationCount = 0;
+					if(null  != candidate.getSkillsName()){
+						String[] skills = candidate.getSkillsName().split(",");
+						Set<String> set = new HashSet<String>(Arrays.asList(skills));
+						skillPercentage = getSkillPercentage(set,percentPerSkill,matchedSkillCount,reqSkills);
+					}
+					
+					if(candidate.getVisaType() !=null && !"".equalsIgnoreCase(candidate.getVisaType())){
+						String[] visa = candidate.getVisaType().split(",");
+						Set<String> set = new HashSet<String>(Arrays.asList(visa));
+						visaPer = getVisaTypePercentage(set,visaTypePercentage,matchedVisaTypeCount,visaType,recommendedCustomizeScore.getCustomizeVisatypecore());
+					}
+					
+					
+					if(null  != candidate.getCandidateEducation()){
+						Set<String> set = new HashSet<String>();
+						Set<CandidateEducation> edu = candidate.getCandidateEducation();
+						for(CandidateEducation can :edu){
+							set.add(can.getName());
+						}
+						 eduPer = getEducationPercentage(set,educationPercentage,matchedEducationCount,education,recommendedCustomizeScore.getCustomizeEducationScore());
+						
+					}
+					
+					//get the ExperiencePercentage
+					expPercentage = getExperiencePercentage(candidateIndex,recommendedCustomizeScore,reqMinExp,expPercentage,percentPerMonthExp,reqMaxExp);
+					
+					//get the RatePercentage
+					ratePercentage = getRatePercentage(candidateIndex,ratePercentage,recommendedCustomizeScore,requirementHourlyRate);
+					
+					// get the NoticeperiodPercentage
+					noticePeriod = getNoticeperiodPercentage(recommendedCustomizeScore,candidateIndex,noticePeriod);
+					
+					if(null != candidateIndex.getCity() && !"".equalsIgnoreCase(candidateIndex.getCity())){
+						if(candidateIndex.getCity().equalsIgnoreCase(reqCity)){
+							locationPercentage = Integer.parseInt(recommendedCustomizeScore.getCustomizeLocationScore());
+						}
+					}
+					
+					//keywords calculation
+				    float totalKeyWordPer = 0;
+					if(null != candidateIndex.getSummary() && null != numOfKeyWords){
+						for(int i=0;i<numOfKeyWords.length;i++){
+							if(candidateIndex.getSummary().contains(numOfKeyWords[i])){
+								totalKeyWordPer = totalKeyWordPer + percentPerkeyword;	
+							}
+						}
+					}
+					
+					float totalPercentage = skillPercentage+expPercentage+locationPercentage+ratePercentage+noticePeriod+totalKeyWordPer+eduPer+visaPer;
+					
+					double roundOff = Math.round(totalPercentage * 100.0) / 100.0;
+					candidateScore = String.valueOf(roundOff);		
+		 }
+		logger.info("....getRecommendationsWithScoreByUsingElk Method Ended...");
+		return candidateScore;
+	
 	}
 }

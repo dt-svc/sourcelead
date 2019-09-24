@@ -305,7 +305,7 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(StringUtils.isNotBlank(contractsDTO.getSubmissionOffersList())){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 			contracts.setRequirementSubmission(rs);
-			contracts.setCandidate(rs.getCandidate());			
+			//contracts.setCandidate(rs.getCandidate());			
 		}
 		
 		if(Constants.Client_SOW.equals(contractsDTO.getContractType()) || Constants.Vendor_SOW.equals(contractsDTO.getContractType())){
@@ -2260,7 +2260,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			}else{
 				RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 				contracts.setRequirementSubmission(rs);
-				contracts.setCandidate(rs.getCandidate());	
+				//contracts.setCandidate(rs.getCandidate());	
 			}
 		}
 		

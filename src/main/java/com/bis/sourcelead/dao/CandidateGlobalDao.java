@@ -3,7 +3,6 @@ package com.bis.sourcelead.dao;
 import java.util.HashSet;
 import java.util.List;
 
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
@@ -20,4 +19,10 @@ public interface CandidateGlobalDao {
 	public CandidateGlobal findByCandidateGlobalEmail(String email,Long orgLocationId) throws Exception;
 	
 	HashSet<CandidateHistory> getCandidateGlobalHistoryDetails(CandidateGlobal candidate,User user) throws Exception;
+	
+	CandidateGlobal getCandidateGlobalByEmailAndRecruiterUserId(String email, Long recruiterUserId) throws Exception;
+	
+	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
+	
+	CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception ;
 }
