@@ -232,11 +232,7 @@ function candidateEducationList(candidateId){
 <script>
 function educationPagination(){  
     $('#candidateEducationPagination').DataTable( { 
-    	"scrollCollapse": false,
-    	"lengthMenu": [[10, 15, 20, -1], [10, 15, 20, "All"]],
-    	"bLengthChange": true,
-    	"bDestroy": true,
-    	"ordering": true,
+    	"searching": false,
     	"oLanguage": {
      		"sSearch": "",
      		 "sZeroRecords": "", "sEmptyTable": ""
