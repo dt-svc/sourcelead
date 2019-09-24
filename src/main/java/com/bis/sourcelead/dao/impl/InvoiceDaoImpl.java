@@ -36,7 +36,6 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SearchDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
-import com.bis.sourcelead.entity.CandidatePassportVisa;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.CreditDebitLineItems;
 import com.bis.sourcelead.entity.CreditDebitNote;
