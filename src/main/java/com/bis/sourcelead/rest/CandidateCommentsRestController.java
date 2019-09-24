@@ -97,7 +97,7 @@ public class CandidateCommentsRestController {
 						submission.setId(Long.parseLong(submissionId));
 					}
 					if (Validator.validate(candidateCommentsDTO)) {
-					candidateCommentsService.storeCandidateComments(candidateCommentsDTO, user, candidate, orgLocation, submission);
+					candidateCommentsService.storeCandidateComments(candidateCommentsDTO, user, candidate.getId(), orgLocation, submission.getId());
 					SourceLeadSessionManager.setSessionAttribute(request, "resumeAddMessage", "Successfully you have added");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
