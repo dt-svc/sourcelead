@@ -2073,13 +2073,14 @@ public class ImmigrationController {
 
 	//visa
 	@RequestMapping(value = { "/deleteCandidateVisaDetails" })
-	public String deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId, HttpServletRequest request
+	public String deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request
 			) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
-		immigrationCommonService.removeCandidateVisaDetails(visaHistoryId);
+		immigrationCommonService.removeCandidateVisaDetails(visaHistoryId,candidateId,user, orgLocations);
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error("Exception while deleting visa history record.");
