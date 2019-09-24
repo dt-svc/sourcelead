@@ -495,7 +495,8 @@ function RequirementWorkflow(){
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
 			}
-			function getViewWorkflowStagesList() {
+		
+			this.getViewWorkflowStagesList = function() {
 				var filter = $("#searchtext").val();
 				$("li.widgetDiv").each(function() {
 					if ($(this).text().search(new RegExp(filter, "i")) < 0) {
