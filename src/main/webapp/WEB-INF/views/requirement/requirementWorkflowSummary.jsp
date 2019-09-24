@@ -19,6 +19,7 @@ $(document).ready(function() {
 	 getJobsTagsList(requirementId)
 	 if(type != null && type != '' && type != 'undefined'){
 		 sideBar(requirementId,type);
+		 requirementWorkflowStatusBar(requirementId);
 	 }
 	 
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
@@ -30,7 +31,7 @@ $(document).ready(function() {
   else if(submissionStatus == 'all'){
 	 $("#detailsTab").removeClass("current");
 	 $('li[name=applicantNotification]').addClass("current");
-	 requirementStatusBar(requirementId);
+	 requirementWorkflowStatusBar(requirementId);
 	 requirementPipeline(requirementId,"all");
 	 }  
  else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
