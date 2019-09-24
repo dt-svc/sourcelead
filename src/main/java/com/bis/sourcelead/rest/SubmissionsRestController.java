@@ -84,6 +84,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.RequirementSubmissionServiceImpl;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -186,6 +187,9 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	 @RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
@@ -851,7 +855,7 @@ public class SubmissionsRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
+		int percentage = candidateGlobalUtil.getCandidatePercentage(submission.getCandidate(),orgLocations);
 		submission.setProfilePercentage(percentage);
 		
 		List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(submission.getCandidate().getId(), orgLocations);
