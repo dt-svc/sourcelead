@@ -328,4 +328,8 @@ public interface ImmigrationCommonDao {
 	Lca updateLcaAvailablePositionsById(Lca lca);
 
 	public Lca getLcaNumber(String lcaNo) throws Exception;
+	
+	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate)throws Exception;
+	
+	public List<CandidateVisaHistory> getAllVisaHistoryList(Date expectedExpiryDate)throws Exception;
 }
