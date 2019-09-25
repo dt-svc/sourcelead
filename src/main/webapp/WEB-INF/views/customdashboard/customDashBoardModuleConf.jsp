@@ -6,7 +6,8 @@
 
 <script>
 $(document).ready(function(){
-	 getRoleBasedModules();
+	var custmConfUUID = '${customDashBoardConfUUID}';
+	 getRoleBasedModules(custmConfUUID);
 	});
 </script>
 
@@ -45,12 +46,10 @@ $(document).ready(function(){
   function saveCustomModuleConfiguration(){
 	  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	  var customDashBoardConfUUID = '${customDashBoardConfUUID}';
-	  alert(customDashBoardConfUUID);
 	  var subModuleIds = [];
 		 $("input[name='subModule[]']:checked").each( function (i) {
 			 subModuleIds[i] = $(this).val();
 		});
-		 alert(subModuleIds);
 		if(subModuleIds.length > 0){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
@@ -97,9 +96,9 @@ function cancel(){
 </script>
 
 <script>
-function getRoleBasedModules(){
+function getRoleBasedModules(custmConfUUID){
 	    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-		$.get(sourceleadUrl+"/getRoleBasedModules?"+tokenParamName+"="+tokenValue, function(res) {
+		$.get(sourceleadUrl+"/getRoleBasedModules?"+tokenParamName+"="+tokenValue+"&custmDashBoardConfUUID="+custmConfUUID, function(res) {
 		
 			var result = "";
 			var output = "";
@@ -119,10 +118,10 @@ function getRoleBasedModules(){
 					var opt = json.subTabsDTO[j];
 					output = output + '<li class="clearfix">';
 					if(opt.isSubTabConfigured == 'NO'){
-						output = output + '<input checked id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<input  id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
 						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
 					}else{
-						output = output + '<input id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<input checked id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
 						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
 					}
 					

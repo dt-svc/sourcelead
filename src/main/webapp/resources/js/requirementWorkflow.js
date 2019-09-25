@@ -507,12 +507,6 @@ function RequirementWorkflow(){
 				});
 			}
 
-			$("#searchtext").keyup(function(e) {
-				if (e.which == 13) {
-					getViewWorkflowStagesList();
-
-				}
-			});
 			
 			this.deleteRequirementWorkflowStages = function(deletedStageUuids, workflowUuid, stageName){
 				$.ajax({
