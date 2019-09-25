@@ -280,7 +280,9 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			ResponseList<RequirementQuestionnaireTemplateDTO> responseList = new ResponseList<>();
 // 
 		//Questionnaire sorting	
+			StringBuilder queryMidBuilder = new StringBuilder("");
 			StringBuilder queryEndBuilder = new StringBuilder("");
+			
 			if(StringUtils.isNotBlank(questionnaireDto.getSortColumn())) {
 				String colName = questionnaireDto.getSortColumn();
 				  if(questionnaireDto.getSortColumn().equalsIgnoreCase("name")){
@@ -291,16 +293,16 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 				}
 			  
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-				queryEndBuilder.append(" and ((rq.name like '%" + searchValue + "%' )");
-				queryEndBuilder.append(" or (rq.description like '%" + searchValue + "%' )");
-				queryEndBuilder.append(" or (rq.createdBy.lastName like '%" + searchValue + "%' ))");
-				queryEndBuilder.append(" or (rq.createdBy.firstName like '%" + searchValue + "%' ))");
+				queryMidBuilder.append(" and ((rq.name like '%" + searchValue + "%' )");
+				queryMidBuilder.append(" or (rq.description like '%" + searchValue + "%' )");
+				queryMidBuilder.append(" or (rq.createdBy.lastName like '%" + searchValue + "%' ))");
+				queryMidBuilder.append(" or (rq.createdBy.firstName like '%" + searchValue + "%' ))");
 				//query1.append(" or (tempView.status like '%" + searchValue + "%' )");
 			}
 			String query = " from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
 			String countQuery = "select count(*) from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
-			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocationId);
-			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocationId);
+			Query query1 = session.createQuery(query + queryMidBuilder + queryEndBuilder).setLong("orgLocationId", orgLocationId);
+			Query query2 = session.createQuery(countQuery + queryMidBuilder + queryEndBuilder).setLong("orgLocationId", orgLocationId);
 			countlist = query2.list();
 			int totalCount = 0;
 			if (questionnaireDto != null) {
@@ -1207,5 +1209,22 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 				return Constants.FAILED;
 			}
 		}
+		
+		@Override
+		public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) {
+			logger.debug("Running getRequirementWorkFlowTasksBycurrentStageUuid DAO");
+			RequirementWorkFlow requirementWorkFlow = null;
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.id =:workflowId and requirementWorkFlow.orgLocationId.id =:id";
+				requirementWorkFlow =  (RequirementWorkFlow) session.createQuery(query).setString("workflowId", workflowId).setLong("id", id).uniqueResult();
+				return  requirementWorkFlow;
+			} catch (Exception e) {
+				logger.error(e+" in getRequirementWorkflowByNameAndOrgLocationId DAO");
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
 	 }
 
