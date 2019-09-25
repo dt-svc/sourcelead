@@ -1479,8 +1479,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	       String dateAndTime= formatter.format(date);
 			
 			EmailMessage emailMessage = new EmailMessage();
-			emailMessage.setFirstName(user.getFirstName());
-			emailMessage.setLastName(user.getLastName());
+			emailMessage.setFirstName(assignUser.getFirstName());
+			emailMessage.setLastName(assignUser.getLastName());
 			emailMessage.setToEmail(assignUser.getEmail());
 			emailMessage.setFromEmail(user.getEmail());
 			emailMessage.setCreatedBy(user.getUserCode());
