@@ -1,6 +1,7 @@
 package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.bis.sourcelead.annotations.Required;
 
@@ -44,6 +45,7 @@ public class ImmigrationVisaDTO implements Serializable{
 
 	private String updatedBy;
 
+	private List<Long> expiredVisaLst;
 
 	public Long getId() {
 		return id;
@@ -164,6 +166,14 @@ public class ImmigrationVisaDTO implements Serializable{
 
 	public void setCurrentStatus(String currentStatus) {
 		this.currentStatus = currentStatus;
+	}
+
+	public List<Long> getExpiredVisaLst() {
+		return expiredVisaLst;
+	}
+
+	public void setExpiredVisaLst(List<Long> expiredVisaLst) {
+		this.expiredVisaLst = expiredVisaLst;
 	}
 
 }
