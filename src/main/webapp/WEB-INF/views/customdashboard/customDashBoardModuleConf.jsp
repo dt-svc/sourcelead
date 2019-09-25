@@ -6,7 +6,8 @@
 
 <script>
 $(document).ready(function(){
-	 getRoleBasedModules();
+	var custmConfUUID = '${customDashBoardConfUUID}';
+	 getRoleBasedModules(custmConfUUID);
 	});
 </script>
 
@@ -97,9 +98,9 @@ function cancel(){
 </script>
 
 <script>
-function getRoleBasedModules(){
+function getRoleBasedModules(custmConfUUID){
 	    var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-		$.get(sourceleadUrl+"/getRoleBasedModules?"+tokenParamName+"="+tokenValue, function(res) {
+		$.get(sourceleadUrl+"/getRoleBasedModules?"+tokenParamName+"="+tokenValue+"&custmDashBoardConfUUID="+custmConfUUID, function(res) {
 		
 			var result = "";
 			var output = "";
@@ -119,10 +120,10 @@ function getRoleBasedModules(){
 					var opt = json.subTabsDTO[j];
 					output = output + '<li class="clearfix">';
 					if(opt.isSubTabConfigured == 'NO'){
-						output = output + '<input checked id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<input  id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
 						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
 					}else{
-						output = output + '<input id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
+						output = output + '<input checked id="sTab'+opt.subTabId+'" value="'+opt.subTabId+'" class="checkbox-custom" name="subModule[]" type="checkbox">';
 						output = output + '<label for="sTab'+opt.subTabId+'" class="checkbox-custom-label paddingright">'+opt.subTabDisplayName+'</label>';
 					}
 					

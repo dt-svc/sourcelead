@@ -310,7 +310,7 @@
 					</div>
 				</div>
 				
-				<%--  <div class="col-md-2 reportNewCta">
+				 <%-- <div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
