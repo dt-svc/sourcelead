@@ -999,7 +999,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		  queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.id = :workflowId and  req.orgLocationId.id = :orgLocationId and req.closedDate is null )";
 			subList =  session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setMaxResults(1).list();
 		}else {
-			queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.uuid = :workflowUuid and  req.orgLocationId.id = :orgLocationId req.closedDate is null)";
+			queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.uuid = :workflowUuid and  req.orgLocationId.id = :orgLocationId and req.closedDate is null )";
 			subList =  session.createQuery(queryString).setString("workflowUuid", workflowUuid).setLong("orgLocationId", orgLocationId).setMaxResults(1).list();
 		}
 		System.out.println(queryString);

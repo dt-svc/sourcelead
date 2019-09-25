@@ -1261,10 +1261,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			    Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), newDate);
 			    
 			  if(candRecentVisaDetails == null) {
-				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
+				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId().toString(), null);
 			  }else {
 				  	visaDto.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
-				    candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
+				    candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId().toString(), null);
 			  }
 			
 			}
@@ -1273,7 +1273,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 				candidatePassport = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
-						immigration.getId());
+						immigration.getId().toString());
 			}
 				candidateVisaMap.put(candidateVisa.getVisaNumber(), candiateId); 
 			  //preparing map not to regenerate the petition for the same visa,  for same candidate, for multiple records for same visa number
