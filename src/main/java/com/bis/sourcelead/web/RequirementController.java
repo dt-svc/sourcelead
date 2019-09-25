@@ -597,12 +597,6 @@ public class RequirementController {
 		// workflow List commented by SRINIVAS SABBU.
 		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
 		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		if (workflowList == null || workflowList.size() == 0) {
-			User user = new User();
-			user.setId(userId);
-			requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
-			workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		}
 		if (workflowList != null && workflowList.size() > 0) {
 			model.addObject("workflowList", workflowList);
 		}
