@@ -1034,8 +1034,20 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		try {
 			if(!stageShortCode.equalsIgnoreCase("REQUEST_SENT")) {
 			  Session session = this.sessionFactory.getCurrentSession();
-			 String query = "from RequirementWorkFlowStages worflowstages where worflowstages.requirementWorkFlowId.id =:workflowId and worflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) and worflowstages.orgLocationId.id=:orgLocationId order by worflowstages.seqOrder";
-			 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
+			
+			  String query = "from RequirementWorkFlowStages workflowstages where workflowstages.requirementWorkFlowId.id =:workflowId "
+						 		+ "and workflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) "
+							    +" and workflowstages.orgLocationId.id=:orgLocationId ";
+			   // Below condition is added not show show interview and offer stage in drop down list added by SRINIVAS SABBU ON 25-SEP-2019.
+			    if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
+					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
+				} else if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
+					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
+				} else {
+					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
+				}
+			     query =query	+ " order by workflowstages.seqOrder";
+			    workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
 			}else {
 				//we are adding manually two stage for REQUEST_SENT because we don't have default stage workflow stages.
 				workflowStagesList = new ArrayList<RequirementWorkFlowStages>();
