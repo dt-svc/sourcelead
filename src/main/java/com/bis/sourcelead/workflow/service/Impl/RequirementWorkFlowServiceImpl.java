@@ -1194,11 +1194,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
 		
 		try {
-		User candidate = (User) paramList.get("candidate");
+		Candidate candidate = (Candidate) paramList.get("candidate");
 		User loginUser = (User) paramList.get("loginUser");
 		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
 		String templateUuid = (String) paramList.get("templateUuid");
-		String templateId = (String) paramList.get("templateId");
 		String stageName = (String) paramList.get("stageName");
 		String jobTitle = (String) paramList.get("jobTitle");
 		String stageUuid = (String) paramList.get("stageUuid");
@@ -1255,10 +1254,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 StringBuilder actionLinkBuilder = new StringBuilder();
 		 String actionLink =actionLinkBuilder.append("").append(sourceleadUrl).append("/").append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageUuid=")
 					                 .append(stageUuid).append("&submissionId=").append(submissionId).toString();	 
-		 if(candidate.getFirstName()!=null){
+		 if(candidate.getConsultantUser() !=null &&  candidate.getConsultantUser().getFirstName()!=null){
 			 String notificationbody = emailScenerioUtil.buildTemplateBody(noificationEmailScenario.getBody(),globalVarsMap,noificationEmailScenario);
 			 noificationEmailScenario.setBody(notificationbody);
-			 emailScenerioUtil.sendNotification(actionLink, loginUser, candidate, orgLocations, noificationEmailScenario,new HashMap<String,String>());
+			 emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocations, noificationEmailScenario,new HashMap<String,String>());
 		 }
 		}catch(Exception e) {
 			e.printStackTrace();

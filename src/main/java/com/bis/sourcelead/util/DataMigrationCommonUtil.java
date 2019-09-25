@@ -1708,10 +1708,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
 					}
 				}
-				
+				// add unassigned and end of life options are added in asset working status
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
-					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
+					if(status.equalsIgnoreCase("assigned") || status.equalsIgnoreCase("unassigned") || status.equalsIgnoreCase("end of life") || status.equalsIgnoreCase("out of service")){
 						// capitalize the words starting letter
 						status=	WordUtils.capitalizeFully(status);
 						dataMigrationDTOJsonCopy.put("workingStatus", status);
