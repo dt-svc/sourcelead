@@ -8,7 +8,14 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </script>
 	<script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 	<script>
-	deletedStageUuids.length = 0;
+	$(document).ready(function() {
+		$("#searchtext").keyup(function(e) {
+			if (e.which == 13) {
+				requirementWorkflow.getViewWorkflowStagesList();
+
+			}
+		});
+	});
 </script>
 <div class="wraper"> 
 <div id="popUp"></div>
