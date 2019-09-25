@@ -1211,7 +1211,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     // below line commented for saving any stage for dynamic workflow name. updated by SRINIVAS SABBU.
    // else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
 	 else if(selectBox){ // skip stage name check for dynamic workflow stages.
-    	$.ajax({
+		 $.ajax({
     	      type : "POST",
     	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
     	    	success :function(data) {
@@ -1252,7 +1252,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		    			result = result+" and "+responseData.tasksCount +" task(s) ";
 		    		}
 		    		result =result+"for the "+responseData.stageName +"</div>";
-		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 		    		result = result +" </div>";
 					$("#popUp").append(result);
 					$("#popUp").show();
@@ -1288,13 +1288,13 @@ function showSuccessMsg(msg){
 	setTimeout(function(){ $('#selector11').hide();$('#msgDiv').text("") }, 1000);
 }
 
-   function sendEmailQuestionaireAndCopyTasksToCandidate(questionnaireId, submissionId, stageName, stageId, questionnaireUuid) {
+   function sendEmailQuestionaireAndCopyTasksToCandidate(questionnaireId, submissionId, stageName, stageId, questionnaireUuid, stageUuid) {
 	   $("#popUp").hide(); $(".project_inn_mask").fadeOut(200);
 	  var jobTitle =  $('#id1').text().trim(); // for the rquirement name .
 	   $.ajax({
 		      type : "GET",
 		      url: sourceleadUrl+"/sendEmailQuestionniareAndCopyTasks?quesionnaireId="+questionnaireId+"&submissionId="
-		    		            +submissionId+"&stageName="+stageName+"&stageId="+stageId+"&questionnaireUuid="+questionnaireUuid+"&jobTitle="+jobTitle, 
+		    		            +submissionId+"&stageName="+stageName+"&stageId="+stageId+"&questionnaireUuid="+questionnaireUuid+"&jobTitle="+jobTitle+"&stageUuid="+stageUuid, 
 		    	success :function(respone) {
 		    		showSuccessMsg(respone);
 		    	  }
