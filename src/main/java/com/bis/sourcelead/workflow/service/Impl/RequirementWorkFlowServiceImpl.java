@@ -240,10 +240,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}*/
 	
 	@Override
-	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations){
-		logger.debug("Started getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
+	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(){
+		logger.debug("Started getRequirementDefaultWorkFlowStages ");
 		try {
-			RequirementWorkFlowDTO requirementWorkFlow = getRequirementDefaultWorkflow(orgLocations);
+			RequirementWorkFlowDTO requirementWorkFlow = getRequirementDefaultWorkflow();
 			List<RequirementWorkFlowStages> requirementWorkFlowStages= requirementWorkFlowDao.getDefaultWorkFlowStages();
 		
 			List<RequirementWorkFlowStagesDTO> workFlowStagesDTO = new ArrayList<>();
@@ -264,10 +264,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			}	
 			}
 			
-		logger.debug("Finished getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
+		logger.debug("Finished getRequirementDefaultWorkFlowStages Service ");
 		return workFlowStagesDTO;
 		}catch(Exception e) {
-			logger.error(e+" in getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
+			logger.error(e+" in getRequirementDefaultWorkFlowStages Service ");
 			e.printStackTrace();
 			return null;
 		}
@@ -380,21 +380,21 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	}
 	
-	public RequirementWorkFlowDTO getRequirementDefaultWorkflow(OrgLocations orgLocations){
-		logger.debug("Started getRequirementDefaultWorkflow Service for "+orgLocations.getId()+" orgLocation");
+	public RequirementWorkFlowDTO getRequirementDefaultWorkflow(){
+		logger.debug("Started getRequirementDefaultWorkflow Service ");
 		try {
 		RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO();
-		RequirementWorkFlow defaultWorkflow = requirementWorkFlowDao.getRequirementDefaultWorkflow(orgLocations.getId());
+		RequirementWorkFlow defaultWorkflow = requirementWorkFlowDao.getRequirementDefaultWorkflow();
 		requirementWorkFlowDTO.setId(defaultWorkflow.getId());
 		requirementWorkFlowDTO.setWorkFlowName(defaultWorkflow.getWorkFlowName());
 		requirementWorkFlowDTO.setDescription(defaultWorkflow.getDescription());
 		requirementWorkFlowDTO.setUuid(defaultWorkflow.getUuid());
 		requirementWorkFlowDTO.setConfigureType(defaultWorkflow.getConfigureType());
 		requirementWorkFlowDTO.setNoOfStages(defaultWorkflow.getNoOfStages().toString());
-		logger.debug("Finished getRequirementDefaultWorkflow Service for "+orgLocations.getId()+" orgLocation");
+		logger.debug("Finished getRequirementDefaultWorkflow ");
 		return requirementWorkFlowDTO;
 	}catch(Exception e) {
-		logger.error(e+" in getRequirementDefaultWorkflow Service for "+orgLocations.getId()+" orgLocation");
+		logger.error(e+" in getRequirementDefaultWorkflow Service orgLocation");
 		e.printStackTrace();
 		return null;
 	}

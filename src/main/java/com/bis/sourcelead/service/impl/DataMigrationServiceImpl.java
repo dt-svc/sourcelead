@@ -638,7 +638,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				// if valid workflow name is not found then setting default WORKFLOW for the JOB. SRINIVAS SABBU.
 	            if(reqDTO.getWorkflow() == null 
 	            		    || reqDTO.getWorkflow().equals("null") || reqDTO.getWorkflow().equals("")){ 
-	           		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow(orgLocation);
+	           		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow();
 		        	   reqDTO.setWorkflow(String.valueOf(workflowDto.getId()));
 	           	}
 	            
