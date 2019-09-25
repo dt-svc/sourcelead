@@ -90,7 +90,6 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
-		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
 	}
@@ -108,7 +107,6 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
-		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
 	
@@ -855,7 +853,6 @@ public class RequirementWorkflowController {
 				paramsMap.put("candidate", candidate);
 				paramsMap.put("orgLocations", orgLocations);
 				paramsMap.put("loginUser", loginUser);
-				paramsMap.put("templateId", quesionnaireId);
 				paramsMap.put("templateUuid", questionnaireUuid);
 				paramsMap.put("stageName", stageName);
 				paramsMap.put("jobTitle", jobTitle);

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.dto.ModuleConfigureDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
@@ -32,6 +33,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -52,6 +54,13 @@ public class CustomDashBoardRestController {
 	
 	@Autowired
 	CustomDashboardConfService customDashboardConfService;
+	
+	@Autowired
+	CustomDashBoardConfDao customDashBoardConfDao;
+	
+	@Autowired
+	OrgService orgService;
+		
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
@@ -262,6 +271,31 @@ public class CustomDashBoardRestController {
 		return model;
 		
 	}
+	
+
+/**
+	 * delete custom dashboard configuration by changing status
+	 * 
+	 * @param customDashBoardUUID
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/deleteCustomDashBoardConf", method = RequestMethod.POST)
+	public @ResponseBody  void  deleteCustomDashBoardConf(@RequestParam("customDashBoardUUID") String customDashBoardUUID,HttpServletRequest req, HttpServletResponse res) throws Exception
+	{
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+			CustomDashBoardConfiguration customDashBoardConf = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
+			customDashBoardConf.setStatus(0);
+			customDashBoardConfDao.saveCustomDashBoardConf(customDashBoardConf);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * Gettinh all associates based on roles
