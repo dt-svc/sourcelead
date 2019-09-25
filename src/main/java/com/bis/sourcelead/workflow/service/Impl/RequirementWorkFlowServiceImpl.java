@@ -1526,7 +1526,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 
 			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario, new HashMap<String, String>());
+			emailScenerioUtil.sendNotification(actionLink, user, assignUser, orgLocations, notificationScenario, new HashMap<String, String>());
 		}
 		}
 		catch(Exception e) {
