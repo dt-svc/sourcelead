@@ -1661,5 +1661,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
 	}
 	
+	@Override
+	public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) throws Exception {
+		return requirementWorkFlowDao.getRequirementWorkflowByNameAndOrgLocationId(workflowId, id);
+	}
+	
 	 }
 
