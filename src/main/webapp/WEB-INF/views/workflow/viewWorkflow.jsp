@@ -62,7 +62,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
          </c:if>
         <li class="">
             <input class="repSearchBar" placeholder="Search" id="searchtext" type="text">
-            <span class="repSearchIcon" onclick="getViewWorkflowStagesList();"></span>
+            <span class="repSearchIcon" onclick="requirementWorkflow.getViewWorkflowStagesList();"></span>
 		</li>
         </ul>
         <div class="clearfix"></div>
