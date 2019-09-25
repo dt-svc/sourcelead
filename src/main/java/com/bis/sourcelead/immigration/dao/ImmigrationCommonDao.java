@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
 import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
@@ -91,6 +92,8 @@ public interface ImmigrationCommonDao {
 
 	// passport list
 	List<CandidatePassport> getCandidatePassportDetails(Long candidateId, String searchValue);
+	
+	ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(Long candidateId, OrgLocations orgLocations)throws Exception;
 
 	List<LcaDTO> getLcaHistoryDetailsInfo(Long immigrationId);
 
@@ -328,6 +331,8 @@ public interface ImmigrationCommonDao {
 	Lca updateLcaAvailablePositionsById(Lca lca);
 
 	public Lca getLcaNumber(String lcaNo) throws Exception;
+
+	List<LcaDTO> getAssociateLcaDetails(Long candidateId);
 	
 	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate)throws Exception;
 	
