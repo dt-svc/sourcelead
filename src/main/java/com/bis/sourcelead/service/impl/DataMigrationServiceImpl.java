@@ -123,6 +123,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.couchbase.client.java.Bucket;
@@ -633,11 +634,21 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 				reqDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), RequirementDTO.class);
 			  
-				// if valid workflow name is not found then setting/creating new WORKFLOW for the JOB. SRINIVAS SABBU.
-	            if(StringUtils.isEmpty(reqDTO.getWorkflow())){
-	        	   RequirementWorkFlow workflow = requirementWorkflowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocation, user);
-	        	   reqDTO.setWorkflow(workflow.getId().toString());
+				//updated on 24/09/2019
+				// if valid workflow name is not found then setting default WORKFLOW for the JOB. SRINIVAS SABBU.
+	            if(StringUtils.isNotBlank(reqDTO.getWorkflow())){
+	            	RequirementWorkFlow workflow = requirementWorkflowService.getRequirementWorkflowByNameAndOrgLocationId(reqDTO.getWorkflow(), orgLocation.getId());
+	            	if(workflow != null && StringUtils.isNotBlank(workflow.getWorkFlowName())){
+	            		reqDTO.setWorkflow(String.valueOf(workflow.getId()));
+	            	}else{
+	            		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow(orgLocation);
+			        	   reqDTO.setWorkflow(String.valueOf(workflowDto.getId()));
+	            	}
+	           	}else{
+	           		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow(orgLocation);
+		        	   reqDTO.setWorkflow(String.valueOf(workflowDto.getId()));
 	           	}
+	            
 				// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
 				if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
