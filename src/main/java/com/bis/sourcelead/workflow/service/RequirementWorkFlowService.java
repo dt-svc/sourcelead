@@ -32,8 +32,6 @@ public interface RequirementWorkFlowService {
 	
 	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations)throws Exception;
 	
-	RequirementWorkFlow saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user)throws Exception;
-	
 	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages()throws Exception;
 	
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations , User user)throws Exception;
