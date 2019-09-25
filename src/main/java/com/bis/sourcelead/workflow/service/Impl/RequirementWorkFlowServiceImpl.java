@@ -196,48 +196,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 	}
 
-	@Override
-	public RequirementWorkFlow saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user) {
-		logger.debug("Started saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
-		RequirementWorkFlow workFlow = null;
-		try {
-		List<RequirementWorkFlow> requirementWorkFlow= requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
-		/*if (requirementWorkFlow.size() == 0) {
-			RequirementWorkFlowDTO requirementWorkFlowDTO = new RequirementWorkFlowDTO(); 
-			
-			StringBuilder jobWorkflow = new StringBuilder(Constants.DEFAULT_JOB_WORKFLOW);
-			requirementWorkFlowDTO.setWorkFlowName(jobWorkflow.toString());
-			requirementWorkFlowDTO.setDescription(jobWorkflow.toString());
-			requirementWorkFlowDTO.setConfigureType(Constants.DEFAULT);
-			workFlow = saveRequirementWorkFlowDetailsInfo(requirementWorkFlowDTO,user,orgLocations);
-			workFlow.setConfigureType(Constants.DEFAULT);
-			workFlow = requirementWorkFlowDao.saveRequirementWorkFlowDetails(workFlow, orgLocations);
-			
-		}*/
-		}catch(Exception e) {
-			logger.error(e+" in saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
-			e.printStackTrace();
-			return null;
-		}
-		logger.debug("Finished saveRequirementDefaultWorkFlowAndStagesByOrgLocationId Service for "+orgLocations.getId()+" orgLocation and "+user.getId()+" user");
-		return workFlow;
-	}
-
-
-	/*@Override
-	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations){
-		logger.debug("Started getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
-		try {
-		RequirementWorkFlowDTO requirementWorkFlowDTO = getRequirementDefaultWorkflow(orgLocations);
-		List<RequirementWorkFlowStagesDTO> newDefaultStages = getRequirementWorkflowStagesByWorkflowUuid(requirementWorkFlowDTO, orgLocations);
-		logger.debug("Finished getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
-		return newDefaultStages;
-		}catch(Exception e) {
-			logger.error(e+" in getRequirementDefaultWorkFlowStages Service for "+orgLocations.getId()+" orgLocation");
-			e.printStackTrace();
-			return null;
-		}
-		}*/
 	
 	@Override
 	public List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations){
