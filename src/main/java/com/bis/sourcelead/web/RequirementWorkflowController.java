@@ -251,7 +251,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
 			 logger.debug("inside createRequirementDefaultWorkFlow>>> templateUuid "+orgLocations.getId());
-			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -281,7 +281,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
 			 logger.debug("inside createRequirementDefaultWorkFlowStages>>> orgLocationid "+orgLocations.getId());
-			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations);
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
