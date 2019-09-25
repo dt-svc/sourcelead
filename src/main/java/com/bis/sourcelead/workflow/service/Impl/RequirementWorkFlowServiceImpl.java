@@ -1469,66 +1469,66 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		try {
 		
 		 List<RequirementWorkFlowTasks> requirementWorkFlowTasksList = requirementWorkFlowDao.getRequirementWorkFlowTaskListById(StageId);
-		 for(RequirementWorkFlowTasks task : requirementWorkFlowTasksList) {
-	        	User assignUser = userDao.getUserById(task.getAssignTo().getId());	
-	        
-		
-		   //This code is display for Current Date and time 
-		   Date date = new Date();
-		   SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-	       String dateAndTime= formatter.format(date);
-			
-			EmailMessage emailMessage = new EmailMessage();
-			emailMessage.setFirstName(user.getFirstName());
-			emailMessage.setLastName(user.getLastName());
-			emailMessage.setToEmail(assignUser.getEmail());
-			emailMessage.setFromEmail(user.getEmail());
-			emailMessage.setCreatedBy(user.getUserCode());
-			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-			
-			Map<String, String> globalVarsMap = new HashMap<String, String>();
-			globalVarsMap.put("taskDescription", task.getDescription());
-			globalVarsMap.put("taskTitle", task.getWorkFlowTaskName());
-			globalVarsMap.put("assignedUser", assignUser.getFirstName());
-			globalVarsMap.put("loginUser", emailMessage.getFromName());
-			globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
-
-			//Login link for string builder
-			 StringBuilder linkBuild = new StringBuilder();
-	         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
-	      
-	         
-			EmailScenario emailScenario = null;
-			if (orgLocations != null)
-				emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(
-						Constants.WORKFLOW_TASK_MAIL, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
-			if (emailScenario == null) {
-				emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WORKFLOW_TASK_MAIL,Constants.ENTITY_TYPE_EMAIL);
-			}
-			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WORKFLOW_TASK_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
-
-			// covert subject,body and signature
-			String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(), globalVarsMap,emailScenario);
-			String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(), globalVarsMap, emailScenario);
-			
-			String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(), globalVarsMap,emailScenario);
-			String url = sourceleadUrl;
-
-			String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
-			notificationScenario.setBody(notificationbody);
-
-			// construct HTML template using required data
-			String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(), orgLocations);
-			emailMessage.setSubject(subject);
-			emailMessage.setMessageBody(emailTemplate);
-			
-			emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
-
-			String actionLink = "";
-			emailScenerioUtil.sendNotification(actionLink, user, user, orgLocations, notificationScenario, new HashMap<String, String>());
+		 if(requirementWorkFlowTasksList != null && !requirementWorkFlowTasksList.isEmpty()) {
+			 for(RequirementWorkFlowTasks task : requirementWorkFlowTasksList) {
+		        	User assignUser = userDao.getUserById(task.getAssignTo().getId());	
+			   //This code is display for Current Date and time 
+			   Date date = new Date();
+			   SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+		       String dateAndTime= formatter.format(date);
+				
+				EmailMessage emailMessage = new EmailMessage();
+				emailMessage.setFirstName(assignUser.getFirstName());
+				emailMessage.setLastName(assignUser.getLastName());
+				emailMessage.setToEmail(assignUser.getEmail());
+				emailMessage.setFromEmail(user.getEmail());
+				emailMessage.setCreatedBy(user.getUserCode());
+				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+				
+				Map<String, String> globalVarsMap = new HashMap<String, String>();
+				globalVarsMap.put("taskDescription", task.getDescription());
+				globalVarsMap.put("taskTitle", task.getWorkFlowTaskName());
+				globalVarsMap.put("assignedUser", assignUser.getFirstName());
+				globalVarsMap.put("loginUser", emailMessage.getFromName());
+				globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
+	
+				//Login link for string builder
+				 StringBuilder linkBuild = new StringBuilder();
+		         globalVarsMap.put("loginLink",linkBuild.append("<a href='").append(sourceleadUrl).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+		      
+		         
+				EmailScenario emailScenario = null;
+				if (orgLocations != null)
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(
+							Constants.WORKFLOW_TASK_MAIL, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+				if (emailScenario == null) {
+					emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WORKFLOW_TASK_MAIL,Constants.ENTITY_TYPE_EMAIL);
+				}
+				EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.WORKFLOW_TASK_NOTIFICATION, Constants.ENTITY_TYPE_NOTIFICATION);
+	
+				// covert subject,body and signature
+				String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(), globalVarsMap,emailScenario);
+				String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(), globalVarsMap, emailScenario);
+				
+				String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(), globalVarsMap,emailScenario);
+				String url = sourceleadUrl;
+	
+				String notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
+				notificationScenario.setBody(notificationbody);
+	
+				// construct HTML template using required data
+				String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario, emailMessage, subject, body,signature, url, orgLocations.getOrg(), orgLocations);
+				emailMessage.setSubject(subject);
+				emailMessage.setMessageBody(emailTemplate);
+				
+				emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
+	
+				String actionLink = "";
+				emailScenerioUtil.sendNotification(actionLink, user, assignUser, orgLocations, notificationScenario, new HashMap<String, String>());
+			 }
 		}
-		}
+	 }
 		catch(Exception e) {
 			e.printStackTrace();
 			logger.error("Exception caught while send task email in service "+e.getLocalizedMessage());
