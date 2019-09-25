@@ -361,12 +361,12 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 	}
 
 	@Override
-	public RequirementWorkFlow getRequirementDefaultWorkflow(Long orgLocationId) {
+	public RequirementWorkFlow getRequirementDefaultWorkflow() {
 		logger.debug("Running getRequirementDefaultWorkflow DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlow requirementWorkFlow where (requirementWorkFlow.orgLocationId.id =:orgLocationId or requirementWorkFlow.orgLocationId.id is NULL) and requirementWorkFlow.configureType=:default";
-			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("default",Constants.DEFAULT).uniqueResult();
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.workFlowName=:defaultWorkflowName and requirementWorkFlow.configureType=:default and requirementWorkFlow.orgLocationId.id is NULL ";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setString("defaultWorkflowName",Constants.DEFAULT_JOB_WORKFLOW).setString("default",Constants.DEFAULT).uniqueResult();
 			return requirementWorkFlow;
 		} catch (Exception e) {
 			logger.error(e+" in getRequirementDefaultWorkflow DAO");
