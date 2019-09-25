@@ -142,4 +142,6 @@ public interface RequirementWorkFlowService {
 
 	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
 			Integer seconds);
+	
+	RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id)throws Exception;
 }

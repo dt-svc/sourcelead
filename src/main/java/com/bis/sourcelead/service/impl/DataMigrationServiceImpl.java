@@ -636,10 +636,19 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			  
 				//updated on 24/09/2019
 				// if valid workflow name is not found then setting default WORKFLOW for the JOB. SRINIVAS SABBU.
-	            if(StringUtils.isEmpty(reqDTO.getWorkflow())){
-	            	RequirementWorkFlowDTO workflow = requirementWorkflowService.getRequirementDefaultWorkflow(orgLocation);
-	        	   reqDTO.setWorkflow(String.valueOf(workflow.getId()));
+	            if(StringUtils.isNotBlank(reqDTO.getWorkflow())){
+	            	RequirementWorkFlow workflow = requirementWorkflowService.getRequirementWorkflowByNameAndOrgLocationId(reqDTO.getWorkflow(), orgLocation.getId());
+	            	if(workflow != null && StringUtils.isNotBlank(workflow.getWorkFlowName())){
+	            		reqDTO.setWorkflow(String.valueOf(workflow.getId()));
+	            	}else{
+	            		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow(orgLocation);
+			        	   reqDTO.setWorkflow(String.valueOf(workflowDto.getId()));
+	            	}
+	           	}else{
+	           		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow(orgLocation);
+		        	   reqDTO.setWorkflow(String.valueOf(workflowDto.getId()));
 	           	}
+	            
 				// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
 				if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {

@@ -1209,5 +1209,22 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 				return Constants.FAILED;
 			}
 		}
+		
+		@Override
+		public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) {
+			logger.debug("Running getRequirementWorkFlowTasksBycurrentStageUuid DAO");
+			RequirementWorkFlow requirementWorkFlow = null;
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.id =:workflowId and requirementWorkFlow.orgLocationId.id =:id";
+				requirementWorkFlow =  (RequirementWorkFlow) session.createQuery(query).setString("workflowId", workflowId).setLong("id", id).uniqueResult();
+				return  requirementWorkFlow;
+			} catch (Exception e) {
+				logger.error(e+" in getRequirementWorkflowByNameAndOrgLocationId DAO");
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
 	 }
 
