@@ -1934,8 +1934,7 @@ public class CandidateListRestController {
 						candidateGlobal.setSkillsName("");
 						candidateGlobal.setSkillsName(skillName);
 						candidateGlobalService.storeCandidateGlobal(candidateGlobal);
-						CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
-						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
+						candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
 						candidateActivityCommonUtil.storeCandidateGlobalHistory(candidateGlobal, user);	
 						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_SKILL_UPDATED,
 								activitySummary.toString(), "CANDIDATE");
@@ -2073,8 +2072,7 @@ public class CandidateListRestController {
 								.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
 						candidateGlobal.setVisaType(visaName);
 						candidateGlobalService.storeCandidateGlobal(candidateGlobal);
-						CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
-						sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
+						candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
 						candidateActivityCommonUtil.storeCandidateGlobalHistory(candidateGlobal, user);	
 						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_VISA_UPDATED,
 								activitySummary.toString(), "CANDIDATE");
