@@ -8,5 +8,5 @@ public interface ModuleDashboardConfService {
 
 	ModuleConfigureDTO saveModuleConfiguration(ModuleConfigureDTO moduleConfDto, OrgLocations orgLocation, Long loginUserId);
 
-	CustomModuleConfiguration getSubModuleById(Long subModuleId);
+	CustomModuleConfiguration getSubModuleByIdAndConfDashBoardId(Long subModuleId,Long confDashBoardId);
 }
