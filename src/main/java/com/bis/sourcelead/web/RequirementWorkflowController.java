@@ -90,7 +90,6 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
-		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
 	}
@@ -108,7 +107,6 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
-		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
 	
@@ -251,7 +249,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
 			 logger.debug("inside createRequirementDefaultWorkFlow>>> templateUuid "+orgLocations.getId());
-			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -281,7 +279,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
 			 logger.debug("inside createRequirementDefaultWorkFlowStages>>> orgLocationid "+orgLocations.getId());
-			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations);
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -855,7 +853,6 @@ public class RequirementWorkflowController {
 				paramsMap.put("candidate", candidate);
 				paramsMap.put("orgLocations", orgLocations);
 				paramsMap.put("loginUser", loginUser);
-				paramsMap.put("templateId", quesionnaireId);
 				paramsMap.put("templateUuid", questionnaireUuid);
 				paramsMap.put("stageName", stageName);
 				paramsMap.put("jobTitle", jobTitle);
