@@ -1035,7 +1035,7 @@ public class Constants {
 
 	public static final String[] EXPENSES_APPROVAL_lIST_HEADERS = {"Expense ID","Employee Name", "Employee Emailid", "Phone Number",
 			"Emp Type", "Vendor", "Project" ,"Client", "Purpose", "Start Date", "End date", "Number of Items",
-			"Amount" , "Status"  , "Approved by","Blling Status"};
+			"Amount" , "Status"  , "Action Performed by","Blling Status"};
 	
 	public static final String[] PROJECT_REPORT_EXPORT_HEADDERS = { "ProjectId", "Project Name", "Project Status",
 		"Project Manager", "Project StartDate", "Project EndDate" ,"Team Member", "TeamMember StartDate", "TeamMember Enddate", "TeamMember Status",};
@@ -1383,7 +1383,7 @@ public class Constants {
     public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
 
     
-    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
+    public static final String[] ASSET_WORKING_STATUS = {"Assigned", "unassigned", "end of life", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
