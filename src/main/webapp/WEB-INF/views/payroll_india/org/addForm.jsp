@@ -45,7 +45,7 @@
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$("#formType").change(
 			function() {
-				location.href = pmsUrl + "/forms/getForm?uuid="
+				location.href = pmsUrl + "/myPayroll/forms/getForm?uuid="
 						+ $(this).val();
 			});
 </script>
