@@ -813,6 +813,7 @@ public class Constants {
 	public static final String ELK_CANDIDATE_INDEX = "candidates";
 	public static final String ELK_USER_INDEX = "users";
 	public static final String ELK_CANDIDATE_TYPE = "candidate";
+	public static final String ELK_GLOBAL_CANDIDATE_TYPE = "globalCandidate";
 	public static final String ELK_USER_TYPE = "user";
 	public static final String ELK_REQUIREMENT_INDEX = "requirement";
 	public static final String ELK_REQUIREMENT_TYPE = "requirement";

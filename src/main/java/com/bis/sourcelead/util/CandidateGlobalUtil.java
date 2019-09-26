@@ -248,9 +248,8 @@ public class CandidateGlobalUtil {
 		/*
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
-		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(savedCandidate);
-		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
-		getCandidatePercentage(savedCandidate, orgLocations);
+		 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(savedCandidate);
+	     getCandidatePercentage(savedCandidate, orgLocations);
 		
 		// store candidate as a contact
 		
@@ -895,16 +894,14 @@ public CandidateGlobal getVendorCandidateForCandidateCreation(CandidateDTO candi
 		}
 		candidate.setStatus(1);
 		CandidateGlobal savedCandidate = candidateGlobalService.storeCandidateGlobal(candidate);
-		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(savedCandidate);
-		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+	    candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(savedCandidate);
 	  }else {
 		  if(candidateDTO.getWorkLocation() != null) {
 				OrgLocations workLocation = new OrgLocations();
 				workLocation.setId(candidateDTO.getWorkLocation());
 				candidate.setWorkLocation(workLocation);
 			}
-		  CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidate);
-		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		  candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 	  }
 	  
 	  return candidate;
@@ -1025,9 +1022,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	candidate.setOrgLocationId(candidateGlobal.getOrgLocationId());
 	candidateDao.storeCandidate(candidate);
 	candidateGlobal.setCandidateId(candidateGlobal.getId());
-	CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
-	sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
-	
+    candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
 	
 	List<CandidateEducation> educationsList = candidateEducationService.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(educationsList != null && !educationsList.isEmpty()) {
@@ -1154,8 +1149,7 @@ public Candidate storeVendorCandidateDetailsForCandidateCreation(Long globalCand
 				candidate.setStatus(1);
 		candidate = candidateDao.storeCandidate(candidate);
 		candidateGlobal.setCandidateId(candidate.getId());
-		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
-		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
 	  }
 	  
 	  return candidate;
