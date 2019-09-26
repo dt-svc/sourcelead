@@ -32,9 +32,7 @@ public interface RequirementWorkFlowService {
 	
 	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations)throws Exception;
 	
-	RequirementWorkFlow saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user)throws Exception;
-	
-	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations)throws Exception;
+	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages()throws Exception;
 	
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations , User user)throws Exception;
 
@@ -48,7 +46,7 @@ public interface RequirementWorkFlowService {
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,  String questinnaireName);
 
-	RequirementWorkFlowDTO getRequirementDefaultWorkflow(OrgLocations orgLocations)throws Exception;
+	RequirementWorkFlowDTO getRequirementDefaultWorkflow()throws Exception;
 
 	String deleteQuestionnaireTemplateById(String templateUuid, Long id)throws Exception;
 
@@ -142,4 +140,6 @@ public interface RequirementWorkFlowService {
 
 	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
 			Integer seconds);
+	
+	RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id)throws Exception;
 }
