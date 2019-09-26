@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CandidateCustomFieldDataDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.entity.CandidateCustomFieldData;
+import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.JobCustomFieldData;
 
 @Repository
@@ -98,5 +99,15 @@ public class CandidateCustomFieldDataDaoImpl implements CandidateCustomFieldData
 			}
 		}
 		return candidateCustomFieldDataMap;
+	}
+
+	@Override
+	@Transactional
+	public List<CandidateCustomFieldData> getCandidateCustomFieldDataByCandidateGlobalId(Long candidateGlobalId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCustomFieldData cfd left join fetch cfd.candidateGlobalId where cfd.candidateGlobalId.id =:candidateGlobalId ";
+		List<CandidateCustomFieldData> candidateCustomFieldDataList = session.createQuery(query).setLong("candidateGlobalId", candidateGlobalId).list();
+		return candidateCustomFieldDataList;
 	}
 }

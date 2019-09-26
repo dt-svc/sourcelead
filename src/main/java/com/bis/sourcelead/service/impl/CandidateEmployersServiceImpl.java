@@ -473,4 +473,9 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		return candidateEmployersDao.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
 	}
 
+	@Override
+	public CandidateEmployers saveCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception {
+		return candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+	}
+
 }

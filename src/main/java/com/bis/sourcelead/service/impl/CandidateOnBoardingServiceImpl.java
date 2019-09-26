@@ -32,6 +32,7 @@ import com.bis.sourcelead.elk.index.UserIndex;
 import com.bis.sourcelead.elk.index.helper.UserIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -52,6 +53,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -60,6 +62,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -143,6 +146,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
 	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
 	}
@@ -174,7 +183,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		RequirementOffers offer = new RequirementOffers();
 		offer.setId(Long.valueOf(onboardCandiate[1]));
 		
-		Candidate candidate = candidateService.getCandidateByCandidateId(Long.valueOf(onboardCandiate[0]));
+		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(onboardCandiate[0]));
 		
 		candidateOnBoarding.setCandidateId(candidate);
 		candidateOnBoarding.setOfferId(offer);
@@ -325,7 +334,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			if(candidateOnBoardingDTO.getEmploymentType().equalsIgnoreCase("C2C")) {
 				OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(candidateOnBoardingDTO.getVendors()));
 				candidate.setOrgRelationId(orgRelation);
-				Candidate vendorCandidate = commonUtil.getC2CVendorCandidate(candidate, orgRelation, orgLocations, user);
+				CandidateGlobal vendorCandidate = candidateGlobalUtil.getC2CVendorCandidateGlobal(candidate, orgRelation, orgLocations, user);
 				candidate.setParentCandidateId(vendorCandidate);
 				
 			    OrgSpoc orgspoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateOnBoardingDTO.getVendorContact()));
@@ -336,10 +345,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 				candidate.setSpocId(null);
 			}
 			candidate.setDesignationType(candidateOnBoardingDTO.getEmploymentType());
-			candidateService.addCandidate(candidate);
-			candidateService.saveOrUpdateCandidate(candidate);
-  			candidateService.saveOrUpdateCandidateElkDocument(candidate);
-			
+			CandidateGlobal savedCandidate = candidateGlobalService.storeCandidateGlobal(candidate);
+			candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(savedCandidate);
 		}else{
 			candidateOnBoarding.setEmploymentType(null);
 			candidateOnBoarding.setEmploymentOtherType(null);
@@ -473,8 +480,16 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			userRoleDao.addUserRole(onboardingUserRole);
 		}
 		
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		Candidate candidate = candidateService.findByCandidateEmail(candidateGlobal.getEmail(),candidateGlobal.getOrgLocationId().getId());
 		if(null != candidate){
+			if(candidateOnBoarding.getShift() != null) {
+				candidate.setShift(candidateOnBoarding.getShift());
+			}
+			candidate.setConsultantUser(onboardingUser);
+			candidateService.addCandidate(candidate);
+		}else {
+			candidate = candidateGlobalUtil.storeCandidateFromCandidateGlobal(candidateGlobal, onboardingUser);
 			if(candidateOnBoarding.getShift() != null) {
 				candidate.setShift(candidateOnBoarding.getShift());
 			}
@@ -724,7 +739,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		    if(candidateOnBoarding.getProbationNotice() != null)
 		    employees.setProbationPeriod(candidateOnBoarding.getProbationNotice());
 		    
-		    Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		    CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateOnBoarding.getCandidateId().getId());
 		    if(candidate.getOrgRelationId() != null) {
 		    	employees.setOrgRelationId(candidate.getOrgRelationId());
 		    }

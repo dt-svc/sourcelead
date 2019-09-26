@@ -38,6 +38,11 @@ public class CandidateGlobalIndexHelper {
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
+			
+			if(candidate.getCandidateId() != null) {
+				candidateIndex.setCandidateId(candidate.getId());
+			}
+
 			candidateIndex.setCandidateGlobalId(candidate.getId());
 			if(null != candidate.getOrgLocationId()){
 				candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());

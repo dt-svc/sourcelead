@@ -16,4 +16,5 @@ public interface CandidateCustomFieldDataDao {
 	
 	public Map<Long, String[]> getCandidateGlobalCustomFieldDataMapByLocationId(Long orgId, List<CustomFormFieldDTO> formFieldId,Long candidateId) throws Exception;
 
+	List<CandidateCustomFieldData> getCandidateCustomFieldDataByCandidateGlobalId(Long candidateGlobalId) throws Exception;
 }

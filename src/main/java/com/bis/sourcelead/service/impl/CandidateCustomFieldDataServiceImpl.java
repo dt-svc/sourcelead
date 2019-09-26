@@ -38,4 +38,10 @@ public class CandidateCustomFieldDataServiceImpl implements CandidateCustomField
 		return candidateCustomFieldDataDao.getCandidateGlobalCustomFieldDataMapByLocationId(id, formFieldId, candidateId);
 	}
 
+	@Override
+	public List<CandidateCustomFieldData> getCandidateCustomFieldDataByCandidateGlobalId(Long candidateGlobalId)
+			throws Exception {
+		return candidateCustomFieldDataDao.getCandidateCustomFieldDataByCandidateGlobalId(candidateGlobalId);
+	}
+
 }

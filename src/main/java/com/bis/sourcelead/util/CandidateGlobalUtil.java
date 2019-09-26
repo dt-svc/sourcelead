@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,8 +17,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.CandidateCertificationsDao;
+import com.bis.sourcelead.dao.CandidateCommentsDao;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.CandidateDocumentsDao;
+import com.bis.sourcelead.dao.CandidateReferencesDao;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
+import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.ReferContactsDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
@@ -25,11 +31,16 @@ import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.helper.CandidateGlobalIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateCustomFieldData;
+import com.bis.sourcelead.entity.CandidateDocuments;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
+import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -42,6 +53,7 @@ import com.bis.sourcelead.entity.OrglocationFormFields;
 import com.bis.sourcelead.entity.ReferContacts;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
@@ -119,6 +131,21 @@ public class CandidateGlobalUtil {
 	
 	@Autowired
 	CandidateDao candidateDao;
+	
+	@Autowired
+	OrgRelationsDao orgRelationsDao;
+	
+	@Autowired
+	CandidateCertificationsDao candidateCertificationsDao;
+	
+	@Autowired
+	CandidateDocumentsDao candidateDocumentsDao;
+	
+	@Autowired
+	CandidateCommentsDao candidateCommentsDao;
+	
+	@Autowired
+	CandidateReferencesDao candidateReferencesDao;
 	
 	
 	public CandidateGlobal storeCandidateGlobal(CandidateDTO candidateDto,OrgLocations orgLocations,User user) throws Exception {
@@ -878,6 +905,257 @@ public CandidateGlobal getVendorCandidateForCandidateCreation(CandidateDTO candi
 			}
 		  CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidate);
 		  sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+	  }
+	  
+	  return candidate;
+}
+
+
+
+public CandidateGlobal getC2CVendorCandidateGlobal(CandidateGlobal vendorCandidate,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+	  CandidateGlobal candidate = null;
+	  OrgLocations vendorOrgLocation = null;
+	  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+		  vendorOrgLocation = orgRelation.getResponderLocationId();
+	  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+		  vendorOrgLocation = orgRelation.getLocationId();
+	  }
+	  
+	  candidate = candidateGlobalService.findByCandidateGlobalEmail(vendorCandidate.getEmail(),vendorOrgLocation.getId());
+	  
+	  if(candidate == null){
+		  candidate = new CandidateGlobal();
+		 
+			candidate.setMasterCandidateId(vendorCandidate.getMasterCandidateId());
+		  
+			candidate.setOrgLocationId(vendorOrgLocation);
+			candidate.setCandidateType("Candidate");
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			
+			candidate.setFirstName(vendorCandidate.getFirstName());
+			candidate.setLastName(vendorCandidate.getLastName());
+			candidate.setEmail(vendorCandidate.getEmail());
+			candidate.setLocation(vendorCandidate.getLocation());
+			candidate.setCountry(vendorCandidate.getCountry());
+			candidate.setState(vendorCandidate.getState());
+			candidate.setCity(vendorCandidate.getCity());
+			candidate.setZipCode(vendorCandidate.getZipCode());
+			candidate.setMobilePhone(vendorCandidate.getMobilePhone());
+			candidate.setAlternateMobilePhone(vendorCandidate.getAlternateMobilePhone());
+			candidate.setDesignationType("Full Time");
+			candidate.setSkillsName(vendorCandidate.getSkills());
+			 
+			candidate.setIsAssociate(Constants.NO);
+			candidate.setStatus(1);
+			CandidateGlobal savedCandidate = candidateGlobalService.storeCandidateGlobal(candidate);
+			candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(savedCandidate);
+	  }
+	  
+	  return candidate;
+}
+
+
+
+public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlobal,User consultantUser) throws Exception {
+	
+	Candidate candidate = new Candidate();
+	Date date = new Date();
+	candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, candidateGlobal.getOrgLocationId()));
+	candidate.setCreatedBy(candidateGlobal.getCreatedBy());
+	candidate.setCandidateType("Candidate");
+	candidate.setConsultantUser(consultantUser);
+	candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	candidate.setIsFavourite(0);
+	candidate.setIsFavouriteAssociate(0);
+	candidate.setMasterCandidateId(candidateGlobal.getMasterCandidateId());
+	candidate.setAadharNumber(candidateGlobal.getAadharNumber());
+	candidate.setPanNumber(candidateGlobal.getPanNumber());
+	candidate.setSsnNumber(candidateGlobal.getSsnNumber());;
+	candidate.setGeneratedId(getCandidateId(candidateGlobal.getOrgLocationId()));
+	candidate.setFirstName(candidateGlobal.getFirstName());
+	candidate.setLastName(candidateGlobal.getLastName());
+	candidate.setMiddelName(candidateGlobal.getMiddelName());
+	candidate.setGender(candidateGlobal.getGender());
+	candidate.setMaritalStatus(candidateGlobal.getMaritalStatus());
+	candidate.setDateOfBirth(candidateGlobal.getDateOfBirth());
+	candidate.setCountry(candidateGlobal.getCountry());
+	candidate.setState(candidateGlobal.getState());
+	candidate.setCity(candidateGlobal.getCity());
+	candidate.setLocation(candidateGlobal.getLocation());
+	candidate.setZipCode(candidateGlobal.getZipCode());
+	candidate.setLatitude(candidateGlobal.getLatitude());
+	candidate.setMobilePhone(candidateGlobal.getMobilePhone());
+	candidate.setAlternateMobilePhone(candidateGlobal.getAlternateMobilePhone());
+	candidate.setEmail(candidateGlobal.getEmail().trim());
+	candidate.setCurrentRate(candidateGlobal.getCurrentRate());
+	candidate.setCurrentRateType(candidateGlobal.getCurrentRateType());
+	candidate.setCurrentRateCurrency(candidateGlobal.getCurrentRateCurrency());
+	candidate.setDesignation(candidateGlobal.getDesignation());
+	candidate.setExpectedRate(candidateGlobal.getExpectedRate());
+	candidate.setRateType(candidateGlobal.getRateType());
+	candidate.setExpectedRateCurrencey(candidateGlobal.getExpectedRateCurrencey());
+	candidate.setSummary(candidateGlobal.getSummary());
+	candidate.setDesignationType(candidateGlobal.getDesignationType());
+	candidate.setDesignationOtherType(candidateGlobal.getDesignationOtherType());
+	candidate.setExperienceYears(candidateGlobal.getExperienceYears());
+	candidate.setExperienceMonths(candidateGlobal.getExperienceMonths());	
+	candidate.setNoticePeriod(candidateGlobal.getNoticePeriod());	
+	candidate.setOtherNoticePeriod(candidateGlobal.getOtherNoticePeriod());
+	candidate.setAddress(candidateGlobal.getAddress());
+	candidate.setRecruiterUserId(candidateGlobal.getRecruiterUserId());
+	candidate.setSkillsName(candidateGlobal.getSkillsName());
+	candidate.setVisaType(candidateGlobal.getVisaType());
+	candidate.setPrimarySkill(candidateGlobal.getPrimarySkill());
+	
+	if(candidateGlobal.getOrgRelationId() != null) {
+		Candidate vendorCandidate = storeVendorCandidateDetailsForCandidateCreation(candidateGlobal.getParentCandidateId().getId(), candidateGlobal.getOrgLocationId().getId());
+		candidate.setParentCandidateId(vendorCandidate);
+		candidate.setOrgRelationId(candidateGlobal.getOrgRelationId());
+	}
+	
+	if(candidateGlobal.getSpocId() != null) {
+		candidate.setSpocId(candidateGlobal.getSpocId());
+	}
+	
+	candidate.setIsAssociate(Constants.YES);
+	
+	candidate.setUpdatedBy(candidateGlobal.getUpdatedBy());
+	candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(new Date(), candidateGlobal.getOrgLocationId()));
+	candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+	candidate.setOrgLocationId(candidateGlobal.getOrgLocationId());
+	candidateDao.storeCandidate(candidate);
+	candidateGlobal.setCandidateId(candidateGlobal.getId());
+	CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+	sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+	
+	
+	List<CandidateEducation> educationsList = candidateEducationService.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(educationsList != null && !educationsList.isEmpty()) {
+		for(CandidateEducation education : educationsList) {
+			education.setCandidateId(candidate);
+			candidateEducationService.saveCandidateEducation(education);
+		}
+	}
+	
+	List<CandidateResumes> resumesList = candidateResumesService.getCandidateGlobalResumesListByCandidateIdAndStatus(candidateGlobal.getId(), Constants.RECORD_ACTIVE);
+	if(resumesList != null && !resumesList.isEmpty()) {
+		for(CandidateResumes candidateResumes : resumesList) {
+			candidateResumes.setCandidateId(candidate);
+			candidateResumesService.updateCandidateResume(candidateResumes);
+		}
+	}
+	
+	List<CandidateEmployers> employersList = candidateEmployersService.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(employersList != null && !employersList.isEmpty()) {
+		for(CandidateEmployers candidateEmployers : employersList) {
+			candidateEmployers.setCandidateId(candidate);
+			candidateEmployersService.saveCandidateEmployers(candidateEmployers);
+		}
+	}
+	
+	List<CandidateHistory> historyList = candidateHistoryService.getCandidateHistoryListByGlobalCandidateId(candidateGlobal.getId());
+	if(historyList != null && !historyList.isEmpty()) {
+		for(CandidateHistory candidateHistory : historyList) {
+			candidateHistory.setCandidateId(candidate);
+			candidateHistoryService.storeCandidateHistory(candidateHistory);
+		}
+	}
+	
+	List<CandidateTimelineActivity> timeLineActivityList = candidateTimelineActivityDao.getCandidateGlobalTimelineActivities(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(timeLineActivityList != null && !timeLineActivityList.isEmpty()) {
+		for(CandidateTimelineActivity candidateTimelineActivity : timeLineActivityList) {
+			candidateTimelineActivity.setCandidate(candidate);
+			candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
+		}
+	}
+	
+	List<CandidateCertifications> certificationsList = candidateCertificationsDao.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(certificationsList != null && !certificationsList.isEmpty()) {
+		for(CandidateCertifications candidateCertifications : certificationsList) {
+			candidateCertifications.setCandidateId(candidate);
+			candidateCertificationsDao.storeCandidateCertifications(candidateCertifications);
+		}
+	}
+	
+	List<CandidateDocuments> documentsList = candidateDocumentsDao.getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(documentsList != null && documentsList.isEmpty()) {
+		for(CandidateDocuments candidateDocuments : documentsList) {
+			candidateDocuments.setCandidateId(candidate);
+			candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
+		}
+	}
+	
+	List<CandidateComments> commentsList = candidateCommentsDao.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(commentsList != null && !commentsList.isEmpty()) {
+		for(CandidateComments candidateComments : commentsList) {
+			candidateComments.setCandidateId(candidate);
+			candidateCommentsDao.storeCandidateComments(candidateComments);
+		}
+		
+	}
+	
+	List<CandidateReferences> referencesList = candidateReferencesDao.getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	if(referencesList != null && !referencesList.isEmpty()) {
+		for(CandidateReferences candidateReferences : referencesList) {
+			candidateReferences.setCandidateId(candidate);
+			candidateReferencesDao.storeCandidateReferences(candidateReferences);
+		}
+	}
+	
+	List<CandidateCustomFieldData> customFieldsList = candidateCustomFieldDataService.getCandidateCustomFieldDataByCandidateGlobalId(candidateGlobal.getId());
+	if(customFieldsList != null && !customFieldsList.isEmpty()) {
+		for(CandidateCustomFieldData candidateCustomFieldData : customFieldsList) {
+			candidateCustomFieldData.setCandidate(candidate);
+			candidateCustomFieldDataService.savejobCustomFieldData(candidateCustomFieldData);
+		}
+	}
+	return candidate;
+}
+
+
+public Candidate storeVendorCandidateDetailsForCandidateCreation(Long globalCandidateId,Long orgLocationId) throws Exception{
+	CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(globalCandidateId);
+	Candidate candidate = null;
+	OrgRelations orgRelation = orgRelationsDao.getOrgRelationById(candidateGlobal.getOrgRelationId().getId());
+	  OrgLocations vendorOrgLocation = null;
+	  if(orgRelation.getLocationId().getId().equals(orgLocationId)){
+		  vendorOrgLocation = orgRelation.getResponderLocationId();
+	  }else if(orgRelation.getResponderLocationId().getId().equals(orgLocationId)){
+		  vendorOrgLocation = orgRelation.getLocationId();
+	  }
+	  
+	  candidate = candidateDao.findByCandidateEmail(candidateGlobal.getEmail().trim(),vendorOrgLocation.getId());
+	  
+	  if(candidate == null){
+		  candidate = new Candidate();
+			candidate.setMasterCandidateId(candidateGlobal.getMasterCandidateId());
+			candidate.setOrgLocationId(vendorOrgLocation);
+			candidate.setCandidateType("Candidate");
+			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			
+			if(StringUtils.isNotBlank(candidateGlobal.getFirstName())){
+				candidate.setFirstName(candidateGlobal.getFirstName());
+			}
+		
+			if(StringUtils.isNotBlank(candidateGlobal.getLastName())){
+				candidate.setLastName(candidateGlobal.getLastName());
+			}
+			
+			if(StringUtils.isNotBlank(candidateGlobal.getEmail())){
+				candidate.setEmail(candidateGlobal.getEmail());
+			}
+			
+			if(StringUtils.isNotBlank(candidateGlobal.getCountry())){
+				candidate.setCountry(candidateGlobal.getCountry());
+			}
+		
+		candidate.setIsAssociate(Constants.NO);
+		candidate.setDesignationType("W-2");
+				candidate.setStatus(1);
+		candidate = candidateDao.storeCandidate(candidate);
+		candidateGlobal.setCandidateId(candidate.getId());
+		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 	  }
 	  
 	  return candidate;

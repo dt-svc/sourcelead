@@ -87,5 +87,5 @@ public interface CandidateEmployersService {
 
 	public CandidateEmployers getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,Long candidateEmployerId)  throws Exception;
 
-	
+	public CandidateEmployers saveCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception;
 }

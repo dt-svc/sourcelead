@@ -35,7 +35,7 @@ private static final long serialVersionUID = 1L;
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
-	private Candidate candidateId;
+	private CandidateGlobal candidateId;
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -268,11 +268,11 @@ private static final long serialVersionUID = 1L;
 		this.onboardingUser = onboardingUser;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 

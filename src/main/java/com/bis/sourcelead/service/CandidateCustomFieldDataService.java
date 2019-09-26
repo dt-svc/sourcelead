@@ -15,4 +15,6 @@ public interface CandidateCustomFieldDataService {
 	public CandidateCustomFieldData savejobCustomFieldData(CandidateCustomFieldData candidateCustomFields);
 	
 	public Map<Long, String[]> getCandidateGlobalCustomFieldDataMapByLocationId(Long id, List<CustomFormFieldDTO> formFieldId,Long candidateId) throws Exception;
+	
+	List<CandidateCustomFieldData> getCandidateCustomFieldDataByCandidateGlobalId(Long candidateGlobalId) throws Exception;
 }

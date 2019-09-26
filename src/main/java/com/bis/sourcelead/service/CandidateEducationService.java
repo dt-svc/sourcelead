@@ -96,6 +96,7 @@ public interface CandidateEducationService {
 	
 	public CandidateEducation removeCandidateGlobalEducationBycandidateIdandcandidateEducationId(Long candidateId, Long candidateEducationId, User user, OrgLocations orgLocations) throws Exception;
 	
+	public CandidateEducation saveCandidateEducation(CandidateEducation candidateEducation) throws Exception;
 	
 
 }

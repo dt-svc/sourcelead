@@ -33,6 +33,8 @@ public interface CandidateGlobalService {
 	
 	public void saveOrUpdateCandidateGlobalElkDocument(CandidateGlobal candidateGlobal) throws Exception;
 	
+	public void deleteCandidateGlobalElkDocument(CandidateGlobal candidateGlobal) throws Exception;
+	
 	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
 	CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception ;

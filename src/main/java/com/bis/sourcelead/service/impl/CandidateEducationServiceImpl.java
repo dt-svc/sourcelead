@@ -542,4 +542,10 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	     
 	     return can;
 	}
+
+
+	@Override
+	public CandidateEducation saveCandidateEducation(CandidateEducation candidateEducation) throws Exception {
+		return candidateEducationDao.storeCandidateEducation(candidateEducation);
+	}
 }

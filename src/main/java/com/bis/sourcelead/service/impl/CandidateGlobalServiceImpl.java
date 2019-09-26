@@ -177,4 +177,10 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		return candidateGlobalDao.getCandidateGlobalByUUID(candidateUUID);
 	}
 
+	@Override
+	public void deleteCandidateGlobalElkDocument(CandidateGlobal candidateGlobal) throws Exception {
+		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+		sourceleadELKBaseIndexer.deleteElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
+	}
+
 }
