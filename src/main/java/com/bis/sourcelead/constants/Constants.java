@@ -1383,7 +1383,7 @@ public class Constants {
     public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
 
     
-    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
+    public static final String[] ASSET_WORKING_STATUS = {"Assigned", "unassigned", "end of life", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";

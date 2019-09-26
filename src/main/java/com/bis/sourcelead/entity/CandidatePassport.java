@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,6 +37,10 @@ public class CandidatePassport implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATIONS_ID")
+	private OrgLocations orgLocationId;
 
 	@Column(name = "PASSPORT_NUMBER")
 	private String passportNumber;
@@ -94,6 +99,14 @@ public class CandidatePassport implements Serializable {
 
 	public void setCandidate(Candidate candidate) {
 		this.candidate = candidate;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public String getPassportNumber() {
