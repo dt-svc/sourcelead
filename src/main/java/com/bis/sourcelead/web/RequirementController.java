@@ -597,12 +597,6 @@ public class RequirementController {
 		// workflow List commented by SRINIVAS SABBU.
 		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
 		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		if (workflowList == null || workflowList.size() == 0) {
-			User user = new User();
-			user.setId(userId);
-			requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
-			workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		}
 		if (workflowList != null && workflowList.size() > 0) {
 			model.addObject("workflowList", workflowList);
 		}
@@ -888,20 +882,21 @@ public class RequirementController {
 			
 			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 				Long requirementId = requirement.getId();
-				RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+				/*RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
 				System.out.println(" defalt workflow id is :>>>"+workflowDTO.getId());
-				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());
-				if(requirement.getWorkflowId() != null  && workflowDTO.getId() != requirement.getWorkflowId().getId()) {
-					System.out.println("OTHER THAN DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
+				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());*/
+				if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+						              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+					logger.debug("DEFAULT WORKFLOW IS FOUND WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME : "+requirement.getWorkflowId().getWorkFlowName());
+					model.addObject("workflowConfigured", false);
+					model.setViewName("requirement/requirementSummary");	 
+				}else {
+					logger.debug("OTHER THAN DEFAULT WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME :  "+requirement.getWorkflowId().getWorkFlowName());
 					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
 					model.addObject("stagesList", stagesList);
 					model.addObject("workflowId", requirement.getWorkflowId().getId());
 					model.addObject("workflowConfigured", true);
 					model.setViewName("requirement/requirementWorkflowSummary");
-				}else {
-					System.out.println("DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
-					model.addObject("workflowConfigured", false);
-					model.setViewName("requirement/requirementSummary");
 				}
 				
 				model.addObject("requirementId",requirementId);
