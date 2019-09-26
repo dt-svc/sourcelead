@@ -40,7 +40,7 @@
             <label class="col-md-4">LCA No<span class="text-danger paddingLeft">*</span></label>
             <div class="col-md-8">
                 <input type="text" name="lcaNo"  id="lcaNo" class="form-control" value="${lcaDTO.lcaNo}" placeholder="LCA Number" field-name="LCA NO"
-								data-validation="required validate_LcaNum validate_length length1-30" onkeyup="validateLcaNumber();" onblur="validateLcaNumber();">
+								data-validation="required validate_LcaNum validate_length length2-30" onkeyup="validateLcaNumber();" onblur="validateLcaNumber();">
           	</div>
         </div>
           
