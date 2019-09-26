@@ -51,7 +51,7 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 		List<CustomDashBoardConfiguration> customDashBoardConf = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId";
+			String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId  AND customDashBoardConf.status = 1";
 			customDashBoardConf = session.createQuery(query).setLong("orgLocationId", locationId).list();
 
 		} catch (Exception e) {
@@ -69,7 +69,7 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 		CustomDashBoardConfiguration customDashBoardConf = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.dashboardConfUUID = :dashboardConfUUID and customDashBoardConf.orgLocations.id = :orgLocationId";
+			String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.dashboardConfUUID = :dashboardConfUUID and customDashBoardConf.orgLocations.id = :orgLocationId  AND customDashBoardConf.status = 1";
 			List<CustomDashBoardConfiguration> list = session.createQuery(query).setString("dashboardConfUUID", customDashBoardUUID).setLong("orgLocationId", orgLocationId).list();
 			if(list != null && list.size() >0) {
 				customDashBoardConf = list.get(0);

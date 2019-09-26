@@ -6549,6 +6549,7 @@ max-width: 100% !important;
 .reportNewCta {
 	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important;
 	cursor: pointer;
+	min-height: 108px;
 }
 .reportNewCta h4 {
 	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #545454;
