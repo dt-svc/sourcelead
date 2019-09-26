@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
@@ -63,6 +64,7 @@ import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateNomineeService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -151,6 +153,9 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	ShiftService shiftService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -674,7 +679,7 @@ public class CandidateOnBoardRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Response<CandidateDTO> response = new Response<>();
 		try {
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 			CandidateDTO candidateDTO = new CandidateDTO();
 			candidateDTO.setFirstName(candidate.getFirstName());
 			candidateDTO.setLastName(candidate.getLastName());
