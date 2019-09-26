@@ -134,8 +134,10 @@
 											+ '/editCustomDashBoardConf?customDashBoardUUID='
 											+ opt.customDashBoardConfUUID
 											+ '"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
-									result = result
-											+ '  <li class="mr5"><i class="fa fa-trash cursorPointer" title="Delete"></i></li>';
+											
+											result = result 
+											        + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
+											
 									result = result
 											+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
 									result = result + ' </ul>';
@@ -217,6 +219,20 @@
 		$(".mask").fadeIn(100);
 	}
 </script>
+
+
+<script>
+function deleteCustomDashBoardConf(customDashBoardUUID){
+	 $.ajax({
+		   	type: "POST",
+		    url: sourceleadUrl+"/deleteCustomDashBoardConf?"+tokenParamName+"="+tokenValue+"&customDashBoardUUID="+customDashBoardUUID,
+		    success: function(data) {
+			 	getCustomDashBoardConfiguredList();
+		    }
+	     });
+}
+</script>
+
 
 
 <script>

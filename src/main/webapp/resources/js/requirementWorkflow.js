@@ -495,7 +495,8 @@ function RequirementWorkflow(){
 			$("#remove_user_pop").slideDown(200);
 			$(".project_inn_mask").fadeIn(200);
 			}
-			function getViewWorkflowStagesList() {
+		
+			this.getViewWorkflowStagesList = function() {
 				var filter = $("#searchtext").val();
 				$("li.widgetDiv").each(function() {
 					if ($(this).text().search(new RegExp(filter, "i")) < 0) {
@@ -506,12 +507,6 @@ function RequirementWorkflow(){
 				});
 			}
 
-			$("#searchtext").keyup(function(e) {
-				if (e.which == 13) {
-					getViewWorkflowStagesList();
-
-				}
-			});
 			
 			this.deleteRequirementWorkflowStages = function(deletedStageUuids, workflowUuid, stageName){
 				$.ajax({
