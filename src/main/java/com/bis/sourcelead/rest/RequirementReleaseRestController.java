@@ -43,6 +43,9 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 /**
  * 
  * @author Rajashekar
@@ -80,6 +83,9 @@ public class RequirementReleaseRestController {
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	RequirementWorkFlowService requirementWorkflowService;
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -403,6 +409,16 @@ public class RequirementReleaseRestController {
 							    if(isJobReleased.toString().equalsIgnoreCase("false")){
 							    	Requirement requirement  = new Requirement();
 							    	releasetype = Constants.VENDORSTYPE;
+							    	// Below Code is used to set default WORKFLOW id for the vendor job,  if job is mapped with custom WORKFLOW id of current login ORGLOCATION.
+							    	try {
+							    	RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow();
+							    	RequirementWorkFlow defaultWorkflow =new RequirementWorkFlow();
+							    	defaultWorkflow.setId(workflowDto.getId());
+							    	parentRequirement.setWorkflowId(defaultWorkflow);
+							    	}catch(Exception e) {
+							    		e.printStackTrace();
+							    	}
+							    	// End of setting default WORKFLOW for the vendor job
 									releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType(),loginOrgLocation);
 									// for URL redirections from mail
 									String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
