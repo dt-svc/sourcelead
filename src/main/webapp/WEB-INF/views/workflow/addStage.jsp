@@ -160,7 +160,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<label class="col-md-12">Description</label>
 				<div class="col-md-12 descriptionTxtarea">
 				<textarea class='form-control' cols='2' name = 'workFlowTaskDescription' id='workFlowTaskDescription'  placeholder='Description'
-				field-name='summerNote' data-validation='required' data-validation-optional='true' ></textarea>
+				field-name='Description' data-validation='required'></textarea>
 				</div>
 			  </div>
 			  <div class="clearfix"></div>
