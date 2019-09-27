@@ -54,13 +54,8 @@ public class CandidateIndexHelper {
 			candidateIndex.setMiddleName(candidate.getMiddelName());
 			candidateIndex.setGender(candidate.getGender());
 			candidateIndex.setMaritalStatus(candidate.getMaritalStatus());
-			if(StringUtils.isNoneBlank(candidate.getLastName())) {
-				StringBuilder fullName = new StringBuilder();
-				fullName = fullName.append(commonUtil.firstLetterCapitalizedString(candidate.getFirstName())).append(" ").append(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
-				candidateIndex.setFullName(fullName.toString());
-			}else {
-				candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
-			}
+			 			
+			candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(candidate.getFullName()));
 			
 			candidateIndex.setEmail(candidate.getEmail().toLowerCase());
 			candidateIndex.setAlternateEmail(candidate.getAlternateEmail());
