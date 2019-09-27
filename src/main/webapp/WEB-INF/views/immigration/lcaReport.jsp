@@ -37,7 +37,7 @@
           <div class="col-md-5">
           
           <div class="form-group">
-              <label class="col-md-12 paddingRight">LCA status</label>
+              <label class="col-md-12 paddingRight">LCA status<span class="text-danger">&nbsp;*</span></label>
 				<div class="col-md-12">
                   <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="lcaStatus" id="lcaStatus" field-name="LCA Status" data-validation="required">
 	                <option ${lcaDTO.lcaStatus == 'Initiated' ? 'selected': ''} value='Initiated'>Initiated</option>
