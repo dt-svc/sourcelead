@@ -1896,8 +1896,19 @@ public class ImmigrationController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Date toDayDate = new Date();
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
+				for (LcaDTO lcaDto : lcaList) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String currentDateStr = dateFormat.format(toDayDate);
+					Date newDate = dateFormat.parse(currentDateStr);
+					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+					lcaDto.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getEndDate())));
+					lcaDto.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getStartDate())));
+				}
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
