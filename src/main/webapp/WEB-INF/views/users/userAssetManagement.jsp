@@ -35,6 +35,8 @@ function userAssetManagement(userId){
 				    var selected1 = '';
    					var selected2 = '';
    					var selected3 = '';
+   					var selected4 = '';
+   					var selected5 = '';
 				    
 				    var report = json[i];
 				  
@@ -42,16 +44,24 @@ function userAssetManagement(userId){
 						model = report.asset.model;
 					}
 					
-					if(report.asset.workingStatus == 'Working'){
+					if(report.asset.workingStatus == 'Assigned'){
 						selected1 = 'selected';
 					} 
-				
-					if(report.asset.workingStatus == 'Out Of Service'){
+					
+					if(report.asset.workingStatus == 'Unassigned'){
 						selected2 = 'selected';
 					} 
 					
+					if(report.workingStatus == 'End Of Life'){
+							selected3 = 'selected';
+					}
+				
+					if(report.asset.workingStatus == 'Out Of Service'){
+						selected4 = 'selected';
+					} 
+					
 					if(report.asset.workingStatus == 'Service'){
-						selected3 = 'selected';
+						selected5 = 'selected';
 					}
 					
 
@@ -64,9 +74,11 @@ function userAssetManagement(userId){
 				   	
 				   	result = result + ' <td><div class="tbldata-dotdot-150">';
 					result = result + ' <select id="workingStatus'+report.asset.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.asset.assetUUID+'\',\''+report.asset.id+'\');">';
-					result = result + ' <option '+selected1+'>Working</option>';
-					result = result + ' <option '+selected2+'>Out Of Service</option>';
-				    result = result + ' <option '+selected3+'>Service</option>'; 
+					result = result + ' <option '+selected1+'>Assigned</option>';
+					result = result + ' <option '+selected2+'>unassigned</option>';
+					result = result + ' <option '+selected3+'>End Of Life</option>';
+					result = result + ' <option '+selected4+'>Out Of Service</option>';
+				    result = result + ' <option '+selected5+'>Service</option>'; 
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 				   	

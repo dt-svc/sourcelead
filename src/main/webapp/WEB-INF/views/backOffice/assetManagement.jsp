@@ -777,11 +777,11 @@ function projectAssetPaginations(url){
 						selected1 = 'selected';
 					 } 
 			  		 
-			  		if(report.workingStatus == 'unassigned'){
+			  		if(report.workingStatus == 'Unassigned'){
 						selected2 = 'selected';
 					 } 
 				
-					 if(report.workingStatus == 'end of life'){
+					 if(report.workingStatus == 'End Of Life'){
 						selected3 = 'selected';
 					 }
 					 if(report.workingStatus == 'Out Of Service'){
