@@ -8,6 +8,15 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 
+<script> 
+	$(document).ready(function(){
+		//appendDynamicPlaceofEmploymentDiv();
+		 if(rowIdPlempt > 2){
+			   $("#placeEmployMntId").hide();
+		   }
+	});
+</script>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <script type="text/javascript" src="/resources/js/immigration.js?staticTime=${staticTime}"></script>
