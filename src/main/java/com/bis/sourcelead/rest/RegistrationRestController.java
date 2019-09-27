@@ -66,6 +66,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserLoginLogoutSession;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.form.Registration;
 import com.bis.sourcelead.form.RestResponsetUtil;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -350,7 +351,8 @@ public class RegistrationRestController {
 						registeredTabs.add(tabs.getTabName());
 					}
 				}
-				
+				subscriptionDTO.setStatus(subscription.getStatus());
+				subscriptionDTO.setOrgId(subscription.getOrg().getId());
 				subscriptionDTO.setModulesList(registeredTabs);
 				subscriptionDTO.setLicenseUUID(subscription.getUuid());
 				subscriptionList.add(subscriptionDTO);
@@ -360,7 +362,38 @@ public class RegistrationRestController {
 	   }
 	
 	
-	
+	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
+	@RequestMapping(value = "/app/orgSubscriptionAndUnsubscription" , method = RequestMethod.POST)
+	   public String orgSubscriptionAndUnsubscription(@RequestParam(value="orgId", required=true) Long orgId, @RequestParam(value="status", required=true) String subScriptionStatus,
+			   @RequestParam(value="country", required=true) String country, @RequestParam(value="subscriptionUUID", required=true) String subscriptionUUID, HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = orgLocationService.getOrgLocationByOrgIdAndCountry(orgId, country);
+		if(orgLocations != null) {
+		OrgLicenseSubscription subscription =  orgLicenseSubscriptionService.getOrgLicenseSubscriptionByUUID(subscriptionUUID);
+		if("Y".equalsIgnoreCase(subScriptionStatus)) {
+			subscription.setStatus(Constants.RECORD_INACTIVE);
+		}else {
+			subscription.setStatus(Constants.RECORD_ACTIVE);
+		}
+		orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
+		
+		List<UserRole> userRoleList = userRoleService.getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(orgLocations.getId(), subScriptionStatus);
+		for(UserRole userRole:userRoleList) {
+			if("Y".equalsIgnoreCase(subScriptionStatus)) {
+				userRole.setIsSubscription(Constants.YES);
+				userRole.setUserState(Status.INACTIVE);
+			}else {
+				userRole.setUserState(Status.ACTIVE);
+				userRole.setIsSubscription(null);
+			}
+			userRoleService.addUserRole(userRole);
+		}
+		if("Y".equalsIgnoreCase(subScriptionStatus)) {
+			OrgLocations primaryOrgLocation = orgLocationService.getPrimaryOrgLocationByOrgId(orgId);
+			registrationService.sendEmailsSubscribeAndUnScribe(primaryOrgLocation,country);
+		}
+		}
+		return "success";
+	}
 
 	@PreAuthorize("hasAnyRole('ROLE_ENROLL_ORG')")
 	@RequestMapping(value = "/app/getLocationSubscriptionDetails" , method = RequestMethod.POST)

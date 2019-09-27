@@ -310,13 +310,21 @@
 					</div>
 				</div>
 				
-				<%-- <div class="col-md-2 reportNewCta">
+				 <%-- <div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Custom DashBoard</h4>
 					</div>
-				</div> --%>
+				</div>  --%>
+				
+				 <div class="col-md-2 reportNewCta">
+					<a href="${SourceLeadWeb_sourceleadUrl}/leaveCronTest">
+							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
+					<div class="clearfix text-center">
+						<h4>Leave Test For Cron</h4>
+					</div>
+				</div>
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">

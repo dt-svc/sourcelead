@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -58,8 +59,10 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.mysql.fabric.xmlrpc.base.Array;
@@ -97,6 +100,12 @@ public class LeaveManagementReportsRestController {
 	
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	EMailJobScheduler eMailJobScheduler;
 	
 	@RequestMapping(value = "/daywiseLeaveReport")
 	public ModelAndView approvedLeavesJsp(HttpServletRequest request,
@@ -196,59 +205,60 @@ public class LeaveManagementReportsRestController {
 				
 					
 			leaveReportsList = leaveService.getLeaveReportsOrglocationIdAndFromDateToDate(hrLeaveReportDTO,orgLocation.getOrg().getId(),orgLocation.getId(),loginUserRole);
-			List<LeaveReportView> list = leaveReportsList.getData();
-	        for(LeaveReportView lrv : list){
-	        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
-	    		 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getToDate());
-	        }
-	    	leaveReportsList.getData().stream().forEach(u -> {
-	 		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
-	 		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
-	 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
-	 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
-	 		   
-	 		   
-	 		  LeaveType leaveType = new LeaveType() ;
-	 		  leaveType.setId(u.getLeaveTypeId());
-	 		  leaveType.setDuration(u.getDuration());
-	 		  leaveType.setIncludeWeekoff(u.getIncludeWeekoff());
-	 		  leaveType.setIncludeHolidays(u.getIncludeHolidays());
-				Leave leave = new Leave();
-				leave.setFromDate(u.getFromDate());
-				if(StringUtils.isNotBlank(hrLeaveReportDTO.getEndDate()))
-					leave.setToDate( u.getToDate());
-				
-				if(StringUtils.isNotBlank(u.getFromHalfDay())) {
-					leave.setFromHalfDay(u.getFromHalfDay());
-				}
-				if(StringUtils.isNotBlank(u.getToHalfDay())) {
-					leave.setToHalfDay(u.getToHalfDay());
-				}
-				if(StringUtils.isNotBlank(u.getFromDateFromHalfTime())) {
-					leave.setFromDateFromHalfTime(u.getFromDateFromHalfTime());
-				}
-				if(StringUtils.isNotBlank(u.getFromDateToHalfTime())) {
-					leave.setFromDateToHalfTime(u.getFromDateToHalfTime());
-				}
-				if(StringUtils.isNotBlank(u.getToDateFromHalfTime())) {
-					leave.setToDateFromHalfTime(u.getToDateFromHalfTime());
-				}
-				if(StringUtils.isNotBlank(u.getToDateToHalfTime())) {
-					leave.setToDateToHalfTime(u.getToDateToHalfTime());
-				}
-				if(u.getUserId() !=null) {
-					User user=new User();
-					user.setId(u.getUserId());
-					leave.setUser(user);
-				}
-				float noOfDays = 0f;
-				noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocation,leaveType,leave,"Duration");
-				String noOfDays1 = String.valueOf(noOfDays);
-				u.setNoOfDays(noOfDays1);
-	 		   
-	 	   });
-	    	
-
+		
+			if(leaveReportsList.getData() != null) {
+				List<LeaveReportView> list = leaveReportsList.getData();
+		        for(LeaveReportView lrv : list){
+		        	 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getFromDate());
+		    		 commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), lrv.getToDate());
+		        }
+		    	leaveReportsList.getData().stream().forEach(u -> {
+		 		   u.setFromDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getFromDate()));
+		 		   u.setToDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getToDate()));
+		 		   u.setAppliedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+		 		   u.setApprovedOnDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), u.getAppliedOn()));
+		 		   
+		 		   
+		 		  LeaveType leaveType = new LeaveType() ;
+		 		  leaveType.setId(u.getLeaveTypeId());
+		 		  leaveType.setDuration(u.getDuration());
+		 		  leaveType.setIncludeWeekoff(u.getIncludeWeekoff());
+		 		  leaveType.setIncludeHolidays(u.getIncludeHolidays());
+					Leave leave = new Leave();
+					leave.setFromDate(u.getFromDate());
+					if(StringUtils.isNotBlank(hrLeaveReportDTO.getEndDate()))
+						leave.setToDate( u.getToDate());
+					
+					if(StringUtils.isNotBlank(u.getFromHalfDay())) {
+						leave.setFromHalfDay(u.getFromHalfDay());
+					}
+					if(StringUtils.isNotBlank(u.getToHalfDay())) {
+						leave.setToHalfDay(u.getToHalfDay());
+					}
+					if(StringUtils.isNotBlank(u.getFromDateFromHalfTime())) {
+						leave.setFromDateFromHalfTime(u.getFromDateFromHalfTime());
+					}
+					if(StringUtils.isNotBlank(u.getFromDateToHalfTime())) {
+						leave.setFromDateToHalfTime(u.getFromDateToHalfTime());
+					}
+					if(StringUtils.isNotBlank(u.getToDateFromHalfTime())) {
+						leave.setToDateFromHalfTime(u.getToDateFromHalfTime());
+					}
+					if(StringUtils.isNotBlank(u.getToDateToHalfTime())) {
+						leave.setToDateToHalfTime(u.getToDateToHalfTime());
+					}
+					if(u.getUserId() !=null) {
+						User user=new User();
+						user.setId(u.getUserId());
+						leave.setUser(user);
+					}
+					float noOfDays = 0f;
+					noOfDays = leaveManagementUtil.getAppliedLeaveCount(orgLocation,leaveType,leave,"Duration");
+					String noOfDays1 = String.valueOf(noOfDays);
+					u.setNoOfDays(noOfDays1);
+		 		   
+		 	   });	
+			}
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -560,7 +570,7 @@ public class LeaveManagementReportsRestController {
 		List<String> leaveTypeNames = leaveService.getLeaveTypeNamesByOrgLocationId(orgLocation.getId(),topleave);
 		
 		
-		Map<String,List<LeaveBalanceReportDTO>>resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
+		Map<String,List<LeaveBalanceReportDTO>> resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
 				
 		List<LeaveBalanceReportDTO> leaveTypeList = resultMap.get("LEAVETYPES");
 		
@@ -628,12 +638,13 @@ public class LeaveManagementReportsRestController {
 					}else {
 						flag = true;
 					}
-					
-						float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
+					    LeaveType lType = leaveTypeService.getLeaveTypeById(lt.getId().longValue());
+					    LeaveType balleaveType = leaveTypeService.getBalanceLeavesByUserIdAndLeaveTypeId(lType,ltDto.getUserId().longValue(),orgLocation);
+//						float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
 						StringBuilder sb = new StringBuilder();
-						sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+						sb.append(balleaveType.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
 						if(flag) {
-							map.put(sb.toString(), leaveTypeBalance);
+							map.put(sb.toString(), balleaveType.getLeaveTypeBalanceLeaveCount());
 						}else {
 							map.put(sb.toString(), 0.01f);
 						}
@@ -769,5 +780,17 @@ public class LeaveManagementReportsRestController {
                     file.delete();
                 }
     }
+	
+	
+
+	@RequestMapping(value = "/leaveCronTest", method = RequestMethod.GET)
+	public void leaveCronTest() throws Exception
+	{
+		System.out.println("====================Cron Started===============");
+		eMailJobScheduler.appliedLeaveRemainder();
+		System.out.println("====================Cron Ended===================");
+		
+		
+	}
 
 }
