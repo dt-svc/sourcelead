@@ -1558,19 +1558,21 @@ $(document).ready(function(){
 
 </script>
 <script>
-var select, chosen;
-select = $("#invoiceTagName");
-select.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
-chosen = select.data('chosen');
-chosen.search_field.on('keyup', function(e)
+var selectOne, chosenOne;
+selectOne = $("#invoiceTagName");
+selectOne.chosen({ no_results_text: 'Press Enter-Key Or Comma(,) To Add Keyword:' });
+chosenOne = selectOne.data('chosen');
+chosenOne.search_field.on('keyup', function(e)
 {
+
 	var anyKeyword = this.value.replace(",","");
     if ((e.which == 13 || e.which == 188) && (anyKeyword != null  && anyKeyword != '' && anyKeyword != 'undefined'))
     {
+    	
     	var par = this.parent;
         var option = $("<option>").val(anyKeyword).text(anyKeyword);
-        select.append(option);
-        select.find(option).prop('selected', true);
+        selectOne.append(option);
+        selectOne.find(option).prop('selected', true);
         $("#invoiceTagName option").each(function(){
               $(this).siblings("[value='"+ this.value+"']").remove();
         });
@@ -1595,7 +1597,7 @@ function getInvoiceTagsList(){
 	var invoiceUUID ='${invoiceUUID}';
 	$.ajax({  
         type : "POST",
-        url: vmsUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
+        url: sourceleadUrl+"/getInvoiceTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
         success :function(json) {
         	var result = "";
         	if(json.tagsList !=null && json.tagsList !='' && json.tagsList !='undefined'){
@@ -1632,9 +1634,9 @@ function saveInvoiceTags(type){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByInvoiceUUID?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
 	 }
 	
 	 $.ajax({  
@@ -1717,7 +1719,7 @@ function getBillsTagsList(){
 	var invoiceUUID ='${invoiceUUID}';
 	$.ajax({  
         type : "POST",
-        url: vmsUrl+"/getBillsTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
+        url: sourceleadUrl+"/getBillsTags?"+tokenParamName+"="+tokenValue+"&invoiceUUID="+invoiceUUID,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -1752,9 +1754,9 @@ function saveBillsTags(type){
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(tagName != null && tagName != '' && tagName !='undefined') {
-		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+jsonData
 	 } else {
-		 Urlcheck = vmsUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
+		 Urlcheck = sourceleadUrl+"/saveOrUpdateTagsByBillsId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&invoiceUUID="+invoiceUUID+"&tagName="+""
 	 }
 	
 	 $.ajax({  
