@@ -53,6 +53,8 @@ public interface RegistrationService {
 	public String sendOtpToUser(User user, String type) throws Exception;
 	
     Boolean	validateOrgRequestCompanyNameByName(String companyName)throws Exception;
+
+	public void sendEmailsSubscribeAndUnScribe(OrgLocations primaryOrgLocation, String subScriptionStatus)throws Exception;
     
 
 }

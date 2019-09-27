@@ -49,7 +49,7 @@ public interface RequirementWorkFlowDao {
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId, String questionnaireName);
 	
-	RequirementWorkFlow getRequirementDefaultWorkflow(Long orgLocationId)throws Exception;
+	RequirementWorkFlow getRequirementDefaultWorkflow()throws Exception;
 
 	String deleteQuestionnaireTemplateById(Long id);
 

@@ -141,6 +141,9 @@ public class UserRole implements Serializable {
     @Column(name = "UUID")
    	private String uuid;
     
+    @Column(name = "IS_SUBSCRIPTION")
+	private String isSubscription;
+    
     
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GRADE_ID")
@@ -1380,6 +1383,14 @@ public class UserRole implements Serializable {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getIsSubscription() {
+		return isSubscription;
+	}
+
+	public void setIsSubscription(String isSubscription) {
+		this.isSubscription = isSubscription;
 	}
 
 }
