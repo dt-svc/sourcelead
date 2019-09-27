@@ -1383,7 +1383,7 @@ public class Constants {
     public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
 
     
-    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
+    public static final String[] ASSET_WORKING_STATUS = {"Assigned", "unassigned", "end of life", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1471,6 +1471,7 @@ public class Constants {
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
 	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusEmail";
 
+	public static final String ORG_UNSUBSCRIPTION = "OrgUnSubscription";
 	
 	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
 	public static final String CHANGE_REPORTING_MANAGER_NOTIFICATOPN="ChangeReportingManagerNotification";
