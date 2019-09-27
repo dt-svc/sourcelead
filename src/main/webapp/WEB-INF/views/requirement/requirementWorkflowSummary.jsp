@@ -19,6 +19,7 @@ $(document).ready(function() {
 	 getJobsTagsList(requirementId)
 	 if(type != null && type != '' && type != 'undefined'){
 		 sideBar(requirementId,type);
+		 requirementWorkflowStatusBar(requirementId);
 	 }
 	 
  if(submissionId != null && submissionId != '' && submissionId != 'undefined' && candidateId != null && candidateId != '' && candidateId != 'undefined'){
@@ -30,7 +31,7 @@ $(document).ready(function() {
   else if(submissionStatus == 'all'){
 	 $("#detailsTab").removeClass("current");
 	 $('li[name=applicantNotification]').addClass("current");
-	 requirementStatusBar(requirementId);
+	 requirementWorkflowStatusBar(requirementId);
 	 requirementPipeline(requirementId,"all");
 	 }  
  else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
@@ -1211,7 +1212,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     // below line commented for saving any stage for dynamic workflow name. updated by SRINIVAS SABBU.
    // else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
 	 else if(selectBox){ // skip stage name check for dynamic workflow stages.
-    	$.ajax({
+		 $.ajax({
     	      type : "POST",
     	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
     	    	success :function(data) {
@@ -1252,7 +1253,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		    			result = result+" and "+responseData.tasksCount +" task(s) ";
 		    		}
 		    		result =result+"for the "+responseData.stageName +"</div>";
-		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 		    		result = result +" </div>";
 					$("#popUp").append(result);
 					$("#popUp").show();
@@ -1288,13 +1289,13 @@ function showSuccessMsg(msg){
 	setTimeout(function(){ $('#selector11').hide();$('#msgDiv').text("") }, 1000);
 }
 
-   function sendEmailQuestionaireAndCopyTasksToCandidate(questionnaireId, submissionId, stageName, stageId, questionnaireUuid) {
+   function sendEmailQuestionaireAndCopyTasksToCandidate(questionnaireId, submissionId, stageName, stageId, questionnaireUuid, stageUuid) {
 	   $("#popUp").hide(); $(".project_inn_mask").fadeOut(200);
 	  var jobTitle =  $('#id1').text().trim(); // for the rquirement name .
 	   $.ajax({
 		      type : "GET",
 		      url: sourceleadUrl+"/sendEmailQuestionniareAndCopyTasks?quesionnaireId="+questionnaireId+"&submissionId="
-		    		            +submissionId+"&stageName="+stageName+"&stageId="+stageId+"&questionnaireUuid="+questionnaireUuid+"&jobTitle="+jobTitle, 
+		    		            +submissionId+"&stageName="+stageName+"&stageId="+stageId+"&questionnaireUuid="+questionnaireUuid+"&jobTitle="+jobTitle+"&stageUuid="+stageUuid, 
 		    	success :function(respone) {
 		    		showSuccessMsg(respone);
 		    	  }
@@ -2197,7 +2198,7 @@ function requirementWorkflowStatusBar(requirementId){
 		 <c:forEach var="stage" items="${stagesList}">
 			<c:choose>
 				 <c:when test = "${stage.stageShortCode =='SUBMISSION'}">
-					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementWorkflowPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
+					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submissionsCount" shortCode="${stage.stageShortCode}">0</b>';
 					result = result + '<div class="clearfix fontSmall mt10"><label  class="mb0 small">${stage.stageName}</label></div>';
 					result = result + '</li>';
@@ -2725,8 +2726,10 @@ function exportPipelineToExcel(requirementId,submissionType){
 	 var workflowId ='${workflowId}';  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
-      if(emptypilpeline > 0 ){
+      if(emptypilpeline > 0 && submissionType != 'all'){
           window.location.href = atsUrl+"/getWorkflowSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&workflowId="+workflowId+"&exportType=xls";
+	  }else if(emptypilpeline > 0 && submissionType == 'all'){
+		  window.location.href = atsUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=xls";
 	  }else{
 		  var result = "";
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
@@ -2746,13 +2749,17 @@ function exportPipelineToExcel(requirementId,submissionType){
 
  <script>
 function exportPipelineToPdf(requirementId,submissionType){
+	
 	$('.export_pipline').hide();
 	 var workflowId ='${workflowId}';  
 	  var clientSubmissions = '${clientSubmissions}';
 	  var emptypilpeline = $("#emptyPipelinelist").val();
-	  if(emptypilpeline > 0 ){
+	  if(emptypilpeline > 0 && submissionType != 'all'){
 		  window.location.href = atsUrl+"/getWorkflowSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&workflowId="+workflowId+"&exportType=pdf";
-	  }else{
+	  }else if(emptypilpeline > 0 && submissionType == 'all'){
+		  window.location.href = atsUrl+"/getSubmissionsExportByRequirementId?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&submissionType="+submissionType+"&exportType=pdf";
+	  }
+	  else{
 		  var result = "";
 			/* result = result +"	<div class='project_inn_mask'></div>"; */
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
