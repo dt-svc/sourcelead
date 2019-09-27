@@ -2957,7 +2957,6 @@ public class EMailJobScheduler {
 	 */
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
-//	@Scheduled(cron = "0/30 * * * * *")
 	@Async
 	public void appliedLeaveRemainder() throws Exception
 	{
@@ -2972,88 +2971,75 @@ public class EMailJobScheduler {
 				
 				for (LeaveApproveHierarchy lah : filteredLahList) {
 					if(Constants.LEAVE_PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())){
-						DateTime zoned = new DateTime(lah.getLeaveid().getCreatedDate());
-						DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-						DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-						DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						
-						DateTime week = zoned.plusDays(3);
-						String startDate = outputFormatter1.print(week);
-						String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
-						Date leaveStartDate = ts.parse(startDateString);
-						String endDate = outputFormatter.print(week);
-						String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
-						Date leaveEndDate = ts.parse(endDateString);
-						
-						User user = lah.getApproverUserId();
+						User approverUser = lah.getApproverUserId();
 						OrgLocations orgLocations = lah.getLeaveid().getOrgLocations();
 						
-						List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == user.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
-						
-						EmailMessage emailMessage = new EmailMessage();
-						emailMessage.setFirstName(user.getFirstName());
-						if (StringUtils.isNotBlank(user.getLastName()))
-							emailMessage.setLastName(user.getLastName());
-						emailMessage.setToEmail(user.getEmail());
-						emailMessage.setFromEmail("defaultFromEmailAddressForProd");
-						String fromEmail = null;
-						EmailConfigurationFromMail confFromMail = null;
-						List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService.getConfFromMailList(orgLocations.getId());
-						if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
-							for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
-								if (fromMail.getEmailModules() != null) {
-									String[] jobIds = fromMail.getEmailModules().split(",");
-									for (int j = 0; j < jobIds.length; j++) {
-										if (Long.valueOf(jobIds[j]) == 31L) {
-											confFromMail = fromMail;
+						List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == approverUser.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+			           if(noOfLeaveRequests != null && noOfLeaveRequests.size() > 0) {
+			        	   EmailMessage emailMessage = new EmailMessage();
+							emailMessage.setFirstName(approverUser.getFirstName());
+							if (StringUtils.isNotBlank(approverUser.getLastName()))
+								emailMessage.setLastName(approverUser.getLastName());
+							emailMessage.setToEmail(approverUser.getEmail());
+							emailMessage.setFromEmail("defaultFromEmailAddressForProd");
+							String fromEmail = null;
+							EmailConfigurationFromMail confFromMail = null;
+							List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService.getConfFromMailList(orgLocations.getId());
+							if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
+								for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
+									if (fromMail.getEmailModules() != null) {
+										String[] jobIds = fromMail.getEmailModules().split(",");
+										for (int j = 0; j < jobIds.length; j++) {
+											if (Long.valueOf(jobIds[j]) == 31L) {
+												confFromMail = fromMail;
+											}
 										}
 									}
 								}
-							}
-							if (confFromMail == null) {
-								confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
-								if (confFromMail != null) {
+								if (confFromMail == null) {
+									confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+									if (confFromMail != null) {
+										fromEmail = confFromMail.getEmail();
+									}
+								}
+								else {
 									fromEmail = confFromMail.getEmail();
 								}
 							}
-							else {
-								fromEmail = confFromMail.getEmail();
+							if (StringUtils.isNotBlank(fromEmail)) {
+								emailMessage.setFromEmail(fromEmail);
 							}
-						}
-						if (StringUtils.isNotBlank(fromEmail)) {
-							emailMessage.setFromEmail(fromEmail);
-						}
-						StringBuilder msgBuild = new StringBuilder();
-						emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-						// setting the class filed values
-						Map<String, String> globalVarsMap = new HashMap<String, String>();
-						StringBuilder name = new StringBuilder();
-						if (user.getLastName() != null && user.getLastName() != ""
-								&& user.getLastName() != "undefined") {
-							globalVarsMap.put("approverName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-						}
-						else {
-							globalVarsMap.put("approverName", user.getFirstName());
-						}
-						globalVarsMap.put("orgName", orgLocations.getOrgLocationName());
-						globalVarsMap.put("noOfLeaveRequests", String.valueOf(noOfLeaveRequests.size()));
-						StringBuilder loginBuilder = new StringBuilder();
-						globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
-						
-						InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-						EmailScenario emailScenario = null;
-						if (orgLocations != null)
-							emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
-						if (emailScenario == null) {
-							emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
-						}
-						// configured Email
-						String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-						if (StringUtils.isNotBlank(fromMail)) {
-							emailMessage.setFromEmail(fromMail);
-						}
-						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.APPLY_LEAVE_REMAINDER, new ArrayList<EmailAttachment>());
-						
+							emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+							// setting the class filed values
+							Map<String, String> globalVarsMap = new HashMap<String, String>();
+							StringBuilder name = new StringBuilder();
+							if (approverUser.getLastName() != null && approverUser.getLastName() != ""
+									&& approverUser.getLastName() != "undefined") {
+								globalVarsMap.put("approverName", name.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
+							}
+							else {
+								globalVarsMap.put("approverName", approverUser.getFirstName());
+							}
+							globalVarsMap.put("orgName", orgLocations.getOrgLocationName());
+							globalVarsMap.put("noOfLeaveRequests", String.valueOf(noOfLeaveRequests.size()));
+							StringBuilder loginBuilder = new StringBuilder();
+							globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+							
+							EmailScenario emailScenario = null;
+							if (orgLocations != null)
+								emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+							if (emailScenario == null) {
+								emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+							}
+							// configured Email
+							String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+							if (StringUtils.isNotBlank(fromMail)) {
+								emailMessage.setFromEmail(fromMail);
+							}
+							commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.APPLY_LEAVE_REMAINDER, new ArrayList<EmailAttachment>());
+				
+			           }
+									
 					}
 				}
 			}

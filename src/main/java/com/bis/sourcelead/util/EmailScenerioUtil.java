@@ -166,7 +166,7 @@ public void sendNotification(String actionLink,User loginUser,User toUser, OrgLo
 	notification.setMode(Constants.NOTIFICATION_UNREAD);
 	notification.setCreatedDate(new Date());
 	notification.setLocationCode(loginOrgLocation.getLocationCode());
-	if(loginOrgLocation.getOrgCode() != null) {
+    if(loginOrgLocation.getOrgCode() != null) {
 		notification.setOrgCode(loginOrgLocation.getOrgCode());
 	}else {
 		if(loginOrgLocation.getOrg() != null && loginOrgLocation.getOrg().getOrgCode() != null) {
