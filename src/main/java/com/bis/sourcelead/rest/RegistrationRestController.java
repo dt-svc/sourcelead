@@ -1404,7 +1404,12 @@ public class RegistrationRestController {
 			Calendar cal = Calendar.getInstance(); // creates calendar
 			Date current = cal.getTime();
 		    cal.setTime(uuidSentTime); // sets calendar time/date
-		    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+//		    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+		    /**
+		     * to check uuidSentTime and current time is within 24 hours, 
+		     * below added one day to current time
+		     */
+		    cal.add(Calendar.DATE, 1);
 		    Date addedDtime = cal.getTime();
 			if((current.after(uuidSentTime) && current.before(addedDtime)) || current.equals(addedDtime)){
 				String isVerified = user.getIsVerified();
