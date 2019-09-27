@@ -79,6 +79,9 @@ function candidateVisa(candidateId){
     /* $("#tab-12").empty();
     $("#tab-12").append(result);   */
     $("#tab-12").show();
+    $("#passportli").removeClass("current");
+    $("#visali ").addClass("current");
+    $("#lcali").removeClass("current");
     $("#immigrationCandidate").empty();
     $("#immigrationCandidate").append(result);
     candidateVisaList(candidateId);
@@ -119,7 +122,23 @@ function candidateVisa(candidateId){
 
 }
 </script>
+<script>
+		 // Add addVisa Div  
+			function popFun() {
+				$(".popMask").fadeOut(200);
+				$("#popUpVisa").fadeOut(200);
+				$("#CandidateVisaform")[0].reset();
+				$('#visaType').prop("disabled",false);
+				$("#visaType").selectpicker("refresh");
+				$('#visaCountry').prop("disabled",false);
+				$("#visaCountry").selectpicker("refresh");
+				$('#visaNumber').removeAttr("disabled");
+				$("#candidateVisaId").val('');
+				$('#popUpVisa').find('p.jquery_form_error_message').remove();
+				$("#visa_save_id").removeClass("disabled");
+			}
 
+		</script>
 <!-- Show success message after form submission script -->
 <script>
 function validateCandidateVisaAndSave() {
@@ -142,12 +161,12 @@ function validateCandidateVisaAndSave() {
 		        success: function(data) {
 		        	if(data == true){
 		        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
-						   $("#visa_save_id").attr('disabled','disabled');
+						   $("#visa_save_id").addClass("disabled");
 		        	}
 		        	else{
 		        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-                          $("#visa_save_id").removeAttr("disabled");
+                          $("#visa_save_id").removeClass("disabled");
                            saveVisaDetails(); // saving the visa details once validation is 
 		        	}
 		        
@@ -161,7 +180,7 @@ function validateCandidateVisaAndSave() {
 function saveVisaDetails() {
 	
 	if ($("#CandidateVisaform").validate(false, validationSettings)) {
-		$("#visa_save_id").attr("disabled",true);
+		$("#visa_save_id").addClass("disabled");
 			var formData = getFormData("CandidateVisaform");
 		 	var candidateId = $('#candidateID').val();
            
@@ -189,8 +208,8 @@ function saveVisaDetails() {
 		                    }else{
 		                    	 showError("Operation failed, please try again");
 		                    }
-							$("#passport_save_id").removeAttr("disabled");
-							$("#visa_save_id").removeAttr("disabled");
+							
+							$("#visa_save_id").removeClass("disabled");
 			}
 		});
 		return true;
@@ -368,6 +387,7 @@ function candidateVisaList(candidateId){
                     result = result +" </tbody>";
                     result = result +"</table>";
                     $("#candidateVisaList").append(result); 
+                    popFun();
                     if(response.data[0].expiredVisaLst != 'undefined' 
         				&& response.data[0].expiredVisaLst != '' && response.data[0].expiredVisaLst != null){
         			enableVisaExtensiondDate(response.data[0].expiredVisaLst);
@@ -528,20 +548,3 @@ var validationSettings = {
 	</div><!--popcode end  -->	
    </div>
 </form>
-<script>
-		 // Add addVisa Div  
-			function popFun() {
-				$(".popMask").fadeOut(200);
-				$("#popUpVisa").fadeOut(200);
-				$("#CandidateVisaform")[0].reset();
-				$('#visaType').prop("disabled",false);
-				$("#visaType").selectpicker("refresh");
-				$('#visaCountry').prop("disabled",false);
-				$("#visaCountry").selectpicker("refresh");
-				$('#visaNumber').removeAttr("disabled");
-				$("#candidateVisaId").val('');
-				$('#popUpVisa').find('p.jquery_form_error_message').remove();
-				$("#visa_save_id").removeAttr("disabled");
-			}
-		   	
-		</script>
