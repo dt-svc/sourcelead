@@ -280,7 +280,9 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			ResponseList<RequirementQuestionnaireTemplateDTO> responseList = new ResponseList<>();
 // 
 		//Questionnaire sorting	
+			StringBuilder queryMidBuilder = new StringBuilder("");
 			StringBuilder queryEndBuilder = new StringBuilder("");
+			
 			if(StringUtils.isNotBlank(questionnaireDto.getSortColumn())) {
 				String colName = questionnaireDto.getSortColumn();
 				  if(questionnaireDto.getSortColumn().equalsIgnoreCase("name")){
@@ -291,16 +293,16 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 				}
 			  
 			if (searchValue != null && !"".equalsIgnoreCase(searchValue)) {
-				queryEndBuilder.append(" and ((rq.name like '%" + searchValue + "%' )");
-				queryEndBuilder.append(" or (rq.description like '%" + searchValue + "%' )");
-				queryEndBuilder.append(" or (rq.createdBy.lastName like '%" + searchValue + "%' ))");
-				queryEndBuilder.append(" or (rq.createdBy.firstName like '%" + searchValue + "%' ))");
+				queryMidBuilder.append(" and ((rq.name like '%" + searchValue + "%' )");
+				queryMidBuilder.append(" or (rq.description like '%" + searchValue + "%' )");
+				queryMidBuilder.append(" or (rq.createdBy.lastName like '%" + searchValue + "%' ))");
+				queryMidBuilder.append(" or (rq.createdBy.firstName like '%" + searchValue + "%' ))");
 				//query1.append(" or (tempView.status like '%" + searchValue + "%' )");
 			}
 			String query = " from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
 			String countQuery = "select count(*) from RequirementQuestionnaireTemplate rq where rq.orgLocationId.id=:orgLocationId";
-			Query query1 = session.createQuery(query + queryEndBuilder).setLong("orgLocationId", orgLocationId);
-			Query query2 = session.createQuery(countQuery + queryEndBuilder).setLong("orgLocationId", orgLocationId);
+			Query query1 = session.createQuery(query + queryMidBuilder + queryEndBuilder).setLong("orgLocationId", orgLocationId);
+			Query query2 = session.createQuery(countQuery + queryMidBuilder + queryEndBuilder).setLong("orgLocationId", orgLocationId);
 			countlist = query2.list();
 			int totalCount = 0;
 			if (questionnaireDto != null) {
@@ -359,12 +361,12 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 	}
 
 	@Override
-	public RequirementWorkFlow getRequirementDefaultWorkflow(Long orgLocationId) {
+	public RequirementWorkFlow getRequirementDefaultWorkflow() {
 		logger.debug("Running getRequirementDefaultWorkflow DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlow requirementWorkFlow where (requirementWorkFlow.orgLocationId.id =:orgLocationId or requirementWorkFlow.orgLocationId.id is NULL) and requirementWorkFlow.configureType=:default";
-			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setLong("orgLocationId", orgLocationId).setString("default",Constants.DEFAULT).uniqueResult();
+			String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.workFlowName=:defaultWorkflowName and requirementWorkFlow.configureType=:default and requirementWorkFlow.orgLocationId.id is NULL ";
+			RequirementWorkFlow requirementWorkFlow = (RequirementWorkFlow)session.createQuery(query).setString("defaultWorkflowName",Constants.DEFAULT_JOB_WORKFLOW).setString("default",Constants.DEFAULT).uniqueResult();
 			return requirementWorkFlow;
 		} catch (Exception e) {
 			logger.error(e+" in getRequirementDefaultWorkflow DAO");
@@ -997,7 +999,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		  queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.id = :workflowId and  req.orgLocationId.id = :orgLocationId and req.closedDate is null )";
 			subList =  session.createQuery(queryString).setLong("workflowId", workflowId).setLong("orgLocationId", orgLocationId).setMaxResults(1).list();
 		}else {
-			queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.uuid = :workflowUuid and  req.orgLocationId.id = :orgLocationId req.closedDate is null)";
+			queryString = "select distinct reqSub from RequirementSubmission reqSub where reqSub.requirement.id in (select req.id from  Requirement req where req.workflowId.uuid = :workflowUuid and  req.orgLocationId.id = :orgLocationId and req.closedDate is null )";
 			subList =  session.createQuery(queryString).setString("workflowUuid", workflowUuid).setLong("orgLocationId", orgLocationId).setMaxResults(1).list();
 		}
 		System.out.println(queryString);
@@ -1032,8 +1034,20 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		try {
 			if(!stageShortCode.equalsIgnoreCase("REQUEST_SENT")) {
 			  Session session = this.sessionFactory.getCurrentSession();
-			 String query = "from RequirementWorkFlowStages worflowstages where worflowstages.requirementWorkFlowId.id =:workflowId and worflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) and worflowstages.orgLocationId.id=:orgLocationId order by worflowstages.seqOrder";
-			 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
+			
+			  String query = "from RequirementWorkFlowStages workflowstages where workflowstages.requirementWorkFlowId.id =:workflowId "
+						 		+ "and workflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) "
+							    +" and workflowstages.orgLocationId.id=:orgLocationId ";
+			   // Below condition is added not show show interview and offer stage in drop down list added by SRINIVAS SABBU ON 25-SEP-2019.
+			    if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
+					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
+				} else if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
+					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
+				} else {
+					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
+				}
+			     query =query	+ " order by workflowstages.seqOrder";
+			    workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
 			}else {
 				//we are adding manually two stage for REQUEST_SENT because we don't have default stage workflow stages.
 				workflowStagesList = new ArrayList<RequirementWorkFlowStages>();
@@ -1207,5 +1221,22 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 				return Constants.FAILED;
 			}
 		}
+		
+		@Override
+		public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) {
+			logger.debug("Running getRequirementWorkFlowTasksBycurrentStageUuid DAO");
+			RequirementWorkFlow requirementWorkFlow = null;
+			try {
+				Session session = this.sessionFactory.getCurrentSession();
+				String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.id =:workflowId and requirementWorkFlow.orgLocationId.id =:id";
+				requirementWorkFlow =  (RequirementWorkFlow) session.createQuery(query).setString("workflowId", workflowId).setLong("id", id).uniqueResult();
+				return  requirementWorkFlow;
+			} catch (Exception e) {
+				logger.error(e+" in getRequirementWorkflowByNameAndOrgLocationId DAO");
+				e.printStackTrace();
+				return null;
+			}
+		}
+		
 	 }
 
