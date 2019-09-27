@@ -431,13 +431,6 @@ public class UserController {
 						String currentDateStr = dateFormat.format(toDayDate);
 						Date newDate = dateFormat.parse(currentDateStr);
 						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-					
-
-						if (StringUtils.isNotBlank(lcaDto.getEndDate()) && currentDate.before(commonUtil.stringToDate(lcaDto.getEndDate()))) {
-							lcaDto.setLcaStatus("Active");
-						} else {
-							lcaDto.setLcaStatus("Expired");
-						}
 						lcaDto.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getEndDate())));
 						lcaDto.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getStartDate())));
 					}
