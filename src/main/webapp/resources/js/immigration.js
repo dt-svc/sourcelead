@@ -1334,8 +1334,8 @@ function Immigration() {
 			  
 			id = $("#candidateVisaId").val();
 		    visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
-			  
-			  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+		    $("input#visaNumber").find('p.jquery_form_error_message').remove();
+		   
 				 $.ajax({
 				    	type: "GET",
 				    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
@@ -1409,7 +1409,37 @@ function Immigration() {
 			    });
 	}
 
-	
+	this.validateCandidateVisaDetails = function() {
+		 var  country =   $('#visaCountry').val();
+		 var candidateId = $("#candidateID").val();
+		 var visaNumber =  $("#visaNumber").val();
+		 if(visaNumber.length >7 && country.length>0){
+			 $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+   		     $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+		     var id = null;
+	       	 id = $("#candidateVisaId").val();
+	         visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
+		  
+		    $('#visaNumber').find('p.jquery_form_error_message').remove();
+			 $.ajax({
+			    	type: "GET",
+			    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+			        success: function(data) {
+			        	if(data == true){
+			        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
+							   $("#visa_save_id").addClass("disabled");
+			        	}
+			        	else{
+			        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+			        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+	                          $("#visa_save_id").removeClass("disabled");
+			        	}
+			        
+			        },
+			    });
+		 }
+		
+}
 	this.editDocumentDetailsByRowId = function(id){
 		 // update the variable with residence member id in edit mode.
 		var candidateId = $("#candidateID").val();
