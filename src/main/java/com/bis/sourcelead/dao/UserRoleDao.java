@@ -177,4 +177,6 @@ public interface UserRoleDao {
 	
 	List<UserRole> getAllUserRolesByOrgLocationId(Long orgLocationId) throws Exception;
 
+    List<UserRole> getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(Long orgLocationId,String subscriptionStatus) throws Exception;
+
 }

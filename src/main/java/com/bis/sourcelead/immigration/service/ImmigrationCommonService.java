@@ -53,9 +53,9 @@ public interface ImmigrationCommonService {
 	
 	String saveCandidateFamilyMemberDetails(CandidateFamilyDetailsDTO familyDetailsDTO, OrgLocations orgLocations, User user,Long immigrationId) throws Exception;
 	
-	CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,Long immigrationId,  Long visaHistoryId)throws Exception;
+	CandidateVisa saveVisaDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,String immigrationId,  Long visaHistoryId)throws Exception;
 	
-	CandidatePassport savePassportDetails(ImmigrationPassportDTO immigrationPassportDTO, User user, OrgLocations orgLocations,Long immigrationId)throws Exception;
+	CandidatePassport savePassportDetails(ImmigrationPassportDTO immigrationPassportDTO, User user, OrgLocations orgLocations,String immigrationId)throws Exception;
 	
 	CandidateResidence saveResidenceDetails(ResidenceDTO residenceDTO, OrgLocations orgLocations, User user, Long candidateId,Long immigrationId) throws Exception;
 
@@ -77,10 +77,12 @@ public interface ImmigrationCommonService {
 	
 	List<CandidatePassport> getCandidatePassportDetails(Long candidateId,String searchValue);
 	
+	ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(Long candidateId,OrgLocations orgLocations) throws Exception;
+	
 	CandidateFamilyDetails getCandidateFamilyDetailsById(Long id);
 
 	//passport delete
-	 void removeCandidateVisaDetails(Long visaHistoryId);
+	 void removeCandidateVisaDetails(Long visaHistoryId, Long candidateId, User user, OrgLocations orgLocations);
 		 
 	 //passport delete
 	 void removeCandidatePassportDetails(Long candidateId, Long id, User user, OrgLocations orgLocations);
@@ -236,11 +238,20 @@ public interface ImmigrationCommonService {
 	ImmigrationVisaDTO getCandidateVisaDetailsByVisaHistoryId(Long visaHistoryId);
 
 	CandidateVisaHistory saveVisaHistoryDetails(ImmigrationVisaDTO immigrationVisaDTO, User user, OrgLocations orgLocations,
-			long immigrationId);
+			String immigrationId);
 	
 	ImmigrationVisaDTO getCandidateVisaDetailsByCandidateIdAndVisaNumber(Long candidateId,String visaNumber);
 	ImmigrationVisaDTO getCandidateActiveVisaDetailsByVisaNumberAndCountry(Long candidateId, String visaNumber, String country);
     
 	Lca updateLcaAvailablePositionsById(Lca lca);
 	public Lca getLcaNumber(String lcaNo) throws Exception;
+
+	List<LcaDTO> getAssociateLcaDetails(Long candidateId);
+	
+	// below method added to get the CandidatePassport list which end dates are equal to expected expiry date used in CRON.
+	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate)throws Exception;
+	
+	// below method added to get the CandidateVisaHistory list which end dates are equal to expected expiry date used in CRON.
+	public List<CandidateVisaHistory> getAllVisaHistoryList(Date expectedExpiryDate)throws Exception;
+	
 }

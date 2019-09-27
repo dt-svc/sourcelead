@@ -47,6 +47,10 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 	private String timezone;
 	
 	private String licenseUUID;
+	
+	private Integer status;
+	
+	private Long orgId;
 
 	public long getOrgLinceseSubscriptionId() {
 		return orgLinceseSubscriptionId;
@@ -174,5 +178,21 @@ public class OrgLicenseSubscriptionDTO implements Serializable{
 
 	public void setModulesIdsList(List<Long> modulesIdsList) {
 		this.modulesIdsList = modulesIdsList;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 }

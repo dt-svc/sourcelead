@@ -49,7 +49,7 @@ public interface RequirementWorkFlowDao {
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId, String questionnaireName);
 	
-	RequirementWorkFlow getRequirementDefaultWorkflow(Long orgLocationId)throws Exception;
+	RequirementWorkFlow getRequirementDefaultWorkflow()throws Exception;
 
 	String deleteQuestionnaireTemplateById(Long id);
 
@@ -129,7 +129,7 @@ public interface RequirementWorkFlowDao {
 	
 	Integer updateDefaultWorkflowInRequirementProcedure() throws Exception;
 
-	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(Long stageId, Long submissionId, Long orgLocationId);
+	RequirementQuestionnaireFeedbackTemplate getSubmittedQuestionnaireUuidByWorkflowStage(String stageUuid, Long submissionId, Long orgLocationId);
 
 	RequirementWorkFlowTasks getRequirementWorkFlowTasksByUuid(String currentStageUuid);
 	
@@ -137,5 +137,7 @@ public interface RequirementWorkFlowDao {
 
 	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
 			Integer seconds);
+	
+	RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id)throws Exception;
 
 }
