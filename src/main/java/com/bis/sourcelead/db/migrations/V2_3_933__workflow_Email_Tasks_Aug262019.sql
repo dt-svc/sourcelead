@@ -5,11 +5,11 @@ INSERT INTO `EMAIL_SCENARIO` (`SCENARIO_NAME`, `ENTITY_TYPE`, `UNIQUE_SCENARIO_N
 VALUES('workflowStageTaskMail',
 			'Email', 
 			'workflowStageTaskMail', 
-			'NULL', 
-			'TASK_TITLE',
+			'This email is to assign user notify to take assigned workflow stage task assigned by manager/admin..', 
+			'New workflow task assigned',
 			'org', 
 			'Best Regards, \n [LOGIN_USER]\n [LOGIN_ORG]', 
-			'Dear [ASSIGNED_USER],\n[TASK_DESCRIPTION]\n\nFor more details please login to SourceLead\n\n[LOGIN_LINK]',
+			'Dear [ASSIGNED_USER],\n[TASK_TITLE] is assigned, details are given below.\n[TASK_DESCRIPTION]. \n\nFor more details please login to SourceLead\n\n[LOGIN_LINK]',
 			'N', 'SLADMIN', 'slead', 'sleadIN', 34,1,'Y');
 			
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) VALUES ((SELECT MAX( ID ) FROM `EMAIL_SCENARIO`), 'taskDescription', '[TASK_DESCRIPTION]');		

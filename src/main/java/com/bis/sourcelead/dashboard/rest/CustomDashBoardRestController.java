@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,11 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.UserRoleDao;
+import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.dto.ModuleConfigureDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
-import com.bis.sourcelead.dashboard.entity.CustomModuleConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
 import com.bis.sourcelead.dto.Response;
@@ -31,10 +30,10 @@ import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -55,6 +54,13 @@ public class CustomDashBoardRestController {
 	
 	@Autowired
 	CustomDashboardConfService customDashboardConfService;
+	
+	@Autowired
+	CustomDashBoardConfDao customDashBoardConfDao;
+	
+	@Autowired
+	OrgService orgService;
+		
 	
 	@Autowired
 	private UserRoleDao userRoleDao;
@@ -266,6 +272,31 @@ public class CustomDashBoardRestController {
 		
 	}
 	
+
+/**
+	 * delete custom dashboard configuration by changing status
+	 * 
+	 * @param customDashBoardUUID
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/deleteCustomDashBoardConf", method = RequestMethod.POST)
+	public @ResponseBody  void  deleteCustomDashBoardConf(@RequestParam("customDashBoardUUID") String customDashBoardUUID,HttpServletRequest req, HttpServletResponse res) throws Exception
+	{
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+			CustomDashBoardConfiguration customDashBoardConf = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
+			customDashBoardConf.setStatus(0);
+			customDashBoardConfDao.saveCustomDashBoardConf(customDashBoardConf);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
 	 * Gettinh all associates based on roles
 	 * @param req
@@ -308,10 +339,12 @@ public class CustomDashBoardRestController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/getRoleBasedModules", method = RequestMethod.GET)
-	public @ResponseBody List<TabsDTO> getRoleBasedModules(HttpServletRequest req,HttpServletResponse res) throws Exception
+	public @ResponseBody List<TabsDTO> getRoleBasedModules(@RequestParam(value="custmDashBoardConfUUID",required = false) String custmDashBoardConfUUID,HttpServletRequest req,HttpServletResponse res) throws Exception
 	{
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
-		return customDashboardConfService.getRoleBasedModules(orgLocation.getId(),5589l);
+		Long roleId = (Long) SourceLeadSessionManager.getSessionAttribute(req, "loginUserRoleId");
+		CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(custmDashBoardConfUUID, orgLocation.getId());
+		return customDashboardConfService.getRoleBasedModules(orgLocation.getId(),roleId,dashBoard.getId());
 	}
 	
 	

@@ -157,7 +157,7 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId)
+	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId, Long confDashBoardId)
 	{
 		List<TabsDTO> tabs = new ArrayList<>();
 		try {
@@ -178,7 +178,7 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 							subTabsDTO.setSubTabId(sTab.getId());
 							subTabsDTO.setSubTabDisplayName(sTab.getSubtabDisplayName());
 							subTabsDTO.setSubTabName(sTab.getSubTabName());
-							CustomModuleConfiguration modConf =  moduleDashboardConfService.getSubModuleById(sTab.getId());
+							CustomModuleConfiguration modConf =  moduleDashboardConfService.getSubModuleByIdAndConfDashBoardId(sTab.getId(),confDashBoardId);
 							if(modConf != null) {
 								subTabsDTO.setIsSubTabConfigured("YES");
 							}else {
@@ -222,6 +222,9 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		}
 		return stablist;
 	}
+
+
+
 	
 }
 
