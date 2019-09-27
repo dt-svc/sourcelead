@@ -183,13 +183,11 @@ $(function(){
           <div class="col-md-5">
            <label class="clearfix">Account Type<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <select onchange="showOrHidePaymentFormFields($(this).val());" id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-required="required">
-                    <option value="0">--Select Location--</option>
+                <select onchange="showOrHidePaymentFormFields($(this).val());" field-name="Account Type"  id="paymentAccountType" name="paymentAccountLocation" class="form-control" data-validation="required">
+                    <option value="">--Select Account Type--</option>
                     <option value="SAVINGS" data-type="1">Savings</option>
                     <option value="CHECKING" data-type="2">Checking</option>
-                    <c:if test="${SourceLeadWeb_orgLocations.country != 'India'}"> 
-                      <option value="WEPAY" data-type="3">WePay</option>
-                    </c:if>
+                    <option value="WEPAY" data-type="3">WePay</option>
                     
                 </select>
            </div>
@@ -198,39 +196,39 @@ $(function(){
         <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
            <label class="clearfix">Bank Name<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" placeholder="Bank Name" class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountBankName" name="paymentAccountBankName" field-name="Bank Name"  placeholder="Bank Name" class="form-control" data-validation="required"/>
            </div>
            </div>
           <div data-fieldtype="account"  data-fieldfor="1,2" class="col-md-5">
            <label class="clearfix">Account Number<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountNumber" data-min='9' data-max='15' placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountNumber"  field-name="Account Number"  placeholder="Account Number" name="paymentAccountNumber" class="form-control" data-validation="required"/>
            </div>
            </div>
         
         <div data-fieldtype="account" data-fieldfor="1,2" class="col-md-5">
               <label class="clearfix">Routing Number<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountRoutingNumber" data-min='9' data-max='9' placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountRoutingNumber" field-name="Routing Number"  placeholder="Routing Number" name="paymentAccountRoutingNumber" class="form-control" data-validation="required"/>
            </div>
            </div>
            <div data-fieldtype="account" data-fieldfor="3" class="col-md-5">
            <label class="clearfix">Email<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" placeholder="Email"  class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountEmail" name="paymentAccountEmail" field-name="Email"  placeholder="Email"  class="form-control" data-validation="required"/>
            </div>
            </div>
         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
            <label class="clearfix">First Name<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" placeholder="First Name" class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountFirstName" name="paymentAccountFirstName" field-name="First Name"  placeholder="First Name" class="form-control" data-validation="required"/>
            </div>
            </div>
         
         <div data-fieldtype="account" data-fieldfor="1,2,3" class="col-md-5">
            <label class="clearfix">Last Name<span class="text-danger">&nbsp;*</span></label>
            <div class="clearfix">
-                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" class="form-control" data-required="required"/>
+                <input type="text" id="paymentAccountLastName" name="paymentAccountLastName" placeholder="Last Name" field-name="Last Name"  class="form-control" data-validation="required"/>
            </div>
            </div>
         
@@ -246,6 +244,47 @@ $(function(){
     </div>
   </div>
 <!-- Add IP Modal -->
+
+
+<script>
+
+function savePaymentAccount() {
+	if ($('#paymentaccount_form').validate(false, validationSettings)) {
+		
+	        var data =  {};
+	        var val = $("#paymentAccountType").val();
+	        var orgloationId = '${orgLocationId}';
+	        var flag = false;
+	        data["email"] = $("#paymentAccountEmail").val();
+	        data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+            data["bankName"] = $("#paymentAccountBankName").val().trim();
+            data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
+	        data["firstName"] = $("#paymentAccountFirstName").val().trim();
+	        data["lastName"] = $("#paymentAccountLastName").val().trim();
+	        data["orgLocationId"] = orgloationId;
+	        data["accountType"] = val;
+	        data["id"] = $("#paymentAccountId").val();
+	        $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
+	            showError(data.responseMessage);
+	             if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
+	                closePaymentAccountPopup(val);
+	                $("#savePaymentButton").removeAttr("disabled", "disabled");
+	                location.replace(sourceleadUrl+"/companyOnboardBankingDetails"); 
+	            }
+	            getPaymentAccounts(true);
+	        });
+		return true;
+	}else{
+		return false;
+	}
+}
+$('body').on('blur', '#paymentaccount_form', function() {
+	$("#paymentaccount_form").showHelpOnFocus();
+	$("#paymentaccount_form").validateOnBlur(false, validationSettings);
+});
+
+</script>
+
 <script>
 var sourceleadUrl = '${sourceleadUrl}';
 function showUSAPaymentAccountPopup() {
@@ -276,7 +315,6 @@ function showOrHidePaymentFormFields(type) {
             if(parseInt(val) === parseInt(id)) 
                 $(this).show();
         } else {
-            console.log(val);
             val = val.split(",");
             for(var e in val) {
                 if(parseInt(val[e]) === parseInt(id)) {
@@ -297,7 +335,7 @@ function closePaymentAccountPopup(type) {
     
     $(".location-alert").fadeOut();
 }
-
+/* 
 function savePaymentAccount() {
     var data =  {};
     var val = $("#paymentAccountType").val();
@@ -341,7 +379,7 @@ function savePaymentAccount() {
             getPaymentAccounts(true);
         });
     }
-}
+} */
 function editPaymentAccount(type, id, locationId, firstName, lastName, accountNumber, routingNumber, bankName) {
 	$("[data-fieldtype=account]").hide();
 	showOrHidePaymentFormFields(type);
@@ -373,4 +411,12 @@ function grantWePayAccess(id) {
         showError(data.responseMessage);
     });
 }
+</script>
+<script>
+var validationSettings = {
+        errorMessagePosition : 'element',
+       borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+   }; 
 </script>

@@ -308,9 +308,23 @@ public class SourceleadResumeParserNew {
 			//Email
 			String email = getEmailFromTextFile(resumeData);
 			jsonUtil.setEmail(email);
+
+			//PhoneNumber(s)
+			Set<String> phoneNumberSet = new LinkedHashSet<>();
+			String primaryMobile = getMobileNumber(resumeData);
+			if(!primaryMobile.isEmpty()) {
+				phoneNumberSet.add(primaryMobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
+				
+				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
+				String alternativeMobile = getMobileNumber(resumeData1).replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim();
+				if(!alternativeMobile.isEmpty()) {
+					phoneNumberSet.add(alternativeMobile);
+				}
+			}
+			jsonUtil.setPhoneNumbers(phoneNumberSet);
 			
 			//Name
-			String name = getNameFromTextFile(resumeData, email, fileName);
+			String name = getNameFromTextFile(resumeData, email, phoneNumberSet, fileName);
 			name = name.replaceAll("\\s+", " ");
 			if (name.split(" ").length > 2) {
 				jsonUtil.setFirstName(name.split(" ")[0]);
@@ -323,14 +337,7 @@ public class SourceleadResumeParserNew {
 				jsonUtil.setFirstName(name);
 			}
 			
-			Set<String> phoneNumberSet = new LinkedHashSet<>();
-			String primaryMobile = getMobileNumber(resumeData);
-			phoneNumberSet.add(primaryMobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
-			if(!primaryMobile.isEmpty()) {
-				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
-				phoneNumberSet.add(getMobileNumber(resumeData1).replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
-			}
-			jsonUtil.setPhoneNumbers(phoneNumberSet);
+			
 			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
 			
 			//Designation
@@ -400,6 +407,154 @@ public class SourceleadResumeParserNew {
 		return jsonUtil;
 	}
 	
+public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeData, String fileName) {
+		
+		//splitting resume into multiple sections
+		List<Integer> globalIndex = new LinkedList<>();
+		List<Integer> objectiveIndex = getSectionIndex("OBJECTIVE", SourceleadResumeParserRegEx.OBJECTIVE, resumeData);
+		List<Integer> educationIndex = getSectionIndex("EDUCATION", SourceleadResumeParserRegEx.EDUCATION, resumeData);
+		List<Integer> experienceIndex = getSectionIndex("EXPERIENCE", SourceleadResumeParserRegEx.EXPERIENCE, resumeData);
+		List<Integer> skillsIndex = getSectionIndex("SKILLS", SourceleadResumeParserRegEx.SKILLS, resumeData);
+		List<Integer> strengthsIndex = getSectionIndex("STRENGTHS", SourceleadResumeParserRegEx.STRENGTHS, resumeData);
+//		List<Integer> languageIndex = getSectionDetails(SourceleadResumeParserRegEx.LANGUAGE, parsedString);
+		List<Integer> interestIndex = getSectionIndex("INTERESTS", SourceleadResumeParserRegEx.INTERESTS, resumeData);
+		List<Integer> membershipIndex = getSectionIndex("MEMBERSHIPS", SourceleadResumeParserRegEx.MEMBERSHIP, resumeData);
+		List<Integer> extraCurricularIndex = getSectionIndex("EXTRA_CURRICULARS", SourceleadResumeParserRegEx.EXTRA_CURRICULARS, resumeData);
+//		List<Integer> designationIndex = getSectionDetails("DESIGNATION", SourceleadResumeParserRegEx.DESIGNATION_START, parsedString);
+
+		/*Adding and sorting all indexes to global index list*/
+		globalIndex.addAll(objectiveIndex);
+		globalIndex.addAll(educationIndex);
+		globalIndex.addAll(experienceIndex);
+		globalIndex.addAll(skillsIndex);
+		globalIndex.addAll(strengthsIndex);
+//		globalIndex.addAll(languageIndex);
+		globalIndex.addAll(interestIndex);
+		globalIndex.addAll(membershipIndex);
+		globalIndex.addAll(extraCurricularIndex);
+//		globalIndex.addAll(designationIndex);
+		Collections.sort(globalIndex);
+		globalIndex = globalIndex.stream().distinct().collect(Collectors.toList());
+//		System.out.println("globalIndex : " + globalIndex.toString());
+		
+		/*String summary = getSectionDetails(resumeData, objectiveIndex, globalIndex, RegEx.OBJECTIVE);
+		System.out.println("summary " + summary);
+		
+		String education = getSectionDetails(resumeData, educationIndex, globalIndex, RegEx.EDUCATION);
+		System.out.println("education " + education);
+		
+		String exp = getSectionDetails(resumeData, experienceIndex, globalIndex, RegEx.EXPERIENCE);
+		System.out.println("exp" + exp);*/
+		
+		//getting values from resume string
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			String summary = getSectionDetails(resumeData, objectiveIndex, globalIndex, SourceleadResumeParserRegEx.OBJECTIVE);
+//			System.out.println("Summary : " + summary);
+			jsonUtil.setSummary(summary);
+
+			//Email
+			String email = getEmailFromTextFile(resumeData);
+			jsonUtil.setEmail(email);
+
+			//PhoneNumber(s)
+			Set<String> phoneNumberSet = new LinkedHashSet<>();
+			String primaryMobile = getMobileNumber(resumeData);
+			if(!primaryMobile.isEmpty()) {
+				phoneNumberSet.add(primaryMobile.replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim());
+				
+				String resumeData1 = resumeData.substring(resumeData.indexOf(primaryMobile) + primaryMobile.length(), resumeData.length());
+				String alternativeMobile = getMobileNumber(resumeData1).replaceAll(":", "").replaceAll("\\.", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll(",", "").trim();
+				if(!alternativeMobile.isEmpty()) {
+					phoneNumberSet.add(alternativeMobile);
+				}
+			}
+			jsonUtil.setPhoneNumbers(phoneNumberSet);
+			
+			//Name
+			String name = getNameFromTextFile(resumeData, email, phoneNumberSet, fileName);
+			name = name.replaceAll("\\s+", " ");
+			if (name.split(" ").length > 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setMiddleName(name.split(" ")[1]);
+				jsonUtil.setLastName(name.split(" ")[2]);
+			} else if (name.split(" ").length == 2) {
+				jsonUtil.setFirstName(name.split(" ")[0]);
+				jsonUtil.setLastName(name.split(" ")[1]);
+			} else {
+				jsonUtil.setFirstName(name);
+			}
+			
+			
+			jsonUtil.setSkills(getSkillsFromTextFile(resumeData));
+			
+			//Designation
+			jsonUtil.setDesignation(getKeywordsFromTextFile(resumeData, "designation.txt"));
+			
+			//Experience
+			String experience = getExperienceFromTextFile(resumeData);
+			jsonUtil.setTotalYearsExp(experience.split(":").length > 0 && !experience.split(":")[0].isEmpty() ? Integer.parseInt(experience.split(":")[0]) : 0);
+			jsonUtil.setTotalMonthsExp(experience.split(":").length > 1 && !experience.split(":")[1].isEmpty() ? Integer.parseInt(experience.split(":")[1]) : 0);
+			
+			//Education
+			String eduSSC = getKeywordsFromTextFile(resumeData, "education_SSC.txt");
+			String edueIntermediate = getKeywordsFromTextFile(resumeData, "education_intermediate.txt");
+			String eduUG = getKeywordsFromTextFile(resumeData, "education_ug.txt");
+			String eduPG = getKeywordsFromTextFile(resumeData, "education_pg.txt");
+			
+			Set<String> educationsSet = new LinkedHashSet<>();
+			if(!eduSSC.isEmpty()) {
+				educationsSet.add(eduSSC.split(",")[0]);
+			}
+			
+			if(!edueIntermediate.isEmpty()) {
+				educationsSet.add(edueIntermediate.split(",")[0]);
+			}
+			
+			if(!eduUG.isEmpty()) {
+				String[] eduUGArray = eduUG.split(",");
+				Set<String> set = new HashSet<>(Arrays.asList(eduUGArray));
+				educationsSet.addAll(set);
+			}
+			
+			if(!eduPG.isEmpty()) {
+				String[] eduPGArray = eduPG.split(",");
+				Set<String> set2 = new HashSet<>(Arrays.asList(eduPGArray));
+				educationsSet.addAll(set2);
+			}
+			
+			educationsSet.remove("been");
+			educationsSet.remove("BEEN");
+			educationsSet.remove("\\,");
+			
+			jsonUtil.setEducations(educationsSet);
+//			System.out.println(educationsSet);
+			
+			//Address
+			/*String country = getKeywordsFromTextFile(resumeData, "countries.txt");
+			jsonUtil.setCountry(country);
+			
+			String state = getKeywordsFromTextFile(resumeData, "states.txt");
+			jsonUtil.setState(state);*/
+			
+			//Gender
+			String gender = getGenderFromTextFile(resumeData);
+			jsonUtil.setGender(gender);
+			
+			//Martial Status
+			String maritalStatus = getMartialStatusFromTextFile(resumeData);
+			jsonUtil.setMaritalStatus(maritalStatus);
+			
+			//Employeers
+			/*String employeers = getKeywordsFromTextFile(resumeData, "companies.txt");
+			System.out.println("Employeers : " + employeers);*/
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
+	}
+
 	private static List<Integer> getSectionIndex(String name, SourceleadResumeParserRegEx regEx, String parsedString) {
 		List<Integer> indexesOfSection = new ArrayList<>();
 		for(String s : parsedString.split(System.getProperty("line.separator"))) {
@@ -460,7 +615,7 @@ public class SourceleadResumeParserNew {
 	 * Name finder from parsed text file Here we used java regular expression
 	 * logic for resolving name from text file
 	 */
-	private String getNameFromTextFile(String parsedString, String email, String fileName) {
+	private String getNameFromTextFile(String parsedString, String email, Set<String> phoneNumberSet, String fileName) {
 //		System.out.println(parsedString);
 		String name = "";
 		try {
@@ -468,17 +623,28 @@ public class SourceleadResumeParserNew {
 			String[] str = parsedString.replaceAll(SourceleadResumeParserRegEx.ELIMINATE_KEYWORDS.toString(), "").trim().split("\n");
 			
 			//Getting name based on filename
-			if(!fileName.isEmpty()) {
-				String subStr = fileName.substring(0, 4);
-				for(int i = 0; i < str.length; i++) {
-					if(str[i].toLowerCase().contains(subStr.toLowerCase())) {
-						String tempName = str[i].trim();
-						if(email.isEmpty() || !tempName.toLowerCase().contains(email.toLowerCase())) {
-							nameString = tempName.replaceAll("[^a-zA-Z\\s\\.]+", "");
-							for(String eleString : Constants.ELIMINATE_NAME_KEYWORDS) {
-								nameString = nameString.replaceAll("(?i)" + eleString, "").trim();
+			fileName = fileName.replaceAll(SourceleadResumeParserRegEx.ELIMINATE_RESUME_NAME_KEYWORDS.toString(), "");
+			nameSearch: {
+				if(!fileName.isEmpty()) {
+					String[] fileNameArray = fileName.split("[^a-zA-Z\\s\\.]+");
+					for(String subFileName : fileNameArray) {
+						Pattern pattern = Pattern.compile(SourceleadResumeParserRegEx.ELIMINATE_RESUME_NAME_KEYWORDS.toString(), Pattern.CASE_INSENSITIVE);
+						Matcher matcher = pattern.matcher(subFileName);
+						if(!subFileName.startsWith(".") && !matcher.find()) {
+							String subStr = subFileName.substring(0, subFileName.length() > 5 ? 5 : subFileName.length()).toLowerCase();
+							for(int i = 0; i < str.length; i++) {
+								if(str[i].toLowerCase().contains(subStr)) {
+									String tempName = str[i].toLowerCase().trim();
+									tempName = tempName.substring(tempName.indexOf(subStr), tempName.length());
+									if(email.isEmpty() || !tempName.toLowerCase().contains(email.toLowerCase())) {
+										nameString = tempName.replaceAll("[^a-zA-Z\\s\\.]+", "");
+										for(String eleString : Constants.ELIMINATE_NAME_KEYWORDS) {
+											nameString = nameString.replaceAll("(?i)" + eleString, "").trim();
+										}
+										break nameSearch;
+									}
+								}
 							}
-							break;
 						}
 					}
 				}
@@ -514,10 +680,27 @@ public class SourceleadResumeParserNew {
 				 *  If emailID found with in 10 lines, then fetch name from 1st line
 				 *	Else fetch name from 4 lines prior to EmailID
 				 **/ 
-				int index = emailRowIndex - empty < 10 ? 0 : emailRowIndex - 4;
+				
+				/*int index = emailRowIndex - empty < 10 ? 0 : emailRowIndex - 4;
 				for(int i = index; i <= index + 4; i++) {
 					if(!str[i].isEmpty()) {
 						nameString += (nameString.isEmpty() ? "" : "\n") + str[i].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+					}
+				}*/
+				
+				/**
+				 * finding name (starting from line above email found line to 1st line)
+				 * **/
+				for(int i = emailRowIndex - 1; i > 0; i--) {
+					if(!str[i].isEmpty()) {
+						/**
+						 * If str[i] contains phone number string, eliminate that line
+						 **/
+						for(String phoneNumber : phoneNumberSet) {
+							if(!str[i].contains(phoneNumber)) {
+								nameString += (nameString.isEmpty() ? "" : "\n") + str[i].replaceAll("[^a-zA-Z\\s\\.]+", "").trim();
+							}
+						}
 					}
 				}
 			}
@@ -532,7 +715,7 @@ public class SourceleadResumeParserNew {
 				name = matcher.group(0).replaceAll("\\.", " ");
 			}
 			if (name.isEmpty()) {
-				String[] totalLines = nameString.split("\n");
+				String[] totalLines = parsedString.split("\n");
 				String firstTenLines = "";
 				String lineSeparator = "";
 				String ecludeNameRegex = "((?i)Name|name|NAME|\\.)";
@@ -644,12 +827,22 @@ public class SourceleadResumeParserNew {
 					}
 					name = name.replaceAll(ecludeNameRegex, " ").trim();
 				}
-			}			
+			}
+			if(!name.isEmpty()) {
+				String eliminateWord = "";
+				pattern = Pattern.compile(SourceleadResumeParserRegEx.ELIMINATE_RESUME_NAME_KEYWORDS.toString(), Pattern.CASE_INSENSITIVE);
+				matcher = pattern.matcher(name);
+				if(matcher.find()) {
+					eliminateWord = matcher.group(0); 
+				}
+				name = name.replaceAll(eliminateWord, "");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return name;
-	}	
+		
+		return CommonUtil.getCaptilizedText(name.trim());
+	}
 	
 	public String getEmailFromTextFile(String parsedString) {
 		String email = "";
@@ -939,6 +1132,22 @@ public class SourceleadResumeParserNew {
 			e.printStackTrace();
 		}
 		return martialStatus;
+	}
+	
+	public ResumeParserJsonUtil getCandidateDetailsFromResumeForPublicPages(byte[] source, String fileName) throws Exception {
+		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
+		try {
+			BodyContentHandler htmlHandler = new BodyContentHandler();
+			ByteArrayInputStream stream = new ByteArrayInputStream(source);
+			AutoDetectParser parser = new AutoDetectParser();
+			Metadata metadata = new Metadata();
+			parser.parse(stream, htmlHandler, metadata);
+			String parsedString = htmlHandler.toString();
+			jsonUtil = getResumeParserJsonUtilForPublicPage(parsedString, fileName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jsonUtil;
 	}
 
 }

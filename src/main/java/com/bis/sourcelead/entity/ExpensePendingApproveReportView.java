@@ -21,7 +21,7 @@ public class ExpensePendingApproveReportView {
 @Column(name = "EXPENSE_ID", nullable = false)
 private Long expenseId;
 
-@Column(name = "EMP_ID")
+@Column(name = "EMP_ID" ,columnDefinition = "TEXT default NULL")
 private Long empId;
 
 @Column (name = "EMPLOYMENT_TYPE")

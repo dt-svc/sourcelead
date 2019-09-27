@@ -710,7 +710,8 @@
 				</div>
 			</div>
 
-
+			<div class="clearfix"></div>
+			<div class="col-md-12">
 			<div class="form-footer clearfix">
 				<div class="col-lg-12">
 					<div class="pull-right">
@@ -721,6 +722,7 @@
 							class="btn btn-default ml">
 					</div>
 				</div>
+			</div>
 			</div>
 
 		</form:form>
