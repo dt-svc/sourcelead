@@ -8,7 +8,37 @@
 	         		<i class="fa fa-check-circle"></i><span>Mail Send Successfully.</span>
 		      </div>
 			 
-			 <div class="clearfix">
+			 
+			
+			
+	<div class="timesheet_out timesheet_background positionRelative">
+		
+        <div class="timesheet_head timesheetHead topfilters">
+			 <div class="pull-left cand-advsrch advsrch_chosen">
+			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetUsersSearchFilter();" title="Refresh">
+				    <span class="fa fa-refresh"></span>
+				</button>
+				
+				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center mr" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
+				</a>
+				
+				<a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary anchorWhite" onclick="getOrgSubscribedCountries();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
+				
+	       </div> 
+        	
+        	<ul>
+        	<li class="positionRelative">
+				  <div class="dynamic_search">
+		   			<input type='text' placeholder='Search' id='usersListDataTableSearch'/>
+		   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getUserList();"></i></span>
+				  </div>
+			  </li>
+	             
+                <div class="clearfix"></div>
+            </ul>
+            <div class="clearfix"></div>
+            
+            <div class="clearfix">
 			 <!-- Popup Div -->
                     <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser orgsummary-adduser-custom col-md-4 zindex" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
                           <div class="form-horizontal clearfix">
@@ -69,40 +99,16 @@
                         </div>
 				
 			 </div>
-			
-			
-	<div class="timesheet_out timesheet_background">
-		
-        <div class="timesheet_head timesheetHead topfilters">
-			 <div class="pull-left cand-advsrch advsrch_chosen">
-			     <button type="button" class="btn btn-primary dropdown-toggle btn-sm mr" onclick="resetUsersSearchFilter();" title="Refresh">
-				    <span class="fa fa-refresh"></span>
-				</button>
-				
-				<a href="javascript:void(0)" class="btn btn-default btn-sm anchorBlack text-center mr" title="Filters" onclick="openFilterPop();"><i class="fa fa-filter faFilter padding_right"></i>
-				</a>
-				
-				<a href="javascript:void(0)" class="addcon-pop btn btn-sm btn-primary anchorWhite" onclick="getOrgSubscribedCountries();"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add User</a>
-				
-	       </div> 
-        	
-        	<ul>
-        	<li class="positionRelative">
-				  <div class="dynamic_search">
-		   			<input type='text' placeholder='Search' id='usersListDataTableSearch'/>
-		   			<span class="cursorPointer faSearch" title="Search"><i class="fa fa-search" onClick="getUserList();"></i></span>
-				  </div>
-			  </li>
-	             
-                <div class="clearfix"></div>
-            </ul>
-            <div class="clearfix"></div>
+            
         </div>
 			
 	<div class="project_tabs_inn_table vendor_wrap_inn_table dataFilterNew">
     	<div id="userList" class="datatable_filter"></div>
     	 <div id="loading"></div>
 	</div>	   
+		
+		
+		
 				
 </div>
 
@@ -254,12 +260,14 @@ function subscribedOrgLocRoles() {
 
 function closeFilterPop(){
 	$("div.cand-advsrch-popup").hide();
-	$(".advancedsearch-mask").fadeOut();
+	//$(".advancedsearch-mask").fadeOut();
+	$(".mask").fadeOut();
 }
 function openFilterPop(){
 	$("div.cand-advsrch-popup").toggle();
-	 $(".advancedsearch-mask").fadeIn();
-	
+	// $(".advancedsearch-mask").fadeIn();
+	$(".mask").fadeIn();
+	$(".collapse-div-adduser").removeClass("show-div");
 	  var subscribedOrgLocationRoles = [];
 		$('input:checkbox[name=subscribedOrgLocationRoles]:checked').each(function() {
 			subscribedOrgLocationRoles.push($(this).val());
