@@ -132,6 +132,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
+						SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+						SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
 					} catch (Exception e) {}
 					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 			}
