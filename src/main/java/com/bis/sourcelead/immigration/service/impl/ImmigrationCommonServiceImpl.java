@@ -107,6 +107,8 @@ import com.bis.sourcelead.util.ImmigrationActivityCommonUtil;
 //import com.bis.sourcelead.util.LcaActivityCommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
+import cucumber.deps.difflib.StringUtills;
+
 /**
  * @author Srinivas.Sabbu
  *
@@ -239,7 +241,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 				// This block of code for no of positions available for LCA Number once LCA Assigned To candidate
 				    Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				    Lca updateLca=	immigrationCommonDao.getLcaByLcaId(Long.parseLong(immigrationDTO.getLcaId()));
-				    updateLca.setAvailablePositions(updateLca.getAvailablePositions()-1);
+				    updateLca.setAvailablePositions((updateLca.getNoOfPositions()-updateLca.getAvailablePositions())-1);
+				  /*  updateLca.setAvailablePositions(updateLca.getAvailablePositions()-1);*/
 				    updateLca.setUpdatedDate(currentDate);
 					immigrationCommonDao.saveLcaDetails(updateLca, null, null);
 				
@@ -2741,12 +2744,32 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 		if (lcaDTO.getLcaId() != null && StringUtils.isNotEmpty(lcaDTO.getLcaId())) {
 			lca = immigrationCommonDao.getLcaById(Long.parseLong(lcaDTO.getLcaId()));
+			
+			//update noOfPositions and Available positions
+			
+			if(lca.getAvailablePositions() == lca.getNoOfPositions()) {
+				lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+				lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+			}else if(lca.getNoOfPositions() != null && lcaDTO.getNoOfPositions() != null) {
+				int posCount = Integer.parseInt(lcaDTO.getNoOfPositions());
+				if(posCount > lca.getNoOfPositions())
+				lca.setAvailablePositions(lca.getAvailablePositions() + (posCount-lca.getNoOfPositions()));
+				else {
+					lca.setAvailablePositions(lca.getAvailablePositions() -(lca.getNoOfPositions()-posCount));
+				}
+				lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+			}
+			
 		} else {
 			lca = new Lca();
 			lca.setCreatedBy(user);
 			lca.setCreatedDate(currentDate);
+			
+			if(lcaDTO.getNoOfPositions() != null && !lcaDTO.getNoOfPositions().isEmpty()) {
+				lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+				lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+		     }
 		}
-		
 		if(lcaDTO.getStartDate() != null && !lcaDTO.getStartDate().isEmpty())
 		{
 		lca.setStartDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), lcaDTO.getStartDate()));
@@ -2755,11 +2778,15 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 		{
 		lca.setEndDate(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), lcaDTO.getEndDate()));
 		}
-		if(lcaDTO.getNoOfPositions() != null && !lcaDTO.getNoOfPositions().isEmpty()) {
-		lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
-		lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
-		}
 		
+		/*if(lcaDTO.getNoOfPositions() != null && !lcaDTO.getNoOfPositions().isEmpty()) {
+		lca.setNoOfPositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+		if(lcaDTO.getNoOfPositions() != null && StringUtils.isNumeric(lcaDTO.getNoOfPositions()) && lcaDTO.getAvailablePositions() != null && StringUtils.isNumeric(lcaDTO.getAvailablePositions()))
+		lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions())-Integer.parseInt(lcaDTO.getAvailablePositions())-1);
+		}else {
+			lca.setAvailablePositions(Integer.parseInt(lcaDTO.getNoOfPositions()));
+		}*/
+		// updateLca.setAvailablePositions((updateLca.getNoOfPositions()-updateLca.getAvailablePositions())-1);
 		lca.setLcaUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 		lca.setLcaNo(lcaDTO.getLcaNo());
 		lca.setLcaTitle(lcaDTO.getLcaTitle());
