@@ -4981,6 +4981,9 @@ function deleteImmigrationRecordById(elem, arg1, arg2){
 		alert("Not a valid Function call.");
 	}
 }
+function clearDateValue(id){
+	   $("#"+id).val(""); 
+}
 </script>
 <div id="deletepopUp"></div>
 <input type="hidden" id = "candidateID" value = "${candidateId}">
