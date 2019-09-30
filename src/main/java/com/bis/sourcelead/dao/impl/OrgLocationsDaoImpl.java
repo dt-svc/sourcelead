@@ -431,5 +431,17 @@ public class OrgLocationsDaoImpl implements OrgLocationsDao {
 			locations = locationsList.iterator().next();
 		return locations;
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public OrgLocations getOrgLocationByOrgIdAndCountry(Long orgId, String country) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+	    String query = "from OrgLocations orgLocations where orgLocations.org = :orgId and orgLocations.country = :country";
+		List<OrgLocations> locationsList = session.createQuery(query).setLong("orgId", orgId).setString("country", country).list();
+		OrgLocations locations = null;
+		if(locationsList != null && !locationsList.isEmpty())
+			locations = locationsList.iterator().next();
+		return locations;
+	}
 	 
 }

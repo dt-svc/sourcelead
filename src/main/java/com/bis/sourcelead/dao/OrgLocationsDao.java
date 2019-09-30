@@ -63,4 +63,6 @@ public interface OrgLocationsDao {
 	public List<OrgLocations> getAllRegisteredWorkLocationsByOrgId(Long orgId) throws Exception;
 	
 	public OrgLocations getOrgLocationById(Long id) throws Exception;
+	
+	public OrgLocations getOrgLocationByOrgIdAndCountry(Long orgId,String country) throws Exception;
 }

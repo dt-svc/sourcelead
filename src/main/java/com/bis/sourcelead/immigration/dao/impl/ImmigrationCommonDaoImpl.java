@@ -3,6 +3,7 @@ package com.bis.sourcelead.immigration.dao.impl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +35,8 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ImmigrationPassportDTO;
+import com.bis.sourcelead.dto.ImmigrationTemplateListDTO;
 import com.bis.sourcelead.dto.ImmigrationVisaDTO;
 import com.bis.sourcelead.dto.LcaDTO;
 import com.bis.sourcelead.dto.LcaDetailsDTO;
@@ -62,6 +65,7 @@ import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.ImmigrationReportView;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.ImmigrationTemplate;
+import com.bis.sourcelead.entity.ImmigrationTemplateView;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.LcaDocumentHistory;
 import com.bis.sourcelead.entity.LcaHistory;
@@ -3199,7 +3203,93 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		
 		
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<ImmigrationPassportDTO> getAssociatePassportDetails(Long candidateId, OrgLocations orgLocations) {
+		  Session session = this.sessionFactory.getCurrentSession();
+		ResponseList<ImmigrationPassportDTO> responseList = new ResponseList<>();
+        List<CandidatePassport> passportList = null;
+        Date toDayDate = new Date();
+        try {
+        if (candidateId != null) {
+			String queryString = "from CandidatePassport cp where cp.candidate.id=:candidateId  order by cp.updatedDate desc";
+			passportList = session.createQuery(queryString).setLong("candidateId", candidateId).list();
+		
+		}
+        List<ImmigrationPassportDTO> passportDTOList = new ArrayList<ImmigrationPassportDTO>();
+        if(passportList != null && passportList.size()>0) {
+        	
+        	for (CandidatePassport canPassport :passportList) {
+        		ImmigrationPassportDTO passDto= new ImmigrationPassportDTO();
+        		passDto.setValidFrom(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassport.getValidFromDate()));
+        		passDto.setValidTo(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),
+						canPassport.getValidToDate()));
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				String currentDateStr = dateFormat.format(toDayDate);
+				Date newDate = dateFormat.parse(currentDateStr);
+				Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+
+				if (currentDate.before(canPassport.getValidToDate())) {
+					passDto.setCurrentStatus("Active");
+				} else {
+					passDto.setCurrentStatus("Expired");
+				}
+				passDto.setCandidatePassportId(canPassport.getId());
+				passDto.setPassportNumber(canPassport.getPassportNumber());
+				passDto.setCountry(canPassport.getCountry());
+				passportDTOList.add(passDto);
+			}
+        	
+        }
+        responseList.setData(passportDTOList);
+        }catch(Exception e) {
+        	e.printStackTrace();
+        }
+        return responseList;
+	}
 	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<LcaDTO> getAssociateLcaDetails(Long candidateId) {
+		List<LcaDTO> lcaList = null;
+			try {
+			logger.debug("in  getAssociateLcaDetails --->  ");
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "SELECT " + 
+					" l.LCA_NO as lcaNo, " + 
+					" l.LCA_TITLE as lcaTitle, " + 
+					" GROUP_CONCAT(lpe.LOCATION SEPARATOR ' & ') AS location, "+
+					" l.PREVAILING_WAGE as prevailingWage, " + 
+					" l.LCA_STATUS as lcaStatus, " + 
+					" CAST(l.NO_OF_POSITIONS AS CHAR(5))as noOfPositions, " + 
+					" CAST(l.AVAILABLE_POSITIONS AS CHAR(5))as availablePositions, " + 
+					" CAST(l.STATUS AS CHAR(1))as status, " + 
+					" DATE_FORMAT(l.START_DATE, '%Y-%m-%d') as startDate, " + 
+					" DATE_FORMAT(l.END_DATE, '%Y-%m-%d') as endDate, " + 
+					
+					" lvc.NEW_EMPLOYMENT as newEmployment, " + 
+                    " CAST(lvc.NEW_EMPLOYMENT_COUNT AS CHAR(5))as newEmploymentCount " + 
+					
+					" FROM " + 
+					" LCA l, " + 
+					" LCA_HISTORY lh, " + 
+					" LCA_PLACE_OF_EMPLOYMENT lpe, " + 
+					" LCA_VISA_CLARIFICATIONS lvc" +
+					" WHERE " + 
+					
+					" l.id = lh.LCA_ID AND l.id = lpe.LCA_ID AND l.id = lvc.LCA_ID " + 
+					"  AND lh.CANDIDATE_ID = :candidateId"+
+					" GROUP BY l.ID";
+			lcaList = session.createSQLQuery(queryString).setParameter("candidateId", candidateId).setResultTransformer(Transformers.aliasToBean(LcaDTO.class)).list();
+		
+			}catch(Exception e) {
+				logger.error("Exception caught while fetching candidate LCA details "+e.getMessage());
+				e.printStackTrace();
+			}
+			return lcaList;
+	}
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidatePassport> getAllPassportList(Date expectedExpiryDate) {

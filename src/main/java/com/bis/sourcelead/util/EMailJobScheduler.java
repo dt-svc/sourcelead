@@ -2957,7 +2957,6 @@ public class EMailJobScheduler {
 	 */
 	@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
-//	@Scheduled(cron = "0/30 * * * * *")
 	@Async
 	public void appliedLeaveRemainder() throws Exception
 	{
@@ -2972,88 +2971,75 @@ public class EMailJobScheduler {
 				
 				for (LeaveApproveHierarchy lah : filteredLahList) {
 					if(Constants.LEAVE_PENDING.equalsIgnoreCase(lah.getLeaveid().getStatus())){
-						DateTime zoned = new DateTime(lah.getLeaveid().getCreatedDate());
-						DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'23:59:59");
-						DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd'T'00:00:00");
-						DateFormat ts = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						
-						DateTime week = zoned.plusDays(3);
-						String startDate = outputFormatter1.print(week);
-						String startDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, startDate);
-						Date leaveStartDate = ts.parse(startDateString);
-						String endDate = outputFormatter.print(week);
-						String endDateString = CommonUtil.convertTimeZones(Constants.UTC_TIMEZONE, Constants.UTC_TIMEZONE, endDate);
-						Date leaveEndDate = ts.parse(endDateString);
-						
-						User user = lah.getApproverUserId();
+						User approverUser = lah.getApproverUserId();
 						OrgLocations orgLocations = lah.getLeaveid().getOrgLocations();
 						
-						List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == user.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
-						
-						EmailMessage emailMessage = new EmailMessage();
-						emailMessage.setFirstName(user.getFirstName());
-						if (StringUtils.isNotBlank(user.getLastName()))
-							emailMessage.setLastName(user.getLastName());
-						emailMessage.setToEmail(user.getEmail());
-						emailMessage.setFromEmail("defaultFromEmailAddressForProd");
-						String fromEmail = null;
-						EmailConfigurationFromMail confFromMail = null;
-						List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService.getConfFromMailList(orgLocations.getId());
-						if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
-							for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
-								if (fromMail.getEmailModules() != null) {
-									String[] jobIds = fromMail.getEmailModules().split(",");
-									for (int j = 0; j < jobIds.length; j++) {
-										if (Long.valueOf(jobIds[j]) == 31L) {
-											confFromMail = fromMail;
+						List<LeaveApproveHierarchy> noOfLeaveRequests = lahList.stream().filter(l->l.getApproverUserId().getId().longValue() == approverUser.getId().longValue() && Constants.LEAVE_PENDING.equalsIgnoreCase(l.getLeaveid().getStatus())).collect(Collectors.toList());
+			           if(noOfLeaveRequests != null && noOfLeaveRequests.size() > 0) {
+			        	   EmailMessage emailMessage = new EmailMessage();
+							emailMessage.setFirstName(approverUser.getFirstName());
+							if (StringUtils.isNotBlank(approverUser.getLastName()))
+								emailMessage.setLastName(approverUser.getLastName());
+							emailMessage.setToEmail(approverUser.getEmail());
+							emailMessage.setFromEmail("defaultFromEmailAddressForProd");
+							String fromEmail = null;
+							EmailConfigurationFromMail confFromMail = null;
+							List<EmailConfigurationFromMail> emailConfigMailList = emailScenarioconService.getConfFromMailList(orgLocations.getId());
+							if (emailConfigMailList != null && !emailConfigMailList.isEmpty()) {
+								for (EmailConfigurationFromMail fromMail : emailConfigMailList) {
+									if (fromMail.getEmailModules() != null) {
+										String[] jobIds = fromMail.getEmailModules().split(",");
+										for (int j = 0; j < jobIds.length; j++) {
+											if (Long.valueOf(jobIds[j]) == 31L) {
+												confFromMail = fromMail;
+											}
 										}
 									}
 								}
-							}
-							if (confFromMail == null) {
-								confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
-								if (confFromMail != null) {
+								if (confFromMail == null) {
+									confFromMail = emailScenarioconService.getConfFromMailByStatus(orgLocations.getId());
+									if (confFromMail != null) {
+										fromEmail = confFromMail.getEmail();
+									}
+								}
+								else {
 									fromEmail = confFromMail.getEmail();
 								}
 							}
-							else {
-								fromEmail = confFromMail.getEmail();
+							if (StringUtils.isNotBlank(fromEmail)) {
+								emailMessage.setFromEmail(fromEmail);
 							}
-						}
-						if (StringUtils.isNotBlank(fromEmail)) {
-							emailMessage.setFromEmail(fromEmail);
-						}
-						StringBuilder msgBuild = new StringBuilder();
-						emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-						// setting the class filed values
-						Map<String, String> globalVarsMap = new HashMap<String, String>();
-						StringBuilder name = new StringBuilder();
-						if (user.getLastName() != null && user.getLastName() != ""
-								&& user.getLastName() != "undefined") {
-							globalVarsMap.put("approverName", name.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
-						}
-						else {
-							globalVarsMap.put("approverName", user.getFirstName());
-						}
-						globalVarsMap.put("orgName", orgLocations.getOrgLocationName());
-						globalVarsMap.put("noOfLeaveRequests", String.valueOf(noOfLeaveRequests.size()));
-						StringBuilder loginBuilder = new StringBuilder();
-						globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
-						
-						InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-						EmailScenario emailScenario = null;
-						if (orgLocations != null)
-							emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
-						if (emailScenario == null) {
-							emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
-						}
-						// configured Email
-						String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
-						if (StringUtils.isNotBlank(fromMail)) {
-							emailMessage.setFromEmail(fromMail);
-						}
-						commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.APPLY_LEAVE_REMAINDER, new ArrayList<EmailAttachment>());
-						
+							emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+							// setting the class filed values
+							Map<String, String> globalVarsMap = new HashMap<String, String>();
+							StringBuilder name = new StringBuilder();
+							if (approverUser.getLastName() != null && approverUser.getLastName() != ""
+									&& approverUser.getLastName() != "undefined") {
+								globalVarsMap.put("approverName", name.append(approverUser.getFirstName()).append(" ").append(approverUser.getLastName()).toString());
+							}
+							else {
+								globalVarsMap.put("approverName", approverUser.getFirstName());
+							}
+							globalVarsMap.put("orgName", orgLocations.getOrgLocationName());
+							globalVarsMap.put("noOfLeaveRequests", String.valueOf(noOfLeaveRequests.size()));
+							StringBuilder loginBuilder = new StringBuilder();
+							globalVarsMap.put("loginUrl",loginBuilder.append("<a href='").append(sourceleadLoginUrl).append("' style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#a21e23; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:5px 0px 10px; text-align:center;'>Login</div></a>").toString());
+							
+							EmailScenario emailScenario = null;
+							if (orgLocations != null)
+								emailScenario = emailScenarioService.getEmailScenarioByUniqueNameAndOrgLocationId(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL, orgLocations.getId());
+							if (emailScenario == null) {
+								emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLY_LEAVE_REMAINDER, Constants.ENTITY_TYPE_EMAIL);
+							}
+							// configured Email
+							String fromMail = commonUtil.getConfiguredFromEmail(orgLocations.getId(), emailScenario);
+							if (StringUtils.isNotBlank(fromMail)) {
+								emailMessage.setFromEmail(fromMail);
+							}
+							commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocations.getOrg(), orgLocations, Constants.APPLY_LEAVE_REMAINDER, new ArrayList<EmailAttachment>());
+				
+			           }
+									
 					}
 				}
 			}
@@ -5107,6 +5093,7 @@ public class EMailJobScheduler {
 				Date currentDate = new Date();
 				Date expectedExpiryDate = null;
 				Calendar cal = null;
+				UserRole userRole = null;
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
@@ -5123,7 +5110,7 @@ public class EMailJobScheduler {
 					Map<Candidate, List<CandidatePassport>> passportMap = new HashMap<Candidate, List<CandidatePassport>>();
 					
 					for (CandidatePassport  passportObj : passportListExpiring) { // here for loop preparing Passport list by user base.
-
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
 						if (passportMap.get(passportObj.getCreatedBy()) == null) {
 							passportList = new ArrayList<CandidatePassport>();
 							passportList.add(passportObj);
@@ -5137,7 +5124,7 @@ public class EMailJobScheduler {
 						Candidate toUser = (Candidate)entry.getKey();
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
-						sendPassportExpiresInDaysMailToCandidate(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]));
+						sendPassportExpiresInDaysMailToCandidate(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}	
@@ -5152,6 +5139,7 @@ public class EMailJobScheduler {
 					for (CandidatePassport passportObj : passportList) { // here for loop preparing Passport list by user base.
 
 						logger.info("passportListExpired list size: "+passportList.size()+" expired.");
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
 						if (managerPassportMap.get(passportObj.getCreatedBy()) == null) {
 							passportListByManager = new ArrayList<CandidatePassport>();
 							passportListByManager.add(passportObj);
@@ -5168,7 +5156,7 @@ public class EMailJobScheduler {
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
 						List<CandidatePassport> mapPassportList = entry.getValue();
-						sendPassportExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol);
+						sendPassportExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol, userRole);
 					}
 				}
 				
@@ -5180,7 +5168,7 @@ public class EMailJobScheduler {
 			}
 		}
 	   
-	   private void sendPassportExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus) throws Exception {
+	   private void sendPassportExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
 			
 		      EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -5288,11 +5276,20 @@ public class EMailJobScheduler {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// Passport Expired Notification 
+				EmailScenario notificationScenario = null;
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRES_IN_DAYS_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				String actionLink ="";
+				emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 
 		}
 	
 	   
-	   private void sendPassportExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidatePassport> passportList, OrgLocations ol) throws Exception {
+	   private void sendPassportExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidatePassport> passportList, OrgLocations ol, UserRole userRole) throws Exception {
 		   EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
 		      StringBuilder sb = new StringBuilder();
@@ -5363,16 +5360,14 @@ public class EMailJobScheduler {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
-			/*// LCA manager Expired Notification 
+			// Passport Expired Notification 
 			EmailScenario notificationScenario = null;
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			//   System.out.println("notificationScenario :"+notificationScenario.getBody());
 			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 			notificationScenario.setBody(notificationBody);
-			StringBuilder actionLinkBuilder = new StringBuilder();
-			String actionLink = actionLinkBuilder.append("")
-					.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
-			emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());*/
+			String actionLink ="";
+			emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 			}
 	   
 	   
@@ -5389,6 +5384,7 @@ public class EMailJobScheduler {
 				Date currentDate = new Date();
 				Date expectedExpiryDate = null;
 				Calendar cal = null;
+				UserRole userRole = null;
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
@@ -5404,7 +5400,8 @@ public class EMailJobScheduler {
 
 					Map<Candidate, List<CandidateVisaHistory>> visaMap = new HashMap<Candidate, List<CandidateVisaHistory>>();
 					
-					for (CandidateVisaHistory  visaObj : visaListExpiring) { // here for loop preparing visa list by user base.
+					for (CandidateVisaHistory  visaObj : visaListExpiring) {
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());// here for loop preparing visa list by user base.
 						if (visaMap.get(visaObj.getCreatedBy()) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
@@ -5418,7 +5415,7 @@ public class EMailJobScheduler {
 						Candidate toUser = (Candidate)entry.getKey();
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
-						sendVisaExpiresInDaysMailToCandidate(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]));
+						sendVisaExpiresInDaysMailToCandidate(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}	
@@ -5432,6 +5429,7 @@ public class EMailJobScheduler {
 
 					for (CandidateVisaHistory visaObj : visaListExpiring) { // here for loop preparing Visa list by user base.
 						logger.info("visaListExpired list size: "+visaListExpiring.size()+" expired.");
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
 						if (visaMap1.get(visaObj.getCreatedBy()) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
@@ -5448,7 +5446,7 @@ public class EMailJobScheduler {
 						Candidate candidate = entry.getKey();
 						OrgLocations ol = candidate.getOrgLocationId();
 						List<CandidateVisaHistory> mapPassportList = entry.getValue();
-						sendVisaExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol);
+						sendVisaExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol, userRole);
 					}
 				}
 				
@@ -5460,7 +5458,7 @@ public class EMailJobScheduler {
 			}
 		}
 	   
-	   private void sendVisaExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidateVisaHistory> visaList, OrgLocations ol, String currPassDayStatus) throws Exception {
+	   private void sendVisaExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidateVisaHistory> visaList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
 			
 		      EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -5568,11 +5566,20 @@ public class EMailJobScheduler {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// visa Expired Notification 
+				EmailScenario notificationScenario = null;
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRES_IN_DAYS_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				String actionLink = "";
+				emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 
 		}
 	
 	   
-	   private void sendVisaExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidateVisaHistory> visaList, OrgLocations ol) throws Exception {
+	   private void sendVisaExpiredMailToCandidate(Candidate toUserObj, String fromUser, List<CandidateVisaHistory> visaList, OrgLocations ol, UserRole userRole) throws Exception {
 		   EmailMessage emailMessage = new EmailMessage();
 		      Map<String, String> globalVarsMap = new HashMap<String, String>();
 		      StringBuilder sb = new StringBuilder();
@@ -5643,16 +5650,632 @@ public class EMailJobScheduler {
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 			 
-			/*// LCA manager Expired Notification 
+			// Visa Expired Notification 
 			EmailScenario notificationScenario = null;
-			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 			//   System.out.println("notificationScenario :"+notificationScenario.getBody());
 			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
 			notificationScenario.setBody(notificationBody);
-			StringBuilder actionLinkBuilder = new StringBuilder();
-			String actionLink = actionLinkBuilder.append("")
-					.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
-			emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());*/
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, userRole.getReportingManager() , userRole.getUser(), ol, notificationScenario,new HashMap<String,String>());
 			}
 	
+	 //Passport expiry mail to manager..
+	   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+		@Async
+		public void runJobSchedulerDailyForCandidatePassportManager() { // check if Passport is expired on not on daily basis, if expired updating
+														// Passport status in Database.
+			logger.info("******************  updating All Passport  Details Started..! **********");
+			//System.out.println("******************  updating All Passport  Details Started..! **********");
+			try { 
+				String fromUser = defaultFromEmailAddressForProd;
+				Date currentDate = new Date();
+				Date expectedExpiryDate = null;
+				Calendar cal = null;
+				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
+				for(int i=0; i<expiring_days_arr.length; i++) {
+				    cal = Calendar.getInstance();
+					cal.add(Calendar.DATE, expiring_days_arr[i]);
+					expectedExpiryDate = cal.getTime();
+					List<CandidatePassport> passportListExpiring = immigrationCommonService.getAllPassportList(expectedExpiryDate);
+					/*System.out.println("passportListExpiring list size: "+passportListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+							" expiry date :" +expectedExpiryDate);*/
+					logger.info("passportListExpiring list size: "+passportListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+							" expiry date :" +expectedExpiryDate);
+				if(passportListExpiring != null && passportListExpiring.size()>0) {
+					List<CandidatePassport> passportList = new ArrayList<CandidatePassport>();
+
+					Map<User, List<CandidatePassport>> passportMap = new HashMap<User, List<CandidatePassport>>();
+					
+					for (CandidatePassport  passportObj : passportListExpiring) { // here for loop preparing Passport list by user base.
+
+						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
+						if(userRole != null){
+						
+									
+						if (passportMap.get(passportObj.getCreatedBy()) == null) {
+							passportList = new ArrayList<CandidatePassport>();
+							passportList.add(passportObj);
+							passportMap.put(userRole.getReportingManager(), passportList);
+						} else {
+							passportMap.get(passportObj.getCreatedBy()).add(passportObj);
+						}
+					}
+					for (Map.Entry<User, List<CandidatePassport>> entry : passportMap.entrySet()) {
+					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
+						User toUser = (User)entry.getKey();
+						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
+						sendPassportExpiresInDaysMailToCandidateManager(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
+					}
+				  }
+				}
+				}	
+			
+				
+				List<CandidatePassport> passportList = immigrationCommonService.getAllPassportList(currentDate);
+				if (passportList != null && passportList.size() > 0) {
+					List<CandidatePassport> passportListByManager = new ArrayList<CandidatePassport>();
+
+					Map<User, List<CandidatePassport>> managerPassportMap = new HashMap<User, List<CandidatePassport>>();
+					UserRole userRole = null;
+					for (CandidatePassport passportObj : passportList) { // here for loop preparing Passport list by user base.
+
+						logger.info("passportListExpired list size: "+passportList.size()+" expired.");
+						
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
+						if(userRole != null){
+						
+						if (managerPassportMap.get(passportObj.getCreatedBy()) == null) {
+							passportListByManager = new ArrayList<CandidatePassport>();
+							passportListByManager.add(passportObj);
+							managerPassportMap.put(userRole.getReportingManager(), passportListByManager);
+						} else {
+							managerPassportMap.get(passportObj.getCandidate()).add(passportObj);
+						}
+					}
+					}
+					// below code is used for sending email to each user in map. Map contains user
+					// as key and value as list of Passport objects.
+					for (Map.Entry<User, List<CandidatePassport>> entry : managerPassportMap.entrySet()) {
+					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
+						User toUser = (User)entry.getKey();
+						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
+						List<CandidatePassport> mapPassportList = entry.getValue();
+						sendPassportExpiredMailToCandidateManager(toUser, fromUser, mapPassportList, ol, userRole);
+					}
+				}
+				
+				
+			} catch (Exception e) {
+				logger.error("ERROR in " + e.getMessage());
+				e.printStackTrace();
+				// System.out.println("ERROR in " + e.getMessage());
+			}
+		}
+	   
+	   private void sendPassportExpiresInDaysMailToCandidateManager(User toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
+			
+		      EmailMessage emailMessage = new EmailMessage();
+		      Map<String, String> globalVarsMap = new HashMap<String, String>();
+		      StringBuilder sb = new StringBuilder();
+		      Date expiredDate = null;
+		      String candidateName = null;
+		      
+		      Calendar cal = Calendar.getInstance();
+				 Date startDate = cal.getTime();
+				 
+			  emailMessage.setFirstName(toUserObj.getFirstName());
+			  emailMessage.setLastName(toUserObj.getLastName());
+			  emailMessage.setToEmail(toUserObj.getEmail());
+			  emailMessage.setFromEmail(fromEmail);
+			  
+				
+			  sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");     
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Candidate Name</th>");  
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Passport Number</th>");          
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid From Date</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid To Date</th>");
+		        sb.append("</tr>");    
+		        sb.append("</thead>");    
+		        sb.append("<tbody>");
+				
+		        for(CandidatePassport cp :passportList)
+		        {
+	  			expiredDate =cp.getValidToDate();
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        
+		        if(cp.getCandidate().getLastName() != null) {
+		        	candidateName = cp.getCandidate().getFirstName() +" "+ cp.getCandidate().getLastName();
+				 }else {
+					 candidateName = cp.getCandidate().getFirstName();
+				 }
+		        
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+candidateName+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+cp.getPassportNumber()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cp.getValidFromDate()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cp.getValidToDate()+"</td>");   
+		        sb.append("</tr>");	
+		       }
+	  		   sb.append("</tbody>");   
+		       sb.append("</table>"); 
+			 
+		       globalVarsMap.put("Passport_Table", String.valueOf(sb));
+		       globalVarsMap.put("Passport_Count", String.valueOf(passportList.size()));
+		       
+		       SimpleDateFormat df=new SimpleDateFormat("yyyy-M-dd");
+				 String expDate=df.format(expiredDate);
+				 Date endDate=commonUtil.dateFromElk(expDate);		
+				 long diff = endDate.getTime()-startDate.getTime();
+				 
+				 Long expiresInDaysCount = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				 globalVarsMap.put("Expires_In_Days_Count", String.valueOf(expiresInDaysCount+1L));
+				 
+				 //210, 180, 90, 60, 30
+				 switch (currPassDayStatus) {
+				case "210":
+					globalVarsMap.put("Expires_In_Months_Count", "7 Month(s)");
+					break;
+				case "180":
+					globalVarsMap.put("Expires_In_Months_Count", "6 Month(s)");
+					break;
+				case "90":
+					globalVarsMap.put("Expires_In_Months_Count", "3 Month(s)");
+					break;
+				case "60":
+					globalVarsMap.put("Expires_In_Months_Count", "2 Month(s)");
+					break;
+				case "30":
+					globalVarsMap.put("Expires_In_Months_Count", "1 Month(s)");
+					break;
+				default:
+					globalVarsMap.put("Expires_In_Months_Count", "0 Month(s)");
+					break;
+				}
+				 
+				 //currPassDayStatus
+			
+			 if(toUserObj.getLastName() != null) {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName() +" "+ toUserObj.getLastName());
+			 }else {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName());
+			 }
+			 
+			 
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+	
+			globalVarsMap.put("Org_Name", ol.getOrgLocationName());
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 EmailScenario emailScenario = null;
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRES_IN_DAYS_MAIL_TO_REPORTINGMANAGER, Constants.ENTITY_TYPE_EMAIL);
+	
+				//convert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// Passport Expired Notification 
+				EmailScenario notificationScenario = null;
+				User user  = new User();
+				user.setEmail(fromEmail);
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRES_IN_DAYS_NOTIFICATION_TO_REPORTINGMANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				String actionLink ="";
+				emailScenerioUtil.sendNotification(actionLink, userRole.getUser() , userRole.getReportingManager(), ol, notificationScenario,new HashMap<String,String>());
+
+		}
+	
+	   
+	   private void sendPassportExpiredMailToCandidateManager(User toUserObj, String fromUser, List<CandidatePassport> passportList, OrgLocations ol, UserRole userRole) throws Exception {
+		   EmailMessage emailMessage = new EmailMessage();
+		      Map<String, String> globalVarsMap = new HashMap<String, String>();
+		      StringBuilder sb = new StringBuilder();
+		      String candidateName = null;
+			  emailMessage.setFirstName(toUserObj.getFirstName());
+			  emailMessage.setLastName(toUserObj.getLastName());
+			  emailMessage.setToEmail(toUserObj.getEmail());
+					
+			  emailMessage.setFromEmail(fromUser.toString());
+				
+			  sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");    
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Candidate Name</th>");  
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Passport Number</th>");          
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid From Date</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid To Date</th>");
+		        sb.append("</tr>");    
+		        sb.append("</thead>");    
+		        sb.append("<tbody>");
+				
+		        for(CandidatePassport cp :passportList)
+		        {
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        
+		        if(cp.getCandidate().getLastName() != null) {
+		        	candidateName = cp.getCandidate().getFirstName() +" "+ cp.getCandidate().getLastName();
+				 }else {
+					 candidateName = cp.getCandidate().getFirstName();
+				 }
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+candidateName+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+cp.getPassportNumber()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cp.getValidFromDate()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cp.getValidToDate()+"</td>");   
+		        sb.append("</tr>");	
+		       }
+	  		   sb.append("</tbody>");   
+		       sb.append("</table>"); 
+			 
+		       globalVarsMap.put("Passport_Table", String.valueOf(sb));
+		       globalVarsMap.put("Passport_Count", String.valueOf(passportList.size()));
+		       
+			 if(toUserObj.getLastName() != null) {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName() +" "+ toUserObj.getLastName());
+			 }else {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName());
+			 }
+			 
+			 
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+	
+			globalVarsMap.put("Org_Name", ol.getOrgLocationName());
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 EmailScenario emailScenario = null;
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRED_MAIL_TO_REPORTINGMANAGER, Constants.ENTITY_TYPE_EMAIL);
+	
+				//convert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// LCA manager Expired Notification 
+			EmailScenario notificationScenario = null;
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.PASSPORT_EXPIRED_NOTIFICATION_TO_REPORTINGMANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+			//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationBody);
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, userRole.getUser() , userRole.getReportingManager(), ol, notificationScenario,new HashMap<String,String>());
+			}
+	   
+	 //Visa expiry mail to manager..
+	   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+		@Async
+		public void runJobSchedulerDailyForCandidateVisaManager() { // check if Visa is expired on not on daily basis, if expired updating
+														// Visa status in Database.
+			logger.info("******************  updating All Visa  Details Started..! **********");
+			//System.out.println("******************  updating All Visa  Details Started..! **********");
+			try { 
+				String fromUser = defaultFromEmailAddressForProd;
+				Date currentDate = new Date();
+				Date expectedExpiryDate = null;
+				Calendar cal = null;
+				UserRole userRole = null;
+				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
+				for(int i=0; i<expiring_days_arr.length; i++) {
+				    cal = Calendar.getInstance();
+					cal.add(Calendar.DATE, expiring_days_arr[i]);
+					expectedExpiryDate = cal.getTime();
+					List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(expectedExpiryDate);
+					/*System.out.println("visaListExpiring list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+							" expiry date :" +expiryDate);*/
+					logger.info("visaListExpiring list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+							" expiry date :" +expectedExpiryDate);
+				if(visaListExpiring != null && visaListExpiring.size()>0) {
+					List<CandidateVisaHistory> visaList = new ArrayList<CandidateVisaHistory>();
+					
+					Map<User, List<CandidateVisaHistory>> visaMap = new HashMap<User, List<CandidateVisaHistory>>();
+					for (CandidateVisaHistory  visaObj : visaListExpiring) { // here for loop preparing visa list by user base.
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
+						
+						if (visaMap.get(visaObj.getCreatedBy()) == null) {
+							visaList = new ArrayList<CandidateVisaHistory>();
+							visaList.add(visaObj);
+							visaMap.put(userRole.getReportingManager(), visaList);
+						} else {
+							visaMap.get(visaObj.getVisaId().getCandidate()).add(visaObj);
+						}
+					}
+					for (Map.Entry<User, List<CandidateVisaHistory>> entry : visaMap.entrySet()) {
+					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
+						User toUser = (User)entry.getKey();
+						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
+						sendVisaExpiresInDaysMailToCandidateManager(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
+					}
+				  }
+				}	
+			
+				
+				List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(currentDate);
+				if (visaListExpiring != null && visaListExpiring.size() > 0) {
+					List<CandidateVisaHistory> visaList = new ArrayList<CandidateVisaHistory>();
+
+					Map<User, List<CandidateVisaHistory>> visaMap1 = new HashMap<User, List<CandidateVisaHistory>>();
+
+					for (CandidateVisaHistory visaObj : visaListExpiring) { // here for loop preparing Visa list by user base.
+						logger.info("visaListExpired list size: "+visaListExpiring.size()+" expired.");
+						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
+						if (visaMap1.get(visaObj.getCreatedBy()) == null) {
+							visaList = new ArrayList<CandidateVisaHistory>();
+							visaList.add(visaObj);
+							visaMap1.put(userRole.getReportingManager(), visaList);
+						} else {
+							visaMap1.get(visaObj.getVisaId().getCandidate()).add(visaObj);
+						}
+					}
+					// below code is used for sending email to each user in map. Map contains user
+					// as key and value as list of Visa objects.
+					for (Map.Entry<User, List<CandidateVisaHistory>> entry : visaMap1.entrySet()) {
+					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
+						User toUser = (User) entry.getKey();
+						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
+						List<CandidateVisaHistory> mapPassportList = entry.getValue();
+						sendVisaExpiredMailToCandidateManager(toUser, fromUser, mapPassportList, ol, userRole);
+					}
+				}
+				
+				
+			} catch (Exception e) {
+				logger.error("ERROR in " + e.getMessage());
+				e.printStackTrace();
+				// System.out.println("ERROR in " + e.getMessage());
+			}
+		}
+	   
+	   private void sendVisaExpiresInDaysMailToCandidateManager(User toUserObj, String fromEmail, List<CandidateVisaHistory> visaList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
+			
+		      EmailMessage emailMessage = new EmailMessage();
+		      Map<String, String> globalVarsMap = new HashMap<String, String>();
+		      StringBuilder sb = new StringBuilder();
+		      Date expiredDate = null;
+		      String candidateName = null;
+		      Calendar cal = Calendar.getInstance();
+				 Date startDate = cal.getTime();
+				 
+			  emailMessage.setFirstName(toUserObj.getFirstName());
+			  emailMessage.setLastName(toUserObj.getLastName());
+			  emailMessage.setToEmail(toUserObj.getEmail());
+			  emailMessage.setFromEmail(fromEmail);
+			  
+				
+			  sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");      
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Candidate Name</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Visa Number</th>");          
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid From Date</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid To Date</th>");
+		        sb.append("</tr>");    
+		        sb.append("</thead>");    
+		        sb.append("<tbody>");
+				
+		        for(CandidateVisaHistory cvh :visaList)
+		        {
+	  			expiredDate =cvh.getValidToDate();
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        if(cvh.getVisaId().getCandidate().getLastName() != null) {
+		        	candidateName = cvh.getVisaId().getCandidate().getFirstName() +" "+ cvh.getVisaId().getCandidate().getLastName();
+				 }else {
+					 candidateName = cvh.getVisaId().getCandidate().getFirstName();
+				 }
+		        
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+candidateName+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+cvh.getVisaId().getVisaNumber()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cvh.getValidFromDate()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cvh.getValidToDate()+"</td>");   
+		        sb.append("</tr>");	
+		       }
+	  		   sb.append("</tbody>");   
+		       sb.append("</table>"); 
+			 
+		       globalVarsMap.put("Visa_Table", String.valueOf(sb));
+		       globalVarsMap.put("Visa_Count", String.valueOf(visaList.size()));
+		       
+		       SimpleDateFormat df=new SimpleDateFormat("yyyy-M-dd");
+				 String expDate=df.format(expiredDate);
+				 Date endDate=commonUtil.dateFromElk(expDate);		
+				 long diff = endDate.getTime()-startDate.getTime();
+				 
+				 Long expiresInDaysCount = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+				 globalVarsMap.put("Expires_In_Days_Count", String.valueOf(expiresInDaysCount+1L));
+				 
+				 //210, 180, 90, 60, 30
+				 switch (currPassDayStatus) {
+				case "210":
+					globalVarsMap.put("Expires_In_Months_Count", "7 Month(s)");
+					break;
+				case "180":
+					globalVarsMap.put("Expires_In_Months_Count", "6 Month(s)");
+					break;
+				case "90":
+					globalVarsMap.put("Expires_In_Months_Count", "3 Month(s)");
+					break;
+				case "60":
+					globalVarsMap.put("Expires_In_Months_Count", "2 Month(s)");
+					break;
+				case "30":
+					globalVarsMap.put("Expires_In_Months_Count", "1 Month(s)");
+					break;
+				default:
+					globalVarsMap.put("Expires_In_Months_Count", "0 Month(s)");
+					break;
+				}
+				 
+				 //currPassDayStatus
+			
+			 if(toUserObj.getLastName() != null) {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName() +" "+ toUserObj.getLastName());
+			 }else {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName());
+			 }
+			 
+			 
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+	
+			globalVarsMap.put("Org_Name", ol.getOrgLocationName());
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 EmailScenario emailScenario = null;
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRES_IN_DAYS_MAIL_TO_REPORTINGMANAGER, Constants.ENTITY_TYPE_EMAIL);
+	
+				//convert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+
+			 // LCA manager Expired Notification 
+				EmailScenario notificationScenario = null;
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRES_IN_DAYS_NOTIFICATION_TO_REPORTINGMANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				String actionLink = "";
+				emailScenerioUtil.sendNotification(actionLink, userRole.getUser() , userRole.getReportingManager(), ol, notificationScenario,new HashMap<String,String>());
+		}
+	
+	   
+	   private void sendVisaExpiredMailToCandidateManager(User toUserObj, String fromUser, List<CandidateVisaHistory> visaList, OrgLocations ol, UserRole userRole) throws Exception {
+		   EmailMessage emailMessage = new EmailMessage();
+		      Map<String, String> globalVarsMap = new HashMap<String, String>();
+		      StringBuilder sb = new StringBuilder();
+		      String candidateName = null;
+			  emailMessage.setFirstName(toUserObj.getFirstName());
+			  emailMessage.setLastName(toUserObj.getLastName());
+			  emailMessage.setToEmail(toUserObj.getEmail());
+					
+			  emailMessage.setFromEmail(fromUser.toString());
+				
+			  sb.append("<table width='900' align='center' style='border-collapse: collapse; margin: 0 auto;border: 1px solid #375d81; text-align: center;' cellpadding='2px' cellspacing='0' border='0'>");
+		        sb.append("<thead style='background-color:#375d81; color: #fff;'>");
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");        
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Candidate Name</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Visa Number</th>");          
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid From Date</th>");
+		        sb.append("<th style='border: 1px solid #12385c; text-align: center;'>Valid To Date</th>");
+		        sb.append("</tr>");    
+		        sb.append("</thead>");    
+		        sb.append("<tbody>");
+				
+		        for(CandidateVisaHistory cvh :visaList)
+		        {
+		        sb.append("<tr style='min-height: 30px; line-height: 30px; vertical-align: middle;'>");
+		        
+		        if(cvh.getVisaId().getCandidate().getLastName() != null) {
+		        	candidateName = cvh.getVisaId().getCandidate().getFirstName() +" "+ cvh.getVisaId().getCandidate().getLastName();
+				 }else {
+					 candidateName = cvh.getVisaId().getCandidate().getFirstName();
+				 }
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+candidateName+"</td>");
+		        sb.append("<td style='border: 1px solid #375d81;' width='300'>"+cvh.getVisaId().getVisaNumber()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cvh.getValidFromDate()+"</td>");   
+		        sb.append("<td style='border: 1px solid #375d81;' width='225'>"+cvh.getValidToDate()+"</td>");   
+		        sb.append("</tr>");	
+		       }
+	  		   sb.append("</tbody>");   
+		       sb.append("</table>"); 
+			 
+		       globalVarsMap.put("Visa_Table", String.valueOf(sb));
+		       globalVarsMap.put("Visa_Count", String.valueOf(visaList.size()));
+		       
+			 if(toUserObj.getLastName() != null) {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName() +" "+ toUserObj.getLastName());
+			 }else {
+				 globalVarsMap.put("Candidate_Reporting_Manager",toUserObj.getFirstName());
+			 }
+			 
+			 
+			StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+	
+			globalVarsMap.put("Org_Name", ol.getOrgLocationName());
+			
+			 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+			 EmailScenario emailScenario = null;
+			 //getting the current EmailScenario by EmailScenario unique name and entity type
+				 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRED_MAIL_TO_REPORTINGMANAGER, Constants.ENTITY_TYPE_EMAIL);
+	
+				//convert subject,body and signature
+				 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+				 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+				 String signature = null;
+				 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+					 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+				 }
+				 String url = sourceleadUrl;
+			 
+			 //construct HTML template using required data
+			 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+			 emailMessage.setSubject(subject);
+			 emailMessage.setMessageBody(emailTemplate);
+			 
+			 //calling the sendEmail method of emailScenerioUtil
+			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			// LCA manager Expired Notification 
+			EmailScenario notificationScenario = null;
+			notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(ImmigrationConstants.VISA_EXPIRED_NOTIFICATION_TO_REPORTINGMANAGER,Constants.ENTITY_TYPE_NOTIFICATION);
+			//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+			notificationScenario.setBody(notificationBody);
+			String actionLink = "";
+			emailScenerioUtil.sendNotification(actionLink, userRole.getUser() , userRole.getReportingManager(), ol, notificationScenario,new HashMap<String,String>());
+			}
+	   
 }

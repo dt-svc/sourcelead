@@ -2295,5 +2295,48 @@ public class RegistrationServiceImpl implements RegistrationService{
 	}
 
 
+	@Override
+	public void sendEmailsSubscribeAndUnScribe(OrgLocations primaryOrgLocation, String subScriptionStatus) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		 emailMessage.setFirstName(primaryOrgLocation.getUser().getFirstName());
+		 emailMessage.setLastName(primaryOrgLocation.getUser().getLastName());
+		 emailMessage.setToEmail(primaryOrgLocation.getUser().getEmail());
+		 emailMessage.setFromEmail(defaultFromEmailAddressForProd);
+		 emailMessage.setFromName("SourceLead");
+		 
+		//setting the class filed values
+		 Map<String, String> globalVarsMap = new HashMap<String, String>();
+		 globalVarsMap.put("subscribeUser", primaryOrgLocation.getUser().getFullName());
+		 globalVarsMap.put("orgLocation", subScriptionStatus);
+		 globalVarsMap.put("orgName", primaryOrgLocation.getOrgLocationName());
+		 StringBuilder loginURLStringBuilder=new StringBuilder();
+		 String url = sourceleadUrl;
+		 globalVarsMap.put("supportLink",loginURLStringBuilder.append("<a href='"+url.split("/app")[0]+"/contact.html' target='_blank' style='outline:none; border:none;'>Support</a>").toString());
+
+		 //setting the Recipient information
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+		 EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.ORG_UNSUBSCRIPTION,Constants.ENTITY_TYPE_EMAIL);
+		
+		 //covert subject,body and signature
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
+		
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, new Org(),new OrgLocations());
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		 emailScenerioUtil.sendEmail(emailMessage,primaryOrgLocation.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+		
+		
+	}
+
+
 
 }
