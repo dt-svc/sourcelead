@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Date;
 //import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -29,6 +30,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -62,6 +65,9 @@ public class PdfUtilPipelineHelper  {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationService;
+	
+	@Autowired
+	RequirementWorkFlowService requirementWorkFlowService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -1156,7 +1162,16 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[8] = "--";
 			}
 			if(requirementsub.getSubmissionStatus() != null){
-				requirementArray[9] = requirementsub.getSubmissionStatus().toString();
+				String stageName = null;
+				HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
+				submissionStatusMap.put("SELECTED_ON_INTERVIEW", "SELECTED_ON_INTERVIEW");
+				submissionStatusMap.put("CLIENT_INTERVIEW", "CLIENT_INTERVIEW");
+				if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
+					requirementArray[9] = requirementsub.getSubmissionStatus().toString();
+				}else{
+					stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
+					requirementArray[9] = stageName;
+				}
 			}else{
 				requirementArray[9] = "--";
 			}
@@ -1190,9 +1205,25 @@ public class PdfUtilPipelineHelper  {
 			 // Here we are using JAVA 8 Reflection API to get dynamic object properties  of an object below.
 				Field field = null;
 				for(String getColumn : colPropLst) {
-					 field= mainClass.getDeclaredField(getColumn);
-					 field.setAccessible(true);
-					 requirementArray[colIndex++]=field.get(requirementsub) == null ?"--":field.get(requirementsub).toString();
+					if(getColumn.equalsIgnoreCase("submissionStatus")){
+						String stageName = null;
+						field= mainClass.getDeclaredField(getColumn);
+						 field.setAccessible(true);
+							HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
+							submissionStatusMap.put("SELECTED_ON_INTERVIEW", "SELECTED_ON_INTERVIEW");
+							submissionStatusMap.put("CLIENT_INTERVIEW", "CLIENT_INTERVIEW");
+							if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
+								requirementArray[colIndex++]=field.get(requirementsub) == null ?"--":field.get(requirementsub).toString();
+							}else{
+								stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
+								requirementArray[colIndex++]=stageName == null ?"--":stageName;
+							}
+					}else{
+						field= mainClass.getDeclaredField(getColumn);
+						 field.setAccessible(true);
+						 requirementArray[colIndex++]=field.get(requirementsub) == null ?"--":field.get(requirementsub).toString();
+					}
+					 
 				}
 				
 				return requirementArray;
