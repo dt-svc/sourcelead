@@ -20,6 +20,7 @@ import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.dto.ModuleConfigureDTO;
+import com.bis.sourcelead.dashboard.dto.ReportConfigureDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
@@ -105,10 +106,11 @@ public class CustomDashBoardRestController {
 	 */
 	
 	@RequestMapping(value="/configureCustomDashBoardReport")
-	public ModelAndView configureCustomDashBoardReport(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView configureCustomDashBoardReport(@RequestParam(value = "customDashBoardConfUUID",required = false) String customDashBoardConfUUID,HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		try {
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("customDashBoardConfUUID",customDashBoardConfUUID);
 			model.setViewName("customdashboard/customDashBoardReportConf");
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -385,6 +387,35 @@ public class CustomDashBoardRestController {
 			e.printStackTrace();
 		}
 		return response;
+	}
+	
+	
+	
+	@RequestMapping(value = "/customReportsConfiguration", method = RequestMethod.POST)
+	public @ResponseBody Response<ModuleConfigureDTO> customReportsConfiguration(ReportConfigureDTO reportConfDto , HttpServletRequest request) throws Exception
+	{
+		
+		System.out.println("test");
+		/*Response<ModuleConfigureDTO> response = new Response<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (Validator.validate(moduleConfDto)) {
+				ModuleConfigureDTO moduleConfi =  moduleDashboardConfService.saveModuleConfiguration(moduleConfDto,orgLocation,user.getId());
+				response.setObject(moduleConfi);
+				response.setResponse(Result.SUCCESS.name());
+			}
+			else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return response;*/
+		return null;
 	}
 	
 }

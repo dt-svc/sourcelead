@@ -62,11 +62,8 @@
 	<input type="hidden" id="customDashBoardConfUUID"
 		name="customDashBoardConfUUID" />
 	<div class="popupContent adddashComp">
-		<a
-			href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardReport"><img
-			src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
-		<a onclick="returnCustomModulePage();"><img
-			src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
+		<a onclick="returnCustomReportPage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
+		<a onclick="returnCustomModulePage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
 	</div>
 </div>
 
@@ -246,6 +243,17 @@ function deleteCustomDashBoardConf(customDashBoardUUID){
 	}
 </script>
 
+<script>
+function returnCustomReportPage(){
+	
+	var customDashBoardConfUUID = $("#customDashBoardConfUUID").val();
+	var sourceleadUrl = "${SourceLeadWeb_sourceleadUrl}";
+	window.location.href = sourceleadUrl
+			+ "/configureCustomDashBoardReport?" + tokenParamName + "="
+			+ tokenValue + "&customDashBoardConfUUID="
+			+ customDashBoardConfUUID;
+}
+</script>
 
 
 
