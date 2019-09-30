@@ -852,8 +852,10 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				&& !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
 			String stageName = null;
 			HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
-			submissionStatusMap.put("SELECTED_ON_INTERVIEW", "SELECTED_ON_INTERVIEW");
-			submissionStatusMap.put("CLIENT_INTERVIEW", "CLIENT_INTERVIEW");
+			submissionStatusMap.put("Offer Accepted", "OFFERACCEPTED");
+			submissionStatusMap.put("Client Offer Accepted", "CLIENT_OFFERACCEPTED");
+			submissionStatusMap.put("Selected On Interview", "SELECTED_ON_INTERVIEW");
+			submissionStatusMap.put("Client Interview", "CLIENT_INTERVIEW");
 			if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
 				writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
 			}else{
@@ -925,8 +927,10 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				field= mainClass.getDeclaredField(getColumn);
 				 field.setAccessible(true);
 					HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
-					submissionStatusMap.put("SELECTED_ON_INTERVIEW", "SELECTED_ON_INTERVIEW");
-					submissionStatusMap.put("CLIENT_INTERVIEW", "CLIENT_INTERVIEW");
+					submissionStatusMap.put("Offer Accepted", "OFFERACCEPTED");
+					submissionStatusMap.put("Client Offer Accepted", "CLIENT_OFFERACCEPTED");
+					submissionStatusMap.put("Selected On Interview", "SELECTED_ON_INTERVIEW");
+					submissionStatusMap.put("Client Interview", "CLIENT_INTERVIEW");
 					if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
 						writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
 					}else{
