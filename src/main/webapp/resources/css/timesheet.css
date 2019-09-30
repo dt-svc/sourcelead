@@ -1292,6 +1292,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .loadTime {
     position:absolute; width: 100%; height: 100%; background-color: rgba(255,255,255,0.7); left: 0px; top: 0px;
     text-align: center; background-image: url(../images/loading.gif); background-repeat: no-repeat; background-position: center;
+    background-size:100px; 
 }
 .totalText {
     position: absolute; top: 15px;
@@ -6548,8 +6549,7 @@ max-width: 100% !important;
 }
 .reportNewCta {
 	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important;
-	cursor: pointer;
-	min-height: 108px;
+	cursor: pointer; min-height: 108px;
 }
 .reportNewCta h4 {
 	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #545454;
@@ -8151,10 +8151,24 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
     border:1px solid #ccc; width:26%; float:left; padding:0px 15px; height:34px;
 }
 .priceNego p { padding: 0px 0px; margin: 10px 0px 15px; font-weight: 500; font-size: 16px; color:#0bb42b; display: none;}
+.appStatusWrap {float:left;}
+.appStatusNewcolor, .appStatusReopencolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #3887d2;}
+.appStatusDracolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #8d8d8d;}
+.appStatusSubcolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #e38f22;}
+.appStatusAppcolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #35ae28;}
+.appStatusRejcolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #ff1515;}
+.expNewAppBtn { float:right;}
+.expNewAppBtn i {
+	font-size: 24px; display: inline-block; padding: 2px 8px; color: #35ae28; cursor: pointer; margin: 0px 5px;
+}
+.expNewAppBtn i.fa-times {color: #ff1515;}
+.UiPado .overIcon {position: relative; top: -7px;}
+.appEditBtn { float: right; background-position: 7px -29px;}
 
-
-
-
-
-
-
+.exp_rejct_pop {
+    position:fixed; width:400px; left:0px; right:0px; margin:0px auto; display:none;
+    background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); z-index:20000; top:30%;}
+.exp_rejct_pop a {
+    display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
+    font-size:14px; font-weight:500;}
+.exp_rejct_pop a.close_color { background-color:#ff4b4b;}
