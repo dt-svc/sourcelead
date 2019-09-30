@@ -50,6 +50,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.reportsDTO.LeaveBalanceReportDTO;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
@@ -58,8 +59,10 @@ import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.mysql.fabric.xmlrpc.base.Array;
@@ -97,6 +100,12 @@ public class LeaveManagementReportsRestController {
 	
 	@Autowired
 	LeaveManagementUtil leaveManagementUtil;
+	
+	@Autowired
+	UserRoleService userRoleService;
+	
+	@Autowired
+	EMailJobScheduler eMailJobScheduler;
 	
 	@RequestMapping(value = "/daywiseLeaveReport")
 	public ModelAndView approvedLeavesJsp(HttpServletRequest request,
@@ -561,7 +570,7 @@ public class LeaveManagementReportsRestController {
 		List<String> leaveTypeNames = leaveService.getLeaveTypeNamesByOrgLocationId(orgLocation.getId(),topleave);
 		
 		
-		Map<String,List<LeaveBalanceReportDTO>>resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
+		Map<String,List<LeaveBalanceReportDTO>> resultMap = leaveService.getLeaveNamesByOrgLocationId(orgLocation.getId(),userleaveTypeList,leaveTypesList,topleave);
 				
 		List<LeaveBalanceReportDTO> leaveTypeList = resultMap.get("LEAVETYPES");
 		
@@ -629,12 +638,13 @@ public class LeaveManagementReportsRestController {
 					}else {
 						flag = true;
 					}
-					
-						float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
+					    LeaveType lType = leaveTypeService.getLeaveTypeById(lt.getId().longValue());
+					    LeaveType balleaveType = leaveTypeService.getBalanceLeavesByUserIdAndLeaveTypeId(lType,ltDto.getUserId().longValue(),orgLocation);
+//						float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
 						StringBuilder sb = new StringBuilder();
-						sb.append(lt.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+						sb.append(balleaveType.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
 						if(flag) {
-							map.put(sb.toString(), leaveTypeBalance);
+							map.put(sb.toString(), balleaveType.getLeaveTypeBalanceLeaveCount());
 						}else {
 							map.put(sb.toString(), 0.01f);
 						}
@@ -770,5 +780,9 @@ public class LeaveManagementReportsRestController {
                     file.delete();
                 }
     }
+	
+	
+
+	
 
 }
