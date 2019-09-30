@@ -830,7 +830,7 @@ public class RequirementListRestController {
 									}
 									if(requirementSubmissionsDTO.getWorkFlowId() != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkFlowId().toString())){
 									 stagesMap = requirementWorkFlowService.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmission.getSubmissionStatus());
-									   if(stagesMap!= null && stagesMap.size() >0) {
+									 if(stagesMap!= null && stagesMap.size() >0) {
 									 	requirementSubmission.setWorkflowStagesMap(stagesMap);
 									   }
 									}
@@ -871,12 +871,29 @@ public class RequirementListRestController {
 										}
 									}
 									
-									if(requirementSubmission.getSubmissionStatus() != null) {
-										//ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-										String status =	requirementSubmission.getSubmissionStatus();
-										if(status != null && stagesMap != null) {
-						  				requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(status));
-										}else {
+									if (requirementSubmission.getSubmissionStatus() != null) {
+										// ApplicantSubmissionDisplayStatus status =
+										// ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										String status = requirementSubmission.getSubmissionStatus();
+										if (status != null && stagesMap != null) {
+											String displayStatus = stagesMap.get(status);
+											if (StringUtils.isNotBlank(displayStatus)) {
+												requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(status));
+											} else {
+												if(status.equalsIgnoreCase("OFFERACCEPTED")) {
+													requirementSubmission.setSubmissionDisplayStatus("Offer Accepted");
+												}else if(status.equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+													requirementSubmission.setSubmissionDisplayStatus("Client Offer Accepted");
+												}else if(status.equalsIgnoreCase("SELECTED_ON_INTERVIEW")) {
+													requirementSubmission.setSubmissionDisplayStatus("Selected On Interview");
+												}else if(status.equalsIgnoreCase("CLIENT_INTERVIEW")) {
+													requirementSubmission.setSubmissionDisplayStatus("Client Interview");
+												}else {													
+												    requirementSubmission.setSubmissionDisplayStatus(status);
+												}
+											}
+		
+										} else {
 											requirementSubmission.setSubmissionDisplayStatus(status);
 										}
 									}
@@ -1077,17 +1094,31 @@ public class RequirementListRestController {
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									
 									
-									if(requirementSubmission.getSubmissionStatus() != null) {
-										/*ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-										if(status != null)*/
-										if(stagesMap != null) {
-											System.out.println("stagesMap stage name is "+stagesMap.get(requirementSubmission.getSubmissionStatus()));
-						  				requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(requirementSubmission.getSubmissionStatus()));
-										}else {
-											System.out.println("stagesMap else stage name is "+requirementSubmission.getSubmissionStatus());
-											requirementSubmission.setSubmissionDisplayStatus(requirementSubmission.getSubmissionStatus());
+									if (requirementSubmission.getSubmissionStatus() != null) {
+										// ApplicantSubmissionDisplayStatus status =
+										// ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										String status = requirementSubmission.getSubmissionStatus();
+										if (status != null && stagesMap != null) {
+											String displayStatus = stagesMap.get(status);
+											if (StringUtils.isNotBlank(displayStatus)) {
+												requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(status));
+											} else {
+												if(status.equalsIgnoreCase("OFFERACCEPTED")) {
+													requirementSubmission.setSubmissionDisplayStatus("Offer Accepted");
+												}else if(status.equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+													requirementSubmission.setSubmissionDisplayStatus("Client Offer Accepted");
+												}else if(status.equalsIgnoreCase("SELECTED_ON_INTERVIEW")) {
+													requirementSubmission.setSubmissionDisplayStatus("Selected On Interview");
+												}else if(status.equalsIgnoreCase("CLIENT_INTERVIEW")) {
+													requirementSubmission.setSubmissionDisplayStatus("Client Interview");
+												}else {													
+												    requirementSubmission.setSubmissionDisplayStatus(status);
+												}
+											}
+		
+										} else {
+											requirementSubmission.setSubmissionDisplayStatus(status);
 										}
-										
 									}
 									if (requirementSubmission.getVendorLocationId() != null) {
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
