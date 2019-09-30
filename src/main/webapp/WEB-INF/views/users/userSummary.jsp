@@ -4295,7 +4295,7 @@ function profileDetails(candidateId){
 							
 							result  = result + '<div class="clearfix project-tabs-menu project-tabs-menu-custom">';
 							result  = result + '<ul class="list-unstyled list-inline col-md-12 mb0 mt2">';
-							result  = result + '<li class="cursorPointer current" onClick="candidatePassport('+candidateId+');" value="passport"><a>Passport</a></li><li value="visa" onClick="candidateVisa('+candidateId+');" class="cursorPointer"><a>Visa</a></li><li onClick="candidateLca('+candidateId+');" class="cursorPointer" value="lca"><a>LCA</a></li>';
+							result  = result + '<li class="cursorPointer" id ="passportli" onClick="candidatePassport('+candidateId+');" value="passport"><a>Passport</a></li><li id ="visali" value="visa" onClick="candidateVisa('+candidateId+');" class="cursorPointer"><a>Visa</a></li><li id ="lcali" onClick="candidateLca('+candidateId+');" class="cursorPointer" value="lca"><a>LCA</a></li>';
 							result  = result + '</ul>';
 							result  = result + '</div>';
 							result = result + '</div>';

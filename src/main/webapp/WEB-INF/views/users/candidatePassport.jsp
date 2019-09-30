@@ -83,6 +83,9 @@ function candidatePassport(candidateId){
     $("#tab-4").empty();
     /* $("#tab-12").empty(); */
     $("#tab-12").show();
+    $("#passportli").addClass("current");
+    $("#visali").removeClass("current");
+    $("#lcali").removeClass("current");
     $("#immigrationCandidate").empty();
     $("#immigrationCandidate").append(result);
     
@@ -92,6 +95,11 @@ function candidatePassport(candidateId){
     	$("#candidateID").val(candidateId);
 		$(".popMask").fadeIn(200);
 		$("#popPassView").fadeIn(100);
+		$("#CandidatePassportform")[0].reset();
+		$("#countryName").selectpicker("refresh");
+		$("#candidatePassportId").val('');
+		$('#popPassView').find('p.jquery_form_error_message').remove();
+		$("#passport_save_id").removeClass("disabled");
 	});	
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
     var finalDateFormatPassSave = getJSDateFormat(locationDate);
@@ -119,10 +127,21 @@ function candidatePassport(candidateId){
           $("#validFrom").datepicker("option", "maxDate", dt);
       }
     });
-   
+
 }
 </script>
-
+<script>
+// Add addPass Div  
+function passportHandler() {
+	$(".popMask").fadeOut(200);
+	$("#popPassView").fadeOut(200);
+	$("#CandidatePassportform")[0].reset();
+	$("#countryName").selectpicker("refresh");
+	$("#candidatePassportId").val('');
+	$('#popPassView').find('p.jquery_form_error_message').remove();
+	$("#passport_save_id").removeClass("disabled");
+}
+</script>
 <!-- Show success message after form submission script -->
 <!-- End -->
 
@@ -230,6 +249,7 @@ function candidatePassportList(candidateId){
                     result = result +"</table>";
                     $("#candidatePassportList").append(result); 
                     passportPagination();
+                    passportHandler();
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
@@ -295,7 +315,8 @@ function editPassportDetailsByRowId(id){
 function savePassportVisaDetails() {
 	
 	if ($("#CandidatePassportform").validate(false, validationSettings)) {
-		$("#passport_save_id").attr("disabled",true);
+		//$("#passport_save_id").attr("disabled",true);
+		$("#passport_save_id").addClass("disabled");
 			var formData = getFormData("CandidatePassportform");
 			 var candidateId = '${candidateId}';
 			 //console.log( "candidateId "+candidateId);
@@ -324,7 +345,7 @@ function savePassportVisaDetails() {
 		                    }else{
 		                    	 showError("Operation failed, please try again");
 		                    }
-							$("#passport_save_id").removeAttr("disabled");
+							$("#passport_save_id").removeClass("disabled");
 			}
 		});
 		return true;
@@ -464,27 +485,6 @@ var validationSettings = {
 	
 	</div>
 	
-	
-		<div class="immFoot clearfix">
-			<div class="pull-right text-right">
-				<input type="button" value="Back" onclick="goToSummaryTab('#detailsTab');" class="btn btn-default btn-sm">
-             	<!-- <input type="button" value="Skip" onclick="goToSummaryTab('#visasTab');" class="btn btn-default btn-sm">  -->
-              	<input type="button" value="Continue" onclick="goToSummaryNextTab('#visasTab');" class="btn btn-primary btn-sm ml10">
-            </div>
-		</div>	
-	
 	<!--popcode end  -->
 		</form>
 </div>
-<script>
-		 // Add addPass Div  
-			function passportHandler() {
-				$(".popMask").fadeOut(200);
-				$("#popPassView").fadeOut(200);
-				$("#CandidatePassportform")[0].reset();
-				$("#countryName").selectpicker("refresh");
-				$("#candidatePassportId").val('');
-				$('#popPassView').find('p.jquery_form_error_message').remove();
-				$("#passport_save_id").removeAttr("disabled");
-			}
-		</script>
