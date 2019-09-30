@@ -79,6 +79,9 @@ function candidateVisa(candidateId){
     /* $("#tab-12").empty();
     $("#tab-12").append(result);   */
     $("#tab-12").show();
+    $("#passportli").removeClass("current");
+    $("#visali ").addClass("current");
+    $("#lcali").removeClass("current");
     $("#immigrationCandidate").empty();
     $("#immigrationCandidate").append(result);
     candidateVisaList(candidateId);
@@ -119,7 +122,23 @@ function candidateVisa(candidateId){
 
 }
 </script>
+<script>
+		 // Add addVisa Div  
+			function popFun() {
+				$(".popMask").fadeOut(200);
+				$("#popUpVisa").fadeOut(200);
+				$("#CandidateVisaform")[0].reset();
+				$('#visaType').prop("disabled",false);
+				$("#visaType").selectpicker("refresh");
+				$('#visaCountry').prop("disabled",false);
+				$("#visaCountry").selectpicker("refresh");
+				$('#visaNumber').removeAttr("disabled");
+				$("#candidateVisaId").val('');
+				$('#popUpVisa').find('p.jquery_form_error_message').remove();
+				$("#visa_save_id").removeClass("disabled");
+			}
 
+		</script>
 <!-- Show success message after form submission script -->
 <script>
 function validateCandidateVisaAndSave() {
@@ -142,12 +161,12 @@ function validateCandidateVisaAndSave() {
 		        success: function(data) {
 		        	if(data == true){
 		        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
-						   $("#visa_save_id").attr('disabled','disabled');
+						   $("#visa_save_id").addClass("disabled");
 		        	}
 		        	else{
 		        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
 		        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-                          $("#visa_save_id").removeAttr("disabled");
+                          $("#visa_save_id").removeClass("disabled");
                            saveVisaDetails(); // saving the visa details once validation is 
 		        	}
 		        
@@ -161,7 +180,7 @@ function validateCandidateVisaAndSave() {
 function saveVisaDetails() {
 	
 	if ($("#CandidateVisaform").validate(false, validationSettings)) {
-		$("#visa_save_id").attr("disabled",true);
+		$("#visa_save_id").addClass("disabled");
 			var formData = getFormData("CandidateVisaform");
 		 	var candidateId = $('#candidateID').val();
            
@@ -189,8 +208,8 @@ function saveVisaDetails() {
 		                    }else{
 		                    	 showError("Operation failed, please try again");
 		                    }
-							$("#passport_save_id").removeAttr("disabled");
-							$("#visa_save_id").removeAttr("disabled");
+							
+							$("#visa_save_id").removeClass("disabled");
 			}
 		});
 		return true;
@@ -368,6 +387,7 @@ function candidateVisaList(candidateId){
                     result = result +" </tbody>";
                     result = result +"</table>";
                     $("#candidateVisaList").append(result); 
+                    popFun();
                     if(response.data[0].expiredVisaLst != 'undefined' 
         				&& response.data[0].expiredVisaLst != '' && response.data[0].expiredVisaLst != null){
         			enableVisaExtensiondDate(response.data[0].expiredVisaLst);
@@ -485,13 +505,15 @@ var validationSettings = {
           <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control"   data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
+              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control"  
+              			 onblur="immigration.validateCandidateVisaDetails();" 
+              		 data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="selectpicker width100percnt" name="country" id= "visaCountry"  field-name="Country" data-validation="required" data-live-search="true">
+					<select class="selectpicker width100percnt" name="country" id= "visaCountry"   onchange="immigration.validateCandidateVisaDetails();" field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
@@ -528,20 +550,3 @@ var validationSettings = {
 	</div><!--popcode end  -->	
    </div>
 </form>
-<script>
-		 // Add addVisa Div  
-			function popFun() {
-				$(".popMask").fadeOut(200);
-				$("#popUpVisa").fadeOut(200);
-				$("#CandidateVisaform")[0].reset();
-				$('#visaType').prop("disabled",false);
-				$("#visaType").selectpicker("refresh");
-				$('#visaCountry').prop("disabled",false);
-				$("#visaCountry").selectpicker("refresh");
-				$('#visaNumber').removeAttr("disabled");
-				$("#candidateVisaId").val('');
-				$('#popUpVisa').find('p.jquery_form_error_message').remove();
-				$("#visa_save_id").removeAttr("disabled");
-			}
-		   	
-		</script>
