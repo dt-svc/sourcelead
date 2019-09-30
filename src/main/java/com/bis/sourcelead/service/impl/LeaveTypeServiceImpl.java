@@ -1,5 +1,6 @@
 package com.bis.sourcelead.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +17,12 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.LeaveTypeDao;
 import com.bis.sourcelead.dto.LeaveTypeDTO;
+import com.bis.sourcelead.entity.AppliedLeaveDateView;
+import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.AssociateGrades;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.Leave;
 import com.bis.sourcelead.entity.LeaveRole;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.LeaveTypeHistory;
@@ -26,8 +32,12 @@ import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.AssociateBalanceLeaveService;
 import com.bis.sourcelead.service.AssociateGradesService;
 import com.bis.sourcelead.service.DepartmentService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.LeaveService;
 import com.bis.sourcelead.service.LeaveTypeService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -35,13 +45,19 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RolesService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.ibm.icu.text.DecimalFormat;
 
 @Service
 public class LeaveTypeServiceImpl implements LeaveTypeService {
 	private static final Logger logger = LoggerFactory.getLogger(LeaveTypeServiceImpl.class);
+	
+	DecimalFormat dec = new DecimalFormat("#0.00");
 	
 	@Autowired
 	LeaveTypeDao leaveTypeDao;
@@ -75,6 +91,24 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	
 	@Autowired
 	AssociateGradesService associateGradesService;
+	
+	@Autowired
+	EmployeesService employeesService;
+	
+	@Autowired
+	LeaveManagementUtil leaveManagementUtil;
+	
+	@Autowired
+	AssociateBalanceLeaveService associateBalanceLeaveService;
+	
+	@Autowired
+	ConversionUtil conversionUtil;
+	
+	@Autowired
+	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	UserRoleService userRoleService;
 	
 	@Override
 	public LeaveType addLeaveType(LeaveTypeDTO leaveTypeDTO) throws Exception
@@ -570,5 +604,221 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 	public List<String> getLeaveTypeNameListByLocationId(Long orgLocationId)
 	{
 		return leaveTypeDao.getLeaveTypeNameListByLocationId(orgLocationId);
+	}
+
+	@Override
+	public List<LeaveType> getLeaveTypeCountForPieChart(OrgLocations orgLocation, User loginUser, UserRole userRole)
+	{
+		
+		List<LeaveType> roleLeaveType = new ArrayList<>();
+		try {
+			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(loginUser.getId(), orgLocation.getId());
+			float balanceLeaveCounts = 0;
+			float pendingLeaveCounts = 0;
+			float takenLeaveCounts = 0;
+			List<LeaveType> leaveTypeList = getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
+				for (LeaveType leaveType : leaveTypeList) {
+					List<Leave> takenLeavesList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocation.getId(), loginUser.getId());
+					List<Leave> pendingAndApprovedList = takenLeavesList.stream().filter(tl->Constants.PENDING.equalsIgnoreCase(tl.getStatus()) || Constants.APPROVED.equalsIgnoreCase(tl.getStatus())).collect(Collectors.toList());
+					if(StringUtils.isNotBlank(leaveType.getAllowability())){
+						if(StringUtils.isNotBlank(leaveType.getAllowability()) && pendingAndApprovedList.size() < Integer.parseInt(leaveType.getAllowability())){
+							boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
+							if(flag == true){
+								roleLeaveType.add(leaveType);
+							}
+						}
+					}else{
+						boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
+						if(flag == true){
+							roleLeaveType.add(leaveType);
+						}
+					}
+				}
+
+				for (LeaveType l : roleLeaveType) {
+					float totalLeaves = 0;
+					if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+						 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),loginUser.getId(),orgLocation.getId(),orgLocation.getOrg().getId());
+					}
+
+//					totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
+					// float leaves =
+					// leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,
+					// totalLeaves,emp);
+					float totalbalanceLeaveCounts = 0;
+					float calculatedTotalNonCarryforwardLeaves = 0;
+					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(l.getLeaveTypeUUID(),orgLocation.getId(), loginUser.getId());
+
+					for (Leave leave : totalleavesTaken) {
+						double fromHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(),leave.getFromDateToHalfTime(),orgLocation.getAverageWorkingHours(),l);
+						double toHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(),leave.getToDateToHalfTime(),orgLocation.getAverageWorkingHours(),l);
+						double appliedLeaveCount = 0;
+						if("Half Day".equalsIgnoreCase(l.getDuration())){
+							appliedLeaveCount = leave.getNumberOfDays();
+						}else{
+							appliedLeaveCount = leave.getNumberOfDays() - (fromHalf + toHalf);
+						}
+							
+						
+
+						if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+							pendingLeaveCounts = (float) (pendingLeaveCounts + appliedLeaveCount);
+						}
+						if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+							takenLeaveCounts = (float) (takenLeaveCounts + appliedLeaveCount);
+						}
+					}
+					
+					//do not remove below commented code, need to do some changes further 
+					
+					float appliedLeaveCount = 0;
+					LocalDate todayDate = LocalDate.now();
+					List<AppliedLeaveDateView> appliedLeaves = null;
+					float appliedLeavesCount =  0;
+					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+					ablv.setIncludeWeekoff(l.getIncludeWeekoff());
+					ablv.setIncludeHolidays(l.getIncludeHolidays());
+					if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+						Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), monthDates[0], monthDates[1], loginUser.getId(),orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,monthDates[0],monthDates[1],l);
+					}
+					else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), loginUser.getId(),orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),l);
+					}
+					else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+						LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), loginUser.getId(),orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),l);
+					}
+					else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
+						LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), loginUser.getId(),orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate(),l);
+					}
+					appliedLeaveCount = totalLeaves - appliedLeavesCount;
+					balanceLeaveCounts += appliedLeaveCount;
+					if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves()))
+						l.setTotalBalanceLeaveCounts(balanceLeaveCounts);
+					l.setPendingLeaveCounts(pendingLeaveCounts);
+					l.setTakenLeaves(takenLeaveCounts);
+					l.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return roleLeaveType;
+	}
+
+	@Override
+	public LeaveType getBalanceLeavesByUserIdAndLeaveTypeId(LeaveType leaveType, long userId, OrgLocations orgLocation)
+	{
+		List<LeaveType> roleLeaveType = new ArrayList<>();
+		try {
+		     UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId,orgLocation.getId());
+			Employees emp = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocation.getId());
+			float balanceLeaveCounts = 0;
+			float pendingLeaveCounts = 0;
+			float takenLeaveCounts = 0;
+//			List<LeaveType> leaveTypeList = getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
+			//if (leaveType != null && !leaveTypeList.isEmpty()) {
+//				for (LeaveType leaveType : leaveTypeList) {
+					List<Leave> takenLeavesList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocation.getId(), userId);
+					List<Leave> pendingAndApprovedList = takenLeavesList.stream().filter(tl->Constants.PENDING.equalsIgnoreCase(tl.getStatus()) || Constants.APPROVED.equalsIgnoreCase(tl.getStatus())).collect(Collectors.toList());
+					if(StringUtils.isNotBlank(leaveType.getAllowability())){
+						if(StringUtils.isNotBlank(leaveType.getAllowability()) && pendingAndApprovedList.size() < Integer.parseInt(leaveType.getAllowability())){
+							boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
+							if(flag == true){
+								roleLeaveType.add(leaveType);
+							}
+						}
+					}else{
+						boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
+						if(flag == true){
+							roleLeaveType.add(leaveType);
+						}
+					}
+//				}
+
+//				for (LeaveType l : roleLeaveType) {
+					float totalLeaves = 0;
+					if(Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(leaveType.getId(),userId,orgLocation.getId(),orgLocation.getOrg().getId());
+					}
+
+//					totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
+					// float leaves =
+					// leaveManagementUtil.getTotalBalanceLeavesForNonCarryforwardLeaveType(type,
+					// totalLeaves,emp);
+					float totalbalanceLeaveCounts = 0;
+					float calculatedTotalNonCarryforwardLeaves = 0;
+					List<Leave> totalleavesTaken = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(),orgLocation.getId(), userId);
+
+					for (Leave leave : totalleavesTaken) {
+						double fromHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getFromDateFromHalfTime(),leave.getFromDateToHalfTime(),orgLocation.getAverageWorkingHours(),leaveType);
+						double toHalf = leaveManagementUtil.calculateActualHoursForHalfDay(leave.getToDateFromHalfTime(),leave.getToDateToHalfTime(),orgLocation.getAverageWorkingHours(),leaveType);
+						double appliedLeaveCount = 0;
+						if("Half Day".equalsIgnoreCase(leaveType.getDuration())){
+							appliedLeaveCount = leave.getNumberOfDays();
+						}else{
+							appliedLeaveCount = leave.getNumberOfDays() - (fromHalf + toHalf);
+						}
+							
+						
+
+						if (Constants.PENDING.equalsIgnoreCase(leave.getStatus())) {
+							pendingLeaveCounts = (float) (pendingLeaveCounts + appliedLeaveCount);
+						}
+						if (Constants.APPROVED.equalsIgnoreCase(leave.getStatus())) {
+							takenLeaveCounts = (float) (takenLeaveCounts + appliedLeaveCount);
+						}
+					}
+					
+					//do not remove below commented code, need to do some changes further 
+					
+					float appliedLeaveCount = 0;
+					LocalDate todayDate = LocalDate.now();
+					List<AppliedLeaveDateView> appliedLeaves = null;
+					float appliedLeavesCount =  0;
+					AssociateBalanceLeaveView ablv = new AssociateBalanceLeaveView();
+					ablv.setIncludeWeekoff(leaveType.getIncludeWeekoff());
+					ablv.setIncludeHolidays(leaveType.getIncludeHolidays());
+					if (Constants.MONTHLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), monthDates[0], monthDates[1], userId,orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,monthDates[0],monthDates[1],leaveType);
+					}
+					else if (Constants.QUARTERLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), userId,orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),leaveType);
+					}
+					else if (Constants.HALFYEARLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), userId,orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),leaveType);
+					}
+					else if (Constants.ANNUALLY.equalsIgnoreCase(leaveType.getPeriod()) && Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves())) {
+						LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), leaveType.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), userId,orgLocation.getOrg().getId());
+						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate(),leaveType);
+					}
+					appliedLeaveCount = totalLeaves - appliedLeavesCount;
+					balanceLeaveCounts += appliedLeaveCount;
+					if(Constants.YES.equalsIgnoreCase(leaveType.getVisibleInBalanceLeaves()))
+						leaveType.setTotalBalanceLeaveCounts(balanceLeaveCounts);
+					leaveType.setPendingLeaveCounts(pendingLeaveCounts);
+					leaveType.setTakenLeaves(takenLeaveCounts);
+					leaveType.setLeaveTypeBalanceLeaveCount(Float.parseFloat(dec.format(appliedLeaveCount)));
+//				}
+			//}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return leaveType;
 	}
 }
