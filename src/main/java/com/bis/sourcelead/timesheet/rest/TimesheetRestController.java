@@ -2152,9 +2152,8 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (loginUser != null && orgLocations != null) {
 			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			loginUser = userService.getUserById(loginUser.getId());
