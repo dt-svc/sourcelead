@@ -14,6 +14,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "CUSTOM_REPORTS_CONFIGURATION")
 
+/**
+ * 
+ * @author JAVAD112
+ *
+ */
 public class CustomReportConfiguration {
 	
 	@Id
@@ -40,7 +45,7 @@ public class CustomReportConfiguration {
 	
 	@Column(name = "UPDATED_DATE")
 	private Date updatedDate;
-	
+
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 	
