@@ -8171,6 +8171,7 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .exp_rejct_pop a {
     display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
     font-size:14px; font-weight:500;}
+<<<<<<< HEAD
 .exp_rejct_pop a.close_color { background-color:#ff4b4b;}
 
 
@@ -8178,3 +8179,6 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 
 
 
+=======
+.exp_rejct_pop a.close_color { background-color:#ff4b4b;}
+>>>>>>> 933c142df5d6eb16e4b87f7dc915480aabe5c9f5
