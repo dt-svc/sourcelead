@@ -272,7 +272,7 @@
 					</div>
 				</sec:authorize>
 				
-				
+				<%-- 
 				<!--  workflow settings configuration -->
 			<sec:authorize access="hasAnyRole('ROLE_ADD_WORKFLOW','ROLE_EDIT_VIEW_WORKFLOW','ROLE_DELETE_WORKFLOW','ROLE_VIEW_MY_WORKFLOW')">
 				<div class="col-md-2 reportNewCta">
@@ -285,7 +285,7 @@
 						</div>
 					</a>
 				</div>
-				</sec:authorize>
+				</sec:authorize> --%>
 				<!-- Candidate Configuration -->
 				 <div class="col-md-2 reportNewCta"> 
 	            <!-- DropDown -->
