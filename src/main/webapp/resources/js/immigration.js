@@ -69,7 +69,7 @@ function Immigration() {
                 scrollToTopOnError: true,
                 dateFormat: 'yyyy/mm/dd'
             };
-    	$("#eduSave_Button").attr("disabled",true);
+    	$("#eduSave_Button").addClass("disabled");
     	if ($('#eduSave_Form').validate(false, validationSettings)) {
             var formData = getFormData("eduSave_Form");
             var candidateId = $('#candidateID').val();
@@ -288,9 +288,9 @@ function Immigration() {
             	$("#savePageOneContinue").prop("disabled",true);
             	$("#sendRequestButton").prop("disabled",true);*/
                 var formData = getFormData("petitionDetailsForm");
-                $("#sendRequestButton").attr("disabled","disabled");
-           	    $("#savePageOneContinue").attr("disabled","disabled");
-           	    $("#saveAsDraftButton").attr("disabled","disabled");
+                $("#sendRequestButton").addClass("disabled");
+           	    $("#savePageOneContinue").addClass("disabled");
+           	    $("#saveAsDraftButton").addClass("disabled");
                 $.ajax({
                     url: vmsUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
@@ -331,7 +331,7 @@ function Immigration() {
             	//$("#savePageOneContinue").prop("disabled",true);
             	//$("#sendRequestButton").prop("disabled",true);
                 var formData = getFormData("petitionDetailsForm");
-                $("#saveAsDraftButton").attr("disabled","disabled");
+                $("#saveAsDraftButton").addClass("disabled");
                 $.ajax({
                     url: vmsUrl + immiModulePath + "/savePetitionDetailsPage?removedResidenceIds="+removedResidenceIds+"&status="+status,
                     type: "POST",
@@ -399,7 +399,7 @@ function Immigration() {
     this.saveVisaDetails= function() {
     	
     	if ($("#CandidateVisaform").validate(false, validationSettings)) {
-    		$("#visa_save_id").attr("disabled",true);
+    		$("#visa_save_id").addClass("disabled");
     			var formData = getFormData("CandidateVisaform");
     		 	var candidateId = $('#candidateID').val();
                 var immigrationId = $('#immigrationId').val();
@@ -427,8 +427,7 @@ function Immigration() {
     		                    }else{
     		                    	 showError("Operation failed, please try again");
     		                    }
-    							$("#passport_save_id").removeAttr("disabled");
-    							$("#visa_save_id").removeAttr("disabled");
+    							$("#visa_save_id").removeClass("disabled");
     			}
     		});
     		return true;
@@ -440,7 +439,7 @@ function Immigration() {
     this.savePassportVisaDetails= function() {
     	
     	if ($("#CandidatePassportform").validate(false, validationSettings)) {
-    		$("#passport_save_id").attr("disabled",true);
+    		$("#passport_save_id").addClass("disabled");
     			var formData = getFormData("CandidatePassportform");
     		 	var candidateId = $('#candidateID').val();
                 var immigrationId = $('#immigrationId').val();
@@ -470,7 +469,7 @@ function Immigration() {
     		                    }else{
     		                    	 showError("Operation failed, please try again");
     		                    }
-    							$("#passport_save_id").removeAttr("disabled");
+    							$("#passport_save_id").removeClass("disabled");
     			}
     		});
     		return true;
@@ -654,7 +653,7 @@ function Immigration() {
 			var formData = getFormData(formId);
 			 var candidateId = $('#candidateID').val();
 			 var immigrationId = $('#immigrationID').val();
-			 $("#family_SaveButton").attr("disabled",true);
+			 $("#family_SaveButton").addClass("disabled");
 			$.ajax({
 				url : vmsUrl + immiModulePath+ "/saveCandidateFamilyDetails?candidateId="+candidateId+"&relationType="+relationType+"&memberId="+familyMemberId+"&immigrationId="+immigrationId,
 				type : "POST",
@@ -677,7 +676,7 @@ function Immigration() {
                    	 showError("Operation failed, please try again");
                    }
 					
-					$("#family_SaveButton").removeAttr("disabled");
+					$("#family_SaveButton").removeClass("disabled");
 				}
 			});
 
@@ -699,9 +698,10 @@ function Immigration() {
 			var candidateId = $('#candidateID').val();
 			var templateId = $('#templateID').val();
 			var immigrationId = $('#immigrationID').val();
-			$("#canFormSave_Button").attr("disabled",true);
+			
+			$("#canFormSave_Button").addClass("disabled");
 	        $.ajax({
-	            url: vmsUrl + immiModulePath + "/saveCandidateImmigrationForms?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId,
+	            url: vmsUrl + immiModulePath + "/saveCandidateImmigrationForms?"+ tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId+"&templateId="+templateId+"&myImmigrationPage="+myImmigrationPage,
 	            type: "POST",
 	            data: formData,
 	            success: function (data) {
@@ -713,9 +713,9 @@ function Immigration() {
 	                	}else{
 	                		showSuccessMsg("Successfully New Form Details Added.");
 	                	}
-	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',curUscisMyImmi);
+	                	immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',myImmigrationPage,curUscisMyImmi);
 	                }
-	                $("#canFormSave_Button").removeAttr("disabled");
+	                $("#canFormSave_Button").removeClass("disabled");
 	            }
 	        });
 
@@ -736,7 +736,7 @@ function Immigration() {
             success: function (result) {
             	if(result =='success'){
             		showSuccessMsg("Successfully Record Deleted.");
-            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',curUscisMyImmi);
+            		immigration.displayImmigrationCandidateForms(candidateId,templateId,immigrationId,'',myImmigrationPage,curUscisMyImmi);
             		deleteImmigrationPopupDiv();
             	}
             }
@@ -827,7 +827,7 @@ function Immigration() {
 	        }
 	    });
 	}
-	
+
 	
 	this.deleteImmigrationDetailsByRowId = function(immigrationUUID){
 		$.ajax({
@@ -854,7 +854,7 @@ function Immigration() {
 			if ($('#candidate_Immigration_document_form').validate(false, validationSettings)) {
 		 
 				var formData = getFormData("candidate_Immigration_document_form");
-				$("#canDocSave_Button1").attr("disabled",true);
+				$("#canDocSave_Button1").addClass("disabled");
 				var candidateId = $('#candidateID').val();
 				var templateId = $('#templateID').val();
 				var immigrationId = $('#immigrationID').val();
@@ -873,9 +873,9 @@ function Immigration() {
 	                	}else{
 	                		showSuccessMsg("Successfully New Document Details Added.");
 	                	}
-	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'','',curUscisMyImmi);
+	                	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',myImmigrationPage,curUscisMyImmi);
 	                }
-	                $("#canDocSave_Button1").removeAttr("disabled");
+	                $("#canDocSave_Button1").removeClass("disabled");
 	            }
 	        });
 
@@ -1004,7 +1004,7 @@ function Immigration() {
 			} else if(startYearFlag && endYearFlag) {
 				document.getElementById("endYearValidation").style.display="none";
 	        
-	        $("#employerSave_Buton").attr("disabled",true);
+	        $("#employerSave_Buton").addClass("disabled");
 	        $.ajax({
 	            url: vmsUrl + immiModulePath + "/saveImmigrationEmployerDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
 	            type: "POST",
@@ -1026,7 +1026,7 @@ function Immigration() {
 	                }else{
 	                	 showError("Operation failed, please try again");
 	                }
-					$("#employerSave_Buton").removeAttr("disabled");
+					$("#employerSave_Buton").removeClass("disabled");
 	            }
 	        
 	        });
@@ -1059,11 +1059,10 @@ function Immigration() {
 	
 	
 	
-	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationStatus,curUscisMyImmi){
-		
+	this.displayImmigrationCandidateDocs = function(candidateId,templateid,immigrationId,searchVal,myImmigrationPage,curUscisMyImmi){
 		$.ajax({
 	        url: vmsUrl + immiModulePath + "/getCandidateImmigrationCandidateDocsList?candidateId="+candidateId+"&templateid="+templateid+"&immigrationId="+immigrationId+"&searchVal="+searchVal+
-	        "&myImmigration="+myImmigrationStatus+"&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
+	        "&myImmigrationPage="+myImmigrationPage+"&curUscisMyImmi="+curUscisMyImmi,
 	        type: "GET",
 	        success: function (result) {
 	            $("#docsTab").html(result);
@@ -1079,7 +1078,7 @@ function Immigration() {
 	        url: vmsUrl + immiModulePath + "/deleteCandidateEduDetails?id="+id+"&candidateId="+candidateId,
 	        type: "GET",
 	        success: function (result) {
-	        	if(result=='success'){
+	        	if(result=='success'){candidate_family_details
 	        		showSuccessMsg("Successfully Record Deleted.");
 	        	  immigration.getCandidateEducationList(candidateId, curUscisMyImmi) //candidateId global variable
 	        	  deleteImmigrationPopupDiv();
@@ -1167,7 +1166,7 @@ function Immigration() {
 	        var formData = getFormData("residenceDetails_form");
 	        var candidateId = $('#candidateID').val();
 	        var immigrationId = $('#immigrationID').val();
-	        $("#residence_SaveButon").attr("disabled",true);
+	        $("#residence_SaveButon").addClass("disabled");
 	        $.ajax({
 	            url: vmsUrl + immiModulePath + "/saveImmigrationResidenceDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
 	            type: "POST",
@@ -1190,7 +1189,7 @@ function Immigration() {
 	               }else{
 	               	 showError("Operation failed, please try again");
 	               }
-	              	$("#residence_SaveButon").removeAttr("disabled");
+	              	$("#residence_SaveButon").removeClass("disabled");
 	            }
 	        });
 
@@ -1335,20 +1334,20 @@ function Immigration() {
 			  
 			id = $("#candidateVisaId").val();
 		    visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
-			  
-			  $('#idNumberDiv').find('p.jquery_form_error_message').remove();
+		    $("input#visaNumber").find('p.jquery_form_error_message').remove();
+		   
 				 $.ajax({
 				    	type: "GET",
 				    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
 				        success: function(data) {
 				        	if(data == true){
 				        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
-								   $("#visa_save_id").attr('disabled','disabled');
+								   $("#visa_save_id").addClass("disabled");
 				        	}
 				        	else{
 				        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
 				        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
-		                          $("#visa_save_id").removeAttr("disabled");
+		                          $("#visa_save_id").removeClass("disabled");
 		                            immigration.saveVisaDetails(); // saving the visa details once validation is 
 				        	}
 				        
@@ -1398,19 +1397,49 @@ function Immigration() {
 			        	if(data == true){
 			        		  $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove();
 			        		  $("input#passportNumber").after("<p class='jquery_form_error_message'>"+idNumberVal+" is Already Existed</span>");
-							  $("#passport_save_id").attr('disabled','disabled');
+							  $("#passport_save_id").addClass("disabled");
 			        	}
 			        	else{
 			        		 $('input#passportNumber').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#idNumberPassportDiv').find('p.jquery_form_error_message').remove(); 
-	                        $("#passport_save_id").removeAttr("disabled");
+	                        $("#passport_save_id").removeClass("disabled");
 			        	}
 			       
 			        },
 			    });
 	}
 
-	
+	this.validateCandidateVisaDetails = function() {
+		 var  country =   $('#visaCountry').val();
+		 var candidateId = $("#candidateID").val();
+		 var visaNumber =  $("#visaNumber").val();
+		 if(visaNumber.length >7 && country.length>0){
+			 $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+   		     $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+		     var id = null;
+	       	 id = $("#candidateVisaId").val();
+	         visaNumber =$('#CandidateVisaform input[name="visaNumber"]').val().trim();  
+		  
+		    $('#visaNumber').find('p.jquery_form_error_message').remove();
+			 $.ajax({
+			    	type: "GET",
+			    	 url:vmsUrl + immiModulePath + "/validateCandidateVisa?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&visaNumber="+visaNumber+"&country="+country+"&id="+id, 
+			        success: function(data) {
+			        	if(data == true){
+			        		   $("input#visaNumber").after("<p class='jquery_form_error_message'>"+visaNumber+" is Already Existed With Active Details.</span>");
+							   $("#visa_save_id").addClass("disabled");
+			        	}
+			        	else{
+			        		  $('input#visaNumber').removeAttr( "record-exist record-exist-errormsg");
+			        		  $('#idNumberVisaDiv').find('p.jquery_form_error_message').remove(); 
+	                          $("#visa_save_id").removeClass("disabled");
+			        	}
+			        
+			        },
+			    });
+		 }
+		
+}
 	this.editDocumentDetailsByRowId = function(id){
 		 // update the variable with residence member id in edit mode.
 		var candidateId = $("#candidateID").val();
@@ -1454,7 +1483,7 @@ function Immigration() {
 	        success: function (result) {
 	        	if(result=='success'){
 	        	showSuccessMsg("Successfully Record Deleted.");
-	            immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
+	            immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',myImmigrationPage,curUscisMyImmi);
 	        	deleteImmigrationPopupDiv();
 	        	}
 	        }
@@ -1465,7 +1494,7 @@ function Immigration() {
 
 	this.uploadRequestDoc = function(){
 		if ($('#uploadRequestDoc_Form').validate(false, validationSettings)) {
-			$("#uploadDocSave_Button").attr("disabled",true);
+			$("#uploadDocSave_Button").addClass("disabled");
 		var formData = getFormData("uploadRequestDoc_Form");
 		var candidateId = $("#candidateID").val();
 		var immigrationId = $('#immigrationID').val();
@@ -1482,7 +1511,7 @@ function Immigration() {
 	            	$('.popMask').fadeOut();
 	        		$(".comMask").fadeOut();
 	            	showSuccessMsg("Successfully Uploaded File.");
-	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',curUscisMyImmi);
+	            	immigration.displayImmigrationCandidateDocs(candidateId,templateId,immigrationId,'',myImmigrationPage,curUscisMyImmi);
 	        	     
 	        	}
 	        }
@@ -1493,7 +1522,7 @@ function Immigration() {
 
 	this.uploadRequestForm = function(){
 		if ($('#uploadRequestForm_Form').validate(false, validationSettings)) {
-			$("#uploadFormSave_Button").attr("disabled",true);
+			$("#uploadFormSave_Button").addClass("disabled");
 		var formData = getFormData("uploadRequestForm_Form");
 		var candidateId = $("#candidateID").val();
 		var immigrationId = $('#immigrationID').val();
@@ -1613,13 +1642,13 @@ function Immigration() {
 			        	if(data == true){
 			        		  $('#nameIdDiv').find('p.jquery_form_error_message').remove();
 			        		  $("#eduName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
-							  $("#eduSave_Button").attr('disabled','disabled');
+							  $("#eduSave_Button").addClass("disabled");
 							 // return false;
 			        	}
 			        	else{
 			        		 $('#eduName').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#nameIdDiv').find('p.jquery_form_error_message').remove(); 
-	                       $("#eduSave_Button").removeAttr("disabled");
+	                       $("#eduSave_Button").removeClass("disabled");
 			        	}
 			        	
 			        },
@@ -1635,7 +1664,7 @@ function Immigration() {
 	        var formData = getFormData("notesDetails_form");
 	        var candidateId = $('#candidateID').val();
 	        var immigrationId = $('#immigrationID').val();
-	        $("#notesSave_Button").attr("disabled",true);
+	        $("#notesSave_Button").addClass("disabled");
 	        $.ajax({
 	            url: vmsUrl + immiModulePath + "/saveImmigrationNotesDetails?" + tokenParamName + "=" + tokenValue + "&candidateId="+candidateId+"&immigrationId="+immigrationId,
 	            type: "POST",
@@ -1647,7 +1676,7 @@ function Immigration() {
 	    				showSuccessMsg("Successfully New Notes Added.");
 	    				immigration.getNotesListByImmigration(candidateId);
 	                }
-	            	$("#notesSave_Button").removeAttr("disabled");
+	            	$("#notesSave_Button").removeClass("disabled");
 	            }
 	        });
 
@@ -1722,12 +1751,12 @@ function Immigration() {
 			        		
 			        		  $('#errformNameDiv').find('p.jquery_form_error_message').remove();
 			        		  $("input#formName").after("<p class='jquery_form_error_message'>"+formName+" is Already Existed</span>");
-							  $("#canFormSave_Button").attr('disabled','disabled');
+							  $("#canFormSave_Button").addClass("disabled");
 			        	}
 			        	else{
 			        		 $('input#formName').removeAttr( "record-exist record-exist-errormsg");
 			        		 $('#errformNameDiv').find('p.jquery_form_error_message').remove(); 
-	                         $("#canFormSave_Button").removeAttr("disabled");
+	                         $("#canFormSave_Button").removeClass("disabled");
 			        	}
 			        	
 			        }
