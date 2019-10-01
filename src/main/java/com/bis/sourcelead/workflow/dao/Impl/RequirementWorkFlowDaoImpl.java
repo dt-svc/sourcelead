@@ -1047,8 +1047,15 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
 				}
 			     query =query	+ " order by workflowstages.seqOrder";
-			    workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
-			}else {
+			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")) {
+			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "INTERVIEW").setLong("orgLocationId", orgLocations.getId()).list();
+			     }else if(stageShortCode.equalsIgnoreCase("OFFERACCEPTED") || stageShortCode.equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
+			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "OFFERMADE").setLong("orgLocationId", orgLocations.getId()).list(); 
+			     }
+			     else {
+			         workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", stageShortCode).setLong("orgLocationId", orgLocations.getId()).list();
+			     }
+			 }else {
 				//we are adding manually two stage for REQUEST_SENT because we don't have default stage workflow stages.
 				workflowStagesList = new ArrayList<RequirementWorkFlowStages>();
 				RequirementWorkFlowStages requestSent = new RequirementWorkFlowStages();
@@ -1066,6 +1073,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			logger.error(e + " in getRequirementWorkflowStagesByWorkflowIdAndOrglocations DAO");
 			e.printStackTrace();
 		}
+		
 		return workflowStagesList;
 	}
 	
@@ -1221,22 +1229,23 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 				return Constants.FAILED;
 			}
 		}
-		
+
 		@Override
-		public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) {
-			logger.debug("Running getRequirementWorkFlowTasksBycurrentStageUuid DAO");
-			RequirementWorkFlow requirementWorkFlow = null;
-			try {
+		public String getWorkflowStageNameByShortCode(String shortCode)  {
+			logger.debug("Running getWorkflowStageNameByShortCode DAO");
+			try{
+				RequirementWorkFlowStages stage = null;
 				Session session = this.sessionFactory.getCurrentSession();
-				String query = "from RequirementWorkFlow requirementWorkFlow where requirementWorkFlow.id =:workflowId and requirementWorkFlow.orgLocationId.id =:id";
-				requirementWorkFlow =  (RequirementWorkFlow) session.createQuery(query).setString("workflowId", workflowId).setLong("id", id).uniqueResult();
-				return  requirementWorkFlow;
-			} catch (Exception e) {
-				logger.error(e+" in getRequirementWorkflowByNameAndOrgLocationId DAO");
+				String query = "from RequirementWorkFlowStages requirementWorkFlowStages where requirementWorkFlowStages.stageShortCode =:shortCode ";
+				stage =  (RequirementWorkFlowStages) session.createQuery(query).setParameter("shortCode", shortCode).uniqueResult();
+				return stage.getStageName();
+			}catch(Exception e){
 				e.printStackTrace();
 				return null;
 			}
+			
 		}
+		
 		
 	 }
 
