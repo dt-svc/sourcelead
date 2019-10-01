@@ -38,7 +38,7 @@
 							<option value="Assigned" ${assetAssignData.workingStatus eq "Assigned" ? 'selected' : ''}>Assigned</option>
 							<option value="Unassigned" ${assetAssignData.workingStatus eq "Unassigned" ? 'selected' : ''}>unassigned</option>
 							<option value="End Of Life" ${assetAssignData.workingStatus eq "End Of Life" ? 'selected' : ''}>end of life</option>
-							<option value="Out of service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
+							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
 						</select>	
 		            </div>
 		            </div>
