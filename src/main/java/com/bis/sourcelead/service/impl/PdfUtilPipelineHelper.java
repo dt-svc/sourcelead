@@ -1168,6 +1168,7 @@ public class PdfUtilPipelineHelper  {
 				submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
 				submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
 				submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+				submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
 				if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
 					requirementArray[9] = requirementsub.getSubmissionStatus().toString();
 				}else{
@@ -1216,6 +1217,7 @@ public class PdfUtilPipelineHelper  {
 							submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
 							submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
 							submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+							submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
 							if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
 								requirementArray[colIndex++]=field.get(requirementsub) == null ?"--":field.get(requirementsub).toString();
 							}else{
