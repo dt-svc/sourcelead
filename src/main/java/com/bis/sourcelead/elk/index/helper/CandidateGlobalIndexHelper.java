@@ -40,6 +40,8 @@ public class CandidateGlobalIndexHelper {
 			candidateIndex = new CandidateIndex();
 			
 			if(candidate.getCandidateId() != null) {
+				candidateIndex.setCandidateId(candidate.getCandidateId());
+			}else {
 				candidateIndex.setCandidateId(candidate.getId());
 			}
 

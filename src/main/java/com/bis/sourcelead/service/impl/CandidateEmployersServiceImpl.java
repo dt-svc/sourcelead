@@ -417,7 +417,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 
 	@Override
 	public HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,
-			OrgLocations orgLocations, Candidate candidate, User user) throws Exception {
+			OrgLocations orgLocations, CandidateGlobal candidate, User user) throws Exception {
 		
           HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
 		  
@@ -430,7 +430,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		    		  CandidateEmployers cemp = new  CandidateEmployers();
 		    		  emps = emps.replace("\"", "");
 		    		  cemp.setName(emps);
-		    		  cemp.setCandidateId(candidate);
+		    		  cemp.setCandidateGlobalId(candidate);
 		    		  cemp.setOrgLocationId(orgLocations);
 		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
 		    		  

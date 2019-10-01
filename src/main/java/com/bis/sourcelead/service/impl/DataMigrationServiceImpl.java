@@ -98,6 +98,7 @@ import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CouchbaseClusterService;
 import com.bis.sourcelead.service.CountriesService;
@@ -217,6 +218,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	RequirementWorkFlowService requirementWorkflowService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	
 	@Value("${env}")
 	 private String environment;
@@ -1519,8 +1523,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 									if(candidateDTO.getCountry() == null || candidateDTO.getCountry().isEmpty()) {
 										candidateDTO.setCountry(history.getOrgLocationId().getCountry());
 									}
-									candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), uploadedUser, vendorsList);
-									 bucket.remove(docs.toString());
+									
+									boolean flag = candidateGlobalService.isCandidateExistsInCandidateGlobal(candidateDTO.getEmail(), history.getOrgLocationId().getId());
+									if(flag == false) {
+										candidateService.saveCandidateBulkImports(candidateDTO, history.getOrgLocationId(), uploadedUser, vendorsList);
+									}
+								    bucket.remove(docs.toString());
 								}else {
 									BulkImportFailureCacheDTO failureCacheDTO = new BulkImportFailureCacheDTO();
 									failureCacheDTO.setDocumentId(docs.toString());

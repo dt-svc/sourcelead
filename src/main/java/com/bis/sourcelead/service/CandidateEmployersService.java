@@ -4,13 +4,13 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -79,7 +79,7 @@ public interface CandidateEmployersService {
 	
 	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId);
 	
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,User user) throws Exception;
 	
 	public List<CandidateEmployers>   getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.util.HashSet;
 import java.util.List;
 
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
@@ -25,4 +26,10 @@ public interface CandidateGlobalDao {
 	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
 	CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception ;
+	
+	Integer getCandidateGlobalProfilePercentageByCandidateId(Long id) throws Exception;
+	
+	 public CandidateDTO getCandidateGlobalDTOByCandidateGlobalId(Long candidateGlobalId) throws Exception;
+	 
+	 boolean isCandidateExistsInCandidateGlobal(String email,Long orgLocationId) throws Exception;
 }

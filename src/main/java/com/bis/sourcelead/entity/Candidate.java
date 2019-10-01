@@ -59,6 +59,10 @@ public class Candidate implements Serializable {
 	private User consultantUser;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID")
+	private CandidateGlobal candidateGlobalId;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_ID")
 	private Shift shift;	
  
@@ -1973,5 +1977,14 @@ public class Candidate implements Serializable {
 	public void setCandidateSource(String candidateSource) {
 		this.candidateSource = candidateSource;
 	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
+	}
+	
 	
 }

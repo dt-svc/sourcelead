@@ -3808,5 +3808,59 @@ public class CandidateDaoImpl implements CandidateDao {
 		return canidate;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getGlobalCandidateIdByCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query =  "SELECT "
+				+" CAND.CANDIDATE_GLOBAL_ID "           
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.ID = :candidateId ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		BigInteger candidateGlobalId = (BigInteger) queryObj.uniqueResult();
+		
+		return candidateGlobalId.longValue();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByCandidateGlobalId(Long candidateGlobalId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  " + "left join fetch cnadidate.consultantUser "
+				+ "left join fetch cnadidate.teamId " + "left join fetch cnadidate.recruiterUserId "
+				+ "left join fetch cnadidate.masterCandidateId " + "left join fetch cnadidate.parentCandidateId "
+				+ "left join fetch cnadidate.orgRelationId left "
+				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId left join fetch cnadidate.orgLocationId.user where cnadidate.candidateGlobalId.id =:candidateGlobalId";
+		List candidateList = session.createQuery(query).setLong("candidateGlobalId", candidateGlobalId).list();
+		Candidate candidate = null;
+		if (candidateList != null && !candidateList.isEmpty()) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
+	
+	}
+
+	@Override
+	@Transactional
+	public Long getCandidateIdByGlobalCandidateId(Long globalCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Long candidateId = 0L;
+		String query =  "SELECT "
+				+" CAND.ID "           
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.CANDIDATE_GLOBAL_ID = :globalCandidateId ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("globalCandidateId", globalCandidateId);
+		BigInteger candidateGlobalId = (BigInteger) queryObj.uniqueResult();
+		if(candidateGlobalId != null) {
+			candidateId = candidateGlobalId.longValue();
+		}
+		return candidateId;
+	}
+
 
 }

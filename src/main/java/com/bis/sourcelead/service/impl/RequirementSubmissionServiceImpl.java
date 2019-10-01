@@ -625,18 +625,32 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
 			 
-			 
-			if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
-				 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+			Candidate associateCandidate = candidateService.getCandidateByCandidateGlobalId(candidate.getId());
+			if(associateCandidate != null) {
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					associateCandidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					associateCandidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				 associateCandidate = candidateService.addCandidate(associateCandidate);
+				 candidateService.saveOrUpdateCandidateElkDocument(associateCandidate);	
+			}else {
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+				 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+				 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);	
 			}
-			
-			if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
-				 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
-			}
-			
-			 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
-			 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
-			 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);		
+				
 			
 		 }
 		 

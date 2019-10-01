@@ -462,7 +462,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 
 	@Override
 	public HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,
-			OrgLocations orgLocations, Candidate candidate, User user) throws Exception {
+			OrgLocations orgLocations, CandidateGlobal candidate, User user) throws Exception {
 		
 	    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 	    if(StringUtils.isNotBlank(candidateDTO.getCandidateEducation())){
@@ -471,7 +471,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	  	    	  for(int i=0; i<educations.length; i++) {
 	  	    		  CandidateEducation ce = new CandidateEducation();
 	  	    		  ce.setName(educations[i].trim());
-		    		  ce.setCandidateId(candidate);
+		    		  ce.setCandidateGlobalId(candidate);
 		    		  ce.setOrglocationId(orgLocations);
 		    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 		    		  

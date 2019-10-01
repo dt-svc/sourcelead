@@ -183,4 +183,19 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		sourceleadELKBaseIndexer.deleteElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
 	}
 
+	@Override
+	public Integer getCandidateGlobalProfilePercentageByCandidateId(Long id) throws Exception {
+		return candidateGlobalDao.getCandidateGlobalProfilePercentageByCandidateId(id);
+	}
+
+	@Override
+	public CandidateDTO getCandidateGlobalDTOByCandidateGlobalId(Long candidateGlobalId) throws Exception {
+		return candidateGlobalDao.getCandidateGlobalDTOByCandidateGlobalId(candidateGlobalId);
+	}
+
+	@Override
+	public boolean isCandidateExistsInCandidateGlobal(String email, Long orgLocationId) throws Exception {
+		return candidateGlobalDao.isCandidateExistsInCandidateGlobal(email, orgLocationId);
+	}
+
 }

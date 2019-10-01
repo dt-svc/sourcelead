@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -84,7 +84,7 @@ public interface CandidateEducationService {
 	
 	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 	
-	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
+	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,User user) throws Exception;
 	
 	Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 	

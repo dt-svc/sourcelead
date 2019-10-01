@@ -1003,6 +1003,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	candidate.setSkillsName(candidateGlobal.getSkillsName());
 	candidate.setVisaType(candidateGlobal.getVisaType());
 	candidate.setPrimarySkill(candidateGlobal.getPrimarySkill());
+	candidate.setCandidateGlobalId(candidateGlobal);
 	
 	if(candidateGlobal.getOrgRelationId() != null) {
 		Candidate vendorCandidate = storeVendorCandidateDetailsForCandidateCreation(candidateGlobal.getParentCandidateId().getId(), candidateGlobal.getOrgLocationId().getId());
@@ -1153,6 +1154,76 @@ public Candidate storeVendorCandidateDetailsForCandidateCreation(Long globalCand
 	  }
 	  
 	  return candidate;
+}
+
+
+
+public CandidateGlobal storeCandidateGlobalFromCandidate(Candidate candidate) throws Exception {
+	
+	CandidateGlobal candidateGlobal = candidateGlobalService.findByCandidateGlobalEmail(candidate.getEmail(), candidate.getOrgLocationId().getId());
+	if(candidateGlobal == null) {
+		candidateGlobal = new CandidateGlobal();
+	}
+	Date date = new Date();
+	candidateGlobal.setCreatedDate(commonUtil.orgLocationCommonDate(date, candidate.getOrgLocationId()));
+	candidateGlobal.setCreatedBy(candidate.getCreatedBy());
+	candidateGlobal.setCandidateType("Candidate");
+	candidateGlobal.setConsultantUser(candidate.getConsultantUser());
+	candidateGlobal.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+	candidateGlobal.setIsFavourite(0);
+	candidateGlobal.setIsFavouriteAssociate(0);
+	candidateGlobal.setMasterCandidateId(candidate.getMasterCandidateId());
+	candidateGlobal.setAadharNumber(candidate.getAadharNumber());
+	candidateGlobal.setPanNumber(candidate.getPanNumber());
+	candidateGlobal.setSsnNumber(candidate.getSsnNumber());;
+	candidateGlobal.setGeneratedId(getCandidateId(candidate.getOrgLocationId()));
+	candidateGlobal.setFirstName(candidate.getFirstName());
+	candidateGlobal.setLastName(candidate.getLastName());
+	candidateGlobal.setMiddelName(candidate.getMiddelName());
+	candidateGlobal.setGender(candidate.getGender());
+	candidateGlobal.setMaritalStatus(candidate.getMaritalStatus());
+	candidateGlobal.setDateOfBirth(candidate.getDateOfBirth());
+	candidateGlobal.setCountry(candidate.getCountry());
+	candidateGlobal.setState(candidate.getState());
+	candidateGlobal.setCity(candidate.getCity());
+	candidateGlobal.setLocation(candidate.getLocation());
+	candidateGlobal.setZipCode(candidate.getZipCode());
+	candidateGlobal.setLatitude(candidate.getLatitude());
+	candidateGlobal.setMobilePhone(candidate.getMobilePhone());
+	candidateGlobal.setAlternateMobilePhone(candidate.getAlternateMobilePhone());
+	candidateGlobal.setEmail(candidate.getEmail().trim());
+	candidateGlobal.setCurrentRate(candidate.getCurrentRate());
+	candidateGlobal.setCurrentRateType(candidate.getCurrentRateType());
+	candidateGlobal.setCurrentRateCurrency(candidate.getCurrentRateCurrency());
+	candidateGlobal.setDesignation(candidate.getDesignation());
+	candidateGlobal.setExpectedRate(candidate.getExpectedRate());
+	candidateGlobal.setRateType(candidate.getRateType());
+	candidateGlobal.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+	candidateGlobal.setSummary(candidate.getSummary());
+	candidateGlobal.setDesignationType(candidate.getDesignationType());
+	candidateGlobal.setDesignationOtherType(candidate.getDesignationOtherType());
+	candidateGlobal.setExperienceYears(candidate.getExperienceYears());
+	candidateGlobal.setExperienceMonths(candidate.getExperienceMonths());	
+	candidateGlobal.setNoticePeriod(candidate.getNoticePeriod());	
+	candidateGlobal.setOtherNoticePeriod(candidate.getOtherNoticePeriod());
+	candidateGlobal.setAddress(candidate.getAddress());
+	candidateGlobal.setRecruiterUserId(candidate.getRecruiterUserId());
+	candidateGlobal.setSkillsName(candidate.getSkillsName());
+	candidateGlobal.setVisaType(candidate.getVisaType());
+	candidateGlobal.setPrimarySkill(candidate.getPrimarySkill());
+	candidateGlobal.setOrgRelationId(candidate.getOrgRelationId());
+	candidateGlobal.setSpocId(candidate.getSpocId());
+	candidateGlobal.setIsAssociate(Constants.YES);
+	
+	candidateGlobal.setUpdatedBy(candidate.getUpdatedBy());
+	candidateGlobal.setUpdatedDate(candidate.getUpdatedDate());
+	candidateGlobal.setStatus(candidate.getStatus());
+	candidateGlobal.setOrgLocationId(candidate.getOrgLocationId());
+	candidateGlobal.setProfilePercentage(30);
+	
+	candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+	
+	return candidateGlobal;
 }
 
 }

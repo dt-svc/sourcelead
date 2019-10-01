@@ -38,4 +38,10 @@ public interface CandidateGlobalService {
 	public CandidateGlobal getCandidateGlobalByCandidateIdAndOrgLocationId(Long candidateId,Long orgLocationId) throws Exception;
 	
 	CandidateGlobal getCandidateGlobalByUUID(String candidateUUID) throws Exception ;
+	
+	Integer getCandidateGlobalProfilePercentageByCandidateId(Long id) throws Exception;
+	
+	public CandidateDTO getCandidateGlobalDTOByCandidateGlobalId(Long candidateGlobalId) throws Exception;
+	
+	boolean isCandidateExistsInCandidateGlobal(String email,Long orgLocationId) throws Exception;
 }

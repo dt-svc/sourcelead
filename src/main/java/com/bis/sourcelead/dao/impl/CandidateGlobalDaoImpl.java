@@ -1,13 +1,16 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.math.BigInteger;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateGlobalDao;
+import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateGlobal;
@@ -216,6 +220,75 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 		} else {
 			return null;
 		}
+	}
+
+
+	@Override
+	public Integer getCandidateGlobalProfilePercentageByCandidateId(Long id) throws Exception {
+
+
+		Integer profilePercentage = 0;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT " + " CAND.PROFILE_PERCENTAGE " + " FROM CANDIDATE_GLOBAL CAND " + " WHERE " + " CAND.ID = :id";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("id", id);
+		Integer percentageId = (Integer) queryObj.uniqueResult();
+		if (percentageId != null) {
+			profilePercentage = percentageId;
+		}
+
+		return profilePercentage;
+	
+	}
+
+
+	@Override
+	public CandidateDTO getCandidateGlobalDTOByCandidateGlobalId(Long candidateGlobalId) throws Exception {
+
+		List<CandidateDTO> candidateDTOList = null;
+		CandidateDTO candidateDTO = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT " + " CAND.ID AS candId, " + " CAND.FIRST_NAME AS firstName, " + " CAND.LAST_NAME AS lastName, "
+				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName,"
+				+ " CAND.MOBILE_PHONE AS phoneNumber, " + " CAND.EMAIL AS email, " + " CAND.LOCATION AS location, "
+				+ " CAND.COUNTRY AS country, " + " CAND.STATE AS state, " + " CAND.CITY AS city, "
+				+ " CAND.NOTICE_PERIOD AS noticePeriod, " + " CAND.PROFILE_PERCENTAGE AS profilePercentage, "
+				+ " CAND.CURRENT_RATE AS currentRate, " + " CAND.CURRENT_RATE_TYPE AS currentRateType, "  + " CAND.CURRENT_RATE_CURRENCY AS currentRateCurrency, "
+				+ " CAND.EXPECTED_RATE AS expectedRate, " + " CAND.RATE_TYPE AS rateType, "  + " CAND.EXPECTED_RATE_CURRENCY AS expectedRateCurrencey, "
+				+ " CAND.EXPERIENCE_YEARS AS experienceYears, " + " CAND.EXPERIENCE_MONTHS AS experienceMonths "
+				+ " FROM CANDIDATE_GLOBAL CAND " + " WHERE " + " CAND.ID = :candidateId ";
+
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateGlobalId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateDTO.class));
+		candidateDTOList = queryObj.list();
+		if (candidateDTOList != null && !candidateDTOList.isEmpty()) {
+			candidateDTO = candidateDTOList.get(0);
+		}
+
+		return candidateDTO;
+
+	}
+
+
+	@Override
+	public boolean isCandidateExistsInCandidateGlobal(String email, Long orgLocationId) throws Exception {
+
+		boolean flag = false;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT " + " CAND.ID " + " FROM CANDIDATE_GLOBAL CAND " + " WHERE " + " CAND.EMAIL = :email AND CAND.ORG_LOCATION_ID = :orgLocationId ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setString("email", email);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		BigInteger candidateId = (BigInteger) queryObj.uniqueResult();
+		if (candidateId != null) {
+			flag = true;
+		}
+		return flag;
+	
 	}
 
 }
