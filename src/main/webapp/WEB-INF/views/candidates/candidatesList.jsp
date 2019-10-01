@@ -943,12 +943,12 @@ function refreshImageBlock(candidateId){
 
 
 <script>
-function addFavourite(candidateId){
+function addFavourite(candidateId,candType){
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	 	$.ajax({
 			type : "POST",
-			url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+			url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,
 			success : function(response) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
@@ -1767,13 +1767,17 @@ function exportToPdf(){
 	       availability.push($(this).val());
 		 });
 	 
-	 var candidateTypeFilter = []
+	/*  var candidateTypeFilter = []
 	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
 	     {
 		 candidateTypeFilter.push($(this).val());
-		 });
+		 }); */
 	 
-	 var createdByRadio = $('input[name=createdByFilter]');
+	 
+	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
+	 
+	  var createdByRadio = $('input[name=createdByFilter]');
 	  var createdByFilter = createdByRadio.filter(':checked').val();
 	 
 	  var candTypeRadio = $('input[name=candidateType]');
@@ -1860,11 +1864,14 @@ function exportToExcel(){
 		       availability.push($(this).val());
 			 });
 		 
-		 var candidateTypeFilter = []
+		/*  var candidateTypeFilter = []
 		 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
 		     {
 			 candidateTypeFilter.push($(this).val());
-			 });
+			 }); */
+			 
+			  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+			  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 		 
 		 var createdByRadio = $('input[name=createdByFilter]');
 		  var createdByFilter = createdByRadio.filter(':checked').val();
@@ -2859,10 +2866,14 @@ function selectedJobSharing(){
 				   continue;
 			 candidateIds.push(shareCandidates[e]);
 		 }
+		 
+		  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+		  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
+		  
 		 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 	          type : "POST",
-	          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
+	          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateType="+candidateTypeFilter,    
 	           success :function(data) {
 	        	   closejobpop();
 	        	    $("#recommendationsLoading").removeAttr("style");
@@ -2972,7 +2983,7 @@ function resetCandidateFilter(){
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
-	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#candidateTypeFilter > li input:radio").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
 	$("#mySkillsInput").val('');
 	
@@ -3026,9 +3037,9 @@ function resetCandidateFilter(){
 				<label><strong>Candidate Type</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="candidateTypeFilter">
-					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+					    <li class="radioIput positionRelative" ><input  type="radio" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
 						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
                    </c:if>
                     </ul>
 				 </div>

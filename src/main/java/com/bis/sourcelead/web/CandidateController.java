@@ -677,12 +677,19 @@ public class CandidateController {
 	 
 	 
 	 @RequestMapping(value = "/getCandidateSubmittedJobsList", method = RequestMethod.GET)
-		public ModelAndView getCandidateSubmittedJobsList(@RequestParam(value = "candidateId", required = true) Long candidateId,HttpServletRequest request) throws Exception {
+		public ModelAndView getCandidateSubmittedJobsList(@RequestParam(value = "candidateId", required = true) Long candidateId,
+				@RequestParam(value = "candidateType", required = true) String candidateType,HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			List<RequirementSubmissionsDTO> responseList = null;
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			try {
-				responseList = requirementSubmissionService.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocations.getId(),orgLocations.getDateFormat());
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase("Associates")) {
+					Long globalCandidateId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
+					responseList = requirementSubmissionService.getCandidateSubmittedRequirementsListByCandidateId(globalCandidateId, orgLocations.getId(),orgLocations.getDateFormat());
+				}else {
+					responseList = requirementSubmissionService.getCandidateSubmittedRequirementsListByCandidateId(candidateId, orgLocations.getId(),orgLocations.getDateFormat());
+				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

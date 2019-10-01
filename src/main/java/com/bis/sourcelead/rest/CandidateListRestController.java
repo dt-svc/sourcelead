@@ -736,9 +736,16 @@ public class CandidateListRestController {
 				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithGlobalSearchResult(Constants.ELK_CANDIDATE_INDEX,
 						Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
 			}else{
-				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
-						Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
-						sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				if(StringUtils.isNotBlank(search.getCandidateTypeFilter()) && search.getCandidateTypeFilter().equalsIgnoreCase("Candidates")) {
+					searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
+							Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
+							sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				}else {
+					searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
+							Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
+							sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				}
+				
 			}
 			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
@@ -752,6 +759,14 @@ public class CandidateListRestController {
 						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
 						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
+						
+						if(candidateIndex.getCandidateId() != null) {
+							Long candidateId = candidateService.getCandidateIdByGlobalCandidateId(candidateIndex.getCandidateId());
+							if(candidateId != 0L) {
+								candidateIndex.setCandidateId(candidateId);
+							}
+						}
+						
 
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
@@ -829,12 +844,23 @@ public class CandidateListRestController {
 	
 	
 	@RequestMapping(value = "/getCandidateSubmittedRequirementCount" , method = RequestMethod.GET)
-	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateId, 
+			 @RequestParam(value = "candidateType", required = true) String candidateType,HttpServletRequest request) throws Exception {
 			
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     CandidateDTO candidateDTO = new CandidateDTO();
-		     Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocation.getId());
-		     Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateId);
+		     Integer profilePercentage = 0;
+		     Integer submittedJobCount = 0;
+		     
+		     if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase("Associates")) {
+		    	 profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateId);
+		    	 Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
+		    	 submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateGlobalId, orgLocation.getId());
+		     }else {
+		    	 profilePercentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidateId);
+		    	 submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocation.getId());
+		     }
+		    
 		     candidateDTO.setSubmittedJobsCount(submittedJobCount);
 		     candidateDTO.setProfilePercentage(profilePercentage);
 			 return candidateDTO;
@@ -1455,12 +1481,23 @@ public class CandidateListRestController {
 			User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
 			if (user != null && Validator.validate(candidateDto)) {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
-				Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
-				if (candidate != null) {
-					response.setObject("success");
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
+				
+				if(StringUtils.isNotBlank(candidateDto.getCandType()) && candidateDto.getCandType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidateGlobal = candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
+					if (candidateGlobal != null) {
+						response.setObject("success");
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}else {
+					Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					if (candidate != null) {
+						response.setObject("success");
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
 				}
+			
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1646,29 +1683,50 @@ public class CandidateListRestController {
 	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				if (null != candidate) {
-					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
-						candidate.setIsFavourite(Constants.RECORD_ACTIVE);
+				
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+					if (null != candidateGlobal) {
+						if (null == candidateGlobal.getIsFavourite() || candidateGlobal.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
+							candidateGlobal.setIsFavourite(Constants.RECORD_ACTIVE);
+						} else {
+							candidateGlobal.setIsFavourite(Constants.RECORD_INACTIVE);
+						}
+						//candidate.setTeamId(null);
+						candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+						candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+						response.setObject("success");
 					} else {
-						candidate.setIsFavourite(Constants.RECORD_INACTIVE);
+						response.setResponse(Result.INVALID_USER.name());
+						response.setResponseMessage(Result.INVALID_USER.getValue());
 					}
-					candidate.setTeamId(null);
-					candidateService.saveOrUpdateCandidate(candidate);
-					candidateService.saveOrUpdateCandidateElkDocument(candidate);
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-					response.setObject("success");
-				} else {
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}else {
+					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+					if (null != candidate) {
+						if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
+							candidate.setIsFavourite(Constants.RECORD_ACTIVE);
+						} else {
+							candidate.setIsFavourite(Constants.RECORD_INACTIVE);
+						}
+						//candidate.setTeamId(null);
+						candidateService.saveOrUpdateCandidate(candidate);
+						candidateService.saveOrUpdateCandidateElkDocument(candidate);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+						response.setObject("success");
+					} else {
+						response.setResponse(Result.INVALID_USER.name());
+						response.setResponseMessage(Result.INVALID_USER.getValue());
+					}
 				}
+				
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());

@@ -27,14 +27,20 @@
 </c:if>
 
 <script>
-function editCandidate(candidateId){
+function editCandidate(candidateId,candType){
 	
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
+	  var candidateUrl = '';
+	  if(candType != null && candType != '' && candType != 'undefined' && candType == 'candidateGlobal'){
+		  candidateUrl =  atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }else{
+		  candidateUrl =  atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
+	  }
        
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: candidateUrl,        
          success :function(result) {
            var json = result.object;
       	   if(result.response === "SESSION_TIMEDOUT") {
@@ -175,6 +181,7 @@ function editCandidate(candidateId){
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
+							result = result + '<input type="hidden" class="form-control input-sm" name="candType"  value="'+candType+'">';
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-4">';
@@ -601,7 +608,7 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
-							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
+							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+',\''+candType+'\');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		          </div>';
@@ -948,7 +955,7 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline">';
 								   if(candidateType == "Candidates"){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+',\''+candType+'\');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
@@ -958,7 +965,7 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 									   '</sec:authorize>';
 								   } else {
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+',\''+candType+'\');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
 									   if(isAssociate != 'Y'){
@@ -1416,7 +1423,7 @@ function saveCandidateTags(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>         
 <script type="text/javascript">
-	function upDateCandidate(candidateId) {
+	function upDateCandidate(candidateId,candType) {
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1442,7 +1449,7 @@ function saveCandidateTags(candidateId){
 				    $("#selector11").css({ display: "block" });
 				    $("#candMsgDivSum").text("Candidate Updated Successfully");
 				    candUpdateMsgFadeinFunction();
-				    candidateQuickViewProfile(candidateId);
+				    candidateQuickViewProfile(candidateId,candType);
 				} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {

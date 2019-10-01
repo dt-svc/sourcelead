@@ -68,6 +68,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -194,6 +195,9 @@ public class RequirementRestController {
 	 
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
@@ -1451,6 +1455,7 @@ public class RequirementRestController {
 	@RequestMapping(value = "/submitRecommendationCandidates", method = RequestMethod.POST)
 	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
 			@RequestParam(value = "candidateIds", required = false) String candidateIds,
+			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "candidateResume", required = false) String candidateResume,
 			@RequestParam(value = "N", required = false) String needApplicantPermit,
 			@RequestParam(value = "N", required = false) String notifyToApplicant,
@@ -1469,11 +1474,17 @@ public class RequirementRestController {
 				if(candidateId != null &&  candidateId.length > 0){
 					for(String candidateid   : candidateId){
 						
+						if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase("Associates")) {
+							Long globalCandiateId =  candidateService.getGlobalCandidateIdByCandidateId(Long.valueOf(candidateid));
+							if(globalCandiateId != null) {
+								candidateid = String.valueOf(globalCandiateId);
+							}
+						}
 						
 						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
 						if(flag == false) {
 						
-							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
+							CandidateDTO candidate = candidateGlobalService.getCandidateGlobalDTOByCandidateGlobalId(Long.valueOf(candidateid));
 							if(candidate.getProfilePercentage() >= requirement.getProfilePercentage()) {
 								
 								JSONObject labelItems = new JSONObject();
