@@ -6,6 +6,8 @@ import com.bis.sourcelead.dto.LeaveTypeDTO;
 import com.bis.sourcelead.entity.LeaveType;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 
 public interface LeaveTypeService {
 	
@@ -26,5 +28,9 @@ public interface LeaveTypeService {
 	public LeaveType getLeaveTypeByLeaveTypeName(String leaveTypeName, OrgLocations orgLocation);
 	
 	List<String> getLeaveTypeNameListByLocationId(Long orgLocationId);
+
+	public List<LeaveType> getLeaveTypeCountForPieChart(OrgLocations orgLocations, User loginUser, UserRole userRole);
+
+	public LeaveType getBalanceLeavesByUserIdAndLeaveTypeId(LeaveType leaveType, long userId, OrgLocations orgLocation);
 
 }

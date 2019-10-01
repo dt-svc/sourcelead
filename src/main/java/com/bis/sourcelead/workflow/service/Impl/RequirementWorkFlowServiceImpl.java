@@ -1463,7 +1463,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				globalVarsMap.put("taskDescription", task.getDescription());
 				globalVarsMap.put("taskTitle", task.getWorkFlowTaskName());
 				globalVarsMap.put("assignedUser", assignUser.getFirstName());
-				globalVarsMap.put("loginUser", emailMessage.getFromName());
+				globalVarsMap.put("loginUser", user.getFirstName()+" "+ user.getLastName());
 				globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
 	
 				//Login link for string builder
@@ -1635,8 +1635,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	}
 	
 	@Override
-	public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) throws Exception {
-		return requirementWorkFlowDao.getRequirementWorkflowByNameAndOrgLocationId(workflowId, id);
+	public String getWorkflowStageNameByShortCode(String shortCode) throws Exception {
+		return requirementWorkFlowDao.getWorkflowStageNameByShortCode(shortCode);
 	}
 	
 	 }
