@@ -388,7 +388,7 @@ function candidateVisaList(candidateId){
                     result = result +"</table>";
                     $("#candidateVisaList").append(result); 
                     popFun();
-                    if(response.data[0].expiredVisaLst != 'undefined' 
+                    if(typeof response.data[0] != 'undefined' 
         				&& response.data[0].expiredVisaLst != '' && response.data[0].expiredVisaLst != null){
         			enableVisaExtensiondDate(response.data[0].expiredVisaLst);
         		   } 
