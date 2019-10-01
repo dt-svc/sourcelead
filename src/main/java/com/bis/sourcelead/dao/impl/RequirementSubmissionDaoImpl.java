@@ -927,10 +927,21 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
          if(submissionStatus.equalsIgnoreCase("ALL")){
         	 statusList.add("APPLICANTS");
         	 statusList.add("REQUEST_SENT");
+        	 statusList.add("OFFERACCEPTED");
+        	 statusList.add("CLIENT_OFFERACCEPTED");
+        	 statusList.add("SELECTED_ON_INTERVIEW");
+        	 statusList.add("CLIENT_INTERVIEW");
+        	 statusList.add("INTERVIEW_ACCEPT");
+        	 
         	 statusList.addAll(Arrays.asList(workflowStages));
         	
         	 stagesCountMap.put("APPLICANTS", 0);
         	 stagesCountMap.put("REQUEST_SENT", 0);
+        	 stagesCountMap.put("OFFERACCEPTED", 0);
+        	 stagesCountMap.put("CLIENT_OFFERACCEPTED", 0);
+        	 stagesCountMap.put("SELECTED_ON_INTERVIEW", 0);
+        	 stagesCountMap.put("CLIENT_INTERVIEW", 0);
+        	 stagesCountMap.put("INTERVIEW_ACCEPT", 0);
              for(String stage: workflowStages) {
             	 stagesCountMap.put(stage, 0);
              }
@@ -949,7 +960,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                  submissionStages = "and (reqSub.submissionStatus = 'SHORTLIST')";
              }else if(ss.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
                  submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
-             }else if(ss.equalsIgnoreCase("INTERVIEWED")){
+             }else if(ss.equalsIgnoreCase("INTERVIEWED") || ss.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || ss.equalsIgnoreCase("CLIENT_INTERVIEW") || ss.equalsIgnoreCase("INTERVIEW_ACCEPT")){
                  submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT')";
              }else if(ss.equalsIgnoreCase("REJECTED")){
                  submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
@@ -957,7 +968,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                  submissionStages = "and (reqSub.submissionStatus = 'REQUEST_SENT')";
              }else if(ss.equalsIgnoreCase("BACKOUT")){
                  submissionStages = "and (reqSub.submissionStatus = 'BACKOUT')";
-             }else if(ss.equalsIgnoreCase("OFFERED")){
+             }else if(ss.equalsIgnoreCase("OFFERED") || ss.equalsIgnoreCase("OFFERACCEPTED") || ss.equalsIgnoreCase("CLIENT_OFFERACCEPTED")){
                  submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
                          + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
              }else if(ss.equalsIgnoreCase("JOINED")){

@@ -1615,7 +1615,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			FileUploadUtil.moveFile(immigrationTemplateFormDTO.getStaticPath(), fileInfo, "immigrationCandidateForms");
 
 		}
-
+		immigrationCandidateForms.setFormCategory(immigrationTemplateFormDTO.getFormCategory());
 		immigrationCandidateForms.setUpdatedBy(user);
 		immigrationCandidateForms.setUpdatedDate(currentDate);
 		immigrationCommonDao.saveImmigrationCandidateForms(immigrationCandidateForms);
