@@ -1047,7 +1047,7 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
 				}
 			     query =query	+ " order by workflowstages.seqOrder";
-			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")) {
+			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")|| stageShortCode.equalsIgnoreCase("INTERVIEW_ACCEPT")) {
 			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "INTERVIEW").setLong("orgLocationId", orgLocations.getId()).list();
 			     }else if(stageShortCode.equalsIgnoreCase("OFFERACCEPTED") || stageShortCode.equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
 			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "OFFERMADE").setLong("orgLocationId", orgLocations.getId()).list(); 
