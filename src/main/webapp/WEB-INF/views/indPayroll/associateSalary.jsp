@@ -118,7 +118,9 @@
                <table>
                		<thead>
                		<tr>
-               			<th style="width:50px;"><input type="checkbox" name="salary" class="selectall"></th>
+<!--                		Don't delete the code because select all functionality is not working properly if any contact Rana -->
+<!--                			<th style="width:50px;"><input type="checkbox" name="salary" class="selectall"></th> -->
+						<th></th>
                			<th>Payhead</th>
                			<th>Paytype</th>
                			<th>Method</th>
@@ -129,6 +131,7 @@
                		</thead>
 	               		<tbody id="phTblBody">
 	               			<c:forEach var="payHead" items="${payrollPayheadList}" varStatus="loop">
+	               			<c:if test="${payHead.active eq 'YES'}">
 		               			<c:set var="checked" value="" />
 		               			<c:set var="monthlyValue" value="" />
 							    <c:set var="yearlyValue" value="" />
@@ -150,6 +153,7 @@
 									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
 									<td><input type="text" id="payHeadYearly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].annualy" value="${yearlyValue}" onblur="calculateToPerMonth('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
 								</tr>
+							</c:if>
 							</c:forEach>
 	               		</tbody>
                		</table>
