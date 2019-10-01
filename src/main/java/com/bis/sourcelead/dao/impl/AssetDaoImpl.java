@@ -250,7 +250,7 @@ public class AssetDaoImpl implements AssetDao{
 		
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
-		 if (Arrays.asList(status).contains("Assigned ")) {
+		 if (Arrays.asList(status).contains("Assigned")) {
 				subquery2 = subquery2 + "asset.workingStatus = 'Assigned' OR ";
 			}
 		 
@@ -543,7 +543,7 @@ public class AssetDaoImpl implements AssetDao{
 		
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
-		 if (Arrays.asList(status).contains("Assigned ")) {
+		 if (Arrays.asList(status).contains("Assigned")) {
 				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Assigned' OR ";
 			}
 		 
