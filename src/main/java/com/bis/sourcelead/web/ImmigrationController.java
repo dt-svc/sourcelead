@@ -821,7 +821,8 @@ public class ImmigrationController {
 	public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "immigrationId", required = false) String immigrationId,
-			@RequestParam(value = "templateId", required = false) String templateId, HttpServletRequest request)
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration,HttpServletRequest request)
 			throws Exception {
 		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
 		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
@@ -830,6 +831,11 @@ public class ImmigrationController {
 		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		immigrationTemplateFormDTO.setStaticPath(staticPath);
+		
+			if("Y".equalsIgnoreCase(myImmigration)) {
+				immigrationTemplateFormDTO.setFormCategory("Document Type");
+				}
+		
 		immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO, user, loginOrglocation);
 		logger.debug("Candidate Form  saved succesfully --> ");
 
@@ -884,9 +890,9 @@ public class ImmigrationController {
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
-			@RequestParam(value = "myImmigration", required = false) String myImmigration, 
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration, 
 			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
-			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage,	HttpServletRequest request)
+				HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -932,7 +938,7 @@ public class ImmigrationController {
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
 		model.addObject("curUscisMyImmi", curUscisMyImmi);
-		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("myImmigrationPage", myImmigration);
 		return model;
 	}
 
@@ -1896,8 +1902,19 @@ public class ImmigrationController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Date toDayDate = new Date();
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
+				for (LcaDTO lcaDto : lcaList) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String currentDateStr = dateFormat.format(toDayDate);
+					Date newDate = dateFormat.parse(currentDateStr);
+					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+					lcaDto.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getEndDate())));
+					lcaDto.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getStartDate())));
+				}
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
@@ -2264,9 +2281,8 @@ public class ImmigrationController {
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
-			@RequestParam(value = "myImmigration", required = false) String myImmigration,
-			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
-			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi	) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
 		ModelAndView model = new ModelAndView();
@@ -2275,7 +2291,7 @@ public class ImmigrationController {
 				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal,myImmigration);
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
-		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("myImmigrationPage", myImmigration);
 		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("formsList", candidateFormsLst);
 		return model;
