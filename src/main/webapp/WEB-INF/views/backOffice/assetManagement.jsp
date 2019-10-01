@@ -461,8 +461,8 @@ function openAssetFilterPop(){
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="workStatusFilter">
 				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Assigned" ><label>Assigned </label></li>
-				                     <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="unassigned" ><label>unassigned </label></li>
-				                      <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="end of life" ><label>end of life</label></li>
+				                     <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Unassigned" ><label>unassigned </label></li>
+				                      <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="End Of Life" ><label>end of life</label></li>
                                     <li class="checkBox positionRelative"><input id="c4" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out of service</label></li>
                                     <li class="checkBox positionRelative"><input id="c5" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
 		                        </ul>
@@ -777,11 +777,11 @@ function projectAssetPaginations(url){
 						selected1 = 'selected';
 					 } 
 			  		 
-			  		if(report.workingStatus == 'unassigned'){
+			  		if(report.workingStatus == 'Unassigned'){
 						selected2 = 'selected';
 					 } 
 				
-					 if(report.workingStatus == 'end of life'){
+					 if(report.workingStatus == 'End Of Life'){
 						selected3 = 'selected';
 					 }
 					 if(report.workingStatus == 'Out Of Service'){
