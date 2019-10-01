@@ -39,15 +39,15 @@
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li class="clearfix">
-                        <input id="c" value="APPLICANTS_JOINED_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Applicants Joined Report
+                        <input id="y" value="APPLICANTS_JOINED_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="y" class="checkbox-custom-label paddingright">Applicants Joined Report
                         </label>
                     </li>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
                     <li class="clearfix">
-                        <input id="c" value="RECRUITER_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Recruiter(s) Report
+                        <input id="z" value="RECRUITER_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="z" class="checkbox-custom-label paddingright">Recruiter(s) Report
                         </label>
                     </li>
                     </sec:authorize>
@@ -403,6 +403,7 @@
         </div>
 
 	</div>
+	<div id="actionsPopUp"></div>
   </section>
   
   
@@ -413,9 +414,9 @@
 	  var customDashBoardConfUUID = '${customDashBoardConfUUID}';
 	  var reportTypeArray = [];
 		 $("input[name='reportName[]']:checked").each( function (i) {
-			 reportTypeArray[i] = $(this).val();
+			 reportTypeArray.push($(this).val());
 		});
-		 alert(reportTypeArray.lenght);
+		 
 		if(reportTypeArray.length > 0){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
@@ -429,6 +430,7 @@
 		        },
 		 }); 
 		}else{
+			alert("test");
 			alertMessage("Select atleast one Report");
 		}
 	  
