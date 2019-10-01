@@ -850,7 +850,18 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		}
 		if (requirementsub.getSubmissionStatus() != null
 				&& !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
-			writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
+			String stageName = null;
+			HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
+			submissionStatusMap.put("Offer Accepted", "OFFERACCEPTED");
+			submissionStatusMap.put("Client Offer Accepted", "CLIENT_OFFERACCEPTED");
+			submissionStatusMap.put("Selected On Interview", "SELECTED_ON_INTERVIEW");
+			submissionStatusMap.put("Client Interview", "CLIENT_INTERVIEW");
+			if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
+				writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
+			}else{
+				stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
+				writeRow.createCell(9).setCellValue(stageName);
+			}
 		}
 		
 		/*String submittedon = "--";*/
@@ -911,9 +922,26 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 		// Here we are using JAVA 8 Reflection API to get dynamic object properties  of an object below.
 		Field field = null;
 		for(String getColumn : colPropLst) {
-			 field= mainClass.getDeclaredField(getColumn);
-			 field.setAccessible(true);
-			 writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
+			if(getColumn.equalsIgnoreCase("submissionStatus")){
+				String stageName = null;
+				field= mainClass.getDeclaredField(getColumn);
+				 field.setAccessible(true);
+					HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
+					submissionStatusMap.put("Offer Accepted", "OFFERACCEPTED");
+					submissionStatusMap.put("Client Offer Accepted", "CLIENT_OFFERACCEPTED");
+					submissionStatusMap.put("Selected On Interview", "SELECTED_ON_INTERVIEW");
+					submissionStatusMap.put("Client Interview", "CLIENT_INTERVIEW");
+					if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
+						writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
+					}else{
+						stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
+						writeRow.createCell(colIndex++).setCellValue(stageName == null ?"":stageName);
+					}
+			}else{
+				field= mainClass.getDeclaredField(getColumn);
+				 field.setAccessible(true);
+				 writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
+			}
 		}
 		
 		return createExcelsheet;
