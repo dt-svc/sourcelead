@@ -856,6 +856,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 			submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
 			submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
 			submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+			submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
 			if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
 				writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
 			}else{
@@ -931,6 +932,7 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 					submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
 					submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
 					submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+					submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
 					if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
 						writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
 					}else{
