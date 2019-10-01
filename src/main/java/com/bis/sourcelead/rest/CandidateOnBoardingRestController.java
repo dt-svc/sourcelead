@@ -79,9 +79,9 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 @RestController
 @RequestMapping("/app")
-public class CandidateOnBoardRestController {
+public class CandidateOnBoardingRestController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardRestController.class);
+	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardingRestController.class);
 
 	@Value("${static.path}")
 	private String staticPath;

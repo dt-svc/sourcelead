@@ -50,6 +50,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -68,6 +69,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -195,6 +197,9 @@ public class RequirementRestControllerAdmin {
 	 
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
@@ -1390,7 +1395,8 @@ public class RequirementRestControllerAdmin {
 	}
 	
 	@RequestMapping(value = "/shareAllRecommendations", method = RequestMethod.POST)
-	public @ResponseBody Response<String> shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
+	public @ResponseBody Response<String> shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request)throws Exception {
 		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1401,14 +1407,21 @@ public class RequirementRestControllerAdmin {
 				String[] candidateId = candidateIds.split(",");
 				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
 					for(String candidateid   : candidateId){
-						Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
-								JobShareCandidate jobShareCandidate = new JobShareCandidate();
-								jobShareCandidate.setCandidateId(candidates);
-								jobShareCandidate.setJobId(requirement);
-								jobShareCandidate.setCreatedDate(new Date());
-								jobShareService.saveJobShareCandidate(jobShareCandidate);
-								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+						if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase("Associates")) {
+							Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+							requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+						}else {
+							CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(candidateid));
+							Candidate candidates = new Candidate();
+							candidates.setFirstName(candidateGlobal.getFirstName());
+							candidates.setLastName(candidateGlobal.getLastName());
+							candidates.setMiddelName(candidateGlobal.getMiddelName());
+							candidates.setEmail(candidateGlobal.getEmail());
+							candidates.setConsultantUser(candidateGlobal.getConsultantUser());
+							requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
 						}
+						
+					}
 				}
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
