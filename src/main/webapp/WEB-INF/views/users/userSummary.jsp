@@ -4233,7 +4233,7 @@ function profileDetails(candidateId){
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+			                result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
@@ -4255,6 +4255,9 @@ function profileDetails(candidateId){
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
 			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
+			              '</sec:authorize>';
+			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
+			              result = result+'<li id="candidateImmigrationTab"><a href="#tab-12" onclick="candidatePassport('+candidateId+');">Immigration</a></li>';
 			              '</sec:authorize>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -4286,6 +4289,18 @@ function profileDetails(candidateId){
 						 result = result + '<div id="tab-6" class="project_tabs_inn">';
 						 result = result + '</div>';
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
+						 result = result + '</div>';
+						 result = result + '<div id="tab-12" class="project_tabs_inn">';
+							result  = result + '<div class="clearfix zIndex-div">';
+							
+							result  = result + '<div class="clearfix project-tabs-menu project-tabs-menu-custom">';
+							result  = result + '<ul class="list-unstyled list-inline col-md-12 mb0 mt2">';
+							result  = result + '<li class="cursorPointer" id ="passportli" onClick="candidatePassport('+candidateId+');" value="passport"><a>Passport</a></li><li id ="visali" value="visa" onClick="candidateVisa('+candidateId+');" class="cursorPointer"><a>Visa</a></li><li id ="lcali" onClick="candidateLca('+candidateId+');" class="cursorPointer" value="lca"><a>LCA</a></li>';
+							result  = result + '</ul>';
+							result  = result + '</div>';
+							result = result + '</div>';
+							result  = result + '<div class="clearfix" style="height:35px;"></div>';
+						 result = result + '<div id="immigrationCandidate"></div>';
 						 result = result + '</div>';
 			             result = result+'     </div>';
 			             result = result+'   </div>';
@@ -4921,15 +4936,58 @@ function sendMailConfirmation(userId,confirmationDate,designation){
 	});
 	
 }
-
+function showSuccessMsg(msg){
+	$("#selector4").fadeIn(200);
+	$('#msgDiv').text(msg)
+	setTimeout(function(){ $('#selector4').hide();$('#msgDiv').text("") }, 1000);
+}
 function cancelRejectPopup() {
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 
 }
-</script>
-<script>
 
+function deleteImmigrationRecord(elem,arg1,arg2){
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <b>Do you want to remove record permanently?</b>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+	result = result +"	</div>";
+	$("#deletepopUp").append(result);
+	$("#remove_immigration_popup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+	}
+function cancelImmigrationDelete(){
+	 deleteImmigrationPopupDiv();
+	}
+function deleteImmigrationPopupDiv(){
+	$("#remove_immigration_popup").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+	$("#deletepopUp").empty();
+}
+function deleteImmigrationRecordById(elem, arg1, arg2){	
+	if(typeof elem ==='function') {
+		if(typeof arg2 == 'undefiend'){
+			elem(arg1);
+		}
+		else{
+		elem(arg1, arg2);
+	}
+	}
+	else{
+		alert("Not a valid Function call.");
+	}
+}
+function clearDateValue(id){
+	   $("#"+id).val(""); 
+}
 </script>
+<div id="deletepopUp"></div>
+<input type="hidden" id = "candidateID" value = "${candidateId}">
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 
 
 <%-- <jsp:include page="associatePay.jsp"></jsp:include> --%>
@@ -4937,6 +4995,9 @@ function cancelRejectPopup() {
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
+<jsp:include page="candidatePassport.jsp"></jsp:include>
+<jsp:include page="candidateVisa.jsp"></jsp:include>
+<jsp:include page="candidateLca.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
