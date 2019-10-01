@@ -62,6 +62,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.mysql.fabric.xmlrpc.base.Array;
@@ -102,6 +103,9 @@ public class LeaveManagementReportsRestController {
 	
 	@Autowired
 	UserRoleService userRoleService;
+	
+	@Autowired
+	EMailJobScheduler eMailJobScheduler;
 	
 	@RequestMapping(value = "/daywiseLeaveReport")
 	public ModelAndView approvedLeavesJsp(HttpServletRequest request,
@@ -635,12 +639,12 @@ public class LeaveManagementReportsRestController {
 						flag = true;
 					}
 					    LeaveType lType = leaveTypeService.getLeaveTypeById(lt.getId().longValue());
-//					    LeaveType balleaveType = leaveTypeService.getBalanceLeavesByUserIdAndLeaveTypeId(lType,ltDto.getUserId().longValue(),orgLocation);
+					    LeaveType balleaveType = leaveTypeService.getBalanceLeavesByUserIdAndLeaveTypeId(lType,ltDto.getUserId().longValue(),orgLocation);
 //						float leaveTypeBalance = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(lt.getId().longValue(),ltDto.getUserId().longValue(),orgLocation.getId(),orgLocation.getOrgId());
 						StringBuilder sb = new StringBuilder();
-						sb.append(lType.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
+						sb.append(balleaveType.getName()).append("-").append(String.valueOf(ltDto.getUserId().longValue()));
 						if(flag) {
-							map.put(sb.toString(), lType.getLeaveTypeBalanceLeaveCount());
+							map.put(sb.toString(), balleaveType.getLeaveTypeBalanceLeaveCount());
 						}else {
 							map.put(sb.toString(), 0.01f);
 						}
@@ -776,5 +780,9 @@ public class LeaveManagementReportsRestController {
                     file.delete();
                 }
     }
+	
+	
+
+	
 
 }
