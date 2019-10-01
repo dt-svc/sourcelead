@@ -888,6 +888,8 @@ public class RequirementListRestController {
 													requirementSubmission.setSubmissionDisplayStatus("Selected On Interview");
 												}else if(status.equalsIgnoreCase("CLIENT_INTERVIEW")) {
 													requirementSubmission.setSubmissionDisplayStatus("Client Interview");
+												}else if(status.equalsIgnoreCase("INTERVIEW_ACCEPT")) {
+													requirementSubmission.setSubmissionDisplayStatus("Interview Accept");
 												}else {													
 												    requirementSubmission.setSubmissionDisplayStatus(status);
 												}
@@ -1111,6 +1113,8 @@ public class RequirementListRestController {
 													requirementSubmission.setSubmissionDisplayStatus("Selected On Interview");
 												}else if(status.equalsIgnoreCase("CLIENT_INTERVIEW")) {
 													requirementSubmission.setSubmissionDisplayStatus("Client Interview");
+												}else if(status.equalsIgnoreCase("INTERVIEW_ACCEPT")) {
+													requirementSubmission.setSubmissionDisplayStatus("Interview Accept");
 												}else {													
 												    requirementSubmission.setSubmissionDisplayStatus(status);
 												}
