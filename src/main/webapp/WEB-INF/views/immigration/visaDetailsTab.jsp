@@ -56,7 +56,7 @@
 				    <c:when test="${myImmigrationPage == 'N'}">
 				    
 				        <td>
-				        <div class="tblminwidth-100">
+				        <div class="width50px">
 				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
 				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
 				        </c:if>
@@ -67,12 +67,12 @@
 					</c:if>
 				<i id="delete" 
 				 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
-				 class="glyphicon glyphicon-trash ml10 cursorPointer"></i> </div></td>
+				 class="glyphicon glyphicon-trash pull-right cursorPointer"></i> </div></td>
 				    </c:when>
 				    <c:otherwise>
 				        <c:choose>
 						    <c:when test="${curUscisMyImmi == 'Request to fill' || curUscisMyImmi == 'Request for modifications'}">
-						      <td><div class="tblminwidth-100">
+						      <td><div class="width50px">
 				           <c:if test ="${visadetails.currentStatus == 'Expired' && visadetails.status == 1}">
 				        	<input type="text" class="calendar visaCalendarInput" id="visaExtendDate${visadetails.candidateVisaId}" readonly="readonly">
 						       </c:if>
@@ -83,7 +83,7 @@
 								</c:if>
 								<i id="delete" 
 							 onclick="deleteImmigrationRecord('immigration.deleteVisaDetails',${visadetails.id});" 
-							 class="glyphicon glyphicon-trash ml10 cursorPointer"></i></div></td>
+							 class="glyphicon glyphicon-trash pull-right cursorPointer"></i></div></td>
 						    </c:when>
 						    <c:otherwise>
 						    </c:otherwise>
@@ -129,13 +129,13 @@
           <div class="col-sm-12 noPad mt clearfix" id="idNumberVisaDiv">
 				<label class="col-md-4 padding_left">Visa Id<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control"   data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
+              		<input type="text" name ="visaNumber" id ="visaNumber" placeholder="Visa Id" field-name = "Visa Id" class="form-control"  	 onblur="immigration.validateCandidateVisaDetails();"  data-validation = "required validate_length length8-20 validate_AtLeastOneAlphaNumber"/>
 				</div>
 			</div>				          
           	<div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Country<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
-					<select class="selectpicker width100percnt" name="country" id= "visaCountry"  field-name="Country" data-validation="required" data-live-search="true">
+					<select class="selectpicker width100percnt" name="country" id= "visaCountry"  onchange="immigration.validateCandidateVisaDetails();" field-name="Country" data-validation="required" data-live-search="true">
 					<option value="" selected>--Select Country--</option>
 					  <c:forEach var="country" items="${countryList}">
 						<option value="${country.name}">${country.name}</option>
