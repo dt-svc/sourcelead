@@ -4,6 +4,8 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <script type="text/javascript" src='/pms/resources/js/expenseApproveOrReject.js'></script>
+ 
  <style>
 .moveErrorMsgUp{
     position: absolute !important;
@@ -25,38 +27,48 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     </section> 
    <div id='reOpenPopup'></div>
     <div id='reOpenRejectedPopup'></div>
+    <div class="dashboard_loading" style="display: none;"></div>
     <div class="project_tabs"> 
             <div class="clearfix">
 				<div class="project_details project_detailsExp">
-                
-                
-					<div class="Expdit pull-right">
-					<div class="timeNewSe mr25">
+					<div class="appStatusWrap">
 						  <c:if test="${submissionStatus == 'NEW'}">
-						       <b class='proj_new pull-right'>${submissionStatus}</b>
+						       <b class='appStatusNewcolor'>${submissionStatus}</b>
 						  </c:if>
 						 
 						  <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REOPENED'}">
-						       <b class='proj_draft pull-right' >${submissionStatus}</b>
+						       <b class='appStatusDracolor' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">
-						       <b class='proj_process pull-right' style='width: 90% !important'>${submissionStatus}</b>
+						       <b class='appStatusSubcolor'>${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'APPROVED'}">
-						       <b class='proj_active pull-right'>${submissionStatus}</b>
+						       <b class='appStatusAppcolor'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
-						       <b class='proj_closed pull-right'>${submissionStatus}</b>
+						       <b class='appStatusRejcolor'>${submissionStatus}</b>
 						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
-					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${eah.rejectedReason}</div>
+					            <div class='app_error_mes' id='rejectedMessage1${expenses.id}'>${eah.rejectedReason}</div>
 						      </i>
 						  </c:if>
 						</div>
+                
+					   <ul class="UiPado clearfix">
+							<li title="Export">
+							<a href="javascript:void(0)" class="overIcon" title="Actions" id="export-pop"></a>
+								<div class="newActPop" style="display: none;">
+									<span>
+									 	<a href="javascript:void(0)" onclick="exportMyExpenses('PDF',${expenses.id},'APPROVER');" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportMyExpenses('EXCEL',${expenses.id},'APPROVER');" title="Excel">Export Excel</a>
+									</span>
+								</div>							
+							</li>
+						</ul>
 					
 					 
 					      <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
-					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default ml10 mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
+					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="editIcon appEditBtn"></a>
 					     </c:if>
 					     </sec:authorize>
 					     
@@ -90,20 +102,13 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					           </div> 
 					      </c:if>
 					     
-					     
-					</div>                
-
-					   <ul class="UiPado">
-							<li title="Export"><i class="glyphicon glyphicon-export"
-								id="export-pop"></i>
-								<div class="export_pop" style="display: none;">
-									<ul>
-										<li onclick="exportMyExpenses('PDF',${expenses.id},'APPROVER');"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-										<li onclick="exportMyExpenses('EXCEL',${expenses.id},'APPROVER');"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
-									</ul>
-								</div></li>
-							<div class="clearfix"></div>
-						</ul>
+						
+						<div class="expNewAppBtn">
+						<c:if test="${submissionStatus == 'SUBMITTED'}">
+							<i class="fa fa-check" onclick='approveExpenseByExpenseId("${expenses.id}","-1","approval","summary");'></i>
+							<i class="fa fa-times" onclick='rejectExpenseByExpenseId("${expenses.id}","-1","approval","summary");'></i>
+							</c:if>
+						</div>
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
@@ -183,7 +188,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<th>Currency</th>
 				<th>Payment Mode</th>
 				<th>Paid By</th>
-				<!-- <th>Billable</th> -->
+				 <th>Billable</th>
 			</tr>
 			
 		</thead>	
@@ -227,9 +232,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 								<li><strong>Currency :</strong><span>${entry.categoryAmountType}</span><div class="clearfix"></div></li>
 								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
 								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
-								<%-- <c:if test="${entry.billable}">
+								<<c:if test="${entry.billable}">
 								<li><strong>Billable :</strong><span>YES</span><div class="clearfix"></div></li>
-								</c:if> --%>
+								</c:if> 
 								<div class="clearfix"></div>
 								</li>
 								<div class="clearfix">
@@ -264,21 +269,24 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </div>
     </section>
   <div class="mask_time"></div>
-<div class="time_appr_rejct_pop" id="" style="top: 25%; display: none;">
+<div class="exp_rejct_pop" id="" style="top: 25%;">
 	 <p id="reject2message" class="modal-body text-center">Are you sure <br/> you want to make this expense item as billable ?</p> 
 	 <div id="rejectReasonDiv"></div>
 	 <a href="javascript:void(0)" class="pull-left" id="changeBillableStatus">Ok</a>
 	 <a class="close_color" class="pull-left" id="cancelBillingStatus">Cancel</a>
 </div> 
 
+<div id='rejectedPopup' class='time_appr_rejct_pop'></div>
+
+
 <script>
 $("#export-pop").click(function(){
-	$(".export_pop").toggle();
+	$(".newActPop").toggle();
 });
 $("html").click(function() {
-    $(".export_pop").slideUp();
+    $(".newActPop").hide();
 });
-$(".export_pop, #export-pop").click(function(e) {
+$(".newActPop, #export-pop").click(function(e) {
     e.stopPropagation();
 });	
 </script>
@@ -295,13 +303,9 @@ $(".export_pop, #export-pop").click(function(e) {
 	});
 	// close popup
 	$(document).ready(function() {
-	    $(".fa-times").click(function(){
-			$(".mask_time").fadeIn(200);
-			$(".time_appr_rejct_pop").slideToggle(200);
-		});
-	    $(".time_appr_rejct_pop a").click(function(){
+	    $(".exp_rejct_pop a").click(function(){
 			$(".mask_time").fadeOut(200);
-			$(".time_appr_rejct_pop").slideUp(200);
+			$(".exp_rejct_pop").slideUp(200);
 		});	
 	});
 	 function showPopUp(element, ExpenseEntriesId){
@@ -315,7 +319,7 @@ $(".export_pop, #export-pop").click(function(e) {
 		$("#changeBillableStatus").data("id", ExpenseEntriesId);
 		$("#changeBillableStatus").data("billableStatus", checked ? "billable": "non-billable");
 		$(".mask_time").fadeIn(200);
-		$(".time_appr_rejct_pop").slideToggle(200);
+		$(".exp_rejct_pop").fadeIn(100);
 	} 
 </script> 
     
@@ -329,6 +333,10 @@ function viewDocument(title,id){
 function exportMyExpenses(type,Expid,ApproverType){
 	window.location.href = pmsUrl + "/exportMyExpensesList?&type="+type+"&Expid="+Expid+"&ApproverType="+ApproverType;
 }
+
+function performAction(action) {
+	sessionStorage.setItem("actionPerformed", action);
+	}
 </script>
 
 <script>
