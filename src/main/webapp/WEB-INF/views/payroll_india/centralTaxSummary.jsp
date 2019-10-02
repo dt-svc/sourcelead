@@ -7,7 +7,7 @@
 			<h2>Central Tax</h2>
 		</div>
 	<div class="pull-right brud-crum">
-		<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/centralTax/list">Centraltax List</a> &raquo;  Central Tax Summary
+		<a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/centralTax/list">Central Tax List</a> &raquo;  Central Tax Summary
 	</div>
 	</section>
 
@@ -33,6 +33,14 @@
 											Tax:</b></label>
 									<div class="col-md-8">
 										<span>${centralTax.sourceleadTaxType}</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-5 mb">
+								<div class="row">
+									<label class="col-md-4 control-label"><b>Financial Year:</b></label>
+									<div class="col-md-8">
+										<span>${centralTax.ctfinancialYear}</span>
 									</div>
 								</div>
 							</div>

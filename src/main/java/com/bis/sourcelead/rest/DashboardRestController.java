@@ -1011,7 +1011,8 @@ public class DashboardRestController {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null) {
 				try {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 					Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 					if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){

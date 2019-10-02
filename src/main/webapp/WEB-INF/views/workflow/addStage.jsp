@@ -29,21 +29,41 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
   
   <c:choose>
   <c:when test = "${not empty stageName}">
-  <div class="clearfix mt col-md-6">
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+      <div class="clearfix mt row">
+        <div class="col-md-6">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
-            value='<c:out value="${stageName}"/>' data-validation="required validate_length length1-100"
-            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-            onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+            value='<c:out value="${stageName}"/>' data-validation="required validate_length length4-100"
+            onkeyup= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
-      </div>
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+      <div class="col-md-6">
+          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-5" id = "ShortCodeDiv">
+          
+          <c:choose>
+          <c:when test="${configureType == 'Customize'}">
+           <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length4-20"
+             onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+             style="text-transform:uppercase" disabled>
+          </c:when>
+          <c:otherwise>
+           <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            value = "<c:out value='${stageShortCode}'/>" data-validation="required validate_length length4-20"
+             onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+             style="text-transform:uppercase" >
+          </c:otherwise>
+          </c:choose>
+           
+          
+          
+          </div>
+        </div>
+      <div class="clearfix"></div>
+        <div class="col-md-6 clearfix mt">
           <label class="col-md-3">Description</label>
           <div class="col-md-9">
             <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
@@ -51,32 +71,38 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           </div>
         </div>
       </div>
-    </div>
-    
+      
 		</c:when>
 							<c:otherwise>
-							<div class="clearfix mt col-md-6">
-      <div class="clearfix row">
-        <div class="form-group clearfix">
+	<div class="clearfix mt row">
+        
+        <div class="col-md-6">
           <label class="col-md-3">Stage Name<span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-9" id = "StageNameDiv">
             <input type="text" class="form-control" id = "stageName" name="stageName" placeholder="Stage Name" field-name="Stage Name"
-            data-validation="required validate_length length1-100"
-            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
-			onblur= "requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
+            data-validation="required validate_length length4-100"
+            onkeyup="requirementWorkflow.validateWorkflowStageName('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');">
 			<input type = "hidden" id = "currentStageUuid" value ="<c:out value='${currentStageUuid}'/>">					
           </div>
         </div>
-      </div>
-      <div class="clearfix row">
-        <div class="form-group clearfix">
-          <label class="col-md-3">Description</label>
-          <div class="col-md-9">
-            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description"
-								data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+
+		<div class="col-md-6">
+          <label class="col-md-3">Short Code<span class="text-danger paddingLeft">&nbsp;*</span></label>
+          <div class="col-md-5" id = "ShortCodeDiv">
+            <input type="text" class="form-control" id = "shortCode" name="stageShortCode" placeholder="Short Code" field-name="Short Code"
+            onkeyup="requirementWorkflow.validateStageShortCode('${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}');"
+            data-validation="required validate_length length1-20" style="text-transform:uppercase" >
           </div>
         </div>
+      <div class="clearfix"></div>
+      <div class="col-md-6 clearfix mt">
+          <label class="col-md-3">Description</label>
+          <div class="col-md-9">
+            <textarea rows="2"  class="form-control" id="stageDescription" placeholder="Description" field-name="Description" data-validation="validate_length length1-500" data-validation-optional="true"></textarea>
+          </div>
       </div>
+      
+        
     </div>
 							
 							</c:otherwise>
@@ -134,7 +160,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<label class="col-md-12">Description</label>
 				<div class="col-md-12 descriptionTxtarea">
 				<textarea class='form-control' cols='2' name = 'workFlowTaskDescription' id='workFlowTaskDescription'  placeholder='Description'
-				field-name='summerNote' data-validation='required' data-validation-optional='true' ></textarea>
+				field-name='Description' data-validation='required'></textarea>
 				</div>
 			  </div>
 			  <div class="clearfix"></div>
@@ -189,11 +215,12 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			  <div class="form-group">
 				<label class="col-md-3">Add Comment</label>
 				
+				
 				<div class="col-md-9">
 				  <label class="switch">
 					<c:choose>
 					<c:when test = "${commentRequired == 'Y'}">
-					<input id = "commentRequired" type="checkbox" checked="" value = "Y">
+					<input id = "commentRequired" type="checkbox" checked="" value = "Y" >
 					</c:when>
 					<c:otherwise>
 					<input id = "commentRequired" type="checkbox" value = "N">
@@ -208,15 +235,16 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		</div>
 		<div class="clearfix mb">
 		  
+		  <form id="columnsForm" name="columnsForm">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
           <div class="clearfix">
               <div class="checkbox-new">
               <c:choose>
   				<c:when test = "${requiredList == 'Y'}">
-                <input id="columnsCHkbx" class="checkbox-custom" name="list_required" type="checkbox" checked>
+                <input id="columnsCHkbx" class="checkbox-custom form-control" value="" name="list_required" type="checkbox" data-validation = "required" field-name= "Required Stats" checked>
                 </c:when>
                 <c:otherwise>
-                <input id="columnsCHkbx" class="checkbox-custom" name="list_required" type="checkbox">
+                <input id="columnsCHkbx" class="checkbox-custom form-control" value="" name="list_required" type="checkbox" data-validation = "required" field-name= "Required Stats">
                 </c:otherwise>
                 </c:choose>
                 <label for="columnsCHkbx" class="checkbox-custom-label"></label>
@@ -224,6 +252,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
               </div>
       </div>
       </div>
+     </form>
       
       <c:choose>
   	<c:when test = "${requiredList == 'Y'}">
@@ -237,21 +266,21 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <ul class="list-unstyled" id = "chosenColumnList">
                   <li>
                     <div class="checkbox-new clearfix">
-                        <input id="applicantname" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Name" disabled = "disabled" checked>
+                        <input id="applicantname" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Name" disabled = "disabled"  checked>
                         <label for="applicantName" class="checkbox-custom-label"></label>
                         <span class="ml10">Applicant Name *</span>
                       </div>
                     </li>
                     <li>
                         <div class="checkbox-new clearfix">
-                            <input id="applicantmailid" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Mail Id" disabled = "disabled" checked>
+                            <input id="applicantmailid" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Applicant Mail Id" disabled = "disabled"  checked>
                             <label for="applicantmailid" class="checkbox-custom-label"></label>
                             <span class="ml10">Applicant Mail Id *</span>
                           </div>
                         </li>
                         <li>
                             <div class="checkbox-new clearfix">
-                                <input id="applicantphonenumber" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Phone Number" disabled = "disabled" checked>
+                                <input id="applicantphonenumber" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Phone Number" disabled = "disabled"  checked>
                                 <label for="applicantphonenumber" class="checkbox-custom-label"></label>
                                 <span class="ml10">Phone Number *</span>
                               </div>
@@ -265,9 +294,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                 </li>
                                 <li>
                                     <div class="checkbox-new clearfix">
-                                        <input id="location" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "location">
+                                        <input id="location" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "location" disabled = "disabled" checked>
                                         <label for="location" class="checkbox-custom-label"></label>
-                                        <span class="ml10">Location</span>
+                                        <span class="ml10">Location *</span>
                                       </div>
                                     </li>
                                     <li>
@@ -319,6 +348,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                                 <span class="ml10">Applied on</span>
                                               </div>
                                         </li>
+                                         <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="SubmittedQuestionnaire" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Submitted Questionnaire" disabled = "disabled" checked>
+                                                <label for="SubmittedQuestionnaire" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Submitted Questionnaire *</span>
+                                              </div>
+                                        </li>
                                         <li>
                                             <div class="checkbox-new clearfix">
                                                 <input id="source" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Source">
@@ -326,6 +362,15 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                                 <span class="ml10">Source</span>
                                               </div>
                                         </li>
+                                        <li>
+                                            <div class="checkbox-new clearfix">
+                                                <input id="Status" class="checkbox-custom" name="chosenColumn" type="checkbox" value = "Status" disabled = "disabled" checked>
+                                                <label for="Status" class="checkbox-custom-label"></label>
+                                                <span class="ml10">Status *</span>
+                                              </div>
+                                        </li>
+                                        </ul>
+                                        
       </div>
 <div class="clearfix"></div>
 <div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -336,7 +381,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 </div>
 
     </div>
-    
+    <%-- <c:if test ="${onlyQuestAndTasksEditable == false}"> --%>
     <form id="stagesForm" name="stagesForm">
 		<div class="clearfix row">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -365,8 +410,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			  <div class="col-md-9" id = "nextStages">		
 			  	
 			  	 <!-- dynamic stage content starts here -->
-			 	<select class="sel form-control" >
-				  <option selected>Select</option>
+			 	<select class="sel form-control" id = 'workflowStageUuid' data-validation = "required" field-name= "Next Stage">
+				  <option selected="" value="">Select</option>
 				 
 				</select>				
 			  <!-- dynamic stage content ends here -->
@@ -377,21 +422,23 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		  </div>
     </div>
     </form>
-    
-    <div class="clearfix">
+  <%--   </c:if> --%>
+   
+    <!-- functionality is not implemented commented as of now for calrification -->
+    <!-- <div class="clearfix">
         <h4 class="col-md-2">Email</h4>
         <div class="col-md-3"> <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="">Add Email</a> </div>
-    </div>
+    </div> -->
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
           
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
+            <input value="Save & Finish" class="btn btn-primary" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.cancelAddStage();">
+            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
           </div>
         </div>
       </div>
@@ -402,9 +449,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 <script>
 var currentStageUuid = $("#currentStageUuid").val();
 $(document).ready(function() {
-	
+	workFlowName = '${workFlowName}';
 	commentReq = $("#commentRequired").val();
-		
+	configureType = "${configureType}";	
 		$("#commentRequired").click(function(){
 			if(commentReq == "Y"){
 				commentReq = "N";
@@ -422,21 +469,48 @@ $(document).ready(function() {
 		requirementWorkflow.getRequirementQuestionnaireTemplates();
 	
 	
-	if($('#stageName').val().length == 0){
-		$("#saveTaskButton").attr("disabled", true);
+	if($('#stageName').val().length < 4){
+		$("#saveTaskButton").addClass("disabled");
 	}else{
-		$("#saveTaskButton").attr("disabled", false);
+		$("#saveTaskButton").removeClass("disabled");
 	}
 	
 	$('#stageName').keyup(function(){
-	    if($(this).val().length !=0)
-	    	$("#saveTaskButton").attr("disabled", false);           
-	    else
-	    	$("#saveTaskButton").attr("disabled", true);
+	    if($(this).val().length < 4 || $('#shortCode').val().length < 4 ){
+	    	$("#saveTaskButton").addClass("disabled");
+	    }
+	    else{
+	    	$("#saveTaskButton").removeClass("disabled");
+	   }
+	})
+	$('#shortCode').keyup(function(){
+	    if($(this).val().length < 4 ||  $('#stageName').val().length < 4 ){
+	    	$("#saveTaskButton").addClass("disabled");    
+	    }
+	    else{
+	    	$("#saveTaskButton").removeClass("disabled");
+	   }
 	})
 	
 	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+	checkValidEditableFields('${onlyQuestAndTasksEditable}')
 });
+// below function disabled the fileds if workflow initiated any requirement for the job.
+function checkValidEditableFields(checkValidEditableFields){
+	//console.log("checkValidEditableFields value is :"+checkValidEditableFields);
+	if(checkValidEditableFields == 'true'){
+		  $('#stagesForm').css("display","none");
+		  $("#columnsCHkbx").val("on");
+		  $("#stageName").attr("disabled", "disabled");
+		  $("#shortCode").attr("disabled", "disabled");
+	 }else{
+		  if($("#columnsCHkbx").is(':checked')){
+			  $("#columnsCHkbx").val("on");
+		  }else{
+			  $("#columnsCHkbx").val("");
+		  }
+	 }
+}
 
 
   var stagename = $('#stageName').val();
@@ -474,6 +548,12 @@ requirementWorkflow.prepareChosenColumnList(chosenColumns);
 <script>
 $("#columnsCHkbx").click(function(){
   $("#chosecolumnsID").toggle();
+  if($(this).is(':checked')){
+	  $("#columnsCHkbx").val("on");
+  }
+  else{
+	  $("#columnsCHkbx").val("");
+  }
 })
 </script>
 <jsp:include page="../masterFooter.jsp" /> 
