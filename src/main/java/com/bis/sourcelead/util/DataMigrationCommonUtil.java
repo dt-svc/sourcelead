@@ -581,7 +581,7 @@ public class DataMigrationCommonUtil {
 					errorSet.put("projectClientID", dataMigrationDTOJsonCopy.getString("projectClientID")+" is invalid Project");
 				}
 			}
-			/** below lines is commented for to move in next release build.!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
+		   // below lines is commented for to move in next release build.!--//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
 			if(!dataMigrationDTOJsonCopy.getString("workflow").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workflow"))) {
 				List<RequirementWorkFlow> workflowList = requirementWorkflowService.getRequirementWorkFlowByOrgLocationId(orgLocation);
 				boolean found = false;
@@ -594,7 +594,7 @@ public class DataMigrationCommonUtil {
 				if(!found){
 					errorSet.put("workflow", dataMigrationDTOJsonCopy.getString("workflow")+" is invalid Workflow");
 				}
-			}*/
+			}
 			
 			
 		if (!dataMigrationDTOJsonCopy.getString("docFile").equals("null")
@@ -1708,10 +1708,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
 					}
 				}
-				
+				// add unassigned and end of life options are added in asset working status
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
-					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
+					if(status.equalsIgnoreCase("assigned") || status.equalsIgnoreCase("unassigned") || status.equalsIgnoreCase("end of life") || status.equalsIgnoreCase("out of service")){
 						// capitalize the words starting letter
 						status=	WordUtils.capitalizeFully(status);
 						dataMigrationDTOJsonCopy.put("workingStatus", status);

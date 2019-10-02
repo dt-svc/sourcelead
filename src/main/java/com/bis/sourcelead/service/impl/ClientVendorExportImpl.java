@@ -31,9 +31,11 @@ import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectApproverHierarchy;
 import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectMembers;
+import com.bis.sourcelead.entity.ProjectMembersHistory;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.ClientVendorExport;
+import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -62,6 +64,9 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 	
 	@Autowired
 	private SubmissionApproverHierarchyService submissionApproverHierarchyService;
+	
+	@Autowired
+	ProjectMembersHistoryService projectMembersHistoryService;
 	
 	/**
 	 * @author Rajashekar 
@@ -441,7 +446,7 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 		 cell6.setCellStyle(style);
 	}
 
-	private Sheet createprojectMembersXlsSheet(Sheet sheet, Row writeRow, ProjectMembers projectMember) {
+	private Sheet createprojectMembersXlsSheet(Sheet sheet, Row writeRow, ProjectMembers projectMember) throws Exception {
 		if(projectMember.getProjectMemberCandidteId().getConsultantUser() != null){
 			 UserRole userRole;
 			try {
@@ -460,11 +465,19 @@ public class ClientVendorExportImpl implements ClientVendorExport {
 			writeRow.createCell(0).setCellValue(projectMember.getEmpName());
 		}
 		
-		if (projectMember.getStartDateStr() != null && !"".equalsIgnoreCase(projectMember.getStartDateStr())) {
-			writeRow.createCell(1).setCellValue(projectMember.getStartDateStr());
+		ProjectMembersHistory pmh = projectMembersHistoryService.getProjectMembersOpenHistoryByProjectMemberId(projectMember.getId());
+		 if(pmh == null){
+			 pmh = projectMembersHistoryService.getProjectMembersRecentClosedByProjectMemberId(projectMember.getId());
+		 }
+      	 
+      	if(pmh != null && pmh.getProjectAssignedDate()!=null){
+			writeRow.createCell(1).setCellValue(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(),pmh.getProjectAssignedDate()));
+		}else {
+			writeRow.createCell(1).setCellValue("--");
+			
 		}
-		if (projectMember.getEndDateStr() != null && !"".equalsIgnoreCase(projectMember.getEndDateStr())) {
-			writeRow.createCell(2).setCellValue(projectMember.getEndDateStr());
+      	if(pmh != null && pmh.getProjectTerminationDate()!=null){
+			writeRow.createCell(2).setCellValue(commonUtil.dateStrFromOrgDateFormatter(projectMember.getProjects().getOrgLocationsId().getDateFormat(),pmh.getProjectTerminationDate()));
 		}else {
 			writeRow.createCell(2).setCellValue("--");
 		}

@@ -123,6 +123,7 @@ import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.couchbase.client.java.Bucket;
@@ -633,11 +634,14 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 				reqDTO = gson.fromJson(dataMigrationDTOJsonCopy.toString(), RequirementDTO.class);
 			  
-				// if valid workflow name is not found then setting/creating new WORKFLOW for the JOB. SRINIVAS SABBU.
-	           /* if(StringUtils.isEmpty(reqDTO.getWorkflow())){
-	        	   RequirementWorkFlow workflow = requirementWorkflowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocation, user);
-	        	   reqDTO.setWorkflow(workflow.getId().toString());
-	           	}*/
+				//updated on 24/09/2019
+				// if valid workflow name is not found then setting default WORKFLOW for the JOB. SRINIVAS SABBU.
+	            if(reqDTO.getWorkflow() == null 
+	            		    || reqDTO.getWorkflow().equals("null") || reqDTO.getWorkflow().equals("")){ 
+	           		RequirementWorkFlowDTO workflowDto = requirementWorkflowService.getRequirementDefaultWorkflow();
+		        	   reqDTO.setWorkflow(String.valueOf(workflowDto.getId()));
+	           	}
+	            
 				// reqDTO = mapper.readValue(dataMigrationDTOJsonCopy, RequirementDTO.class);
 				reqDTO.setDateFormat(orgLocation.getDateFormat());
 				if (reqDTO.getRequirementSubmissionStatus().equalsIgnoreCase("SUBMITTED")) {
@@ -1250,10 +1254,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			    Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocation.getDateFormat(), newDate);
 			    
 			  if(candRecentVisaDetails == null) {
-				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
+				  candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId().toString(), null);
 			  }else {
 				  	visaDto.setCandidateVisaId(candRecentVisaDetails.getCandidateVisaId());
-				    candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId(), null);
+				    candidateVisa = immigrationCommonService.saveVisaDetails(visaDto, user, orgLocation, immigration.getId().toString(), null);
 			  }
 			
 			}
@@ -1262,7 +1266,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("passportNo"))
 					&& !"null".equals(dataMigrationDTOJsonCopy.getString("passportNo"))) {
 				candidatePassport = immigrationCommonService.savePassportDetails(passVisaDto, user, orgLocation,
-						immigration.getId());
+						immigration.getId().toString());
 			}
 				candidateVisaMap.put(candidateVisa.getVisaNumber(), candiateId); 
 			  //preparing map not to regenerate the petition for the same visa,  for same candidate, for multiple records for same visa number

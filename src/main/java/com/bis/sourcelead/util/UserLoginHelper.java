@@ -1081,8 +1081,12 @@ public class UserLoginHelper {
 	public Candidate getCandidateDetails(JSONObject userRoleJson) {
 		
 		Candidate candidate = new Candidate();
-		candidate.setId(Long.valueOf(userRoleJson.get("candidateId").toString()));
-		candidate.setCandidateUUID(userRoleJson.get("candidateUUID").toString());
+		if(userRoleJson.get("candidateId") != null) {
+			candidate.setId(Long.valueOf(userRoleJson.get("candidateId").toString()));
+		}
+		if(userRoleJson.get("candidateUUID") != null) {
+			candidate.setCandidateUUID(userRoleJson.get("candidateUUID").toString());
+		}
 		if(userRoleJson.get("masterCandidateId") != null) {
 			candidate.setMasterCandId(Long.valueOf(userRoleJson.get("masterCandidateId").toString()));
 		}

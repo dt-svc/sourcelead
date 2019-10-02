@@ -153,9 +153,18 @@ public class AssetDaoImpl implements AssetDao{
 			}
 		}
 		
-		if (Arrays.asList(status).contains("Working")) {
-			subquery2 = subquery2 + "asset.workingStatus = 'Working' OR ";
+		if (Arrays.asList(status).contains("Assigned ")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'Assigned' OR ";
 		}
+		
+		if (Arrays.asList(status).contains("Unassigned")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'Unassigned' OR ";
+		}
+		
+		if (Arrays.asList(status).contains("End Of Life")) {
+			subquery2 = subquery2 + "asset.workingStatus = 'End Of Life' OR ";
+		}
+		
 		if (Arrays.asList(status).contains("Out Of Service")) {
 			subquery2 = subquery2 + "asset.workingStatus = 'Out Of Service' OR ";
 		}
@@ -241,9 +250,18 @@ public class AssetDaoImpl implements AssetDao{
 		
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
-		 if (Arrays.asList(status).contains("Working")) {
-				subquery2 = subquery2 + "asset.workingStatus = 'Working' OR ";
+		 if (Arrays.asList(status).contains("Assigned")) {
+				subquery2 = subquery2 + "asset.workingStatus = 'Assigned' OR ";
 			}
+		 
+		 if (Arrays.asList(status).contains("Unassigned")) {
+				subquery2 = subquery2 + "asset.workingStatus = 'Unassigned' OR ";
+			}
+		 
+		 if (Arrays.asList(status).contains("End Of Life")) {
+				subquery2 = subquery2 + "asset.workingStatus = 'End Of Life' OR ";
+			}
+		 
 			if (Arrays.asList(status).contains("Out Of Service")) {
 				subquery2 = subquery2 + "asset.workingStatus = 'Out Of Service' OR ";
 			}
@@ -525,9 +543,18 @@ public class AssetDaoImpl implements AssetDao{
 		
 		if(assetDTO.getWorkingStatus() != null) {
 		 status = assetDTO.getWorkingStatus().split(",");
-		 if (Arrays.asList(status).contains("Working")) {
-				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Working' OR ";
+		 if (Arrays.asList(status).contains("Assigned")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Assigned' OR ";
 			}
+		 
+		 if (Arrays.asList(status).contains("Unassigned")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Unassigned' OR ";
+			}
+		 
+		 if (Arrays.asList(status).contains("End Of Life")) {
+				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'End Of Life' OR ";
+			}
+		 
 			if (Arrays.asList(status).contains("Out Of Service")) {
 				subquery2 = subquery2 + "assetAssign.asset.workingStatus = 'Out Of Service' OR ";
 			}

@@ -2,9 +2,13 @@ package com.bis.sourcelead.service.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 //import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -26,6 +30,8 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -59,6 +65,9 @@ public class PdfUtilPipelineHelper  {
 	
 	@Autowired
 	private RequirementLocationsService requirementLocationService;
+	
+	@Autowired
+	RequirementWorkFlowService requirementWorkFlowService;
 	
 	@Autowired
 	private CommonUtil commonUtil;
@@ -415,7 +424,49 @@ public class PdfUtilPipelineHelper  {
 		}
 		}
 		
-	
+	public File getRequirementWorkflowPipelenePdf(java.util.List<RequirementSubmission> requirementStatusList, OrgLocations loginOrgLocation,
+			String requirementId,String submissionType,HashMap<String, String> stageColumnMap ,RequirementSubmissionCounts requirementSubmissionCounts) throws NumberFormatException, Exception {
+		StringBuilder fileStringBuilder=new StringBuilder();
+		
+		
+			//String[] headers = Constants.REQUIREMENT_PIPELINE_EXCEL_HEADERS;
+		      String[] headers = Arrays.copyOf(stageColumnMap.keySet().toArray(), stageColumnMap.size(), String[].class);
+		    File file = File.createTempFile(fileStringBuilder.append(loginOrgLocation.getOrgLocationName()).append("_Jobs_").append(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),new Date())).toString(),".pdf");
+		    file.setReadable(true);
+			StringBuilder sbPipeHearder = new StringBuilder();
+	        sbPipeHearder.append(loginOrgLocation.getOrgLocationName()).append(" ").append("Jobs");
+	        Document document =  prepareHeadres(loginOrgLocation,requirementId,requirementSubmissionCounts.getWorkflowStageCount(),submissionType,file);
+		    try {
+		      // int [] width = new int[]{3,5, 3,5, 5, 3,5,3,5,5,5,5}; // these are each column fixed size widths. 
+		    	// we are getting headers are dynamically thats why above width properties are not used.
+		    	PdfPTable table = getWorkflowPdfTable(headers, sbPipeHearder.toString(), 0);
+		        table.completeRow();
+		        java.util.List<String[]> requirements = new ArrayList<>();
+		        for(RequirementSubmission requirementsub : requirementStatusList){
+		        	requirements.add(prepareRequirementWorkflowPipelineToArray(requirementsub, stageColumnMap));
+		        }
+		        
+		        for (String[] reqArray: requirements) {
+	                for (int i = 0; i < reqArray.length; i++) {
+	                    String datum = reqArray[i];
+	                    PdfPCell cell = new PdfPCell();
+	                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 10, Font.NORMAL)));
+	                    table.addCell(cell);
+	                }
+	                table.completeRow();
+	            }
+		        
+		        document.addTitle("Applicants Table");
+		        table.setSpacingBefore(15f);
+		        document.add(table);
+		        logger.info("Pdf table created !!");
+		    } catch (DocumentException e) {
+		    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+		    } finally {
+		        document.close();
+		  }
+		    return file;
+		}
 	private String[] prepareRequirementPipelineToArraySubmitClient(RequirementSubmission requirementsub,OrgLocations loginOrgLocation, int columnCount) {
 		/*String requirementArray[] = new String[Constants.REQUIREMENT_PIPELINE_SUBMIT_TO_CLIENT_EXCEL_HEADERS.length];*/
 		String requirementArray[] = new String[columnCount];
@@ -647,7 +698,37 @@ public class PdfUtilPipelineHelper  {
 		return table;
 	}
 
-
+	/**
+	 * @author Srinivas Sabbu
+	 * prepares column names for pdf table
+	 * @param headers
+	 * @param width
+	 * @param title 
+	 * @return PdfPTable
+	 */
+	private PdfPTable getWorkflowPdfTable(String[] headers, String titleName, int columnCount) {
+		PdfPTable table = new PdfPTable(headers.length);
+		try{
+			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(titleName.toString(),font));
+	        cell1.setColspan(columnCount > 0 ? columnCount : 14);
+	        headerCellStyle(cell1);
+            table.addCell(cell1);
+			table.setWidthPercentage(100);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 10, Font.BOLD)));
+	            BaseColor myColor = WebColors.getRGBColor("#D3D3D3");
+	            cell.setBackgroundColor(myColor);
+	            table.addCell(cell);
+	        }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return table;
+	}
 /**
  * @author Rajashekar
  * prepares header for pdf
@@ -1081,7 +1162,19 @@ public class PdfUtilPipelineHelper  {
 				requirementArray[8] = "--";
 			}
 			if(requirementsub.getSubmissionStatus() != null){
-				requirementArray[9] = requirementsub.getSubmissionStatus().toString();
+				String stageName = null;
+				HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
+				submissionStatusMap.put("OFFERACCEPTED", "Offer Accepted");
+				submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+				submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+				submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+				submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
+				if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
+					requirementArray[9] = requirementsub.getSubmissionStatus().toString();
+				}else{
+					stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
+					requirementArray[9] = stageName;
+				}
 			}else{
 				requirementArray[9] = "--";
 			}
@@ -1099,7 +1192,48 @@ public class PdfUtilPipelineHelper  {
 			
 			return requirementArray;
 		}
-	
+	/**
+	 * @author SRINIVAS SABBU.
+	 * convert pojo to Array Applicants
+	 * @param requirementsub
+	 * @return
+	 * @throws Exception 
+	 */
+		private String[] prepareRequirementWorkflowPipelineToArray(RequirementSubmission requirementsub, HashMap<String, String> stageColumnMap) throws Exception {
+				String requirementArray[] = new String[stageColumnMap.size()];
+				
+				ArrayList<String> colPropLst =  new ArrayList(stageColumnMap.values());
+				int colIndex = 0;
+				Class mainClass = RequirementSubmission.class;
+			 // Here we are using JAVA 8 Reflection API to get dynamic object properties  of an object below.
+				Field field = null;
+				for(String getColumn : colPropLst) {
+					if(getColumn.equalsIgnoreCase("submissionStatus")){
+						String stageName = null;
+						field= mainClass.getDeclaredField(getColumn);
+						 field.setAccessible(true);
+							HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
+							submissionStatusMap.put("OFFERACCEPTED", "Offer Accepted");
+							submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+							submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+							submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+							submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
+							if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
+								requirementArray[colIndex++]=field.get(requirementsub) == null ?"--":field.get(requirementsub).toString();
+							}else{
+								stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
+								requirementArray[colIndex++]=stageName == null ?"--":stageName;
+							}
+					}else{
+						field= mainClass.getDeclaredField(getColumn);
+						 field.setAccessible(true);
+						 requirementArray[colIndex++]=field.get(requirementsub) == null ?"--":field.get(requirementsub).toString();
+					}
+					 
+				}
+				
+				return requirementArray;
+			}
 	private static void headerCellStyle(PdfPCell cell){
 	    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    cell.setPaddingTop(0f);

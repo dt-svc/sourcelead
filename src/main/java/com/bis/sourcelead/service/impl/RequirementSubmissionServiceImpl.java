@@ -740,11 +740,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
              if(jsonObj.getString("needApplicantPermit").equals("Y")){
                  requirementSubmission.setNeedApplicantPermit("Y");
-                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT.toString());
              }
          }
 		else{
-                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
              }	 
 		
 			 /*requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
@@ -1340,7 +1340,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmission.setSourceSubmission(submission);
     		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
     		 clientSubmission.setSubmissionTemplateJsonStringValue(submission.getSubmissionTemplateJsonStringValue());
-    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
     		 clientSubmission.setVendorLocationId(loginOrgLocation);
     		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
     		 clientSubmission.setCreatedDate(new Date());
@@ -1442,8 +1442,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmissionFields.setUpdatedDate(commonUtil.currentDate());
     		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
     		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
-    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
+    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
+    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString());
     		 submission.setUpdatedBy(user.getUserCode());
     		 submission.setUpdatedDate(new Date());
     		 requirementSubmissionDao.storeRequirementSubmission(submission);
@@ -1613,6 +1613,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
 			OrgLocations loginOrgLocation, String submissionStatus) throws Exception{
 		return requirementSubmissionDao.getAllPipeLineCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus);
+	}
+	
+	@Override
+	public Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages) throws Exception{
+		return requirementSubmissionDao.getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus, workflowStages);
 	}
 	
 	@Override
@@ -1935,7 +1941,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 StringBuilder linkBuild = new StringBuilder();
 		 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +atsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
-					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:50px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
 					.toString());	 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -2038,7 +2044,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		if(requirementSubmission != null){
 			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
 					requirementSubmission.setSubmissionRateComment(applicantAuthorizationDTO.getComment());
@@ -2063,10 +2069,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
 				
-				ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+				String previousStatus = requirementSubmission.getSubmissionStatus();
 				 
 				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
 					requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
@@ -2238,7 +2244,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
    		 StringBuilder sb = new StringBuilder();
    		 clientSubmission.setScore(submission.getScore());
-   		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+   		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
    		 clientSubmission.setVendorLocationId(loginOrgLocation);
    		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
    		 clientSubmission.setCreatedDate(new Date());
@@ -2299,19 +2305,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
-					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-					 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
+					 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 					 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 clientSubmission.setRejectedCategoryType("Other");
 					 clientSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
 			 }else{
-				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			 }
 			 /*END Code snippet*/
 		 
 		 }else{
-			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 		 }
 		 
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
@@ -2435,10 +2441,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmissionFields.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-   		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+   		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
    		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().toString());
    		submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
-   		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
+   		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString());
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
@@ -2903,27 +2909,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(pastUser.getEmail());
 		 emailMessage.setFromEmail(users.getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
-		 StringBuilder msgBuild = new StringBuilder();
-		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
+		 emailMessage.setFromName(users.getFullName());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 
-		 if(pastUser.getFirstName()!= null && !"".equalsIgnoreCase(pastUser.getFirstName()) && pastUser.getLastName()!= null && !"".equalsIgnoreCase(pastUser.getLastName())){
-			 StringBuilder pastUserBuild = new StringBuilder();
-			 globalVarsMap.put("vendorContact", pastUserBuild.append(pastUser.getFirstName()).append(" ").append(pastUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("vendorContact",pastUser.getFirstName());
-			 }
-		 
-		 if(users.getFirstName()!= null && !"".equalsIgnoreCase(users.getFirstName()) && users.getLastName()!= null && !"".equalsIgnoreCase(users.getLastName())){
-			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("loginUser", userBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("loginUser",users.getFirstName());
-			 }
+		 globalVarsMap.put("vendorContact",pastUser.getFullName());
+		 globalVarsMap.put("loginUser",users.getFullName());
 		 
 		 if(requirementSubmission.getRequirement().getJobId()!= null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())){
 			 
@@ -2963,7 +2956,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
@@ -4047,18 +4040,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
-			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
-					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
+					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
 			 }else{
-				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			 }
 			 /*END Code snippet*/
 			 
@@ -5045,7 +5038,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
 		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
 	}
-	
+	@Override
+	public ResponseList<RequirementSubmission> loadWorkflowSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
+	{
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
+		return requirementSubmissionDao.loadWorkflowSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
+	}
 	@Override
 	public RequirementSubmission editRequirementSubmission(JSONObject jsonObj, User user, OrgLocations orgLocations,
 			String jsonStringvalues) throws Exception {

@@ -360,12 +360,11 @@ public class RequirementServiceImpl implements RequirementService {
 			requirement.setProfilePercentage(orgLocations.getProfilePercentage());
 		}
 		//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-		// below lines is commented for to move in next release build.
-		/*if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
+		if (StringUtils.isNotBlank(requirementDTO.getWorkflow())) {
 			RequirementWorkFlow workflow = new RequirementWorkFlow();
 			workflow.setId(Long.parseLong(requirementDTO.getWorkflow()));
 			requirement.setWorkflowId(workflow);
-		}*/
+		}
 		if (orgLocations != null) {
 			requirement.setOrgLocationId(orgLocations);
 		}
@@ -1257,6 +1256,7 @@ public class RequirementServiceImpl implements RequirementService {
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 			List<String> parallelApprover = new LinkedList<>();
 			String sequentialApprover1 = "";
+			String sequentialApprover1Status = "", sequentialApprover2Status = "";
 			String sequentialApprover2 = "";
 			
 			List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(Long.parseLong(requirementDTO.getRequirementId()));
@@ -1268,16 +1268,20 @@ public class RequirementServiceImpl implements RequirementService {
 					if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
 						if (rah.getLevel() == 1) {
 							sequentialApprover1 = rah.getApproverUserId().getId() + "";
+							sequentialApprover1Status = rah.getRequirementApproverStatus().name();
 						}
 						if (rah.getLevel() == 2) {
 							sequentialApprover2 = rah.getApproverUserId().getId() + "";
+							sequentialApprover2Status = rah.getRequirementApproverStatus().name();
 						}
 					}
 				}
 			}
 			requirementDTO.setParallelApprover(parallelApprover);
 			requirementDTO.setSequentialApprover1(sequentialApprover1);
+			requirementDTO.setReqLevel1ApproverStatus(sequentialApprover1Status);
 			requirementDTO.setSequentialApprover2(sequentialApprover2);
+			requirementDTO.setReqLevel2ApproverStatus(sequentialApprover2Status);
 		}
 		
 		requirementElkUtil.saveElkRequirement(savedRequirement, requirementDTO);
@@ -1378,6 +1382,16 @@ public class RequirementServiceImpl implements RequirementService {
 		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		
+		//managerName
+		
+		if (assUser.getFirstName() != null && !"".equalsIgnoreCase(assUser.getFirstName())) {
+			StringBuilder sb = new StringBuilder();
+			globalVarsMap.put("managerName",
+					sb.append(assUser.getFirstName()).append(" ").append(assUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("managerName", "--");
+		}
 		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
 			StringBuilder reqsb = new StringBuilder();
 			globalVarsMap.put("RequirementTitle",

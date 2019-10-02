@@ -2,6 +2,7 @@
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.TimeZone;
 
 
@@ -132,6 +133,8 @@ public class Constants {
 	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINREJECT_THETIMESHEET = "MailToManager1WhenManager2orAdminRejectTheTimesheet";
 
 	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINAPPROVES_THETIMESHEET = "MailToManager1WhenManager2orAdminApprovesTheTimesheet";
+	
+	public static final String MAIL_TO_MANAGER2_WHEN_MANAGER1_APPROVES_THE_TIMESHEET = "MailToLevel2WhenLevel1ApproveTimesheet";
 	
 	public static final String MAIL_TO_THE_MANAGER_TIMESHEET_SUBMISSION = "Mail To Manager when the Timesheet Submission";
 
@@ -641,14 +644,31 @@ public class Constants {
 	public static final String SEMI_MONTHLY = "Semi-Monthly";
 	public static final String MONTHLY = "Monthly";
 	public static final String YEARLY = "Yearly";
-	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
+	
+	//workflow
+	public static final String QUESTIONNAIRE_AUTO_SUBMISSION = "Auto";
+	public static final String QUESTIONNAIRE_MANUAL_SUBMISSION = "Manual";
+	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
+	public static final String CUSTOMIZE = "Customize";
+	public static final LinkedHashMap<String, String> DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String> (){
+		{
+			put("SUBMISSION", "Submission"); 	put("SHORTLIST", "Short List"); 
+			put("SUBMIT_TO_CLIENT", "Submit to Client"); put("INTERVIEW","Interview"); 
+			put("OFFERMADE", "Offer"); 	put("NORESPONSE", "No Response"); 
+			put("ONHOLD","On-hold"); put("JOINED", "Joined"); 
+			put("REJECTED", "Reject"); put("BACKOUT","Backout");
+		}
+	};
+	
+	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
+	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowStageTaskNotification";
 	
 	// "Workflow" removed from the below list as it planned for next build SRINIVA SABBU 07- JUNE-2019.
 	public static final String[] IMPORT_JOB_EXCEL_HEADERS = { "Jobs id", "Title*",
 			"Min Experience", "Max Experience", "Min/Max Rate", "Location*", "City",	"State", "Country", "Zip Code",	
 			"Education", "Skills", "Immigration Status", "Cooling-off Period", "Travel Allowance", "Closed Date",
-			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
+			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Workflow","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
 	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
@@ -1365,7 +1385,7 @@ public class Constants {
     public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
 
     
-    public static final String[] ASSET_WORKING_STATUS = { "Working", "Out Of Service"};
+    public static final String[] ASSET_WORKING_STATUS = {"Assigned", "unassigned", "end of life", "Out Of Service"};
 
 	public static final String EMAIL_SUCCESS = "success";
 	public static final String UPDATE = "UPD";
@@ -1453,6 +1473,7 @@ public class Constants {
 	public static final String CHANGE_JOB_STATUS_EMAIL = "ChangeJobStatusEmail";
 	public static final String CHANGE_JOB_STATUS_NOTIFICATION = "ChangeJobStatusEmail";
 
+	public static final String ORG_UNSUBSCRIPTION = "OrgUnSubscription";
 	
 	public static final String CHANGE_REPORTING_MANAGER_EMAIL="ChangeReportingManagerEmail";
 	public static final String CHANGE_REPORTING_MANAGER_NOTIFICATOPN="ChangeReportingManagerNotification";
@@ -1525,4 +1546,6 @@ public class Constants {
 			                                                "Note-", "Date","Place","SIGNATURE OF THE EMPLOYEE"};
 	
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
+	
+	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
 }
