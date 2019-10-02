@@ -783,14 +783,6 @@ public class LeaveManagementReportsRestController {
 	
 	
 
-	@RequestMapping(value = "/leaveCronTest", method = RequestMethod.GET)
-	public void leaveCronTest() throws Exception
-	{
-		System.out.println("====================Cron Started===============");
-		eMailJobScheduler.appliedLeaveRemainder();
-		System.out.println("====================Cron Ended===================");
-		
-		
-	}
+	
 
 }

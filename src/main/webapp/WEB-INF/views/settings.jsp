@@ -272,7 +272,7 @@
 					</div>
 				</sec:authorize>
 				
-				
+				<%-- 
 				<!--  workflow settings configuration -->
 			<sec:authorize access="hasAnyRole('ROLE_ADD_WORKFLOW','ROLE_EDIT_VIEW_WORKFLOW','ROLE_DELETE_WORKFLOW','ROLE_VIEW_MY_WORKFLOW')">
 				<div class="col-md-2 reportNewCta">
@@ -285,7 +285,7 @@
 						</div>
 					</a>
 				</div>
-				</sec:authorize>
+				</sec:authorize> --%>
 				<!-- Candidate Configuration -->
 				 <div class="col-md-2 reportNewCta"> 
 	            <!-- DropDown -->
@@ -318,13 +318,7 @@
 					</div>
 				</div>  --%>
 				
-				 <div class="col-md-2 reportNewCta">
-					<a href="${SourceLeadWeb_sourceleadUrl}/leaveCronTest">
-							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
-					<div class="clearfix text-center">
-						<h4>Leave Test For Cron</h4>
-					</div>
-				</div>
+				
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">
