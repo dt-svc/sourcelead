@@ -2455,7 +2455,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, user);
 		}
 		candidate.setMasterCandidateId(masterCandidate);
-		candidate.setGeneratedId(getCandidateId(orgLocations));
+		candidate.setGeneratedId(candidateGlobalUtil.getCandidateGlobalId(orgLocations));
 		
 		candidate = candidateGlobalUtil.getCandidateDetails(candidate, candidateDTO, user, orgLocations, activitySummary);
 		
@@ -2472,7 +2472,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if (!folder.exists())
 				folder.mkdirs();
 			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
-			String fileUrl = "/slead-static/"+orgLocations.getOrgId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
+			String fileUrl = "/slead-static/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/"+file.getName();
 			XWPFDocument document = new XWPFDocument(); 
 			FileOutputStream out = new FileOutputStream(file);
 			XWPFParagraph paragraph = document.createParagraph();

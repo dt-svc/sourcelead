@@ -198,4 +198,9 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		return candidateGlobalDao.isCandidateExistsInCandidateGlobal(email, orgLocationId);
 	}
 
+	@Override
+	public Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount) {
+		return candidateGlobalDao.getCandidateGlobalGeneratedIdByOrgLocationId(orgLocationId, generatedIdcount);
+	}
+
 }

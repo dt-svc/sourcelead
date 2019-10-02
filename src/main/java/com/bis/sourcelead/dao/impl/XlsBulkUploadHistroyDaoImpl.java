@@ -74,7 +74,7 @@ public class XlsBulkUploadHistroyDaoImpl implements XlsBulkUploadHistroyDao{
 	public XlsBulkUploadHistroy getXlsBulkUploadHistroyByDocumentKey(String documentKey) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from XlsBulkUploadHistroy history left join fetch history.orgLocationId left join fetch history.createdBy where history.documentKey = :documentKey  ";  
+		String query = "from XlsBulkUploadHistroy history left join fetch history.orgLocationId left join fetch history.orgLocationId.org left join fetch history.createdBy where history.documentKey = :documentKey  ";  
 		List<XlsBulkUploadHistroy> xlsBulkUploadHistroyList =  session.createQuery(query).setString("documentKey", documentKey).list();
 		XlsBulkUploadHistroy xlsBulkUploadHistroy = null;
 		if (xlsBulkUploadHistroyList != null && xlsBulkUploadHistroyList.size() > 0) {

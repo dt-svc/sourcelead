@@ -1139,6 +1139,7 @@ public class Constants {
     public static final String WORK_FROM_HOME = "Work From Home";
 	
 	public static final String CANDIDATE_ENTITY = "CD";
+	public static final String CANDIDATE_GLOBAL_ENTITY = "GCD";
 	public static final String JOB_ENTITY = "JB";
 	public static final String JOB_FAIR = "JF";
 	public static final String IMMIGRATION_ENTITY = "IM";

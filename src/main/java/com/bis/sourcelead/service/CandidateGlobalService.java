@@ -44,4 +44,6 @@ public interface CandidateGlobalService {
 	public CandidateDTO getCandidateGlobalDTOByCandidateGlobalId(Long candidateGlobalId) throws Exception;
 	
 	boolean isCandidateExistsInCandidateGlobal(String email,Long orgLocationId) throws Exception;
+	
+	Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount);
 }
