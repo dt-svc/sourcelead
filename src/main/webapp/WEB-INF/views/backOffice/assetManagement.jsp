@@ -795,8 +795,8 @@ function projectAssetPaginations(url){
 			  	 	result = result + ' <td><div class="tblminwidth-150">';
 					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.assetUUID+'\',\''+report.id+'\');">';
 					result = result + ' <option '+selected1+'>Assigned</option>';
-					result = result + ' <option '+selected2+'>unassigned</option>';
-					result = result + ' <option '+selected3+'>end of life</option>';
+					result = result + ' <option '+selected2+'>Unassigned</option>';
+					result = result + ' <option '+selected3+'>End Of Life</option>';
 					result = result + ' <option '+selected4+'>Out Of Service</option>';
 					result = result + ' <option '+selected5+'>Service</option>';
 					result = result + ' </select>';
