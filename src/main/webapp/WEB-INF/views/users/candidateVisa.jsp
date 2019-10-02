@@ -85,6 +85,7 @@ function candidateVisa(candidateId){
     $("#immigrationCandidate").empty();
     $("#immigrationCandidate").append(result);
     candidateVisaList(candidateId);
+    $("#visa_save_id").removeClass("disabled");
     $("#addVisa").click(function(){
 		$(".popMask").fadeIn(200);
 		$("#popUpVisa").fadeIn(100);
@@ -209,7 +210,7 @@ function saveVisaDetails() {
 		                    	 showError("Operation failed, please try again");
 		                    }
 							
-							$("#visa_save_id").removeClass("disabled");
+							
 			}
 		});
 		return true;

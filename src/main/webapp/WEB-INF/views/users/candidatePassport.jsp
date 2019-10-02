@@ -250,6 +250,7 @@ function candidatePassportList(candidateId){
                     $("#candidatePassportList").append(result); 
                     passportPagination();
                     passportHandler();
+                    $("#passport_save_id").removeClass("disabled");
         		} else if (response.indexOf('Sign In') !== -1) {
         			location.replace(sourceleadUrl);
         		} else {
@@ -345,7 +346,7 @@ function savePassportVisaDetails() {
 		                    }else{
 		                    	 showError("Operation failed, please try again");
 		                    }
-							$("#passport_save_id").removeClass("disabled");
+							
 			}
 		});
 		return true;
