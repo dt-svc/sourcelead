@@ -653,11 +653,11 @@ public class Constants {
 	public static final String CUSTOMIZE = "Customize";
 	public static final LinkedHashMap<String, String> DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String> (){
 		{
-			put("Submission", "SUBMISSION"); 	put("Short List", "SHORTLIST"); 
-			put("Submit to Client", "SUBMIT_TO_CLIENT"); put("Interview","INTERVIEW"); 
-			put("Offer", "OFFERMADE"); 	put("No Response", "NORESPONSE"); 
-			put("On-hold","ONHOLD"); put("Joined", "JOINED"); 
-			put("Reject", "REJECTED"); put("Backout","BACKOUT");
+			put("SUBMISSION", "Submission"); 	put("SHORTLIST", "Short List"); 
+			put("SUBMIT_TO_CLIENT", "Submit to Client"); put("INTERVIEW","Interview"); 
+			put("OFFERMADE", "Offer"); 	put("NORESPONSE", "No Response"); 
+			put("ONHOLD","On-hold"); put("JOINED", "Joined"); 
+			put("REJECTED", "Reject"); put("BACKOUT","Backout");
 		}
 	};
 	
