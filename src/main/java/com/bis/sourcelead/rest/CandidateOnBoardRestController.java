@@ -994,7 +994,7 @@ public class CandidateOnBoardRestController {
 				} else {
 					candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 				}
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateOnBoarding.getCandidateId().getId());
 				if (candidate.getOrgRelationId() != null) {
 					candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
 				}
