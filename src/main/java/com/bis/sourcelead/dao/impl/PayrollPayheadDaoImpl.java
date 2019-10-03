@@ -399,4 +399,19 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		response.setResponse(String.valueOf(updatequeryString.executeUpdate()));
 		return response;
 	}
+
+	@Override
+	@Transactional
+	public AssociateSalaryPayheadInd getAssociateSalaryPayheadIndByPayrollPayhedId(Long payrollPayhedId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryPayheadInd payhead where payhead.payrollPayhead.id = :payrollPayhedId and payhead.status = '1' ";  
+		List<AssociateSalaryPayheadInd> associateSalaryPayheadIndList =  session.createQuery(query).setLong("payrollPayhedId", payrollPayhedId).list();
+		AssociateSalaryPayheadInd associateSalaryPayheadInd = null;
+		if (associateSalaryPayheadIndList != null && associateSalaryPayheadIndList.size() > 0) {
+			associateSalaryPayheadInd = (AssociateSalaryPayheadInd) associateSalaryPayheadIndList.iterator().next();
+		}
+		return associateSalaryPayheadInd;
+	}
+	 
+	
 }
