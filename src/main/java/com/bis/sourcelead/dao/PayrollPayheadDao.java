@@ -41,6 +41,8 @@ public interface PayrollPayheadDao {
 	
 	AssociateSalaryPayheadInd getAssociateSalaryPayheadIndById(Long id) throws Exception;
 	
+	AssociateSalaryPayheadInd getAssociateSalaryPayheadIndByPayrollPayhedId(Long payrollPayhedId) throws Exception;
+
 	PayrollPayhead getPayrollPayheadByShortCodeAndOrglocation(String shortCode, Long orgLocationId);
 	
 	AssociateSalaryHistoryInd saveAssociateSalaryHistoryInd(AssociateSalaryHistoryInd associateSalaryHistoryInd) throws Exception;
