@@ -826,6 +826,7 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 		if(myImmigration.equalsIgnoreCase("Y")) {
 			query.setParameter("docCategory", "Document Type");
 		}
+	//	System.out.println(query);
 		immigrationCandidateDocumentsList = query.list();
 		return immigrationCandidateDocumentsList;
 	}

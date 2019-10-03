@@ -154,9 +154,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 			requirementWorkFlowStages.setRequirementWorkFlowId(reqWorkFlow);
 			requirementWorkFlowStages.setOrgLocationId(orgLocations);
-			requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
-			requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
-			requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setStageName(defaultWorkflowMap.getValue());
+			requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setDescription(defaultWorkflowMap.getValue());
 			requirementWorkFlowStages.setSeqOrder(seqOrder);
 			requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
@@ -1536,9 +1536,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			for(Map.Entry<String, String> defaultWorkflowMap: Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.entrySet()) {
 				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 				requirementWorkFlowStages.setRequirementWorkFlowId(requirementWorkFlow);
-				requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
-				requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
-				requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setStageName(defaultWorkflowMap.getValue());
+				requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setDescription(defaultWorkflowMap.getValue());
 				requirementWorkFlowStages.setSeqOrder(seqOrder);
 				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
