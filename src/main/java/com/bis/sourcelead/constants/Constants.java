@@ -134,6 +134,8 @@ public class Constants {
 
 	public static final String MAIL_TO_MANAGER1_WHENMANAGER2_OR_ADMINAPPROVES_THETIMESHEET = "MailToManager1WhenManager2orAdminApprovesTheTimesheet";
 	
+	public static final String MAIL_TO_MANAGER2_WHEN_MANAGER1_APPROVES_THE_TIMESHEET = "MailToLevel2WhenLevel1ApproveTimesheet";
+	
 	public static final String MAIL_TO_THE_MANAGER_TIMESHEET_SUBMISSION = "Mail To Manager when the Timesheet Submission";
 
 
