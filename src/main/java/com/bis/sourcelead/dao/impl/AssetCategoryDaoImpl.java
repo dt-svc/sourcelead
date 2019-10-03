@@ -106,7 +106,7 @@ public class AssetCategoryDaoImpl implements AssetCategoryDao{
 	@Transactional
 	public Boolean validateCategoryName(String categoryName, Long orgLocationId) {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.status = '1' and ac.categoryName = :categoryName"; 
+		String query = "from AssetCategory ac where ac.orgLocations.id = :orgLocationId and ac.categoryName = :categoryName"; 
 		List<AssetCategory> assetCategoryList = session.createQuery(query.toString()).setString("categoryName", categoryName).setLong("orgLocationId", orgLocationId).list();
          boolean isCategoryFound = false;
 		if (assetCategoryList != null && !assetCategoryList.isEmpty()) {
