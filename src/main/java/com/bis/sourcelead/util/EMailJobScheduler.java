@@ -5083,7 +5083,7 @@ public class EMailJobScheduler {
 	//Passport expiry mail..
 	//@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
-	   @Scheduled(cron = "0 0/15 * 1/1 * ?") // used for dev testing run for every 15 minutes..
+	   @Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
 		public void runJobSchedulerDailyForCandidatePassport() { // check if Passport is expired on not on daily basis, if expired updating
 														// Passport status in Database.
@@ -5373,7 +5373,7 @@ public class EMailJobScheduler {
 	 //Visa expiry mail..
 	 //@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
-	   @Scheduled(cron = "0 0/15 * 1/1 * ?") // used for dev testing run for every 15 minutes..
+	   @Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
 		public void runJobSchedulerDailyForCandidateVisa() { // check if Visa is expired on not on daily basis, if expired updating
 														// Visa status in Database.
@@ -5663,7 +5663,7 @@ public class EMailJobScheduler {
 	 //Passport expiry mail to manager..
 	 //@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
-	   @Scheduled(cron = "0 0/15 * 1/1 * ?") // used for dev testing run for every 15 minutes..
+	   @Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
 		public void runJobSchedulerDailyForCandidatePassportResourceManager() { // check if Passport is expired on not on daily basis, if expired updating
 														// Passport status in Database.
@@ -5983,7 +5983,7 @@ public class EMailJobScheduler {
 	 //Visa expiry mail to manager..
 	   //@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
-	   @Scheduled(cron = "0 0/15 * 1/1 * ?") // used for dev testing run for every 15 minutes..
+	   @Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
 	public void runJobSchedulerDailyForCandidateVisaManager() { // check if Visa is expired on not on daily basis, if expired updating
 														// Visa status in Database.
