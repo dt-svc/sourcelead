@@ -136,7 +136,7 @@
 											        + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
 											
 									result = result
-											+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+											+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
 									result = result + ' </ul>';
 									result = result + ' </div>';
 									result = result + '  </td>';

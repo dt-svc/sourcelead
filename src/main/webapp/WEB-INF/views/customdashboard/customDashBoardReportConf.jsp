@@ -32,88 +32,88 @@
                 <ul>
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
                 <li class="clearfix">
-                        <input id="c" value="OFFER_ACCEPTANCE_RATE" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="c" class="checkbox-custom-label paddingright">Offer Acceptance Rate
+                        <input id="offerAcceptanceRate"  value="OFFER_ACCEPTANCE_RATE" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="offerAcceptanceRate" class="checkbox-custom-label paddingright">Offer Acceptance Rate
                         </label>
                     </li>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li class="clearfix">
-                        <input id="y" value="APPLICANTS_JOINED_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="y" class="checkbox-custom-label paddingright">Applicants Joined Report
+                        <input id="aplicantJoin" value="APPLICANTS_JOINED_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="" class="checkbox-custom-label paddingright">Applicants Joined Report
                         </label>
                     </li>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_RECRUITERS_REPORT')">
                     <li class="clearfix">
-                        <input id="z" value="RECRUITER_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="z" class="checkbox-custom-label paddingright">Recruiter(s) Report
+                        <input id="recruiterReport" value="RECRUITER_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="recruiterReport" class="checkbox-custom-label paddingright">Recruiter(s) Report
                         </label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_MY_PERFORMANCE_REPORT')">
                     <li class="clearfix">
-                        <input id="d" value="MY_PERFORMANCE_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="d" class="checkbox-custom-label paddingright">My Performance Report</label>
+                        <input id="performanceReport" value="MY_PERFORMANCE_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="performanceReport" class="checkbox-custom-label paddingright">My Performance Report</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_VENDORS_REPORT')">
                     <li class="clearfix">
-                        <input id="e" value="VENDOR_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="e" class="checkbox-custom-label paddingright">Vendor(s) Report</label>
+                        <input id="vendorReport" value="VENDOR_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="vendorReport" class="checkbox-custom-label paddingright">Vendor(s) Report</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_CLIENT_REPORT')">
                     <li class="clearfix">
-                        <input id="f" value="CLIENT_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="f" class="checkbox-custom-label paddingright">Client(s) Report</label>
+                        <input id="clientReport" value="CLIENT_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="clientReport" class="checkbox-custom-label paddingright">Client(s) Report</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_APPLICANT_DECLINE')">
                     <li class="clearfix">
-                        <input id="g" value=" " class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="g" class="checkbox-custom-label paddingright">Applicant(s) Decline</label>
+                        <input id="applicantDecline" value="APPLICANT_DECLINE" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="applicantDecline" class="checkbox-custom-label paddingright">Applicant(s) Decline</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_APPLICANT_BACKOUT')">
                     <li class="clearfix">
-                        <input id="h" value="APPLICANT_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="h" class="checkbox-custom-label paddingright">Applicant(s) Backout</label>
+                        <input id="applicantBackout" value="APPLICANT_BACKOUT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="applicantBackout" class="checkbox-custom-label paddingright">Applicant(s) Backout</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_JOBS_PIPELINE')">
                     <li class="clearfix">
-                        <input id="j" value="JOBS_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="j" class="checkbox-custom-label paddingright">Job(s) Pipeline</label>
+                        <input id="jobsReport" value="JOBS_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="jobsReport" class="checkbox-custom-label paddingright">Job(s) Pipeline</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_APPLICANT_SOURCE')">
                     <li class="clearfix">
-                        <input id="k" value="APPLICANTS_BY_SOURCE" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="k" class="checkbox-custom-label paddingright">Applicant(s) by Source</label>
+                        <input id="applicantBySource" value="APPLICANTS_BY_SOURCE" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="applicantBySource" class="checkbox-custom-label paddingright">Applicant(s) by Source</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_TIME_TO_FILL')">
                     <li class="clearfix">
-                        <input id="l" value="TIME_TO_FILL" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="l" class="checkbox-custom-label paddingright">Time to Fill</label>
+                        <input id="timeToFill" value="TIME_TO_FILL" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="timeToFill" class="checkbox-custom-label paddingright">Time to Fill</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_APPLICANT_RECEIVED')">
                     <li class="clearfix">
-                        <input id="m" value="APPLICANTS_BY_RECEIVED" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="m" class="checkbox-custom-label paddingright">Applicant(s) by Received</label>
+                        <input id="applicantByReceived" value="APPLICANTS_BY_RECEIVED" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="applicantByReceived" class="checkbox-custom-label paddingright">Applicant(s) by Received</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_JOBS_STAGES')">
                     <li class="clearfix">
-                        <input id="n" value="JOBS_STAGE" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="n" class="checkbox-custom-label paddingright">Job(s) Stage</label>
+                        <input id="jobsStage" value="JOBS_STAGE" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="jobsStage" class="checkbox-custom-label paddingright">Job(s) Stage</label>
                     </li>  
                     </sec:authorize>
                     <li class="clearfix">
-                        <input id="o" value="JOBS_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="o" class="checkbox-custom-label paddingright">Job(s) Report</label>
+                        <input id="jobsReport" value="JOBS_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="jobsReport" class="checkbox-custom-label paddingright">Job(s) Report</label>
                     </li> 
 				</ul>
             </div>
@@ -122,43 +122,43 @@
             <div id="tab2">
                 <ul>
                     <li class="clearfix">
-                        <input id="a" value="ASSIGNED_ASSETS_HISTORY" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="a" class="checkbox-custom-label paddingright">Assigned Assets History</label>
+                        <input id="assignedAssetHis" value="ASSIGNED_ASSETS_HISTORY" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="assignedAssetHis" class="checkbox-custom-label paddingright">Assigned Assets History</label>
                     </li>
                     <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
                     <li class=" clearfix">
-                        <input id="b" value="DAYWISE_TIMESHEET_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="b" class="checkbox-custom-label paddingright">Daywise Timesheet Report</label>
+                        <input id="daywiseTimesheet" value="DAYWISE_TIMESHEET_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="daywiseTimesheet" class="checkbox-custom-label paddingright">Daywise Timesheet Report</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
                     <li class="clearfix">
-                        <input id="monthlyReport" value="TIMESHEET_MONTHLY_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="monthlyReport" class="checkbox-custom-label paddingright">Timesheet Monthly Report</label>
+                        <input id="timesheetMonthlyReport" value="TIMESHEET_MONTHLY_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="timesheetMonthlyReport" class="checkbox-custom-label paddingright">Timesheet Monthly Report</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
                     <li class="clearfix">
-                        <input id="expenses" value="EXPENSE" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <input id="expenses" value="EXPENSES" class="checkbox-custom" name="reportName[]" type="checkbox">
                         <label for="expenses" class="checkbox-custom-label paddingright">Expense(s)</label>
                     </li> 
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
                     <li class="clearfix">
-                        <input id="approvalExpenses" value="PENDING_FOR_APPROVAL_EXPENSES" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="approvalExpenses" class="checkbox-custom-label paddingright">Pending for Approval Expenses</label>
+                        <input id="pendingApprovalExpenses" value="PENDING_FOR_APPROVAL_EXPENSES" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="pendingApprovalExpenses" class="checkbox-custom-label paddingright">Pending for Approval Expenses</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_MISSING_TIMESHEETS')">
                     <li class="clearfix">
-                        <input id="missingTimesheets" value="MISSING_TIMESHEET" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="missingTimesheets" class="checkbox-custom-label paddingright">Missing Timesheet(s)</label>
+                        <input id="missingTimesheet" value="MISSING_TIMESHEET" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="missingTimesheet" class="checkbox-custom-label paddingright">Missing Timesheet(s)</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_PENDING_FOR_APPROVAL')">
                     <li class="clearfix">
-                        <input id="approvalTimesheets" value="PENDING_FOR_APPROVAL_TIMESHEETS" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="approvalTimesheets" class="checkbox-custom-label paddingright">Pending for Approval Timesheets</label>
+                        <input id="pendingApprovalTimesheets" value="PENDING_FOR_APPROVAL_TIMESHEETS" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="pendingApprovalTimesheets" class="checkbox-custom-label paddingright">Pending for Approval Timesheets</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_EMPLOYEMENT_VERIFICATION_REPORT')">
@@ -176,12 +176,12 @@
                         <label for="leaveReport" class="checkbox-custom-label paddingright">Leave Report</label>
                     </li>
                     <li class="clearfix">
-                        <input id="balanceReport" value="LEAVE_BALANCE_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="balanceReport" class="checkbox-custom-label paddingright">Leave Balance Report</label>
+                        <input id="leaveBalanceReport" value="LEAVE_BALANCE_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="leaveBalanceReport" class="checkbox-custom-label paddingright">Leave Balance Report</label>
                     </li>
                     <li class="clearfix">
-                        <input id="leaveTakenReport" value="TOP_LEAVE_TAKEN_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="leaveTakenReport" class="checkbox-custom-label paddingright">Top Leave Taken Report</label>
+                        <input id="topLeaveTaken" value="TOP_LEAVE_TAKEN_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="topLeaveTaken" class="checkbox-custom-label paddingright">Top Leave Taken Report</label>
                     </li>
 				</ul>
             </div>
@@ -263,8 +263,8 @@
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_CAMPAIGN_REPORTS')">
                     <li class="clearfix">
-                        <input id="campaignsReport" value="CAMPAIGN_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="campaignsReport" class="checkbox-custom-label paddingright">Campaign(s) Report</label>
+                        <input id="campaignReport" value="CAMPAIGN_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
+                        <label for="campaignReport" class="checkbox-custom-label paddingright">Campaign(s) Report</label>
                     </li>
                     </sec:authorize>
                     <sec:authorize access="hasRole('ROLE_ASSOCIATE_JOINED_REPORT')">
@@ -430,7 +430,6 @@
 		        },
 		 }); 
 		}else{
-			alert("test");
 			alertMessage("Select atleast one Report");
 		}
 	  
@@ -459,13 +458,253 @@ function cancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
+
+<script>
+var custmConfUUID = '${reportCongList}';
+
+<c:forEach var="report" items="${reportCongList}">  
+		<c:if test = "${report.reportName == 'OFFER_ACCEPTANCE_RATE'}">
+		   $("#offerAcceptanceRate").prop('checked', true);
+		</c:if>
+
+		<c:if test = "${report.reportName == 'APPLICANTS_JOINED_REPORT'}">
+		   $("#aplicantJoin").prop('checked', true);
+		</c:if>
+ 
+        <c:if test = "${report.reportName == 'RECRUITER_REPORT'}">
+		   $("#recruiterReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'MY_PERFORMANCE_REPORT'}">
+		   $("#performanceReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'VENDOR_REPORT'}">
+		   $("#vendorReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'CLIENT_REPORT'}">
+		   $("#clientReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'APPLICANT_DECLINE'}">
+		   $("#applicantDecline").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'APPLICANT_BACKOUT'}">
+		   $("#applicantBackout").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'JOBS_REPORT'}">
+		   $("#jobsReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'APPLICANTS_BY_SOURCE'}">
+		   $("#applicantBySource").prop('checked', true);
+	    </c:if>
+	   
+	    <c:if test = "${report.reportName == 'TIME_TO_FILL'}">
+		   $("#timeToFill").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'APPLICANTS_BY_RECEIVED'}">
+		   $("#applicantByReceived").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'JOBS_STAGE'}">
+		   $("#jobsStage").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'JOBS_REPORT'}">
+		   $("#jobsReport").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'ASSIGNED_ASSETS_HISTORY'}">
+		   $("#assignedAssetHis").prop('checked', true);
+	    </c:if> 
+	     
+	    <c:if test = "${report.reportName == 'DAYWISE_TIMESHEET_REPORT'}">
+		   $("#daywiseTimesheet").prop('checked', true);
+	    </c:if> 
+	    
+	    <c:if test = "${report.reportName == 'TIMESHEET_MONTHLY_REPORT'}">
+		   $("#timesheetMonthlyReport").prop('checked', true);
+	    </c:if> 
+	    
+	    <c:if test = "${report.reportName == 'EXPENSES'}">
+		   $("#expenses").prop('checked', true);
+	    </c:if> 
+	     
+	    <c:if test = "${report.reportName == 'PENDING_FOR_APPROVAL_EXPENSES'}">
+		   $("#pendingApprovalExpenses").prop('checked', true);
+	    </c:if> 
+	    <c:if test = "${report.reportName == 'MISSING_TIMESHEET'}">
+		   $("#missingTimesheet").prop('checked', true);
+	    </c:if> 
+	    <c:if test = "${report.reportName == 'PENDING_FOR_APPROVAL_TIMESHEETS'}">
+		   $("#pendingApprovalTimesheets").prop('checked', true);
+	    </c:if> 
+	    
+	    <c:if test = "${report.reportName == 'EMPLOYEMENT_VERIFICATION_REPORT'}">
+		   $("#verificationReport").prop('checked', true);
+	    </c:if> 
+	    
+	    <c:if test = "${report.reportName == 'DAYWISE_LEAVE_REPORT'}">
+		   $("#daywiseLeaveReport").prop('checked', true);
+	    </c:if> 
+	    
+	    <c:if test = "${report.reportName == 'LEAVE_REPORT'}">
+		   $("#leaveReport").prop('checked', true);
+	    </c:if> 
+	    
+	    <c:if test = "${report.reportName == 'LEAVE_BALANCE_REPORT'}">
+		   $("#leaveBalanceReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'TOP_LEAVE_TAKEN_REPORT'}">
+		   $("#topLeaveTaken").prop('checked', true);
+	    </c:if>
+	      
+	    
+	    <c:if test = "${report.reportName == 'FINANCE'}">
+		   $("#finance").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'AR_AGING'}">
+		   $("#arAging").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'AP_AGING'}">
+		   $("#apAging").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'MISSING_INVOICE'}">
+		   $("#missingInvoice").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'RECEIVED_INVOICE'}">
+		   $("#receivedInvoice").prop('checked', true);
+	    </c:if>
+	    
+	    
+	    <c:if test = "${report.reportName == 'MISSING_BILL'}">
+		   $("#missingBill").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'PAID_BILL'}">
+		   $("#paidBill").prop('checked', true);
+	    </c:if>
+	     
+	    
+	    <c:if test = "${report.reportName == 'MARGIN_SHEET_REPORT'}">
+		   $("#marginSheetReport").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'ASSET_GROWTH'}">
+		   $("#assetGrowth").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'ASSOCIATE_ROI'}">
+		   $("#associatesROI").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'ALL_ASSOCIATES_ROI'}">
+		   $("#allAssociatesROI").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'CAMPAIGN_REPORT'}">
+		   $("#campaignReport").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'ASSOCIATE_JOINED_REPORT'}">
+		   $("#associateJoinedReport").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'ASSOCIATE_CLOCKIN_SUMMARY_REPORT'}">
+		   $("#clock-InSummaryReport").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'AVAILABLE_ASSOCIATE_REPORT'}">
+		   $("#availableAssociateReport").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'LOANS_AND_ADVANCES_REPORT'}">
+		   $("#loanAndAdvancesReport").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'PROJECT_REPORT'}">
+		   $("#projectReport").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'EMPLOYEE_TASKS'}">
+		   $("#employeeTasks").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'OVER_DUE_REPORT'}">
+		   $("#overDueReport").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'PAYROLL_REGISTER'}">
+		   $("#payrollRegister").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'COMPARSION'}">
+		   $("#comparsion").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'PAYROLL_SUMMARY'}">
+		   $("#payrollSummary").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'CHECK_REGISTER'}">
+		   $("#checkRegister").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'ASSOCIATE_WITHHOLDING'}">
+		   $("#associateWithholding").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'TAXABLE_WAGES_REPORT'}">
+		   $("#taxableWagesReport").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'DEDUCTION_REPORTS'}">
+		   $("#deductionReports").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'CONTRIBUTION_REPORTS'}">
+		   $("#contributionReports").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'DEDUCTION_SUMMARY_REPORT'}">
+		   $("#deductionSummaryReport").prop('checked', true);
+	    </c:if>
+	     
+	    <c:if test = "${report.reportName == 'CONTRIBUTION_SUMMARY_REPORTS'}">
+		   $("#contributionSummaryReports").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'DIRECT_DEPOSIT'}">
+		   $("#directDeposit").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'EMPLOYEE_PAYROLL'}">
+		   $("#employeePayroll").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'CONTRACT_EMPLOYEE_PAYROLL'}">
+		   $("#contractEmployeePayroll").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'PETITION_REPORT'}">
+		   $("#petitionReport").prop('checked', true);
+	    </c:if>
+	    <c:if test = "${report.reportName == 'PETITION_ATTORNEY_REPORT'}">
+		   $("#petitionAttorneyReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'LCA_REPORT'}">
+		   $("#lcaReport").prop('checked', true);
+	    </c:if>
+	    
+	    <c:if test = "${report.reportName == 'USAGE_REPORT'}">
+		   $("#usageReport").prop('checked', true);
+	    </c:if>
+	     
+	     
+	     
+</c:forEach>
  
 
+
+</script>
   
   
   <script>
 $(document).ready(function(){
-    $('#tab-content div').hide();
+	
+	$('#tab-content div').hide();
     $('#tab-content div:first').show();
 
     $('#nav li').click(function() {
@@ -476,7 +715,16 @@ $(document).ready(function(){
         var indexer = $(this).index(); 
         $('#tab-content div:eq(' + indexer + ')').fadeIn(); 
     });  
+    
 });
 
 </script>
+
+
+
+
+
+
+
+
 <jsp:include page="../masterFooter.jsp" />

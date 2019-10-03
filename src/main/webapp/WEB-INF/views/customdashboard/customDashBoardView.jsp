@@ -2,7 +2,8 @@
 <jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.mousewheel.js"></script> 
+<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.jscrollpane.min.js"></script> 
 
 
 <section class="content-wraper">
@@ -15,24 +16,31 @@
     </section>
     
 <div class="row clearfix" id="configItemsList">
-    <div class="col-md-6 mb">
-        <div class="newDashBg mb10">
-            <div class="newDashhead clearfix">
-                <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 1</a>
-                <span class="pull-right">
-                  <i><img src="../images/edit.svg"></i><i><img src="../images/trash.svg"></i><i><img src="../images/drag.svg"></i>
-                </span>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 mb">
+
+     	<c:forEach var="configureDashBoard" items="${dashBoardConfData}" >
+    			 <div class="col-md-6 mb">
+				        <div class="newDashBg mb10">
+				            <div class="newDashhead clearfix">
+				                <a href="javascript:void(0)" class="pull-left">${configureDashBoard.displayTabName }</a>
+				                <span class="pull-right">
+				                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i>
+				                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg">
+				                  </i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
+				                </span>
+				            </div>
+				        </div>
+    			</div>
+		</c:forEach>
+   
+   <%--  <div class="col-md-6 mb">
         <div class="newDashBg mb10">
             <div class="newDashhead clearfix">
                 <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 2</a>
                 <span class="pull-right">
-                  <i><img src="../images/edit.svg"></i><i><img src="../images/trash.svg"></i><i><img src="../images/drag.svg"></i>
+                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
                 </span>
             </div>
+              <p>*********************Text for Test************************* </p>
         </div>
     </div>
     <div class="col-md-12 mb">
@@ -40,9 +48,11 @@
             <div class="newDashhead clearfix">
                 <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 3</a>
                 <span class="pull-right">
-                  <i><img src="../images/edit.svg"></i><i><img src="../images/trash.svg"></i><i><img src="../images/drag.svg"></i>
+                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
                 </span>
+               
             </div>
+             <p>***********************Text for Test*************** </p>
         </div>
     </div>    
     <div class="col-md-6 mb">
@@ -50,9 +60,10 @@
             <div class="newDashhead clearfix">
                <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 4</a>
                 <span class="pull-right">
-                  <i><img src="../images/edit.svg"></i><i><img src="../images/trash.svg"></i><i><img src="../images/drag.svg"></i>
+                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
                 </span>
             </div>
+              <p>***********************Text for Test*************************** </p>
         </div>
     </div>
     <div class="col-md-6 mb">
@@ -60,11 +71,12 @@
             <div class="newDashhead clearfix">
                 <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 5</a>
                 <span class="pull-right">
-                  <i><img src="../images/edit.svg"></i><i><img src="../images/trash.svg"></i><i><img src="../images/drag.svg"></i>
+                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
                 </span>
             </div>
+              <p>****************Text for Test*************************</p>
         </div>
-    </div>  
+    </div>   --%>
 </div>
 	
   </section>
@@ -84,6 +96,17 @@ $(document).ready(function(){
     });  
 });
 
+</script>
+
+
+<!--    Dashboard Draging Function    -->
+<script>
+$(function() {
+  $("#configItemsList").sortable();
+  $("#configItemsList").on("sortdeactivate", function( event, ui ) {
+  } );
+  $("#configItemsList").disableSelection();
+  });
 </script>
 <jsp:include page="../masterFooter.jsp" />
   
