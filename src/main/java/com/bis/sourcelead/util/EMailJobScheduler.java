@@ -562,7 +562,7 @@ public class EMailJobScheduler {
 			int expiring_days_arr [] = {180, 90, 60, 30, 15, 7};
 			for(int i=0; i<expiring_days_arr.length; i++) {
 				cal= Calendar.getInstance();
-				cal.add(Calendar.DATE, expiring_days_arr[i]);
+				cal.add(Calendar.DATE, expiring_days_arr[i] - 1);//this includes the current date.
 				expectedExpiryDate = cal.getTime();
 			
 			List<Lca> lcaListExpiring = immigrationCommonService.getAllLcaList(expectedExpiryDate);
@@ -5097,7 +5097,7 @@ public class EMailJobScheduler {
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
-					cal.add(Calendar.DATE, expiring_days_arr[i]);
+					cal.add(Calendar.DATE, expiring_days_arr[i] - 1);//this includes the current date.
 					expectedExpiryDate = cal.getTime();
 					List<CandidatePassport> passportListExpiring = immigrationCommonService.getAllPassportList(expectedExpiryDate);
 					/*System.out.println("passportListExpiring list size: "+passportListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
@@ -5296,6 +5296,7 @@ public class EMailJobScheduler {
 		      
 			  emailMessage.setFirstName(toUserObj.getFirstName());
 			  emailMessage.setLastName(toUserObj.getLastName());
+			  //emailMessage.setToEmail(toUserObj.getEmail());
 			  emailMessage.setToEmail(toUserObj.getEmail());
 					
 			  emailMessage.setFromEmail(fromUser.toString());
@@ -5388,7 +5389,7 @@ public class EMailJobScheduler {
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
-					cal.add(Calendar.DATE, expiring_days_arr[i]);
+					cal.add(Calendar.DATE, expiring_days_arr[i] - 1);//this includes the current date.
 					expectedExpiryDate = cal.getTime();
 					List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(expectedExpiryDate);
 					/*System.out.println("visaListExpiring list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
@@ -5676,7 +5677,7 @@ public class EMailJobScheduler {
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
-					cal.add(Calendar.DATE, expiring_days_arr[i]);
+					cal.add(Calendar.DATE, expiring_days_arr[i] - 1);//this includes the current date.
 					expectedExpiryDate = cal.getTime();
 					List<CandidatePassport> passportListExpiring = immigrationCommonService.getAllPassportList(expectedExpiryDate);
 					/*System.out.println("passportListExpiring list size: "+passportListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
@@ -5993,7 +5994,7 @@ public class EMailJobScheduler {
 				int expiring_days_arr [] = {210, 180, 90, 60, 30, 15, 7};
 				for(int i=0; i<expiring_days_arr.length; i++) {
 				    cal = Calendar.getInstance();
-					cal.add(Calendar.DATE, expiring_days_arr[i]);
+					cal.add(Calendar.DATE, expiring_days_arr[i] - 1);//this includes the current date.
 					expectedExpiryDate = cal.getTime();
 					List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(expectedExpiryDate);
 					/*System.out.println("visaListExpiring list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
