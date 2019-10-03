@@ -5164,7 +5164,7 @@ public class EMailJobScheduler {
 				e.printStackTrace();
 				// System.out.println("ERROR in " + e.getMessage());
 			}
-			System.out.println("Candidate Paspport expiring email scenarion completed >>>>>>>>>>>>>>>>>");
+			System.out.println("Candidate Paspport expiring email scenarion completed for candidate>>>>>>>>>>>>>>>>>");
 		}
 	   
 	   private void sendPassportExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
@@ -6011,7 +6011,7 @@ public class EMailJobScheduler {
 					Map<Long, List<CandidateVisaHistory>> visaMapExpiring = new HashMap<Long, List<CandidateVisaHistory>>();
 					for (CandidateVisaHistory  visaObj : visaListExpiring) { // here for loop preparing visa list by user base.
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
-						Long managerId =  userRole.getUserId();
+						Long managerId =  userRole.getReportingManager().getId();
 						if (visaMapExpiring.get(managerId) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
