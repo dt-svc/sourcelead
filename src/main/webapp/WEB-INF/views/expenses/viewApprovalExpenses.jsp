@@ -46,9 +46,11 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						       <b class='appStatusAppcolor'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
-						       <b class='appStatusRejcolor'>${submissionStatus}</b>
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
-					            <div class='app_error_mes' id='rejectedMessage1${expenses.id}'>${eah.rejectedReason}</div>
+						       <b class='appStatusRejcolor pull-left mr'>${submissionStatus}</b>
+						        <i class='glyphicon glyphicon-comment rejectedHoverDiv colorRed pull-left positionRelative mt10'>
+						        <div class="clearfix mt10"></div>
+					            <div class='clearfix submissionRejectedDiv' id='rejectedMessage1${expenses.id}'>${eah.rejectedReason}</div>
+					            <br><p title="${expApproverHierarchy.actionPerformedBy}"></p>
 						      </i>
 						  </c:if>
 						</div>
@@ -68,7 +70,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					 
 					      <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
-					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="editIcon appEditBtn"></a>
+					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="editIcon appEditBtn" title="Edit"></a>
 					     </c:if>
 					     </sec:authorize>
 					     
@@ -105,8 +107,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						
 						<div class="expNewAppBtn">
 						<c:if test="${submissionStatus == 'SUBMITTED'}">
-							<i class="fa fa-check" onclick='approveExpenseByExpenseId("${expenses.id}","-1","approval","summary");'></i>
-							<i class="fa fa-times" onclick='rejectExpenseByExpenseId("${expenses.id}","-1","approval","summary");'></i>
+							<i class="fa fa-check" title= "Approve" onclick='approveExpenseByExpenseId("${expenses.id}","-1","approval","summary");'></i>
+							<i class="fa fa-times" title ="Reject" onclick='rejectExpenseByExpenseId("${expenses.id}","-1","approval","summary");'></i>
 							</c:if>
 						</div>
 

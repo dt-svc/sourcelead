@@ -9,7 +9,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 if(encodeMsg !== ""){
 			 cancelRejectExpense(expenseId);
 			 var encodeMsg = encodeURIComponent(msg);
-			 $("#rejectReasonDiv").empty();
+			 $("#rejectReasonDiv1").empty();
 		     var rowHtmlContent =  $("#row"+expenseId).html();
 		     
 		     /*var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
@@ -51,9 +51,9 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 		 }
 		 else{
 			 if(msg){
-					$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
+					$("#rejectReasonDiv1").empty().append("<font color='red' style='padding: 5px 10px; '>Must not Start With Space</font>") ;
 				}else{
-					$("#rejectReasonDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Reason is required</font>") ; 
+					$("#rejectReasonDiv1").empty().append("<font color='red' style='padding: 5px 10px;'>Reason is required</font>") ; 
 				}
 			}
 	    
@@ -81,12 +81,12 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			 window.location.reload();
 	}
 	function rejectExpenseByExpenseId(expenseId,tdSpanSize,from){ 
-	    $("#rejectReasonDiv").empty();
+	    $("#rejectReasonDiv1").empty();
 	    $("#reject"+expenseId+"message").val(''); 
 	    var result = "";
 	    result = result +'<div class="clearfix" id="reject'+expenseId+'panel" style="top:25%">';
 		result = result +'<textarea placeholder="Enter comment here" id="reject'+expenseId+'message" "></textarea>';
-		result = result + ' <div id="rejectReasonDiv"/>';
+		result = result + ' <div id="rejectReasonDiv1"> </div>';
 		result = result +'<a href="#" onClick="removeEmptyLines($(\'#reject'+expenseId+'message\'));acceptOrRejectReopenExpenseBySuperUser(\''+expenseId+'\','+tdSpanSize+',\''+from+'\');" >Submit</a><a class="close_color" href="#" onClick="cancelRejectExpense(\''+expenseId+'\');">Cancel</a>';
 		result = result +'</div>';
 		result = result +'</div>';
@@ -113,7 +113,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 	
 	
   function approveExpenseByExpenseId(expenseId,tdSpanSize,from,source){
-		//$("#timesheetApprList").empty();
+		$("#timesheetApprList").empty();
 	    /*var locationName =  '${SourceLeadWeb_orgLocations.orgLocationName}';
 		 if(locationName == '' || locationName == 'undefined' || locationName == null ){
 			 locationName = '';
@@ -146,7 +146,7 @@ function acceptOrRejectReopenExpenseBySuperUser(expenseId,tdSpanSize,from){
 			        		 $("#row"+expenseId).empty();
 					    	 $("#row"+expenseId).html(rowHtmlContent);
 					    	 $("#status"+expenseId).html("APPROVED");
-					    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+locationName+"</b>"); 
+					    	 $("#action"+expenseId).html("<h3>Approved</h3><b class='Rname'>By :"+userName+"</b>"); 
 			        	 }
 		    		 } else {
 		    			 location.reload();

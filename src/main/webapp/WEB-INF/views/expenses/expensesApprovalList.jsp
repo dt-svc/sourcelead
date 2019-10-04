@@ -6,6 +6,7 @@
 
 <script>
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+var userName ='${userName}';
 </script>
 
 <script type="text/javascript">
