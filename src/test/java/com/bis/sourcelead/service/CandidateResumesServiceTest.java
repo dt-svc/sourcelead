@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -27,6 +26,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -52,7 +52,7 @@ public class CandidateResumesServiceTest {
 	public void storeCandidateResume() throws Exception
 	{
 		CandidateResumes candidateResumes = new CandidateResumes();
-		Candidate candidate = new Candidate();
+		CandidateGlobal candidate = new CandidateGlobal();
 		User user = new User();
 		OrgLocations orgLocationId = new OrgLocations();
 		orgLocationId.setId(1l);
@@ -67,7 +67,7 @@ public class CandidateResumesServiceTest {
 		candidate.setOrgLocationId(orgLocationId);
 		File multipartFile = new File(staticPath);
 		String fileURL = new FileUploadUtil().uploadFile(staticPath, 1l, orgLocationId.getId(), "resume", multipartFile);
-		candidateResumes = candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, "1", orgLocationId);
+		candidateResumes = candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate.getId(), "1", orgLocationId);
 		logger.info("success fully store " + candidateResumes.getStatus());
 	}
 	
@@ -114,7 +114,7 @@ public class CandidateResumesServiceTest {
 	{
 		CandidateResumes candidateResumes = new CandidateResumes();
 		OrgLocations orgLocations = new OrgLocations();
-		Candidate candidate = new Candidate();
+		CandidateGlobal candidate = new CandidateGlobal();
 		candidate.setId(1l);
 		orgLocations.setId(1l);
 		candidate.setOrgLocationId(orgLocations);
@@ -138,7 +138,7 @@ public class CandidateResumesServiceTest {
 	public void getCandidateLatesResumes() throws Exception
 	{
 		CandidateResumes candidateResumes = new CandidateResumes();
-		Candidate candidate = new Candidate();
+		CandidateGlobal candidate = new CandidateGlobal();
 		candidate.setCandidateId(1l);
 		candidate.setId(1l);
 		candidateResumes.setCandidateId(candidate);

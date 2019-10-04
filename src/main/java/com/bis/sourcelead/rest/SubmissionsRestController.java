@@ -39,13 +39,13 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -64,12 +64,12 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
@@ -189,9 +189,9 @@ public class SubmissionsRestController {
 	RequirementApproverHierarchyService requirementApproverHierarchyService;
 	
 	@Autowired
-	CandidateGlobalUtil candidateGlobalUtil;
-
-	 @RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
+	CandidateGlobalService candidateGlobalService;
+	
+	@RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
 		ResponseList<CandidateResumes> response = new ResponseList<>();
@@ -210,14 +210,14 @@ public class SubmissionsRestController {
 	}
 
 	@RequestMapping(value = "/getCandidateDetails")
-	@ResponseBody Response<Candidate> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	@ResponseBody Response<CandidateGlobal> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
-		Response<Candidate> response = new Response<>();
+		Response<CandidateGlobal> response = new Response<>();
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
 			StringBuilder education = new StringBuilder();
 			if (educationList != null && educationList.size() > 0) {
@@ -235,7 +235,7 @@ public class SubmissionsRestController {
 			if(requirementId != null){
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 				RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
-				String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+				String score = recommendationsService.getCandidateGlobalScore(candidate,requirement,recommendedCustomizeScore);
 				if(score != null && !"".equalsIgnoreCase(score)){
 					candidate.setCandidateScore(score);
 				}
@@ -247,7 +247,7 @@ public class SubmissionsRestController {
 					candidate.setIsCandidateSubmitted(Constants.NO);
 				}
 			}
-			int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			int percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidate.getId());
 			candidate.setProfilePercentage(percentage);
 			
 			CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
@@ -855,7 +855,7 @@ public class SubmissionsRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		int percentage = candidateGlobalUtil.getCandidatePercentage(submission.getCandidate(),orgLocations);
+		int percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(submission.getCandidate().getId());
 		submission.setProfilePercentage(percentage);
 		
 		List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(submission.getCandidate().getId(), orgLocations);

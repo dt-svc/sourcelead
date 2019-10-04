@@ -17,7 +17,7 @@ function closeCertificatePopup(){
 --%>
 
 <script>
-function candidateCertificate(candidateId,candType){
+function candidateCertificate(candidateId){
 	 var candidateType = '${candidateType}';
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
@@ -45,11 +45,11 @@ function candidateCertificate(candidateId,candType){
 	else{
 		if(candidateType == "Candidates"){
 			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
-			 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+',\''+candType+'\');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
+			 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 			 result = result +' </sec:authorize>';
 		}else{
 			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-			 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+',\''+candType+'\');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
+			 result  = result + '   	<span class="pad-sea"> <a href="javascript:void(0)" id="newCandidate" onClick="addCertification('+candidateId+');flushCandiadate();" class="addUser-org"><i class="glyphicon glyphicon-plus"></i>Add Certification</a></span> ';
 			 result = result +' </sec:authorize>';
 		}
 	  	
@@ -69,7 +69,7 @@ function candidateCertificate(candidateId,candType){
     $("#tab-6").empty();  
     $("#tab-5").append(result);
     
-    candidateCertificateList(candidateId,candType);
+    candidateCertificateList(candidateId);
     
 }
 </script>
@@ -106,7 +106,7 @@ var validationSettings = {
 --%>
 
 <script>
-function storeCertificate(candidateId,candType) {
+function storeCertificate(candidateId) {
 	var scoreType = document.getElementById("scoreType").value; 
 	if(scoreType != null && scoreType != "") {
  		$('#candidateScore').removeAttr('data-validation-optional');
@@ -119,7 +119,7 @@ function storeCertificate(candidateId,candType) {
 		var formData = getFormData("Candidate_certification_form");
 		$("#Candidate_certification_form").attr("disabled", "disabled");
 		$("#addCandidate").attr("disabled", "disabled");
-		$.post(atsUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType, formData, function(result) {
+		$.post(atsUrl+"/storeCandidateCertifications?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
 			if (result && result.response === "INVALID_DATA") {
     		    showError(result.responseMessage);
     		} else if (result.response === "AWKWARD") {
@@ -129,9 +129,9 @@ function storeCertificate(candidateId,candType) {
     		    $("#selector5").removeAttr("style");
     	     	$("#selector5").css({ display: "block" });
     	     	$("#cerMsgDiv").html("Success!! New Certification added");
-    		    candidateCertificateList(candidateId,candType);
+    		    candidateCertificateList(candidateId);
                 cerMsgFadein();
-                qwikCertificates(candidateId,candType);
+                qwikCertificates(candidateId);
                 setTimeout(function(){
     				candidateList();					 			
     			},100);
@@ -185,7 +185,7 @@ function storeCertificate(candidateId,candType) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
 <script>
-function candidateCertificateList(candidateId,candType){
+function candidateCertificateList(candidateId){
 	var candidateType = '${candidateType}';
 	var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -199,7 +199,7 @@ function candidateCertificateList(candidateId,candType){
 	  }
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);
@@ -279,11 +279,11 @@ function candidateCertificateList(candidateId,candType){
                    	 }else{
                    		 if(candidateType == "Candidates"){
                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
-	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ',\''+candType+'\');" title="Edit"></a>';
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
 	                    		result = result +' </sec:authorize>';
                    		 }else{
                    			 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ',\''+candType+'\');" title="Edit"></a>';
+	                    		result = result  +'	            <a href="javascript:void(0)" class="glyphicon glyphicon-pencil" id="editCandidateCertificate" href="javascript:void(0)" onClick="editCertification('+ opt.id+ ','+ candidateId+ ');" title="Edit"></a>';
 	                    		result = result +' </sec:authorize>';
                    		 }
                    		
@@ -303,11 +303,11 @@ function candidateCertificateList(candidateId,candType){
                    	}else{
                    		if(candidateType == "Candidates"){
                    			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+',\''+candType+'\');" id="removeCandidate" title= "Remove"></i>';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
 	                    		 result = result +' </sec:authorize>';
                    		}else{
                    			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+',\''+candType+'\');" id="removeCandidate" title= "Remove"></i>';
+	                    		 result = result  +'<i class="glyphicon glyphicon-trash" onclick="removeCertification('+opt.id+','+candidateId+');" id="removeCandidate" title= "Remove"></i>';
 	                    		 result = result +' </sec:authorize>';
                    		}
                    		
@@ -353,7 +353,7 @@ function certificationPagination(){
      2.parameter : candidateId .
 --%>
 <script>
-function addCertification(candidateId,candType) {	
+function addCertification(candidateId) {	
 	var candidateType = '${candidateType}';
 	 	var result = '';
 	 	result  = result + '     <!-- Popup Div -->                                                                                         ';
@@ -419,11 +419,11 @@ function addCertification(candidateId,candType) {
 		result  = result + '                 <div class="clearfix mr">';
 		if(candidateType == "Candidates"){
 			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
-			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+',\''+candType+'\');"  >Add</button>';
+			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 			result = result +' </sec:authorize>';
 		}else{
 			result = result +'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+',\''+candType+'\');"  >Add</button>';
+			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 			result = result +' </sec:authorize>';
 		}
 		
@@ -480,12 +480,12 @@ function addCertification(candidateId,candType) {
      3.ajax url implementation in CandidateCertificationsRestController.
 --%>
 <script>
-	function editCertification(candidateCertificationId, candidateId, candType) {
+	function editCertification(candidateCertificationId, candidateId) {
 		$.ajax({
 			type : "POST",
 			url : atsUrl
 					+ "/getCandidateCertificateBycandidateIdandCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="
-					+ candidateId + "&candidateCertificationId=" + candidateCertificationId+"&candidateType="+candType,
+					+ candidateId + "&candidateCertificationId=" + candidateCertificationId,
 			success : function(response) {
 				if (response && response.response === "INVALID_DATA") {
 	    		    showError(response.responseMessage);
@@ -594,7 +594,7 @@ function addCertification(candidateId,candType) {
 	    			result  = result + '                 <div class="clearfix mr">';
 	    			result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
 	    			result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-	    			result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ',\''+candType+'\');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
+	    			result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
 	    			result  = result + '                 </div>';
 
 	    			result  = result + '              </form>';
@@ -659,7 +659,7 @@ function addCertification(candidateId,candType) {
 --%>
       
 <script type="text/javascript">
-	function updateCandidateCertification(candidateId, candidateCertificationId, candType) {
+	function updateCandidateCertification(candidateId, candidateCertificationId) {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -679,7 +679,7 @@ function addCertification(candidateId,candType) {
 				validationSettings)) {
 			var formData = getFormData("candidateCertificationEdit_form");
 			//It will escape all the special characters
-			$.post(atsUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId+"&candidateType="+candType, formData, function(result) {
+			$.post(atsUrl+"/updateCandidateCertificationsBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateCertificationId"+ candidateCertificationId, formData, function(result) {
 				if (result && result.response === "INVALID_DATA") {
 	    		    showError(result.responseMessage);
 	    		} else if (result.response === "AWKWARD") {
@@ -689,9 +689,9 @@ function addCertification(candidateId,candType) {
      				$("#selector5").removeAttr("style");
      				$("#selector5").css({ display: "block" });
 	     			$("#cerMsgDiv").html("Certification details updated");
-					candidateCertificateList(candidateId,candType);
+					candidateCertificateList(candidateId);
 					cerMsgFadein();
-					qwikCertificates(candidateId,candType);
+					qwikCertificates(candidateId);
 					setTimeout(function(){
 						candidateList();					 			
 					},100);
@@ -731,13 +731,13 @@ function deleteCerPopup(){
 <div id="deleteCertificationPopUp"></div> 
 
 <script type="text/javascript">
-function removeCertification(candidateCertificationId, candidateId, candType){
+function removeCertification(candidateCertificationId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop_certificates' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Certification</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteSelectedCertification('+candidateCertificationId+','+candidateId+',\''+candType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="deleteCerPopup();"></b>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteCertificationPopUp").empty();
 	$("#deleteCertificationPopUp").append(result);
@@ -749,12 +749,12 @@ function removeCertification(candidateCertificationId, candidateId, candType){
       
       
 <script>
-function deleteSelectedCertification(candidateCertificationId,candidateId,candType) {
+function deleteSelectedCertification(candidateCertificationId,candidateId) {
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({
           type : "POST",
-          url: atsUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId+"&candidateType="+candType,        
+          url: atsUrl+"/removeCandidateCertificateBycandidateIdandcandidateCertificateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateCertificationId="+candidateCertificationId,        
           success :function(result) {
 			if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 				showError(result.responseMessage);
@@ -766,8 +766,8 @@ function deleteSelectedCertification(candidateCertificationId,candidateId,candTy
         		$("#selector5").css({ display: "block" });
         		$("#cerMsgDiv").html("Certification deleted");
         		$("#remove_user_pop_certificates, .project_inn_mask").fadeOut();
-        		candidateCertificateList(candidateId,candType);
-        		qwikCertificates(candidateId,candType);
+        		candidateCertificateList(candidateId);
+        		qwikCertificates(candidateId);
         		cerMsgFadein();
         		setTimeout(function(){
 			 		candidateList();					 			

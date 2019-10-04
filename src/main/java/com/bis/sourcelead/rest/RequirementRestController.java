@@ -50,6 +50,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1401,8 +1402,8 @@ public class RequirementRestController {
 		if(loginUser != null) {
 			try {
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidateGlobal);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				}catch(Exception e) {
@@ -1428,13 +1429,13 @@ public class RequirementRestController {
 				String[] candidateId = candidateIds.split(",");
 				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
 					for(String candidateid   : candidateId){
-						Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+						CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(candidateid));
 								JobShareCandidate jobShareCandidate = new JobShareCandidate();
-								jobShareCandidate.setCandidateId(candidates);
+								jobShareCandidate.setCandidateId(candidateGlobal);
 								jobShareCandidate.setJobId(requirement);
 								jobShareCandidate.setCreatedDate(new Date());
 								jobShareService.saveJobShareCandidate(jobShareCandidate);
-								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidateGlobal);
 						}
 				}
 				response.setResponse(Result.SUCCESS.name());
@@ -1473,13 +1474,6 @@ public class RequirementRestController {
 				String[] candidateId = candidateIds.split(",");
 				if(candidateId != null &&  candidateId.length > 0){
 					for(String candidateid   : candidateId){
-						
-						if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase("Associates")) {
-							Long globalCandiateId =  candidateService.getGlobalCandidateIdByCandidateId(Long.valueOf(candidateid));
-							if(globalCandiateId != null) {
-								candidateid = String.valueOf(globalCandiateId);
-							}
-						}
 						
 						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
 						if(flag == false) {

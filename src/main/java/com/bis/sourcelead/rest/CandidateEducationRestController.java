@@ -139,8 +139,7 @@ public class CandidateEducationRestController {
 				candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 				candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
 						loginOrgLocation.getId(), user);
-				Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateId));
-				Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
+				Integer percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(Long.parseLong(candidateId));
 				response.setObject(percentage);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -183,16 +182,9 @@ public class CandidateEducationRestController {
 				if (candidateId > 0) {
 					List<CandidateEducation> candidatesEducationList = null;
 					
-					
-					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-						 candidatesEducationList = candidateEducationService
-									.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateId,
-											loginOrgLocation.getId());
-					}else {
-						 candidatesEducationList = candidateEducationService
-									.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId,
-											loginOrgLocation.getId());
-					}
+					candidatesEducationList = candidateEducationService
+							.getCandidateEducationListByCandidateIdAndOrgLocationID(candidateId,
+									loginOrgLocation.getId());
 					
 					List<CandidateEducationDTO> eduList = new ArrayList<>();
 					for (CandidateEducation candidateEducation : candidatesEducationList) {
@@ -206,11 +198,7 @@ public class CandidateEducationRestController {
 						edu.setInstitute(candidateEducation.getInstitute());
 						edu.setAddress(candidateEducation.getAddress());
 						edu.setId(candidateEducation.getId());
-						if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-							edu.setCandidateId(candidateEducation.getCandidateGlobalId().getId());
-						}else {
-							edu.setCandidateId(candidateEducation.getCandidateId().getId());
-						}
+						edu.setCandidateId(candidateEducation.getCandidateId().getId());
 						
 						edu.setCandidateEduId(candidateEducation.getId().toString());
 						edu.setStartDate(candidateEducation.getStartDateStr());
@@ -263,42 +251,23 @@ public class CandidateEducationRestController {
 			if (user != null) {
 				OrgLocations orgLocations = orgLocationService
 						.getOrgLocations(candidateEducationDTO.getOrgLocationId());
-				CandidateEducation candidateEducation = null;
-				if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-					candidateEducation = candidateEducationService
-							.removeCandidateGlobalEducationBycandidateIdandcandidateEducationId(
-									candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
-									user, orgLocations);
-					
-					CandidateGlobal candidate = candidateGlobalService
-							.getCandidateGlobalByCandidateId(candidateEducationDTO.getCandidateId());
-					if (null != candidate && null != candidate.getId()) {
-						Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
-						response.setObject(percentage.toString());
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} else {
-						response.setResponse(Result.INVALID_DATA.name());
-						response.setResponseMessage(Result.INVALID_DATA.getValue());
-					}
-				}else {
-					candidateEducation = candidateEducationService
-							.removeCandidateEducationBycandidateIdandcandidateEducationId(
-									candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
-									user, orgLocations);
-					
-					Candidate candidate = candidateService
-							.getCandidateByCandidateId(candidateEducationDTO.getCandidateId());
-					if (null != candidate && null != candidate.getId()) {
-						Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);
-						response.setObject(percentage.toString());
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} else {
-						response.setResponse(Result.INVALID_DATA.name());
-						response.setResponseMessage(Result.INVALID_DATA.getValue());
-					}
+				CandidateEducation candidateEducation = candidateEducationService
+						.removeCandidateGlobalEducationBycandidateIdandcandidateEducationId(
+								candidateEducationDTO.getCandidateId(), candidateEducationDTO.getCandidateEducationId(),
+								user, orgLocations);
+				
+				CandidateGlobal candidate = candidateGlobalService
+						.getCandidateGlobalByCandidateId(candidateEducationDTO.getCandidateId());
+				if (null != candidate && null != candidate.getId()) {
+					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
+			
 				
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());

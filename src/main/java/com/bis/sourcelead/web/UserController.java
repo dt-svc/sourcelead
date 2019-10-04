@@ -234,11 +234,8 @@ public class UserController {
 		    
 			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
-				// to get a project list by userId
-               
-				/*List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
-				model.addObject("org_projectsList", projectsList);*/
 				Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+				Long candidateGloalId = candidateService.getGlobalCandidateIdByCandidateId(candidate.getId());
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
 					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
 					if(candidate != null && candidate.getMasterCandidateId() != null) {
@@ -261,6 +258,7 @@ public class UserController {
 			    model.addObject("isMulitplieOrgAccounts", isMulitplieOrgAccounts);
 			    
 				request.setAttribute("candidateId", candidate.getId());
+				request.setAttribute("candidateGloalId", candidateGloalId);
 				request.setAttribute("userId", user.getId());
 				
 				model.setViewName("users/userSummary");

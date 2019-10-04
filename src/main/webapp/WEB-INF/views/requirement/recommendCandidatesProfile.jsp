@@ -34,7 +34,7 @@ function editCandidate(candidateId){
 	  
 	  $.ajax({
 	        type : "POST",
-	         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+	         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
 	         success :function(result) { 
 	        	   var json = result.object;
 	        	   if(result.response === "SESSION_TIMEDOUT") {
@@ -645,7 +645,7 @@ function candidateProfile(candidateId){
 	  
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {
         	var json = result.object;
       	   if(result.response === "SESSION_TIMEDOUT") {
@@ -1141,7 +1141,7 @@ function candidateSkillsList(candidateId){
 	// getCandidatesSkillsBycandidateID
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(result) {
         	  var json = result.object;
        	   		if(result.response === "SESSION_TIMEDOUT") {

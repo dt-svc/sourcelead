@@ -185,14 +185,8 @@ public class CandidateReferencesRestController {
 		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
 		ResponseList<CandidateReferencesDTO> candidateReferencesList =  null;
 		
-		if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-			candidateReferencesList = candidateReferencesService
-					.getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
-		}else {
-			candidateReferencesList = candidateReferencesService
-					.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
-		}
-		 
+		candidateReferencesList = candidateReferencesService
+				.getCandidateReferencesListByCandidateIdAndOrgLocationID(Long.parseLong(candidateId), orgLocation.getId(),user.getUserCode());
 		return candidateReferencesList;
 	}
 

@@ -51,14 +51,10 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	       availability.push($(this).val());
 		 });
 	 
-	/* var candidateTypeFilter = []
-	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-	     {
-		 candidateTypeFilter.push($(this).val());
-		 });*/
-	 
 	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
 	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
+	 
+	 
  	 
  	  var candTypeRadio = $('input[name=candidateType]');
  	  var candidateType = candTypeRadio.filter(':checked').val();
@@ -273,15 +269,8 @@ function cpagination(url){
 	    	  		
 	    	  		
 		              result = result +"<div class='iconClass pull-left star-rating "+isFavClass+"' id='favourite"+full.candidateId+"'>";
-		              
-		               if(associateFlag && full.candidateGlobalId != null){
-	            			 candidateType = "candidateGlobal"
-	            		}else if(associateFlag && full.candidateId != null && full.candidateGlobalId == null){
-	            			 candidateType = "candidate"
-	            		}
-		              
 		              if(associateFlag)
-		            	  result = result +'<input type="checkbox" id="fav'+full.candidateId+'" '+isFavourite+' '+title+' onclick="addFavourite('+full.candidateId+',\''+candidateType+'\')"></input>';
+		            	  	result = result +"   <input type='checkbox' id='fav"+full.candidateId+"' "+isFavourite+" "+title+" onclick='addFavourite("+full.candidateId+")'></input>";
 		             
 		              result = result +" <label></label>";
 		              result = result +"</div>";
@@ -308,7 +297,6 @@ function cpagination(url){
             		var result = "";
             		var lastName = "";
             		var middleName = "";
-            		var candidateType = "";
             		if(full.lastName != null && full.lastName != "" && full.lastName != 'undefined'){
 	            		lastName = full.lastName;
 	            	}else{
@@ -319,16 +307,8 @@ function cpagination(url){
 	            	}else{
 	            		middleName = "";
 	            	}
-            		
-            		if(name1Flag && full.candidateGlobalId != null){
-            			 candidateType = "candidateGlobal"
-            			 
-            		}else if(name1Flag && full.candidateId != null && full.candidateGlobalId == null){
-            			 candidateType = "candidate"
-            		}
-            		
-        		   if(name1Flag)
-            		result = result +'<td><div class="proj_show divmax-width" onclick="candidateQuickViewProfile('+full.candidateId+',\''+candidateType+'\');"><span title="'+full.firstName+' '+middleName+'  '+lastName+'">'+full.firstName+' '+middleName+'  '+lastName+'</span><i class="fa fa-binoculars"></i></div></td>';
+            		if(name1Flag)
+	                result = result +"  <td><div class='proj_show divmax-width' onclick='candidateQuickViewProfile("+full.candidateId+");'><span title='"+full.firstName+" "+middleName+"  "+lastName+"'>"+full.firstName+" "+middleName+"  "+lastName+"</span><i class='fa fa-binoculars'></i></div></td>";
 	              
 	              if(name2Flag)
 	               result = result +"  <td><div class='proj_show' onclick='#'><span title='"+full.firstName+" "+middleName+" "+lastName+"'>"+full.firstName+" "+middleName+" "+lastName+"</span></div></td>";
@@ -459,9 +439,7 @@ function cpagination(url){
    	      $('a.paginate_button', this.api().table().container()).on('click', function(){
    	    	candidateSearchHighlight();
 	         }); 
-   	   var candidateTypeRadio = $('input[name=candidateTypeFilter]');
- 	   var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
-   	   getCandidateSubmittedJobsCount(candidateTypeFilter);
+   	   getCandidateSubmittedJobsCount();
 	   }
     } );
     $("#candidatePagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
@@ -475,9 +453,11 @@ function cpagination(url){
 }
 
 
-function getCandidateSubmittedJobsCount(candidateTypeFilter){
+function getCandidateSubmittedJobsCount(){
 	 $('.submittedRequirementCount').each(function() {
 		 var candidateId = this.id;
+		  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+		  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 		 if(candidateId != null &&  candidateId !='undefined' && candidateId != ''){
 			 $.ajax({
 		           type : "GET",
@@ -504,12 +484,9 @@ function getCandidateSubmittedJobsCount(candidateTypeFilter){
 }
 
 function getSubmittedJobsList(candidateId){
-	
-	   var candidateTypeRadio = $('input[name=candidateTypeFilter]');
-	   var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 	$.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId+"&candidateType="+candidateTypeFilter,
+		    url: atsUrl+"/getCandidateSubmittedJobsList?candidateId="+candidateId,
 		     success :function(response) {
 		    	    $("#candidateSubmittedJobsDiv").empty();  
 		    	    $("#candidateSubmittedJobsDiv").append(response);

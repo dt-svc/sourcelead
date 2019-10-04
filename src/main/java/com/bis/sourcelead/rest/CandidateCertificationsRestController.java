@@ -154,13 +154,8 @@ public class CandidateCertificationsRestController {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (loginOrgLocation != null) {
 					List<CandidateCertifications> candidateCertificationsList = null;
-					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-						candidateCertificationsList = candidateCertificationsService
-								.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-					}else {
-						candidateCertificationsList = candidateCertificationsService
-								.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-					}
+					candidateCertificationsList = candidateCertificationsService
+							.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 					
 					for (CandidateCertifications candidateCertifications : candidateCertificationsList) {
 						CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();

@@ -7,15 +7,15 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 </script>
 
 <script>
-function candidateCommentsList(candidateId,submissionId,candType){
+function candidateCommentsList(candidateId,submissionId){
 	$('#tab-7').show();
 	$('.' + "current").removeClass("current");
 	$("#candidateCommentTab").addClass("current");
 	var urlForm = "";
-	if(submissionId != null && submissionId != '' && submissionId != 'undefined' && submissionId != 'null') {
+	if(submissionId != null && submissionId != '' && submissionId != 'undefined') {
 		urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocationAndSubmissionId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&submissionId="+submissionId;
     } else {
-    	urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType;
+    	urlForm = "/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
     }
 	$.ajax({
 		type : "POST",

@@ -122,22 +122,16 @@ function closeCandiatesSubmitedList() {
 
 <script>
 var candidateStatusGlobal ="";
-function candidateSideBar(candidateId,candType){
+function candidateSideBar(candidateId){
 	var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Candidates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
-	  var candidateUrl = "";
-	  if(candType != null && candType != 'undefined' && candType != '' && candType == 'candidateGlobal'){
-		  candidateUrl = atsUrl+"/getGlobalCandidateInfo?candidateId="+candidateId+"&locationCode="+locationCode+"&candidateType="+candidateType;
-	  }else{
-		  candidateUrl = atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode;
-	  }
-	  
 	  $.ajax({
 		  type: "GET",
-		    url: candidateUrl,
+		    url: atsUrl+"/getGlobalCandidateInfo?candidateId="+candidateId+"&locationCode="+locationCode,
            success :function(json) { 
                 if(json != null && json != 'undefined' && json != ""){  
+                	// var json = JSON.parse(data);
               			 candidateStatusGlobal = json.status;
 	                	 $("#candidateSideDiv").empty();
 	                	 var skills = [];
@@ -472,13 +466,13 @@ function candidateSideBar(candidateId,candType){
 			            result = result+'         <div class="pull-right cmt-button">';
 			            result = result+'          <span class="comments-button">';
 			            
-			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+',\''+candType+'\')">';
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
 			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
 			            result = result+'            </button>';
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+',null,\''+candType+'\');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -534,35 +528,35 @@ function candidateSideBar(candidateId,candType){
 			             result = result+'     <ul class="project-tabs-menu">'; 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CANDIDATE\',\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\',\''+json.isAssociate+'\',\''+candType+'\');">Profile</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\',\''+json.isAssociate+'\');">Profile</a></li>';
 
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_RESUMES\',\'ROLE_VIEW_CANDIDATE_RESUMES\',\'ROLE_VIEW_EDIT_CANDIDATE_RESUMES\',\'ROLE_VIEW_DELETE_CANDIDATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+',\''+candType+'\'); candidateResume('+candidateId+',\''+candType+'\');" >Resume</a></li>';
+			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_EMPLOYEER\',\'ROLE_VIEW_EMPLOYEER\',\'ROLE_VIEW_EDIT_EMPLOYEER\',\'ROLE_VIEW_DELETE_EMPLOYEER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+',\''+candType+'\');">Employers</a></li>';
+			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_VIEW_CANDIDATE_EDUCATION\',\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+',\''+candType+'\');">Education</a></li>';
+			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
 			             '</sec:authorize>';
 			             
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_EDIT_CANDIDATE_CERTIFICATION\',\'ROLE_VIEW_DELETE_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+',\''+candType+'\');">Certifications</a></li>';
+			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
 			             '</sec:authorize>';
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
 			             '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+',\''+candType+'\');">Documents</a></li>';
+			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
 			             '</sec:authorize>';
 			             
-			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+',\''+candType+'\');">References</a></li>';
+			            result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+');">References</a></li>';
 						 
 			             '<sec:authorize access="hasAnyRole(\'ROLE_POST_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+',null,\''+candType+'\');">Comments</a></li>';
+			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
 			              '</sec:authorize>';
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_CANDIDATE_REQUIREMENT_HISTORY\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
@@ -610,7 +604,7 @@ function candidateSideBar(candidateId,candType){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
-						 getCandidateTagsList(candidateId,candType);
+						 getCandidateTagsList(candidateId);
 						 
 						 
 						 if("${candidateKeyword}" == "requestedDocumentNotification"){
@@ -622,7 +616,7 @@ function candidateSideBar(candidateId,candType){
 						    	$("#candDetailView").addClass("active");
 					 	    	candidateDocuments(candidateId);
 						    }else{
-						    	candidateProfile(candidateId,candidateType,json.isAssociate,candType);
+						    	candidateProfile(candidateId,candidateType,json.isAssociate);
 						    }
 						 
 						 var output = "";
@@ -685,24 +679,17 @@ function candidateSideBar(candidateId,candType){
            
       }); 
 	  
-	  savedCommentAndCount(candidateId,candType);
+	  savedCommentAndCount(candidateId);
 				
 }
 </script>
 
 <!--  ============================= Candidate tags related scripts written by Laxman Start ================================ -->
 <script>
-function getCandidateTagsList(candidateId,candidateType){
-	
-	 if(candidateType != null && candidateType != 'undefined' && candidateType != '' && candidateType == 'candidateGlobal'){
-		  candidateUrl =  atsUrl+"/getCandidatesGlobalTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
-	  }else{
-		  candidateUrl =  atsUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
-	  }
-	 
+function getCandidateTagsList(candidateId){
 	$.ajax({  
         type : "POST",
-        url: candidateUrl,        
+        url: atsUrl+"/getCandidatesGlobalTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -943,12 +930,15 @@ function refreshImageBlock(candidateId){
 
 
 <script>
-function addFavourite(candidateId,candType){
+function addFavourite(candidateId){
+	
+	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	 	$.ajax({
 			type : "POST",
-			url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,
+			url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candidateTypeFilter,
 			success : function(response) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
@@ -1767,17 +1757,10 @@ function exportToPdf(){
 	       availability.push($(this).val());
 		 });
 	 
-	/*  var candidateTypeFilter = []
-	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-	     {
-		 candidateTypeFilter.push($(this).val());
-		 }); */
-	 
-	 
 	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
 	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 	 
-	  var createdByRadio = $('input[name=createdByFilter]');
+	 var createdByRadio = $('input[name=createdByFilter]');
 	  var createdByFilter = createdByRadio.filter(':checked').val();
 	 
 	  var candTypeRadio = $('input[name=candidateType]');
@@ -1864,14 +1847,8 @@ function exportToExcel(){
 		       availability.push($(this).val());
 			 });
 		 
-		/*  var candidateTypeFilter = []
-		 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-		     {
-			 candidateTypeFilter.push($(this).val());
-			 }); */
-			 
-			  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
-			  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
+		 var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+		 var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 		 
 		 var createdByRadio = $('input[name=createdByFilter]');
 		  var createdByFilter = createdByRadio.filter(':checked').val();
@@ -1896,12 +1873,12 @@ function exportToExcel(){
 </script>
 
 <script>
-function showComment(candidateId,candType){
+function showComment(candidateId){
 	var result = "";
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
 	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
-	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+',\''+candType+'\')">';
+	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
 	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
 	    result = result+'              </span>';
 		result = result+'	        </form>';
@@ -1923,7 +1900,7 @@ function closeComment(){
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script type="text/javascript">
-	function addComment(candidateId,candType){
+	function addComment(candidateId){
 			var validationSettings = {
 			        errorMessagePosition : 'element',
 			        borderColorOnError : '',
@@ -1935,13 +1912,13 @@ function closeComment(){
 				$("#submit_comment").attr("disabled", "disabled");
          		$("#submit_comment" ).addClass('button').val('Processing..');
 				
-				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,formData,function(result){
+				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,formData,function(result){
 					if (result && result.response === "INVALID_USER") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
-		    			savedCommentAndCount(candidateId,candType);
+		    			savedCommentAndCount(candidateId);
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
@@ -1965,10 +1942,10 @@ function closeComment(){
 
 
 <script>
-function savedCommentAndCount(candidateId,candType){
+function savedCommentAndCount(candidateId){
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,        
+         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
         	 if (data && data.response === "INVALID_DATA") {
         		    showError(data.responseMessage);
@@ -2000,13 +1977,13 @@ function savedCommentAndCount(candidateId,candType){
    				            result = result+'         <div class="pull-right cmt-button">';
    				            result = result+'          <span class="comments-button">';
    				            
-   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+',\''+candType+'\')">';
+   				            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
    				            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
    				            result = result+'            </button>';
    				            result = result+'            <div class="add-comment">';
    				            result = result+'            </div>';
    				            result = result+'          </span>';
-   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+',null,\''+candType+'\');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+   				            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
    				 			result = result+'		</div>';
    				            result = result+'     </div>';
    	 			           
@@ -2866,14 +2843,10 @@ function selectedJobSharing(){
 				   continue;
 			 candidateIds.push(shareCandidates[e]);
 		 }
-		 
-		  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
-		  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
-		  
 		 $("#recommendationsLoading").attr('style','position:absolute; width:100%; height:95%; background-color:rgba(255,255,255,0.8); top:34px; left:1px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		 $.ajax({
 	          type : "POST",
-	          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId+"&candidateType="+candidateTypeFilter,    
+	          url: atsUrl+"/shareAllRecommendations?"+tokenParamName+"="+tokenValue+"&candidateIds="+candidateIds+"&requirementId="+requirementId,    
 	           success :function(data) {
 	        	   closejobpop();
 	        	    $("#recommendationsLoading").removeAttr("style");

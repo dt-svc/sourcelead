@@ -122,20 +122,11 @@ public class CandidateResumeRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
 				
-				if(StringUtils.isNotBlank(candidateResumeDTO.getCandidateType()) && 
-						candidateResumeDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
-					candidateResumesService.storeGlobalCandidateResume(candidateResumeDTO, user, candidateGlobal, candidateResumeDTO.getResumeId(),
-							orgLocation);
-					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
-					response.setObject(percentage);
-				}else {
-					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
-					candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(),
-							orgLocation);
-					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
-					response.setObject(percentage);
-				}
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+				candidateResumesService.storeGlobalCandidateResume(candidateResumeDTO, user, candidateGlobal, candidateResumeDTO.getResumeId(),
+						orgLocation);
+				Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
+				response.setObject(percentage);
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -168,10 +159,10 @@ public class CandidateResumeRestController {
 				candidateResumeDTO.setStaticPath(staticPath);
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (StringUtils.isNotEmpty(candidateResumeDTO.getCandidateId())) {
-					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
-					candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, candidateResumeDTO.getResumeId(),
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateResumeDTO.getCandidateId()));
+					candidateResumesService.storeGlobalCandidateResume(candidateResumeDTO, user, candidateGlobal, candidateResumeDTO.getResumeId(),
 							orgLocation);
-					Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
+					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
 					response.setObject(percentage.toString());
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -212,13 +203,8 @@ public class CandidateResumeRestController {
 		List<CandidateResumeDTO> candidateResumesDTOList = new ArrayList<>();
 		if (candidateId != null) {
 			List<CandidateResumes> candidateResumesList = null;
-			if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-				 candidateResumesList = candidateResumesService
-						.getCandidateGlobalResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
-			}else {
-				candidateResumesList = candidateResumesService
-						.getCandidateResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
-			}
+			candidateResumesList = candidateResumesService
+					.getCandidateGlobalResumesListByCandidateIdAndStatus(Long.parseLong(candidateId), status);
 			
 			if(candidateResumesList != null && !candidateResumesList.isEmpty()) {
 				for (CandidateResumes candidateResume : candidateResumesList) {
@@ -292,13 +278,16 @@ public class CandidateResumeRestController {
 								.append(candidateResume.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 					}
 					candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
-					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateResume.getCandidateGlobalId(), "",
+				/*	if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateResume.getCandidateId()(), "",
 								Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
 					}else {
 						candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "",
 								Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
-					}
+					}*/
+					
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateResume.getCandidateId(), "",
+							Constants.CANDIDATE_DELETED_RESUME, activitySummary.toString(), "CANDIDATE");
 					
 				}
 				Integer percentage = candidateService.getCandidatePercentage(candidate, orgLocations);

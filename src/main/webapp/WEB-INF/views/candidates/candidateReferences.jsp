@@ -13,9 +13,8 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
-	function candidateReferences(candidateId,candType) {
+	function candidateReferences(candidateId) {
 		var candidateType = '${candidateType}';
-		
 		var result = "";
 
 		if (window.candidateStatusGlobal == '0') {
@@ -48,7 +47,7 @@
 		} else {
 			if (candidateType == "Candidates") {
 				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ',\''+candType+'\')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
+				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
 				'</sec:authorize>';
 				
 				'<sec:authorize access="!hasAnyRole(\'ROLE_ADD_CANDIDATE_REFERENCE\')">';
@@ -56,7 +55,7 @@
 				'</sec:authorize>';
 			} else {
 				'<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_REFERENCE\')">';
-				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ',\''+candType+'\')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
+				result = result + '<span class="pad-sea"><a href="javascript:void(0)"  onClick="addReference('+ candidateId + ')" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Reference</a></span>';
 				'</sec:authorize>';
 				
 				'<sec:authorize access="!hasAnyRole(\'ROLE_ADD_ASSOCIATE_REFERENCE\')">';
@@ -86,18 +85,23 @@
 		$("#tab-9").empty();
 		$("#tab-10").empty();
 		$("#tab-10").append(result);
-		candReferencesList(candidateId,candType);
+		candReferencesList(candidateId);
 	}
 </script>
 <script>
-	function candReferencesList(candidateId,candType) {
+	function candReferencesList(candidateId) {
 		var candidateType = '${candidateType}';
 		var locationCode = '${SourceLeadWeb_locationCode}';
-		$.ajax({
+
+		$
+				.ajax({
 					type : "POST",
-					url : atsUrl+ "/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+ candidateId + "&locationCode=" + locationCode+"&candidateType="+candType,
+					url : atsUrl
+							+ "/getCandidateReferencesListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="
+							+ candidateId + "&locationCode=" + locationCode,
 					success : function(json) {
 
+						/*  var json = JSON.parse(data);  */
 						$("#candidateReferencesList").empty();
 						var result = "";
 						result = result
@@ -181,15 +185,18 @@
 								result = result
 										+ '<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
 							} else {
-							
-								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')">';
-								result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('+candidateId+','+opt.id+',\''+candType+'\');" editRelation(this);" title="Edit"></a>';
-								'</sec:authorize>';
-								
-								'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')">';
-								result = result+' <a class="glyphicon glyphicon-trash" href="javascript:void(0)" onClick="removeReference('+candidateId+','+opt.id+',\''+candType+'\');"  title="Remove"></a>';
-								'</sec:authorize>';
-							
+								result = result
+										+ ' <sec:authorize access="hasAnyRole(\'ROLE_VIEW_AND_EDIT_CANDIDATE_REFERENCE\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="editCandidateReference('
+										+ candidateId
+										+ ','
+										+ opt.id
+										+ ');editRelation(this);" title="Edit"></a></sec:authorize>';
+								result = result
+										+ '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_REFERENCE\')"><i class="glyphicon glyphicon-trash" onclick="removeReference('
+										+ candidateId
+										+ ','
+										+ opt.id
+										+ ');" title= "Remove"></i></sec:authorize>';
 							}
 
 						}
@@ -276,7 +283,7 @@
      1.usage   : used in addReference() function.
 --%>
 <script>
-	function addReference(candidateId, candType) {
+	function addReference(candidateId) {
 		var result = "";
 		result = result + '<!-- Popup Div -->';
 		result = result
@@ -297,7 +304,7 @@
 		result = result + '<div class="col-md-12" id="emailDivId">';
 		
 		result = result + '<div class="input-group errorInptgroup">';
-		result = result+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onkeyup="validateReferenceEmail('+candidateId+',null,\''+candType+'\');">';
+		result = result+ '<input type="text" name="email" field-name="Email" id="email" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onkeyup="validateReferenceEmail('+candidateId+');">';
 		result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
 		result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
 		result = result + '</i>';
@@ -353,8 +360,9 @@
 		result = result + '</div>';
 
 		result = result + '<div class="clearfix mr" id="docAddButton">';
-				
-		result = result+' <input type="button" value="Save" name="btnAddPr" id="save_ref" class="btn btn-sm btn-primary pull-right" onClick="storeCandidateReferences('+candidateId+',\''+candType+'\');" />';
+		result = result
+				+ '<input type="button" value="Save" name="btnAddPr" id="save_ref" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateReferences('
+				+ candidateId + ');" />';
 		result = result + '</div>';
 		result = result + '</div>';
 		result = result + '</form>';
@@ -405,7 +413,7 @@
      3.ajax url implementation in CandidateReferencesRestController.
 --%>
 <script type="text/javascript">
-	function storeCandidateReferences(candidateId,candType) {
+	function storeCandidateReferences(candidateId) {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -418,7 +426,7 @@
 			var locationCode = '${SourceLeadWeb_locationCode}';
 			$("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-		    $.post(atsUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode+"&candidateType="+candType, formData, function(result) {
+		    $.post(atsUrl+"/saveCandidateReferences?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
 		    	if (result && (result.response === "INVALID_USER" || result.response === "INVALID_DATA")) {
 				    showError(result.responseMessage);
 				} else if (result.response === "AWKWARD") {
@@ -429,7 +437,7 @@
 					$("#selector10").removeAttr("style");
 					$("#selector10").css({display : "block"	});
 					$("#refMsgDiv").html("Success!! New References added");
-			        candReferencesList(candidateId,candType);
+			        candReferencesList(candidateId);
 					refMsgFadein(); 
 					setTimeout(function(){
 				 		candidateList();					 			
@@ -477,7 +485,7 @@
 <!-- End -->
 
 <script type="text/javascript">
-	function removeReference(candidateId, refId, candType) {
+	function removeReference(candidateId, refId) {
 
 		var result = "";
 		result = result + "	<div class='project_inn_mask'></div>";
@@ -486,7 +494,11 @@
 		result = result + "		<p>You are choosing to delete the Reference</p>";
 		result = result + "		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result
-				+ '<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteReference('+candidateId+', '+refId+', \''+candType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="deleteReferencesPopup();"></b>';
+				+ "<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("
+				+ candidateId
+				+ ","
+				+ refId
+				+ ");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 		result = result + "	</div>";
 		$("#deleteReferencesPopup").empty();
 		$("#deleteReferencesPopup").append(result);
@@ -503,7 +515,7 @@
      3.ajax url implementation in CandidateReferencesRestController.
 --%>
 <script>
-	function deleteReference(candidateId, refId, candType) {
+	function deleteReference(candidateId, refId) {
 		var loginUserId = '${SourceLeadWeb_userId}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		//var message = confirm("You are choosing to delete the reference");
@@ -525,7 +537,7 @@
 					$("#refMsgDiv").html("Reference deleted");
 					$("#popUpDiv").removeClass("edit-details-active");
 					$("#remove_user_pop_reference, .project_inn_mask").fadeOut();
-					candReferencesList(candidateId,candType);
+					candReferencesList(candidateId);
 					refMsgFadein();
 					setTimeout(function(){
 						candidateList();					 			
@@ -541,7 +553,7 @@
 </script>
 
 <script type="text/javascript">
-	function updateCandidateReference(candidateId, refId, candType) {
+	function updateCandidateReference(candidateId, refId) {
 		var validationSettings = {
 			errorMessagePosition : 'element',
 			borderColorOnError : '',
@@ -554,7 +566,7 @@
 		    var locationCode = '${SourceLeadWeb_locationCode}';
 			$("#save_ref").attr("disabled", "disabled");
 			$("#save_ref").addClass('button').val('Processing..'); 
-	        $.post(atsUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode+"&candidateType="+candType, formData, function(result) {
+	        $.post(atsUrl+"/updateCandidateReferenceBycandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&userId="+userId+"&locationCode="+locationCode, formData, function(result) {
 	        	if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 	    		    showError(result.responseMessage);
 	    		} else if (result.response === "AWKWARD") {
@@ -564,7 +576,7 @@
 					$("#selector10").css({display : "block"});
 					$("#refMsgDiv").html("Reference details updated");
 					closePopup();
-					candReferencesList(candidateId,candType);
+					candReferencesList(candidateId);
 					refMsgFadein();
 	    		} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
@@ -584,11 +596,12 @@
 </script>
 
 <script>
-	function editCandidateReference(candidateId, refId, candType) {
+	function editCandidateReference(candidateId, refId) {
 		$.ajax({
 				type : "POST",
 				url : atsUrl
-					+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+ "&refId=" + refId,
+					+ "/getCandidateReferencesByCandidateIdAndReferenceId?"+tokenParamName+"="+tokenValue+"&candidateId="
+					+ candidateId + "&refId=" + refId,
 				success : function(response) {
 					if (response.response === "AWKWARD") {
 					    location.href = "/errorPage";
@@ -618,7 +631,7 @@
 						result = result+ '<div class="clearfix mb10">';
 						result = result+ '<div class="col-md-12" id="emailDivId">';
 						result = result + '<div class="input-group errorInptgroup">';
-						result = result+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+',\''+candType+'\');">';
+						result = result+ '<input type="text" name="email" id="email" field-name="Email" value="'+json.email+'" data-validation="required validate_Space validate_email validate_length length9-100" class="form-control input-sm" value="" placeholder="Email *" onblur="validateReferenceEmail('+candidateId+','+json.id+');">';
 						result = result + ' <span id="emailStatusIconDiv" class="input-group-addon">';
 						result = result + '<i class="fa fa-check text-muted" style="color:#f6f6f6">';
 						result = result + '</i>';
@@ -705,7 +718,12 @@
 						result = result
 								+ '<input type="hidden"  value="'+candidateId+'" id="candidateId" name="candidateId">';
 
-						result = result+ '<button type="button"  id="addCandidate"  onClick ="updateCandidateReference('+candidateId+','+refId+',\''+candType+'\');" class="btn btn-sm btn-primary pull-right" >Update</button>';
+						result = result
+								+ '<button type="button"  id="addCandidate"  onClick ="updateCandidateReference('
+								+ candidateId
+								+ ','
+								+ refId
+								+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
 
 						result = result + '</div>';
 						result = result + '</div>';
@@ -745,8 +763,8 @@
 </script>
 
 <script>
-function validateReferenceEmail(candidateId,referId,candType){
-	if(referId != null && referId != "" && referId != "undefined"  && referId != "null"){
+function validateReferenceEmail(candidateId,referId){
+	if(referId != null && referId != "" && referId != "undefined"){
 		referId = referId;
 	}else{
 		referId = "";
@@ -758,7 +776,7 @@ function validateReferenceEmail(candidateId,referId,candType){
 	 if (email != null && email != "") {
 	$.ajax({
 			type : "POST",
-			url : atsUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email+"&candidateType="+candType,
+			url : atsUrl + "/validateReferEmail?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&referId="+referId+"&email="+email,
 			success : function(response) {
 				if (response.response === "AWKWARD") {
 				    location.href = "/errorPage";

@@ -27,20 +27,14 @@
 </c:if>
 
 <script>
-function editCandidate(candidateId,candType){
+function editCandidate(candidateId){
 	
 	  $("#profileEditPopup").show();
 	  var loginCountryName = '${loginCountryName}';
-	  var candidateUrl = '';
-	  if(candType != null && candType != '' && candType != 'undefined' && candType == 'candidateGlobal'){
-		  candidateUrl =  atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
-	  }else{
-		  candidateUrl =  atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
-	  }
        
 	  $.ajax({
         type : "POST",
-         url: candidateUrl,        
+         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {
            var json = result.object;
       	   if(result.response === "SESSION_TIMEDOUT") {
@@ -181,7 +175,6 @@ function editCandidate(candidateId,candType){
 							result  = result + '<input type="hidden" id="loginUserId" name="loginUserId" value="${SourceLeadWeb_user.id}" />';
 							result = result + '		      <div class="form-horizontal clearfix">';
 							result = result + '<input type="hidden" class="form-control input-sm" name="candidateId"  value="'+candidateId+'">';
-							result = result + '<input type="hidden" class="form-control input-sm" name="candType"  value="'+candType+'">';
 							
 							result = result + '		        <div class="clearfix mb10">';
 							result = result + '		          <div class="col-md-4">';
@@ -608,7 +601,7 @@ function editCandidate(candidateId,candType){
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
-							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+',\''+candType+'\');" class="btn btn-sm btn-primary mr">Save</button>';
+							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
 							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		          </div>';
@@ -924,18 +917,11 @@ function reActivateCandidateAlertMessage(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateProfile(candidateId,candidateType,isAssociate,candType){
+function candidateProfile(candidateId,candidateType,isAssociate){
 	  var skillsList = '${skillsList}'; 
-	  
-	  if(candType != null && candType != 'undefined' && candType != '' && candType == 'candidateGlobal'){
-		  candidateUrl = atsUrl +"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
-	  }else{
-		  candidateUrl = atsUrl +"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId;
-	  }
-	  
 	  $.ajax({
         type : "POST",
-         url: candidateUrl,        
+         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) { 
         	 var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
@@ -955,7 +941,7 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 								   result = result + '<div class="project_tabs_inn_head mt10"> <div class="anchor-inline">';
 								   if(candidateType == "Candidates"){
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+',\''+candType+'\');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_DELETE_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
 									   if(isAssociate != "Y"){
@@ -965,7 +951,7 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 									   '</sec:authorize>';
 								   } else {
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+',\''+candType+'\');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
+									   result = result + ' <a href="javascript:void(0)" onClick="editCandidate('+candidateId+');" class="mr addUser-org"><i class="glyphicon glyphicon-pencil"></i>Edit</a>';
 									   '</sec:authorize>'; 
 									   '<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE\')">';
 									   if(isAssociate != 'Y'){
@@ -999,11 +985,11 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 							result = result +'		          <h2 class="education  pull-left">Skills:</h2>';
 							if(candidateType == "Candidates") {
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Skill</button></span>';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
 								 '</sec:authorize>';
 							} else {
 								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Skill</button></span>';
+								result = result +'		          <span id="editSkillBtnSpan" class="pull-right mt10 mb"><button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button></span>';
 								'</sec:authorize>';
 							}
 							result = result +'		          <span id="saveSkillBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
@@ -1041,11 +1027,11 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 							result = result +'		          <h2 class="education  pull-left">Immigration Status:</h2>';
 							if(candidateType == "Candidates"){
 								'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Visa</button></span>';
+								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
 								 '</sec:authorize>';
 							}else{
 								'<sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE\')">';
-								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Visa</button></span>';
+								result = result +'		          <span id="editVisaBtnSpan" class="pull-right mt10 mb"><button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button></span>';
 								'</sec:authorize>';
 							}
 							result = result +'		          <span id="saveVisaBtnSpan" class="pull-right mt10 mb" style.display = "none";></span>';
@@ -1116,9 +1102,9 @@ function candidateProfile(candidateId,candidateType,isAssociate,candType){
 							$("#tab-5").empty();  
 							$("#tab-6").empty();  
 							$("#tab-1").append(result);  
-							employeeSubmissionProfile(candidateId,candType);
-							educationSubmissionProfile(candidateId,candType);
-							 certificationSubmissionProfile(candidateId,candType); 
+							employeeSubmissionProfile(candidateId);
+							educationSubmissionProfile(candidateId);
+							 certificationSubmissionProfile(candidateId); 
 							$("#tab-1").show();
 							$(".project-tabs-menu a").click(function(event) {
 							     event.preventDefault();
@@ -1327,13 +1313,13 @@ function saveCandidateTags(candidateId){
 </script>
 
 <script>
-	function editSkill(candidateId,isAssociate,candType){
+	function editSkill(candidateId){
 		$("#skillName").prop('disabled', false).trigger("chosen:updated");
 		$("#editSkillBtn").remove();
 		$("#editSkillBtnSpan").hide();
 		window.skillCountBefore = $("#skillName :selected").length;
 		var result = '';
-		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Save Skill</button>';
+		result = result + '<button type="button" id="saveSkillBtn" name="saveSkillBtn" class="btn btn-primary btn-sm" onclick="saveSkill('+candidateId+');">Save Skill</button>';
 		$("#saveSkillBtnSpan").empty();
 		$("#saveSkillBtnSpan").append(result);
 		$("#saveSkillBtnSpan").show();
@@ -1343,16 +1329,16 @@ function saveCandidateTags(candidateId){
 		
 	}
 
-	function saveSkill(candidateId,isAssociate,candType){
+	function saveSkill(candidateId){
 		$("#skillName").prop('disabled', true).trigger("chosen:updated");
 		window.skillCountAfter = $("#skillName :selected").length;
 		if(skillCountBefore != skillCountAfter){
-			saveSkils(candidateId,isAssociate,candType);
+			saveSkils(candidateId);
 		}
 		$("#saveSkillBtn").remove();
 		$("#saveSkillBtnSpan").hide();
 		var result = '';
-		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Skill</button>';
+		result = result + '<button type="button" id="editSkillBtn" name="editSkillBtn" class="btn btn-primary btn-sm" onclick="editSkill('+candidateId+');">Edit Skill</button>';
 		$("#editSkillBtnSpan").empty();
 		$("#editSkillBtnSpan").append(result);
 		$("#editSkillBtnSpan").show();
@@ -1370,15 +1356,15 @@ function saveCandidateTags(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>  
- function saveSkils(candidateId,isAssociate,candType){
+ function saveSkils(candidateId){
 	 var skillName = $("#skillName").val();
 	 var jsonData = encodeURIComponent(skillName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(skillName != null && skillName != '' && skillName !='undefined') {
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&skillName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+jsonData
 	 } else {
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&skillName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlySkillBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&skillName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -1391,10 +1377,10 @@ function saveCandidateTags(candidateId){
         	} else if (result.response === "AWKWARD") {
         	    location.href = "/errorPage";
         	} else if (result.response === "SUCCESS") {
-        		showSuccessStatusPopup("Skills details updated successfully");
+        		showSuccessStatusPopup("Visa details updated successfully");
         		var candidateType = "Candidates";
-          	  	candidateProfile(candidateId,candidateType,isAssociate,candType);
-          	  	candidateQuickViewProfile(candidateId,candType);
+          	  	candidateProfile(candidateId,candidateType);
+          	  	candidateQuickViewProfile(candidateId);
         	} else if (result.indexOf('Sign In') !== -1) {
         		location.replace(sourceleadUrl);
         	} else {
@@ -1423,7 +1409,7 @@ function saveCandidateTags(candidateId){
      3.ajax url implementation in CandidateListRestController.
 --%>         
 <script type="text/javascript">
-	function upDateCandidate(candidateId,candType) {
+	function upDateCandidate(candidateId) {
 		var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -1449,7 +1435,7 @@ function saveCandidateTags(candidateId){
 				    $("#selector11").css({ display: "block" });
 				    $("#candMsgDivSum").text("Candidate Updated Successfully");
 				    candUpdateMsgFadeinFunction();
-				    candidateQuickViewProfile(candidateId,candType);
+				    candidateQuickViewProfile(candidateId);
 				} else if (result.indexOf('Sign In') !== -1) {
 					location.replace(sourceleadUrl);
 				} else {
@@ -1548,10 +1534,10 @@ function removeSkillById(candidateId, skillId){
 </script>
 
 <script>
-	function employeeSubmissionProfile(candidateId,candidateType) {
+	function employeeSubmissionProfile(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId+"&candidateType="+candidateType,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
 					success : function(data) {
 						if (data && data.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
@@ -1626,10 +1612,10 @@ function removeSkillById(candidateId, skillId){
 </script>
 
 <script>
-function educationSubmissionProfile(candidateId,candidateType){
+function educationSubmissionProfile(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candidateType,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -1718,11 +1704,11 @@ function educationSubmissionProfile(candidateId,candidateType){
 </script> 
 
 <script>
-function certificationSubmissionProfile(candidateId,candidateType) {
+function certificationSubmissionProfile(candidateId) {
 	
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candidateType,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(data) {
         	  if (data && data.response === "INVALID_DATA") {
       		    showError(data.responseMessage);
@@ -2087,26 +2073,29 @@ function  removeValiationVendorContact() {
  
  <!-- Visa Type Script View/edit script start here -->
  <script>
-	function editVisa(candidateId,isAssociate,candType){
+	function editVisa(candidateId){
 		$("#visaName").prop('disabled', false).trigger("chosen:updated");
 		$("#editVisaBtn").remove();
 		$("#editVisaBtnSpan").hide();
 // 		window.visaCountBefore = $("#visaName :selected").length;
 		var result = '';
-		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Save Visa</button>';
+		result = result + '<button type="button" id="saveVisaBtn" name="saveVisaBtn" class="btn btn-primary btn-sm" onclick="saveVisa('+candidateId+');">Save Visa</button>';
 		$("#saveVisaBtnSpan").empty();
 		$("#saveVisaBtnSpan").append(result);
 		$("#saveVisaBtnSpan").show();
 	    
 	}
 
-	function saveVisa(candidateId,isAssociate,candType){
+	function saveVisa(candidateId){
 		$("#visaName").prop('disabled', true).trigger("chosen:updated");
-		saveVisas(candidateId,isAssociate,candType);
+// 		window.visaCountAfter = $("#visaName :selected").length;
+// 		if(visaCountBefore != visaCountAfter){
+		saveVisas(candidateId);
+// 		}
 		$("#saveVisaBtn").remove();
 		$("#saveVisaBtnSpan").hide();
 		var result = '';
-		result = result + '<button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+',\''+isAssociate+'\',\''+candType+'\');">Edit Visa</button>';
+		result = result + '<button type="button" id="editVisaBtn" name="editVisaBtn" class="btn btn-primary btn-sm" onclick="editVisa('+candidateId+');">Edit Visa</button>';
 		$("#editVisaBtnSpan").empty();
 		$("#editVisaBtnSpan").append(result);
 		$("#editVisaBtnSpan").show();
@@ -2117,15 +2106,15 @@ function  removeValiationVendorContact() {
 
 
 <script>  
- function saveVisas(candidateId,isAssociate,candType) {
+ function saveVisas(candidateId) {
 	 var visaName = $("#visaName").val();
 	 var jsonData = encodeURIComponent(visaName);
 	 var loginUserId = '${SourceLeadWeb_userId}';
 	 var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 if(visaName != null && visaName != '' && visaName !='undefined'){
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&visaName="+jsonData
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+jsonData
 	 }else{
-		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType+"&visaName="+""
+		 Urlcheck = atsUrl+"/saveOrUpdateOnlyVisaBycandidateId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&visaName="+""
 	 }
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({  
@@ -2140,8 +2129,8 @@ function  removeValiationVendorContact() {
               		} else if (result.response === "SUCCESS") {
               			showSuccessStatusPopup("Visa details updated successfully");
               			var candidateType = "Candidates";
-              			candidateProfile(candidateId,candidateType,isAssociate,candType);
-                  	  	candidateQuickViewProfile(candidateId,candType);
+              	  	  	candidateProfile(candidateId,candidateType);
+               	  	//candidateQuickViewProfile(candidateId);
               		} else if (result.indexOf('Sign In') !== -1) {
 	              		location.replace(sourceleadUrl);
 	              	} else {

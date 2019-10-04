@@ -124,15 +124,9 @@ public class CandidateDocumentsRestController {
 							Long.parseLong(candidateDocumentsDTO.getCandidateId()), candidateDocumentsDTO.getDocumentUUID(),
 							orgLocation.getId(), user);
 					
-					if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-						CandidateGlobal candidateGlobal = candidateGlobalService
-								.getCandidateGlobalByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-						percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
-					}else {
-						Candidate candidate = candidateService
-								.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-						percentage = candidateService.getCandidatePercentage(candidate, orgLocation);
-					}
+					CandidateGlobal candidateGlobal = candidateGlobalService
+							.getCandidateGlobalByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+					percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, orgLocation);
 					
 					response.setObject(percentage.toString());
 					response.setResponse(Result.SUCCESS.name());
@@ -218,13 +212,8 @@ public class CandidateDocumentsRestController {
 			if (user != null && candidateId > 0) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				List<CandidateDocumentsDTO> candidateDocumentsList =  null;
-				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-					candidateDocumentsList = candidateDocumentsService
-							.getCandidateGlobalDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-				}else {
-					candidateDocumentsList = candidateDocumentsService
-							.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
-				}
+				candidateDocumentsList = candidateDocumentsService
+						.getCandidateDocumentsDTOListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
 				
 				responseList.setData(candidateDocumentsList);
 				responseList.setResponse(Result.SUCCESS.name());
@@ -363,28 +352,15 @@ public class CandidateDocumentsRestController {
 
 				}
 				
-				if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-					if (null != candidateGlobal && null != candidateGlobal.getId()) {
-						Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, loginOrgLocation);
-						response.setObject(percentage.toString());
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} else {
-						response.setResponse(Result.INVALID_DATA.name());
-						response.setResponseMessage(Result.INVALID_DATA.getValue());
-					}
-				}else {
-					Candidate candidate = candidateService.getCandidateByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
-					if (null != candidate && null != candidate.getId()) {
-						Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
-						response.setObject(percentage.toString());
-						response.setResponse(Result.SUCCESS.name());
-						response.setResponseMessage(Result.SUCCESS.getValue());
-					} else {
-						response.setResponse(Result.INVALID_DATA.name());
-						response.setResponseMessage(Result.INVALID_DATA.getValue());
-					}
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateDocumentsDTO.getCandidateId()));
+				if (null != candidateGlobal && null != candidateGlobal.getId()) {
+					Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, loginOrgLocation);
+					response.setObject(percentage.toString());
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				}
 				
 			} else {
@@ -513,13 +489,8 @@ public class CandidateDocumentsRestController {
 			if (user != null && documentsIds != null && !documentsIds.isEmpty()) {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 				
-				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
-					requestedDocumentsService.acceptRequestedCandidateGlobalDocuments(user, documentsIds, loginOrgLocation, candidateGlobal);
-				}else {
-					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-					requestedDocumentsService.acceptRequestedDocuments(user, documentsIds, loginOrgLocation, candidate);
-				}
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+				requestedDocumentsService.acceptRequestedCandidateGlobalDocuments(user, documentsIds, loginOrgLocation, candidateGlobal);
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

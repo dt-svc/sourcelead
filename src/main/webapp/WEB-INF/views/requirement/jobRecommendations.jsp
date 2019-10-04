@@ -59,7 +59,7 @@ function clientSideBar(candidateId,recScore){
 	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
           type : "POST",
-           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+           url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(result) {
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {

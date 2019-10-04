@@ -11,7 +11,7 @@
      1.usage     : used at clientSideBar().
 --%>
 <script>
-function candidateEducation(candidateId,candType){
+function candidateEducation(candidateId){
 	 var candidateType = '${candidateType}';
 	var result = "";
 	if(window.candidateStatusGlobal == '0'){
@@ -37,11 +37,11 @@ function candidateEducation(candidateId,candType){
 	}else{
 		if(candidateType == "Candidates"){
 			'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onclick="addEducation('+candidateId+',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onclick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
 			'</sec:authorize>';
 		}else{
 			'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\')">';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onclick="addEducation('+candidateId+',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onclick="addEducation('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Education</a></span>';
 			'</sec:authorize>';
 		}
 		
@@ -68,7 +68,7 @@ function candidateEducation(candidateId,candType){
     $("#tab-9").empty();
     $("#tab-4").append(result);  
 	
-    candidateEducationList(candidateId,candType);
+    candidateEducationList(candidateId);
     
 }
 </script>
@@ -88,7 +88,7 @@ function candidateEducation(candidateId,candType){
      3.ajax url implementation in CandidateListRestController.
 --%>
 <script>
-function candidateEducationList(candidateId,candType){
+function candidateEducationList(candidateId){
 	var candidateType = '${candidateType}';
 	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
@@ -102,7 +102,7 @@ function candidateEducationList(candidateId,candType){
 	  }
 	 $.ajax({  
           type : "GET",
-          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -181,9 +181,9 @@ function candidateEducationList(candidateId,candType){
                   		 }
                   		 else{
                   			 if(candidateType == "Candidates"){
-                  				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ',\''+candType+'\');" title="Edit"></a></sec:authorize>';
+                  				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
                   			 }else{
-                  				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ',\''+candType+'\');" title="Edit"></a></sec:authorize>';
+                  				 result = result+' <td><div class="tblicons tblminwidth-75"><sec:authorize access="hasRole(\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\')"><a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick ="EditEducation('+ candidateId+ ','+ opt.id+ ');" title="Edit"></a></sec:authorize>';
                   			 }
                   				 
                   		 }
@@ -191,9 +191,9 @@ function candidateEducationList(candidateId,candType){
 								result = result+'<i class="glyphicon glyphicon-trash"></i></div></td>';
                   		 }else{
                   			 if(candidateType == "Candidates"){
-                  				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+',\''+candType+'\');" title="Remove"></i></sec:authorize></div></td>';	 
+                  				 result = result+'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_EDUCATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';	 
                   			 }else{
-                  				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+',\''+candType+'\');" title="Remove"></i></sec:authorize></div></td>';
+                  				 result = result+'<sec:authorize access="hasRole(\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\')"> <i class="glyphicon glyphicon-trash" onclick="removeEducation('+opt.id+','+candidateId+');" title="Remove"></i></sec:authorize></div></td>';
                   			 }
                   			  
                   		 }
@@ -250,7 +250,7 @@ function closePopup(){
      1.usage   : used in candidateEducation() function.
 --%>
 <script>
-function addEducation(candidateId,candType) {	
+function addEducation(candidateId) {	
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'          <form role="form"  id="education_form" name="education_form" method="post" > ';
@@ -258,7 +258,7 @@ function addEducation(candidateId,candType) {
 	result = result  +'                <div class="form-horizontal clearfix"> ';
 	result = result  +'   ';
 	result = result  +'                  <div class="clearfix mb10 col-md-12" id="nameIdDiv"> ';
-	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="candEdu" data-validation=" required" onchange="validateEduname('+candidateId+',\''+candType+'\');" onkeyup = "validateEduname('+candidateId+');">';
+	result = result  +'						<select label=" " class="chosen-select form-control" field-name="Education" data-placeholder = "Select Education" name="name" id="candEdu" data-validation=" required" onchange="validateEduname('+candidateId+');" onkeyup = "validateEduname('+candidateId+');">';
 	
 											 <c:forEach var="edu" items="${educationsList}">
     result = result  +'	                        <option value="" disabled selected></option>';										 
@@ -323,7 +323,8 @@ function addEducation(candidateId,candType) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+',\''+candType+'\');" />'; 
+    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
+	/* result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       '; */
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
 	result = result  +'                </form>                                                                                                                                ';
@@ -415,10 +416,10 @@ function addEducation(candidateId,candType) {
 	}
 </script>
 <script>
-function EditEducation(candidateId,candidateEducationId,candType) {
+function EditEducation(candidateId,candidateEducationId) {
 	$.ajax({
 		type : "POST",
-		url : atsUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId+"&candidateType="+candType,
+		url : atsUrl+ "/getCandidateEducationBycandidateIdandEducationId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,
 		success : function(response) {
 			if (response && response.response === "INVALID_DATA") {
 			    showError(response.responseMessage);
@@ -457,7 +458,7 @@ function EditEducation(candidateId,candidateEducationId,candType) {
 					result = result  +'   ';
 					result = result  +'                  <div class="clearfix mb10"> ';
 					result = result  +'                    <div class="col-md-12">                                                                                                            ';
-					result = result + '<select  class="chosen-select form-control" name="name" id="candEdu" data-validation="validate_Space" data-validation-optional="true" onchange="validateEduname('+candidateId+',\''+candType+'\');" onkeyup = "validateEduname('+candidateId+',\''+candType+'\');">';
+					result = result + "<select  class='chosen-select form-control' name='name' id='candEdu' data-validation='validate_Space' data-validation-optional='true' onchange='validateEduname("+candidateId+");'onkeyup = 'validateEduname("+candidateId+");'>";
 					
 			    	$.each(json.allAndCandidateEducations, function( i, eduName) {
 						var existed = 0;
@@ -560,7 +561,7 @@ function EditEducation(candidateId,candidateEducationId,candType) {
 					result = result  +'                  <div class="clearfix mr"> ';
 					result = result	+ '	                   <input type="hidden"  value="'+candidateEducationId+'" id="candidateEducationId"  name="candidateEduId" >';
 					result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-				    result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+',\''+candType+'\');" class="btn btn-sm btn-primary pull-right">Update</button>';
+				    result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
 					result = result  +'                  </div>';
 					result = result  +'                </div>   ';
 					result = result  +'                </form>                                                                                                                                ';
@@ -654,7 +655,7 @@ var validationSettings = {
 	};
 </script>
 <script>
-function candidateEducationStore(candidateId,candType) {
+function candidateEducationStore(candidateId) {
 	var scoreType = document.getElementById("scoreEducationType").value; 
 	 if(scoreType != null && scoreType != ""){
 		 $('#candidateEducationScore').removeAttr('data-validation-optional');
@@ -669,7 +670,7 @@ function candidateEducationStore(candidateId,candType) {
 		 $("#education_form").attr("disabled", "disabled");
 		 $("#save_button").attr("disabled", "disabled");
 		
-		 $.post(atsUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType, formData, function(result) {
+		 $.post(atsUrl+"/storeCandidateEducation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId, formData, function(result) {
 			 if (result && result.response === "INVALID_DATA") {
 				    $("#update_candidate").removeAttr("disabled");
 				    $("#update_candidate").removeAttr('button').val('Save');
@@ -707,9 +708,9 @@ function candidateEducationStore(candidateId,candType) {
 	    			$("#selector04").removeAttr("style");
 	    			$("#selector04").css({ display: "block" });
 					$("#eduMsgDivEmp").html("Success!! New Education added");
-	       			candidateEducationList(candidateId,candType);
+	       			candidateEducationList(candidateId);
 	       			eduMsgFadeinFunction();
-	       			qveducationSubmission(candidateId,candType);
+	       			qveducationSubmission(candidateId);
 	       			setTimeout(function(){
 			 			candidateList();					 			
 			 		},100);
@@ -755,13 +756,13 @@ function deleteEduPopup(){
 </script>
 <div id="deleteEduPopUp"></div>
 <script type="text/javascript">
-function removeEducation(candidateEducationId, candidateId,candType){
+function removeEducation(candidateEducationId, candidateId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Education</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteSelectedEducation('+candidateEducationId+','+candidateId+',\''+candType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="deleteEduPopup();"></b>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);
@@ -774,12 +775,12 @@ function removeEducation(candidateEducationId, candidateId,candType){
      this script is for remove candidateEducation.
 --%>
 <script>
-function deleteSelectedEducation(candidateEducationId,candidateId,candType){
+function deleteSelectedEducation(candidateEducationId,candidateId){
  var loginUserId = '${SourceLeadWeb_userId}';
  var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId+"&candidateType="+candType,        
+          url: atsUrl+"/removeCandidateEducationBycandidateIdandcandidateEducationId?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateEducationId="+candidateEducationId,        
           success :function(result) {
         	  if (result && result.response === "INVALID_DATA") {
         		    showError(result.responseMessage);
@@ -817,8 +818,8 @@ function deleteSelectedEducation(candidateEducationId,candidateId,candType){
            			$("#eduMsgDivEmp").html("Education deleted");
             		$("#popUpDiv").removeClass("edit-details-active");
             		$("#remove_user_pop, .project_inn_mask").fadeOut();
-            		candidateEducationList(candidateId,candType);
-            		qveducationSubmission(candidateId,candType);
+            		candidateEducationList(candidateId);
+            		qveducationSubmission(candidateId);
             		eduMsgFadeinFunction();
             		setTimeout(function() {
 				 		candidateList();					 			
@@ -926,7 +927,7 @@ function clearSearchKeyEducation() {
 }
 </script>
 <script type="text/javascript">
-	function updateCandidateEducation(candidateId, candType) {
+	function updateCandidateEducation(candidateId, candidateEducationId) {
 		
 		var scoreType = document.getElementById("scoreEducationType").value; 
 		 if(scoreType != null && scoreType != ""){
@@ -941,7 +942,7 @@ function clearSearchKeyEducation() {
 				var formData = getFormData('education_form');
 				 $("#education_form").attr("disabled", "disabled");
 				 $("#save_button").attr("disabled", "disabled");
-				 $.post(atsUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId+"&candidateType="+candType,formData,function(result){
+				 $.post(atsUrl+"/upDateCandidateEducationByCandidateIdAndCandidateEducationId?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,formData,function(result){
 					 	if (result && result.response === "INVALID_DATA") {
 						    $("#update_candidate").removeAttr("disabled");
 						    $("#update_candidate").removeAttr('button').val('Save');
@@ -953,9 +954,9 @@ function clearSearchKeyEducation() {
 			     			$("#selector04").removeAttr("style");
 			     			$("#selector04").css({ display: "block" });
 			     			$("#eduMsgDivEmp").html("Education details updated");
-							candidateEducationList(candidateId,candType)
+							candidateEducationList(candidateId)
 							eduMsgFadeinFunction();
-							qveducationSubmission(candidateId,candType);
+							qveducationSubmission(candidateId);
 							setTimeout(function(){
 					 			candidateList();					 			
 					 		},100);
@@ -982,11 +983,11 @@ function clearSearchKeyEducation() {
 	}
 </script>
 <script type="text/javascript">
- function validateEduname(candidateId,candType) {
+ function validateEduname(candidateId) {
 	var name = document.getElementById("candEdu").value; 
 	$.ajax({
 		type: "POST",
-	    url: atsUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name+"&candidateType="+candType, 
+	    url: atsUrl+"/validateEduname?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&name="+name, 
 	    success: function(response) {
 	    	$('#education_form').find('p.jquery_form_error_message').remove();
         	if (response && response.response === "INVALID_DATA") {

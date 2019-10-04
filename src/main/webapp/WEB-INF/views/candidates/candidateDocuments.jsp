@@ -14,7 +14,7 @@
 <div id="rejectedReasonDiv"></div>
 
 <script>
-function candidateDocuments(candidateId,candType){
+function candidateDocuments(candidateId){
 	
 	$("#candidateProfileTab").removeClass("current");
 	$("#candidateDocumentsTab").addClass("current");
@@ -46,17 +46,17 @@ function candidateDocuments(candidateId,candType){
 		var docUUID = '';
 		if(candidateType =="Candidates"){
 			'<sec:authorize access="hasAnyRole(\'ROLE_CREATE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-			result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+',\''+candType+'\');" title="Reject"></i></a></span>';
-			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+',\''+candType+'\');" title="Accept"></i></a></span>';
-			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\',\''+candType+'\');refreshDocList('+candidateId+',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
+			result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+');" title="Reject"></i></a></span>';
+			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+');" title="Accept"></i></a></span>';
+			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		}else{
 		 '<sec:authorize access="hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
-		    result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+',\''+candType+'\');" title="Reject"></i></a></span>';
-			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+',\''+candType+'\');" title="Accept"></i></a></span>';
-			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
-			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\',\''+candType+'\');refreshDocList('+candidateId+',\''+candType+'\');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
+		    result = result  +'<span class="" style="display : none" id="rejectDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-remove text-danger" onClick="rejectRequestedDocs('+candidateId+');" title="Reject"></i></a></span>';
+			result = result  +'<span class="" style="display : none" id="acceptDoc"><a href="javascript:void(0)"  class="addUser-org"><i class="glyphicon glyphicon-ok text-success" onClick="acceptRequestedDocs('+candidateId+');" title="Accept"></i></a></span>';
+			result = result  +'<span class=""><a href="javascript:void(0)"  onClick="requestDoc();createDocsType('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Request Documents</a></span>';
+			result = result  +'<span class="pad-sea"><a href="javascript:void(0)"  onClick="addDocument('+candidateId+',\''+docUUID+'\');refreshDocList('+candidateId+');" class="addUser-org" ><i class="glyphicon glyphicon-plus"></i>Add Document</a></span>';
 		'</sec:authorize>';
 		
 		'<sec:authorize access="!hasRole(\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">';
@@ -84,17 +84,17 @@ function candidateDocuments(candidateId,candType){
 	$("#tab-8").empty();
     $("#tab-9").empty();
     $("#tab-9").append(result); 
-    candDocumentsList(candidateId,candType);
+    candDocumentsList(candidateId);
 }
 </script>
 
 
 <script>
-function candDocumentsList(candidateId,candType){
+function candDocumentsList(candidateId){
 	var candidateType = '${candidateType}';
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candType,        
+          url: atsUrl+"/getCandidateDocumentsListByCandidateId?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
           success :function(response) {
         	  if (response && response.response === "INVALID_USER") {
         		    showError(response.responseMessage);
@@ -168,14 +168,14 @@ function candDocumentsList(candidateId,candType){
     			           	result = result+'<i class="glyphicon glyphicon-trash" href="javascript:void(0)"></i>';
     		           	} else {
     		           		var docUUID = opt.documentUUID;
-    		           		result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\',\''+candType+'\'); getDocument('+candidateId+', '+opt.id+',\''+candType+'\');" title="Edit"></a>';
+    		           		result = result+' <a class="glyphicon glyphicon-pencil" href="javascript:void(0)" onClick="addDocument('+candidateId+',\''+docUUID+'\'); getDocument('+candidateId+', '+opt.id+');" title="Edit"></a>';
     		           		if(candidateType =="Candidates"){
     		           			'<sec:authorize access="hasAnyRole(\'ROLE_DELETE_CANDIDATE_DOCUMENT\',\'ROLE_CROWDSOURCING_CANDIDATES\')">';
-    		           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+',\''+candType+'\');" title= "Remove"></i>';
+    		           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
     		           			'</sec:authorize>';
     		           		} else {
     		           			'<sec:authorize access="hasRole(\'ROLE_DELETE_ASSOCIATE_DOCUMENT\')">';
-    		           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+',\''+candType+'\');" title= "Remove"></i>';
+    		           				result = result+'<i class="glyphicon glyphicon-trash" onclick="removeDocument('+candidateId+','+opt.id+');" title= "Remove"></i>';
     		           			'</sec:authorize>';
     		           		}
     		           	}
@@ -243,7 +243,7 @@ function deleteRequestedDoc(){
 </script> 
 
 <script>
- function rejectRequestedDocs(candidateId,candType){
+ function rejectRequestedDocs(candidateId){
 	
 	 var result = "";
 		result = result + '	<div class="settPop">';
@@ -254,7 +254,6 @@ function deleteRequestedDoc(){
 		
 		result = result + '		<div class="clearfix">  ';
 		result = result + '      <input type="hidden" name="rejectedDocsCandidateId"  id="rejectedDocsCandidateId" value='+candidateId+' />';
-		result = result + '      <input type="hidden" name="rejectedDocsCandidateType"  id="rejectedDocsCandidateType" value='+candType+' />';
 		result = result + '		  <label class="col-md-12" for="Rejected Reason">Reason</label> ';
 		result = result + '		  <div class="col-md-12 taskdesp mt10">   ';
 		result = result + '			<textarea class="form-control" name="rejectedReason" id="rejectedReason" field-name="Reason" data-validation="required  validate_length length2-500" rows="2"></textarea>';
@@ -281,7 +280,7 @@ function deleteRequestedDoc(){
  </script> 
  
  <script>
- function acceptRequestedDocs(candidateId,candType){
+ function acceptRequestedDocs(candidateId){
 	 var documentsIds = [];
  	 $("input[name='documents[]']:checked").each( function (i) {
  		 documentsIds[i] = $(this).val();
@@ -290,14 +289,14 @@ function deleteRequestedDoc(){
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	   $.ajax({
 	    	type: "POST",
-	    	url: atsUrl+"/acceptRequestedDocuments?"+tokenParamName+"="+tokenValue+"&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&candidateType="+candType,
+	    	url: atsUrl+"/acceptRequestedDocuments?"+tokenParamName+"="+tokenValue+"&documentsIds="+documentsIds+"&userId="+userId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId,
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
 	        	} else if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
 	        	} else if (response.response === "SUCCESS") {
-	        		candidateDocuments(candidateId,candType);
+	        		candidateDocuments(candidateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
 	        	} else {
@@ -425,7 +424,7 @@ function closePopup1(){
      1.usage   : used in candidateDocument() function.
 --%>
 <script>
-function addDocument(candidateId, documentUUID, candType) {
+function addDocument(candidateId, documentUUID) {
 	var result = "";
 	result = result  +'<!-- Popup Div -->';
 	result = result  +'<form role="form"  id="documentType_form" name="documentType_form" method="post" > ';
@@ -477,7 +476,7 @@ function addDocument(candidateId, documentUUID, candType) {
 	result = result+'</div>';
 	
 	result = result  +'<div class="clearfix mr" id="docAddButton">';
-    result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateDocument('+candidateId+', \''+documentUUID+'\',\''+candType+'\');" />'; 
+    result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateDocument('+candidateId+', \''+documentUUID+'\');" />'; 
 	result = result  +'</div>';
 	result = result  +'</div>';
 	result = result  +'</form>';
@@ -570,7 +569,7 @@ function getDocumentType(documentType){
      3.ajax url implementation in CandidateDocumentRestController.
 --%>
 <script type="text/javascript">
-function storeCandidateDocument(candidateId, documentUUID, candType) {
+function storeCandidateDocument(candidateId, documentUUID) {
 	var validationSettings = {
 		errorMessagePosition : 'element',
 		borderColorOnError : '',
@@ -589,7 +588,7 @@ function storeCandidateDocument(candidateId, documentUUID, candType) {
 		      	data: formData,
 		  		processData: false,
 		  	    contentType:false,
-		      	url : atsUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID+"&candidateType="+candType,
+		      	url : atsUrl+"/saveCandidateDocument?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&documentUUID="+documentUUID,
 				success : function(result) {
 					if (result && (result.response === "INVALID_DATA" || result.response === "INVALID_USER")) {
 		    		    showError(result.responseMessage);
@@ -627,7 +626,7 @@ function storeCandidateDocument(candidateId, documentUUID, candType) {
 	          				$("#docMsgDiv").html("Document updated");
 	           			else
 	           				$("#docMsgDiv").html("Success!! New Document added");
-	           			candDocumentsList(candidateId,candType);
+	           			candDocumentsList(candidateId);
 	           			docMsgFadein();
 	           			setTimeout(function(){
 	      		 			candidateList();					 			
@@ -659,8 +658,8 @@ function uploadFileDoc() {
 </script>
 
 <script>
-function refreshDocList(candidateId,candType){
-	candDocumentsList(candidateId,candType);
+function refreshDocList(candidateId){
+	candDocumentsList(candidateId);
 }
 </script>
 
@@ -672,7 +671,7 @@ function refreshDocList(candidateId,candType){
      3.ajax url implementation in CandidateResumeRestController.
 --%>
 <script>
-function getDocument(candidateId, documentId,candType){
+function getDocument(candidateId, documentId){
 	 $("#docsName").attr("data-validation-optional", "true");
 	  $("#documentOtherType").attr("data-validation-optional", "true");
 		$.ajax({
@@ -708,13 +707,7 @@ function getDocument(candidateId, documentId,candType){
 			    	            }
 	        			 	}
        			 		}
-       			 		
-       			 	if(candType == 'candidateGlobal'){
-	       				 $("#update_doc").attr("onclick", 'storeCandidateDocument('+data.candidateGlobalId.id+',\''+data.documentUUID+'\',\''+candType+'\');');
-	       			 }else{
-	       			     $("#update_doc").attr("onclick", 'storeCandidateDocument('+data.candidateId.id+',\''+data.documentUUID+'\',\''+candType+'\');');
-	       			 }
-       			 		
+	       				$("#update_doc").attr("onclick", "storeCandidateDocument("+data.candidateId.id+", \""+data.documentUUID+"\");");
        			 
 	    	   			if(data.description != null && data.description != "undefined" && data.description != ""){
 	       					 $("textarea#description").val(data.description);
@@ -739,13 +732,13 @@ function deleteDocumentPopup() {
 <div id="deleteDocumentPopUp"></div> 
 
 <script type="text/javascript">
-function removeDocument(candidateId, documentId, candType) {
+function removeDocument(candidateId, documentId) {
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop_documents' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Documents</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteDocument('+candidateId+','+documentId+',\''+candType+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="deleteDocumentPopup();"></b>';
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
@@ -761,13 +754,13 @@ function removeDocument(candidateId, documentId, candType) {
      3.ajax url implementation in CandidateDocumentRestController.
 --%>
 <script>
-function deleteDocument(candidateId, documentId, candType) {
+function deleteDocument(candidateId, documentId) {
 	var loginUserId = '${SourceLeadWeb_userId}';
 	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 	//var message = confirm("You are choosing to delete the document");
 	$.ajax({
 	   	type: "POST",
-	    url: atsUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId+"&candidateType="+candType, 	   
+	    url: atsUrl+"/terminateDoc?"+tokenParamName+"="+tokenValue+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId+"&candidateId="+candidateId+"&documentId="+documentId, 	   
   		success: function(result) {
   			if (result && result.response === "INVALID_DATA") {
 			    showError(result.responseMessage);
@@ -803,7 +796,7 @@ function deleteDocument(candidateId, documentId, candType) {
    				$("#docMsgDiv").html("Document deleted");
   				$("#popUpDiv").removeClass("edit-details-active");
   				$("#remove_user_pop_documents, .project_inn_mask").fadeOut();
-  				candDocumentsList(candidateId,candType);
+  				candDocumentsList(candidateId);
   				docMsgFadein();
   				setTimeout(function(){
 					candidateList();					 			
@@ -862,7 +855,7 @@ function removeDocNameDiv(){
 </script>
 
 <script>
-function createDocsType(candidateId,candType){
+function createDocsType(candidateId){
 	
 	$("#documentsTypeDiv").empty();
 	
@@ -882,7 +875,6 @@ function createDocsType(candidateId,candType){
         
 	result = result +'<div class="clearfix mb10 mt5 requestdocmntTable">';
 	result = result +'<input type="hidden" name="requestedCandidateId"  id="requestedCandidateId" value='+candidateId+' />';
-	result = result +'<input type="hidden" name="candidateType"  id="requestedCandidateType" value='+candType+' />';
 	result = result +'<input type="hidden" name="docuemntMaxRowNumber"  id="docuemntMaxRowNumber" value="1" />';
 	result = result +'<table class="table table-responsive table-bordered table-hover" width="100%" id="requestedDocumentsTable" border="0">';
 	result = result +'<tbody>';
@@ -980,7 +972,6 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 	if ($('#requestForDocuments_form').validate(false, validationSettings)){
 		e.preventDefault();
 		var requestedCandidateId = document.getElementById("requestedCandidateId").value;
-		var candType = document.getElementById("requestedCandidateType").value;
      /*  var form = $('#requestForDocuments_form')[0];
       var formData = new FormData(form); */
       	var formData = getFormData("requestForDocuments_form");
@@ -999,7 +990,7 @@ $('body').on('submit', '#requestForDocuments_form', function(e){
 			    	} else if (response.response === "SUCCESS") {
 			    		$("#documentLoading").removeAttr("style"); 
 				        closeRD();
-				        candidateDocuments(requestedCandidateId,candType);
+				        candidateDocuments(requestedCandidateId);
 			    	} else if (response.indexOf('Sign In') !== -1) {
 			    		location.replace(sourceleadUrl);
 			    	} else {
@@ -1074,7 +1065,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e) {
       	//It will escape all the special characters
       	var jsonData = encodeURIComponent(con);
       	var rejectedDocsCandidateId = document.getElementById("rejectedDocsCandidateId").value;
-      	var candType = document.getElementById("rejectedDocsCandidateType").value;
+      
       	var documentsIds = [];
 	 	$("input[name='documents[]']:checked").each( function (i) {
 	 		documentsIds[i] = $(this).val();
@@ -1084,7 +1075,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e) {
        	$("#docsrejectedLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
   	   	$.ajax({
 	    	type: "POST",
-	    	url: atsUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds+"&candidateType="+candType, 
+	    	url: atsUrl+"/rejectRequestedDocuments?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&documentsIds="+documentsIds, 
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
@@ -1093,7 +1084,7 @@ $('body').on('submit', '#docrejectedReason_form', function(e) {
 	        	} else if (response.response === "SUCCESS") {
 	        		cancelDocumentRejectedReason();
 		        	$("#docsrejectedLoading").removeAttr("style"); 
-		        	candidateDocuments(rejectedDocsCandidateId,candType);
+		        	candidateDocuments(rejectedDocsCandidateId);
 	        	} else if (response.indexOf('Sign In') !== -1) {
 	        		location.replace(sourceleadUrl);
 	        	} else {
