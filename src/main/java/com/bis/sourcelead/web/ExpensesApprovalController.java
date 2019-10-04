@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class ExpensesApprovalController {
@@ -25,6 +27,7 @@ public class ExpensesApprovalController {
 		
 		ModelAndView model = new ModelAndView();
 		try{
+			  User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user"); 
 		SessionMaintainanceData sessionData = (SessionMaintainanceData) request.getSession().getAttribute("sessionData");
 		if (null == sessionData) {
 			sessionData = new SessionMaintainanceData();
@@ -35,6 +38,7 @@ public class ExpensesApprovalController {
 		if(expensesStatus.isPresent()) {
 			model.addObject("expensesStatusFormDashBoard",expensesStatus.get());
 		}
+		model.addObject("userName",loginUser.getFullName());
 		model.setViewName("expenses/expensesApprovalList");
 		}catch(Exception e){
 			 model.addObject("AWKWARD", true);
