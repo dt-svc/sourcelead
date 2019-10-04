@@ -276,7 +276,7 @@ function getItDeclarationSubmissionList(uuid, financialYear, pageNo) {
 					text += "	<td>" + formList[e].employeeId + "</td>";
 					text += "	<td>";
 					text += "		<div class='tblminwidth proj_show'>";
-					text += "			<a href='viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i></a>";
+					text += "			<a href='" + sourceleadUrl + "/forms/viewForm?uuid=" + uuid + "&formUUID=" + formList[e].uuid + "'><span>" + formList[e].userName + "</span> <i class='fa fa-binoculars'></i></a>";
 					text += "		</div>";
 					text += "	</td>";
 					text += "	<td><div class='tbldata-dotdot-verybig'>" + formList[e].financialYear + "</div></td>";
