@@ -32,12 +32,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PaymentAccountDao;
+import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
@@ -75,6 +77,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 	
 	@Autowired
 	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	PayrollPayheadDao payrollPayheadDao;
 	
 	@Override
 	public AssociateBankErrorData saveAssociateInformation(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
@@ -552,6 +557,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 										        assoSalPayheadIndDTO.setPayrollPayheadId(id);
 										    }
 								        }
+										AssociateSalaryPayheadInd payrollPayhedId = payrollPayheadDao.getAssociateSalaryPayheadIndByPayrollPayhedId(assoSalPayheadIndDTO.getPayrollPayheadId());
+										if(payrollPayhedId != null) {
+											assoSalPayheadIndDTO.setId(payrollPayhedId.getId());
+										}
 										
 										for (String sc : mapPayheadShortCodeAndName.keySet())  
 								        { 
