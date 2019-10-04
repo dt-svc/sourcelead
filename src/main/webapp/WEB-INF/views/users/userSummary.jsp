@@ -4365,6 +4365,7 @@ function assocSalarySummary(candidateId){
 			  			$('#editAssociateBtn').css('display','block');
 			  			$('#saveAssociateBtnDiv').css('display','none');
 			  			$('#associateSalary_form input').attr('disabled','true');
+			  			$('#associateSalary_form input#salaryPayheadDataTableSearch').prop('disabled',false);
 				  		$('#associateSalary_form select').prop('disabled', true);
 			  		}
 			       }
