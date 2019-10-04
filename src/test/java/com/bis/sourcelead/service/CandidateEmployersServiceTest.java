@@ -1,9 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.List;
-import java.util.Set;
 
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,10 +14,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
-import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEmployerDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -44,7 +41,7 @@ public class CandidateEmployersServiceTest {
 		candemp.setStartMonth("FEB");
 		candemp.setEndYear("2010");
 		candemp.setEndMonth("DEC");
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateId.setId(1l);
 		candidateEmployers.setCandidateId(candidateId );
 		OrgLocations orglocationId = new OrgLocations();
@@ -67,23 +64,7 @@ public class CandidateEmployersServiceTest {
 			logger.info("getCandidateEducationListByCandidateIdAndOrgLocationID added successfully"+candidateEmployers.size());
 		}
 	}
-	@SuppressWarnings("unused")
-	@Test
-	public void getCandidateEmployersDetails() throws Exception{
-		CandidateDTO dto = new CandidateDTO();
-		dto.setCandidateEmployers("yes");
-		OrgLocations orgLocations = new OrgLocations();
-		orgLocations.setId(1l);
-		Candidate candidate = new Candidate();
-		candidate.setId(1l);
-		String userCode ="AOO2";
- 
-		Set<CandidateEmployers> canEmp = candidateEmployersService.getCandidateEmployersDetails(dto, orgLocations, candidate, userCode);
-		for(CandidateEmployers candidateEmp:canEmp){
-			logger.info("getCandidateEmployersDetails added successfully"+canEmp.size());
-		}
-
-	}
+	
 	
 	@Test
 	public void getCandidateEmployerBycandidateIdandCandidateEmployerID() throws Exception{
