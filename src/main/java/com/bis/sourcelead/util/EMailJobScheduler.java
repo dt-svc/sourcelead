@@ -5081,8 +5081,9 @@ public class EMailJobScheduler {
 	}
 	
 	//Passport expiry mail..
-	   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	@Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+	   //@Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
 		public void runJobSchedulerDailyForCandidatePassport() { // check if Passport is expired on not on daily basis, if expired updating
 														// Passport status in Database.
@@ -5105,60 +5106,57 @@ public class EMailJobScheduler {
 					logger.info("passportListExpiring list size: "+passportListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
 							" expiry date :" +expectedExpiryDate);
 				if(passportListExpiring != null && passportListExpiring.size()>0) {
-					List<CandidatePassport> passportList = new ArrayList<CandidatePassport>();
+					List<CandidatePassport> passportList = null;
 
-					Map<Candidate, List<CandidatePassport>> passportMap = new HashMap<Candidate, List<CandidatePassport>>();
+					Map<Long, List<CandidatePassport>> canPassportExpiryMapList = new HashMap<Long, List<CandidatePassport>>();
 					
 					for (CandidatePassport  passportObj : passportListExpiring) { // here for loop preparing Passport list by user base.
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
-						if (passportMap.get(passportObj.getCreatedBy()) == null) {
+					    Long candidteId   = passportObj.getCandidate().getId();
+						if (canPassportExpiryMapList.get(candidteId) ==  null) {
 							passportList = new ArrayList<CandidatePassport>();
 							passportList.add(passportObj);
-							passportMap.put(passportObj.getCandidate(), passportList);
+							canPassportExpiryMapList.put(candidteId, passportList);
 						} else {
-							passportMap.get(passportObj.getCreatedBy()).add(passportObj);
+							canPassportExpiryMapList.get(candidteId).add(passportObj);
 						}
 					}
-					for (Map.Entry<Candidate, List<CandidatePassport>> entry : passportMap.entrySet()) {
-					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						Candidate toUser = (Candidate)entry.getKey();
-						Candidate candidate = entry.getKey();
-						OrgLocations ol = candidate.getOrgLocationId();
-						sendPassportExpiresInDaysMailToCandidate(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
-					}
+					for (Map.Entry<Long, List<CandidatePassport>> entry : canPassportExpiryMapList.entrySet()) {
+						System.out.println("candidate id  = " + entry.getKey()+ ",  list size is  = " + entry.getValue().size());
+						List<CandidatePassport> passportLst  = (List<CandidatePassport>)entry.getValue();
+						Candidate toUser = passportLst.get(0).getCandidate();
+						OrgLocations ol = userRole.getOrgLocations();
+						sendPassportExpiresInDaysMailToCandidate(toUser, fromUser, passportLst, ol, String.valueOf(expiring_days_arr[i]), userRole);
+					} 
 				  }
 				}	
 			
 				
-				List<CandidatePassport> passportList = immigrationCommonService.getAllPassportList(currentDate);
-				if (passportList != null && passportList.size() > 0) {
-					List<CandidatePassport> passportListByManager = new ArrayList<CandidatePassport>();
+				List<CandidatePassport> passportListExpired = immigrationCommonService.getAllPassportList(currentDate);
+				if (passportListExpired != null && passportListExpired.size() > 0) {
+					List<CandidatePassport> passportList = null;
 
-					Map<Candidate, List<CandidatePassport>> managerPassportMap = new HashMap<Candidate, List<CandidatePassport>>();
-
-					for (CandidatePassport passportObj : passportList) { // here for loop preparing Passport list by user base.
-
-						logger.info("passportListExpired list size: "+passportList.size()+" expired.");
-						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
-						if (managerPassportMap.get(passportObj.getCreatedBy()) == null) {
-							passportListByManager = new ArrayList<CandidatePassport>();
-							passportListByManager.add(passportObj);
-							managerPassportMap.put(passportObj.getCandidate(), passportListByManager);
-						} else {
-							managerPassportMap.get(passportObj.getCandidate()).add(passportObj);
-						}
-					}
-					// below code is used for sending email to each user in map. Map contains user
-					// as key and value as list of Passport objects.
-					for (Map.Entry<Candidate, List<CandidatePassport>> entry : managerPassportMap.entrySet()) {
-					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						Candidate toUser = (Candidate) entry.getKey();
-						Candidate candidate = entry.getKey();
-						OrgLocations ol = candidate.getOrgLocationId();
-						List<CandidatePassport> mapPassportList = entry.getValue();
-						sendPassportExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol, userRole);
+				Map<Long, List<CandidatePassport>> canPassportExpiredMapList = new HashMap<Long, List<CandidatePassport>>();
+				
+				for (CandidatePassport  passportObj : passportListExpired) { // here for loop preparing Passport list by user base.
+					userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
+				    Long candidteId   = passportObj.getCandidate().getId();
+					if (canPassportExpiredMapList.get(candidteId) ==  null) {
+						passportList = new ArrayList<CandidatePassport>();
+						passportList.add(passportObj);
+						canPassportExpiredMapList.put(candidteId, passportList);
+					} else {
+						canPassportExpiredMapList.get(candidteId).add(passportObj);
 					}
 				}
+				for (Map.Entry<Long, List<CandidatePassport>> entry : canPassportExpiredMapList.entrySet()) {
+				   System.out.println("candidate id  = " + entry.getKey()+ ",  list size is  = " + entry.getValue().size());
+					List<CandidatePassport> passportLst  = (List<CandidatePassport>)entry.getValue();
+					Candidate toUser = passportLst.get(0).getCandidate();
+					OrgLocations ol = userRole.getOrgLocations();
+					sendPassportExpiredMailToCandidate(toUser, fromUser, passportLst, ol, userRole);
+				} 
+			  }
 				
 				
 			} catch (Exception e) {
@@ -5166,6 +5164,7 @@ public class EMailJobScheduler {
 				e.printStackTrace();
 				// System.out.println("ERROR in " + e.getMessage());
 			}
+			System.out.println("Candidate Paspport expiring email scenarion completed for candidate>>>>>>>>>>>>>>>>>");
 		}
 	   
 	   private void sendPassportExpiresInDaysMailToCandidate(Candidate toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
@@ -5214,8 +5213,7 @@ public class EMailJobScheduler {
 				 Date endDate=commonUtil.dateFromElk(expDate);		
 				 long diff = endDate.getTime()-startDate.getTime();
 				 
-				 Long expiresInDaysCount = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				 globalVarsMap.put("Expires_In_Days_Count", String.valueOf(expiresInDaysCount+1L));
+				 globalVarsMap.put("Expires_In_Days_Count", currPassDayStatus);
 				 
 				 //210, 180, 90, 60, 30
 				 switch (currPassDayStatus) {
@@ -5373,12 +5371,13 @@ public class EMailJobScheduler {
 	   
 	   
 	 //Visa expiry mail..
-	   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	 @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+	   //@Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
 		public void runJobSchedulerDailyForCandidateVisa() { // check if Visa is expired on not on daily basis, if expired updating
 														// Visa status in Database.
-			logger.info("******************  updating All Visa  Details Started..! **********");
+			logger.info("******************running email scenario visa expiring list.! **********");
 			//System.out.println("******************  updating All Visa  Details Started..! **********");
 			try { 
 				String fromUser = defaultFromEmailAddressForProd;
@@ -5399,24 +5398,25 @@ public class EMailJobScheduler {
 				if(visaListExpiring != null && visaListExpiring.size()>0) {
 					List<CandidateVisaHistory> visaList = new ArrayList<CandidateVisaHistory>();
 
-					Map<Candidate, List<CandidateVisaHistory>> visaMap = new HashMap<Candidate, List<CandidateVisaHistory>>();
+					Map<Long, List<CandidateVisaHistory>> visaMapExpiring = new HashMap<Long, List<CandidateVisaHistory>>();
 					
 					for (CandidateVisaHistory  visaObj : visaListExpiring) {
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());// here for loop preparing visa list by user base.
-						if (visaMap.get(visaObj.getCreatedBy()) == null) {
+						Long candidateId=visaObj.getVisaId().getCandidate().getId();
+						if (visaMapExpiring.get(candidateId) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
-							visaMap.put(visaObj.getVisaId().getCandidate(), visaList);
+							visaMapExpiring.put(candidateId, visaList);
 						} else {
-							visaMap.get(visaObj.getVisaId().getCandidate()).add(visaObj);
+							visaMapExpiring.get(candidateId).add(visaObj);
 						}
 					}
-					for (Map.Entry<Candidate, List<CandidateVisaHistory>> entry : visaMap.entrySet()) {
+					for (Map.Entry<Long, List<CandidateVisaHistory>> entry : visaMapExpiring.entrySet()) {
 					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						Candidate toUser = (Candidate)entry.getKey();
-						Candidate candidate = entry.getKey();
-						OrgLocations ol = candidate.getOrgLocationId();
-						sendVisaExpiresInDaysMailToCandidate(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
+						List<CandidateVisaHistory> expiringList = (List<CandidateVisaHistory>)entry.getValue();;
+						Candidate toUser = expiringList.get(0).getVisaId().getCandidate();
+						OrgLocations ol = toUser.getOrgLocationId();
+						sendVisaExpiresInDaysMailToCandidate(toUser, fromUser, expiringList, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}	
@@ -5424,30 +5424,30 @@ public class EMailJobScheduler {
 				
 				List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(currentDate);
 				if (visaListExpiring != null && visaListExpiring.size() > 0) {
-					List<CandidateVisaHistory> visaList = new ArrayList<CandidateVisaHistory>();
+					List<CandidateVisaHistory> visaList = null;
 
-					Map<Candidate, List<CandidateVisaHistory>> visaMap1 = new HashMap<Candidate, List<CandidateVisaHistory>>();
+					Map<Long, List<CandidateVisaHistory>> visaMapExpired = new HashMap<Long, List<CandidateVisaHistory>>();
 
 					for (CandidateVisaHistory visaObj : visaListExpiring) { // here for loop preparing Visa list by user base.
 						logger.info("visaListExpired list size: "+visaListExpiring.size()+" expired.");
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
-						if (visaMap1.get(visaObj.getCreatedBy()) == null) {
+						 Long candidateId= visaObj.getVisaId().getCandidate().getId();
+						if (visaMapExpired.get(candidateId) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
-							visaMap1.put(visaObj.getVisaId().getCandidate(), visaList);
+							visaMapExpired.put(candidateId, visaList);
 						} else {
-							visaMap1.get(visaObj.getVisaId().getCandidate()).add(visaObj);
+							visaMapExpired.get(candidateId).add(visaObj);
 						}
 					}
 					// below code is used for sending email to each user in map. Map contains user
 					// as key and value as list of Visa objects.
-					for (Map.Entry<Candidate, List<CandidateVisaHistory>> entry : visaMap1.entrySet()) {
+					for (Map.Entry<Long, List<CandidateVisaHistory>> entry : visaMapExpired.entrySet()) {
 					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						Candidate toUser = (Candidate) entry.getKey();
-						Candidate candidate = entry.getKey();
-						OrgLocations ol = candidate.getOrgLocationId();
-						List<CandidateVisaHistory> mapPassportList = entry.getValue();
-						sendVisaExpiredMailToCandidate(toUser, fromUser, mapPassportList, ol, userRole);
+						List<CandidateVisaHistory> visaListByCandidate = (List<CandidateVisaHistory>) entry.getValue();
+						Candidate toUser = visaListByCandidate.get(0).getVisaId().getCandidate();
+						OrgLocations ol = toUser.getOrgLocationId();
+						sendVisaExpiredMailToCandidate(toUser, fromUser, visaListByCandidate, ol, userRole);
 					}
 				}
 				
@@ -5505,8 +5505,7 @@ public class EMailJobScheduler {
 				 Date endDate=commonUtil.dateFromElk(expDate);		
 				 long diff = endDate.getTime()-startDate.getTime();
 				 
-				 Long expiresInDaysCount = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				 globalVarsMap.put("Expires_In_Days_Count", String.valueOf(expiresInDaysCount+1L));
+				 globalVarsMap.put("Expires_In_Days_Count", currPassDayStatus);
 				 
 				 //210, 180, 90, 60, 30
 				 switch (currPassDayStatus) {
@@ -5662,10 +5661,11 @@ public class EMailJobScheduler {
 			}
 	
 	 //Passport expiry mail to manager..
-	   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+	 @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+	   //@Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
-		public void runJobSchedulerDailyForCandidatePassportManager() { // check if Passport is expired on not on daily basis, if expired updating
+		public void runJobSchedulerDailyForCandidatePassportResourceManager() { // check if Passport is expired on not on daily basis, if expired updating
 														// Passport status in Database.
 			logger.info("******************  updating All Passport  Details Started..! **********");
 			//System.out.println("******************  updating All Passport  Details Started..! **********");
@@ -5685,62 +5685,65 @@ public class EMailJobScheduler {
 					logger.info("passportListExpiring list size: "+passportListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
 							" expiry date :" +expectedExpiryDate);
 				if(passportListExpiring != null && passportListExpiring.size()>0) {
-					List<CandidatePassport> passportList = new ArrayList<CandidatePassport>();
+					List<CandidatePassport> passportList = null;
 
-					Map<User, List<CandidatePassport>> passportMap = new HashMap<User, List<CandidatePassport>>();
+					Map<Long, List<CandidatePassport>> passporExpiringtMap = new HashMap<Long, List<CandidatePassport>>();
 					
 					for (CandidatePassport  passportObj : passportListExpiring) { // here for loop preparing Passport list by user base.
 
 						UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
 						if(userRole != null){
-						
+						   Long userId = userRole.getReportingManager().getId();
 									
-						if (passportMap.get(passportObj.getCreatedBy()) == null) {
+						if (passporExpiringtMap.get(userId) == null) {
 							passportList = new ArrayList<CandidatePassport>();
 							passportList.add(passportObj);
-							passportMap.put(userRole.getReportingManager(), passportList);
+							passporExpiringtMap.put(userId, passportList);
 						} else {
-							passportMap.get(passportObj.getCreatedBy()).add(passportObj);
+							passporExpiringtMap.get(userId).add(passportObj);
 						}
 					}
-					for (Map.Entry<User, List<CandidatePassport>> entry : passportMap.entrySet()) {
+					for (Map.Entry<Long, List<CandidatePassport>> entry : passporExpiringtMap.entrySet()) {
 					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						User toUser = (User)entry.getKey();
+						System.out.println("Resource manager id for expiring in days >>> user id :  " + entry.getKey() + ", passport list size is  = " + entry.getValue().size());
+						Long resourceManagerid = entry.getKey();
+						List<CandidatePassport> passportListByUser = (List<CandidatePassport> )entry.getValue();
+						User toUser = userService.getUserById(resourceManagerid);
 						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
-						sendPassportExpiresInDaysMailToCandidateManager(toUser, fromUser, passportListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
+						sendPassportExpiresInDaysMailToCandidateManager(toUser, fromUser, passportListByUser, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}
 				}	
 			
 				
-				List<CandidatePassport> passportList = immigrationCommonService.getAllPassportList(currentDate);
-				if (passportList != null && passportList.size() > 0) {
+				List<CandidatePassport> passportListExpired = immigrationCommonService.getAllPassportList(currentDate);
+				if (passportListExpired != null && passportListExpired.size() > 0) {
 					List<CandidatePassport> passportListByManager = new ArrayList<CandidatePassport>();
 
-					Map<User, List<CandidatePassport>> managerPassportMap = new HashMap<User, List<CandidatePassport>>();
+					Map<Long, List<CandidatePassport>> managerPassportMap = new HashMap<Long, List<CandidatePassport>>();
 					UserRole userRole = null;
-					for (CandidatePassport passportObj : passportList) { // here for loop preparing Passport list by user base.
+					for (CandidatePassport passportObj : passportListExpired) { // here for loop preparing Passport list by user base.
 
-						logger.info("passportListExpired list size: "+passportList.size()+" expired.");
+						logger.info("passportListExpired list size: "+passportListExpired.size()+" expired.");
 						
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(passportObj.getCandidate().getConsultantUser().getId(), passportObj.getCandidate().getOrgLocationId().getId());
 						if(userRole != null){
-						
-						if (managerPassportMap.get(passportObj.getCreatedBy()) == null) {
+						Long resourceManagerId = userRole.getReportingManager().getId();
+						if (managerPassportMap.get(resourceManagerId) == null) {
 							passportListByManager = new ArrayList<CandidatePassport>();
 							passportListByManager.add(passportObj);
-							managerPassportMap.put(userRole.getReportingManager(), passportListByManager);
+							managerPassportMap.put(resourceManagerId, passportListByManager);
 						} else {
-							managerPassportMap.get(passportObj.getCandidate()).add(passportObj);
+							managerPassportMap.get(resourceManagerId).add(passportObj);
 						}
 					}
 					}
 					// below code is used for sending email to each user in map. Map contains user
 					// as key and value as list of Passport objects.
-					for (Map.Entry<User, List<CandidatePassport>> entry : managerPassportMap.entrySet()) {
-					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						User toUser = (User)entry.getKey();
+					for (Map.Entry<Long, List<CandidatePassport>> entry : managerPassportMap.entrySet()) {
+						System.out.println("Resource manager id for expired >>> user id :  " + entry.getKey() + ", passport list size is  = " + entry.getValue().size());
+						User toUser = userService.getUserById(entry.getKey());
 						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
 						List<CandidatePassport> mapPassportList = entry.getValue();
 						sendPassportExpiredMailToCandidateManager(toUser, fromUser, mapPassportList, ol, userRole);
@@ -5753,6 +5756,7 @@ public class EMailJobScheduler {
 				e.printStackTrace();
 				// System.out.println("ERROR in " + e.getMessage());
 			}
+			 System.out.println("Sending emails to resource manager is completed>>>>>>>>>>>>>");
 		}
 	   
 	   private void sendPassportExpiresInDaysMailToCandidateManager(User toUserObj, String fromEmail, List<CandidatePassport> passportList, OrgLocations ol, String currPassDayStatus, UserRole userRole) throws Exception {
@@ -5811,8 +5815,7 @@ public class EMailJobScheduler {
 				 Date endDate=commonUtil.dateFromElk(expDate);		
 				 long diff = endDate.getTime()-startDate.getTime();
 				 
-				 Long expiresInDaysCount = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				 globalVarsMap.put("Expires_In_Days_Count", String.valueOf(expiresInDaysCount+1L));
+				 globalVarsMap.put("Expires_In_Days_Count",currPassDayStatus);
 				 
 				 //210, 180, 90, 60, 30
 				 switch (currPassDayStatus) {
@@ -5980,10 +5983,11 @@ public class EMailJobScheduler {
 	 //Visa expiry mail to manager..
 	   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
 	   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+	   //@Scheduled(cron = "0 0/5 * 1/1 * ?") // used for dev testing run for every 5 minutes..
 		@Async
-		public void runJobSchedulerDailyForCandidateVisaManager() { // check if Visa is expired on not on daily basis, if expired updating
+	public void runJobSchedulerDailyForCandidateVisaManager() { // check if Visa is expired on not on daily basis, if expired updating
 														// Visa status in Database.
-			logger.info("******************  updating All Visa  Details Started..! **********");
+			logger.info("******************  updating All Visa  expiring in days Started..! ****");
 			//System.out.println("******************  updating All Visa  Details Started..! **********");
 			try { 
 				String fromUser = defaultFromEmailAddressForProd;
@@ -5999,58 +6003,60 @@ public class EMailJobScheduler {
 					List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(expectedExpiryDate);
 					/*System.out.println("visaListExpiring list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
 							" expiry date :" +expiryDate);*/
-					logger.info("visaListExpiring list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
+					logger.info("visaListExpiring  list size: "+visaListExpiring.size()+" for expected days: "+expiring_days_arr[i]+
 							" expiry date :" +expectedExpiryDate);
 				if(visaListExpiring != null && visaListExpiring.size()>0) {
-					List<CandidateVisaHistory> visaList = new ArrayList<CandidateVisaHistory>();
+					List<CandidateVisaHistory> visaList = null;;
 					
-					Map<User, List<CandidateVisaHistory>> visaMap = new HashMap<User, List<CandidateVisaHistory>>();
+					Map<Long, List<CandidateVisaHistory>> visaMapExpiring = new HashMap<Long, List<CandidateVisaHistory>>();
 					for (CandidateVisaHistory  visaObj : visaListExpiring) { // here for loop preparing visa list by user base.
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
-						
-						if (visaMap.get(visaObj.getCreatedBy()) == null) {
+						Long managerId =  userRole.getReportingManager().getId();
+						if (visaMapExpiring.get(managerId) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
-							visaMap.put(userRole.getReportingManager(), visaList);
+							visaMapExpiring.put(managerId, visaList);
 						} else {
-							visaMap.get(visaObj.getVisaId().getCandidate()).add(visaObj);
+							visaMapExpiring.get(managerId).add(visaObj);
 						}
 					}
-					for (Map.Entry<User, List<CandidateVisaHistory>> entry : visaMap.entrySet()) {
-					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						User toUser = (User)entry.getKey();
+					for (Map.Entry<Long, List<CandidateVisaHistory>> entry : visaMapExpiring.entrySet()) {
+						System.out.println("for user id  = " + entry.getKey() + ", expiring visa list size  = " + entry.getValue().size());
+						List<CandidateVisaHistory> expiringVisaList  = (List<CandidateVisaHistory>)entry.getValue();
+						User toUser = userService.getUserById(entry.getKey());
 						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
-						sendVisaExpiresInDaysMailToCandidateManager(toUser, fromUser, visaListExpiring, ol, String.valueOf(expiring_days_arr[i]), userRole);
+						sendVisaExpiresInDaysMailToCandidateManager(toUser, fromUser, expiringVisaList, ol, String.valueOf(expiring_days_arr[i]), userRole);
 					}
 				  }
 				}	
 			
 				
-				List<CandidateVisaHistory> visaListExpiring = immigrationCommonService.getAllVisaHistoryList(currentDate);
-				if (visaListExpiring != null && visaListExpiring.size() > 0) {
+				List<CandidateVisaHistory> visaListExpired = immigrationCommonService.getAllVisaHistoryList(currentDate);
+				if (visaListExpired != null && visaListExpired.size() > 0) {
 					List<CandidateVisaHistory> visaList = new ArrayList<CandidateVisaHistory>();
 
-					Map<User, List<CandidateVisaHistory>> visaMap1 = new HashMap<User, List<CandidateVisaHistory>>();
+					Map<Long, List<CandidateVisaHistory>> visaListExpiredMap = new HashMap<Long, List<CandidateVisaHistory>>();
 
-					for (CandidateVisaHistory visaObj : visaListExpiring) { // here for loop preparing Visa list by user base.
-						logger.info("visaListExpired list size: "+visaListExpiring.size()+" expired.");
+					for (CandidateVisaHistory visaObj : visaListExpired) { // here for loop preparing Visa list by user base.
+						logger.info("visaListExpired list size: "+visaListExpiredMap.size()+" expired.");
 						userRole = userRoleService.getUserRoleByUserIdAndLocationId(visaObj.getVisaId().getCandidate().getConsultantUser().getId(), visaObj.getVisaId().getCandidate().getOrgLocationId().getId());
-						if (visaMap1.get(visaObj.getCreatedBy()) == null) {
+						Long resourceManager = userRole.getReportingManager().getId();
+						if (visaListExpiredMap.get(resourceManager) == null) {
 							visaList = new ArrayList<CandidateVisaHistory>();
 							visaList.add(visaObj);
-							visaMap1.put(userRole.getReportingManager(), visaList);
+							visaListExpiredMap.put(resourceManager, visaList);
 						} else {
-							visaMap1.get(visaObj.getVisaId().getCandidate()).add(visaObj);
+							visaListExpiredMap.get(resourceManager).add(visaObj);
 						}
 					}
 					// below code is used for sending email to each user in map. Map contains user
 					// as key and value as list of Visa objects.
-					for (Map.Entry<User, List<CandidateVisaHistory>> entry : visaMap1.entrySet()) {
-					//	System.out.println("Key = " + entry.getKey().getId() + ", Value = " + entry.getValue().size());
-						User toUser = (User) entry.getKey();
+					for (Map.Entry<Long, List<CandidateVisaHistory>> entry : visaListExpiredMap.entrySet()) {
+					    System.out.println("for user id = " + entry.getKey()+ ", exiredvisalist size  = " + entry.getValue().size());
+						List<CandidateVisaHistory> visaExpiredList  = (List<CandidateVisaHistory>) entry.getValue();
 						OrgLocations ol = orgLocationService.getOrgLocationById(userRole.getOrgLocations().getId());
-						List<CandidateVisaHistory> mapPassportList = entry.getValue();
-						sendVisaExpiredMailToCandidateManager(toUser, fromUser, mapPassportList, ol, userRole);
+						User toUser = userService.getUserById(entry.getKey());
+						sendVisaExpiredMailToCandidateManager(toUser, fromUser, visaExpiredList, ol, userRole);
 					}
 				}
 				
@@ -6116,8 +6122,7 @@ public class EMailJobScheduler {
 				 Date endDate=commonUtil.dateFromElk(expDate);		
 				 long diff = endDate.getTime()-startDate.getTime();
 				 
-				 Long expiresInDaysCount = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-				 globalVarsMap.put("Expires_In_Days_Count", String.valueOf(expiresInDaysCount+1L));
+				 globalVarsMap.put("Expires_In_Days_Count", currPassDayStatus);
 				 
 				 //210, 180, 90, 60, 30
 				 switch (currPassDayStatus) {
