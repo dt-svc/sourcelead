@@ -99,7 +99,7 @@ public class CandidateTimelineActivityDaoImpl implements CandidateTimelineActivi
 		Session session = this.sessionFactory.getCurrentSession();
 		List<CandidateTimelineActivity> candidateTimelineActivityList = null;
 		if (candidateId != null) {
-			String query = "from CandidateTimelineActivity cta left join fetch cta.createdUser user left join fetch cta.candidateGlobalId candidate left join fetch cta.orgLocationId orglocation where cta.orgLocationId.id =:orgLocationId and cta.candidateGlobalId.id =:candidateId ORDER BY cta.createdDate DESC";
+			String query = "from CandidateTimelineActivity cta left join fetch cta.createdUser user left join fetch cta.candidate candidate left join fetch cta.orgLocationId orglocation where cta.orgLocationId.id =:orgLocationId and cta.candidate.id =:candidateId ORDER BY cta.createdDate DESC";
 			candidateTimelineActivityList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).list();
 		}
 		logger.debug("Successfully Fetched Candidate Activities");

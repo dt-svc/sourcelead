@@ -33,14 +33,17 @@ public class CandidateGlobalIndexHelper {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	CandidateService candidateService;
+	
 
 	public CandidateIndex getCandidateGlobalIndexFromCandidate(CandidateGlobal candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
-			
-			if(candidate.getCandidateId() != null) {
-				candidateIndex.setCandidateId(candidate.getCandidateId());
+			Long candidateGlobalId = candidateService.getCandidateIdByGlobalCandidateId(candidate.getId());
+			if(candidateGlobalId != null) {
+				candidateIndex.setCandidateId(candidateGlobalId);
 			}else {
 				candidateIndex.setCandidateId(candidate.getId());
 			}

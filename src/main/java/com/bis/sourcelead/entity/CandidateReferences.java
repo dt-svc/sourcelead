@@ -38,12 +38,8 @@ public class CandidateReferences implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	private Candidate candidateId;
+	private CandidateGlobal candidateId;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable=false)
-	private CandidateGlobal candidateGlobalId;
 	
 	@Column(name = "NAME")
 	private String name ;
@@ -94,11 +90,11 @@ public class CandidateReferences implements Serializable{
 		this.orgLocationId = orgLocationId;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -194,12 +190,6 @@ public class CandidateReferences implements Serializable{
 		this.comment = comment;
 	}
 
-	public CandidateGlobal getCandidateGlobalId() {
-		return candidateGlobalId;
-	}
-
-	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
-		this.candidateGlobalId = candidateGlobalId;
-	}
+	
 	
 }

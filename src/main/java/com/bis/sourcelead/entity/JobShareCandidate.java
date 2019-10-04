@@ -34,7 +34,7 @@ private static final long serialVersionUID = 1L;
 	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
+	private CandidateGlobal candidateId;
     
 	@NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +48,7 @@ private static final long serialVersionUID = 1L;
 		return id;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
@@ -60,7 +60,7 @@ private static final long serialVersionUID = 1L;
 		this.id = id;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 

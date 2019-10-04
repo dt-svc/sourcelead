@@ -34,4 +34,6 @@ public interface CandidateGlobalDao {
 	 boolean isCandidateExistsInCandidateGlobal(String email,Long orgLocationId) throws Exception;
 	 
 	 Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount);
+	 
+	 public List<CandidateGlobal> getAllRequestedGlboalCandidatesForCampaign(List<Long> candidateId)throws Exception;
 }

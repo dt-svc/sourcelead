@@ -34,7 +34,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Candidate candidate, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
+	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Long candidateId, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
 	
 	
 	/**
@@ -46,7 +46,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,FileInfo fileInfo)throws Exception;
+	public void storeCandidateResumesDetails(OrgLocations orgLocations,String userCode,Long candidateId,FileInfo fileInfo)throws Exception;
 	 
 	/**
 	 * @param candidateId

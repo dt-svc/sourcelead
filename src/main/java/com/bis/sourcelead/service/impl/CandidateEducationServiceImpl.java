@@ -89,8 +89,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		CandidateEducation candidateEducation = null;
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
-		 CandidateGlobal candidateGlobal = null;
-		 Candidate candidate = null;
+		 CandidateGlobal candidate = null;
 		if(candidateId !=null){
         	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateEduId())){
 	       		 if(candidateEducationDTO.getCandidateEduId() !=null){
@@ -104,15 +103,9 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
        	    }else{
        	    	candidateEducation = new CandidateEducation();
        	     }
-    	if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-    		    candidateGlobal = new CandidateGlobal();
-    		    candidateGlobal.setId(candidateId);
-    			candidateEducation.setCandidateGlobalId(candidateGlobal);
-    	}else {
-    		    candidate = new Candidate();
-    			candidate.setId(candidateId);
-    			candidateEducation.setCandidateId(candidate);
-    	}
+        	candidate = new CandidateGlobal();
+        	candidate.setId(candidateId);
+		    candidateEducation.setCandidateId(candidate);
        
 		
 		orgLocations.setId(orgLocationId);
@@ -220,16 +213,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		
 		candidateActivityCommonUtil.storeCandidateEducationHistory(candidateEducation, user);
 		
-		if(StringUtils.isNotBlank(candidateEducationDTO.getCandidateType()) && candidateEducationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-			candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
-		}else {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
-		}
-		
-		/*
-		 * updating Candidate Education DB data in existing candidateindex
-		 */
-		saveOrUpdateCandidateElkDocumentWithEducationDetails(candidateEducation.getCandidateId(),orgLocationId);
+		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_EDUCATION_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
 		return candidateEducation;
 	}
@@ -281,7 +265,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	}
 
 	@Override
-	public HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception {
+	public void saveCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,String userCode) throws Exception {
 		    HashSet<CandidateEducation> candidateEducationList = new HashSet<CandidateEducation>(); 
 		    if(StringUtils.isNotBlank(candidateDTO.getCandidateEducation())){
 		  	      String[] educations = candidateDTO.getCandidateEducation().split(",");
@@ -305,7 +289,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				    		  ce.setCandidateId(candidate);
 				    		  ce.setOrglocationId(orgLocations);
 				    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
-				    		  candidateEducationList.add(ce);
+				    		  saveCandidateEducation(ce);
 			    		  }
 	    			  }
 		    		  }else{
@@ -315,7 +299,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 				    		  ce.setCandidateId(candidate);
 				    		  ce.setOrglocationId(orgLocations);
 				    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
-				    		  candidateEducationList.add(ce);
+				    		  saveCandidateEducation(ce);
 			    		  }
 		    		  }
 		    		  
@@ -323,7 +307,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		    	  }
 		    	  
 		    }
-			return  candidateEducationList;
 	  }
 
 	
@@ -350,11 +333,6 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 		     activitySummary.append("Education").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
 			 candidateActivityCommonUtil.storeCandidateEducationHistory(can, user);
 			 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can.getCandidateId(), "", Constants.CANDIDATE_DELETED_EDUCATION, activitySummary.toString(), "CANDIDATE");
-				
-		        /*
-				 * updating Candidate Skills DB data in existing candidateindex
-				 */
-				saveOrUpdateCandidateElkDocumentWithEducationDetails(can.getCandidateId(),can.getOrglocationId().getId());
 		     
 		     return can;
 	}
@@ -471,7 +449,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	  	    	  for(int i=0; i<educations.length; i++) {
 	  	    		  CandidateEducation ce = new CandidateEducation();
 	  	    		  ce.setName(educations[i].trim());
-		    		  ce.setCandidateGlobalId(candidate);
+		    		 // ce.setCandidateGlobalId(candidate);
 		    		  ce.setOrglocationId(orgLocations);
 		    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 		    		  
@@ -537,7 +515,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	     StringBuffer activitySummary = new StringBuffer();
 	     activitySummary.append("Education").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(can.getName()).append(Constants.NEW_VALUE_TAG_END);
 		 candidateActivityCommonUtil.storeCandidateEducationHistory(can, user);
-		 candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, can.getCandidateGlobalId(), "", Constants.CANDIDATE_DELETED_EDUCATION, activitySummary.toString(), "CANDIDATE");
+		// candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, can.getCandidateGlobalId(), "", Constants.CANDIDATE_DELETED_EDUCATION, activitySummary.toString(), "CANDIDATE");
 			
 	     
 	     return can;

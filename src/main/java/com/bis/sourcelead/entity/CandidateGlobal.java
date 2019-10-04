@@ -360,22 +360,22 @@ public class CandidateGlobal {
 	@Transient
 	private String fullName;
 
-	@OneToMany(mappedBy = "candidateGlobalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateEducation> candidateEducation = new HashSet<CandidateEducation>(0);
 
-	@OneToMany(mappedBy = "candidateGlobalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateResumes> candidateResumes = new HashSet<CandidateResumes>(0);
 
-	@OneToMany(mappedBy = "candidateGlobalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateEmployers> candidateEmployers = new HashSet<CandidateEmployers>(0);
 	
-	@OneToMany(mappedBy = "candidateGlobalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateHistory> candidateHistory = new HashSet<CandidateHistory>(0);
 	
-	@OneToMany(mappedBy = "candidateGlobalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateTimelineActivity> candidateTimeLineActivity = new HashSet<CandidateTimelineActivity>(0);
 	
-	@OneToMany(mappedBy = "candidateGlobalId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "candidateId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<CandidateCertifications> candidateCertifications = new HashSet<CandidateCertifications>();
 
 	@Transient

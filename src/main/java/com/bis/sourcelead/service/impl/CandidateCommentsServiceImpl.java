@@ -67,22 +67,15 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Long candidateId, OrgLocations orgLocations, Long submissionId) throws Exception {
 		CandidateComments candidateComments = new CandidateComments();
 		StringBuffer activitySummary = new StringBuffer();
-		Candidate candidate = null;
-		CandidateGlobal candidateGlobal = null;
+		CandidateGlobal candidate = null;
 			if(candidateCommentsDTO.getComment() != null){
 				activitySummary.append("Comment").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCommentsDTO.getComment()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				candidateComments.setComment(candidateCommentsDTO.getComment());
 			}
 			
-			if (StringUtils.isNotBlank(candidateCommentsDTO.getCandidateType()) && candidateCommentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-				candidateGlobal = new CandidateGlobal();
-				candidateGlobal.setId(candidateId);
-				candidateComments.setCandidateGlobalId(candidateGlobal);
-			}else {
-				candidate = new Candidate();
-				candidate.setId(candidateId);
-				candidateComments.setCandidateId(candidate);
-			}
+			candidate = new CandidateGlobal();
+			candidate.setId(candidateId);
+			candidateComments.setCandidateId(candidate);
 			
 			RequirementSubmission submission = null;
 			if (submissionId != null) {
@@ -103,11 +96,7 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			candidateComments.setUpdatedDate(commonUtil.currentDate());
 		    candidateCommentsDao.storeCandidateComments(candidateComments);
 		
-		  if (StringUtils.isNotBlank(candidateCommentsDTO.getCandidateType()) && candidateCommentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-			  candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
-		  }else {
-			  candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
-		  }
+		    candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
 			  
 		
 		return candidateComments;

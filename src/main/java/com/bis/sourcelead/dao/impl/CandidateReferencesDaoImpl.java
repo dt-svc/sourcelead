@@ -124,7 +124,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 	public CandidateReferences getCandidateReferenceByReferenceId(Long refId) throws Exception {
 		logger.debug("In Candidate Reference By refId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateReferences cr left join fetch cr.candidateId left join fetch cr.candidateGlobalId where cr.id = :refId" ;
+		String query = " from CandidateReferences cr left join fetch cr.candidateId  where cr.id = :refId" ;
 		List<CandidateReferences> candidateReferencesList =session.createQuery(query).setLong("refId", refId).list(); 
 		CandidateReferences candidateReferences = null;
 		if(candidateReferencesList != null && !candidateReferencesList.isEmpty()){
@@ -195,7 +195,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 	@Transactional(rollbackFor = { Exception.class })
 	public List<CandidateReferences> getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateReferences cr left join fetch cr.candidateGlobalId where cr.candidateGlobalId.id =:candidateId and cr.status ='1' ORDER BY cr.createdDate DESC";
+		String query = "from CandidateReferences cr left join fetch cr.candidateId where cr.candidateId.id =:candidateId and cr.status ='1' ORDER BY cr.createdDate DESC";
 		List<CandidateReferences> candidateReferencesList = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateReferencesList;
 	}
@@ -206,7 +206,7 @@ public class CandidateReferencesDaoImpl implements CandidateReferencesDao{
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		 boolean flag = false;
-			 String query = "from CandidateReferences cr  where cr.email =:referenceEmail and cr.candidateGlobalId.id =:candidateId ";
+			 String query = "from CandidateReferences cr  where cr.email =:referenceEmail and cr.candidateId.id =:candidateId ";
 				Collection<CandidateReferences> candidateReferencesList = session.createQuery(query) .setString("referenceEmail", referenceEmail).setLong("candidateId", candidateId).list();
 				if (candidateReferencesList != null && candidateReferencesList.size() > 0) {
 					flag = true;

@@ -619,7 +619,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			subQuery = "candidate.isAssociate = 'N' ";
 		}
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "
+		String query = "select count(*) from CandidateGlobal candidate  where candidate.orgLocationId.id = :orgLocationId and "
 				+ subQuery
 				+ " and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";
 		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
@@ -638,7 +638,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllHotlistCandidatesCountNotAssignedToTeamByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and (candidate.isFavourite = '1' OR candidate.isFavouriteAssociate = '1') and candidate.teamId IS NULL ";
+		String query = "select count(*) from CandidateGlobal candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and (candidate.isFavourite = '1' OR candidate.isFavouriteAssociate = '1') and candidate.teamId IS NULL ";
 		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
 				.list();
 		Integer count = 0;
@@ -1986,7 +1986,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					+ "OL.ORG_ID AS orgId, " + "(SELECT " + "ORG_NAME " + "FROM "
 					+ "ORG_LOCATIONS OL,ORG_RELATIONS ORL " + "WHERE "
 					+ "(OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId AND ORL.ID = CAND.ORG_RELATION_ID) AS vendorName "
-					+ "FROM " + "CANDIDATE CAND, " + "ORG_LOCATIONS OL "
+					+ "FROM " + "CANDIDATE_GLOBAL CAND, " + "ORG_LOCATIONS OL "
 					+ "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' "
 					+ "AND CAND.ORG_LOCATION_ID = :orgLocationId "
 					+ "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
@@ -2107,7 +2107,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		String query = "SELECT " + " CAND.ID AS candId, "
 				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName,"
-				+ " CAND.IS_ASSOCIATE AS isAssociate " + " FROM CANDIDATE CAND " + " WHERE CAND.STATUS = '1' "
+				+ " CAND.IS_ASSOCIATE AS isAssociate " + " FROM CANDIDATE_GLOBAL CAND " + " WHERE CAND.STATUS = '1' "
 				+ " AND CAND.ORG_LOCATION_ID = :orgLocationId " + " AND CAND.PROFILE_PERCENTAGE >= :profilePercentage "
 				+ subQuery
 				+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
@@ -3847,7 +3847,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional
 	public Long getCandidateIdByGlobalCandidateId(Long globalCandidateId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		Long candidateId = 0L;
+		Long candidateId = null;
 		String query =  "SELECT "
 				+" CAND.ID "           
 				+" FROM CANDIDATE CAND "

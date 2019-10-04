@@ -1,13 +1,12 @@
 package com.bis.sourcelead.service.impl;
 
-import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dao.CandidateHistoryDao;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateHistoryService;
@@ -19,9 +18,7 @@ public class CandidateHistoryServiceImpl implements CandidateHistoryService{
 	CandidateHistoryDao candidateHistoryDao;
 
 	@Override
-	public HashSet<CandidateHistory> getCandidateHistoryDetails(Candidate candidate, User user) throws Exception {
-		
-		HashSet<CandidateHistory> candidatehistoryList = new HashSet<CandidateHistory>(); 
+	public void saveCandidateHistoryDetails(CandidateGlobal candidate, User user) throws Exception {
 		
 		CandidateHistory candidateHistory = new CandidateHistory();
 		candidateHistory.setCandidateId(candidate);
@@ -62,8 +59,7 @@ public class CandidateHistoryServiceImpl implements CandidateHistoryService{
 		candidateHistory.setStatus(candidate.getStatus());
 		candidateHistory.setCreatedUser(user);
 		candidateHistory.setCreatedBy(user.getUserCode());
-		candidatehistoryList.add(candidateHistory);
-		return candidatehistoryList;
+		storeCandidateHistory(candidateHistory);
 	}
 
 	@Override

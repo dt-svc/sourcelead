@@ -3,7 +3,6 @@ package com.bis.sourcelead.service.impl;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +33,6 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
 import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.util.ConversionUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -94,9 +92,10 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Candidate candidate, String resumeId, OrgLocations orgLocations) throws Exception
+	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Long candidateId, String resumeId, OrgLocations orgLocations) throws Exception
 	{
 		CandidateResumes candidateResume = null;
+		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 		StringBuffer activitySummary = new StringBuffer();
 		if (resumeId != null && !resumeId.equalsIgnoreCase("null")) {
 			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
@@ -177,13 +176,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		candidateResumesDao.updateCandidateResume(candidateResume);
 		candidateActivityCommonUtil.storeCandidateResumesHistory(candidateResume, user);
 		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_RESUME_UPDATED, activitySummary.toString(), "CANDIDATE");
-		/*
-		 * updating Candidate Resume DB data in existing candidateindex
-		 */
-
-//    	candidate.setUpdatedDate(new Date());
     	
-		saveOrUpdateCandidateElkDocumentWithResumeDetails(candidate);
 		return candidateResume;
 	}
 	
@@ -215,13 +208,13 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations, String userCode, Candidate candidate, FileInfo fileInfo) throws Exception
+	public void storeCandidateResumesDetails(OrgLocations orgLocations, String userCode, Long candidateId, FileInfo fileInfo) throws Exception
 	{
-		HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
 		if (StringUtils.isNotBlank(fileInfo.getFileURL())) {
 			CandidateResumes candidateResumes = new CandidateResumes();
+			CandidateGlobal candidate = new CandidateGlobal();
+			candidate.setId(candidateId);
 			candidateResumes.setCandidateId(candidate);
-			//candidateResumes.setDocFile(multiFile.getBytes());
 			candidateResumes.setFileName(fileInfo.getFileName());
 			candidateResumes.setFileContentType(fileInfo.getContentType());
 			candidateResumes.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
@@ -232,9 +225,8 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 			candidateResumes.setUpdatedBy(userCode);
 			candidateResumes.setUpdatedDate(new Date());
 			candidateResumes.setOrgLocationId(orgLocations);
-			candidateResumesList.add(candidateResumes);
+			candidateResumesDao.storeCandidateResumes(candidateResumes);
 		}
-		return candidateResumesList;
 	}
 	
 	/**
@@ -263,7 +255,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 		// return
 		// candidateResumesDao.getCandidateResumesListByCandidateIdAndStatus(candidateId,
 		// status);
-		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 		OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
 		// SimpleDateFormat simpleDateFormat =
 		// orgLocations.getLocFullFormDateFormatter();
@@ -477,7 +469,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 				candidateResume.setDescription(candidateResumeDTO.getDescription());
 			}
 			if (candidate != null) {
-				candidateResume.setCandidateGlobalId(candidate);
+				candidateResume.setCandidateId(candidate);
 			}
 			if (orgLocations != null) {
 				candidateResume.setOrgLocationId(orgLocations);

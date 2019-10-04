@@ -127,7 +127,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception {
 		logger.debug("In Candidate Document By documentId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd left join fetch cd.candidateGlobalId  where cd.id = :documentId" ;
+		String query = " from CandidateDocuments cd left join fetch cd.candidateId  where cd.id = :documentId" ;
 		List<CandidateDocuments> candidateDocumentsList =session.createQuery(query).setLong("documentId", documentId).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
@@ -141,7 +141,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentUUID(String documentUUID) throws Exception {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd left join fetch cd.candidateGlobalId where cd.documentUUID = :documentUUID" ;
+		String query = " from CandidateDocuments cd left join fetch cd.candidateId where cd.documentUUID = :documentUUID" ;
 		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setString("documentUUID", documentUUID).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
@@ -206,7 +206,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 				+ " COUNT(DOCS.ID) AS DOCS_COUNT"
 				+ " FROM"
 				    + " CANDIDATE_DOCUMENTS DOCS "
-					+ " WHERE DOCS.CANDIDATE_GLOBAL_ID = :candidateId AND DOCS.STATUS = '1' ";
+					+ " WHERE DOCS.CANDIDATE_ID = :candidateId AND DOCS.STATUS = '1' ";
 		
 		Query countqueryString = session.createSQLQuery(countQuery);
 		countqueryString.setParameter("candidateId", candidateId);
@@ -221,7 +221,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public List<CandidateDocuments> getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateGlobalId.id =:candidateId  and cd.status = 1 ORDER BY cd.id DESC";
+		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateId.id =:candidateId  and cd.status = 1 ORDER BY cd.id DESC";
 		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateDocumentsList;
 	}
@@ -231,7 +231,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateGlobalDocumentByCandidateId(Long candidateId, String documentUUID)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateDocuments  cd left join fetch cd.candidateGlobalId where cd.candidateGlobalId.id = :candidateId and cd.documentUUID =:documentUUID";
+		String query = "from CandidateDocuments  cd left join fetch cd.candidateId where cd.candidateId.id = :candidateId and cd.documentUUID =:documentUUID";
 		List<CandidateDocuments> candidateDocumentsList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setString("documentUUID", documentUUID).list();
 		CandidateDocuments canDoc = null;
 		if (candidateDocumentsList != null && candidateDocumentsList.size() > 0) {

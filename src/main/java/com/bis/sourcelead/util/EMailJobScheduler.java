@@ -405,6 +405,10 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
 
 	private static boolean startEmailParsingProcess = true;
 	
@@ -525,7 +529,7 @@ public class EMailJobScheduler {
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
 							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user);
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,candidateGlobalUtil);
 		                    }
 						}
 					}

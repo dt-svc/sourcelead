@@ -1,6 +1,7 @@
 package com.bis.sourcelead.service;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONException;
 
@@ -46,4 +47,6 @@ public interface CandidateGlobalService {
 	boolean isCandidateExistsInCandidateGlobal(String email,Long orgLocationId) throws Exception;
 	
 	Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount);
+	
+	public List<CandidateGlobal> getAllRequestedGlboalCandidatesForCampaign(List<Long> candidateId)throws Exception;
 }

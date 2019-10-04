@@ -49,11 +49,8 @@ public class CandidateResumes implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	private Candidate candidateId;
+	private CandidateGlobal candidateId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CANDIDATE_GLOBAL_ID", nullable = false)
-	private CandidateGlobal candidateGlobalId;
 	
 	@Transient
 	private Long candidateJsonId;
@@ -130,11 +127,11 @@ public class CandidateResumes implements Serializable{
 		this.orgLocationId = orgLocationId;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -257,12 +254,5 @@ public class CandidateResumes implements Serializable{
 		this.candidateResumesHistoryList = candidateResumesHistoryList;
 	}
 
-	public CandidateGlobal getCandidateGlobalId() {
-		return candidateGlobalId;
-	}
-
-	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
-		this.candidateGlobalId = candidateGlobalId;
-	}
 
 }

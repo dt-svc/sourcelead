@@ -74,7 +74,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
     				  ce = new  CandidateEducation();
     				  if(null !=ce){
 		    			  ce.setName(edu);
-			    		  ce.setCandidateGlobalId(candidate);
+			    		 // ce.setCandidateGlobalId(candidate);
 			    		  ce.setOrglocationId(orgLocations);
 			    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 			    		  candidateEducationList.add(ce);
@@ -84,7 +84,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	    			  ce = new  CandidateEducation();
 	    			  if(null !=ce){
 		    			  ce.setName(edu);
-			    		  ce.setCandidateGlobalId(candidate);
+			    		  //ce.setCandidateGlobalId(candidate);
 			    		  ce.setOrglocationId(orgLocations);
 			    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 			    		  candidateEducationList.add(ce);
@@ -115,7 +115,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		    		  CandidateEmployers cemp = new  CandidateEmployers();
 		    		  emps = emps.replace("\"", "");
 		    		  cemp.setName(emps);
-		    		  cemp.setCandidateGlobalId(candidate);
+		    		  cemp.setCandidateId(candidate);
 		    		  cemp.setOrgLocationId(orgLocations);
 		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
 		    		  candidateEmployersList.add(cemp);
@@ -133,7 +133,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
 		if (StringUtils.isNotBlank(fileInfo.getFileURL())) {
 			CandidateResumes candidateResumes = new CandidateResumes();
-			candidateResumes.setCandidateGlobalId(candidate);
+			//candidateResumes.setCandidateGlobalId(candidate);
 			candidateResumes.setFileName(fileInfo.getFileName());
 			candidateResumes.setFileContentType(fileInfo.getContentType());
 			candidateResumes.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
@@ -201,6 +201,11 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	@Override
 	public Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount) {
 		return candidateGlobalDao.getCandidateGlobalGeneratedIdByOrgLocationId(orgLocationId, generatedIdcount);
+	}
+
+	@Override
+	public List<CandidateGlobal> getAllRequestedGlboalCandidatesForCampaign(List<Long> candidateId) throws Exception {
+		return candidateGlobalDao.getAllRequestedGlboalCandidatesForCampaign(candidateId);
 	}
 
 }

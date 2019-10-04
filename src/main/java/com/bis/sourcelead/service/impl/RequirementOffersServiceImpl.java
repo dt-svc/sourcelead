@@ -1644,7 +1644,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			if(resume != null) {
     				CandidateResumes candResume = new CandidateResumes();
     				candResume.setOrgLocationId(orgLocations);
-    				candResume.setCandidateGlobalId(candidate);
+    				candResume.setCandidateId(candidate);
     				candResume.setFileContentType(resume.getFileContentType());
     				candResume.setFileName(resume.getFileName());
     				candResume.setFileURL(resume.getFileURL());

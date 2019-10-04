@@ -45,7 +45,7 @@ public interface CandidateEducationService {
 	 * @return HashSet<CandidateEducation>
 	 * @throws JSONException
 	 */
-	HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception;
+	void saveCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,String userCode) throws Exception;
 
 	/**
 	 * @param candidateId

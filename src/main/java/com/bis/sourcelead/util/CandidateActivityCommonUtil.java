@@ -52,7 +52,7 @@ public class CandidateActivityCommonUtil {
 	@Autowired
 	private CandidateHistoryDao candidateHistoryDao;
 	
-	public void storeCandidateActivity(User user, OrgLocations orgLocations, Candidate candidate, String actionOn, String actionDesc, String actionSummary, String actionIcon) throws Exception
+	public void storeCandidateActivity(User user, OrgLocations orgLocations, CandidateGlobal candidate, String actionOn, String actionDesc, String actionSummary, String actionIcon) throws Exception
 	{
 		CandidateTimelineActivity candidateTimelineActivity = new CandidateTimelineActivity();
 		
@@ -81,7 +81,7 @@ public class CandidateActivityCommonUtil {
 		candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
 	}
 	
-	public void storeCandidateHistory(Candidate candidate, User user) throws Exception
+	public void storeCandidateHistory(CandidateGlobal candidate, User user) throws Exception
 	{
 		CandidateHistory candidateHistory = new CandidateHistory();
 		candidateHistory.setCandidateId(candidate);
@@ -353,7 +353,7 @@ public class CandidateActivityCommonUtil {
 	{
 		CandidateTimelineActivity candidateTimelineActivity = new CandidateTimelineActivity();
 		
-		candidateTimelineActivity.setCandidateGlobalId(candidate);
+		candidateTimelineActivity.setCandidate(candidate);
 		candidateTimelineActivity.setOrgLocationId(orgLocations);
 		if(user !=null){
 			candidateTimelineActivity.setActionBy(user.getFullName());
@@ -381,7 +381,7 @@ public class CandidateActivityCommonUtil {
 	public void storeCandidateGlobalHistory(CandidateGlobal candidate, User user) throws Exception
 	{
 		CandidateHistory candidateHistory = new CandidateHistory();
-		candidateHistory.setCandidateGlobalId(candidate);
+		candidateHistory.setCandidateId(candidate);
 		candidateHistory.setCandidateType(candidate.getCandidateType());
 		candidateHistory.setCandidateUUID(candidate.getCandidateUUID());
 		candidateHistory.setIsFavourite(candidate.getIsFavourite());

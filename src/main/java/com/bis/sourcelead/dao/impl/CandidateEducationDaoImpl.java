@@ -225,7 +225,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 				+ " COUNT(EDU.ID) AS EDU_COUNT"
 				+ " FROM"
 				    + " CANDIDATE_EDUCATION EDU "
-					+ " WHERE EDU.CANDIDATE_GLOBAL_ID = :candidateId AND EDU.STATUS = '1' ";
+					+ " WHERE EDU.CANDIDATE_ID = :candidateId AND EDU.STATUS = '1' ";
 		
 		Query countqueryString = session.createSQLQuery(countQuery);
 		countqueryString.setParameter("candidateId", candidateId);
@@ -240,7 +240,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	public List<CandidateEducation> getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation ce  left join fetch ce.candidateGlobalId where  ce.candidateGlobalId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
+		String query = "from CandidateEducation ce  left join fetch ce.candidateId where  ce.candidateId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
 		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateEducation;
 	}
@@ -250,7 +250,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	public CandidateEducation getCandidateGlobalEducationBycandidateIdandEducationId(Long candidateId,
 			Long candidateEducationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateGlobalId left join fetch cEmp.orglocationId where cEmp.id = :candidateEducationId and cEmp.candidateGlobalId.id = :candidateId ";
+		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orglocationId where cEmp.id = :candidateEducationId and cEmp.candidateId.id = :candidateId ";
 		List<CandidateEducation> educationList = session.createQuery(query.toString()).setLong("candidateEducationId", candidateEducationId).setLong("candidateId", candidateId).list();
 		CandidateEducation canEMp = null;
 		if (educationList != null && educationList.size() > 0) {
@@ -264,7 +264,7 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 	public Boolean validateCandidateGlobalEducationName(Long candidateId, String candidateEducation) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query = "from CandidateEducation cEmp where cEmp.name = :candidateEducation and cEmp.candidateGlobalId.id = :candidateId and cEmp.status ='1' ";
+		String query = "from CandidateEducation cEmp where cEmp.name = :candidateEducation and cEmp.candidateId.id = :candidateId and cEmp.status ='1' ";
 		List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateEducation", candidateEducation).list();
 		if (educationList != null && educationList.size() > 0) {
 			flag = true;

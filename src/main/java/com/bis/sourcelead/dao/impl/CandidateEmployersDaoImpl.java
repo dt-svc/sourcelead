@@ -235,7 +235,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	public List<CandidateEmployers> getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId,
 			Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateGlobalId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateGlobalId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY (candidateEmployers.endYear) DESC,candidateEmployers.id DESC";  
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY (candidateEmployers.endYear) DESC,candidateEmployers.id DESC";  
 		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).list();
 		return candidateList;
 	}
@@ -245,7 +245,7 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 	public CandidateEmployers getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,
 			Long candidateEmployerId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateGlobalId left join fetch cEmp.orgLocationId where cEmp.id = :candidateEmployersId and cEmp.candidateGlobalId.id = :candidateGlobalId ";
+		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orgLocationId where cEmp.id = :candidateEmployersId and cEmp.candidateId.id = :candidateGlobalId ";
 		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateEmployersId", candidateEmployerId).setLong("candidateGlobalId", candidateId)
 				.list();
 		

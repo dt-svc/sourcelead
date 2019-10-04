@@ -86,7 +86,7 @@ public class CandidateCustomFieldDataDaoImpl implements CandidateCustomFieldData
 		for(CustomFormFieldDTO form:formFieldId) {
 			formIds.add(form.getCustomFormFieldId());
 		}
-		String query = "from CandidateCustomFieldData candidateData left join fetch candidateData.orglocationsFormFields formField left join fetch formField.org org left join fetch candidateData.candidateGlobalId can where org.id =:orgId and can.id =:candidateId and formField.id IN(:formFieldId)";
+		String query = "from CandidateCustomFieldData candidateData left join fetch candidateData.orglocationsFormFields formField left join fetch formField.org org left join fetch candidateData.candidate can where org.id =:orgId and can.id =:candidateId and formField.id IN(:formFieldId)";
 		List<CandidateCustomFieldData> candidateCustomFieldData  = session.createQuery(query).setLong("orgId", orgId).setLong("candidateId", candidateId).setParameterList("formFieldId", formIds).list();
 		Map<Long,String[]> candidateCustomFieldDataMap = new HashMap<Long,String[]>();
 		if(candidateCustomFieldData != null && !candidateCustomFieldData.isEmpty()) {
@@ -106,7 +106,7 @@ public class CandidateCustomFieldDataDaoImpl implements CandidateCustomFieldData
 	public List<CandidateCustomFieldData> getCandidateCustomFieldDataByCandidateGlobalId(Long candidateGlobalId)
 			throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateCustomFieldData cfd left join fetch cfd.candidateGlobalId where cfd.candidateGlobalId.id =:candidateGlobalId ";
+		String query = "from CandidateCustomFieldData cfd left join fetch cfd.candidate where cfd.candidate.id =:candidateGlobalId ";
 		List<CandidateCustomFieldData> candidateCustomFieldDataList = session.createQuery(query).setLong("candidateGlobalId", candidateGlobalId).list();
 		return candidateCustomFieldDataList;
 	}

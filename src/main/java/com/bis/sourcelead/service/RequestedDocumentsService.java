@@ -19,7 +19,7 @@ public interface RequestedDocumentsService {
 	
 	public void rejectRequestedDocuments(JSONObject jsonObj,User user,OrgLocations orgLocations,String documentsIds, String candidateType) throws Exception;
 	
-	public void acceptRequestedDocuments(User user,String documentsIds, OrgLocations orgLocations, Candidate candidate) throws Exception;
+	public void acceptRequestedDocuments(User user,String documentsIds, OrgLocations orgLocations, CandidateGlobal candidate) throws Exception;
 	
 	public void acceptRequestedCandidateGlobalDocuments(User user,String documentsIds, OrgLocations orgLocations, CandidateGlobal candidateGlobal) throws Exception;
 }

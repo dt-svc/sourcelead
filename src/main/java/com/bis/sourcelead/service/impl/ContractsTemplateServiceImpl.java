@@ -305,7 +305,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(StringUtils.isNotBlank(contractsDTO.getSubmissionOffersList())){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 			contracts.setRequirementSubmission(rs);
-			//contracts.setCandidate(rs.getCandidate());			
+			Long candidateId = candidateService.getCandidateIdByGlobalCandidateId(rs.getCandidate().getId());
+			if(candidateId != null) {
+				Candidate candidate = new Candidate();
+				candidate.setId(candidateId);
+				contracts.setCandidate(candidate);		
+			}
+				
 		}
 		
 		if(Constants.Client_SOW.equals(contractsDTO.getContractType()) || Constants.Vendor_SOW.equals(contractsDTO.getContractType())){

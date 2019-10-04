@@ -41,12 +41,8 @@ public class CandidateIndexHelper {
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
 			candidateIndex = new CandidateIndex();
-			if(candidate.getCandidateGlobalId() != null) {
-				candidateIndex.setCandidateId(candidate.getCandidateGlobalId().getId());
-			}else {
-				Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidate.getId());
-				candidateIndex.setCandidateId(candidateGlobalId);
-			}
+			Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidate.getId());
+			candidateIndex.setCandidateId(candidateGlobalId);
 			candidateIndex.setCandidateGlobalId(null);
 			if(null != candidate.getOrgLocationId()){
 				candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());

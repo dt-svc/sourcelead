@@ -284,7 +284,7 @@ public class CandidateHistoryDaoImpl implements CandidateHistoryDao {
 		List<CandidateHistory> candidateHistoryList = new ArrayList<CandidateHistory>();
 		logger.debug("findByCandidateEmail start");
 		try {
-			candidateHistoryList = session.createQuery("from CandidateHistory ch where ch.candidateGlobalId.id=:candidateGlobalId ORDER BY ch.id DESC").setLong("candidateGlobalId", candidateGlobalId).list();
+			candidateHistoryList = session.createQuery("from CandidateHistory ch where ch.candidateId.id=:candidateGlobalId ORDER BY ch.id DESC").setLong("candidateGlobalId", candidateGlobalId).list();
 			logger.debug("findByCandidateEmail end");
 			if (candidateHistoryList.size() > 0) {
 				return candidateHistoryList;

@@ -64,6 +64,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -4029,7 +4030,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement,
-			Candidate candidate) throws Exception {
+			CandidateGlobal candidate) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -4108,8 +4109,9 @@ public class RequirementServiceImpl implements RequirementService {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append(atsUrl).append("/jobCampaignSummary?requirementUUID=")
 				.append(requirement.getRequirementUUID()).toString();
-		if (candidate.getConsultantUser() != null)
-			emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation,
+		Candidate associateCandiate = candidateService.getCandidateByCandidateGlobalId(candidate.getId());
+		if (associateCandiate.getConsultantUser() != null)
+			emailScenerioUtil.sendNotification(actionLink, loginUser, associateCandiate.getConsultantUser(), orgLocation,
 					notificationScenario, new HashMap<String, String>());
 
 	}

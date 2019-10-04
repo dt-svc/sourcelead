@@ -583,7 +583,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 			    		   
 						for(int i=0; i<educationList.length; i++){
 							CandidateEducation candidateEducation = new CandidateEducation();
-							candidateEducation.setCandidateGlobalId(candidate);
+							candidateEducation.setCandidateId(candidate);
 							candidateEducation.setOrglocationId(orgLocations);
 							candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
 							if(user != null){
@@ -603,7 +603,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 if(jsonObj.has("Current/LastCompany") && !isNullOrEmpty(jsonObj.getString("Current/LastCompany"))){
 						 CandidateEmployers candidateEmployers = new CandidateEmployers();
 						 candidateEmployers.setOrgLocationId(orgLocations);
-						 candidateEmployers.setCandidateGlobalId(candidate);
+						 candidateEmployers.setCandidateId(candidate);
 						 candidateEmployers.setName(jsonObj.getString("Current/LastCompany"));
 						 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
 						 candidateEmployers.setCreatedDate(new Date());
@@ -679,7 +679,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 				 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
 				 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
 				 candidateResumes = new CandidateResumes();
- 				 candidateResumes.setCandidateGlobalId(candidate);
+ 				 candidateResumes.setCandidateId(candidate);
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
@@ -3979,7 +3979,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	    		   
 				for(int i=0; i<educationList.length; i++){
 					CandidateEducation candidateEducation = new CandidateEducation();
-					candidateEducation.setCandidateGlobalId(candidate);
+					candidateEducation.setCandidateId(candidate);
 					candidateEducation.setOrglocationId(orgLocations);
 					candidateEducation.setName(educationList[i].startsWith(" ") ? educationList[i].substring(1) : educationList[i]);
 					candidateEducation.setCreatedBy(user.getUserCode());
@@ -3992,7 +3992,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 if(jsonObj.has("Current/LastCompany") && !isNullOrEmpty(jsonObj.getString("Current/LastCompany"))){
 				 CandidateEmployers candidateEmployers = new CandidateEmployers();
 				 candidateEmployers.setOrgLocationId(orgLocations);
-				 candidateEmployers.setCandidateGlobalId(candidate);
+				 candidateEmployers.setCandidateId(candidate);
 				 candidateEmployers.setName(jsonObj.getString("Current/LastCompany"));
 				 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
 				 candidateEmployers.setCreatedDate(new Date());
@@ -4026,7 +4026,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
 				 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
 				 candidateResumes = new CandidateResumes();
- 				 candidateResumes.setCandidateGlobalId(candidate);
+ 				 candidateResumes.setCandidateId(candidate);
 				 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 				 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
@@ -5095,7 +5095,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					 fileInfo.setFileURL(jsonObj.get("fileInfo[0].fileURL").toString());
 					 fileInfo.setContentType(jsonObj.get("fileInfo[0].contentType").toString());
 					 candidateResumes = new CandidateResumes();
-	 				 candidateResumes.setCandidateGlobalId(requirementSubmission.getCandidate());
+	 				 candidateResumes.setCandidateId(requirementSubmission.getCandidate());
 					 candidateResumes.setFileName(jsonObj.get("fileInfo[0].fileName").toString());
 					 candidateResumes.setTitle(jsonObj.get("fileInfo[0].fileName").toString());
 					 candidateResumes.setFileContentType(jsonObj.get("fileInfo[0].contentType").toString());
@@ -5126,7 +5126,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 
 				 if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))){
 					 if(jsonObj.getString("notifyToApplicant").equals("Y")){
-						 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirementSubmission.getRequirement(),candidateResumes.getCandidateGlobalId(),user,orgLocations,"EditSubmission");
+						 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirementSubmission.getRequirement(),candidateResumes.getCandidateId(),user,orgLocations,"EditSubmission");
 					 }
 				 }
 				 

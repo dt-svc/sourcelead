@@ -48,7 +48,7 @@ public interface CandidateEmployersService {
 	 * @return
 	 * @throws JSONException
 	 */
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws JSONException;
+	public void saveCandidateEmployersDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Long candidateId,String userCode) throws Exception;
 	 
 	/**
 	 * @param candidateId
@@ -79,7 +79,7 @@ public interface CandidateEmployersService {
 	
 	public Integer getCandidateActiveEmployersCountByCandidateId(Long candidateId);
 	
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,User user) throws Exception;
+	public  HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Long candidateId,User user) throws Exception;
 	
 	public List<CandidateEmployers>   getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
 	

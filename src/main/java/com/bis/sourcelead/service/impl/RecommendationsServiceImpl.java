@@ -41,6 +41,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -77,6 +78,9 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 	 
 	 @Autowired
 	 private OrgLocationService orgLocationService;
+	 
+	 @Autowired
+	 CandidateGlobalService candidateGlobalService;
 	 
 	 /*@Autowired
 	 private CandidateSkillsService candidateSkillsService;*/
@@ -850,7 +854,7 @@ public class RecommendationsServiceImpl implements RecommendationsService{
 						// get the locationPercentage
 						locationPercentage = getLocationPercentage(recommendedCustomizeScore,candidateIndex);
 						
-						Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateIndex.getCandidateId());
+						Integer profilePercentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidateIndex.getCandidateId());
 						candidateIndex.setCandidateProfilePercentage(profilePercentage);
 						
 						//keywords calculation

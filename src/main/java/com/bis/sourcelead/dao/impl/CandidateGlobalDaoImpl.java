@@ -96,7 +96,7 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 			Long orgLocationId) throws Exception {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CandidateEducation ce where  ce.candidateGlobalId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
+		String query = "from CandidateEducation ce where  ce.candidateId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
 		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).list();
 		return candidateEducation;
 	}
@@ -133,7 +133,7 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 		HashSet<CandidateHistory> candidatehistoryList = new HashSet<CandidateHistory>(); 
 		
 		CandidateHistory candidateHistory = new CandidateHistory();
-		candidateHistory.setCandidateGlobalId(candidate);
+		//candidateHistory.setCandidateGlobalId(candidate);
 		candidateHistory.setCandidateType(candidate.getCandidateType());
 		candidateHistory.setCandidateUUID(candidate.getCandidateUUID());
 		candidateHistory.setIsFavourite(candidate.getIsFavourite());
@@ -313,6 +313,20 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 
 		return count;
 
+	}
+
+
+	@Override
+	public List<CandidateGlobal> getAllRequestedGlboalCandidatesForCampaign(List<Long> candidateId) throws Exception {
+
+
+		logger.debug("In getAllRequestedCandidatesForCampaign method");
+		Session session = this.sessionFactory.getCurrentSession();
+
+		String query = "from CandidateGlobal candidate  where candidate.id IN (:candidateId)";
+		List<CandidateGlobal> candidateList = session.createQuery(query).setParameterList("candidateId", candidateId).list();
+		return candidateList;
+	
 	}
 
 }

@@ -467,31 +467,32 @@ public class CandidateServiceImpl implements CandidateService {
 			}
 		candidate = getCandidateDetails(candidate, candidateDto, user, orgLocations, activitySummary);
 		
-		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDto, orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateEducation(candidateEducationList);
-		
-		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDto,orgLocations,candidate,user.getUserCode());
-		candidate.setCandidateEmployers(candidateEmployersList);
-		
-		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
-			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
-			if(fileInfo != null){
-			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
-			candidate.setCandidateResumes(candidateResumesList);
-				}
-			}
 		if(candidateDto.getCandidateSource()  != null) {
 			candidate.setCandidateSource(candidateDto.getCandidateSource());
 			}
 		Candidate savedCandidate = candidateDao.storeCandidate(candidate);
+		saveOrUpdateCandidateElkDocument(savedCandidate);
+		getCandidatePercentage(savedCandidate, orgLocations);
+		Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(savedCandidate.getId());
+		CandidateGlobal candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(candidateGlobalId);
+	    candidateEducationService.saveCandidateEducationDetails(candidateDto, orgLocations,candidateGlobal,user.getUserCode());
+		candidateEmployersService.saveCandidateEmployersDetails(candidateDto,orgLocations,candidateGlobal.getId(),user.getUserCode());
+		if(candidateDto.getFileInfo()!= null && !candidateDto.getFileInfo().isEmpty()){
+			FileInfo fileInfo = candidateDto.getFileInfo().get(0);
+			if(fileInfo != null){
+			candidateResumesService.storeCandidateResumesDetails(orgLocations,user.getUserCode(),candidateGlobal.getId(), fileInfo);
+				}
+			}
+		
+		candidateHistoryService.saveCandidateHistoryDetails(candidateGlobal, user);	
 		
 		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, activitySummary.toString(), "CANDIDATE");
 		}else {
 			if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.MANUAL_CANDIDATE)){
-				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_ADDED_MANUALLY, "", "CANDIDATE");
 			}else if(candidateDto.getCandidateCreationType() != null && candidateDto.getCandidateCreationType().equalsIgnoreCase(Constants.IMPORT_CANDIDATE)){
-				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
+				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_ADDED_BY_IMPORTING, "", "CANDIDATE");
 			}
 		}
 		if(candidateDto.getCustomFormData() !=null) {
@@ -503,7 +504,7 @@ public class CandidateServiceImpl implements CandidateService {
 					}else {
 						candidateCustomFields = new CandidateCustomFieldData();
 					}
-				candidateCustomFields.setCandidate(savedCandidate);
+				candidateCustomFields.setCandidate(candidateGlobal);
 				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
 				candidateCustomFields.setOrglocationsFormFields(orgFormField);
 				candidateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
@@ -523,8 +524,7 @@ public class CandidateServiceImpl implements CandidateService {
 		/*
 		 * Saving Candidate DB data as ElasticSearch Documents
 		 */
-		saveOrUpdateCandidateElkDocument(savedCandidate);
-		getCandidatePercentage(savedCandidate, orgLocations);
+		
 		
 		// store candidate as a contact
 		
@@ -1219,33 +1219,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setVisaType(null);
 			}
 			
-			HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(candidateDTO, orgLocations,candidate,user.getUserCode());
-			candidate.setCandidateEducation(candidateEducationList);
 			
-			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(candidateDTO,orgLocations,candidate,user.getUserCode());
-			candidate.setCandidateEmployers(candidateEmployersList);
-			
-			/*HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetails(jsonObj, orgLocations,candidate,user.getUserCode());
-			candidate.setCandidateEducation(candidateEducationList);
-			
-			HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetails(jsonObj,orgLocations,candidate,user.getUserCode());
-			candidate.setCandidateEmployers(candidateEmployersList);*/
-			
-			/*if(multiFile != null){
-			HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate,multiFile);
-			candidate.setCandidateResumes(candidateResumesList);
-			}*/
-			
-			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
-				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
-				HashSet<CandidateResumes> candidateResumesList = candidateResumesService.getCandidateResumesDetails(orgLocations,user.getUserCode(),candidate, fileInfo);
-				candidate.setCandidateResumes(candidateResumesList);
-				
-				if(fileInfo != null){
-						candidate.setFileName(fileInfo.getFileName());
-						FileUploadUtil.moveFile(candidateDTO.getStaticPath(), fileInfo, "resumes");
-					}
-				}
 			candidate.setUpdatedBy(user.getUserCode());
 			candidate.setUpdatedDate(commonUtil.currentDate());
 			candidate.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -1256,6 +1230,22 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			 * Saving Candidate DB data as ElasticSearch Documents
 			 */
 			saveOrUpdateCandidateElkDocument(savedCandidate);
+			
+			
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(savedCandidate.getId());
+			CandidateGlobal candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(candidateGlobalId);
+		    candidateEducationService.saveCandidateEducationDetails(candidateDTO, orgLocations,candidateGlobal,user.getUserCode());
+			candidateEmployersService.saveCandidateEmployersDetails(candidateDTO,orgLocations,candidateGlobal.getId(),user.getUserCode());
+			
+			if(candidateDTO.getFileInfo() != null && !candidateDTO.getFileInfo().isEmpty()){
+				FileInfo fileInfo = candidateDTO.getFileInfo().get(0);
+				candidateResumesService.storeCandidateResumesDetails(orgLocations,user.getUserCode(),candidateGlobal.getId(), fileInfo);
+				
+				if(fileInfo != null){
+						candidate.setFileName(fileInfo.getFileName());
+						FileUploadUtil.moveFile(candidateDTO.getStaticPath(), fileInfo, "resumes");
+					}
+				}
 			return savedCandidate;
 	}
 
@@ -2462,7 +2452,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetailsList(candidateDTO, orgLocations,candidate,user);
 		candidate.setCandidateEducation(candidateEducationList);
 		
-		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetailsList(candidateDTO,orgLocations,candidate,user);
+		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetailsList(candidateDTO,orgLocations,candidate.getId(),user);
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
 		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
@@ -2494,7 +2484,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	        
 	        CandidateResumes resume = new CandidateResumes();
 	        resume.setOrgLocationId(orgLocations);
-	        resume.setCandidateGlobalId(candidate);
+	      //  resume.setCandidateGlobalId(candidate);
 	        resume.setFileContentType("application/msword");
 	        resume.setFileName(candidateDTO.getFirstName()+" Resume.doc");
 	        resume.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -2949,14 +2939,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		}else{
 			candidate.setSpocId(null);
 		}
-		
-		HashSet<CandidateHistory> candiateHistoryList = candidateHistoryService.getCandidateHistoryDetails(candidate, user);
-		candidate.setCandidateHistory(candiateHistoryList);
-		
-		HashSet<CandidateTimelineActivity> candiateTimeLineActivityList = null;
-		
-		candidate.setCandidateTimeLineActivity(candiateTimeLineActivityList);
-		
 		
 		if(StringUtils.isNotBlank(candidateDto.getIsAssociate()) && Constants.YES.equalsIgnoreCase(candidateDto.getIsAssociate())){
 			candidate.setIsAssociate(Constants.YES);

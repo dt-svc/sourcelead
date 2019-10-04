@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateTimelineActivityDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -42,14 +43,15 @@ public class CandidateTimelineActivityServiceImpl implements CandidateTimelineAc
 
 	@Override
 	public HashSet<CandidateTimelineActivity> getCandidateTimelineActivityDetails(User user, OrgLocations orgLocations,
-			Candidate candidate, String actionOn, String actionDesc, String actionSummary, String actionIcon)
+			Long candidateId, String actionOn, String actionDesc, String actionSummary, String actionIcon)
 			throws Exception {
 		
 		HashSet<CandidateTimelineActivity> candidateTimeLineList = new HashSet<CandidateTimelineActivity>(); 
 		
 		CandidateTimelineActivity candidateTimelineActivity = new CandidateTimelineActivity();
-		
-		candidateTimelineActivity.setCandidate(candidate);
+		CandidateGlobal candidateGlobal = new CandidateGlobal();
+		candidateGlobal.setId(candidateId);
+		candidateTimelineActivity.setCandidate(candidateGlobal);
 		candidateTimelineActivity.setOrgLocationId(orgLocations);
 		if(user !=null){
 			candidateTimelineActivity.setActionBy(user.getFullName());

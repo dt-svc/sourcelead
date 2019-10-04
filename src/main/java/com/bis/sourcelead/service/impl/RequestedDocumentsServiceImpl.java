@@ -104,13 +104,8 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 			StringBuilder sb = new StringBuilder();
 			RequestedDocuments requestedDocuments = new RequestedDocuments();
 			StringBuffer activitySummary = new StringBuffer();
-			if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-				candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.valueOf(candidateDocumentsDTO.getRequestedCandidateId()));
-				requestedDocuments.setCandidateGlobalId(candidateGlobal);
-			}else {
-				candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(candidateDocumentsDTO.getRequestedCandidateId()));
-				requestedDocuments.setCandidateId(candidate);
-			}
+			candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.valueOf(candidateDocumentsDTO.getRequestedCandidateId()));
+			requestedDocuments.setCandidateId(candidateGlobal);
 			
 			requestedDocuments.setUserId(user);
 			requestedDocuments.setOrgLocationId(orgLocations);
@@ -161,11 +156,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					
 					CandidateDocuments candidateDocuments = new CandidateDocuments();	
 					candidateDocuments.setRequestedDocumentsId(requestedDocuments);
-					if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-						candidateDocuments.setCandidateGlobalId(candidateGlobal);
-					}else {
-						candidateDocuments.setCandidateId(candidate);
-					}
+					candidateDocuments.setCandidateId(candidateGlobal);
 					
 					candidateDocuments.setDocUploadStatus(Constants.DOCUMENT_UPLOAD_REQUESTED);
 					candidateDocuments.setDocumentType(docList.getDocType());
@@ -197,25 +188,13 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 				
 			}
 			
-			
-			
-			if(StringUtils.isNotBlank(candidateDocumentsDTO.getCandidateType()) && candidateDocumentsDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-				 if(!isNullOrEmpty(candidateGlobal.getLastName())){
-					 candidateName = sb.append(candidateGlobal.getFirstName()).append(" ").append(candidateGlobal.getLastName()).toString();
-				 }else{
-					 candidateName = sb.append(candidateGlobal.getFirstName()).toString();
-				 }
-				sendEmailToCandidateForDocument(user,candidateName,candidateGlobal.getEmail(),orgLocations,requestedDocuments.getRequestDocUUID());
-				candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");
-			}else {
-				 if(!isNullOrEmpty(candidate.getLastName())){
-					 candidateName = sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
-				 }else{
-					 candidateName = sb.append(candidate.getFirstName()).toString();
-				 }
-				sendEmailToCandidateForDocument(user,candidateName,candidate.getEmail(),orgLocations,requestedDocuments.getRequestDocUUID());
-				candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");
-			}
+			 if(!isNullOrEmpty(candidateGlobal.getLastName())){
+				 candidateName = sb.append(candidateGlobal.getFirstName()).append(" ").append(candidateGlobal.getLastName()).toString();
+			 }else{
+				 candidateName = sb.append(candidateGlobal.getFirstName()).toString();
+			 }
+			sendEmailToCandidateForDocument(user,candidateName,candidateGlobal.getEmail(),orgLocations,requestedDocuments.getRequestDocUUID());
+			candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_REQUEST_DOCUMENTS, activitySummary.toString().substring(0, activitySummary.toString().length() - 2), "CANDIDATE");
 			
 		}
 	}
@@ -263,30 +242,16 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 emailMessage.setToEmail(requestedDocuments.getUserId().getEmail());
-		 if(requestedDocuments.getCandidateGlobalId() != null && requestedDocuments.getCandidateId() == null) {
-			 emailMessage.setFromName(requestedDocuments.getCandidateGlobalId().getFirstName());
-			 emailMessage.setFromEmail(requestedDocuments.getCandidateGlobalId().getEmail());
-			 emailMessage.setCreatedBy(requestedDocuments.getUserId().getUserCode());
-			 emailMessage.setFirstName(requestedDocuments.getCandidateGlobalId().getFirstName());
-			 
-			 if(!isNullOrEmpty(requestedDocuments.getCandidateGlobalId().getLastName())){
-				 StringBuilder sb2 = new StringBuilder();
-				 globalVarsMap.put("candidateName", sb2.append(requestedDocuments.getCandidateGlobalId().getFirstName()).append(" ").append(requestedDocuments.getCandidateGlobalId().getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("candidateName", requestedDocuments.getCandidateGlobalId().getFirstName());
-			 }
-		 }else {
-			 emailMessage.setFromName(requestedDocuments.getCandidateId().getFirstName());
-			 emailMessage.setFromEmail(requestedDocuments.getCandidateId().getEmail());
-			 emailMessage.setCreatedBy(requestedDocuments.getUserId().getUserCode());
-			 emailMessage.setFirstName(requestedDocuments.getCandidateId().getFirstName());
-			 
-			 if(!isNullOrEmpty(requestedDocuments.getCandidateId().getLastName())){
-				 StringBuilder sb2 = new StringBuilder();
-				 globalVarsMap.put("candidateName", sb2.append(requestedDocuments.getCandidateId().getFirstName()).append(" ").append(requestedDocuments.getCandidateId().getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("candidateName", requestedDocuments.getCandidateId().getFirstName());
-			 }
+		 emailMessage.setFromName(requestedDocuments.getCandidateId().getFirstName());
+		 emailMessage.setFromEmail(requestedDocuments.getCandidateId().getEmail());
+		 emailMessage.setCreatedBy(requestedDocuments.getUserId().getUserCode());
+		 emailMessage.setFirstName(requestedDocuments.getCandidateId().getFirstName());
+		 
+		 if(!isNullOrEmpty(requestedDocuments.getCandidateId().getLastName())){
+			 StringBuilder sb2 = new StringBuilder();
+			 globalVarsMap.put("candidateName", sb2.append(requestedDocuments.getCandidateId().getFirstName()).append(" ").append(requestedDocuments.getCandidateId().getLastName()).toString());
+		 }else{
+			 globalVarsMap.put("candidateName", requestedDocuments.getCandidateId().getFirstName());
 		 }
 		
 		
@@ -313,11 +278,7 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 		 commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,requestedDocuments.getOrgLocationId().getOrg(),requestedDocuments.getOrgLocationId(),Constants.UPLOADED_REQUESTED_DOCUMENTS,new ArrayList<EmailAttachment>());
 		 StringBuilder notificationLink = new StringBuilder();
 		 String actionLink="";
-		 if(requestedDocuments.getCandidateGlobalId() != null && requestedDocuments.getCandidateId() == null) {
-			 actionLink = notificationLink.append(atsUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateGlobalId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
-		 }else {
-			 actionLink = notificationLink.append(atsUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
-		 }
+		 actionLink = notificationLink.append(atsUrl).append("/").append("candidatesList?&candidateIdSearchId="+requestedDocuments.getCandidateId().getId()+"&candidateKeyword=requestedDocumentNotification").toString();
 	    
 		 emailScenerioUtil.sendNotification(actionLink, fromUser, requestedDocuments.getUserId(), requestedDocuments.getOrgLocationId(), notificationScenario,new HashMap<String,String>());
 	}
@@ -333,18 +294,12 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 	{
 		if(!isNullOrEmpty(documentsIds)){
 			String[] documents = documentsIds.split(",");
-			Candidate candidate = null;
 			CandidateGlobal candidateGlobal = null;
 			String candidateName = null;
 			StringBuilder sb = new StringBuilder();
 			RequestedDocuments requestedDocuments = new RequestedDocuments();
-			if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-				 candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.valueOf(jsonObj.getString("rejectedDocsCandidateId")));
-				 requestedDocuments.setCandidateGlobalId(candidateGlobal);
-			}else {
-				 candidate = candidateDao.getCandidateByCandidateId(Long.valueOf(jsonObj.getString("rejectedDocsCandidateId")));
-					requestedDocuments.setCandidateId(candidate);
-			}
+			 candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.valueOf(jsonObj.getString("rejectedDocsCandidateId")));
+			 requestedDocuments.setCandidateId(candidateGlobal);
 				
 				StringBuffer activitySummary = new StringBuffer();
 				StringBuffer rejectSummary = new StringBuffer();
@@ -405,34 +360,21 @@ public class RequestedDocumentsServiceImpl implements RequestedDocumentsService{
 					candidateDocuments.setUpdatedDate(new Date());
 					candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
 				}
-				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-					
-					 if(!isNullOrEmpty(candidateGlobal.getLastName())){
-						 candidateName = sb.append(candidateGlobal.getFirstName()).append(" ").append(candidateGlobal.getLastName()).toString();
-					 }else{
-						 candidateName = sb.append(candidateGlobal.getFirstName()).toString();
-					 }
-					 
-					sendEmailToCandidateForDocument(user,candidateName,candidateGlobal.getEmail(),orgLocations,requestedDocuments.getRequestDocUUID());
-					String summaryStr = activitySummary.toString().substring(0, activitySummary.toString().length() - 2) +"<br />" + rejectSummary.append(jsonObj.getString("rejectedReason")).toString();
-					candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_REJECT_REQUEST_DOCUMENTS, summaryStr, "CANDIDATE");
-				}else {
-					
-					 if(!isNullOrEmpty(candidate.getLastName())){
-						 candidateName = sb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
-					 }else{
-						 candidateName = sb.append(candidate.getFirstName()).toString();
-					 }
-					sendEmailToCandidateForDocument(user,candidateName,candidate.getEmail(),orgLocations,requestedDocuments.getRequestDocUUID());
-					String summaryStr = activitySummary.toString().substring(0, activitySummary.toString().length() - 2) +"<br />" + rejectSummary.append(jsonObj.getString("rejectedReason")).toString();
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REJECT_REQUEST_DOCUMENTS, summaryStr, "CANDIDATE");
-				}
+				 if(!isNullOrEmpty(candidateGlobal.getLastName())){
+					 candidateName = sb.append(candidateGlobal.getFirstName()).append(" ").append(candidateGlobal.getLastName()).toString();
+				 }else{
+					 candidateName = sb.append(candidateGlobal.getFirstName()).toString();
+				 }
+				 
+				sendEmailToCandidateForDocument(user,candidateName,candidateGlobal.getEmail(),orgLocations,requestedDocuments.getRequestDocUUID());
+				String summaryStr = activitySummary.toString().substring(0, activitySummary.toString().length() - 2) +"<br />" + rejectSummary.append(jsonObj.getString("rejectedReason")).toString();
+				candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_REJECT_REQUEST_DOCUMENTS, summaryStr, "CANDIDATE");
 				
 		}
 	}
 
 	@Override
-	public void acceptRequestedDocuments(User user, String documentsIds, OrgLocations orgLocations, Candidate candidate) throws Exception
+	public void acceptRequestedDocuments(User user, String documentsIds, OrgLocations orgLocations, CandidateGlobal candidate) throws Exception
 	{
 		StringBuffer activitySummary = new StringBuffer();
 		if(!isNullOrEmpty(documentsIds)){

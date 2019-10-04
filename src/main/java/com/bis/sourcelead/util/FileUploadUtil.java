@@ -1,9 +1,11 @@
 package com.bis.sourcelead.util;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +26,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
@@ -40,6 +41,7 @@ import com.bis.sourcelead.dto.OrgStorageDetailDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
@@ -48,8 +50,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -724,7 +724,7 @@ public class FileUploadUtil {
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
 			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user,
-			Long requirementId, String needApplicantPermit, String notifyToApplicant) {
+			Long requirementId, String needApplicantPermit, String notifyToApplicant,CandidateGlobalUtil candidateGlobalUtil) {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -769,7 +769,8 @@ public class FileUploadUtil {
 					fileInfoList1.add(fileInfo);
 					candidateResumeDTO.setStaticPath(staticPath);
 					candidateResumeDTO.setFileInfo(fileInfoList1);
-					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
+					Long candidateGlobalId = candidateService.getCandidateIdByGlobalCandidateId(c.getId());
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, candidateGlobalId, null, loginOrgLocation);
 					addToResponse(2, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
 					successList.add(resume);
 					candidateIds += (candidateIds.isEmpty() ? "" : ",") + c.getId();
@@ -809,7 +810,7 @@ public class FileUploadUtil {
 					candidateDto.setCandidateEducation(resume.getEducations() != null ? String.join(", ", resume.getEducations()) : "");
 					candidateDto.setSummary(resume.getSummary() != null ? resume.getSummary() : "");
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-					Candidate storedCandidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					CandidateGlobal storedCandidate = candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
 					if(requirementId > 0) {
 						candidateIds += (candidateIds.isEmpty() ? "" : ",") + storedCandidate.getId();
 						System.out.println("Add Applicant for requirement " + requirementId + " to newly imported candidate");
@@ -843,7 +844,7 @@ public class FileUploadUtil {
 	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
-			String country, OrgLocations loginOrgLocation, User user) {
+			String country, OrgLocations loginOrgLocation, User user,CandidateGlobalUtil candidateGlobalUtil) {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -879,7 +880,8 @@ public class FileUploadUtil {
 					fileInfoList1.add(fileInfo);
 					candidateResumeDTO.setStaticPath(staticPath);
 					candidateResumeDTO.setFileInfo(fileInfoList1);
-					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
+					Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(c.getId());
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, candidateGlobalId, null, loginOrgLocation);
 					successList.add(resume);
 				} else {
 					CandidateDTO candidateDto = new CandidateDTO();
@@ -903,7 +905,7 @@ public class FileUploadUtil {
 					candidateDto.setFirstName(resume.getFirstName() != null ? resume.getFirstName() : "");
 					candidateDto.setLastName(resume.getLastName() != null ? resume.getLastName() : "");
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
 					successList.add(resume);
 				}
 			} catch (Exception ex) {

@@ -50,8 +50,7 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 	public CandidateReferences storeCandidateReferences(CandidateReferencesDTO candidateReferencesDTO,Long candidateId,Long orgLocationId,User user) throws Exception {
 		
 		CandidateReferences candidateReferences = null;
-		Candidate candidate = new Candidate();
-		CandidateGlobal candidateGlobal = new CandidateGlobal();
+		CandidateGlobal candidate = new CandidateGlobal();
 		OrgLocations orgLocations = new OrgLocations();
 		StringBuffer activitySummary = new StringBuffer();
 		if(candidateId !=null){
@@ -61,14 +60,8 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
        	    	candidateReferences = new CandidateReferences();
        	    }
         
-        	if(StringUtils.isNotBlank(candidateReferencesDTO.getCandidateType()) && candidateReferencesDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-        		candidateGlobal.setId(candidateId);
-        		candidateReferences.setCandidateGlobalId(candidateGlobal);
-        	}else {
-        		candidate.setId(candidateId);
-        		candidateReferences.setCandidateId(candidate);
-        	}
-		
+        	candidate.setId(candidateId);
+    		candidateReferences.setCandidateId(candidate);
 		
 		orgLocations.setId(orgLocationId);
 		candidateReferences.setOrgLocationId(orgLocations);
@@ -137,11 +130,7 @@ public class CandidateReferencesServiceImpl implements CandidateReferencesServic
 		
 		candidateActivityCommonUtil.storeCandidateReferencesHistory(candidateReferences, user);
 		
-		if(StringUtils.isNotBlank(candidateReferencesDTO.getCandidateType()) && candidateReferencesDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-			candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
-		}else {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
-		}
+		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_REFERENCES_UPDATED, activitySummary.toString(), "CANDIDATE");
 		
 		return candidateReferences;
 	

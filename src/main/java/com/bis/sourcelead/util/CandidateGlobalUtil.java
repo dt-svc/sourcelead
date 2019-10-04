@@ -228,7 +228,7 @@ public class CandidateGlobalUtil {
 					}else {
 						candidateCustomFields = new CandidateCustomFieldData();
 					}
-				candidateCustomFields.setCandidateGlobalId(savedCandidate);
+				candidateCustomFields.setCandidate(savedCandidate);
 				OrglocationFormFields orgFormField = orglocationFormFieldsService.getOrglocationFormFieldsById(customFields.getCustomFormFieldId());
 				candidateCustomFields.setOrglocationsFormFields(orgFormField);
 				candidateCustomFields.setCustomFormFieldData(customFields.getCustomFormFieldData());
@@ -735,7 +735,7 @@ public void storeCandidateActivity(User user, OrgLocations orgLocations, Candida
 {
 	CandidateTimelineActivity candidateTimelineActivity = new CandidateTimelineActivity();
 	
-	candidateTimelineActivity.setCandidateGlobalId(candidate);
+	candidateTimelineActivity.setCandidate(candidate);
 	candidateTimelineActivity.setOrgLocationId(orgLocations);
 	if(user !=null){
 		candidateTimelineActivity.setActionBy(user.getFullName());
@@ -869,6 +869,13 @@ public int getCandidatePercentage(CandidateGlobal can, OrgLocations loginOrgLoca
 			 
 			 can.setCandidateProfilePercentage(percentage);
 			 candidateGlobalService.storeCandidateGlobal(can);
+			 
+			 Long associateCandiateId = candidateDao.getCandidateIdByGlobalCandidateId(can.getId());
+			 if(associateCandiateId != null) {
+				 Candidate associateCandidate = candidateDao.getCandidateByCandidateId(associateCandiateId);
+				 associateCandidate.setCandidateProfilePercentage(percentage);
+				 candidateDao.storeCandidate(associateCandidate);
+			 }
 		}
 		return percentage;
 }
@@ -1060,10 +1067,10 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	candidateGlobal.setCandidateId(candidateGlobal.getId());
     candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
 	
-	List<CandidateEducation> educationsList = candidateEducationService.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
+	/*List<CandidateEducation> educationsList = candidateEducationService.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(educationsList != null && !educationsList.isEmpty()) {
 		for(CandidateEducation education : educationsList) {
-			education.setCandidateId(candidate);
+			education.setCandidateId(candidateGlobal);
 			candidateEducationService.saveCandidateEducation(education);
 		}
 	}
@@ -1071,7 +1078,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateResumes> resumesList = candidateResumesService.getCandidateGlobalResumesListByCandidateIdAndStatus(candidateGlobal.getId(), Constants.RECORD_ACTIVE);
 	if(resumesList != null && !resumesList.isEmpty()) {
 		for(CandidateResumes candidateResumes : resumesList) {
-			candidateResumes.setCandidateId(candidate);
+			candidateResumes.setCandidateId(candidateGlobal);
 			candidateResumesService.updateCandidateResume(candidateResumes);
 		}
 	}
@@ -1079,7 +1086,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateEmployers> employersList = candidateEmployersService.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(employersList != null && !employersList.isEmpty()) {
 		for(CandidateEmployers candidateEmployers : employersList) {
-			candidateEmployers.setCandidateId(candidate);
+			candidateEmployers.setCandidateId(candidateGlobal);
 			candidateEmployersService.saveCandidateEmployers(candidateEmployers);
 		}
 	}
@@ -1087,7 +1094,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateHistory> historyList = candidateHistoryService.getCandidateHistoryListByGlobalCandidateId(candidateGlobal.getId());
 	if(historyList != null && !historyList.isEmpty()) {
 		for(CandidateHistory candidateHistory : historyList) {
-			candidateHistory.setCandidateId(candidate);
+			candidateHistory.setCandidateId(candidateGlobal);
 			candidateHistoryService.storeCandidateHistory(candidateHistory);
 		}
 	}
@@ -1095,7 +1102,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateTimelineActivity> timeLineActivityList = candidateTimelineActivityDao.getCandidateGlobalTimelineActivities(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(timeLineActivityList != null && !timeLineActivityList.isEmpty()) {
 		for(CandidateTimelineActivity candidateTimelineActivity : timeLineActivityList) {
-			candidateTimelineActivity.setCandidate(candidate);
+			candidateTimelineActivity.setCandidate(candidateGlobal);
 			candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
 		}
 	}
@@ -1103,7 +1110,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateCertifications> certificationsList = candidateCertificationsDao.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(certificationsList != null && !certificationsList.isEmpty()) {
 		for(CandidateCertifications candidateCertifications : certificationsList) {
-			candidateCertifications.setCandidateId(candidate);
+			candidateCertifications.setCandidateId(candidateGlobal);
 			candidateCertificationsDao.storeCandidateCertifications(candidateCertifications);
 		}
 	}
@@ -1111,7 +1118,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateDocuments> documentsList = candidateDocumentsDao.getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(documentsList != null && documentsList.isEmpty()) {
 		for(CandidateDocuments candidateDocuments : documentsList) {
-			candidateDocuments.setCandidateId(candidate);
+			candidateDocuments.setCandidateId(candidateGlobal);
 			candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
 		}
 	}
@@ -1119,7 +1126,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateComments> commentsList = candidateCommentsDao.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(commentsList != null && !commentsList.isEmpty()) {
 		for(CandidateComments candidateComments : commentsList) {
-			candidateComments.setCandidateId(candidate);
+			candidateComments.setCandidateId(candidateGlobal);
 			candidateCommentsDao.storeCandidateComments(candidateComments);
 		}
 		
@@ -1128,7 +1135,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateReferences> referencesList = candidateReferencesDao.getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
 	if(referencesList != null && !referencesList.isEmpty()) {
 		for(CandidateReferences candidateReferences : referencesList) {
-			candidateReferences.setCandidateId(candidate);
+			candidateReferences.setCandidateId(candidateGlobal);
 			candidateReferencesDao.storeCandidateReferences(candidateReferences);
 		}
 	}
@@ -1136,10 +1143,10 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	List<CandidateCustomFieldData> customFieldsList = candidateCustomFieldDataService.getCandidateCustomFieldDataByCandidateGlobalId(candidateGlobal.getId());
 	if(customFieldsList != null && !customFieldsList.isEmpty()) {
 		for(CandidateCustomFieldData candidateCustomFieldData : customFieldsList) {
-			candidateCustomFieldData.setCandidate(candidate);
+			candidateCustomFieldData.setCandidate(candidateGlobal);
 			candidateCustomFieldDataService.savejobCustomFieldData(candidateCustomFieldData);
 		}
-	}
+	}*/
 	return candidate;
 }
 
