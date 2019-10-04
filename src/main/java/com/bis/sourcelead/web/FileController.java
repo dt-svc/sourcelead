@@ -44,6 +44,7 @@ import com.bis.sourcelead.rest.RequirementRestControllerAdmin;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
@@ -77,6 +78,9 @@ public class FileController {
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	@RequestMapping(value = { "/ws/upload/{type}", "/rest/upload/{type}" }, method = RequestMethod.POST)
 	@ResponseBody
@@ -221,7 +225,7 @@ public class FileController {
 			}
 		}
 		String candidateIds = FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
-				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant);
+				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,candidateGlobalUtil);
 
 		if (requirementId > 0 && requirementRestController != null && !candidateIds.isEmpty()) {
 			requirementRestController.submitRecommendationCandidates(requirementId, candidateIds, "Y", needApplicantPermit, notifyToApplicant, request);
@@ -289,7 +293,7 @@ public class FileController {
 						Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
 
 						FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
-								candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null);
+								candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,candidateGlobalUtil);
 
 						FileUploadUtil.saveLogMessage(uploadid, "<br/>Completed!<br/><br/>", candidateService);
 
