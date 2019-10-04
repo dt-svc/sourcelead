@@ -3234,7 +3234,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 				if (currentDate.before(canPassport.getValidToDate())) {
 					passDto.setCurrentStatus("Active");
-				} else {
+				} else if (currentDate.compareTo(canPassport.getValidToDate()) == 0) {
+					passDto.setCurrentStatus("Active");
+				}else {
 					passDto.setCurrentStatus("Expired");
 				}
 				passDto.setCandidatePassportId(canPassport.getId());
