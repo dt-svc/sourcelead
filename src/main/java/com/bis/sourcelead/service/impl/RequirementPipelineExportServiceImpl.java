@@ -852,11 +852,12 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				&& !"".equalsIgnoreCase(requirementsub.getSubmissionStatus().toString())) {
 			String stageName = null;
 			HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
-			submissionStatusMap.put("Offer Accepted", "OFFERACCEPTED");
-			submissionStatusMap.put("Client Offer Accepted", "CLIENT_OFFERACCEPTED");
-			submissionStatusMap.put("Selected On Interview", "SELECTED_ON_INTERVIEW");
-			submissionStatusMap.put("Client Interview", "CLIENT_INTERVIEW");
-			if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
+			submissionStatusMap.put("OFFERACCEPTED", "Offer Accepted");
+			submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+			submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+			submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+			submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
+			if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
 				writeRow.createCell(9).setCellValue(requirementsub.getSubmissionStatus().toString());
 			}else{
 				stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
@@ -927,11 +928,12 @@ public class RequirementPipelineExportServiceImpl implements RequirementPipeline
 				field= mainClass.getDeclaredField(getColumn);
 				 field.setAccessible(true);
 					HashMap <String, String> submissionStatusMap = Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP;
-					submissionStatusMap.put("Offer Accepted", "OFFERACCEPTED");
-					submissionStatusMap.put("Client Offer Accepted", "CLIENT_OFFERACCEPTED");
-					submissionStatusMap.put("Selected On Interview", "SELECTED_ON_INTERVIEW");
-					submissionStatusMap.put("Client Interview", "CLIENT_INTERVIEW");
-					if(submissionStatusMap.containsValue(requirementsub.getSubmissionStatus())){
+					submissionStatusMap.put("OFFERACCEPTED", "Offer Accepted");
+					submissionStatusMap.put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+					submissionStatusMap.put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+					submissionStatusMap.put("CLIENT_INTERVIEW", "Client Interview");
+					submissionStatusMap.put("INTERVIEW_ACCEPT", "Interview Accept");
+					if(submissionStatusMap.containsKey(requirementsub.getSubmissionStatus())){
 						writeRow.createCell(colIndex++).setCellValue(field.get(requirementsub) == null ?"":field.get(requirementsub).toString());
 					}else{
 						stageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementsub.getSubmissionStatus().toString());
