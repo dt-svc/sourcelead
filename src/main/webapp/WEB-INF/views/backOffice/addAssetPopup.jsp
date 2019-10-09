@@ -420,7 +420,7 @@ function getCustomDependentField(sectionId){
 
 <script type="text/javascript">
  function validateAssetSno(assetId) {
-	 var assetSno = $("#sno").val(); 
+	 var assetSno = $("#sno").val().trim(); 
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
