@@ -1721,7 +1721,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("sno").equals("sno") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
-					String serialNo = dataMigrationDTOJsonCopy.getString("sno");
+					String serialNo = dataMigrationDTOJsonCopy.getString("sno").trim();
 				       Asset asset = assetService.validateAssetSno(dataMigrationDTOJsonCopy.getString("sno"), orgLocation.getId());
 					 	if (asset != null) {
 					 		errorSet.put("sno", dataMigrationDTOJsonCopy.getString("sno")+" is Already Existed");

@@ -58,10 +58,10 @@ public class PayrollTaxServiceImpl implements PayrollTaxService {
 			payrollTax.setEmployerESIContribution(new BigDecimal(payrollTaxDTO.getEmployerESIContribution()));
 			payrollTax.setEmployeePFContribution(new BigDecimal(payrollTaxDTO.getEmployeePFContribution()));
 			payrollTax.setEmployerPFContribution(new BigDecimal(payrollTaxDTO.getEmployerPFContribution()));
-			payrollTax.setEdli(new BigDecimal(payrollTaxDTO.getEdli()));
-			payrollTax.setPension(new BigDecimal(payrollTaxDTO.getPension()));
-			payrollTax.setEdliAdminCharges(new BigDecimal(payrollTaxDTO.getEdliAdminCharges()));
-			payrollTax.setPfAdminCharges(new BigDecimal(payrollTaxDTO.getPfAdminCharges()));
+//			payrollTax.setEdli(new BigDecimal(payrollTaxDTO.getEdli()));
+//			payrollTax.setPension(new BigDecimal(payrollTaxDTO.getPension()));
+//			payrollTax.setEdliAdminCharges(new BigDecimal(payrollTaxDTO.getEdliAdminCharges()));
+//			payrollTax.setPfAdminCharges(new BigDecimal(payrollTaxDTO.getPfAdminCharges()));
 			payrollTax.setPfCeilValue(new BigDecimal(payrollTaxDTO.getPfCeilValue()));
 			long result = payrollTaxDao.savePayrollTaxConfiguration(payrollTax);
 			if (result > 0) {
