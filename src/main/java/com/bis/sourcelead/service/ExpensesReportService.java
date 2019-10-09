@@ -27,9 +27,9 @@ public interface ExpensesReportService {
 
 	public Map<String, String> getmonthStringNamefromStartAndEndDate(Date convertedStartDate, Date convertedEndDate, List<ProjectMembers> projectMembers);
 
-	public File expensesReportExportListPdf(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws ParseException, IOException;
+	public File expensesReportExportListPdf(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws ParseException, IOException, Exception;
 
-	public File expensesReportExportListExcel(String frequencyMonth, OrgLocations orgLoc, User loginUser)throws ParseException, IOException;
+	public File expensesReportExportListExcel(String frequencyMonth, OrgLocations orgLoc, User loginUser)throws ParseException, IOException, Exception;
 
 	List<Expenses> getExpensesByProjectMemberIdAndExpenseStartAndEndDateForClaimedExpenses(Long proMembersId,Date startDate, Date endtDate) throws ParseException;
 
