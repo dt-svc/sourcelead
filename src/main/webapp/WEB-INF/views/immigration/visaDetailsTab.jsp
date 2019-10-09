@@ -205,7 +205,7 @@
 		      dateFormat: finalDateFormatVisaSave,
 		      changeMonth: true,
 		  	  changeYear: true, 
-		  	  minDate:1,
+		  	  minDate:0,
 		      onSelect: function (selected) {
 		    	  var extensionDate = $(this).val();
 		    	  immigration.addvisaExtensionDate(${visaId},extensionDate);
