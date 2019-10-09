@@ -253,7 +253,7 @@ function candidateVisaList(candidateId){
 			      dateFormat: finalDateFormatVisaSave,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:1,
+			  	  minDate:0,
 			      onSelect: function (selected) {
 			    	  var extensionDate = $(this).val();
 			    	  addvisaExtensionDate($(this).attr("visaId"),extensionDate);
