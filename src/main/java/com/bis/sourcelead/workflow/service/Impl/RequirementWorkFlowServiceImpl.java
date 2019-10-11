@@ -1629,9 +1629,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageUuid, Long submissionId,
 			Integer minutes, Integer seconds) {
-		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
+		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageUuid,submissionId, minutes, seconds);
 	}
 	
 	@Override
