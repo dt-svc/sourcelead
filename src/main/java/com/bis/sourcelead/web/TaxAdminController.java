@@ -417,9 +417,11 @@ public class TaxAdminController {
 
 	@RequestMapping(value = "/form/addITDeclarationSection", method = RequestMethod.POST)
 	@ResponseBody
-	public Response<Long> addItDeclarationSection(HttpServletRequest request,
+	public Response<Long> addItDeclarationSection(HttpServletRequest request, @RequestParam long formId,
 			SourceleadTaxITDeclarationDTO sourceleadTaxSectionDTO) {
 		Response<Long> response = new Response<>();
+		
+		sourceleadTaxSectionDTO.setTaxFormId(formId);
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
