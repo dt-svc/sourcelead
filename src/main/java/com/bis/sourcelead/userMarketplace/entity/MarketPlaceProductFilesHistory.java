@@ -1,6 +1,7 @@
 package com.bis.sourcelead.userMarketplace.entity;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,8 +27,8 @@ public class MarketPlaceProductFilesHistory {
 @Column(name = "ID", nullable = false)
 private Long id;
 
-@ManyToOne
-@JoinColumn(name = "MARKETPLACE_PRODUCT_ID")
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "MARKETPLACE_PRODUCT_ID",nullable = false)
 private MarketPlaceProducts marketPlaceProductId;
 
 @ManyToOne
