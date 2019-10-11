@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
@@ -39,7 +40,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
@@ -48,15 +49,14 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.CandidateSource;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
-import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -2289,9 +2289,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		ResponseList<CandidateDTO> responseList = new ResponseList<>();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
-		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
-		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
-		String listQueryCount = "select count(candidate) from Candidate candidate where candidate.id IN ( :candidateIds )";
+		String query = "from CandidateGlobal candidate where candidate.id IN ( :candidateIds )";
+		List<CandidateGlobal> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+		String listQueryCount = "select count(candidate) from CandidateGlobal candidate where candidate.id IN ( :candidateIds )";
 		countlist = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
 		int totalCount = 0;
 		if (countlist != null && !countlist.isEmpty()) {
@@ -2305,7 +2305,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		// responseList.setRecordsFiltered(totalCount);
 		// }
 		List<CandidateDTO> candidateDTOList = new ArrayList<>();
-		for (Candidate candidate : candidates) {
+		for (CandidateGlobal candidate : candidates) {
 			CandidateDTO dto = new CandidateDTO();
 			BeanUtils.copyProperties(candidate, dto);
 			candidateDTOList.add(dto);
@@ -2522,7 +2522,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.ALL_RECORDS)) {
-				typeQuery.append(" and (marketplace.candidateId.isFavourite = 0) ");
+				typeQuery.append(" and (marketplace.candidateId.isFavourite = 0 OR marketplace.candidateId.isFavourite IS NULL) ");
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.Favourite)) {

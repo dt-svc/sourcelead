@@ -2976,9 +2976,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	public void copyCandidateToMarketplace(String candidateIdsStr, User user) throws NumberFormatException, Exception {
 		String[] candidateIds = candidateIdsStr.split(",");
 		for(String candidateId : candidateIds){
-			Candidate candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateId));
+			CandidateGlobal candidate = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.parseLong(candidateId));
 			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
-			//BeanUtils.copyProperties(candidate, marketPlace);
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
 			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
@@ -3017,15 +3016,14 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			if(marketPlace == null){
 				marketPlace = new CandidateMarketPlace();
 			}
-			Candidate candidate = candidateDao.getCandidateById(Long.parseLong(dto.getCandidateId()));
-			//BeanUtils.copyProperties(candidate, marketPlace);
-			candidate.setIsSharedInMarketplace(Constants.YES);
-			marketPlace.setCandidateId(candidate);
+			CandidateGlobal candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.parseLong(dto.getCandidateId()));
+			candidateGlobal.setIsSharedInMarketplace(Constants.YES);
+			marketPlace.setCandidateId(candidateGlobal);
 			marketPlace.setMarketplaceUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			marketPlace.setCandidateUUID(candidate.getCandidateUUID());
-			marketPlace.setOrgLocationId(candidate.getOrgLocationId());
-			marketPlace.setCompanyName(candidate.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
-			marketPlace.setShowCompanyName(candidate.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
+			marketPlace.setCandidateUUID(candidateGlobal.getCandidateUUID());
+			marketPlace.setOrgLocationId(candidateGlobal.getOrgLocationId());
+			marketPlace.setCompanyName(candidateGlobal.getOrgLocationId().getOrg().getOrgName()); // added company name for the candidate
+			marketPlace.setShowCompanyName(candidateGlobal.getOrgLocationId().getShowCompanyNameInMarkeplace());// ORG level setting to display org name in market place.
 			marketPlace.setCandidateMarketStatus(Constants.ACTIVE);
 			marketPlace.setMarketPrice(dto.getMarketPrice());
 			marketPlace.setMarketRateCurrencey(dto.getMarketRateCurrencey());
@@ -3034,8 +3032,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 			marketPlace.setCreatedBy(user);
 			marketPlace.setUpdatedDate(new Date());
 			marketPlace.setUpdatedBy(user);
-			candidateDao.storeCandidate(candidate);
-			saveOrUpdateCandidateElkDocument(candidate);
+			candidateGlobalDao.storeCandidateGlobal(candidateGlobal);
+			CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidateGlobal);
+			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidateGlobal.getId().toString());
 			candidateDao.saveMarketPlace(marketPlace);
 		}
 	}
