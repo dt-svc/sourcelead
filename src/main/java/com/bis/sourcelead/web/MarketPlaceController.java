@@ -26,21 +26,16 @@ import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 @Controller
 public class MarketPlaceController {
 	
-	
-	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
 	@Value("${atsUrl}")
 	private String atsUrl;
-
-	@Autowired
-	private UserService userService;
 	
 	@Autowired
 	private AddProductService addProductService;
 	
-	@RequestMapping(value = "/productsList")
+	@RequestMapping(value = "/productList")
 	public ModelAndView productList() throws Exception {
 		ModelAndView model = new ModelAndView();
 		model.addObject("sourceleadUrl", sourceleadUrl);
@@ -57,4 +52,50 @@ public class MarketPlaceController {
 		model.setViewName("userMarketplace/addProduct");
 		return model;
 	}
+	
+	@RequestMapping(value = "/saveMarketPlaceDetails", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveMarketPlaceDetails(MarketPlaceProductsDTO marketPlaceProductsDTO, HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+      
+        response =  addProductService.savemarketPlaceDetails(marketPlaceProductsDTO,orgLocations,user,org);
+		 return response;
+}
+	
+	@RequestMapping(value = "/getMarketPlaceListDetails", method = RequestMethod.GET)
+	public @ResponseBody ResponseList<MarketPlaceProductsDTO> getWorkflowList(
+			MarketPlaceProductsDTO marketPlaceProductsDTO,
+			HttpServletRequest request){
+		ResponseList<MarketPlaceProductsDTO> responseList = new ResponseList<>();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+        String searchValue ="";
+	try {
+			String[] tableColumns = { "productCode","category", "manufacturerName", "manufacturerDate","price","currencySpecification","priority",
+					"docFile","isNegotiate","shareContactDetails","productShareType","productDescription","uploadPhotos"};
+		  	int sortColumnIndex = -1; 
+	  		String sortColumnOrder = "desc"; 
+ 	  		if (marketPlaceProductsDTO.getOrder() != null && !marketPlaceProductsDTO.getOrder().isEmpty()) {
+	  		sortColumnIndex = Integer.parseInt(marketPlaceProductsDTO.getOrder().get(0).get("column"));
+	  		sortColumnOrder = marketPlaceProductsDTO.getOrder().get(0).get("dir"); 
+	  		}
+ 	  		    if (sortColumnIndex != -1) {
+ 	  		    	marketPlaceProductsDTO.setSortOrder(sortColumnOrder);
+ 	  		    	marketPlaceProductsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+ 	  		    }
+			responseList = addProductService.getMareketPlaceListDetails(marketPlaceProductsDTO, orgLocations, user, org, searchValue);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return responseList;
+		
+	}
+	
+	
+	
+	
+	
 }
