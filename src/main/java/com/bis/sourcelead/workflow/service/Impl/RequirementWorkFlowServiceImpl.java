@@ -164,6 +164,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
 			requirementWorkFlowStages.setCommentRequired(Constants.YES);
 			requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+			// 11-october-2019.
+			// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
+			if(defaultWorkflowMap.getKey().equalsIgnoreCase("NORESPONSE") || defaultWorkflowMap.getKey().equalsIgnoreCase("ONHOLD")){
+				requirementWorkFlowStages.setChosenColumns(Constants.DEFAULT_STAGE_COLUMNS);
+			}
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -1546,6 +1551,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
 				requirementWorkFlowStages.setCommentRequired(Constants.YES);
 				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				// 11-october-2019.
+				// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
+				if(defaultWorkflowMap.getKey().equalsIgnoreCase("NORESPONSE") || defaultWorkflowMap.getKey().equalsIgnoreCase("ONHOLD")){
+					requirementWorkFlowStages.setChosenColumns(Constants.DEFAULT_STAGE_COLUMNS);
+				}
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setUpdatedDate(new Date());
 				requirementWorkFlowSet.add(requirementWorkFlowStages);
