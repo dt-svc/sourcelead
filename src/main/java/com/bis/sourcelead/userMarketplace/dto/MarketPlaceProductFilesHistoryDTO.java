@@ -1,6 +1,9 @@
 package com.bis.sourcelead.userMarketplace.dto;
 
 import java.sql.Date;
+import java.util.List;
+
+import com.bis.sourcelead.dto.FileInfo;
 
 public class MarketPlaceProductFilesHistoryDTO {
 	
@@ -8,6 +11,8 @@ public class MarketPlaceProductFilesHistoryDTO {
 	private String uploadedfileName;
 	private String upleadedFileContentType;
 	private String uploadedFileUrl;
+	private List<FileInfo> fileInfo;
+	
 	private int status;
 	private Date createdDate;
 	private Date updatedDate;
@@ -54,5 +59,12 @@ public class MarketPlaceProductFilesHistoryDTO {
 	public void setUpdatedDate(Date updatedDate) {
 		this.updatedDate = updatedDate;
 	}
+	public List<FileInfo> getFileInfo() {
+		return fileInfo;
+	}
+	public void setFileInfo(List<FileInfo> fileInfo) {
+		this.fileInfo = fileInfo;
+	}
+	
 	
 }

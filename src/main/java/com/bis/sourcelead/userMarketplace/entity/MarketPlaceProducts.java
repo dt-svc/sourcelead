@@ -1,6 +1,7 @@
 package com.bis.sourcelead.userMarketplace.entity;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,13 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Table(name = "MARKETPLACE_PRODUCTS")
+@Table(name = "MARKETPLACE_PRODUCT")
 public class MarketPlaceProducts {
 
 @Id
@@ -34,8 +38,9 @@ private User userId;
 @JoinColumn(name = "ORG_ID")
 private Org orgId;
 	  
-@ManyToOne
-@JoinColumn(name="ORG_LOCATION_ID")        
+@ManyToOne(fetch = FetchType.LAZY)
+@Fetch(FetchMode.SELECT)
+@JoinColumn(name = "ORG_LOCATION_ID")
 private OrgLocations orgLocationId;
 
 @ManyToOne
@@ -48,6 +53,15 @@ private User updatedBy;
 
 @Column(name = "UUID")
 private String uuid;	
+
+@Column(name = "File_URL")
+private String fileUrl;
+
+@Column(name = "FILE_CONTENT_TYPE")
+private String fileContentType;
+
+@Column(name = "FILE_NAME")
+private String fileName;
 
 @Column(name = "PRODUCT_CODE")
 private String productCode;
@@ -67,9 +81,6 @@ private String productDescription;
 @Column(name = "IS_NEGOTIABLE")
 private String isNegotiable;
 
-@Column(name = "FINAL_PRICE")
-private String finalPrice;
-
 @Column(name = "MANUFACTURER_NAME")
 private String manufacturerName;
 
@@ -82,29 +93,38 @@ private String isInWarranty;
 @Column(name = "WARRANTY_END_DATE")
 private Date warrantyEndDate;
 
-@Column(name = "PRODUCT_CURRENT_STATUS")
-private String productCurrentStatus;
-
-@Column(name = "AVLBL_QUANTITY")
-private int avlblQuantity;
-
-@Column(name = "PRODUCT_AVLBL_END_DATE")
-private Date producyAvlblEndDate;
-
 @Column(name = "CATEGORY")
 private String category;
 
 @Column(name = "PRICE")
 private String price;
 
-@Column(name = "CURRENT_RATE_CURRENCY")
-private String currentRateCurrency;
+@Column(name = "CURRENCY_SPECIFICATION")
+private String currencySpecification;
+
+@Column(name = "COMMENTS")
+private String comments;
+
+@Column(name = "PRIORITY")
+private String priority;
 
 @Column(name = "STATUS")
 private String status;
 
+@Column(name = "REGION_TYPE")
+private String regionType;
+
+@Column(name = "CURRENT_CITY")
+private String currentCity;
+
 @Column(name="CREATED_DATE")
 private Date createdDate;
+
+@Column(name="RELOCATE_FROM_DATE")
+private Date fromDate;
+
+@Column(name="RELOCATE_TO_DATE")
+private Date toDate;
 
 @Column(name = "UPDATED_DATE")
 private Date updatedDate;
@@ -213,13 +233,7 @@ public void setIsNegotiable(String isNegotiable) {
 	this.isNegotiable = isNegotiable;
 }
 
-public String getFinalPrice() {
-	return finalPrice;
-}
 
-public void setFinalPrice(String finalPrice) {
-	this.finalPrice = finalPrice;
-}
 
 public String getManufacturerName() {
 	return manufacturerName;
@@ -253,21 +267,8 @@ public void setWarrantyEndDate(Date warrantyEndDate) {
 	this.warrantyEndDate = warrantyEndDate;
 }
 
-public String getProductCurrentStatus() {
-	return productCurrentStatus;
-}
 
-public void setProductCurrentStatus(String productCurrentStatus) {
-	this.productCurrentStatus = productCurrentStatus;
-}
 
-public int getAvlblQuantity() {
-	return avlblQuantity;
-}
-
-public void setAvlblQuantity(int avlblQuantity) {
-	this.avlblQuantity = avlblQuantity;
-}
 
 public String getCategory() {
 	return category;
@@ -285,13 +286,7 @@ public void setPrice(String price) {
 	this.price = price;
 }
 
-public String getCurrentRateCurrency() {
-	return currentRateCurrency;
-}
 
-public void setCurrentRateCurrency(String currentRateCurrency) {
-	this.currentRateCurrency = currentRateCurrency;
-}
 
 public String getStatus() {
 	return status;
@@ -317,12 +312,84 @@ public void setUpdatedDate(Date updatedDate) {
 	this.updatedDate = updatedDate;
 }
 
-public Date getProducyAvlblEndDate() {
-	return producyAvlblEndDate;
+public String getComments() {
+	return comments;
 }
 
-public void setProducyAvlblEndDate(Date producyAvlblEndDate) {
-	this.producyAvlblEndDate = producyAvlblEndDate;
+public void setComments(String comments) {
+	this.comments = comments;
+}
+
+public String getCurrentCity() {
+	return currentCity;
+}
+
+public void setCurrentCity(String currentCity) {
+	this.currentCity = currentCity;
+}
+
+public String getPriority() {
+	return priority;
+}
+
+public void setPriority(String priority) {
+	this.priority = priority;
+}
+
+public Date getFromDate() {
+	return fromDate;
+}
+
+public void setFromDate(Date fromDate) {
+	this.fromDate = fromDate;
+}
+
+public Date getToDate() {
+	return toDate;
+}
+
+public void setToDate(Date toDate) {
+	this.toDate = toDate;
+}
+
+public String getFileUrl() {
+	return fileUrl;
+}
+
+public void setFileUrl(String fileUrl) {
+	this.fileUrl = fileUrl;
+}
+
+public String getCurrencySpecification() {
+	return currencySpecification;
+}
+
+public void setCurrencySpecification(String currencySpecification) {
+	this.currencySpecification = currencySpecification;
+}
+
+public String getRegionType() {
+	return regionType;
+}
+
+public void setRegionType(String regionType) {
+	this.regionType = regionType;
+}
+
+public String getFileContentType() {
+	return fileContentType;
+}
+
+public void setFileContentType(String fileContentType) {
+	this.fileContentType = fileContentType;
+}
+
+public String getFileName() {
+	return fileName;
+}
+
+public void setFileName(String fileName) {
+	this.fileName = fileName;
 }
 
 
