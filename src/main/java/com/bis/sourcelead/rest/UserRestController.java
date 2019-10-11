@@ -49,6 +49,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.AssetAssign;
 import com.bis.sourcelead.entity.AssociateDepartmentView;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.Department;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -70,6 +71,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateBalanceLeaveService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -210,6 +212,9 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 	@Autowired
 	private ProbationHistoryService probationHistoryService;
 	
+	@Autowired
+	CandidateGlobalService candidateGlboalService;
+	
 	
 	/**
 	 * To get All Approvers
@@ -267,7 +272,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
     public @ResponseBody String getAssociateDetailsById(@RequestParam(value="candidateId", required=false) Long candidateId,HttpServletRequest request) throws Exception {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		 if(candidateId !=null){
-		Candidate candidate   = candidateService.getCandidateById(candidateId);
+		CandidateGlobal candidate   = candidateGlboalService.getCandidateGlobalByCandidateId(candidateId);
 		if(null != candidate.getOrgRelationId()){
 			candidate.setVendorOrgRelationId(candidate.getOrgRelationId().getId().toString());
 			if(candidate.getOrgRelationId().getResponderLocationId().getId().equals(orgLocations.getId())){
