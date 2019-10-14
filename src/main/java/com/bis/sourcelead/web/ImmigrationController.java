@@ -821,7 +821,8 @@ public class ImmigrationController {
 	public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "immigrationId", required = false) String immigrationId,
-			@RequestParam(value = "templateId", required = false) String templateId, HttpServletRequest request)
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration,HttpServletRequest request)
 			throws Exception {
 		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
 		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
@@ -830,6 +831,11 @@ public class ImmigrationController {
 		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		immigrationTemplateFormDTO.setStaticPath(staticPath);
+		
+			if("Y".equalsIgnoreCase(myImmigration)) {
+				immigrationTemplateFormDTO.setFormCategory("Document Type");
+				}
+		
 		immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO, user, loginOrglocation);
 		logger.debug("Candidate Form  saved succesfully --> ");
 
@@ -884,9 +890,9 @@ public class ImmigrationController {
 			@RequestParam(value = "templateid", required = true) Long templateid,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
-			@RequestParam(value = "myImmigration", required = false) String myImmigration, 
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration, 
 			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
-			@RequestParam(value = "myImmigrationPage" , required = true) String myImmigrationPage,	HttpServletRequest request)
+				HttpServletRequest request)
 			throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -932,7 +938,7 @@ public class ImmigrationController {
 		model.addObject("documentsList", documentsList);
 		model.addObject("immigrationCanDocList", immigrationCanDocList);
 		model.addObject("curUscisMyImmi", curUscisMyImmi);
-		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("myImmigrationPage", myImmigration);
 		return model;
 	}
 
@@ -1323,7 +1329,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/saveVisaDetailsPage" }, method = RequestMethod.POST)
 	public Response<String> saveVisaDetailsPage(ImmigrationVisaDTO immigrationVisaDTO,
 			HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+			@RequestParam(value = "immigrationId", required = false) String immigrationId,
 			@RequestParam(value = "visaHistoryId", required = false) Long visaHistoryId) {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -1336,6 +1342,8 @@ public class ImmigrationController {
 		if(visaHistoryId != null) {
 			immigrationVisaDTO.setId(visaHistoryId);// setting value as "N"
 		}
+		// immigrationId changed from Long to String when VISA details added form associate summary we don't  get immigration id.
+	    // validation check added for immigrationId in service layer.
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationVisaDTO)) {
@@ -1377,12 +1385,13 @@ public class ImmigrationController {
 				"orgLocations");
 		Response<String> response = new Response<>();
 		logger.debug("Candidate ID ----> :  " + immigrationPassportDTO.getCandidateId());
+		 // immigrationId changed from Long to String when PASSPORT details added form associate summary we don't get immigration id.
+		 // validation check added for immigrationId in service layer.
 		if (user != null) {
 			try {
 				if (Validator.validate(immigrationPassportDTO)) {
 					
-					immigrationCommonService.savePassportDetails(immigrationPassportDTO, user, orgLocations,
-							Long.parseLong(immigrationId));
+					immigrationCommonService.savePassportDetails(immigrationPassportDTO, user, orgLocations,immigrationId);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1785,7 +1794,9 @@ public class ImmigrationController {
 
 				if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
 					canVisa.setCurrentStatus("Active");
-				} else {
+				} else if (currentDate.compareTo(commonUtil.stringToDate(canVisa.getValidTo())) == 0) {
+					canVisa.setCurrentStatus("Active");
+				}else {
 					canVisa.setCurrentStatus("Expired");
 					if(canVisa.getStatus() == 1)
 					expiredVisaIdList.add(canVisa.getCandidateVisaId());
@@ -1814,7 +1825,7 @@ public class ImmigrationController {
 	@RequestMapping(value = { "/addVisaExtensionDate" })
 	public void addCandidateExtensionDatebyVisaId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request,
-			@RequestParam(value = "immigrationId", required = true) long immigrationId,
+			@RequestParam(value = "immigrationId", required = true) String immigrationId,  
 			@RequestParam(value = "extensionDate", required = true) String extensionDate,
 			@RequestParam(value = "visaId", required = true) long visaId) throws Exception {
 		logger.debug(" inisde getCandidateVisaDetailsByVisaNuimebr controller test -->");
@@ -1863,7 +1874,9 @@ public class ImmigrationController {
 
 				if (currentDate.before(canPassport.getValidToDate())) {
 					canPassport.setCurrentStatus("Active");
-				} else {
+				} else if (currentDate.compareTo(canPassport.getValidToDate()) == 0) {
+					canPassport.setCurrentStatus("Active");
+				}else {
 					canPassport.setCurrentStatus("Expired");
 				}
 			}
@@ -1893,8 +1906,19 @@ public class ImmigrationController {
 		ModelAndView model = new ModelAndView();
 		model.addObject("myImmigrationPage", myImmigrationPage);
 		logger.debug(" inisde getLcaDetails controller test -->");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		Date toDayDate = new Date();
 		if(immigrationId != null) {
 			 List<LcaDTO> lcaList = immigrationCommonService.getLcaHistoryDetailsInfo(Long.parseLong(immigrationId));
+				for (LcaDTO lcaDto : lcaList) {
+					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+					String currentDateStr = dateFormat.format(toDayDate);
+					Date newDate = dateFormat.parse(currentDateStr);
+					Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
+					lcaDto.setEndDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getEndDate())));
+					lcaDto.setStartDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),  commonUtil.stringToDate(lcaDto.getStartDate())));
+				}
 			    model.addObject("lcaList", lcaList);
 		}
 		model.setViewName("/immigration/lcaDetailsTab");
@@ -2070,13 +2094,14 @@ public class ImmigrationController {
 
 	//visa
 	@RequestMapping(value = { "/deleteCandidateVisaDetails" })
-	public String deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId, HttpServletRequest request
+	public String deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId,
+			@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request
 			) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
-		immigrationCommonService.removeCandidateVisaDetails(visaHistoryId);
+		immigrationCommonService.removeCandidateVisaDetails(visaHistoryId,candidateId,user, orgLocations);
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error("Exception while deleting visa history record.");
@@ -2260,9 +2285,8 @@ public class ImmigrationController {
 			@RequestParam(value = "templateId", defaultValue = "0") Long templateId,
 			@RequestParam(value = "immigrationId", required = false) Long immigrationId,
 			@RequestParam(value = "searchVal", required = false) String searchVal,
-			@RequestParam(value = "myImmigration", required = false) String myImmigration,
-			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi,
-			@RequestParam(value = "myImmigrationPage", required = true) String myImmigrationPage) throws Exception {
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration,
+			@RequestParam(value = "curUscisMyImmi", required = true) String curUscisMyImmi	) throws Exception {
 
 		logger.debug("inside controller method getCandidateImmigrationForms--> ");
 		ModelAndView model = new ModelAndView();
@@ -2271,7 +2295,7 @@ public class ImmigrationController {
 				.getCandidateImmigartionFormsDetails(candidateId, templateId, immigrationId, searchVal,myImmigration);
 		logger.debug("Candidate forms Details updated succesfully  candidateFormsLst size  is --> "
 				+ candidateFormsLst.size());
-		model.addObject("myImmigrationPage", myImmigrationPage);
+		model.addObject("myImmigrationPage", myImmigration);
 		model.addObject("curUscisMyImmi", curUscisMyImmi);
 		model.addObject("formsList", candidateFormsLst);
 		return model;
