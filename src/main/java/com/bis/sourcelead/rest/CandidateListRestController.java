@@ -498,7 +498,11 @@ public class CandidateListRestController {
 			} else if (designationType.equalsIgnoreCase("Full Time")) {
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
 				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
-			} else {
+			} else if (designationType.equalsIgnoreCase("Other")) {
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Other"));
+			}else {
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", designationType));
 			}
 

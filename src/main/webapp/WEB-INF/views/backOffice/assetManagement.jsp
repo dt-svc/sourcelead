@@ -460,9 +460,11 @@ function openAssetFilterPop(){
 							<label><strong>Working Status</strong></label>
 							 <div class="clearfix">
 								<ul class="list-unstyled" id="workStatusFilter">
-				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Working" ><label>Working</label></li>
-                                    <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out of service</label></li>
-                                    <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
+				                    <li class="checkBox positionRelative"><input id="c1" type="checkbox"  name="workingStatus"  value ="Assigned" ><label>Assigned </label></li>
+				                     <li class="checkBox positionRelative"><input id="c2" type="checkbox"  name="workingStatus"  value ="Unassigned" ><label>unassigned </label></li>
+				                      <li class="checkBox positionRelative"><input id="c3" type="checkbox"  name="workingStatus"  value ="End Of Life" ><label>end of life</label></li>
+                                    <li class="checkBox positionRelative"><input id="c4" type="checkbox"  name="workingStatus"  value ="Out Of Service" ><label>Out of service</label></li>
+                                    <li class="checkBox positionRelative"><input id="c5" type="checkbox"  name="workingStatus"  value ="Service" ><label>Service</label></li>
 		                        </ul>
 							 </div>
 						</div> 
@@ -764,26 +766,39 @@ function projectAssetPaginations(url){
 		  	  	"targets": colIndex++,
 			  	"data": "",
 			  	"render": function(data, type, report) {
-			  		var result = "";
+			  		 var result = "";
 			  		 var selected1 = '';
 	   				 var selected2 = '';
 	   				 var selected3 = '';
-			  		 if(report.workingStatus == 'Working'){
+	   				 var selected4 = '';
+	   				 var selected5 = '';
+	   				 
+			  		 if(report.workingStatus == 'Assigned'){
 						selected1 = 'selected';
 					 } 
-				
-					 if(report.workingStatus == 'Out Of Service'){
+			  		 
+			  		if(report.workingStatus == 'Unassigned'){
 						selected2 = 'selected';
-					 }
-					 if(report.workingStatus == 'Service'){
+					 } 
+				
+					 if(report.workingStatus == 'End Of Life'){
 						selected3 = 'selected';
+					 }
+					 if(report.workingStatus == 'Out Of Service'){
+							selected4 = 'selected';
+						 }
+					 
+					 if(report.workingStatus == 'Service'){
+						selected5 = 'selected';
 					 }
 					
 			  	 	result = result + ' <td><div class="tblminwidth-150">';
 					result = result + ' <select id="workingStatus'+report.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.assetUUID+'\',\''+report.id+'\');">';
-					result = result + ' <option '+selected1+'>Working</option>';
-					result = result + ' <option '+selected2+'>Out Of Service</option>';
-					result = result + ' <option '+selected3+'>Service</option>';
+					result = result + ' <option '+selected1+'>Assigned</option>';
+					result = result + ' <option '+selected2+'>Unassigned</option>';
+					result = result + ' <option '+selected3+'>End Of Life</option>';
+					result = result + ' <option '+selected4+'>Out Of Service</option>';
+					result = result + ' <option '+selected5+'>Service</option>';
 					result = result + ' </select>';
 					result = result + ' </div></td>';
 		           return result;
@@ -1080,22 +1095,22 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 				result = result + '	<div class="row form-group">';
 					result = result + '<div class="col-md-4">';
 					result = result + '    	<label class="clearfix">Service Date<span class="colorRed paddingLeft">*</span></label>';
-					result = result + '    	<div class="clearfix validation_p" id="errServiceDateDiv">';
+					result = result + '    	<div class="clearfix" id="errServiceDateDiv">';
 					result = result + '    		<input type="text" class="form-control calendar"  placeholder="Service Date" name="serviceDate" id="serviceDate" data-validation="required" field-name="Service Date" readonly="readonly">';
 					result = result + '    	</div>';
 					result = result + '</div>';
 					
 					result = result + '			<div class="col-md-4">';
 					result = result + '				<label class="clearfix">Received Date<span class="colorRed paddingLeft">*</span></label>';
-					result = result + '				<div class="clearfix validation_p" id="errRecivedDateDiv">';
+					result = result + '				<div class="clearfix" id="errRecivedDateDiv">';
 					result = result + '					<input type="text" class="form-control calendar" placeholder="Received Date" name="receivedDate" id="receivedDate" data-validation="required" field-name="Received  Date" readonly="readonly">';
 					result = result + '				</div>';
 					result = result + '			</div>';
 					
 					result = result + '			<div class="col-md-4">';
 					result = result + '				<label class="clearfix">Cost<span class="colorRed paddingLeft">*</span></label>';
-					result = result + '				<div class="clearfix validation_p">';
-					result = result + '					<input type="text" class="form-control" placeholder="Cost" name="cost" id="cost" data-validation="required validate_float validate_length length1-50" field-name="Cost">';
+					result = result + '				<div class="clearfix">';
+					result = result + '					<input type="text" class="form-control" placeholder="Cost" name="cost" id="cost" data-validation="required validate_float validate_length length1-8" field-name="Cost">';
 					result = result + '				</div>';
 					result = result + '			</div>';
 					result = result + '	</div>';
