@@ -680,6 +680,9 @@ public class Constants {
 			put("INTERVIEW_ACCEPT", "Interview Accept");
 		}
 	};
+	
+	public static final String DEFAULT_STAGE_COLUMNS= "Applicant Name,Applicant Mail Id,Phone Number,location,Experience,Applied on,Source,Status";
+	
 	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
 	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowStageTaskNotification";
 	

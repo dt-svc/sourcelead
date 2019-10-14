@@ -118,6 +118,8 @@ public class ClientDTO {
 	
 	private String generateInvoice;
 	
+	private String isBackgroundCheck;
+	
 	public String getClientSaveFromType()
 	{
 		return clientSaveFromType;
@@ -462,6 +464,12 @@ public class ClientDTO {
 	}
 	public void setGenerateInvoice(String generateInvoice) {
 		this.generateInvoice = generateInvoice;
+	}
+	public String getIsBackgroundCheck() {
+		return isBackgroundCheck;
+	}
+	public void setIsBackgroundCheck(String isBackgroundCheck) {
+		this.isBackgroundCheck = isBackgroundCheck;
 	}
 	
 	

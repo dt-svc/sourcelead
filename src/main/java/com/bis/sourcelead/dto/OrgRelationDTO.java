@@ -93,6 +93,8 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	
 	private String isLawFirm;
 	
+	private String isBackgroundCheck;
+	
 	private String isAccountingFirm;
 	
 	private String noOfNonReleasedContacts;
@@ -448,6 +450,14 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setIsLawFirm(String isLawFirm) {
 		this.isLawFirm = isLawFirm;
+	}
+
+	public String getIsBackgroundCheck() {
+		return isBackgroundCheck;
+	}
+
+	public void setIsBackgroundCheck(String isBackgroundCheck) {
+		this.isBackgroundCheck = isBackgroundCheck;
 	}
 
 	public String getIsAccountingFirm() {
