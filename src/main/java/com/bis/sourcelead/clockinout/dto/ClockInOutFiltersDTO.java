@@ -1,4 +1,4 @@
-package com.bis.sourcelead.clockInOutDTO;
+package com.bis.sourcelead.clockinout.dto;
 
 public class ClockInOutFiltersDTO {
 	

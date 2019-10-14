@@ -732,7 +732,7 @@ function callAddITDeclarationSectionRestService(formData, type) {
 	$.ajax({
 		type : "POST",
 	    data: formData,
-		url : sourceleadUrl+"/form/addITDeclarationSection",
+		url : sourceleadUrl+"/form/addITDeclarationSection?formId=" + formId,
 		success : function(response) {
 			if (response.response === "AWKWARD") {
         	    location.href = "/errorPage";
@@ -741,7 +741,7 @@ function callAddITDeclarationSectionRestService(formData, type) {
 				$(".success_pop").css("display","block");
         		$(".success_pop span").html("Tax Section " + (type === 1 ? "added" : "updated") + " successfully....");
         		setTimeout(function() {
-        			tax.getDynamicTaxForm($("#sectionTaxFormId").val(), true);
+        			tax.getDynamicTaxForm( formId, true);
         			$(".success_pop").css("display","none");
 		 		},1000);
         	} else if (response.response === "INVALID_DATA" || response.response === "FAILED") {
