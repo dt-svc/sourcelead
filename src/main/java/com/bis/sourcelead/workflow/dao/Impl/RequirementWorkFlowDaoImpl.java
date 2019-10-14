@@ -1210,14 +1210,14 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		}
 
 		@Override
-		public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+		public String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageUuid, Long submissionId,
 				Integer minutes, Integer seconds) {
 			logger.debug("Running deleteRequirementWorkFlowtasks DAO");
 			try {
 				Session session = this.sessionFactory.getCurrentSession();
 				String query = "UPDATE  REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE SET TIME_MINUTES_REMAINED =:minutes , TIME_SECONDS_REMAINED=:seconds"
-						                  + " WHERE REQUIREMENT_SUBMISSION_ID =:submissionId AND REQUIREMENT_WORKFLOW_STAGES_ID =:stageId  AND REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID =:questTemplUuid" ;
-				int count = session.createSQLQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setLong("stageId", stageId)
+						                  + " WHERE REQUIREMENT_SUBMISSION_ID =:submissionId AND REQUIREMENT_WORKFLOW_STAGES_UUID =:stageUuid  AND REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID =:questTemplUuid" ;
+				int count = session.createSQLQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setString("stageUuid", stageUuid)
 			                                               .setString("questTemplUuid",questTemplUuid).executeUpdate();
 				if(count != 0 ) {
 					return Constants.SUCCESS;
