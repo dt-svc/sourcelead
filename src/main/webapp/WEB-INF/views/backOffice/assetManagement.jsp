@@ -1095,22 +1095,22 @@ function assetmanagemetServicePopUp(assetId,workingStatus,assetUUID){
 				result = result + '	<div class="row form-group">';
 					result = result + '<div class="col-md-4">';
 					result = result + '    	<label class="clearfix">Service Date<span class="colorRed paddingLeft">*</span></label>';
-					result = result + '    	<div class="clearfix validation_p" id="errServiceDateDiv">';
+					result = result + '    	<div class="clearfix" id="errServiceDateDiv">';
 					result = result + '    		<input type="text" class="form-control calendar"  placeholder="Service Date" name="serviceDate" id="serviceDate" data-validation="required" field-name="Service Date" readonly="readonly">';
 					result = result + '    	</div>';
 					result = result + '</div>';
 					
 					result = result + '			<div class="col-md-4">';
 					result = result + '				<label class="clearfix">Received Date<span class="colorRed paddingLeft">*</span></label>';
-					result = result + '				<div class="clearfix validation_p" id="errRecivedDateDiv">';
+					result = result + '				<div class="clearfix" id="errRecivedDateDiv">';
 					result = result + '					<input type="text" class="form-control calendar" placeholder="Received Date" name="receivedDate" id="receivedDate" data-validation="required" field-name="Received  Date" readonly="readonly">';
 					result = result + '				</div>';
 					result = result + '			</div>';
 					
 					result = result + '			<div class="col-md-4">';
 					result = result + '				<label class="clearfix">Cost<span class="colorRed paddingLeft">*</span></label>';
-					result = result + '				<div class="clearfix validation_p">';
-					result = result + '					<input type="text" class="form-control" placeholder="Cost" name="cost" id="cost" data-validation="required validate_float validate_length length1-50" field-name="Cost">';
+					result = result + '				<div class="clearfix">';
+					result = result + '					<input type="text" class="form-control" placeholder="Cost" name="cost" id="cost" data-validation="required validate_float validate_length length1-8" field-name="Cost">';
 					result = result + '				</div>';
 					result = result + '			</div>';
 					result = result + '	</div>';
