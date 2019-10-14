@@ -107,8 +107,8 @@ public class Constants {
 	public static final DateFormat SHORT_DF_STD_MD = new SimpleDateFormat("");
 	public static final DateFormat SHORT_DF_MM_DD = new SimpleDateFormat("MMM-dd");
 	public static final DateFormat TZ_DF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        public static final DateFormat TZ_DF1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        public static final DateFormat FULL_DATE = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+	public static final DateFormat TZ_DF1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+	public static final DateFormat FULL_DATE = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
 	
 	// Below line of code is used to print Week days like Sunday, Monday.... by passing Date.
 	public static final SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
@@ -617,11 +617,11 @@ public class Constants {
 	public static final String EXPERIENCELEVEL = "Experience Level";
 	
 	public static final String NOTES_JOBS = "Jobs";
-    public static final String NOTES_CONTRACTS = "Contracts";
-    public static final String NOTES_BILLING = "Billing";
-    public static final String NOTES_CONTACTS = "Contacts";
+	public static final String NOTES_CONTRACTS = "Contracts";
+	public static final String NOTES_BILLING = "Billing";
+	public static final String NOTES_CONTACTS = "Contacts";
     
-    public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
+	public static final String SOURCELEAD_ADMIN_UNIQUE = "Sourcelead";
 	
 	public static final String DOCUMENT_TYPE = "Document Type";
 	public static final String ATTORNEY_CATEGORY = "AttorneyCategory";
@@ -660,7 +660,26 @@ public class Constants {
 			put("REJECTED", "Reject"); put("BACKOUT","Backout");
 		}
 	};
-	
+	public static final LinkedHashMap<String, String> ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String>() {
+		{
+			put("SUBMISSION", "Submission");
+			put("SHORTLIST", "Short List");
+			put("SUBMIT_TO_CLIENT", "Submit to Client");
+			put("INTERVIEW", "Interview");
+			put("OFFERMADE", "Offer");
+			put("NORESPONSE", "No Response");
+			put("ONHOLD", "On-hold");
+			put("JOINED", "Joined");
+			put("REJECTED", "Reject");
+			put("BACKOUT", "Backout");
+
+			put("OFFERACCEPTED", "Offer Accepted");
+			put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+			put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+			put("CLIENT_INTERVIEW", "Client Interview");
+			put("INTERVIEW_ACCEPT", "Interview Accept");
+		}
+	};
 	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
 	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowStageTaskNotification";
 	
@@ -1070,26 +1089,26 @@ public class Constants {
 
 	public static final String[] RECRUITER_REPORTS_BACKOUT_HEADERS = { "Applicant Name", "Email","Phone Number","Job Title", "Client","Job Location","Rate","Backout On", "Category","Comment", "Current Stage"};
 
-    public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
+	public static final String BILLABLE_HOURS = "BILLABLE_HOURS";
 	public static final String JOB_ALERT_DURATION_DIALY = "Daily";
 	public static final String JOB_ALERT_DURATION_WEEKLY = "Weekly";
 	public static final String JOB_ALERT_DURATION_MONTHLY = "Monthly";
 	public static final String JOB_ALERTS = "JobAlerts";
-    public static final String UNDEFINED = "undefined";
-    public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
-    public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
-    public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
-    public static final String DOCUMENT_UPLOAD_MANUALLY = "Manually";
-    public static final String DOCUMENT_UPLOAD_REQUESTED = "Requested";
-    public static final String DOCUMENT_UPLOAD = "Uploaded";
-    public static final String REQUESTED_DOCUMENT_ACCEPTED = "Accepted";
-    public static final String REQUESTED_DOCUMENT_REJECTED = "Rejected";
-    public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
-    public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
-    public static final String PERCENTAGE = "percentage";
+	public static final String UNDEFINED = "undefined";
+	public static final String EMPLOYEE_PAYROLL = "EMPLOYEE_PAYROLL";
+	public static final String WAGE_TAX_SUMMARY = "WAGE_TAX";
+	public static final String ACCOUNT_DEDUCTIONS = "ACCOUNT_DEDUCTIONS";
+	public static final String DOCUMENT_UPLOAD_MANUALLY = "Manually";
+	public static final String DOCUMENT_UPLOAD_REQUESTED = "Requested";
+	public static final String DOCUMENT_UPLOAD = "Uploaded";
+	public static final String REQUESTED_DOCUMENT_ACCEPTED = "Accepted";
+	public static final String REQUESTED_DOCUMENT_REJECTED = "Rejected";
+	public static final String REQUESTED_DOCUMENT_SUBMITTED = "Submitted";
+	public static final String HR_DEDUCTIONS = "HR_DEDUCTIONS";
+	public static final String PERCENTAGE = "percentage";
     public static final String[] PERCENTAGES = {"0%","10%","20%","30%","40%","50%"};
     public static final String[] PRIORITIES = {"medium","low","high","urgent"};
-    public static final String DEFAULTPRIORITY = "Medium";
+	public static final String DEFAULTPRIORITY = "Medium";
     public static final String[] COOLINGOFFSET = {"0 days","1 week","2 weeks","3 weeks","1 month","2 months","3 months","4 months","5 months","6 months","7 months","8 months","9 months","10 months","11 months","1 year"};
 
 
@@ -1097,15 +1116,15 @@ public class Constants {
     public static final String[] WAGES_TAX_HEADERS = {"Id","Employee Name","Check Date","Check No","Gross","fwt","ssec","med","swt","sdi/sui","local","deds","net"};
     public static final String[] ACCOUNT_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th","sep 1st","sep 15th","oct 1st","oct 15th","nov 1st","nov 15th","dec 1st","dec 15th"};
     public static final String[] HR_DEDUCTION_HEADERS = {"Id","Name","ded","mar 15th","april 1st","april 15th","may 1st","may 15th","june 1st","june 15th","july 1st","july 15th","aug 1st","aug 15th"};
-    public static final String BIS_USERS = "BIS_USERS";
-    public static final String OVER_DUE = "Overdue";
+	public static final String BIS_USERS = "BIS_USERS";
+	public static final String OVER_DUE = "Overdue";
     
     //contracts 
-    public static final String EXPIRED = "EXPIRED";
-    public static final String FINALIZED = "FINALIZED";
-    public static final String SEND_FOR_VERIFICATION = "SEND_FOR_VERIFICATION";
-    public static final String WAITING_TO_BE_VERIFY = "WAITING_TO_BE_VERIFY";
-    public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
+	public static final String EXPIRED = "EXPIRED";
+	public static final String FINALIZED = "FINALIZED";
+	public static final String SEND_FOR_VERIFICATION = "SEND_FOR_VERIFICATION";
+	public static final String WAITING_TO_BE_VERIFY = "WAITING_TO_BE_VERIFY";
+	public static final String WAITING_TO_BE_SIGNED = "WAITING_TO_BE_SIGNED";
     public static final String DELETED = "DELETED";   
     public static final String APPROVED = "APPROVED";  
     public static final String SEQUENTIAL = "Sequential";  
@@ -1113,10 +1132,10 @@ public class Constants {
     public static final String WAITING_TO_SEND = "WAITING_TO_SEND";  
     public static final String WAITING = "WAITING";  
     
-    public static final String PENDING = "PENDING";
+	public static final String PENDING = "PENDING";
 
-    public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
-    public static final String Client_SOW = "Client SOW";
+	public static final String WAITING_FOR_APPROVER = "WAITING_FOR_APPROVER";
+	public static final String Client_SOW = "Client SOW";
 	public static final String Vendor_SOW = "Vendor SOW";
 	public static final String FULL_TIME_OFFER = "Full time offer";
 	public static final String CLIENT_MSA = "Client MSA";
@@ -1135,9 +1154,9 @@ public class Constants {
 	public static final String BIS_CHECKS = "BIS_CHECKS";
 
 
-    public static final String HOLIDAY = "Holiday";
-    public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
-    public static final String WORK_FROM_HOME = "Work From Home";
+	public static final String HOLIDAY = "Holiday";
+	public static final String COMPENSATORY_LEAVE = "Compensatory Leave";
+	public static final String WORK_FROM_HOME = "Work From Home";
 	
 	public static final String CANDIDATE_ENTITY = "CD";
 	public static final String JOB_ENTITY = "JB";
@@ -1369,9 +1388,9 @@ public class Constants {
 	public static final String REPORT_FILTER_2_MONTHS = "2_months";
 	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Id","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
-    public static final String BOOLEAN_TRUE = "true";
-    public static final String LOCAL_TAX_YES = "YES";
-    public static final String LOCAL_TAX_NO = "NO";
+	public static final String BOOLEAN_TRUE = "true";
+	public static final String LOCAL_TAX_YES = "YES";
+	public static final String LOCAL_TAX_NO = "NO";
 
     
     public static final String[] GENDER = { "Male", "Female", "Transgender"};
@@ -1380,9 +1399,9 @@ public class Constants {
 
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
-    public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
+	public static final String[] RATE_CURRENCY = { "INR", "AUD", "USD", "GBP", "SGD", "EUR" };
     
-    public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
+	public static final String[] BILLING_TYPE = { "Billable", "Non-Billable" };
 
     
     public static final String[] ASSET_WORKING_STATUS = {"Assigned", "unassigned", "end of life", "Out Of Service"};
