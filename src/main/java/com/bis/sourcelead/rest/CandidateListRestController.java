@@ -825,7 +825,7 @@ public class CandidateListRestController {
 	
 	
 	@RequestMapping(value = "/getCandidateSubmittedRequirementCount" , method = RequestMethod.GET)
-	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateId, 
+	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateGlobalId, 
 			 @RequestParam(value = "candidateType", required = true) String candidateType,HttpServletRequest request) throws Exception {
 			
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -833,14 +833,8 @@ public class CandidateListRestController {
 		     Integer profilePercentage = 0;
 		     Integer submittedJobCount = 0;
 		     
-		     if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase("Associates")) {
-		    	 profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateId);
-		    	 Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
-		    	 submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateGlobalId, orgLocation.getId());
-		     }else {
-		    	 profilePercentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidateId);
-		    	 submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocation.getId());
-		     }
+		     profilePercentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidateGlobalId);
+	    	 submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateGlobalId, orgLocation.getId());
 		    
 		     candidateDTO.setSubmittedJobsCount(submittedJobCount);
 		     candidateDTO.setProfilePercentage(profilePercentage);
