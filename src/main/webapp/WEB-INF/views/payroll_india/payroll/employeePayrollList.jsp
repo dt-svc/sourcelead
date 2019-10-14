@@ -32,6 +32,7 @@
 			<div class="timesheet_head minHeight">
 				<div class="col-md-12 mt">
 					<div class="row">
+					<div class="clearfix"></div>
 						<div class="col-md-2">
 							<select class="sel selheight30">
 								<option selected>${freqResponse.groupName}</option>
@@ -53,7 +54,10 @@
 						
 						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
 							<div class="col-md-4">
-								<a class="pull-right" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk Actions</a>
+								<a class="pull-left ml btn btn-primary anchorWhite" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk Actions</a>
+								<div class="pull-right ml positionRelative">
+						         	<input type="text" class="repSearchBar" placeholder="Search" id="orgPayrollTableSearch" onkeyup="myPayrollSerach()"><span class="repSearchIcon" onclick="myPayrollSerach();"></span>
+						         	</div>
 							</div>
 						</c:if>
 					</div>
@@ -80,7 +84,7 @@
 								<th>Net Pay</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="payrollSerachTbody">
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
 									<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
@@ -114,6 +118,12 @@
 							</c:forEach>
 						</tbody>
 					</table>
+					<div class="panel-default text-center" id="noOrgPayrollDiv" style="display: none;">
+				    <div class="panel-body">
+						<p class="dataTables_empty"></p>
+				    </div>
+				  </div>
+				  
 				</div>
 			</div>
 			<div class="clearfix mt"></div>
@@ -156,6 +166,38 @@
 </div>
 <!-- Content Area Ends--> 
 
+<script>
+function myPayrollSerach(){
+	var hasResults = false, flag = false;
+	var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("orgPayrollTableSearch");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("payrollSerachTbody");
+	  tr = table.getElementsByTagName("tr");
+	  for (i = 0; i < tr.length; i++) {
+	    td = tr[i].getElementsByTagName("td")[2];
+	    if (td) {
+	      txtValue = td.textContent || td.innerText;
+	      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+	        tr[i].style.display = "";
+	        flag = true;
+	      } else {
+	        tr[i].style.display = "none";
+	      }
+	    }   
+	    if(flag) {
+			hasResults = true;
+		}  
+	  }
+	  if(!hasResults) {
+			$("#noOrgPayrollDiv").show();
+		} else {
+			$("#noOrgPayrollDiv").hide();
+		}
+}
+
+
+</script>
 <script>
 $(document).ready(function() {
 	$("#runPay").click(function(){
