@@ -1286,7 +1286,12 @@ public CandidateGlobal storeCandidateGlobalFromCandidate(Candidate candidate) th
 	candidateGlobal.setUpdatedDate(candidate.getUpdatedDate());
 	candidateGlobal.setStatus(candidate.getStatus());
 	candidateGlobal.setOrgLocationId(candidate.getOrgLocationId());
-	candidateGlobal.setProfilePercentage(30);
+	if(candidate.getCandidateProfilePercentage() != null) {
+		candidateGlobal.setCandidateProfilePercentage(candidate.getCandidateProfilePercentage());
+	}else {
+		candidateGlobal.setCandidateProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+	}
+	
 	
 	candidateGlobalService.storeCandidateGlobal(candidateGlobal);
 	

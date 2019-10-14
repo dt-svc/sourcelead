@@ -796,7 +796,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setMobilePhone(user.getMobilePhone());
 				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
-				candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+				candidate.setCandidateProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
 				candidate.setMaritalStatus(userImport.getMaritalStatus());
 				
 				
