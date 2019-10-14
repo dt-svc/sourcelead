@@ -661,6 +661,26 @@ public class Constants {
 		}
 	};
 	
+	public static final LinkedHashMap<String, String> ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String>() {
+		{
+			put("SUBMISSION", "Submission");
+			put("SHORTLIST", "Short List");
+			put("SUBMIT_TO_CLIENT", "Submit to Client");
+			put("INTERVIEW", "Interview");
+			put("OFFERMADE", "Offer");
+			put("NORESPONSE", "No Response");
+			put("ONHOLD", "On-hold");
+			put("JOINED", "Joined");
+			put("REJECTED", "Reject");
+			put("BACKOUT", "Backout");
+			put("OFFERACCEPTED", "Offer Accepted");
+			put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+			put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+			put("CLIENT_INTERVIEW", "Client Interview");
+			put("INTERVIEW_ACCEPT", "Interview Accept");
+		}
+	};
+	
 	public static final String DEFAULT_STAGE_COLUMNS= "Applicant Name,Applicant Mail Id,Phone Number,location,Experience,Applied on,Source,Status";
 	
 	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
