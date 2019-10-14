@@ -1139,7 +1139,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					actionDesc.toString());
 
 		} else {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidate.getId());
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
 		}
 		return candidateVisa;
 		
@@ -1226,7 +1229,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					actionDesc.toString());
 
 		} else {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidate.getId());
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
 		}
 		return candidatePassport;
 
@@ -1447,7 +1453,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Candidate candidate = new Candidate();
 		candidate.setId(candidateId);
 		try {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidateId);
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1462,8 +1471,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		actionDesc.append("Passport Details Removed ").toString();
 		Candidate candidate = new Candidate();
 		candidate.setId(candidateId);
+		
 		try {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
+			
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidateId);
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3253,9 +3267,12 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 					}
 
 				}else {
-					Candidate candidate = new Candidate();
-					candidate.setId(immigrationVisaDTO.getCandidateId());
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+					
+					Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(immigrationVisaDTO.getCandidateId());
+					CandidateGlobal candidateGlobal = new CandidateGlobal();
+					candidateGlobal.setId(candidateGlobalId);
+					
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
 				}
 				logger.debug(count + "Records are upated in Visa History Table >>>>>>>>>>");
 			}
