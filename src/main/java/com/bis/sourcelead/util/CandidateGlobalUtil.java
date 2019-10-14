@@ -909,7 +909,6 @@ public CandidateGlobal getVendorCandidateForCandidateCreation(CandidateDTO candi
 			candidate.setOrgLocationId(vendorOrgLocation);
 			candidate.setCandidateType("Candidate");
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			
 			if(StringUtils.isNotBlank(candidateDTO.getFirstName())){
 				candidate.setFirstName(candidateDTO.getFirstName());
 			}
@@ -969,7 +968,7 @@ public CandidateGlobal getC2CVendorCandidateGlobal(CandidateGlobal vendorCandida
 			candidate.setOrgLocationId(vendorOrgLocation);
 			candidate.setCandidateType("Candidate");
 			candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
-			
+			candidate.setGeneratedId(getCandidateGlobalId(vendorOrgLocation));
 			candidate.setFirstName(vendorCandidate.getFirstName());
 			candidate.setLastName(vendorCandidate.getLastName());
 			candidate.setEmail(vendorCandidate.getEmail());
@@ -1067,86 +1066,7 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	candidateGlobal.setCandidateId(candidateGlobal.getId());
     candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
 	
-	/*List<CandidateEducation> educationsList = candidateEducationService.getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(educationsList != null && !educationsList.isEmpty()) {
-		for(CandidateEducation education : educationsList) {
-			education.setCandidateId(candidateGlobal);
-			candidateEducationService.saveCandidateEducation(education);
-		}
-	}
 	
-	List<CandidateResumes> resumesList = candidateResumesService.getCandidateGlobalResumesListByCandidateIdAndStatus(candidateGlobal.getId(), Constants.RECORD_ACTIVE);
-	if(resumesList != null && !resumesList.isEmpty()) {
-		for(CandidateResumes candidateResumes : resumesList) {
-			candidateResumes.setCandidateId(candidateGlobal);
-			candidateResumesService.updateCandidateResume(candidateResumes);
-		}
-	}
-	
-	List<CandidateEmployers> employersList = candidateEmployersService.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(employersList != null && !employersList.isEmpty()) {
-		for(CandidateEmployers candidateEmployers : employersList) {
-			candidateEmployers.setCandidateId(candidateGlobal);
-			candidateEmployersService.saveCandidateEmployers(candidateEmployers);
-		}
-	}
-	
-	List<CandidateHistory> historyList = candidateHistoryService.getCandidateHistoryListByGlobalCandidateId(candidateGlobal.getId());
-	if(historyList != null && !historyList.isEmpty()) {
-		for(CandidateHistory candidateHistory : historyList) {
-			candidateHistory.setCandidateId(candidateGlobal);
-			candidateHistoryService.storeCandidateHistory(candidateHistory);
-		}
-	}
-	
-	List<CandidateTimelineActivity> timeLineActivityList = candidateTimelineActivityDao.getCandidateGlobalTimelineActivities(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(timeLineActivityList != null && !timeLineActivityList.isEmpty()) {
-		for(CandidateTimelineActivity candidateTimelineActivity : timeLineActivityList) {
-			candidateTimelineActivity.setCandidate(candidateGlobal);
-			candidateTimelineActivityDao.storeCandidateTimelineActivity(candidateTimelineActivity);
-		}
-	}
-	
-	List<CandidateCertifications> certificationsList = candidateCertificationsDao.getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(certificationsList != null && !certificationsList.isEmpty()) {
-		for(CandidateCertifications candidateCertifications : certificationsList) {
-			candidateCertifications.setCandidateId(candidateGlobal);
-			candidateCertificationsDao.storeCandidateCertifications(candidateCertifications);
-		}
-	}
-	
-	List<CandidateDocuments> documentsList = candidateDocumentsDao.getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(documentsList != null && documentsList.isEmpty()) {
-		for(CandidateDocuments candidateDocuments : documentsList) {
-			candidateDocuments.setCandidateId(candidateGlobal);
-			candidateDocumentsDao.storeCandidateDocuments(candidateDocuments);
-		}
-	}
-	
-	List<CandidateComments> commentsList = candidateCommentsDao.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(commentsList != null && !commentsList.isEmpty()) {
-		for(CandidateComments candidateComments : commentsList) {
-			candidateComments.setCandidateId(candidateGlobal);
-			candidateCommentsDao.storeCandidateComments(candidateComments);
-		}
-		
-	}
-	
-	List<CandidateReferences> referencesList = candidateReferencesDao.getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(candidateGlobal.getId(), candidateGlobal.getOrgLocationId().getId());
-	if(referencesList != null && !referencesList.isEmpty()) {
-		for(CandidateReferences candidateReferences : referencesList) {
-			candidateReferences.setCandidateId(candidateGlobal);
-			candidateReferencesDao.storeCandidateReferences(candidateReferences);
-		}
-	}
-	
-	List<CandidateCustomFieldData> customFieldsList = candidateCustomFieldDataService.getCandidateCustomFieldDataByCandidateGlobalId(candidateGlobal.getId());
-	if(customFieldsList != null && !customFieldsList.isEmpty()) {
-		for(CandidateCustomFieldData candidateCustomFieldData : customFieldsList) {
-			candidateCustomFieldData.setCandidate(candidateGlobal);
-			candidateCustomFieldDataService.savejobCustomFieldData(candidateCustomFieldData);
-		}
-	}*/
 	return candidate;
 }
 
