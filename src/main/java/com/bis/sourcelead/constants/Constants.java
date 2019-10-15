@@ -520,11 +520,15 @@ public class Constants {
 	public static final int TAB_CONTRACTS = 16;
 	public static final int TAB_IMMIGRATION = 33;
 	public static final int TAB_RUN_PAYROLL = 37;
+	public static final int TAB_BACKGROUND_CHECK = 47;// 46 IS LATEST AS OF 10-10-2019.
 	public static final String Dashboard = "Dashboard";
 	public static final String Users = "Users";
 	public static final String Immigration = "Immigration";
 	public static final String Immigrations = "Immigrations";
 	public static final String My_Immigration = "MyImmigration";
+	public static final String Background_Check = "Background Check";
+	public static final String InProgress_Bgc_Details = "In Progress";
+	public static final String Completed_Bgc_Details = "Completed";
 	public static final String Projects = "Projects";
 	public static final String Clients = "Clients";
 	public static final String TimeSheet = "TimeSheet";
@@ -681,25 +685,7 @@ public class Constants {
 		}
 	};
 	
-	public static final LinkedHashMap<String, String> ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String>() {
-		{
-			put("SUBMISSION", "Submission");
-			put("SHORTLIST", "Short List");
-			put("SUBMIT_TO_CLIENT", "Submit to Client");
-			put("INTERVIEW", "Interview");
-			put("OFFERMADE", "Offer");
-			put("NORESPONSE", "No Response");
-			put("ONHOLD", "On-hold");
-			put("JOINED", "Joined");
-			put("REJECTED", "Reject");
-			put("BACKOUT", "Backout");
-			put("OFFERACCEPTED", "Offer Accepted");
-			put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
-			put("SELECTED_ON_INTERVIEW", "Selected On Interview");
-			put("CLIENT_INTERVIEW", "Client Interview");
-			put("INTERVIEW_ACCEPT", "Interview Accept");
-		}
-	};
+	
 	
 	public static final String DEFAULT_STAGE_COLUMNS= "Applicant Name,Applicant Mail Id,Phone Number,location,Experience,Applied on,Source,Status";
 	
