@@ -208,6 +208,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				
 				//ind payroll cache removing unnecessary value after aprove and submitForAproval
 				List<EmployeeSessionIndPayroll> IndPayrollCahe = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+				if(IndPayrollCahe != null && IndPayrollCahe.size() > 0)
 				indPayrollService.deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(IndPayrollCahe);
 				
 				if (savedPF != null) {
