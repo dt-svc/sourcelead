@@ -57,38 +57,13 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </div> 
 
 
-<!-- <script>
-$(document).ready(function(){
-	datatableBody();
-});
-</script> 
-<script>
-function datatableBody(){ 
-	 $('#example').DataTable( { 
-		    "sDom": "Rlfrtip",
-		    "bPaginate": false,
-		    "bInfo" : false,
-		    "ordering": false,
-		    "searchHighlight": true
-	    } );
-}
-</script> 
-<script>
- function searchHighlight(searchData){
-	 if(searchData != null && searchData != 'undefined' && searchData != ''){
-		    var table = $('#example').DataTable();
-		    var body = $( table.table().body() );
-		    body.unhighlight();
-	        body.highlight(searchData);
-	 } 
- }
- </script> -->
 <script>
 $(document).ready(function(){
 	if('${AWKWARD}' == "true"){
 		   window.location.href =  "/errorPage";
 	 }
 });
+
 </script>
 
 <script>
@@ -187,10 +162,6 @@ function searchExpensesDataIcon(){
 	      $('#pageMsg').html(pageMsg);
 	 }
   </script>
-
-
-
-
 
 <script>
 	function changeBillingStatus(id, ele) {
