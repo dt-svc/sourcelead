@@ -16,12 +16,11 @@ public interface AddProductDao {
 	MarketPlaceProductFilesHistory saveMarketPlaceProductFilesHistory(MarketPlaceProductFilesHistory marketPlaceProductFilesHistory)throws Exception;
 	
 	//MarketPlaceProductNegotiationHistory saveMarketPlaceProductNegotiationHistory(MarketPlaceProductNegotiationHistory marketPlaceProductNegotiationHistory)throws Exception;
-	
-	MarketPlaceProducts deleteMarketPlaceProducts()throws Exception;
-
     
 	Integer getProductCategoryCountByCategory(String category);
 
 	ResponseList<MarketPlaceProductsDTO> getMarketPlaceDetailsbyId(MarketPlaceProductsDTO marketPlaceProductsDTO,
 			OrgLocations orgLocations, User user, String searchValue);
+
+	List<MarketPlaceProducts> getMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception;
 }

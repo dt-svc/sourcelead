@@ -1,5 +1,7 @@
 package com.bis.sourcelead.userMarketplace.service;
 
+import java.util.TreeMap;
+
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
@@ -16,6 +18,8 @@ public interface AddProductService{
 
 	ResponseList<MarketPlaceProductsDTO> getMareketPlaceListDetails(MarketPlaceProductsDTO marketPlaceProductsDTO,
 			OrgLocations orgLocations, User user, Org org, String searchValue);
+
+	TreeMap<Long, String> deleteMarketPlaceList(String uuid, Long id);
 
 
 
