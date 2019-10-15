@@ -4,6 +4,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<script type="text/javascript">
+window.onload = function () {
+	getmarketPlaceList();
+};
+</script>
+
+
 <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -143,11 +150,12 @@
         <label class="clearfix">Price</label>
         <div class="clearfix row">
             <div class="col-md-9">
-          <input type="text" id="price" name="price" class="form-control">
+          <input type="text" id="price" name="price" value="${price}" class="form-control" data-validation="validate_length length1-20 validate_phone"
+							field-name="Price"	data-validation-optional="true" value=" ">
         </div>
           <div class="col-md-3">
        <select class="form-control sel" name ="currencySpecification" id="currencySpecification" >
-                <option selected="" value="0">Select</option>
+                <option selected="" value=" ">Select</option>
                 <option>&#x20B9;</option>
                 <option>&#36;</option>
                 <option>&#163;</option>
@@ -356,6 +364,18 @@ function saveProduct(){
 	   return false;
    }
         }
+        
+        
+   function deleteMarketPlaceList(productCode,uuid)  { 
+	 
+	   $.ajax({
+			type : "GET",
+			url : atsUrl+"/deleteMarketPlaceList?uuid="+uuid,
+			 success : function(dataList){
+			 }
+			 
+   });
+   }
   </script>
 
 <script>
@@ -388,7 +408,6 @@ function saveProduct(){
 				}
 
   function getDynamicMarketPlaceList()
-  
   {
 	  console.log("getDynamicMarketPlaceList");
 					   var colIndex = 0;
@@ -456,14 +475,16 @@ function saveProduct(){
 				  	             	}
 				  	             	 return result;
 					    	  	}
+					        
 					        },{
 					    	  	"targets": colIndex++,
 					    	  	"sortable": false,
 					    	  	"data": "manufacturerDate",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
+					    	  		var result = "";
 					    	  		if(productList.manufacturerDate != null && productList.manufacturerDate !== '' && productList.manufacturerDate != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.manufacturerDate+"</div>";
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.manufacturerDate+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -476,7 +497,13 @@ function saveProduct(){
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
 					    	  		if(productList.price != null && productList.price !== '' && productList.price != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.price+productList.currencySpecification+"</div>";
+					    	  			
+					    	  			if(productList.currencySpecification != null && productList.currencySpecification !== '' && productList.currencySpecification != "undefined"){
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.price+'  '+productList.currencySpecification+"</div>";
+					    	  			}else{
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.price+"</div>";
+					    	  			}
+					    	  			
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -490,7 +517,7 @@ function saveProduct(){
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
 					    	  		if(productList.priority != null && productList.priority !== '' && productList.priority != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.priority+"</div>";
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.priority+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -502,21 +529,17 @@ function saveProduct(){
 					    	  	"data": "docFile",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
-					    	  		if(productList.docFile != null && productList.docFile !== '' && productList.docFile != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.docFile+"</div>";
-					    	  		}else{
-				  	            	  		  result = result +"<div>---</div>"; 
-				  	             	}
+		                             result = result + '<span title="Warranty Document" class="paddingRight pull-middle" href=\"'+productList.fileURL+'\"><i class="fa fa-download cursorPointer"></i></span>';
 				  	             	 return result;
 					    	  	}
 					        },{
 					    	  	"targets": colIndex++,
 					    	  	"sortable": false,
-					    	  	"data": "isNegotiate",
+					    	  	"data": "isNegotiable",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
-					    	  		if(productList.isNegotiate != null && productList.isNegotiate !== '' && productList.isNegotiate != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.isNegotiate+"</div>";
+					    	  		if(productList.isNegotiable != null && productList.isNegotiable !== '' && productList.isNegotiable != "undefined"){
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.isNegotiable+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -529,7 +552,7 @@ function saveProduct(){
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
 					    	  		if(productList.shareContactDetails != null && productList.shareContactDetails !== '' && productList.shareContactDetails != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.shareContactDetails+"</div>";
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.shareContactDetails+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -542,7 +565,7 @@ function saveProduct(){
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
 					    	  		if(productList.productShareType != null && productList.productShareType !== '' && productList.productShareType != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.productShareType+"</div>";
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.productShareType+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -555,7 +578,7 @@ function saveProduct(){
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
 					    	  		if(productList.productDescription != null && productList.productDescription !== '' && productList.productDescription != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.productDescription+"</div>";
+					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.productDescription+"</div>";
 					    	  		}else{
 				  	            	  		  result = result +"<div>---</div>"; 
 				  	             	}
@@ -567,18 +590,21 @@ function saveProduct(){
 					    	  	"data": "uploadPhotos",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
-					    	  		if(productList.uploadPhotos != null && productList.uploadPhotos !== '' && productList.uploadPhotos != "undefined"){
-					    	  				result = result +"<div class='tbldata-dotdot-big'>"+productList.uploadPhotos+"</div>";
-					    	  		}else{
-				  	            	  		  result = result +"<div>---</div>"; 
-				  	             	}
+		                             result = result + ' <span title="Warranty Document" class="paddingRight pull-middle"><i class="fa fa-download cursorPointer"></i></span>';
 				  	             	 return result;
 					    	  	}
 					        },{
 					    	  	"targets": colIndex++,
 					    	  	"sortable": false,
 					    	  	"render": function(data, type, productList, meta) {
+					    	  		
 					    	  		 var result = "";
+					    	  		 result = result + '<div class="tblminwidth-100 pull-left text-center ml10">';
+		                             result = result + ' <span title="Share the Product" class="paddingRight pull-left"><i class="fa fa-share-alt cursorPointer"></i></span>';
+		                             result = result + '  <span title="Share Later" class="paddingLeft  pull-left"><i class="fa fa-clock-o cursorPointer"></i></span>';
+		                             result = result + '  <span title="Edit" class="paddingLeft  pull-left" onclick="editMarketPlace();"><i class="fa fa-pencil cursorPointer"></i></span>';
+		                             result = result + '  <span title="Delete" onclick="deleteMarketPlaceList()" class="paddingLeft  pull-left"><i class="fa fa-trash cursorPointer"></i></span>';
+		                             result = result + '</div>';
 				  	             	 return result;
 				  	             	
 					    	  	}
