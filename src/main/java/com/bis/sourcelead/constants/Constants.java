@@ -661,6 +661,28 @@ public class Constants {
 		}
 	};
 	
+	public static final LinkedHashMap<String, String> ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP = new LinkedHashMap<String, String>() {
+		{
+			put("SUBMISSION", "Submission");
+			put("SHORTLIST", "Short List");
+			put("SUBMIT_TO_CLIENT", "Submit to Client");
+			put("INTERVIEW", "Interview");
+			put("OFFERMADE", "Offer");
+			put("NORESPONSE", "No Response");
+			put("ONHOLD", "On-hold");
+			put("JOINED", "Joined");
+			put("REJECTED", "Reject");
+			put("BACKOUT", "Backout");
+			put("OFFERACCEPTED", "Offer Accepted");
+			put("CLIENT_OFFERACCEPTED", "Client Offer Accepted");
+			put("SELECTED_ON_INTERVIEW", "Selected On Interview");
+			put("CLIENT_INTERVIEW", "Client Interview");
+			put("INTERVIEW_ACCEPT", "Interview Accept");
+		}
+	};
+	
+	public static final String DEFAULT_STAGE_COLUMNS= "Applicant Name,Applicant Mail Id,Phone Number,location,Experience,Applied on,Source,Status";
+	
 	public static final String WORKFLOW_TASK_MAIL = "workflowStageTaskMail";
 	public static final String WORKFLOW_TASK_NOTIFICATION = "workflowStageTaskNotification";
 	
@@ -768,7 +790,7 @@ public class Constants {
 
 	public static final String[] IMMIGRATION_LIST_EXCEL_HEADERS = { "ID", "Country", "Beneficiary First Name", "Beneficiary Last Name", "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number", "I-20 SEVIS Number If Student", "EAD Number If Student",
 			"DOB", "Marital Status", "Petition Type", "Template", "Date Of Arrival", "Open On", "Status", "Visa No", "Visa Start Date", "Visa End Date", "Visa Status", "Attorney/Company", "Contact Name", "Contact Email", "Receipt No", "Location", "LCA Start Date", 
-			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Number", "Previous LCA Rate"};
+			"LCA End Date", "LCA Number", "LCA Rate", "LCA Location", "LCA Title","Job Name","Job Id", "Previous LCA Start Date", "Previous LCA End Date", "Previous LCA Rate"};
 
 	public static final String[] DATA_MIGRATION_ASSOCIATE_BANKING_EXCEL_HEADERS = { "Assoicate Id" , "Associate Email*","Payment Mode*","Bank Name*","Account Number*","BSR Number","MICR Code","IFSC Code*",
 			"First Name*","Last Name*",};
@@ -1548,4 +1570,6 @@ public class Constants {
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
 	
 	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
+	
+	public static final String LCA_MANAGER_EXPIRES_IN_DAYS_NOTIFICATION ="LCAManagerExpiresInDaysNotification";
 }
