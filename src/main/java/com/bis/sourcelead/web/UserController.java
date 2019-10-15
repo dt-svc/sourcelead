@@ -378,8 +378,9 @@ public class UserController {
 						String currentDateStr = dateFormat.format(toDayDate);
 						Date newDate = dateFormat.parse(currentDateStr);
 						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-					
-						if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
+						if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo())) && !currentDate.equals(commonUtil.stringToDate(canVisa.getValidTo()))) {
+							canVisa.setCurrentStatus("Active");
+						}else if (currentDate.compareTo(commonUtil.stringToDate(canVisa.getValidTo())) == 0) {
 							canVisa.setCurrentStatus("Active");
 						} else {
 							canVisa.setCurrentStatus("Expired");
