@@ -1115,6 +1115,9 @@ public class ClientRestController {
 		if(StringUtils.isNotBlank(orgRelation.getIsLawFirm())){
 			clientVendorDTO.setIsLawFirm(orgRelation.getIsLawFirm());
 		}
+		if(StringUtils.isNotBlank(orgRelation.getIsBackgroundCheck())){
+			clientVendorDTO.setIsBackgroundCheck(orgRelation.getIsBackgroundCheck());
+		}
 		if(StringUtils.isNotBlank(orgRelation.getIsAccountingFirm())){
 			clientVendorDTO.setIsAccountingFirm(orgRelation.getIsAccountingFirm());
 		}

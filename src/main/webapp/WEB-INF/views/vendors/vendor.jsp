@@ -603,7 +603,12 @@ function getVendorDetails(){
                  <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email </label>
               </div>
             </div>
-               		
+              <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="isBackgroundCheck" id="isBackgroundCheck" onclick = "allowBackgroundCheck();"> Background Check </label>
+              </div>
+            </div>  		
 						<div class="clearfix"></div>	
 					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		               <c:if test="${sectionOrder.index == 1}">
@@ -693,6 +698,14 @@ function allowIsAccountFirm(){
 	}
 }
 
+function allowBackgroundCheck(){
+	var checked = document.getElementById("isBackgroundCheck").checked
+	if(checked == true){
+		$("#isBackgroundCheck").val("Y");
+	}else{
+		$("#isBackgroundCheck").val("N");
+	}
+}
 function getCustomDependentField(sectionId){
 	 $.ajax({
 			type : "POST" , 
