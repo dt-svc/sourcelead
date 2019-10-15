@@ -207,7 +207,15 @@ function buildMasterSideNavPanel(){
 	       if(tabAccessArray.indexOf("ROLE_SOURCELEAD_ADMIN") > -1){
 	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="'+sourceleadUrl+'/stateTax/list" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>';
 	       } 
-	       
+	       if(tabAccessArray.indexOf("Immigrations") > -1 && tabAccessArray.indexOf("My Immigration") > -1){
+	    	   sideNavHtml = sideNavHtml+'<li class=""> <a href="#" class="expencesLi" title="Background Check"> <span class="navIcons immIcon"></span><b>BGC</b> <i class="fa fa-fw fa-caret-down"></i> </a>';
+	    	   sideNavHtml = sideNavHtml+'<ul class="collapses" style="display: none">';
+	     	   sideNavHtml = sideNavHtml+'<li class=""><a href="'+vmsUrl+'/bgc/inProgressBgcDetails" title="In Progress"><i class="fa fa-chevron-right"></i>In Progress</a></li>';
+	    	   sideNavHtml = sideNavHtml+'<li class=""><a href="'+vmsUrl+'/bgc/completedBgcDetails" title="Completed"><i class="fa fa-chevron-right"></i>Completed</a></li>';
+	    	   sideNavHtml = sideNavHtml+'</ul>';
+	    	   sideNavHtml = sideNavHtml+'</li>';
+	    	   alert("inside");
+	       }
 	        sideNavHtml = sideNavHtml+'</ul>';
 	        sideNavHtml = sideNavHtml+'</nav>';
 	        $("#masterSideNav").append(sideNavHtml);
