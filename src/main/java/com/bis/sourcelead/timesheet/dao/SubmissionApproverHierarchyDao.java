@@ -130,5 +130,7 @@ public interface SubmissionApproverHierarchyDao {
 
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(Date frequencyStartDate, Date frequencyEndDate, Long projectMemberId);
 
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long approverId);
+
 
 }
