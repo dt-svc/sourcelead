@@ -576,7 +576,7 @@ public class IndianPayrollRestController {
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocationId);
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 		try {
@@ -703,7 +703,10 @@ public class IndianPayrollRestController {
     @RequestMapping(value = { "/sentForApproveIndPayroll","/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
    	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
-   		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	
+    	Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+   //	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
    		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 //   	    Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    		List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
