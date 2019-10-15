@@ -1,6 +1,7 @@
 package com.bis.sourcelead.userMarketplace.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -19,12 +20,14 @@ import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.userMarketplace.dao.AddProductDao;
 import com.bis.sourcelead.userMarketplace.dto.MarketPlaceProductsDTO;
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductFilesHistory;
 
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.workflow.dao.Impl.RequirementWorkFlowDaoImpl;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
@@ -36,6 +39,10 @@ public class AddProductDaoImpl implements AddProductDao {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private CommonUtil commonUtil;
+
 
 	private static final Logger logger = LoggerFactory.getLogger(RequirementWorkFlowDaoImpl.class);
 
@@ -68,12 +75,6 @@ public class AddProductDaoImpl implements AddProductDao {
 //	  return filesHistory; 
 //	  }
 	
-	@Override
-	public MarketPlaceProducts deleteMarketPlaceProducts() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	@Override
 	public MarketPlaceProductFilesHistory saveMarketPlaceProductFilesHistory(
@@ -106,10 +107,12 @@ public class AddProductDaoImpl implements AddProductDao {
 	public ResponseList<MarketPlaceProductsDTO> getMarketPlaceDetailsbyId(MarketPlaceProductsDTO marketPlaceProductsDTO,
 			OrgLocations orgLocations, User user, String searchValue) {
 		Session session = this.sessionFactory.getCurrentSession();
+		Date date = new Date();
 		List<MarketPlaceProducts> marketplaceProducts = null;
 		ResponseList<MarketPlaceProductsDTO> responseList = new ResponseList<>();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
+		String formattedDate =  null;
 		
 		String listQuery = "from MarketPlaceProducts marketplaceProducts where marketplaceProducts.status = 1 and marketplaceProducts.orgLocationId = "
 					+ orgLocations.getId() 
@@ -144,20 +147,36 @@ public class AddProductDaoImpl implements AddProductDao {
 	        productDto.setPrice(source.getPrice());
 	        productDto.setCurrencySpecification(source.getCurrencySpecification());
 	        productDto.setPriority(source.getPriority());
-	       //productDto.setWarrantyEndDate(source.getWarrantyEndDate());
 	        productDto.setIsNegotiable(source.getIsNegotiable());
 	        productDto.setShareContactDetails(source.getShareContactDetails());
 	        productDto.setProductShareType(source.getProductShareType());
 	        productDto.setProductDescription(source.getProductDescription());
+	        formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getManufacturerDate());
+	        productDto.setManufacturerDate(formattedDate);
+	        
 	        marketPlaceProductsDto.add(productDto);
-		
-		responseList.setData(marketPlaceProductsDto);
+		   responseList.setData(marketPlaceProductsDto);
 	
 		
 	}
 		return responseList;
 	
-	}	
+	}
+
+	@Override
+	public List<MarketPlaceProducts> getMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception {
+		List<MarketPlaceProducts> marketPlaceList = new ArrayList<MarketPlaceProducts>();
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from MarketPlaceProducts marketPlaceList where marketPlaceList.id.uuid =:uuid and marketPlaceList.orgLocationId.id=:id";
+			marketPlaceList = session.createQuery(query).setString("uuid", uuid).setLong("id", id).list();
+			return marketPlaceList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	
+	}
 	
 }
 

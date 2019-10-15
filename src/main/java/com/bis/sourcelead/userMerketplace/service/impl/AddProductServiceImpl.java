@@ -3,6 +3,7 @@ package com.bis.sourcelead.userMerketplace.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.userMarketplace.dao.AddProductDao;
 import com.bis.sourcelead.userMarketplace.dto.MarketPlaceProductsDTO;
@@ -68,6 +70,7 @@ public class AddProductServiceImpl implements AddProductService {
 		market.setCurrentCity(marketPlaceProductsDTO.getCurrentCity());
 		market.setPriority(marketPlaceProductsDTO.getPriority());
 		market.setCurrencySpecification(marketPlaceProductsDTO.getCurrencySpecification());
+		
 
 		// market.setFileUrl(marketPlaceProductsDTO.getFileUrl());
 		market.setShareContactDetails(marketPlaceProductsDTO.getShareContactDetails());
@@ -182,5 +185,24 @@ public class AddProductServiceImpl implements AddProductService {
 		
 		return sbuilder.append(convetredRequirementsId).toString();
 	}
+
+	@Override
+	public TreeMap<Long, String> deleteMarketPlaceList(String uuid, Long id)  {
+		try {
+		TreeMap<Long, String> marketPlaceMap = new TreeMap<Long, String>();
+		List<MarketPlaceProducts> marketPlaceList = addProductDao.getMarketPlaceListByIdAndOrgLocationId(uuid, id);
+		if(marketPlaceList != null && marketPlaceList.size() > 0) {
+			for(MarketPlaceProducts marketPlace : marketPlaceList) {
+				marketPlaceMap.put(marketPlace.getId(), marketPlace.getProductCode());
+			}
+			return marketPlaceMap;
+		}
+		return null;
+	}catch(Exception e) {
+		e.printStackTrace();
+		return null;
+	}
+	}
+	
 	
 }
