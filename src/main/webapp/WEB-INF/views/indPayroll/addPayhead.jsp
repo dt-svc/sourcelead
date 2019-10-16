@@ -68,7 +68,7 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-5">
+				<%-- <div class="col-md-5">
 					<label class="clearfix">Pay Type</label>
 					<div class="clearfix">
 						<div class="row">
@@ -119,7 +119,7 @@
 							<option value="Section 80CCD(Employer)" ${payrollPayhead.form16  == 'Section 80CCD(Employer)'  ? 'selected' :''}>Section 80CCD(Employer)</option>
 						</select>
 					</div>
-				</div>
+				</div> --%>
 
 				<div class="col-md-5">
 					<label class="clearfix">Tax</label>
@@ -190,7 +190,7 @@
 								class="checkbox-custom-label"><span class="ml10">Paid
 									Component</span></label>
 						</div>
-						<div class="checkbox-new ml mr pull-left">
+						<%-- <div class="checkbox-new ml mr pull-left">
 							<input id="partOfGratitutiy" class="checkbox-custom" name="partOfGratitutiy"
 								type="checkbox" ${payrollPayhead.partOfGratitutiy  == 'Y' ? "checked" : ''} value="Y"> <label for="partOfGratitutiy"
 								class="checkbox-custom-label"><span class="ml10">Part
@@ -201,8 +201,8 @@
 								type="checkbox" ${payrollPayhead.fbpComponent  == 'Y' ? "checked" : ''} value="Y"> <label for="fbpComponent"
 								class="checkbox-custom-label"><span class="ml10">FBP
 									Component</span></label>
-						</div>
-						<div class="checkbox-new pull-left">
+						</div> --%>
+						<div class="checkbox-new  pull-left ml mr">
 							<input id="leaveDependent" class="checkbox-custom" name="leaveDependent"
 								type="checkbox" ${payrollPayhead.leaveDependent  == 'Y' ? "checked" : ''} value="Y"> <label for="leaveDependent"
 								class="checkbox-custom-label"><span class="ml10">Leave Dependent</span></label>
@@ -212,12 +212,12 @@
 								type="checkbox" ${payrollPayhead.showInPayslip  == 'Y' ? "checked" : ''} value="Y"> <label for="showInPayslip"
 								class="checkbox-custom-label"><span class="ml10">Show in Payslip</span></label>
 						</div>
-						<div class="checkbox-new pull-left">
+						<div class="checkbox-new pull-left ml mr">
 							<input id="pfApplicable" class="checkbox-custom" name="pfApplicable"
 								type="checkbox" ${payrollPayhead.pfApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="pfApplicable"
 								class="checkbox-custom-label"><span class="ml10">PF Applicable</span></label>
 						</div>
-						<div class="checkbox-new pull-left">
+						<div class="checkbox-new pull-left ml mr">
 							<input id="esiApplicable" class="checkbox-custom" name="esiApplicable"
 								type="checkbox" ${payrollPayhead.esiApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="esiApplicable"
 								class="checkbox-custom-label"><span class="ml10">ESI Applicable</span></label>
