@@ -8,7 +8,6 @@
 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 </script>
  
- 
 <section class="content-wraper" id="themeroller">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -20,10 +19,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
             <div class="project_tabs_inn_table">
 				<div class="project_details project_detailsExp">
                 
-					<div class="Expdit pull-right">
-					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
-					        <a href="${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="btn btn-default mr10" style='cursor: pointer !important'><i class="fa fa-pencil-square-o" ></i> &nbsp;Edit</a>
-					     </c:if>
+
 					     
 					     <c:if test="${!isSahApproved && submissionStatus == 'SUBMITTED'}">
 						     <div class="timeNewSe pull-right" style="margin: 0px;">
@@ -31,21 +27,21 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						     </div>
 					     </c:if>
 					     
-					     <div class="timeNewSe pull-right" >
+					     <div class="appStatusWrap" >
 						  <c:if test="${submissionStatus == 'NEW'}">
-						       <b class='proj_new pull-right'>${submissionStatus}</b>
+						       <b class='appStatusNewcolor'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'DRAFT'}">
-						       <b class='proj_draft pull-right' >${submissionStatus}</b>
+						       <b class='appStatusNewcolor' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'REOPENED'}">
-						       <b class='proj_draft pull-right' >${submissionStatus}</b>
+						       <b class='appStatusNewcolor' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'SUBMITTED'}">
-						       <b class='proj_process pull-right' >${submissionStatus}</b>
+						       <b class='appStatusNewcolor' >${submissionStatus}</b>
 						  </c:if>
 						   <c:if test="${submissionStatus == 'APPROVED'}">
-						       <b class='proj_active pull-right'>${submissionStatus}</b>
+						       <b class='appStatusNewcolor'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
 						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
@@ -54,18 +50,27 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						      <b class='proj_closed pull-right' style="width:75% !important;">${submissionStatus}</b>
 						  </c:if>
 						</div>
-				</div>                
+             
 					<ul class="UiPado">
-						<li title="Export"><i class="glyphicon glyphicon-export"
-							id="export-pop"></i>
-							<div class="export_pop" style="display: none;">
-								<ul>
-									<li onclick="exportMyExpenses('PDF',${expenses.id},'USER');"><i class="fa fa-file-pdf-o"></i>&nbsp;PDF</li>
-									<li onclick="exportMyExpenses('EXCEL',${expenses.id},'USER');"><i class="fa fa-file-excel-o"></i>&nbsp;Excel</li>
-								</ul>
-							</div></li>
+						<li title="Export">
+						<a href="javascript:void(0)" class="overIcon" title="Actions" id="export-pop"></a>
+							
+								<div class="newActPop" style="display: none;">
+									<span>
+									 	<a href="javascript:void(0)" onclick="exportMyExpenses('PDF',${expenses.id},'USER');" title="PDF">Export PDF</a>
+										<a href="javascript:void(0)" onclick="exportMyExpenses('EXCEL',${expenses.id},'USER');" title="Excel">Export Excel</a>
+									</span>
+								</div>								
+							
+							</li>
 						<div class="clearfix"></div>
 					</ul>
+					
+
+					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
+					        <a href="${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit" title = "Edit" class="editIcon appEditBtn" ></a>
+					     </c:if>					
+					
 
                     <div class="clearfix"></div>
 					<div class="project_details_cta">
@@ -151,10 +156,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		</thead>	
 			<tbody>
 			
-			
-			
-			
-			
 			<c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
 			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
 			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick ="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
@@ -172,9 +173,6 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
 			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
 			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			            
-					    
-			           
 			           
 			        </tr>
 			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
@@ -220,67 +218,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					  </td>			
 			        </tr>
 			     </c:forEach> 
-			
-			
-			   <%--   <c:forEach var="entry" items="${expenses.expenseEntry}" varStatus="entryCount">
-			        <tr id="divEntityTsRow${(2*(entryCount.count))-1}">
-			           <td><div class="ExpShow" id="categoryDateDiv${entryCount.count}"><i class="fa fa-plus-square-o" aria-hidden="true" onclick="hideAndShowDetailsRow(${2*(entryCount.count)},'Edit');"></i>${entry.dateOccurred}</div></td>
-			           <td><div id="categoryTypeDiv${entryCount.count}">${entry.categoryName}</div></td>
-			           <td><div id="entryDesDiv${entryCount.count}" class="tbldata-dotdot_50" title="${entry.entryDescription}">${entry.entryDescription}</div></td>
-			           <td><div id="expenseAmountDiv${entryCount.count}">${entry.submittedamount}</div></td>
-			           
-			              <c:choose>
-		               	<c:when test="${submissionStatus == 'APPROVED'}">
-		           			<td><div id="expenseAmountDiv${entryCount.count}">${entry.amount}</div></td>    	
-		               	</c:when>
-		               	<c:otherwise>
-		               		<td><div id="expenseAmountDiv${entryCount.count}">---</div></td>
-		               	</c:otherwise>
-		               </c:choose>
-			         
-			           <td><div id="expenseRateType${entryCount.count}">${entry.categoryAmountType}</div></td>
-			           <td><div id="paymentModeDiv${entryCount.count}">${entry.paymentMode}</div></td>
-			           <td><div id="paidByDiv${entryCount.count}">${entry.paidBy}</div></td>
-			        </tr>
-			        <tr id="divEntityTsRow${2*(entryCount.count)}" style="display:none;">
-				        <td colspan="7">
-						<div class="expDetails">
-							<ul>
-							    <li><strong>Date :</strong><span>${entry.dateOccurred}</span><div class="clearfix"></div></li>
-								<li><strong>Exp Category :</strong><span>${entry.categoryName}</span><div class="clearfix"></div></li>
-								<li><strong>Description :</strong><span title="${entry.entryDescription}">${entry.entryDescription}</span>
-								<li><strong>Receipt Issued by :</strong><span title="${entry.receiptIssuedBy}">${entry.receiptIssuedBy}</span><div class="clearfix"></div></li>
-								<li><strong>Amount :</strong><span>${entry.submittedamount}</span><div class="clearfix"></div></li>
-								<li><strong>Currency :</strong><span>${entry.currencyType}</span><div class="clearfix"></div></li>
-								<li><strong>Payment Mode :</strong><span>${entry.paymentMode}</span><div class="clearfix"></div></li>
-								<li><strong>Paid By :</strong><span>${entry.paidBy}</span><div class="clearfix"></div></li>
-								<div class="clearfix"></div>
-								</li>
-								<div class="clearfix">
-								<div id='attachmentSection' class='col-md-4 noPad mt10'>
-				                   <div class="uploadFile timesheet_week_comm edit-Expense-upload">
-					                <div id='timesheetDocumentsId' class=''>
-					                       <c:forEach var="entryDoc" items="${entry.fileInfo}" varStatus="entryDocCount">
-					                        <c:if test = '${entryDoc.status == 1}'>
-						                         <strong class='proDown' id='${entryDocCount.index}document${entryCount.count}'>
-						                               <a class='downicon' href='${entryDoc.fileURL}' download>
-							                                 <i class='glyphicon glyphicon-save'></i>
-												             <input type='button' value='${entryDoc.fileName}'/>
-												        </a>
-											           <a class="fa fa-eye expAttView" onclick="viewFile('${entryDoc.fileURL}','${entryDoc.fileName}','${entryDoc.contentType}');"></a>
-						                         </strong>
-					                         </c:if>
-					                       </c:forEach>
-					                 </div> 
-					             </div>
-					             </div>
-					             </div>   				
-								<div class="clearfix"></div>
-							</ul>
-						</div>
-					  </td>			
-			        </tr>
-			     </c:forEach>  --%>
+
 		   </tbody>
 	</table>
    </div>
@@ -290,12 +228,12 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
     
     <script>
 $("#export-pop").click(function(){
-	$(".export_pop").toggle();
+	$(".newActPop").toggle();
 });
 $("html").click(function() {
-    $(".export_pop").slideUp();
+    $(".newActPop").slideUp();
 });
-$(".export_pop, #export-pop").click(function(e) {
+$(".newActPop, #export-pop").click(function(e) {
     e.stopPropagation();
 });	
 </script>

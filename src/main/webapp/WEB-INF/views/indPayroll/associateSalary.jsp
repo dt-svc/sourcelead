@@ -112,13 +112,23 @@
                  <div class="clearfix"></div>
                  </div>
          <div class="clearfix clients_wrap_table">
-         <div class="clearfix mb5">
-         	<a href="${SourceLeadWeb_pmsUrl}/payrollPayhead"class="btn btn-primary  pull-right mr"><i class="fa fa-plus paddingRight"></i>Add Payhead</a>
-         </div>
+	         <div class="clearfix mb5 mt">
+	         	<div class='pull-right'>
+	         	<div class='pull-left'>
+	         	<a href="${SourceLeadWeb_pmsUrl}/payrollPayhead"class="btn btn-primary mr"><i class="fa fa-plus paddingRight"></i>Add Payhead</a>
+	         	</div>
+	         	<div class="pull-left mr positionRelative">
+	         	<input type="text" class="repSearchBar" placeholder="Search" id="salaryPayheadDataTableSearch" onkeyup="myPayheads()"><span class="repSearchIcon" onclick="myPayheads();"></span>
+	         	</div>
+	         	</div>
+	         	
+	         </div>
                <table>
                		<thead>
                		<tr>
-               			<th style="width:50px;"><input type="checkbox" name="salary" class="selectall"></th>
+<!--                		Don't delete the code because select all functionality is not working properly if any contact Rana -->
+<!--                			<th style="width:50px;"><input type="checkbox" name="salary" class="selectall"></th> -->
+						<th></th>
                			<th>Payhead</th>
                			<th>Paytype</th>
                			<th>Method</th>
@@ -129,6 +139,7 @@
                		</thead>
 	               		<tbody id="phTblBody">
 	               			<c:forEach var="payHead" items="${payrollPayheadList}" varStatus="loop">
+	               			<c:if test="${payHead.active eq 'YES'}">
 		               			<c:set var="checked" value="" />
 		               			<c:set var="monthlyValue" value="" />
 							    <c:set var="yearlyValue" value="" />
@@ -150,10 +161,16 @@
 									<td><input type="text" id="payHeadMonthly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].monthly" value="${monthlyValue}" onblur="calculateToPerYear('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
 									<td><input type="text" id="payHeadYearly[${payHead.shortCode}]" name="associateSalaryPayheadIndList[${loop.index}].annualy" value="${yearlyValue}" onblur="calculateToPerMonth('${payHead.shortCode}');" value="" class="form-control input-sm" field-name="${payHead.name}" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true"></td>
 								</tr>
+							</c:if>
 							</c:forEach>
 	               		</tbody>
                		</table>
                 
+                <div class="panel-default text-center" id="noPayheadsDiv" style="display: none;">
+				    <div class="panel-body">
+						<p class="dataTables_empty"></p>
+				    </div>
+				  </div>
                 <input type="text" style="display:none" name="candidateId" id="assocandidateId" value="${candidate.id}">
                 <input type="text" style="display:none" name="uuid" value="${uuid}">
                 <input type="text" style="display:none" id="status" value="${status}">
@@ -189,6 +206,38 @@
             </div>
          </form:form>
 <div id="cnfPHPopUpDiv"></div>
+
+
+<script>
+function myPayheads(){
+	var hasResults = false, flag = false;
+	var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("salaryPayheadDataTableSearch");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("phTblBody");
+	  tr = table.getElementsByTagName("tr");
+	  for (i = 0; i < tr.length; i++) {
+	    td = tr[i].getElementsByTagName("td")[1];
+	    if (td) {
+	      txtValue = td.textContent || td.innerText;
+	      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+	        tr[i].style.display = "";
+	        flag = true;
+	      } else {
+	        tr[i].style.display = "none";
+	      }
+	    }   
+	    if(flag) {
+			hasResults = true;
+		}  
+	  }
+	  if(!hasResults) {
+			$("#noPayheadsDiv").show();
+		} else {
+			$("#noPayheadsDiv").hide();
+		}
+}
+</script>
 <script type="text/javascript">
         var validationSettings = {
             errorMessagePosition : 'element',
