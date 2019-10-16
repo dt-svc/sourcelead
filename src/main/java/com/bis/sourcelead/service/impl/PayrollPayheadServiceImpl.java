@@ -414,4 +414,9 @@ public class PayrollPayheadServiceImpl implements PayrollPayheadService{
 	public Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception {
 		return payrollPayheadDao.payheadHandlerByOrg(payrollPayheadDTO);
 	}
+
+	@Override
+	public Boolean getPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception {
+		return payrollPayheadDao.getPayrollPayheadListByOrgLocationId(orgLocationId);
+	}
 }
