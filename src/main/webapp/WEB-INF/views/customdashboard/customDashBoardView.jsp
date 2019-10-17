@@ -28,11 +28,11 @@
 				                  </i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
 				                </span>
 				            </div>
+				             <p>**********************</p>
 				        </div>
     			</div>
-		</c:forEach>
-   
-   <%--  <div class="col-md-6 mb">
+		</c:forEach> 
+    <%-- <div class="col-md-6 mb">
         <div class="newDashBg mb10">
             <div class="newDashhead clearfix">
                 <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 2</a>
@@ -76,7 +76,7 @@
             </div>
               <p>****************Text for Test*************************</p>
         </div>
-    </div>   --%>
+    </div>    --%>
 </div>
 	
   </section>

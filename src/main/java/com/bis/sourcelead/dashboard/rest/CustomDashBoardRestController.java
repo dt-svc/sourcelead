@@ -174,6 +174,25 @@ public class CustomDashBoardRestController {
 	}
 	
 	
+	
+	@RequestMapping(value="/configureCustomDashBoardViewJSON")
+	ModelAndView configureCustomDashBoardViewJSON(@RequestParam(value = "customDashBoardUUID", required = false) String customDashBoardUUID,HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
+//			List<ConfigureDashBoardViewDTO> configureDashBoardView = customDashBoardViewService.getConfiguredDataByDashBoardId(dashBoard.getId());
+//			model.addObject("dashBoardConfData",configureDashBoardView);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/customDashBoardViewJSON");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	
+	
 	@RequestMapping(value = "/addCustomDashBoardConf")
 	public ModelAndView addConfigureCustomDashBoard(HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
@@ -433,4 +452,18 @@ public class CustomDashBoardRestController {
 	}
 	
 	
+	@RequestMapping(value = "/addDynamicHeadersWithData")
+	public ModelAndView addDynamicHeadersWithData(HttpServletRequest request,HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/dynamicHeaderWithData");
+				
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		return model;
+
+	}
 }

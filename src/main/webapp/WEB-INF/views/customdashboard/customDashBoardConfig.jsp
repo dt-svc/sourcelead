@@ -31,9 +31,11 @@
 		<div id="loading"></div>
 		<div class="positionRelative reportHead clearfix">
 			<ul class="pull-right list-unstyled list-inline">
-				<li><a class="newAdBtn mr5"
-					href='${SourceLeadWeb_sourceleadUrl}/addCustomDashBoardConf'
-					title="Add">+ Add</a></li>
+				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addCustomDashBoardConf' title="Add">+ Add</a></li>
+				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addDynamicHeadersWithData' title="Add">+ Dayana</a></li>
+				
+				
+				
 				<li><a href="javascript:void(0)" class="overIcon"
 					title="Actions" onclick="newActions();"></a>
 					<div class="newActPop" style="">
@@ -135,8 +137,10 @@
 											result = result 
 											        + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
 											
-									result = result
-											+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+									result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+									
+									//result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardViewJSON?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+
 									result = result + ' </ul>';
 									result = result + ' </div>';
 									result = result + '  </td>';
