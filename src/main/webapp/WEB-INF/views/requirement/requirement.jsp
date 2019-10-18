@@ -3569,6 +3569,7 @@ function approvalType(type){
 				$('#sequentialApprover2').removeAttr('data-validation-optional');
 				
 				$('#parallelApprover').val('').trigger('chosen:updated');
+				$("#seqentialApprovers").prop("checked", true);
 		  }
 		}
 		else{
