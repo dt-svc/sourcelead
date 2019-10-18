@@ -6879,13 +6879,13 @@ public class TimesheetRestController {
 		
 		if (sah.getProjectId() != null && sah.getProjectId().getProjectApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL)
 				&& sah.getHierarchyId().getLevel() != 2) {
-			System.out.println("---------------- Send Approval Email to Level 2 Manager ----------------");
+			//---------------- Send Approval Email to Level 2 Manager ----------------
 			List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyService.getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId());
 			if(sahList != null && !sahList.isEmpty()) {
 				for(SubmissionApproverHierarchy s : sahList) {
 					if(s.getHierarchyId().getLevel() == 2) {
-						timesheetEmailUtil.sendEmailNotificationToLevel2WhenLevel1Approves(projectMember.getProjectMemberCandidteId().getFirstName(),
-								projectMember.getProjectMemberCandidteId().getLastName(), loginUser, s.getHierarchyId().getApproverUserId(), loginOrgLocation, projectMember, startDate, endDate, status);
+						timesheetEmailUtil.sendEmailNotificationToLevel2WhenLevel1Approves(s.getHierarchyId().getApproverUserId().getFirstName(),
+								s.getHierarchyId().getApproverUserId().getLastName(), loginUser, s.getHierarchyId().getApproverUserId(), loginOrgLocation, projectMember, startDate, endDate, status);
 					}
 				}
 			}
