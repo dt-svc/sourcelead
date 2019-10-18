@@ -155,7 +155,7 @@ window.onload = function () {
         </div>
           <div class="col-md-3">
        <select class="form-control sel" name ="currencySpecification" id="currencySpecification" >
-                <option selected="" value=" ">Select</option>
+                <option selected="" value="0">Select</option>
                 <option>&#x20B9;</option>
                 <option>&#36;</option>
                 <option>&#163;</option>
@@ -251,10 +251,7 @@ window.onload = function () {
   <div class="clearfix"></div> 
 </div>
 
- 
-
 <div class="clearfix"></div>
-
     
      <div class="clearfix mt">
         <label class="clearfix col-md-12 mb10">
@@ -287,7 +284,7 @@ window.onload = function () {
   <div class="project_wrap_table datatable_filter" id = "dynamicMarketPlaceList">
     
   </div>
- <!--  <nav>
+ <nav>
     <ul id="paging" class="pagination">
       <li><a href="#">Previous</a></li>
       <li><a href="#">2</a></li>
@@ -298,7 +295,7 @@ window.onload = function () {
       <li data-page="last"><a href="#">Next</a></li>
     </ul>
     <div class="clearfix"></div>
-  </nav> -->
+  </nav> 
 </div>
 
 </div>
@@ -339,16 +336,16 @@ window.onload = function () {
 function saveProduct(){     
 	 var atsUrl ='${SourceLeadWeb_atsUrl}';
        /*  var atsUrl='${atsUrl}'; */
-        var check =$('#uploadBtn').val();
-        var checking =$('#file0').val();
         if ($('#personalAndProductInfo_form').validate(false, validationSettings)){
         var formData = getFormData("personalAndProductInfo_form");
 			  $.ajax({
 					type : "POST",
 					data : formData, 
 					url : atsUrl+"/saveMarketPlaceDetails?${_csrf.parameterName}=${_csrf.token}",
-		            success : function(dataList) {
+					
+							success : function(dataList) {
 		            	
+								location.reload(); 
 		            	/* if(dataList.response != null){
 							console.log("response "+dataList.response);
 		            		getmarketPlaceList(json);
@@ -366,22 +363,28 @@ function saveProduct(){
         }
         
         
-   function deleteMarketPlaceList(productCode,uuid)  { 
-	 
+   function deleteMarketPlaceList(uuid)  { 
+	
 	   $.ajax({
-			type : "GET",
-			url : atsUrl+"/deleteMarketPlaceList?uuid="+uuid,
+			type : "POST",
+			url : atsUrl+"/deleteMarketPlaceProductByUuid?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
 			 success : function(dataList){
+				  location.reload(); 
 			 }
-			 
    });
    }
+   
+    function editMarketPlace(){
+    	alert("ghj")
+	    location.href = "${SourceLeadWeb_atsUrl}/editMarketPlace";
+	} 
   </script>
 
 <script>
            function getmarketPlaceList()
            {
 					$("#dynamicMarketPlaceList").empty();
+					
 					var result = "";
 				  	var url = "";
 				  	result = result +"<table id='marketPlaceList' class='display' cellspacing='0' width='100%'>";
@@ -529,7 +532,7 @@ function saveProduct(){
 					    	  	"data": "docFile",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
-		                             result = result + '<span title="Warranty Document" class="paddingRight pull-middle" href=\"'+productList.fileURL+'\"><i class="fa fa-download cursorPointer"></i></span>';
+					    	  		result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt"  href=\"'+productList.docFile+'\" download title="Warranty Document"></a>';
 				  	             	 return result;
 					    	  	}
 					        },{
@@ -590,8 +593,9 @@ function saveProduct(){
 					    	  	"data": "uploadPhotos",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
-		                             result = result + ' <span title="Warranty Document" class="paddingRight pull-middle"><i class="fa fa-download cursorPointer"></i></span>';
-				  	             	 return result;
+					    	  		result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt"  href=\"'+productList.uploadPhotos+'\" download title="Product Image"></a>';
+//  		                             result = result + ' <span title="Warranty Document" class="paddingRight pull-middle"><i class="fa fa-download cursorPointer"></i></span>';
+ 				  	             	 return result;
 					    	  	}
 					        },{
 					    	  	"targets": colIndex++,
@@ -602,8 +606,8 @@ function saveProduct(){
 					    	  		 result = result + '<div class="tblminwidth-100 pull-left text-center ml10">';
 		                             result = result + ' <span title="Share the Product" class="paddingRight pull-left"><i class="fa fa-share-alt cursorPointer"></i></span>';
 		                             result = result + '  <span title="Share Later" class="paddingLeft  pull-left"><i class="fa fa-clock-o cursorPointer"></i></span>';
-		                             result = result + '  <span title="Edit" class="paddingLeft  pull-left" onclick="editMarketPlace();"><i class="fa fa-pencil cursorPointer"></i></span>';
-		                             result = result + '  <span title="Delete" onclick="deleteMarketPlaceList()" class="paddingLeft  pull-left"><i class="fa fa-trash cursorPointer"></i></span>';
+		                             result = result + '  <span title="Edit" class="paddingLeft  pull-left" href="${SourceLeadWeb_atsUrl}/editMarketPlace" onclick="editMarketPlace();"><i class="fa fa-pencil cursorPointer"></i></span>';
+		                             result = result + '  <span title="Delete" onclick="deleteMarketPlaceList(\''+productList.uuid+'\')" class="paddingLeft  pull-left"><i class="fa fa-trash cursorPointer"></i></span>';
 		                             result = result + '</div>';
 				  	             	 return result;
 				  	             	
@@ -710,7 +714,6 @@ function clearFromDate(){
 <script>
 function ContactDetails(){
  var contactDetails = $("#shareContactDetailss").val();
- alert(contactDetails)
 	  $("#shareContactDetailss").val("N");
 }
 /* function warrantyHandler(){
@@ -724,22 +727,25 @@ function negotiable(){
 }
 </script>
 
-
-
 <script>
 function resetFunction(){
-    $("#category").val('').trigger("chosen:updated");
-    $("#priorityy").val('').trigger("chosen:updated");
-    $("#relocationFromtoSelect").val('').trigger("chosen:updated");
+	$("#productName").val('').trigger("chosen:updated");
+    $("#category").val('0').trigger("chosen:updated");
+    $("#priorityy").val('0').trigger("chosen:updated");
+    $("#relocationFromtoSelect").val('0').trigger("chosen:updated");
     $("#currentCity").val('').trigger("chosen:updated");
     $("#comment").val('').trigger("chosen:updated");
     $("#manufacturerName").val('').trigger("chosen:updated");
     $("#price").val('').trigger("chosen:updated");
-    $("#currencySpecification").val('').trigger("chosen:updated");
+    $("#currencySpecification").val('0').trigger("chosen:updated");
     $("#manufacturerDate").val('').trigger("chosen:updated");
     $("#warrantyExperyDate").val('').trigger("chosen:updated");
     $("#productDescription").val('').trigger("chosen:updated");
+    $("#file0").val('').trigger("chosen:updated");
+    $("#uploadFile").val('').trigger("chosen:updated");
+
 }
+
 </script>
 <script>
 var validationSettings = {
