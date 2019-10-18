@@ -26,6 +26,7 @@ import com.bis.sourcelead.userMarketplace.service.AddProductService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 import com.ibm.icu.text.DecimalFormat;
 
 @Service
@@ -103,33 +104,35 @@ public class AddProductServiceImpl implements AddProductService {
 		} catch (Exception e) {
 		}
 			
+		
+		addProductDao.saveMarketPlaceProducts(market);
+		
 			MarketPlaceProductFilesHistory filesHistory = new MarketPlaceProductFilesHistory();
-			
+
 			filesHistory.setMarketPlaceProductId(market);
 			filesHistory.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			filesHistory.setUpdatedBy(user);
 			filesHistory.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
 			filesHistory.setCreatedBy(user);
+			filesHistory.setStatus(Constants.RECORD_ACTIVE.toString());
 			
-			if(marketPlaceProductsDTO.getUploadPhotos() != null) {
-				FileInfo fileInfo1 = marketPlaceProductsDTO.getUploadInfo().get(0);
-				filesHistory.setUploadedfileName(fileInfo1.getFileName());
-				filesHistory.setUpleadedFileContentType(fileInfo1.getContentType());
-				filesHistory.setUploadedFileUrl(fileInfo1.getFileURL());
+
+			 
+				filesHistory.setUploadedfileName(fileInfo.getFileName());
+				filesHistory.setUpleadedFileContentType(fileInfo.getContentType());
+				filesHistory.setUploadedFileUrl(fileInfo.getFileURL());
 				try {
-					FileUploadUtil.moveFile(staticPath, fileInfo1, "resumes");
+					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes");
 				} catch (Exception e) {
 				}
-			}
 			
 			
-			addProductDao.saveMarketPlaceProducts(market);
-			  
-			  return response;
-	}
-			
-			//addProductDao.saveMarketPlaceProductFilesHistory(filesHistory);
+			addProductDao.saveMarketPlaceProductFilesHistory(filesHistory);
 		
+			  return response;
+	
+}
+	
 			
 	@Override
 	public ResponseList<MarketPlaceProductsDTO> getMareketPlaceListDetails(MarketPlaceProductsDTO marketPlaceProductsDTO,
@@ -185,23 +188,11 @@ public class AddProductServiceImpl implements AddProductService {
 		
 		return sbuilder.append(convetredRequirementsId).toString();
 	}
+	
 
 	@Override
-	public TreeMap<Long, String> deleteMarketPlaceList(String uuid, Long id)  {
-		try {
-		TreeMap<Long, String> marketPlaceMap = new TreeMap<Long, String>();
-		List<MarketPlaceProducts> marketPlaceList = addProductDao.getMarketPlaceListByIdAndOrgLocationId(uuid, id);
-		if(marketPlaceList != null && marketPlaceList.size() > 0) {
-			for(MarketPlaceProducts marketPlace : marketPlaceList) {
-				marketPlaceMap.put(marketPlace.getId(), marketPlace.getProductCode());
-			}
-			return marketPlaceMap;
-		}
-		return null;
-	}catch(Exception e) {
-		e.printStackTrace();
-		return null;
-	}
+	public Boolean deleteMarketPlaceProductByUuid(String uuid, Long id) {
+			return addProductDao.deleteMarketPlaceProductByUuid(uuid,id);
 	}
 	
 	

@@ -13,10 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.bis.sourcelead.entity.Org;
-import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "MARKETPLACE_PRODUCT_FILES_HISTORY")
@@ -49,7 +46,7 @@ private String upleadedFileContentType;
 private String uploadedFileUrl;	
 
 @Column(name = "STATUS")
-private int status;	
+private String status;	
 
 @Column(name = "CREATED_DATE")
 private Date createdDate;	
@@ -113,11 +110,11 @@ public void setUploadedFileUrl(String uploadedFileUrl) {
 	this.uploadedFileUrl = uploadedFileUrl;
 }
 
-public int getStatus() {
+public String getStatus() {
 	return status;
 }
 
-public void setStatus(int status) {
+public void setStatus(String status) {
 	this.status = status;
 }
 

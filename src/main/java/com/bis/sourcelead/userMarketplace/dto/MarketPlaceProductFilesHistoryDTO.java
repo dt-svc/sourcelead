@@ -8,6 +8,7 @@ import com.bis.sourcelead.dto.FileInfo;
 public class MarketPlaceProductFilesHistoryDTO {
 	
 	private Long id;
+	private String uploadPhotos;
 	private String uploadedfileName;
 	private String upleadedFileContentType;
 	private String uploadedFileUrl;
@@ -64,6 +65,12 @@ public class MarketPlaceProductFilesHistoryDTO {
 	}
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
+	}
+	public String getUploadPhotos() {
+		return uploadPhotos;
+	}
+	public void setUploadPhotos(String uploadPhotos) {
+		this.uploadPhotos = uploadPhotos;
 	}
 	
 	

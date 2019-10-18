@@ -38,7 +38,7 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
 	private String status;
 	private List<FileInfo> fileInfo;
 	private List<FileInfo> uploadInfo;
-	private List<MarketPlaceProductFilesHistoryDTO> filesHystoryList;
+	private List<MarketPlaceProductFilesHistoryDTO>filesHystoryList;
 	private String docFile;
 	private String staticPath;
 	private String createdDate;
