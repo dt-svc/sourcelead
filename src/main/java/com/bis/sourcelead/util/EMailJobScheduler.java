@@ -213,7 +213,7 @@ public class EMailJobScheduler {
 	@Value("${atsUrl}")
 	private String atsUrl;
 	
-	@Value("$pmsUrl}")
+	@Value("${pmsUrl}")
 	private String pmsUrl;
 	
 	@Value("${defaultFromEmailAddressForProd}")
@@ -2895,7 +2895,7 @@ public class EMailJobScheduler {
 							 emailMessage.setFromEmail(fromEmail);
 						 }
 						  	// for URL redirections from mail
-						 String redirectURL = "/leaveManagementReports";
+						 String redirectURL = "/pms/leaveManagementReports";
 						 Long redirectOrgLocationId = orgLocations.getId(); 	 
 						 
 						StringBuilder msgBuild = new StringBuilder();
