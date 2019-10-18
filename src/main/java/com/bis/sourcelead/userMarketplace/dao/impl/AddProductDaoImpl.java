@@ -31,6 +31,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.workflow.dao.Impl.RequirementWorkFlowDaoImpl;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 
 @Repository
 @Transactional
@@ -148,6 +149,8 @@ public class AddProductDaoImpl implements AddProductDao {
 	        productDto.setCurrencySpecification(source.getCurrencySpecification());
 	        productDto.setPriority(source.getPriority());
 	        productDto.setIsNegotiable(source.getIsNegotiable());
+	        productDto.setDocFile(source.getFileUrl());
+	        productDto.setUploadPhotos(source.getFileUrl());
 	        productDto.setShareContactDetails(source.getShareContactDetails());
 	        productDto.setProductShareType(source.getProductShareType());
 	        productDto.setProductDescription(source.getProductDescription());
@@ -156,28 +159,27 @@ public class AddProductDaoImpl implements AddProductDao {
 	        
 	        marketPlaceProductsDto.add(productDto);
 		   responseList.setData(marketPlaceProductsDto);
-	
-		
 	}
 		return responseList;
 	
 	}
-
 	@Override
-	public List<MarketPlaceProducts> getMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception {
-		List<MarketPlaceProducts> marketPlaceList = new ArrayList<MarketPlaceProducts>();
+	public Boolean deleteMarketPlaceProductByUuid(String uuid, Long id) {
+	
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from MarketPlaceProducts marketPlaceList where marketPlaceList.id.uuid =:uuid and marketPlaceList.orgLocationId.id=:id";
-			marketPlaceList = session.createQuery(query).setString("uuid", uuid).setLong("id", id).list();
-			return marketPlaceList;
+			String query = "delete from MarketPlaceProducts marketPlace where marketPlace.uuid = :uuid";
+			session.createQuery(query).setParameter("uuid", uuid).executeUpdate();
+			
+			return  true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
-		}
+			return false;
+		}	
 	
 	}
 	
-}
 
+	}	
+		
 

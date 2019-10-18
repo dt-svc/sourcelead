@@ -19,7 +19,9 @@ public interface AddProductService{
 	ResponseList<MarketPlaceProductsDTO> getMareketPlaceListDetails(MarketPlaceProductsDTO marketPlaceProductsDTO,
 			OrgLocations orgLocations, User user, Org org, String searchValue);
 
-	TreeMap<Long, String> deleteMarketPlaceList(String uuid, Long id);
+
+	Boolean deleteMarketPlaceProductByUuid(String uuid, Long id) throws Exception;
+
 
 
 

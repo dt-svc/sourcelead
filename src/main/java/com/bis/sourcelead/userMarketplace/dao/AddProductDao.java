@@ -22,5 +22,10 @@ public interface AddProductDao {
 	ResponseList<MarketPlaceProductsDTO> getMarketPlaceDetailsbyId(MarketPlaceProductsDTO marketPlaceProductsDTO,
 			OrgLocations orgLocations, User user, String searchValue);
 
-	List<MarketPlaceProducts> getMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception;
+	//int getMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception;
+
+	//String deleteMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception;
+
+	Boolean deleteMarketPlaceProductByUuid(String uuid, Long id);
+
 }
