@@ -153,7 +153,12 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				} else {
 					orgRelations.setIsLawFirm(Constants.NO);
 				}
-				if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
+				if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+					orgRelations.setIsBackgroundCheck(Constants.YES);
+				} else {
+					orgRelations.setIsBackgroundCheck(Constants.NO);
+				}
+					if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 						orgRelations.setIsAccountingFirm(Constants.YES);
 				} else {
 					orgRelations.setIsAccountingFirm(Constants.NO);

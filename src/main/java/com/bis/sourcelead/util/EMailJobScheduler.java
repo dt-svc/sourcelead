@@ -213,7 +213,7 @@ public class EMailJobScheduler {
 	@Value("${atsUrl}")
 	private String atsUrl;
 	
-	@Value("$pmsUrl}")
+	@Value("${pmsUrl}")
 	private String pmsUrl;
 	
 	@Value("${defaultFromEmailAddressForProd}")
@@ -547,7 +547,7 @@ public class EMailJobScheduler {
 		}
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-   //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+  //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
@@ -762,14 +762,14 @@ public class EMailJobScheduler {
 		}
 	
 	
-	private void sendEmailReminderToLcaManagerExpiredInDays(User toUserObj, String fromEmail, List<Lca> lcaList, OrgLocations ol, String currLcaDaysStatus) throws Exception {
+	private void sendEmailReminderToLcaManagerExpiredInDays(User toUserObj, String fromUser, List<Lca> lcaList, OrgLocations ol, String currLcaDaysStatus) throws Exception {
 			
 		      EmailMessage emailMessage = new EmailMessage();
 			
 			  emailMessage.setFirstName(toUserObj.getFirstName());
 			  emailMessage.setLastName(toUserObj.getLastName());
 			  emailMessage.setToEmail(toUserObj.getEmail());
-			  emailMessage.setFromEmail(fromEmail);
+			//  emailMessage.setFromEmail("defaultFromEmailAddressForProd");
 			  
 			 StringBuilder sb = new StringBuilder();
 			 Date expiredDate = null;	
@@ -861,6 +861,21 @@ public class EMailJobScheduler {
 			 
 			 //calling the sendEmail method of emailScenerioUtil
 			 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			 
+			 // LCA manager Expired Notification 
+				EmailScenario notificationScenario = null;
+				notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRES_IN_DAYS_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
+				//   System.out.println("notificationScenario :"+notificationScenario.getBody());
+				String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap, notificationScenario);
+				notificationScenario.setBody(notificationBody);
+				
+				User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
+				
+				StringBuilder actionLinkBuilder = new StringBuilder();
+				String actionLink = actionLinkBuilder.append("")
+						.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
+			      
+				emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 
 		}
 	
@@ -2895,7 +2910,7 @@ public class EMailJobScheduler {
 							 emailMessage.setFromEmail(fromEmail);
 						 }
 						  	// for URL redirections from mail
-						 String redirectURL = "/leaveManagementReports";
+						 String redirectURL = "/pms/leaveManagementReports";
 						 Long redirectOrgLocationId = orgLocations.getId(); 	 
 						 
 						StringBuilder msgBuild = new StringBuilder();
