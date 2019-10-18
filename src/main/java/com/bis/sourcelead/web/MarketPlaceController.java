@@ -97,11 +97,24 @@ public class MarketPlaceController {
 		
 	}
 	
-	@RequestMapping(value = "/deleteMarketPlaceList")
-	@ResponseBody
-	public TreeMap<Long, String> deleteMarketPlaceList(@RequestParam(value = "uuid", required = true)String uuid,
-			HttpServletRequest request)throws Exception {
-		Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
-		return addProductService.deleteMarketPlaceList(uuid, orgLocationId);
+	@RequestMapping(value = { "/deleteMarketPlaceProductByUuid" }, method = RequestMethod.POST)
+	public @ResponseBody Boolean deleteMarketPlaceProductByUuid(@RequestParam(value = "uuid", required = false) String uuid, HttpServletRequest request) throws Exception {
+	
+	
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Boolean status = addProductService.deleteMarketPlaceProductByUuid(uuid, orgLocations.getId());
+		
+		return status;
 	}
-}
+	
+	@RequestMapping(value = "/editMarketPlace")
+	public ModelAndView editMarketPlace() throws Exception {
+		ModelAndView model = new ModelAndView();
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("atsUrl", atsUrl);
+		model.setViewName("userMarketplace/editMarketPlace");
+		return model;
+	}
+	
+	
+	}
