@@ -272,7 +272,7 @@
 					</div>
 				</sec:authorize>
 				
-				<%-- 
+				
 				<!--  workflow settings configuration -->
 			<sec:authorize access="hasAnyRole('ROLE_ADD_WORKFLOW','ROLE_EDIT_VIEW_WORKFLOW','ROLE_DELETE_WORKFLOW','ROLE_VIEW_MY_WORKFLOW')">
 				<div class="col-md-2 reportNewCta">
@@ -285,8 +285,8 @@
 						</div>
 					</a>
 				</div>
-				</sec:authorize> --%>
-				<!-- Candidate Configuration -->
+				</sec:authorize> 
+				 <!-- Candidate Configuration -->
 				 <div class="col-md-2 reportNewCta"> 
 	            <!-- DropDown -->
 	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
