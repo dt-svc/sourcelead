@@ -380,11 +380,11 @@ public class ClientServiceImpl implements ClientService {
 			}else{
 				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
-			if(StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")){
-				clientOrgLocations.setIsBackgroundCheck(Constants.YES);	
-			}else{
-				clientOrgLocations.setIsBackgroundCheck(Constants.NO);	
-			}
+//			if(StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")){
+//				clientOrgLocations.setIsBackgroundCheck(Constants.YES);	
+//			}else{
+//				clientOrgLocations.setIsBackgroundCheck(Constants.NO);	
+//			}
 			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
 				}else{
@@ -1472,13 +1472,13 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setIsLawFirm(Constants.NO);
 			}
-			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())) {
-				if (clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
-					orgLocations.setIsBackgroundCheck(Constants.YES);
-				}
-			} else {
-				orgLocations.setIsBackgroundCheck(Constants.NO);
-			}
+//			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())) {
+//				if (clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+//					orgLocations.setIsBackgroundCheck(Constants.YES);
+//				}
+//			} else {
+//				orgLocations.setIsBackgroundCheck(Constants.NO);
+//			}
 			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
 				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 					orgLocations.setIsAccountingFirm(Constants.YES);
@@ -1561,7 +1561,7 @@ public class ClientServiceImpl implements ClientService {
 				}
 			}
 			// Below coded added for Background check vendor tags to be enabled
-			if(StringUtils.isNotBlank(orgRelation.getIsBackgroundCheck()) && orgRelation.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
+			/*if(StringUtils.isNotBlank(orgRelation.getIsBackgroundCheck()) && orgRelation.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
 				OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
 				String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
 				List<Long> subscriptionTabIdsList = new ArrayList<>();
@@ -1602,7 +1602,7 @@ public class ClientServiceImpl implements ClientService {
 					subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
 					orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 				}
-			}
+			}*/
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
