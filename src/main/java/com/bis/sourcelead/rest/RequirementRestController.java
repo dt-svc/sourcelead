@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -65,6 +66,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
@@ -642,21 +644,45 @@ public class RequirementRestController {
 									requirement.setUpdatedDate(commonUtil.currentDate());
 									requirementService.addRequirement(requirement);
 									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
-									String approverArray[] = new String[list1.size()];
+//									String approverArray[] = new String[list1.size()];
+									List<String> parallelApprover = new LinkedList<>();
 									int i = 0;
 									for (RequirementApproverHierarchy rah : list1) {
-										if (status.equalsIgnoreCase("APPROVED")) {
-											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
-										} else if (status.equalsIgnoreCase("REJECTED")) {
-											rah.setRejectedReason(reason);
-											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
-										}
+										
 										rah.setUpdatedBy(loginUser.getUserCode());
 										rah.setUpdatedDate(commonUtil.currentDate());
-										approverArray[i++] = rah.getApproverUserId().getId() + "";
+//										approverArray[i++] = rah.getApproverUserId().getId() + "";
+										if(rah.getLevel() == 1) {
+											String[] levelUserIds = new String[1];
+											levelUserIds[0] = rah.getApproverUserId().getId() + "";
+											requirement.setLevel1ApproverUserId(levelUserIds);
+											
+											
+											if (status.equalsIgnoreCase("APPROVED")) {
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+												requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
+											} else if (status.equalsIgnoreCase("REJECTED")) {
+												rah.setRejectedReason(reason);
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+												requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
+											}
+										}
+										if(rah.getLevel() == 2) {
+											String[] levelUserIds = new String[1];
+											levelUserIds[0] = rah.getApproverUserId().getId() + "";
+											requirement.setLevel2ApproverUserId(levelUserIds);
+											if (status.equalsIgnoreCase("APPROVED")) {
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+												requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
+											} else if (status.equalsIgnoreCase("REJECTED")) {
+												rah.setRejectedReason(reason);
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+												requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
+											}
+										}
 										requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 									}
-									requirement.setLevel1ApproverUserId(approverArray);
+//									requirement.setLevel1ApproverUserId(approverArray);
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
 									
@@ -751,6 +777,44 @@ public class RequirementRestController {
 						
 					}
 					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					
+					List<String> parallelApprover = new LinkedList<>();
+					String sequentialApprover1 = "";
+					String sequentialApprover2 = "";
+					
+					List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+					if(list1 != null && !list1.isEmpty()) {
+						for (RequirementApproverHierarchy rah : list1) {
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+								parallelApprover.add(rah.getApproverUserId().getId() + "");
+								requirementDTO.setParallelApprover(parallelApprover);
+							}
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+								if (rah.getLevel() == 1) {
+									sequentialApprover1 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover1(sequentialApprover1);
+									requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+								}
+								if (rah.getLevel() == 2) {
+									sequentialApprover2 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover2(sequentialApprover2);
+									requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+								}
+							}
+							
+							if(rah.getLevel() == 1) {
+								String[] levelUserIds = new String[1];
+								levelUserIds[0] = rah.getApproverUserId().getId() + "";
+								requirement.setLevel1ApproverUserId(levelUserIds);
+							}
+							if(rah.getLevel() == 2) {
+								String[] levelUserIds = new String[1];
+								levelUserIds[0] = rah.getApproverUserId().getId() + "";
+								requirement.setLevel2ApproverUserId(levelUserIds);
+							}
+						}
+					}
+					
 					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
 			
 					return "success";
@@ -1625,6 +1689,38 @@ public class RequirementRestController {
 									
 									// pass dto as parameter
 									RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+
+									List<String> parallelApprover = new LinkedList<>();
+									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+									if(list1 != null && !list1.isEmpty()) {
+										for (RequirementApproverHierarchy rah : list1) {
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+												parallelApprover.add(rah.getApproverUserId().getId() + "");
+												requirementDTO.setParallelApprover(parallelApprover);
+											}
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+												if(rah.getLevel() == 1) {
+													String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover1;
+													requirement.setLevel1ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover1(sequentialApprover1);
+													requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+												if(rah.getLevel() == 2) {
+													String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover2;
+													requirement.setLevel2ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover2(sequentialApprover2);
+													requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+											}
+										}
+									}
+									
 									requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 								}
 							}else {
