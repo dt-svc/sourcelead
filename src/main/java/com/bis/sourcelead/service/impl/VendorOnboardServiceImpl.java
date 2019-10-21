@@ -361,7 +361,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 			}
 		}
 		// Below code added for Background check vendor 
-		if(StringUtils.isNotBlank(orgRelations.getIsBackgroundCheck()) && orgRelations.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
+		/*if(StringUtils.isNotBlank(orgRelations.getIsBackgroundCheck()) && orgRelations.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
 			OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(vendorOrgLocations.getOrg().getId(), vendorOrgLocations.getCountry());
 			String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
 			List<Long> subscriptionTabIdsList = new ArrayList<>();
@@ -402,7 +402,7 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
 				orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 			}
-		}
+		}*/
 		SubmissionTemplate submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(
 				vendorOrgLocations.getId(), orgLocations.getId());
 		
