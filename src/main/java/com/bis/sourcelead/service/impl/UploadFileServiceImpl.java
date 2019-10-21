@@ -783,6 +783,8 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
+				candidate.setGender(user.getGender());
+				
 				if(StringUtils.isNotBlank(userImport.getDesignationType())) {
 					candidate.setDesignationType(userImport.getDesignationType());
 				}else {

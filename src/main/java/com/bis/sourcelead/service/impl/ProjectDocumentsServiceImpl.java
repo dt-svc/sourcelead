@@ -264,13 +264,14 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 		emailMessage.setOrgLocationId(loginOrgLocation.getId());
 		emailMessage.setEmailType(Constants.MAIL_SEND_PROJECT_DOCUMENTS);
 		ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
-		EmailAttachment emailAttachment = new EmailAttachment();
-		File file = null;
+//		EmailAttachment emailAttachment = new EmailAttachment();
+//		File file = null;
 		if (!isNullOrEmpty(projectsDocumentsDTO.getDocumentId())) {
 			String[] documentIds = projectsDocumentsDTO.getDocumentId().split(",");
 			String path = StringUtils.removeEnd(staticPath, "/slead-static");
 			if (documentIds.length > 1) {
-				file = File.createTempFile("ProjectDocuments", ".zip");
+				// don't delete the code this is email should zip format but not working because send mail logic writing different 
+				/*file = File.createTempFile("ProjectDocuments", ".zip");
 				FileOutputStream fos = new FileOutputStream(file);
 				ZipOutputStream zos = new ZipOutputStream(fos);
 				for (int j = 0; j < documentIds.length; j++) {
@@ -298,9 +299,20 @@ public class ProjectDocumentsServiceImpl implements ProjectDocumentsService {
 				attachmentList = new ArrayList<EmailAttachment>();
 				emailAttachment.setName("Project Documents");
 				emailAttachment.setDocFile(commonUtil.readBytesFromFile(file.getPath()));
+				attachmentList.add(emailAttachment);*/
+				for (int j = 0; j < documentIds.length; j++) {
+				ProjectDocuments projectDocument = getDocumentById(Long.valueOf(documentIds[j]));
+				EmailAttachment emailAttachment = new EmailAttachment();
+				emailAttachment.setName(projectDocument.getFileName());
+				emailAttachment.setFileUrl(projectDocument.getFileUrl());
+				emailAttachment.setType(projectDocument.getFileType());
+				emailAttachment.setDocFile(commonUtil.readBytesFromFile(path + projectDocument.getFileUrl()));
 				attachmentList.add(emailAttachment);
+				}
+				
 			}
 			else {
+				EmailAttachment emailAttachment = new EmailAttachment();
 				ProjectDocuments projectDocument = getDocumentById(Long.valueOf(projectsDocumentsDTO.getDocumentId()));
 				emailAttachment.setName(projectDocument.getFileName());
 				emailAttachment.setFileUrl(projectDocument.getFileUrl());
