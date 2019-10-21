@@ -2003,14 +2003,17 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			}
 			
 			Date daysFilter = null;
+			Date currentDate = null;
 			boolean isDateFileterFound= false;
 			if(StringUtils.isNotBlank(filterByDays) && !filterByDays.equalsIgnoreCase("All")) {
 			
 			isDateFileterFound = true;
 			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.DATE, Integer.parseInt(filterByDays));
+			currentDate = cal.getTime();
+			cal.add(Calendar.DATE, Integer.parseInt(filterByDays)-1);//  -1 used to consider current date(day also).
 			daysFilter = cal.getTime();
-			subQuery3 = "and lcaView.endDate <=:daysFilter"; 
+			
+			subQuery3 = "and lcaView.endDate <=:daysFilter and lcaView.endDate >=:currentDate"; 
 			
 			}
 			
@@ -2023,14 +2026,14 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 			
 			// Filter By Date
 			if(isDateFileterFound) {
-				hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
+				hqlQuery1 = hqlQuery1.setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter).setDate("currentDate", currentDate);
 			}
 			
 			Query hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId());
 			
 			// Filter By Date
 			if(isDateFileterFound) {
-				hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter);
+				hqlQuery = session.createQuery(query).setLong("orgLocationId", orgLocations.getId()).setDate("daysFilter", daysFilter).setDate("currentDate", currentDate);;
 			}
 			
 	        lcaViewList = hqlQuery.setFirstResult(lcaListViewDTO.getStart()).setMaxResults(lcaListViewDTO.getLength()).list();
@@ -3234,7 +3237,9 @@ public class ImmigrationCommonDaoImpl implements ImmigrationCommonDao {
 
 				if (currentDate.before(canPassport.getValidToDate())) {
 					passDto.setCurrentStatus("Active");
-				} else {
+				} else if (currentDate.compareTo(canPassport.getValidToDate()) == 0) {
+					passDto.setCurrentStatus("Active");
+				}else {
 					passDto.setCurrentStatus("Expired");
 				}
 				passDto.setCandidatePassportId(canPassport.getId());

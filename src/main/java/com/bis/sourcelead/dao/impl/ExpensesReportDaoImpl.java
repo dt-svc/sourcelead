@@ -60,7 +60,7 @@ public class ExpensesReportDaoImpl implements ExpensesReportDao {
 			if(startDate !=null && endDate !=null){
 				java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
 				java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
-				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc  where project.id = :projectId and mc.id = :masterCandidateId and expenses.endDate  BETWEEN :startDate and :endDate";
+				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc  where project.id = :projectId and mc.id = :masterCandidateId and expenses.endDate  BETWEEN :startDate and :endDate and expenses.expenseStatus != 'DRAFT' ";
 				expenses =session.createQuery(query).setLong("projectId", pm.getProjects().getId()).setLong("masterCandidateId", pm.getProjectMemberCandidteId().getMasterCandidateId().getId()).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
 			}else{
 				String query = "from Expenses expenses left join fetch expenses.projectMembers proMembers left join fetch expenses.projects project left join fetch expenses.masterCandidateId mc where project.id = :projectId and mc.id = :masterCandidateId";

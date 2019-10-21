@@ -1497,19 +1497,24 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			age = p.getYears();
 		}
 		
-		//Eligible percent of tax based on age and salary
-		Double taxPercent = 0d;
-		if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
-			for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
-				if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
-					taxPercent = tds.getPercentage();
-				}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
-					taxPercent = tds.getPercentage();
-				}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80") && taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1  && taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1){
-					taxPercent = tds.getPercentage();
-				}
-			}
-		}
+			/*
+			 * //Eligible percent of tax based on age and salary Double taxPercent = 0d;
+			 * if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() !=
+			 * null && preCheckINDPayrollDTO.getTdsList().size() > 0) { for(Tds tds :
+			 * preCheckINDPayrollDTO.getTdsList()) { if(age <= 60 &&
+			 * tds.getAge().equalsIgnoreCase("0 - 60 Years") &&
+			 * taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1 &&
+			 * taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
+			 * taxPercent = tds.getPercentage(); }else if(age > 60 && age <= 80 &&
+			 * tds.getAge().equalsIgnoreCase("60 - 80 Years") &&
+			 * taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1 &&
+			 * taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1) {
+			 * taxPercent = tds.getPercentage(); }else if(age > 80 &&
+			 * tds.getAge().equalsIgnoreCase("Above 80") &&
+			 * taxableYearlyAmount.compareTo(new BigDecimal(tds.getFromamount())) > -1 &&
+			 * taxableYearlyAmount.compareTo(new BigDecimal(tds.getToamount())) < 1){
+			 * taxPercent = tds.getPercentage(); } } }
+			 */
 		
 		SourceleadTaxITDeclarationSubmission itDeclarationSubmission = taxService.getITDeclarationSubmissionByUserIdOrgLocationAndFinancialYear(employee.getUser().getId(), orgLocation.getId(), fromYear + "-" + toYear);
 		
@@ -1551,10 +1556,74 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			}
 		}
 		
+		taxableYearlyAmount =(taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal));
+		
+		//Eligible percent of tax based on age and salary
+		Double taxPercent = 0d;
+		
+		// TDS calculation start here 
+		if(preCheckINDPayrollDTO != null && preCheckINDPayrollDTO.getTdsList() != null && preCheckINDPayrollDTO.getTdsList().size() > 0) {
+			
+			for(Tds tds : preCheckINDPayrollDTO.getTdsList()) {
+				
+				taxPercent = tds.getPercentage();
+				BigDecimal fromAmount =  new BigDecimal(tds.getFromamount());
+				BigDecimal toAmount =    new BigDecimal(tds.getToamount());
+				BigDecimal diffAmount =   toAmount.subtract(fromAmount);
+				
+				if(age <= 60 && tds.getAge().equalsIgnoreCase("0 - 60 Years")) {
+					
+					
+							if (diffAmount.compareTo(taxableYearlyAmount) < 0) {
+								
+								  taxableYearlyAmount = taxableYearlyAmount.subtract(diffAmount);
+								  Double  slabAmount =     diffAmount.doubleValue(); 
+								  tdsYearlyTotal =   tdsYearlyTotal + (slabAmount * taxPercent )/100;
+							      
+							}else {
+								
+	                               Double  slabAmount =   taxableYearlyAmount.doubleValue(); 
+	                               tdsYearlyTotal =  tdsYearlyTotal + (slabAmount * taxPercent )/100;
+							       break;
+						    }
+					
+				}else if(age > 60 && age <= 80 && tds.getAge().equalsIgnoreCase("60 - 80 Years")) {
+					
+							if (diffAmount.compareTo(taxableYearlyAmount) < 0) {
+								
+								  taxableYearlyAmount = taxableYearlyAmount.subtract(diffAmount);
+								  Double  slabAmount =     diffAmount.doubleValue(); 
+								  tdsYearlyTotal =   tdsYearlyTotal + (slabAmount * taxPercent )/100;
+							      
+							}else {
+								
+	                             Double  slabAmount =   taxableYearlyAmount.doubleValue(); 
+	                             tdsYearlyTotal =  tdsYearlyTotal + (slabAmount * taxPercent )/100;
+							       break;
+						    }
+					
+				}else if(age > 80 && tds.getAge().equalsIgnoreCase("Above 80")){
+					
+							if (diffAmount.compareTo(taxableYearlyAmount) < 0) {
+								
+								  taxableYearlyAmount = taxableYearlyAmount.subtract(diffAmount);
+								  Double  slabAmount =     diffAmount.doubleValue(); 
+								  tdsYearlyTotal =   tdsYearlyTotal + (slabAmount * taxPercent )/100;
+							      
+							}else {
+								
+	                             Double  slabAmount =   taxableYearlyAmount.doubleValue(); 
+	                             tdsYearlyTotal =  tdsYearlyTotal + (slabAmount * taxPercent )/100;
+							       break;
+						    }
+				}
+			}
+		}
+		
 		
 		//TDS amount calculation
-		tdsEligibilityTotal = (taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
-		tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
+	//	tdsEligibilityTotal = (taxableYearlyAmount).subtract(new BigDecimal(tdsExemptionTotal)).doubleValue();
+	//	tdsYearlyTotal = (tdsEligibilityTotal * taxPercent) / 100 ;
 		tdsMonthlyTotal = (tdsYearlyTotal / 12);
 		
 		ph.setIndEmployeePayrollId(employeePayroll);

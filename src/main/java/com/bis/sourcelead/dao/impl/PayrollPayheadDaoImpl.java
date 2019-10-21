@@ -399,4 +399,31 @@ public class PayrollPayheadDaoImpl implements PayrollPayheadDao{
 		response.setResponse(String.valueOf(updatequeryString.executeUpdate()));
 		return response;
 	}
+
+	@Override
+	@Transactional
+	public AssociateSalaryPayheadInd getAssociateSalaryPayheadIndByPayrollPayhedId(Long payrollPayhedId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from AssociateSalaryPayheadInd payhead where payhead.payrollPayhead.id = :payrollPayhedId and payhead.status = '1' ";  
+		List<AssociateSalaryPayheadInd> associateSalaryPayheadIndList =  session.createQuery(query).setLong("payrollPayhedId", payrollPayhedId).list();
+		AssociateSalaryPayheadInd associateSalaryPayheadInd = null;
+		if (associateSalaryPayheadIndList != null && associateSalaryPayheadIndList.size() > 0) {
+			associateSalaryPayheadInd = (AssociateSalaryPayheadInd) associateSalaryPayheadIndList.iterator().next();
+		}
+		return associateSalaryPayheadInd;
+	}
+	 
+	@Override
+	@Transactional
+	public Boolean getPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Boolean flag = false;
+		String query = " FROM PayrollPayhead payhead WHERE  payhead.orgLocationId.id=:orgLocationId and payhead.status = '1'";
+		List<PayrollPayhead> payrollPayheadList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		if(payrollPayheadList.size() > 0) {
+			flag = true;
+		}
+		return flag;
+	}
+	
 }
