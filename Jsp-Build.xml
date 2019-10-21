@@ -15,7 +15,7 @@
 	</condition>
 	
     <!--Location Of Tomcat-Server -->
-	<property name="tomcat.dir" value="\apache-tomcat-9.0.12" />
+	<property name="tomcat.dir" value="\Manoj\E\Tomcat\apache-tomcat-9.0.14" />
 
 	<target name="copy-jsp">
 		<copy todir="${root.dir}/${tomcat.dir}/wtpwebapps/pms/WEB-INF/views" includeEmptyDirs="no">
