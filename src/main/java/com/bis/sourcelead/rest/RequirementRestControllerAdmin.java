@@ -1395,7 +1395,7 @@ public class RequirementRestControllerAdmin {
 						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
 						if(flag == false) {
 						
-							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
+							CandidateDTO candidate = candidateGlobalService.getCandidateGlobalDTOByCandidateGlobalId(Long.valueOf(candidateid));
 							if(candidate.getProfilePercentage() >= requirement.getProfilePercentage()) {
 								
 								JSONObject labelItems = new JSONObject();
