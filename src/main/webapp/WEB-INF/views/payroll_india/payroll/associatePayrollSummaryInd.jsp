@@ -62,6 +62,7 @@
 							</thead>
 							<tbody class="earningPayheadTbady">
 							<c:forEach var="earning" items="${earningPayhead}" varStatus="loop1">
+							<c:if test="${earning.taxStatus eq 'Taxable'}">
 								<tr>
 									<th><div class="tbldata-dotdot inlineBlock"> <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadName" value="${earning.payrollPayheadName}"> ${earning.payrollPayheadName}</div></th>
 									<td><input type="text" id="earningPayheadAmount" name="associateSalaryPayheadIndEarningList[${loop1.index}].monthly" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true" value="${earning.monthly}" class="formControl" readOnly onBlur="calculateGrossSalary();">
@@ -70,13 +71,52 @@
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].indEmployeePayrollId" value="${earning.indEmployeePayrollId}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].monthlyOld" value="${earning.monthly}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadType" value="Earnings">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].taxStatus" value="Taxable">
 									</td>
 									<c:set var="earningTotal" value="${earningTotal + earning.monthly}"/>
 								</tr>
+							</c:if>
 							</c:forEach>
 							</tbody>
 							<tfoot>
-							    <tr><th><strong>Total</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="earningPayheadAmountTotal"> ${earningTotal}</label></td></tr>
+							    <tr><th><strong>Gross Salary (A)</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="earningPayheadAmountTotal"> ${earningTotal}</label></td></tr>
+							</tfoot>
+					</table>
+				</td>
+			</c:if>
+			
+			<c:if test="${fn:length(earningPayhead) gt 0}">
+				<td class="padding_right">
+					<table class="table table-bordered tableNetpay mb0">
+						<c:set var="employeeEarningTotal" value="${0.00}"/>
+							<thead>
+								<tr>
+									<th>Employer Contribution</th>
+									<th>Amount <span class="paddingLeft">(&#8377;)</span></th>
+								</tr>
+							</thead>
+							<tbody class="earningPayheadTbady">
+							<c:forEach var="earning" items="${earningPayhead}" varStatus="loop1">
+							<c:if test="${earning.taxStatus eq 'NonTaxable'}">
+								<tr>
+									<th><div class="tbldata-dotdot inlineBlock"> <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadName" value="${earning.payrollPayheadName}"> ${earning.payrollPayheadName}</div></th>
+									<td><input type="text" id="employerEarningPayheadAmount" name="associateSalaryPayheadIndEarningList[${loop1.index}].monthly" data-validation="validate_Space validate_length length1-20 validate_number" data-validation-optional="true" value="${earning.monthly}" class="formControl" readOnly onBlur="calculateEmployerContribution();">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayhead" value="${earning.payrollPayhead}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadShortCode" value="${earning.payrollPayheadShortCode}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].indEmployeePayrollId" value="${earning.indEmployeePayrollId}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].monthlyOld" value="${earning.monthly}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadType" value="Earnings">
+									    <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].taxStatus" value="NonTaxable">
+										
+									</td>
+									<c:set var="employeeEarningTotal" value="${employeeEarningTotal + earning.monthly}"/>
+								</tr>
+							</c:if>
+							</c:forEach>
+							</tbody>
+							<tfoot>
+							    <tr><th><strong>Total Contribution  (B) </strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="employerEarningPayheadAmountTotal"> ${employeeEarningTotal}</label></td></tr>
+							    <tr><th><strong>Cost to Company (CTC)A+B</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="totalGrossPay"> ${indPayrollDTO.grossPay}</label></td></tr>
 							</tfoot>
 					</table>
 				</td>
@@ -115,7 +155,7 @@
 							</c:if>
 							</tbody>
 							<tfoot>
-							<tr><th><strong>Total</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="deductionPayheadAmountTotal"> ${decuctionTotal}</label></td></tr>
+							<tr><th><strong>Total Deductions (C)</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="deductionPayheadAmountTotal"> ${decuctionTotal}</label></td></tr>
 						</tfoot>
 					</table>
 				</td>
@@ -127,19 +167,19 @@
 			<table class="table" style="width:100%">
 				<tbody>
 				<tr>
-				<td class="padding_right">
+				<%-- <td class="padding_right">
 					<table class="table table-bordered tableNetpay mb0">
 					<tbody>
-						<th>Gross Salary</th>
+						<th>Gross Salary <strong>(A+B)</strong>  </th>
 						<td ><span class="paddingLeft">&#8377;</span> <label id="totalGrossPay"> ${indPayrollDTO.grossPay}</label></td>
 					</tbody>
 					</table>
-				</td>
+				</td> --%>
 				<td class="padding_right">
 					<table class="table table-bordered tableNetpay mb0">
 					<tbody>
-						<th>Net Salary</th>
-						<td ><span class="paddingLeft">&#8377;</span><label id="totalNetPay"> ${indPayrollDTO.netPay}</label></td>
+						<th>Net Salary <strong>(A-C)</strong></th>
+						<td ><span class="paddingLeft">&#8377;</span><label id="totalNetPay"> ${earningTotal - decuctionTotal} </label></td>
 					</tbody>
 					</table>
 				</td>

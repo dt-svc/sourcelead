@@ -150,7 +150,7 @@
 
 <div class="comMask"></div>
 <div class="modal netPay" style="display: none;" id="netPay">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-lg" style="width: 1200px;">
 		<div class="modal-content">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal"  onclick="closeNetPay();">&times;</button>
@@ -289,11 +289,34 @@ function calculateGrossSalary(){
 			grossTotal += parseFloat($(this).val());
 		}
 	});
+	
 	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
+	$('#totalGrossPay').html((parseFloat($('#earningPayheadAmountTotal').html()) + parseFloat($('#employerEarningPayheadAmountTotal').html())).toFixed(2));
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	
+	/* $('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
 	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
 	$("input[name='grossPay']").val($('#totalGrossPay').html());
 	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
-	$("input[name='netPay']").val($('#totalNetPay').html());
+	$("input[name='netPay']").val($('#totalNetPay').html()); */
+}
+
+function calculateEmployerContribution(){
+	var grossTotal = 0.00;
+	var floatRegex = /^((\d+(\.\d *)?)|((\d*\.)?\d+))$/;
+	$('.earningPayheadTbady #employerEarningPayheadAmount').each(function() {
+		if($(this).val() != '' && floatRegex.test($(this).val())){
+			grossTotal += parseFloat($(this).val());
+		}
+	});
+	 $('#employerEarningPayheadAmountTotal').html(grossTotal.toFixed(2));
+	 $('#totalGrossPay').html((parseFloat($('#earningPayheadAmountTotal').html()) + parseFloat($('#employerEarningPayheadAmountTotal').html())).toFixed(2));
+// 	 $('#totalNetPay').html((parseFloat($('#totalGrossPay').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	 
+	 
+	 /*$("input[name='grossPay']").val($('#totalGrossPay').html());
+	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
+	$("input[name='netPay']").val($('#totalNetPay').html()); */
 }
 
 function calculateNetSalary(){
