@@ -1038,16 +1038,19 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			  String query = "from RequirementWorkFlowStages workflowstages where workflowstages.requirementWorkFlowId.id =:workflowId "
 						 		+ "and workflowstages.seqOrder >= (select ws.seqOrder from RequirementWorkFlowStages ws where ws.stageShortCode =:stageShortCode and ws.requirementWorkFlowId.id =:workflowId and ws.orgLocationId.id=:orgLocationId) "
 							    +" and workflowstages.orgLocationId.id=:orgLocationId ";
-			   // Below condition is added not show show interview and offer stage in drop down list added by SRINIVAS SABBU ON 25-SEP-2019.
-			    if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
+			  // Below condition is added not show show interview and offer stage in drop down list added by SRINIVAS SABBU ON 25-SEP-2019.
+			  //16-october-2019
+			  //commented if blocks to remove the conditions for applicants when moved to next stage in jobs pipeline.
+			  /*if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
 					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
-				} else if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
+				} */
+			  	if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
-				} else {
+				} /*else {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
-				}
+				}*/
 			     query =query	+ " order by workflowstages.seqOrder";
-			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")) {
+			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")|| stageShortCode.equalsIgnoreCase("INTERVIEW_ACCEPT")) {
 			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "INTERVIEW").setLong("orgLocationId", orgLocations.getId()).list();
 			     }else if(stageShortCode.equalsIgnoreCase("OFFERACCEPTED") || stageShortCode.equalsIgnoreCase("CLIENT_OFFERACCEPTED")) {
 			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "OFFERMADE").setLong("orgLocationId", orgLocations.getId()).list(); 
@@ -1210,14 +1213,14 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		}
 
 		@Override
-		public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+		public String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageUuid, Long submissionId,
 				Integer minutes, Integer seconds) {
 			logger.debug("Running deleteRequirementWorkFlowtasks DAO");
 			try {
 				Session session = this.sessionFactory.getCurrentSession();
 				String query = "UPDATE  REQUIREMENT_QUESTIONNAIRE_FEEDBACK_TEMPLATE SET TIME_MINUTES_REMAINED =:minutes , TIME_SECONDS_REMAINED=:seconds"
-						                  + " WHERE REQUIREMENT_SUBMISSION_ID =:submissionId AND REQUIREMENT_WORKFLOW_STAGES_ID =:stageId  AND REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID =:questTemplUuid" ;
-				int count = session.createSQLQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setLong("stageId", stageId)
+						                  + " WHERE REQUIREMENT_SUBMISSION_ID =:submissionId AND REQUIREMENT_WORKFLOW_STAGES_UUID =:stageUuid  AND REQUIREMENT_QUESTIONNAIRE_TEMPLATE_UUID =:questTemplUuid" ;
+				int count = session.createSQLQuery(query).setInteger("minutes", minutes).setInteger("seconds", seconds).setLong("submissionId", submissionId).setString("stageUuid", stageUuid)
 			                                               .setString("questTemplUuid",questTemplUuid).executeUpdate();
 				if(count != 0 ) {
 					return Constants.SUCCESS;

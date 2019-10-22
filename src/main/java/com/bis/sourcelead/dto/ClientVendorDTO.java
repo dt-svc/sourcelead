@@ -94,6 +94,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String isLawFirm;
 	
+//	private String isBackgroundCheck;
+	
 	private String isAccountingFirm;
 	
 	private String generateBill;
@@ -659,6 +661,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	public String getIsLawFirm() {
 		return isLawFirm;
 	}
+
+//	public String getIsBackgroundCheck() {
+//		return isBackgroundCheck;
+//	}
+//
+//	public void setIsBackgroundCheck(String isBackgroundCheck) {
+//		this.isBackgroundCheck = isBackgroundCheck;
+//	}
 
 	public void setIsLawFirm(String isLawFirm) {
 		this.isLawFirm = isLawFirm;
