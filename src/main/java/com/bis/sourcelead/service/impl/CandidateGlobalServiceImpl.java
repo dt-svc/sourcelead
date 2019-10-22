@@ -74,7 +74,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
     				  ce = new  CandidateEducation();
     				  if(null !=ce){
 		    			  ce.setName(edu);
-			    		 // ce.setCandidateGlobalId(candidate);
+			    		  ce.setCandidateId(candidate);
 			    		  ce.setOrglocationId(orgLocations);
 			    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 			    		  candidateEducationList.add(ce);
@@ -84,7 +84,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	    			  ce = new  CandidateEducation();
 	    			  if(null !=ce){
 		    			  ce.setName(edu);
-			    		  //ce.setCandidateGlobalId(candidate);
+			    		  ce.setCandidateId(candidate);
 			    		  ce.setOrglocationId(orgLocations);
 			    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 			    		  candidateEducationList.add(ce);
@@ -133,7 +133,7 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		HashSet<CandidateResumes> candidateResumesList = new HashSet<CandidateResumes>();
 		if (StringUtils.isNotBlank(fileInfo.getFileURL())) {
 			CandidateResumes candidateResumes = new CandidateResumes();
-			//candidateResumes.setCandidateGlobalId(candidate);
+			candidateResumes.setCandidateId(candidate);
 			candidateResumes.setFileName(fileInfo.getFileName());
 			candidateResumes.setFileContentType(fileInfo.getContentType());
 			candidateResumes.setFileURL(fileInfo.getFileURL().replaceAll(" ", "_"));
