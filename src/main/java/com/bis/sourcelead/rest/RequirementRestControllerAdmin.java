@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -65,6 +66,7 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
@@ -1602,6 +1604,36 @@ public class RequirementRestControllerAdmin {
 									
 									// pass dto as parameter
 									RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+									List<String> parallelApprover = new LinkedList<>();
+									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+									if(list1 != null && !list1.isEmpty()) {
+										for (RequirementApproverHierarchy rah : list1) {
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+												parallelApprover.add(rah.getApproverUserId().getId() + "");
+												requirementDTO.setParallelApprover(parallelApprover);
+											}
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+												if(rah.getLevel() == 1) {
+													String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover1;
+													requirement.setLevel1ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover1(sequentialApprover1);
+													requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+												if(rah.getLevel() == 2) {
+													String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover2;
+													requirement.setLevel2ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover2(sequentialApprover2);
+													requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+											}
+										}
+									}
 									requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 								}
 							}else {
