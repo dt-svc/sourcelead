@@ -2,6 +2,7 @@ package com.bis.sourcelead.dashboard.dto;
 
 import java.math.BigInteger;
 
+
 public class ConfigureDashBoardViewDTO {
 	
 
@@ -14,6 +15,8 @@ public class ConfigureDashBoardViewDTO {
 	private String subTabName;
 	
 	private String displayTabName;
+	
+	private String jsonStringData;
 
 	public BigInteger getCustomModuleCofigId()
 	{
@@ -64,6 +67,15 @@ public class ConfigureDashBoardViewDTO {
 	{
 		this.displayTabName = displayTabName;
 	}
+
+	public String getJsonStringData() {
+		return jsonStringData;
+	}
+
+	public void setJsonStringData(String jsonStringData) {
+		this.jsonStringData = jsonStringData;
+	}
+
 	
 	
 }

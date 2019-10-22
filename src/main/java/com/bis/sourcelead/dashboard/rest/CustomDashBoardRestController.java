@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +44,8 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @RestController
 @RequestMapping("/app")
@@ -79,6 +83,7 @@ public class CustomDashBoardRestController {
 	@Autowired
 	CustomDashBoardViewService customDashBoardViewService;
 	
+   
 	
 	/**
 	 * Return Dash board configuration jsp
@@ -164,6 +169,22 @@ public class CustomDashBoardRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
 			List<ConfigureDashBoardViewDTO> configureDashBoardView = customDashBoardViewService.getConfiguredDataByDashBoardId(dashBoard.getId());
+
+		  //  String jsonStringData= "[{'First Name': 'Rajashekar','Last Name': 'Chelpuri','Full Name': 'Raja Chelpuri','email': 'rajasekhar@gmail.com'}]";
+			JSONObject jsonObj = new JSONObject(); 
+			jsonObj.put("First Name", "Srinivas");
+			jsonObj.put("Last Name", "Sabbu");
+			jsonObj.put("Full Name", "Srinivas Sabbu");
+			jsonObj.put("Email", "srinivas@gmail.com");
+			JSONArray jsonArray= new JSONArray();
+			jsonArray.add(jsonObj);
+		//	System.out.println(jsonArray);
+    		String convertedString=jsonArray.toString().replace("\"", "\\\"");
+		    for(ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
+		        dtoObj.setJsonStringData(convertedString);
+		    }
+						
+			//System.out.println("configureDashBoardView size is >>>>>>>>>>>"+configureDashBoardView.size());
 			model.addObject("dashBoardConfData",configureDashBoardView);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("customdashboard/customDashBoardView");

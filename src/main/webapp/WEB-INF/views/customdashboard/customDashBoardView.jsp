@@ -4,7 +4,27 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.mousewheel.js"></script> 
 <script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.jscrollpane.min.js"></script> 
+<script>
 
+function prepareDynamicTableGrid(subTabName,dataSet){
+console.log(dataSet);
+		var my_columns = [];
+		dataSet = JSON.parse(dataSet);
+		$.each( dataSet[0], function( key, value ) {
+			console.log("key"+key);
+			console.log("value"+value);
+			var my_item = {};
+			my_item.data = key;
+			my_item.title = key;
+			my_columns.push(my_item);
+		});
+console.log(my_columns);
+		$('#'+subTabName).DataTable({
+			data: dataSet,
+			"columns": my_columns
+	   });
+}
+</script>
 
 <section class="content-wraper">
 
@@ -28,7 +48,13 @@
 				                  </i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
 				                </span>
 				            </div>
-				             <p>**********************</p>
+				             <table id="${configureDashBoard.subTabName}"></table>
+				               <script>
+				                    prepareDynamicTableGrid('${configureDashBoard.subTabName}', '${configureDashBoard.jsonStringData}');
+				                    		
+				                    		
+				                    				                    		
+				                     </script>
 				        </div>
     			</div>
 		</c:forEach> 
