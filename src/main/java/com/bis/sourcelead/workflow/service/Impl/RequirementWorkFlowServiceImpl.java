@@ -1208,7 +1208,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 	
-		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageId, submissionId);
+		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageUuid, submissionId);
 		 StringBuilder linkBuild = new StringBuilder();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1245,7 +1245,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return Constants.SUCCESS;
 	}
 
-	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, Long stageId, Long submissionId)
+	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, String stageUuid, Long submissionId)
 			throws Exception {
 		StringBuilder tempHTML = new StringBuilder();
 		tempHTML.append(
@@ -1256,8 +1256,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		int i = 0;
 		if (null != templateUuid && !"".equalsIgnoreCase(templateUuid)) {
 			tempHTML.append("<td>").append("<a href='").append(sourceleadUrl)
-					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
-					.append(stageId).append("&submissionId=").append(submissionId)
+					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageUuid=")
+					.append(stageUuid).append("&submissionId=").append(submissionId)
 					.append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Click Here</div></a>")
 					.append("</td>");
 		}

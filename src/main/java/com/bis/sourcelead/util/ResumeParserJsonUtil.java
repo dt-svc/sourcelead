@@ -15,8 +15,10 @@ public class ResumeParserJsonUtil {
 	private String maritalStatus;
 	private String gender;
 	private String designation;
+	private Set<String> designations;
 	private int totalYearsExp;
 	private int totalMonthsExp;
+	
 	private Set<String> skills;
 	private Set<String> employeers;
 	private Set<String> educations;
@@ -30,6 +32,14 @@ public class ResumeParserJsonUtil {
 	private String zipcode;
 
 	private FileInfo fileInfo;
+
+	public Set<String> getDesignations() {
+		return designations;
+	}
+
+	public void setDesignations(Set<String> designations) {
+		this.designations = designations;
+	}
 
 	/**
 	 * @return the firstName
