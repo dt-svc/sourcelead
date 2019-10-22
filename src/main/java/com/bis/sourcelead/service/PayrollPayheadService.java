@@ -48,4 +48,6 @@ public interface PayrollPayheadService {
 	Response<String> refreshPayheadsForOrg(Long orgLocationId) throws Exception;
 	
 	Response<String> payheadHandlerByOrg(PayrollPayheadDTO payrollPayheadDTO) throws Exception;
+	
+	Boolean getPayrollPayheadListByOrgLocationId(Long orgLocationId) throws Exception;
 }
