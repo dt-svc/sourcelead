@@ -429,7 +429,7 @@ public class CandidateServiceImpl implements CandidateService {
         Candidate candidate = null;
         Date date = new Date();
 		if(StringUtils.isNotBlank(candidateDto.getCandidateId())){
-			candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(candidateDto.getCandidateId()));
+			candidate = candidateDao.getCandidateByCandidateGlobalId(Long.parseLong(candidateDto.getCandidateId()));
 		}else{	
 			
 			candidate = new Candidate();
@@ -912,14 +912,15 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		candidate.setCandidateGlobalId(candiateGlobal);
 		candidateDao.storeCandidate(candidate);
 		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candiateGlobal.getId().toString());
 	}
 	
 	@Override
 	public void deleteCandidateElkDocument(Candidate candidate) throws Exception{
 		 //Elastic Search Document Saving
 		CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-		sourceleadELKBaseIndexer.deleteElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+		CandidateGlobal candiateGlobal = candidateGlobalUtil.storeCandidateGlobalFromCandidate(candidate);
+		sourceleadELKBaseIndexer.deleteElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candiateGlobal.getId().toString());
 	}
 
 	@Override

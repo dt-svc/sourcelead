@@ -1150,6 +1150,7 @@ public CandidateGlobal storeCandidateGlobalFromCandidate(Candidate candidate) th
 	CandidateGlobal candidateGlobal = candidateGlobalService.findByCandidateGlobalEmail(candidate.getEmail(), candidate.getOrgLocationId().getId());
 	if(candidateGlobal == null) {
 		candidateGlobal = new CandidateGlobal();
+		candidateGlobal.setGeneratedId(getCandidateGlobalId(candidate.getOrgLocationId()));
 	}
 	Date date = new Date();
 	candidateGlobal.setCreatedDate(commonUtil.orgLocationCommonDate(date, candidate.getOrgLocationId()));
@@ -1163,7 +1164,6 @@ public CandidateGlobal storeCandidateGlobalFromCandidate(Candidate candidate) th
 	candidateGlobal.setAadharNumber(candidate.getAadharNumber());
 	candidateGlobal.setPanNumber(candidate.getPanNumber());
 	candidateGlobal.setSsnNumber(candidate.getSsnNumber());;
-	candidateGlobal.setGeneratedId(getCandidateGlobalId(candidate.getOrgLocationId()));
 	candidateGlobal.setFirstName(candidate.getFirstName());
 	candidateGlobal.setLastName(candidate.getLastName());
 	candidateGlobal.setMiddelName(candidate.getMiddelName());
@@ -1200,7 +1200,7 @@ public CandidateGlobal storeCandidateGlobalFromCandidate(Candidate candidate) th
 	candidateGlobal.setPrimarySkill(candidate.getPrimarySkill());
 	candidateGlobal.setOrgRelationId(candidate.getOrgRelationId());
 	candidateGlobal.setSpocId(candidate.getSpocId());
-	candidateGlobal.setIsAssociate(Constants.YES);
+	candidateGlobal.setIsAssociate(candidate.getIsAssociate());
 	
 	candidateGlobal.setUpdatedBy(candidate.getUpdatedBy());
 	candidateGlobal.setUpdatedDate(candidate.getUpdatedDate());

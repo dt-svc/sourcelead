@@ -296,7 +296,7 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 	public Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount) {
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdcount + "') AS UNSIGNED)) FROM "
-				+ schema + ".CANDIDATE WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
+				+ schema + ".CANDIDATE_GLOBAL WHERE ORG_LOCATION_ID = '" + orgLocationId + "'";
 		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
 		Long count = 0L;
 		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
