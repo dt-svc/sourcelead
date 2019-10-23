@@ -360,7 +360,49 @@ public class VendorOnboardServiceImpl implements VendorOnboardService {
 				orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 			}
 		}
-		
+		// Below code added for Background check vendor 
+		/*if(StringUtils.isNotBlank(orgRelations.getIsBackgroundCheck()) && orgRelations.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
+			OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(vendorOrgLocations.getOrg().getId(), vendorOrgLocations.getCountry());
+			String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
+			List<Long> subscriptionTabIdsList = new ArrayList<>();
+			for(int i=0; i<subscriptionTabs.length;i ++){
+				subscriptionTabIdsList.add(Long.valueOf(subscriptionTabs[i]));
+			}
+			
+			if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_BACKGROUND_CHECK))){
+				List<Long> tabsIds = new ArrayList<>();
+				List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_BACKGROUND_CHECK));
+				if(childTabsList.size() > 0) {
+					for(Tabs childTabs : childTabsList) {
+						tabsIds.add(childTabs.getId());
+					}
+				}
+				
+				List<Long> sourceLeadActionsIdsList =  sourceleadActionsService.getAllSourceleadActionsIdsByTabsList(tabsIds);
+				StringBuilder immigrationTabIds  = new StringBuilder();
+				for(Long tabId : sourceLeadActionsIdsList){
+					immigrationTabIds.append(tabId).append(",");
+				}
+				
+				String tabIds = immigrationTabIds.toString();
+				tabIds = tabIds.substring(0, tabIds.length()-1);
+				
+				Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, vendorOrgLocations.getId());
+				String adminIds = adminrole.getActionId()+","+tabIds;
+				adminrole.setActionId(adminIds);
+				rolesService.storeRoles(adminrole);
+				
+				Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, vendorOrgLocations.getId());
+				String managerIds = managerrole.getActionId()+","+tabIds;
+				managerrole.setActionId(managerIds);
+				rolesService.storeRoles(managerrole);
+				
+				String subscriptionRegisteredTabs = subscription.getSubscriptionTabs();
+				subscriptionRegisteredTabs = subscriptionRegisteredTabs+","+Constants.TAB_BACKGROUND_CHECK;
+				subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
+				orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
+			}
+		}*/
 		SubmissionTemplate submissionTemplate = submissionTemplateService.getDefaultSubmissionTemplateByClientLocationIdAndOrgLocationId(
 				vendorOrgLocations.getId(), orgLocations.getId());
 		
