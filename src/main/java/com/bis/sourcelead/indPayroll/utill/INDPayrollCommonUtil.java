@@ -795,7 +795,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				}
 			}
 		}
-		associatePayrollPayheadDTOLists.addAll(associatePayrollPayheadDTOList);
+		//associatePayrollPayheadDTOLists.addAll(associatePayrollPayheadDTOList);
 		return associatePayrollPayheadDTOLists;
 	}
 	
