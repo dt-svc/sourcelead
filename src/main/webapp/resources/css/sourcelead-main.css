@@ -10541,6 +10541,11 @@ border-radius: 3px 3px 0px 0px; }
 .orgwidth { width:95%;}
 .head_height{height:55px;width:100%;}
 .chosen-select-anchor a.chosen-single { margin-left: 0px; }
+.zIndex-div {height:35px; position: absolute; left: 0; top: 0; width: 350px; z-index:1;}
+.rejectedHoverDiv { width: 10px; height: 10px;}
+.rejectedHoverDiv .submissionRejectedDiv { border:1px solid red; border-radius: 2px; display: none; position: absolute; top: 15px; left: 0px;
+ background-color: #fff; width: 350px; z-index: 1px; padding: 10px; line-height: 22px; }
+.rejectedHoverDiv:hover .submissionRejectedDiv { display: block; }
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {
