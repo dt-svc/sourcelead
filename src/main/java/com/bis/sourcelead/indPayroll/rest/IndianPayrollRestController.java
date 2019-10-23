@@ -841,7 +841,9 @@ public class IndianPayrollRestController {
 	   	   			}
 	   	   		}
 	   	   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
-	   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getTaxStatus().equals(Constants.TAXABLE) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		model.addObject("employerContribution", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getTaxStatus().equals(Constants.NON_TAXABLE) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		
 	   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
 	   		}
 	   		
