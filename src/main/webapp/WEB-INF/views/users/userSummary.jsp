@@ -2158,7 +2158,7 @@ $("#editRoleDetailsList").empty();
 					
 					
 					result = result+'		<div class="col-md-4 mt5">';
-					result = result+'		<label class="ml10">Gender <span class="text-danger paddingLeft">*</span></label>  ';
+					result = result+'		<label class="ml10">Gender<span class="text-danger paddingLeft">*</span></label>  ';
 					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.gender == "Male"){
 					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
