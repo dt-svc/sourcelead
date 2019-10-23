@@ -440,6 +440,27 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setLoanAdvHistoryDTOList(getAssociateLoanAndAdvancesHistoryDTOListFromAssociateLoanAndAdvancesHistoryList(employeePayroll, loanAdvHistorySet, orgLocations));
 				
 				
+				//get yearly taxable amount in current frequency
+				BigDecimal totalCtcAmountGrossPay = new BigDecimal("0.00");
+				for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : payHeadHistorySet) {
+					if(Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
+						if(Constants.TAXABLE.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getTax())) {
+							
+							totalCtcAmountGrossPay = totalCtcAmountGrossPay.add(associatePayrollPayheadHistory.getMonthly());
+						}
+					}
+				}
+				payrollDTO.setTotalCtc(totalCtcAmountGrossPay);
+				
+				//Monthly deduction total 
+				BigDecimal totalDeductions = new BigDecimal("0.00");
+				for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : payHeadHistorySet) {
+					if(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
+						totalDeductions = totalDeductions.add(associatePayrollPayheadHistory.getMonthly());
+					}
+				}
+				payrollDTO.setNetPay(totalCtcAmountGrossPay.subtract(totalDeductions));
+				
 				payrollDTO.setRegularHours(employeePayroll.getRegularHours());
 				payrollDTO.setRegularHrsAmt(employeePayroll.getRegularHoursAmount());
 				payrollDTO.setOvertimeHours(employeePayroll.getOverTimeHours());
@@ -447,7 +468,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setNoOfLeaves(employeePayroll.getNoOfLeaves());
 				payrollDTO.setNoOfDays(employeePayroll.getNoOfDays());
 				payrollDTO.setGrossPay(employeePayroll.getGrossPay());
-				payrollDTO.setNetPay(employeePayroll.getNetPay());
 				payrollDTO.setLopAmount(employeePayroll.getLopAmount());
 				payrollDTO.setTds(employeePayroll.getTds());
 				payrollDTO.setProfessionalTax(employeePayroll.getProfessionalTax());
@@ -788,6 +808,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadName(payHeadHistoryDTO.getPayrollPayheadName());
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadType(payHeadHistoryDTO.getPayrollPayheadType());
+		
+		associatePayrollPayheadHistoryDTO.setTaxStatus(payHeadHistoryDTO.getTaxStatus());
+		
 		associatePayrollPayheadHistoryDTO.setMonthly(payHeadHistoryDTO.getMonthly());
 		associatePayrollPayheadHistoryDTO.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
 		associatePayrollPayheadHistoryDTO.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1682,6 +1705,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
 		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
 		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+		 			indDTO.setTotalCtc(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
 		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
 		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
