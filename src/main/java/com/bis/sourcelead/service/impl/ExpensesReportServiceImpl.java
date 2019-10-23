@@ -372,10 +372,10 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 BigDecimal decUnApprovedTotal = new BigDecimal(0);
 				 for(Expenses exp:expenses){
 					 if(projectMember!=  null && null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployeeIdForExpenses() != null){
+							if(projectMember.getEmployee() != null){
 								expensesArray[0] = (projectMember.getEmployee().getEmployeeId());
 							}else {
-								expensesArray[0] = ("--");
+								expensesArray[0] = "--";
 							}
 							if(null != projectMember.getProjectMemberCandidteId()){
 								if(null != projectMember.getProjectMemberCandidteId().getLastName()){
@@ -1032,7 +1032,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 
 				 for(Expenses exp:expenses){
 					 if(null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployeeIdForExpenses()!= null ){
+							if(projectMember.getEmployee()!= null ){
 								writeRow.createCell(0).setCellValue(exp.getProjectMembers().getEmployee().getEmployeeId());
 								 createExcelsheet.autoSizeColumn(0);
 							}else{
