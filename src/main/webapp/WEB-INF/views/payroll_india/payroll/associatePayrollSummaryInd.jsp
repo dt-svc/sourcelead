@@ -46,6 +46,7 @@
 			<input type="text" hidden id="paySheetFrequencyUUID" name="paySheetFrequencyUUID" value="${indPayrollDTO.paySheetFrequencyUUID}">
 			<input type="text" hidden name="indEmpPayrollUUID" value="${indPayrollDTO.indEmpPayrollUUID}">
 			<input type="text" hidden name="grossPay" value="${indPayrollDTO.grossPay}">
+			<input type="text" hidden name="totalCtc" value="${indPayrollDTO.totalCtc}">
 			<input type="text" hidden name="netPay" value="${indPayrollDTO.netPay}">
 			<table width="100%" class="table mb0" id="tableNetpay">
 				<tbody>
@@ -70,8 +71,9 @@
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadShortCode" value="${earning.payrollPayheadShortCode}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].indEmployeePayrollId" value="${earning.indEmployeePayrollId}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].monthlyOld" value="${earning.monthly}">
+										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].taxStatus" value="${earning.taxStatus}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadType" value="Earnings">
-										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].taxStatus" value="Taxable">
+										
 									</td>
 									<c:set var="earningTotal" value="${earningTotal + earning.monthly}"/>
 								</tr>
@@ -105,8 +107,9 @@
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadShortCode" value="${earning.payrollPayheadShortCode}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].indEmployeePayrollId" value="${earning.indEmployeePayrollId}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].monthlyOld" value="${earning.monthly}">
+										 <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].taxStatus" value="${earning.taxStatus}">
 										<input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].payrollPayheadType" value="Earnings">
-									    <input type="text" hidden name="associateSalaryPayheadIndEarningList[${loop1.index}].taxStatus" value="NonTaxable">
+									   
 										
 									</td>
 									<c:set var="employeeEarningTotal" value="${employeeEarningTotal + earning.monthly}"/>

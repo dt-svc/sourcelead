@@ -616,6 +616,7 @@ public class IndianPayrollRestController {
 	   	 	           employeeJsonObject.put("empName", ipDTO.getEmpName());
 	   	 	           employeeJsonObject.put("regularHours", ipDTO.getRegularHours());
 	   	 	           employeeJsonObject.put("overtimeHours", ipDTO.getOvertimeHours());
+	   	 	           employeeJsonObject.put("totalCtc", ipDTO.getTotalCtc());
 	   	 	           employeeJsonObject.put("grossPay", ipDTO.getGrossPay());
 	   	 	           employeeJsonObject.put("netPay", ipDTO.getNetPay());
 	   	 	           employeeJsonObject.put("lopAmount", ipDTO.getLopAmount());

@@ -208,6 +208,7 @@ public class PayrollRestController {
 		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
 		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
 		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+    	 			indDTO.setTotalCtc(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
 		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
 		 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
@@ -323,6 +324,7 @@ public class PayrollRestController {
 		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
 		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
 		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
+		 			indDTO.setTotalCtc(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
 		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
 		 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
@@ -446,6 +448,7 @@ public class PayrollRestController {
 			 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
 			 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
 			 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));
+			 			indDTO.setTotalCtc(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 			 			indDTO.setNoOfDays(new BigDecimal(jsonEmployeeObject.getString("noOfDays")));
 			 			indDTO.setTotalHours(Double.valueOf(jsonEmployeeObject.getLong("totalHours")));
 			 			indDTO.setTds(new BigDecimal(jsonEmployeeObject.getString("tds")));
@@ -517,6 +520,7 @@ public class PayrollRestController {
 		   	 	           employeeJsonObject.put("payCheckDate", indPayrollDTO.getPayCheckDate());
 		   	 	           employeeJsonObject.put("createdDate", indPayrollDTO.getCreatedDate());
 		   	 	           employeeJsonObject.put("createdBy", indPayrollDTO.getCreatedBy());
+		   	 	           employeeJsonObject.put("totalCtc", indEmployeePayrollDTO.getTotalCtc());
 		   	 	           employeeJsonObject.put("netPay", indEmployeePayrollDTO.getNetPay());
 				    	   employeeJsonObject.put("grossPay", indEmployeePayrollDTO.getGrossPay());
 				    	   employeeJsonObject.put("updatedBy", loginUser.getId());

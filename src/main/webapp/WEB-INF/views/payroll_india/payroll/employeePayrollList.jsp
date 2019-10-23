@@ -104,7 +104,7 @@
 											<fmt:formatNumber value="${empPayroll.noOfLeaves}" pattern="0"/><span class="paddingLeft"></span>
 										</div></td>
 									<td><div class="tblminwidth-50 clearfix">
-											${empPayroll.grossPay}<span class="paddingLeft">&#8377;</span>
+											${empPayroll.totalCtc}<span class="paddingLeft">&#8377;</span>
 										</div></td>
 									<td><div class="tblminwidth-50 clearfix">
 											${empPayroll.tds}<span class="paddingLeft">&#8377;</span>
@@ -293,12 +293,11 @@ function calculateGrossSalary(){
 	$('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
 	$('#totalGrossPay').html((parseFloat($('#earningPayheadAmountTotal').html()) + parseFloat($('#employerEarningPayheadAmountTotal').html())).toFixed(2));
 	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
-	
-	/* $('#earningPayheadAmountTotal').html(grossTotal.toFixed(2));
-	$('#totalGrossPay').html($('#earningPayheadAmountTotal').html());
+	$("input[name='totalCtc']").val($('#earningPayheadAmountTotal').html());
 	$("input[name='grossPay']").val($('#totalGrossPay').html());
-	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
-	$("input[name='netPay']").val($('#totalNetPay').html()); */
+	$("input[name='netPay']").val($('#totalNetPay').html());
+	
+	 
 }
 
 function calculateEmployerContribution(){
@@ -311,12 +310,8 @@ function calculateEmployerContribution(){
 	});
 	 $('#employerEarningPayheadAmountTotal').html(grossTotal.toFixed(2));
 	 $('#totalGrossPay').html((parseFloat($('#earningPayheadAmountTotal').html()) + parseFloat($('#employerEarningPayheadAmountTotal').html())).toFixed(2));
-// 	 $('#totalNetPay').html((parseFloat($('#totalGrossPay').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
-	 
-	 
-	 /*$("input[name='grossPay']").val($('#totalGrossPay').html());
-	$('#totalNetPay').html((parseFloat($('#earningPayheadAmountTotal').html()) - parseFloat($('#deductionPayheadAmountTotal').html())).toFixed(2));
-	$("input[name='netPay']").val($('#totalNetPay').html()); */
+	 $("input[name='grossPay']").val($('#totalGrossPay').html());
+ 
 }
 
 function calculateNetSalary(){
@@ -416,6 +411,7 @@ $('#approveTab , #cnfmPayrollBtn').click(function(){
 	        type : "GET",
 	        url: pmsUrl+"/getApproveInfoIndPayroll?"+tokenParamName+"="+tokenValue+"&paySheetFrequencyUUID="+feqUUID+"&excludeEmpPayrollUUID="+excludeEmpArr,   
 	         success :function(result) {
+	        	 //console.log(result)
 	        	 $("#reviewTab").removeClass("current");
 	        	 $("#approveTab").addClass("current");
 	        	 $("#reviewDiv").hide();
