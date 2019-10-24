@@ -241,7 +241,7 @@ function getAddApplicant(requirementId){
 		    });
 	    });
 	    
-	    chosen.search_field.on('keydown keyup', function(e)
+	    /*chosen.search_field.on('keydown keyup', function(e)
 			    {
 			    	   var skillsArray = this.value.split(",");
 				    	 if(skillsArray.length > 1){
@@ -289,12 +289,12 @@ function getAddApplicant(requirementId){
 			                }
 					       
 		    	         }
-	    	});
+	    	});*/
 	    //Adding Customized Skills to the list
-			
-	$("#candidateSkills").val('').trigger("chosen:updated");
+		$("#candidateSkills").val('').trigger("chosen:updated");	
+	
 	    
-		for (var selector in config) {
+		/*for (var selector in config) {
 		  $(selector).chosen(config[selector]);
 		}
 		$('.chosen-select').each(function() {
@@ -305,7 +305,8 @@ function getAddApplicant(requirementId){
 	
 	$(".new_side_wrap").addClass("new_side_wrap_active");
 	$(".side_mask").fadeIn(200);
-	$("body").css('overflow-y', 'hidden');
+	$("body").css('overflow-y', 'hidden');*/
+	
 	
 	var selectedFile = document.getElementById("newUploadBtn");
     selectedFile.addEventListener("change", function() {
@@ -331,6 +332,13 @@ function getAddApplicant(requirementId){
 	};
 	
 }
+</script>
+<script>
+    $(function () {
+        tagIt("candidateSkills", 'Press Enter-Key Or Comma(,) To Add New Skill:', 'tagItBykeyForSkills', 'skills', 'Select Skills');
+        //tagIt("candidateEducation", 'Press Enter-Key Or Comma(,) To Add New Education:', 'tagItBykeyForSkills', 'skills', 'Select Education');
+
+    });
 </script>
 
 
