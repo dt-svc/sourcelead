@@ -160,6 +160,12 @@ function candidateSideBar(candidateId){
              			 		designation = '---';
              			 } 
          			 	
+         			 	if(json.designation != null && json.designation != '' && json.designation != 'undefined'){
+             			 	designation = json.designation;
+             			 	}else{
+             			 		designation = '---';
+             			 } 
+         			 	
          			 	if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined'){
          			 	designationType = json.designationType;
          			 	}else{
@@ -347,16 +353,26 @@ function candidateSideBar(candidateId){
 			             result = result+'<ul class="list-unstyled">';
 			             
 // 			             result = result+'<li>Type - '+json.candidateType+'</li>';  
-			             
-                         
                          
 						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Generated ID</span><span class="col-md-7 padding_left padding_right">'+generatedId+'</span></li>';
 			             
-						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+designation+'> '+designation+'</span></li>';
-						 
-						 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+designationType+'</span></li>';
+						result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+designation+'> '+designation+'</span></li>';
 						 
 						 
+						 if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined' && json.designationType != 'Other'){
+	                    	 
+				               result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+json.designationType+'(s)'+'</span></li>';
+				             
+	             		       }else if(json.designationType != null && json.designationType != '' && json.designationType != 'undefined' && json.designationType == 'Other'){
+	             		                                                	  
+	                   		     result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+json.designationType+"---"+json.designationOtherType+'</span></li>';  
+	             		     
+	             		       }else{
+	             		    	  result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">---</span></li>';    
+	             		      
+	             		       }
+						 
+					//	 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+designationType+'</span></li>';
 						 
 	         			 if(json.vendorName != null && json.vendorName != '' && json.vendorName != 'undefined'){
 
