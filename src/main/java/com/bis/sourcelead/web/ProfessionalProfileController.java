@@ -200,7 +200,8 @@ public class ProfessionalProfileController {
 		       /* if(candidate.getConsultantUser() != null) {
 		        	 candidate.getConsultantUser().setPassword(null);
 		        }*/
-		        List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidate.getId(), orgLocations);
+		        Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidate.getId());
+		        List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(candidateGlobalId, orgLocations);
 		        candidate.setCommentsCount(String.valueOf(candidateCommentsList.size()));
 		        candidate.setDateofBirthString(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), candidate.getDateOfBirth()));
 				return candidate;

@@ -130,13 +130,8 @@ public class CandidateCommentsRestController {
 			if (user != null) {
 				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (StringUtils.isNotEmpty(candidateId)) {
-					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
-						candidateCommentsList = candidateCommentsService
-								.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation.getId());
-					}else {
-						candidateCommentsList = candidateCommentsService
-								.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation);
-					}
+					candidateCommentsList = candidateCommentsService
+							.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long.parseLong(candidateId), orgLocation.getId());
 					 
 					response.setData(candidateCommentsList);
 					response.setResponse(Result.SUCCESS.name());

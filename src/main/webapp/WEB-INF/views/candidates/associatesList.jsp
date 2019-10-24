@@ -1511,7 +1511,7 @@ function closeComment(){
 							}
 						},
 					}); */
-				$.post(sourceleadUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId,{},function(result){
+				$.post(atsUrl+"/saveCandidateComment?"+tokenParamName+"="+tokenValue+"&json="+jsonData+"&candidateId="+candidateId,{},function(result){
 					if (result && result.response === "INVALID_USER") {
 		    		    showError(result.responseMessage);
 		    		} else if (result.response === "AWKWARD") {
@@ -1544,7 +1544,7 @@ function closeComment(){
 function savedCommentAndCount(candidateId){
 	  $.ajax({
         type : "POST",
-         url: sourceleadUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getAllCommentsOnCandidateByCandidateIdAndOrgLocation?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(data) {
 				if (data && data.response === "INVALID_DATA") {
         		    showError(data.responseMessage);

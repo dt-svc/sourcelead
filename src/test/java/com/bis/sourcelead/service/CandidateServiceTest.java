@@ -46,6 +46,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
@@ -240,9 +241,9 @@ public class CandidateServiceTest {
 		@Test
 		public void getCandidateExcelFile() throws Exception{
 			
-			List<Candidate> candidatesList = new ArrayList<>();
+			List<CandidateGlobal> candidatesList = new ArrayList<>();
 			OrgLocations orgLocationId=new OrgLocations();
-			Candidate can= new Candidate();
+			CandidateGlobal can= new CandidateGlobal();
 			can.setId(1l);
 			can.setFirstName("rak");
 			can.setFileName("rak");
@@ -250,7 +251,7 @@ public class CandidateServiceTest {
 			orgLocationId.setId(1l);
 			can.setOrgLocationId(orgLocationId);
 			
-			Candidate can1= new Candidate();
+			CandidateGlobal can1= new CandidateGlobal();
 			can1.setId(1l);
 			can1.setFirstName("rakshith");
 			can1.setFileName("rakshith");
@@ -265,15 +266,15 @@ public class CandidateServiceTest {
 		
 		@Test
 		public void getCandidatePdf() throws Exception{
-			List<Candidate> candidatesList = new ArrayList<>();
+			List<CandidateGlobal> candidatesList = new ArrayList<>();
 			OrgLocations orgLocationId=new OrgLocations();
 			orgLocationId.setId(1l);
-			Candidate can= new Candidate();
+			CandidateGlobal can= new CandidateGlobal();
 			can.setId(1l);
 			can.setFileName("pdf");
 			can.setOrgLocationId(orgLocationId);
 			
-			Candidate can1= new Candidate();
+			CandidateGlobal can1= new CandidateGlobal();
 			can1.setId(1l);
 			can1.setFileName("pdf2");
 			

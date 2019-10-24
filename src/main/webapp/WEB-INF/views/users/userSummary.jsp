@@ -4199,13 +4199,13 @@ function profileDetails(candidateId){
 			            result = result+'         <div class="pull-right cmt-button">';
 			            result = result+'          <span class="comments-button">';
 			            
-			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGloalId+')">';
 			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
 			            result = result+'            </button>';
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGloalId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -4819,13 +4819,13 @@ function savedCommentAndCount(candidateId){
       				    result = result+'         <div class="pull-right cmt-button">';
       				    result = result+'          <span class="comments-button">';
       				            
-      				    result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+      				    result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGloalId+')">';
       				    result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
       				    result = result+'            </button>';
       				    result = result+'            <div class="add-comment">';
       				    result = result+'            </div>';
       				    result = result+'          </span>';
-      				    result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+      				    result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGloalId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
       				 	result = result+'		</div>';
       				    result = result+'     </div>';
       	 			           

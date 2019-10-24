@@ -1894,12 +1894,12 @@ public class CandidateListRestController {
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-		List<Candidate> candidatesList = null;
+		List<CandidateGlobal> candidatesList = null;
 
 		if (!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
-			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
+			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
-			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
+			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
 					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 
 		}
