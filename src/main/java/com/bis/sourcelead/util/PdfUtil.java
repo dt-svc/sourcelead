@@ -39,6 +39,7 @@ import com.bis.sourcelead.entity.AppliedLeaveDateView;
 import com.bis.sourcelead.entity.AssociateBalanceLeaveView;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
@@ -356,7 +357,7 @@ public class PdfUtil {
 	
 	
 	
-	public  File createCandidatePdfTable(java.util.List<Candidate> candidatesList, String orgName,String isAssociate) throws IOException {
+	public  File createCandidatePdfTable(java.util.List<CandidateGlobal> candidatesList, String orgName,String isAssociate) throws IOException {
 
 		String[] headers = Constants.CANDIDATE_EXCEL_HEADERS;
 	    Document document = new Document(PageSize.LETTER.rotate());
@@ -425,7 +426,7 @@ public class PdfUtil {
 	        }
 	        table.completeRow();
 	        java.util.List<String[]> candidateList = new ArrayList<>();
-	        for(Candidate candidate : candidatesList){
+	        for(CandidateGlobal candidate : candidatesList){
 	        	candidateList.add(prepareStringArray(candidate,isAssociate));
 	        }
 	        
@@ -458,7 +459,7 @@ public class PdfUtil {
 		return file;
 	
 	}
-	private String[] prepareStringArray(Candidate candidate, String isAssociate) {
+	private String[] prepareStringArray(CandidateGlobal candidate, String isAssociate) {
 		String candidateArray[] = new String[Constants.CANDIDATE_EXCEL_HEADERS.length];
 
 		if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){

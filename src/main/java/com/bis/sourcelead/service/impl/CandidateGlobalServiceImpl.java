@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateGlobalDao;
+import com.bis.sourcelead.dao.OrgLocationsDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.elk.index.CandidateIndex;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateGlobalService;
+import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
@@ -39,6 +41,12 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	
 	@Autowired
 	CandidateGlobalIndexHelper candidateGlobalIndexHelper;
+	
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	private CommonUtil commonUtil;
 
 	@Override
 	public CandidateGlobal getCandidateGlobalByCandidateId(Long candidateGlobalId) throws Exception {
@@ -207,5 +215,28 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	public List<CandidateGlobal> getAllRequestedGlboalCandidatesForCampaign(List<Long> candidateId) throws Exception {
 		return candidateGlobalDao.getAllRequestedGlboalCandidatesForCampaign(candidateId);
 	}
+
+	@Override
+	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+			throws Exception {
+		return candidateGlobalDao.getCandidatesGlobalListByOrgLocationIDAndUserId(orgLocationId, userId);
+	}
+
+	@Override
+	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationID(Long orgLocationId, Long orgId,
+			Integer candidateStatus, String updatedDateRange, String candidateType, String isAssociate,
+			String candidateFilterSkills, String availability, String candidateTypeFilter, String createdByFilter,
+			User user) throws Exception {
+		List<CandidateGlobal> candidateList = candidateGlobalDao.getCandidatesGlobalListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
+		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(orgLocationId);
+		for(CandidateGlobal can :candidateList){
+			if(can.getUpdatedDate() != null){
+			 can.setCandidateUpdateDateToString(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),can.getUpdatedDate()));
+			}
+		}
+		return candidateList;
+	}
+
+	
 
 }

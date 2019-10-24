@@ -81,7 +81,6 @@ import com.bis.sourcelead.entity.CandidateCustomFieldData;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateGlobal;
-import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
@@ -90,7 +89,6 @@ import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateSource;
-import com.bis.sourcelead.entity.CandidateTimelineActivity;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -738,7 +736,7 @@ public class CandidateServiceImpl implements CandidateService {
  * Write candidate data to xls format
  */
 	@Override
-	public File getCandidateExcelFile(List<Candidate> candidatesList,String orgName,String isAssociate) throws Exception {
+	public File getCandidateExcelFile(List<CandidateGlobal> candidatesList,String orgName,String isAssociate) throws Exception {
 		
 		Workbook createExcelworkbook =  new XSSFWorkbook();
 		CellStyle style = commonUtil.getCellStyle(createExcelworkbook);
@@ -756,7 +754,7 @@ public class CandidateServiceImpl implements CandidateService {
 		String headers [] = Constants.CANDIDATE_EXCEL_HEADERS;
 		createExcelsheet = commonUtil.setExcelHeaders(createExcelsheet,style,headers,0);
 		 int column=0;
-	        for(Candidate candidate : candidatesList){
+	        for(CandidateGlobal candidate : candidatesList){
 	       	 writeRow = createExcelsheet.createRow(column+1);
 	       	 createExcelsheet = createXlsSheet(createExcelsheet,writeRow,candidate,isAssociate);
 	       	 column++;
@@ -789,7 +787,7 @@ public class CandidateServiceImpl implements CandidateService {
 	 * @param candidate
 	 * @return
 	 */
-private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate candidate,String isAssociate) {
+private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGlobal candidate,String isAssociate) {
 	if(candidate.getFirstName() !=null && !"".equalsIgnoreCase(candidate.getFirstName())){
 		 writeRow.createCell(0).setCellValue(candidate.getFirstName());
 	}
@@ -889,7 +887,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 }
 
 	@Override
-	public File getCandidatePdf(List<Candidate> candidatesList, String orgName,String isAssociate) throws Exception {
+	public File getCandidatePdf(List<CandidateGlobal> candidatesList, String orgName,String isAssociate) throws Exception {
 		return pdfUtil.createCandidatePdfTable(candidatesList,orgName,isAssociate);
 	}
 
@@ -1517,13 +1515,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 				candidate.setDesignationType(null);
 			}
 			
-			/*if(StringUtils.isNotBlank(candidateDTO.getDesignationOtherType())){
-				candidate.setDesignationOtherType(candidateDTO.getDesignationOtherType());
-			}else
-			{
-				candidate.setDesignationOtherType(null);
-			}*/
-			
 			if(StringUtils.isNotBlank(candidateDTO.getDesignation())){
 				candidate.setDesignation(candidateDTO.getDesignation());
 			}else
@@ -1589,9 +1580,6 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 		if(StringUtils.isNotBlank(candidateUser.getMaritalStatus())) {
 			candidate.setMaritalStatus(candidateUser.getMaritalStatus());
 		}
-		
-	   
-		
 		  
 	    if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 	    	candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
@@ -1612,6 +1600,31 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,Candidate cand
 	    	}
 	    	
 	    }
+	    
+	    CandidateGlobal candidateGlobal = candidateGlobalDao.findByCandidateGlobalEmail(candidateDTO.getEmail(), orgLocations.getId());
+	    if(candidateGlobal != null) {
+	    	candidate.setExperienceYears(candidateGlobal.getExperienceYears());
+	    	candidate.setExperienceMonths(candidateGlobal.getExperienceMonths());	
+	    	candidate.setNoticePeriod(candidateGlobal.getNoticePeriod());	
+	    	candidate.setSkillsName(candidateGlobal.getSkillsName());
+	    	candidate.setVisaType(candidateGlobal.getVisaType());
+	    	candidate.setPrimarySkill(candidateGlobal.getPrimarySkill());
+	    	candidate.setSummary(candidateGlobal.getSummary());
+	    	candidate.setIsFavourite(candidateGlobal.getIsFavourite());
+	    	candidate.setIsFavouriteAssociate(candidateGlobal.getIsFavouriteAssociate());
+	    	candidate.setAddress(candidateGlobal.getAddress());
+	    	candidate.setExpectedRate(candidateGlobal.getExpectedRate());
+	    	candidate.setRateType(candidateGlobal.getRateType());
+	    	candidate.setExpectedRateCurrencey(candidateGlobal.getExpectedRateCurrencey());
+	    	candidate.setCountry(candidateGlobal.getCountry());
+	    	candidate.setState(candidateGlobal.getState());
+	    	candidate.setCity(candidateGlobal.getCity());
+	    	candidate.setZipCode(candidateGlobal.getZipCode());
+	    	candidate.setLongitude(candidateGlobal.getLongitude());
+	    	candidate.setLatitude(candidateGlobal.getLatitude());
+	    	candidate.setCandidateSource(candidateGlobal.getCandidateSource());
+	    }
+	    
 		candidateDao.storeCandidate(candidate);
 		saveOrUpdateCandidateElkDocument(candidate);
 		return candidate;

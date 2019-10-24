@@ -2,10 +2,14 @@ package com.bis.sourcelead.dao.impl;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -18,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateGlobalDao;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.entity.Candidate;
@@ -26,6 +31,7 @@ import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+import com.bis.sourcelead.util.CommonUtil;
 
 @Repository
 @Transactional
@@ -35,6 +41,9 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	CommonUtil commonUtil;
 	
 	@Value("${SourceLead.100}")
 	private String notFound;
@@ -328,5 +337,138 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 		return candidateList;
 	
 	}
+
+
+	@Override
+	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationIDAndUserId(Long orgLocationId, Long userId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateGlobal candidate  where candidate.orgLocationId.id =:orgLocationId and candidate.recruiterUserId.id = :userId ";
+		return session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).list();
+	}
+
+
+	@Override
+	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationID(Long orgLocationId, Long orgId,
+			Integer candidateState, String updatedDateRange, String candidateType, String isAssociate,
+			String candidateFilterSkills, String availability, String candidateTypeFilter, String createdByFilter,
+			User user) throws Exception {
+
+
+		String subQuery = null;
+		Integer dateRange;
+		String updatedDate = "";
+		Date currentDate = commonUtil.currentDate();
+		List<CandidateGlobal> candidateList;
+		java.sql.Date sqlCurrentDate = null;
+
+		// for current Date Converting to Sql Date Format
+		if (currentDate != null) {
+			sqlCurrentDate = new java.sql.Date(currentDate.getTime());
+		}
+
+		// Checking for Candidate Status
+		Session session = this.sessionFactory.getCurrentSession();
+		String dateLimit = "";
+		if (candidateState.equals(Constants.CANDIDATE_ACTIVE)) {
+			subQuery = "(cnadidate.status = 1)";
+		} else if (candidateState.equals(Constants.CANDIDATE_ALL)) {
+			subQuery = "(cnadidate.status = 1 or cnadidate.status = 0)";
+		} else {
+			subQuery = "(cnadidate.status = 0)";
+		}
+
+		String candidateTypeSubQuery = "";
+
+		if (candidateType != null && !candidateType.isEmpty() && candidateType.equalsIgnoreCase("Favourite")) {
+			candidateTypeSubQuery = " and (cnadidate.isFavourite = '1') ";
+
+		}
+
+		String createdBySubQuery = "";
+		if (createdByFilter != null && !createdByFilter.isEmpty() && createdByFilter.equalsIgnoreCase("myCandidates")) {
+			createdBySubQuery = " and cnadidate.createdBy = '" + user.getUserCode() + "' ";
+		}
+
+		List<String> skillsList = new ArrayList<>();
+		if (StringUtils.isNotBlank(candidateFilterSkills)) {
+			String[] skills = candidateFilterSkills.split(",");
+			for (int i = 0; i < skills.length; i++) {
+				skillsList.add(skills[i]);
+			}
+
+		} else {
+			skillsList.add("0");
+		}
+
+		List<String> avalibilityList = new ArrayList<>();
+		if (StringUtils.isNotBlank(availability)) {
+			String[] availabilityStr = availability.split(",");
+			for (int i = 0; i < availabilityStr.length; i++) {
+				avalibilityList.add(availabilityStr[i]);
+			}
+
+		} else {
+			avalibilityList.add("0");
+		}
+
+		String candidateTypeFilterSubQuery = "";
+		if (StringUtils.isNotBlank(candidateTypeFilter)) {
+			String[] candidateTypeFilterStr = candidateTypeFilter.split(",");
+
+			if (candidateTypeFilterStr.length == 2) {
+				candidateTypeFilterSubQuery = " and (cnadidate.isAssociate = 'N' OR cnadidate.isAssociate = 'Y' )";
+			} else {
+				if (candidateTypeFilter.equalsIgnoreCase("Associates")) {
+					candidateTypeFilterSubQuery = " and cnadidate.isAssociate = 'Y'";
+				} else if (candidateTypeFilter.equalsIgnoreCase("Candidates")) {
+					candidateTypeFilterSubQuery = " and cnadidate.isAssociate = 'N'";
+				}
+			}
+		}
+
+		String candidateSkillsSubQuery = " and ((:varZero  IN (:skillsList)) OR (:varZero NOT IN (:skillsList) and cnadidate.skillsName IN (:skillsList)))";
+		String avaliabilitySubQuery = " and ((:varZero  IN (:avalibilityList)) OR (:varZero NOT IN (:avalibilityList) and cnadidate.noticePeriod IN (:avalibilityList)))";
+
+		if (StringUtils.isNotEmpty(updatedDateRange) && !"null".equalsIgnoreCase(updatedDateRange)
+				&& !updatedDateRange.equalsIgnoreCase("undefined")) {
+
+			// This Code is for getting the sql enddate based on range
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date()); // Now use today date.
+			dateRange = Integer.parseInt(updatedDateRange);
+			c.add(Calendar.DATE, -dateRange); // Subtracting dateRange days
+			updatedDate = dateFormat.format(c.getTime());
+			Date parsed = dateFormat.parse(updatedDate);
+			java.sql.Date endDate = new java.sql.Date(parsed.getTime());
+
+			String query = "from CandidateGlobal cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "
+					+ subQuery + " " + candidateTypeSubQuery + " " + candidateSkillsSubQuery + " "
+					+ avaliabilitySubQuery + " " + candidateTypeFilterSubQuery + " " + createdBySubQuery
+					+ " and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";
+			candidateList = session.createQuery(query).setDate("endDate", endDate)
+					.setLong("orgLocationId", orgLocationId).setString("varZero", "0")
+					.setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList)
+					.setLong("orgId", orgId)
+
+					.list();
+		} else {
+
+			String query = "from CandidateGlobal cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "
+					+ subQuery + " " + candidateTypeSubQuery + " " + candidateSkillsSubQuery + " "
+					+ avaliabilitySubQuery + " " + candidateTypeFilterSubQuery + " " + createdBySubQuery
+					+ " ORDER BY cnadidate.id DESC";
+			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId)
+					.setString("varZero", "0").setParameterList("skillsList", skillsList)
+					.setParameterList("avalibilityList", avalibilityList).list();
+		}
+
+		return candidateList;
+	
+	}
+
+
+	
 
 }
