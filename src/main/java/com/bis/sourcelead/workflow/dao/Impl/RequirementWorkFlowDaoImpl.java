@@ -1105,12 +1105,11 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		String query = "SELECT  question.id AS questionnaireId, question.NAME AS questionnaireName, "+
 				       "          question.UUID AS questionnaireUuid, stages.ID AS stageId, stages.STAGE_NAME AS stageName, stages.uuid AS stageUuid, COUNT(tasks.id) AS tasksCount " + 
 		
-						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages, " + 
-						"                  REQUIREMENT_QUESTIONNAIRE_TEMPLATE question, "+
-						"                  REQUIREMENT_WORKFLOW_TASKS tasks " + 
+						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages " + 
+						"                  LEFT JOIN  REQUIREMENT_WORKFLOW_TASKS tasks ON tasks.REQUIREMENT_WORKFLOW_STAGES_ID = stages.ID, " + 
+						"                    REQUIREMENT_QUESTIONNAIRE_TEMPLATE question "+
 						
 						"		   WHERE  stages.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID=question.ID" + 
-						"                 AND  tasks.REQUIREMENT_WORKFLOW_STAGES_ID=stages.ID "+
 						"                 AND  stages.STAGE_SHORT_CODE =:stageName" + 
 						"                 AND  stages.REQUIREMENT_WORKFLOW_ID =:workflowId" + 
 						"                 AND  stages.ORG_LOCATION_ID =:orgLocationId " +
