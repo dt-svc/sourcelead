@@ -417,21 +417,22 @@ public class SubmissionsRestController {
 						for (RequirementApproverHierarchy rah : list1) {
 							if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
 								parallelApprover.add(rah.getApproverUserId().getId() + "");
+								requirementDTO.setParallelApprover(parallelApprover);
 							}
 							if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
 								if (rah.getLevel() == 1) {
 									sequentialApprover1 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover1(sequentialApprover1);
+									requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
 								}
 								if (rah.getLevel() == 2) {
 									sequentialApprover2 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover2(sequentialApprover2);
+									requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
 								}
 							}
 						}
 					}
-					requirementDTO.setParallelApprover(parallelApprover);
-					requirementDTO.setSequentialApprover1(sequentialApprover1);
-					requirementDTO.setSequentialApprover2(sequentialApprover2);
-					
 					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 				}
 				response.setObject("success");
