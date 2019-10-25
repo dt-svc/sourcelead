@@ -9,6 +9,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	<script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 	<script>
 	$(document).ready(function() {
+		
 		$("#searchtext").keyup(function(e) {
 			if (e.which == 13) {
 				requirementWorkflow.getViewWorkflowStagesList();
@@ -52,18 +53,17 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <li>
           <c:if test="${not empty requirementWorkFlowStagesDTO}">
 
+		 <c:if test ="${isWorkflowEditable == true}">	
          <c:choose>
          <c:when test="${requirementWorkFlowStagesDTO[0].stageCount == 15 || requirementWorkFlowStagesDTO[0].stageCount > 15}">
          <input value="+ Stage" id="stageButton" onclick="requirementWorkflow.alertStageCount();" class="btn btn-primary margin-top0" type="button">
          </c:when>
          <c:otherwise>
-           <c:if test ="${isWorkflowEditable == true}">
               <input value="+ Stage" id="stageButton" 
         	       onclick="requirementWorkflow.saveRequirementAndAddAStage('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>','${requirementWorkFlowStages.stageName}','<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />');" class="btn btn-primary margin-top0" type="button">
-            </c:if>
          </c:otherwise>
          </c:choose>
-
+			</c:if>
           </c:if>
           </li>
          </c:if>
@@ -88,7 +88,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             <div class="col-md-9" id = "workflowNameDiv">
 						
 						<c:choose>
-						<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+						<c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow' || isWorkflowEditable == false}">
 						<input type="text"
 										value='<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}"/>'
 										class="form-control" id="workFlowName" name="workFlowName"
@@ -115,7 +115,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             <div class="col-md-9">
             
             <c:choose>
-            <c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow'}">
+            <c:when test = "${requirementWorkFlowStagesDTO[0].workFlowName == 'Default Job WorkFlow' || isWorkflowEditable == false}">
             <textarea rows="2"  value = '' class="form-control" name="description" id="description" placeholder="Description" field-name="Description"
 			data-validation="validate_length length1-500" data-validation-optional="true" disabled><c:out value="${requirementWorkFlowStagesDTO[0].workflowDescription}"/></textarea>
             </c:when>
@@ -186,8 +186,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</div>
 				<div class="col-md-2">
 				
-					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
-					
+					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow' && isWorkflowEditable == true}">
 					<ul class="list-inline list-unstyled pull-right mb0">
 						<c:if test = "${requirementWorkFlowStages.configureType == 'Client'}">
 						    <sec:authorize access="hasRole('ROLE_EDIT_VIEW_WORKFLOW')">
@@ -202,7 +201,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                              <sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
                         
                         <c:choose>
-                        <c:when test="${requirementWorkFlowStages.configureType == 'Client' && isWorkflowEditable == true}">
+                        <c:when test="${requirementWorkFlowStages.configureType == 'Client'}">
                         <li>
 							<a title="Delete" 
 							onclick = 'requirementWorkflow.deletepopup("${requirementWorkFlowStages.uuid}",
