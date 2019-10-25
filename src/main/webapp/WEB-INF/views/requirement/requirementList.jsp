@@ -376,7 +376,7 @@ function statusvalidating(id){
 				<label>Selected Cities</label>
 				<div class="clearfix">
 				   <select class="chosen-select form-control input-sm" multiple
-						data-placeholder="sletected cites" id="city" name="city">
+						data-placeholder="selected cites" id="city" name="city">
 					</select>
 				</div>
 			</div>
