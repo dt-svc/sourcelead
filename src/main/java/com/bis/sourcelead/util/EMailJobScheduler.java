@@ -416,6 +416,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private ReadEmail readEmail;
 
 	private static boolean startEmailParsingProcess = true;
 	
@@ -503,7 +506,7 @@ public class EMailJobScheduler {
 			// candidates table with parsed information.
 			logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
 			logger.info("******************  startEmailParsingProcessvalue is ::: "+startEmailParsingProcess);
-			if(environment != null && !environment.trim().equalsIgnoreCase("local") && startEmailParsingProcess) {
+			if(environment != null && !environment.trim().equalsIgnoreCase("local2") && startEmailParsingProcess) {
 				logger.debug("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
@@ -529,9 +532,7 @@ public class EMailJobScheduler {
 							logger.debug("***********Parsisng started  Email id is :" + email.getEmailId());
 							tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 							if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
-							 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
-						
-						  
+							 readEmail.readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
 							 List<File> fileList = Arrays.asList(tempfolder.listFiles());
 						
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
