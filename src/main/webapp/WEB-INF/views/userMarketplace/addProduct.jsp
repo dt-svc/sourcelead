@@ -18,7 +18,7 @@ window.onload = function () {
       </div>
  <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a>&raquo;<a href="<c:url value='${SourceLeadWeb_atsUrl}/OrgMarketplace'/>">Associate Marektplace </a>&raquo;<a href="<c:url value='${SourceLeadWeb_atsUrl}/productList'/>">Product List </a>&raquo;Add Product</div>     
     </section>
-    
+    <div id="popUp"></div>
     <div class="content-area content-new clearfix backgroundWhite">
       <div class="minHeightcol6 mt mb clearfix">
 <h4 class="col-md-12  text-muted">Add Personal Info</h4>
@@ -127,7 +127,14 @@ window.onload = function () {
         <div class="col-md-4">
             <label class="clearfix">Warranty Eligible</label>
             <label class="switch mt5 ml">
-                <input type="checkbox" onclick="warrantyHandler();" id="warrantyCheckbox">
+            <c:choose>
+            <c:when test="${marketPlaceDto.isInWarranty == 'N'}">
+                <input type="checkbox" onclick="warrantyHandler();" name="isInWarranty" value='N' id="warrantyCheckbox">
+            </c:when>
+            <c:otherwise>
+                       <input type="checkbox" onclick="warrantyHandler();" name="isInWarranty" value='Y' id="warrantyCheckbox">
+            </c:otherwise>
+            </c:choose>
                 <span class="slider round"></span>
             </label>
         </div>
@@ -150,7 +157,7 @@ window.onload = function () {
         <label class="clearfix">Price</label>
         <div class="clearfix row">
             <div class="col-md-9">
-          <input type="text" id="price" name="price" value="${price}" class="form-control" data-validation="validate_length length1-20 validate_phone"
+          <input type="text" id="price" name="price"  class="form-control" data-validation="validate_length length1-20 validate_phone"
 							field-name="Price"	data-validation-optional="true" value=" ">
         </div>
           <div class="col-md-3">
@@ -206,21 +213,34 @@ window.onload = function () {
         <label class="col-md-8 mt5">Negotiate</label>
         <div class="col-md-4">
         <label class="switch">
-            <input checked="" id="isNegotiable" name="isNegotiable" value ="Y" onclick="negotiable()" type="checkbox">
+        <c:choose>
+        <c:when test="${marketPlaceDto.isNegotiable == 'Y'}">
+        	<input checked="" id="isNegotiable" name="isNegotiable" value ="Y"  type="checkbox">
+        </c:when>
+        <c:otherwise>
+   		     <input id="isNegotiable" name="isNegotiable" value ="N" type="checkbox">
+        </c:otherwise>
+        </c:choose>
             <span class="slider round"></span>
         </label>
       </div>
     </div>
     <div class="clearfix"></div>
 </div>
-
 <div class="col-md-4 minHeight">
     <label class="clearfix">&nbsp;</label>
     <div class="clearfix row">
         <label class="col-md-8 mt5">Show Contact details <i class="fa fa-info text-primary ml cursorPointer" title="Contact details would be viewable to the buyers"></i></label>
         <div class="col-md-4">
         <label class="switch">
-            <input checked="" id="shareContactDetailss" name="shareContactDetails" type="checkbox" value ="Y" onclick="ContactDetails()">
+         <c:choose>
+        <c:when test="${marketPlaceDto.shareContactDetails == 'Y'}">
+      <input checked="" id="shareContactDetails" name="shareContactDetails" type="checkbox" value ="Y"> 
+      </c:when>       
+        <c:otherwise>
+   		     <input id="shareContactDetails" name="shareContactDetails" value ="N" type="checkbox">
+        </c:otherwise>
+        </c:choose>
             <span class="slider round"></span>
         </label>
       </div>
@@ -234,7 +254,15 @@ window.onload = function () {
         <label class="col-md-8 mt5">Post Public</label>
         <div class="col-md-4">
         <label class="switch">
-            <input checked="" type="checkbox" name="productShareType" value ="Y" onclick="shareType()" id="productShareType" >
+       <c:choose>
+        <c:when test="${marketPlaceDto.productShareType == 'Y'}">
+         <input checked="" type="checkbox" name="productShareType" value ="Y"  id="productShareType" >
+        </c:when>
+        <c:otherwise>
+         <input checked="" type="checkbox" name="productShareType" value ="N"  id="productShareType" >
+        </c:otherwise>
+        </c:choose>
+           
             <span class="slider round"></span>
         </label>
       </div>
@@ -272,7 +300,7 @@ window.onload = function () {
       </div>
       
         <div class="clearfix col-md-12">
-          <div class="pull-right">
+          <div class="pull-right mb10">
             <input value="Save Product" class="btn btn-info" id="productSave" type="button" onclick="saveProduct();">
             <input type="button" value="Reset" onclick="resetFunction();" class="btn btn-default ml">
           </div>
@@ -284,18 +312,7 @@ window.onload = function () {
   <div class="project_wrap_table datatable_filter" id = "dynamicMarketPlaceList">
     
   </div>
- <nav>
-    <ul id="paging" class="pagination">
-      <li><a href="#">Previous</a></li>
-      <li><a href="#">2</a></li>
-      <li><a href="#">3</a></li>
-      <li><a href="#">4</a></li>
-      <li><a href="#">5</a></li>
-      <li class="disabled"><a href="#">6</a></li>
-      <li data-page="last"><a href="#">Next</a></li>
-    </ul>
-    <div class="clearfix"></div>
-  </nav> 
+
 </div>
 
 </div>
@@ -333,8 +350,8 @@ window.onload = function () {
 </script> 
  
  <script type="text/javascript">
-function saveProduct(){     
-	 var atsUrl ='${SourceLeadWeb_atsUrl}';
+function saveProduct(){    
+		 var atsUrl ='${SourceLeadWeb_atsUrl}';
        /*  var atsUrl='${atsUrl}'; */
         if ($('#personalAndProductInfo_form').validate(false, validationSettings)){
         var formData = getFormData("personalAndProductInfo_form");
@@ -342,41 +359,53 @@ function saveProduct(){
 					type : "POST",
 					data : formData, 
 					url : atsUrl+"/saveMarketPlaceDetails?${_csrf.parameterName}=${_csrf.token}",
-					
 							success : function(dataList) {
-		            	
-								location.reload(); 
-		            	/* if(dataList.response != null){
-							console.log("response "+dataList.response);
-		            		getmarketPlaceList(json);
-							
-						}if(dataList.response == null){
-							showError("Operation failed, please try again");
-						} */
-		            	getmarketPlaceList();
-		            
-		            }
+								 if (dataList.response === "AWKWARD") {
+							      	    location.href = "/errorPage";
+							      	} else if (dataList.response === "SUCCESS") {
+							      		location.reload(); 
+										getmarketPlaceList();
+							      	}
+							      		if(dataList.object === "DataMissing") {
+												showError("Invalid data");
+											}
+						            }
 		            });
    }else {
 	   return false;
    }
         }
         
-        
-   function deleteMarketPlaceList(uuid)  { 
+function deletepopup(uuid){
 	
+	 var result = "";
+	 $("#popUp").empty();
+	 result = result +" <div class='project_inn_mask'></div>"; 
+	 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	 result = result +" <p>Do you want to delete ?</p>";
+	 result = result + ' <div id="voidInvoiceId"/>';
+	 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteMarketPlaceList(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+	 result = result +" </div>";
+	 $("#popUp").append(result);
+	 $("#remove_user_pop").slideDown(200);
+	 $(".project_inn_mask").fadeIn(200);
+	 }
+   function deleteMarketPlaceList(uuid)  {
 	   $.ajax({
 			type : "POST",
 			url : atsUrl+"/deleteMarketPlaceProductByUuid?${_csrf.parameterName}=${_csrf.token}&uuid="+uuid,
 			 success : function(dataList){
-				  location.reload(); 
+				 getmarketPlaceList();
+				 cancelTermination();
 			 }
    });
    }
-   
-    function editMarketPlace(){
-    	alert("ghj")
-	    location.href = "${SourceLeadWeb_atsUrl}/editMarketPlace";
+   this.cancelTermination = function(){
+	 	 $("#popUp").empty();
+	      $(".project_inn_mask").fadeOut(200);
+	 }
+    function editMarketPlace(uuid){
+    	window.location.href = "${SourceLeadWeb_atsUrl}/editMarketPlace?uuid="+uuid;
 	} 
   </script>
 
@@ -544,7 +573,7 @@ function saveProduct(){
 					    	  		if(productList.isNegotiable != null && productList.isNegotiable !== '' && productList.isNegotiable != "undefined"){
 					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.isNegotiable+"</div>";
 					    	  		}else{
-				  	            	  		  result = result +"<div>---</div>"; 
+				  	            	  		  result = result +"<div>N</div>"; 
 				  	             	}
 				  	             	 return result;
 					    	  	}
@@ -557,7 +586,7 @@ function saveProduct(){
 					    	  		if(productList.shareContactDetails != null && productList.shareContactDetails !== '' && productList.shareContactDetails != "undefined"){
 					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.shareContactDetails+"</div>";
 					    	  		}else{
-				  	            	  		  result = result +"<div>---</div>"; 
+				  	            	  		  result = result +"<div>N</div>"; 
 				  	             	}
 				  	             	 return result;
 					    	  	}
@@ -570,7 +599,7 @@ function saveProduct(){
 					    	  		if(productList.productShareType != null && productList.productShareType !== '' && productList.productShareType != "undefined"){
 					    	  				result = result +"<div class='tblminwidth-100 pull-left text-center ml10'>"+productList.productShareType+"</div>";
 					    	  		}else{
-				  	            	  		  result = result +"<div>---</div>"; 
+				  	            	  		  result = result +"<div>N</div>"; 
 				  	             	}
 				  	             	 return result;
 					    	  	}
@@ -606,8 +635,9 @@ function saveProduct(){
 					    	  		 result = result + '<div class="tblminwidth-100 pull-left text-center ml10">';
 		                             result = result + ' <span title="Share the Product" class="paddingRight pull-left"><i class="fa fa-share-alt cursorPointer"></i></span>';
 		                             result = result + '  <span title="Share Later" class="paddingLeft  pull-left"><i class="fa fa-clock-o cursorPointer"></i></span>';
-		                             result = result + '  <span title="Edit" class="paddingLeft  pull-left" href="${SourceLeadWeb_atsUrl}/editMarketPlace" onclick="editMarketPlace();"><i class="fa fa-pencil cursorPointer"></i></span>';
-		                             result = result + '  <span title="Delete" onclick="deleteMarketPlaceList(\''+productList.uuid+'\')" class="paddingLeft  pull-left"><i class="fa fa-trash cursorPointer"></i></span>';
+		                             result = result + '  <span title="Edit" class="paddingLeft  pull-left"  onclick="editMarketPlace(\''+productList.uuid+'\');" ><i class="fa fa-pencil cursorPointer"></i></span>';
+// 		                     		result = result +"<div class='tbldata-dotdot-200'><a onclick='editMarketPlace(\""+uuid+"\")' title='"+productCode+"'>"+manufacturerName+"</a></div>";
+		                             result = result + '  <span title="Delete" onclick="deletepopup(\''+productList.uuid+'\')" class="paddingLeft  pull-left"><i class="fa fa-trash cursorPointer"></i></span>';
 		                             result = result + '</div>';
 				  	             	 return result;
 				  	             	
@@ -710,21 +740,6 @@ function clearFromDate(){
          $(".clearUpload").show();
      });
  });
-</script>
-<script>
-function ContactDetails(){
- var contactDetails = $("#shareContactDetailss").val();
-	  $("#shareContactDetailss").val("N");
-}
-/* function warrantyHandler(){
-	$("#warrantyCheckbox").val("N");
-} */
-function shareType(){
-	  $("#productShareType").val("N");
-}
-function negotiable(){
-	  $("#isNegotiable").val("N");
-}
 </script>
 
 <script>
