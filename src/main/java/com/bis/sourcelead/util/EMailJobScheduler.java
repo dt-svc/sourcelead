@@ -524,13 +524,14 @@ public class EMailJobScheduler {
 						List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 							File tempfolder = null;
 						for(EmailScenarioConfiguration email :  emailsList) {
+							try {
 							System.out.println(" ord is "+org.getId()+", orgLocationId ,"+orgLocationId+"**************Parsisng started for Email id is :" + email.getEmailId());
 							logger.debug("***********Parsisng started  Email id is :" + email.getEmailId());
 							tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 							if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
 							 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
 						
-						
+						  
 							 List<File> fileList = Arrays.asList(tempfolder.listFiles());
 						
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
@@ -538,6 +539,9 @@ public class EMailJobScheduler {
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
 									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,isResumeparserEnabled);
 		                    }
+							}catch(Exception e) {
+								logger.error("Exception Caught while parsing resume for the EmailId >>>:  "+ email.getEmailId());
+							}
 						}
 					}
 
