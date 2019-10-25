@@ -762,7 +762,7 @@ public class FileUploadUtil {
 			ResumeParserJsonUtil resume = null;
 			  try {
 				   if("true".equalsIgnoreCase(isResumeparserEnabled)) {
-					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo);
+					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo,country);
 				   }else {
 					   resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
 				   }

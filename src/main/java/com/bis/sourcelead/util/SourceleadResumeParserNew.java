@@ -24,6 +24,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -44,15 +45,6 @@ import com.google.gson.Gson;
 
 @Component
 public class SourceleadResumeParserNew {
-	
-	
-	/**
-	 * 
-	 * @author Mahaveer Manoj
-	 * @purpose Using 3rd party API, we are parsing resume(s)
-	 * 
-	 */
-	
 	
 	@Value("${static.path}")
     private String staticPath;
@@ -923,7 +915,7 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 	 * @param fileInfo 
 	 * @return ResumeParserJsonUtil
 	 */
-	public ResumeParserJsonUtil getCandidateDetailsFromResumeParser(File file, FileInfo fileInfo) {
+	public ResumeParserJsonUtil getCandidateDetailsFromResumeParser(File file, FileInfo fileInfo,String country) {
 		ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
 		try {
 			String baseServicesUrl = "";
@@ -938,11 +930,13 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 		      HttpHeaders headers = new HttpHeaders();
 		      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
-	            
-		      RestTemplate restTemplate = new RestTemplate();
+		      RestTemplate  restTemplate = new RestTemplate();
 		      ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
 		      Gson gson = new Gson();
 		       resume = gson.fromJson(response.getBody().toString(), ResumeParserJsonUtil.class);
+		       if(resume.getCountry() == null || resume.getCountry().isEmpty() || resume.getCountry() == "") {
+		    	   resume.setCountry(country);
+				}
 		      resume.setFileInfo(fileInfo);
 		}catch (Exception e) {
 			e.printStackTrace();
