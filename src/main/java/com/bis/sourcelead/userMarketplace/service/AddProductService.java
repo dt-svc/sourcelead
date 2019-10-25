@@ -1,6 +1,5 @@
 package com.bis.sourcelead.userMarketplace.service;
 
-import java.util.TreeMap;
 
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -8,7 +7,6 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.userMarketplace.dto.MarketPlaceProductsDTO;
-import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
 
 public interface AddProductService{
 
@@ -22,8 +20,9 @@ public interface AddProductService{
 
 	Boolean deleteMarketPlaceProductByUuid(String uuid, Long id) throws Exception;
 
-
-
-
+	MarketPlaceProductsDTO getMarketPlaceDetailsByUuid(String uuid, OrgLocations orgLocations) throws Exception;
+	
+	Response<String> saveEditMarketPlaceDetails(MarketPlaceProductsDTO marketPlaceProductsDTO, OrgLocations orgLocations,
+			User user, Org org, String uuid)throws Exception;
 	
 }

@@ -1,7 +1,5 @@
 package com.bis.sourcelead.userMarketplace.dao;
 
-import java.util.List;
-
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -27,5 +25,9 @@ public interface AddProductDao {
 	//String deleteMarketPlaceListByIdAndOrgLocationId(String uuid, Long id) throws Exception;
 
 	Boolean deleteMarketPlaceProductByUuid(String uuid, Long id);
+
+	
+	MarketPlaceProducts getmarketPlaceProductEditList(String uuid, OrgLocations orgLocations);
+	
 
 }

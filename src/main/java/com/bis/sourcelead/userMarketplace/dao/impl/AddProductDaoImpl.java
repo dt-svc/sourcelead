@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,13 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.BeanUtils;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.userMarketplace.dao.AddProductDao;
 import com.bis.sourcelead.userMarketplace.dto.MarketPlaceProductsDTO;
@@ -29,9 +23,6 @@ import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProductFilesHistory;
 import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.workflow.dao.Impl.RequirementWorkFlowDaoImpl;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 
 @Repository
 @Transactional
@@ -135,6 +126,7 @@ public class AddProductDaoImpl implements AddProductDao {
 			}
 		}
 		responseList.setRecordsTotal(totalCount);
+		responseList.setRecordsFiltered(totalCount);
 		
 		List<MarketPlaceProductsDTO> marketPlaceProductsDto = new ArrayList<MarketPlaceProductsDTO>();
 		for (MarketPlaceProducts source : marketplaceProducts) {
@@ -144,7 +136,6 @@ public class AddProductDaoImpl implements AddProductDao {
 			productDto.setProductCode(source.getProductCode());
 			productDto.setCategory(source.getCategory());
 			productDto.setManufacturerName(source.getManufacturerName());
-			//productDto.setManufacturerDate(source.getManufacturerDate());
 	        productDto.setPrice(source.getPrice());
 	        productDto.setCurrencySpecification(source.getCurrencySpecification());
 	        productDto.setPriority(source.getPriority());
@@ -154,7 +145,7 @@ public class AddProductDaoImpl implements AddProductDao {
 	        productDto.setShareContactDetails(source.getShareContactDetails());
 	        productDto.setProductShareType(source.getProductShareType());
 	        productDto.setProductDescription(source.getProductDescription());
-	        formattedDate =  commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getManufacturerDate());
+	        formattedDate = commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), source.getManufacturerDate());
 	        productDto.setManufacturerDate(formattedDate);
 	        
 	        marketPlaceProductsDto.add(productDto);
@@ -168,6 +159,21 @@ public class AddProductDaoImpl implements AddProductDao {
 	
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
+			
+			//Get the marketproductList
+			String productQuey = "from MarketPlaceProducts marketPlace where marketPlace.uuid = :uuid";
+			List<MarketPlaceProducts> marketProductList = session.createQuery(productQuey).setParameter("uuid", uuid).list();
+			MarketPlaceProducts marketProduct = null;
+			if(marketProductList != null && !marketProductList.isEmpty())
+			{
+				marketProduct = (MarketPlaceProducts) marketProductList.iterator().next();
+			}
+			
+			//Delete the MarketPlaceProductFilesHistory based on productId
+			String queryHistory = "delete from MarketPlaceProductFilesHistory marketPlaceHis where marketPlaceHis.marketPlaceProductId.id = :marketProductId";
+			session.createQuery(queryHistory).setParameter("marketProductId", marketProduct.getId()).executeUpdate();
+			
+			//Delete the MarketPlaceProducts Based on uuid
 			String query = "delete from MarketPlaceProducts marketPlace where marketPlace.uuid = :uuid";
 			session.createQuery(query).setParameter("uuid", uuid).executeUpdate();
 			
@@ -179,7 +185,23 @@ public class AddProductDaoImpl implements AddProductDao {
 	
 	}
 	
-
-	}	
+	
+	
+	@Override
+	public MarketPlaceProducts getmarketPlaceProductEditList(String uuid, OrgLocations orgLocations) {
 		
+		try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from MarketPlaceProducts marketPlace where marketPlace.uuid = :uuid";
+		MarketPlaceProducts marketPlace =(MarketPlaceProducts)session.createQuery(query).setParameter("uuid", uuid).uniqueResult();
+		return marketPlace;
+	}
+		catch (Exception e) {
+			e.printStackTrace();
+	}
+		return null;
+	}
 
+	
+}		
+	
