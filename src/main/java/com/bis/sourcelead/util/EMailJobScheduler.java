@@ -221,6 +221,15 @@ public class EMailJobScheduler {
 	
 	@Value("${env}")
 	private String environment;
+	
+	@Value("${resumeParserUrlLocal}")
+	private String resumeParserUrlLocal;
+	
+	@Value("${resumeParserUrlQa}")
+	private String resumeParserUrlQa;
+	
+	@Value("${isResumeparserEnabled}")
+	private String isResumeparserEnabled;
 	 
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
@@ -486,7 +495,7 @@ public class EMailJobScheduler {
 	 *  	   So, commented for now. If needed will open later
 	 **/
 	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
-	//	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
+		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
 		@Async
 		public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																	// Jobs(attachments)in inbox folder.
@@ -527,7 +536,7 @@ public class EMailJobScheduler {
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
 							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user);
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,isResumeparserEnabled);
 		                    }
 						}
 					}
