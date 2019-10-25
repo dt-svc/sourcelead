@@ -1,6 +1,7 @@
 package com.bis.sourcelead.userMarketplace.entity;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "MARKETPLACE_PRODUCT")
-public class MarketPlaceProducts {
+public class MarketPlaceProducts implements Serializable{
 
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
