@@ -43,6 +43,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
@@ -170,6 +171,9 @@ public class CandidateRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Value("${isResumeparserEnabled}")
+	private String isResumeparserEnabled;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -244,13 +248,32 @@ public class CandidateRestController {
 				multiFile = request.getFile(itrator.next());
 			}
 			ResumeParserJsonUtil resumeDetails = null;
-			String fileName = null;
+			FileInfo fileInfo = new FileInfo();
+			File convertedFile = new File("");
+				File file = new File(multiFile.getOriginalFilename());
+				multiFile.transferTo(file);
+				convertedFile = file;
+				 fileInfo.setFileName(multiFile.getOriginalFilename());
+					fileInfo.setFileURL(convertedFile.getAbsolutePath());
+					fileInfo.setContentType(multiFile.getContentType());
 			if (null != multiFile && orgLocation !=null && country != null ) {
 				
-				 fileName = multiFile.getOriginalFilename();
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
+					if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+						logger.info("*******Resume Parser Service calling..");
+						resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+					}else {
+						logger.info("*******Resume Parser without Service calling..");
+						resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, orgLocation.getDateFormat(), file.getName());
+					}
 			}else {
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeForPublicPages(multiFile.getBytes(), fileName);
+				//getting candidate detils from public pages
+				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+					logger.info("*******Resume Parser Service calling..");
+					resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+				}else {
+					logger.info("*******Resume Parser without Service calling..");
+					resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, orgLocation.getDateFormat(), file.getName());
+				}
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());
