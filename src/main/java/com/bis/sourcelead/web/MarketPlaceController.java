@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,13 +17,10 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.userMarketplace.dto.MarketPlaceProductsDTO;
-import com.bis.sourcelead.userMarketplace.entity.MarketPlaceProducts;
 import com.bis.sourcelead.userMarketplace.service.AddProductService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 
 @Controller
 public class MarketPlaceController {
@@ -62,8 +58,23 @@ public class MarketPlaceController {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
         Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-      
-        response =  addProductService.savemarketPlaceDetails(marketPlaceProductsDTO,orgLocations,user,org);
+        try {
+			if (marketPlaceProductsDTO != null ) {
+				response =  addProductService.savemarketPlaceDetails(marketPlaceProductsDTO,orgLocations,user,org);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} else if (marketPlaceProductsDTO == null) {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			} else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
 		 return response;
 }
 	
@@ -108,13 +119,51 @@ public class MarketPlaceController {
 	}
 	
 	@RequestMapping(value = "/editMarketPlace")
-	public ModelAndView editMarketPlace() throws Exception {
+	public ModelAndView editMarketPlace(HttpServletRequest request, String uuid, OrgLocations orgLocations,
+			MarketPlaceProductsDTO productsDto) throws Exception {
 		ModelAndView model = new ModelAndView();
+		OrgLocations orgLoc  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
+	    MarketPlaceProductsDTO marketPlaceDto = addProductService.getMarketPlaceDetailsByUuid(uuid,orgLoc);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("atsUrl", atsUrl);
+		model.addObject("marketPlaceDto", marketPlaceDto);
 		model.setViewName("userMarketplace/editMarketPlace");
 		return model;
 	}
 	
+	@RequestMapping(value = "/saveEditMarketPlaceDetails", method = RequestMethod.POST)
+	public @ResponseBody Response<String> saveEditMarketPlaceDetails(@RequestParam(value = "uuid", required = false) String uuid,
+			MarketPlaceProductsDTO marketPlaceProductsDTO, HttpServletRequest request)throws Exception {
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+        Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+       try {
+        if (marketPlaceProductsDTO != null ) {
+            response =  addProductService.saveEditMarketPlaceDetails(marketPlaceProductsDTO,orgLocations,user,org, uuid);
+			response.setResponse(Result.SUCCESS.name());
+			response.setResponseMessage(Result.SUCCESS.getValue());
+		} else if (marketPlaceProductsDTO == null) {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		} else {
+			response.setResponse(Result.INVALID_DATA.name());
+			response.setResponseMessage(Result.INVALID_DATA.getValue());
+		}
+	} catch (Exception e) {
+		response.setResponse(Result.AWKWARD.name());
+		response.setResponseMessage(Result.AWKWARD.getValue());
+		e.printStackTrace();
+	}
+		 return response;
+}
+	@RequestMapping(value="/redirectToAddproduct")
+	public ModelAndView redirectToAddProduct() throws Exception{
+		ModelAndView model =new ModelAndView();
+		model.addObject(sourceleadUrl, sourceleadUrl);
+		model.addObject(atsUrl, atsUrl);
+		model.setViewName("userMarketplace/addProduct");
+		return model;
+	}
 	
 	}
