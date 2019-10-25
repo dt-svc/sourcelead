@@ -4205,7 +4205,8 @@ function profileDetails(candidateId){
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGloalId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
+			            result = result+'          	<input type="hidden" id="totalCommentsCount" value="'+json.commentsCount+'">';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGloalId+');">View more <span class="label label-warning" id="commentsCount"></span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -4313,6 +4314,8 @@ function profileDetails(candidateId){
 			             $("#tab-25").empty();
 			             $("#candidateSideDiv").empty();  
 			 		     $("#candidateSideDiv").append(result);  
+			 		     $("#commentsCount").html(json.commentsCount);
+			 		    
 				 		/*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200); */
 					//	 $("body").css('overflow-y', 'hidden');
@@ -4338,7 +4341,6 @@ function profileDetails(candidateId){
            
       }); 
 	  
-	  savedCommentAndCount(candidateId);
 				
 }
 </script>
@@ -4761,7 +4763,27 @@ function closeComment(){
 		    		} else if (result.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
-		    			savedCommentAndCount(candidateId);
+		    			
+		    			 $('#candidateProfileTab').removeClass('current');
+		    			 $('#candidateResumeTab').removeClass('current');
+		    			 $('#candidateEmployersTab').removeClass('current');
+		    			 $('#candidateEducationTab').removeClass('current');
+		    			 $('#candidateCertificationsTab').removeClass('current');
+		    			 $('#candidateDocumentsTab').removeClass('current');
+		    			 $('#candidateReferencesTab').removeClass('current');
+		    			 $('#candidateCommentTab').removeClass('current');
+		    			 $('#candidateHistoryTab').removeClass('current');
+		    			 $('#candidateImmigrationTab').removeClass('current');
+		    			 $('#candidateCommentTab').addClass('current');
+		    			 
+		    			 var element = document.getElementById('candidateCommentTab');
+		    			 element.onclick = candidateCommentsList(candidateId); 
+		    			 
+		    			 var commentsCount = $('#totalCommentsCount').val();
+		    			 commentsCount = parseInt(commentsCount)+1;
+		    			 $('#totalCommentsCount').val(commentsCount);
+		    			 $('#commentsCount').html(commentsCount);
+		    			 
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(atsUrl);
 					} else {
