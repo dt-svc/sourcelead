@@ -58,6 +58,9 @@ public class SourceleadResumeParserNew {
 	@Value("${resumeParserUrlQa}")
 	private String resumeParserUrlQa;
 	
+	@Autowired
+	private RestTemplate  restTemplate;
+	
 	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat, String fileName) throws Exception {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try {
@@ -930,7 +933,6 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 		      HttpHeaders headers = new HttpHeaders();
 		      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
-		      RestTemplate  restTemplate = new RestTemplate();
 		      ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
 		      Gson gson = new Gson();
 		       resume = gson.fromJson(response.getBody().toString(), ResumeParserJsonUtil.class);
