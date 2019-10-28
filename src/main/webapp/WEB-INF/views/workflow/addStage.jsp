@@ -370,15 +370,16 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                               </div>
                                         </li>
                                         </ul>
-                                        
-      </div>
-<div class="clearfix"></div>
+                                        <div class="clearfix"></div>
 <div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12">
   <div class="pull-right">
     <button type="button" class="btn btn-primary mr" onclick = "requirementWorkflow.selectChosenColumns();">Select All</button>
     <button type="button" class="btn btn-default" onclick = "requirementWorkflow.resetChosenColumns();">Reset</button>
   </div>
 </div>
+                                        
+      </div>
+      
 
     </div>
     <%-- <c:if test ="${onlyQuestAndTasksEditable == false}"> --%>
