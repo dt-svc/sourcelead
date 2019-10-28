@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
+import com.bis.sourcelead.dashboard.dto.CommonDataDto;
 import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.dto.ModuleConfigureDTO;
@@ -35,6 +36,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -169,23 +171,17 @@ public class CustomDashBoardRestController {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
 			List<ConfigureDashBoardViewDTO> configureDashBoardView = customDashBoardViewService.getConfiguredDataByDashBoardId(dashBoard.getId());
-
-		  //  String jsonStringData= "[{'First Name': 'Rajashekar','Last Name': 'Chelpuri','Full Name': 'Raja Chelpuri','email': 'rajasekhar@gmail.com'}]";
-			JSONObject jsonObj = new JSONObject(); 
-			jsonObj.put("First Name", "Srinivas");
-			jsonObj.put("Last Name", "Sabbu");
-			jsonObj.put("Full Name", "Srinivas Sabbu");
-			jsonObj.put("Email", "srinivas@gmail.com");
-			JSONArray jsonArray= new JSONArray();
-			jsonArray.add(jsonObj);
-		//	System.out.println(jsonArray);
-    		String convertedString=jsonArray.toString().replace("\"", "\\\"");
-		    for(ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
-		        dtoObj.setJsonStringData(convertedString);
-		    }
-						
+			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			CommonDataDto commonDataDto = new CommonDataDto();
+			commonDataDto.setOrgLocation(orgLocation);
+			commonDataDto.setLoginUserRole(loginUserRole);
+			commonDataDto.setUserId(user.getId());
+			commonDataDto.setOrgId(org.getId());
+			List<ConfigureDashBoardViewDTO>  resultData = customDashBoardViewService.getDashBoardData(configureDashBoardView,commonDataDto);
 			//System.out.println("configureDashBoardView size is >>>>>>>>>>>"+configureDashBoardView.size());
-			model.addObject("dashBoardConfData",configureDashBoardView);
+			model.addObject("dashBoardConfData",resultData);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("customdashboard/customDashBoardView");
 		}catch(Exception e) {

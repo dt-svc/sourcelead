@@ -2,14 +2,20 @@ package com.bis.sourcelead.dashboard.service.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardViewDao;
+import com.bis.sourcelead.dashboard.dto.CommonDataDto;
 import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
 import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
+import com.bis.sourcelead.dashboard.util.LeaveDashBoardDataUtil;
+import com.bis.sourcelead.dto.LeaveDTO;
 
 @Service
 public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewService{
@@ -17,6 +23,9 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	
 	@Autowired
 	CustomDashBoardViewDao customDashBoardViewDao;
+	
+	@Autowired
+	LeaveDashBoardDataUtil leaveDashBoardDataUtil;
 	  
 	@Override
 	public List<ConfigureDashBoardViewDTO> getConfiguredDataByDashBoardId(Long dashBoardId)
@@ -45,7 +54,6 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 				return viewData;
 	}
 
@@ -64,5 +72,31 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 		}
 		return sb.toString();
 	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ConfigureDashBoardViewDTO> getDashBoardData(List<ConfigureDashBoardViewDTO> configureDashBoardView,
+			CommonDataDto commonDataDto) {
+		try {
+			Map<String, String> data = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
+			JSONObject jsonObj = new JSONObject();
+			data.forEach((key, value) -> {
+				jsonObj.put(key, value);
+			});
+			JSONArray jsonArray = new JSONArray();
+			jsonArray.add(jsonObj);
+			String convertedString = jsonArray.toString().replace("\"", "\\\"");
+			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
+				dtoObj.setJsonStringData(convertedString);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return configureDashBoardView;
+	}
+
+
 	
 }
