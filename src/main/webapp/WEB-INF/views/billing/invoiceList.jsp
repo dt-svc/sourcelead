@@ -1668,6 +1668,7 @@ function resetInvoiceFilter(){
 	$(".custom_search").empty().hide();
 	$("#invoiceDataTableSearch").val('');
 	getInvoiceList();
+	getActions();
 	
 }
 function resetingInvoiceFilter(){
