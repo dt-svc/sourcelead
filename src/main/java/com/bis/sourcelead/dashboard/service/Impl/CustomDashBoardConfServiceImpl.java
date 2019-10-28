@@ -6,10 +6,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.apache.bcel.classfile.Constant;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.SubTabs;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.service.TabsService;
@@ -51,6 +55,7 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 				customDashBoardConf = getCustomDashboardConfById(Long.parseLong(customDashBoardConfDTO.getCustomDashBoardConfId()),orgLocation.getId());
 			}else {
 				customDashBoardConf = new CustomDashBoardConfiguration();
+				customDashBoardConf.setMakeDefault(false);
 			}
 			if(StringUtils.isNotBlank(customDashBoardConfDTO.getRoles())) {
 				customDashBoardConf.setRoleId(Long.parseLong(customDashBoardConfDTO.getRoles()));
@@ -123,13 +128,14 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		try {
 			List<CustomDashBoardConfiguration> dashBoardConfList = customDashBoardConfDao.getCustomConfDashBoardByLocationId(locationId);	
 			List<CustomDashBoardConfDTO> resList = new ArrayList<>();
-			if(dashBoardConfList != null) {
+			if(dashBoardConfList != null && dashBoardConfList.size() >0) {
 				for(CustomDashBoardConfiguration dashConf : dashBoardConfList) {
 					CustomDashBoardConfDTO dashBoardConfDTO = new CustomDashBoardConfDTO();
 					dashBoardConfDTO.setCustomDashBoardConfId(String.valueOf(dashConf.getId()));
 					dashBoardConfDTO.setDashBoardName(dashConf.getDashboardName());
 					dashBoardConfDTO.setDescription(dashConf.getDescription());
 					dashBoardConfDTO.setCustomDashBoardConfUUID(dashConf.getDashboardConfUUID());
+					dashBoardConfDTO.setActive(dashConf.getMakeDefault());
 					resList.add(dashBoardConfDTO);
 					response.setData(resList);
 				}
@@ -224,6 +230,10 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 	}
 
 
+	@Override
+	public void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId,String customDashBoardUUID) {
+		customDashBoardConfDao.getCustomConfDashBoardListByOrgLocationId(orgLOcatinId,customDashBoardUUID);
+	}
 
 	
 }

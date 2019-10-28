@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
@@ -29,6 +31,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
+import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -386,5 +390,28 @@ public class CustomDashBoardRestController {
 		}
 		return response;
 	}
+	
+	
+	
+	/**
+	 * custom dashboard configuration default 
+	 * 
+	 * @param customDashBoardUUID
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	
+	@RequestMapping(value = "/makeDefaultCustomDashBoard", method = RequestMethod.POST)
+	public boolean makeDefaultCustomDashBoard(@RequestParam(value = "customDashBoardUUID", required = true) String customDashBoardUUID,
+			@RequestParam(value = "isActiveStatus", required = true) Boolean isActiveStatus,	HttpServletRequest req,HttpServletResponse res) throws Exception
+	{
+		boolean isMakeDefault = true;
+		customDashboardConfService.getCustomConfDashBoardListByOrgLocationId(orgLocationId,customDashBoardUUID);
+		return isMakeDefault;
+		
+	}
+	
 	
 }
