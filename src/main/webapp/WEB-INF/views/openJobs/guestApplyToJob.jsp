@@ -515,7 +515,9 @@ function uploadAddApplicantCandidateDoc(){
 					        	 $("input[name=LastName]").val(lastName);
 					        	 $("input[name=EmailId]").val(json.email);
 					        	 $("input[name=PhoneNumber]").val(json.phoneNumbers);
-					        	 
+					        	 $("input[name=location]").val(json.addressLine1 !== null && json.addressLine1 !== "" ? json.addressLine1 : "");
+					        	 $("input[name=country]").val(json.country !== null && json.country !== "" ? json.country : "");
+					        	 $("input[name='zipcode']").val(json.zipcode !== null && json.zipcode !== "" ? json.zipcode : "");
 					        	 // Here parseresume skills and parseresume skills,lookup skills duplicate check
 					        	 $("#candidateSkills").empty();
 					        	 var internalOutput = "";
