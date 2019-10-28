@@ -19,6 +19,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -85,6 +86,11 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	    resolver.setMaxInMemorySize(10485760); // 1 MB
 	    return resolver;
 	}
+	
+	@Bean
+    public RestTemplate restTemplate() {
+          return new RestTemplate();
+    }
 
 	/*
 	 * @Bean public MessageSource messageSource() { ResourceBundleMessageSource
