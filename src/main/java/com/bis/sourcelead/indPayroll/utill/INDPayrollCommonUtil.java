@@ -1704,7 +1704,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
 		 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
 		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
-		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+//		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 		 			indDTO.setTotalCtc(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
 		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
