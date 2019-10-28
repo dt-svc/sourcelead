@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -72,7 +74,8 @@ import com.google.gson.Gson;
 @Controller
 @RequestMapping("/app")
 public class FileController {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -276,19 +279,21 @@ public class FileController {
 	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
+		
+		long startTime = System.currentTimeMillis();
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
 			try {
 				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
-					// This is the code with service
-					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo);
+					logger.info("*******Resume Parser Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
 				}else {
-					// This is the code without service
-					String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+					logger.info("*******Resume Parser without Service calling..");
 					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
 				}
 				
@@ -297,6 +302,9 @@ public class FileController {
 				ex.printStackTrace();
 			}
 		}
+		long endTime = System.currentTimeMillis();
+		long responseTime = endTime - startTime;
+		logger.info("Total Response Time of resume parser is "+responseTime+" MS");
 		return resumeContent;
 	}
 
