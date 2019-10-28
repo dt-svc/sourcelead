@@ -711,7 +711,7 @@ public class PdfUtilPipelineHelper  {
 		try{
 			Font font = new Font(FontFamily.HELVETICA, 14, Font.BOLD, BaseColor.WHITE);
 	        PdfPCell cell1 = new PdfPCell(new Phrase(titleName.toString(),font));
-	        cell1.setColspan(columnCount > 0 ? columnCount : 14);
+	        cell1.setColspan(columnCount > 0 ? columnCount : 15);
 	        headerCellStyle(cell1);
             table.addCell(cell1);
 			table.setWidthPercentage(100);

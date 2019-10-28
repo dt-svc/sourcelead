@@ -221,6 +221,15 @@ public class EMailJobScheduler {
 	
 	@Value("${env}")
 	private String environment;
+	
+	@Value("${resumeParserUrlLocal}")
+	private String resumeParserUrlLocal;
+	
+	@Value("${resumeParserUrlQa}")
+	private String resumeParserUrlQa;
+	
+	@Value("${isResumeparserEnabled}")
+	private String isResumeparserEnabled;
 	 
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
@@ -407,6 +416,9 @@ public class EMailJobScheduler {
 	
 	@Autowired
 	private ProjectTasksService projectTasksService;
+	
+	@Autowired
+	private ReadEmail readEmail;
 
 	private static boolean startEmailParsingProcess = true;
 	
@@ -486,7 +498,7 @@ public class EMailJobScheduler {
 	 *  	   So, commented for now. If needed will open later
 	 **/
 	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
-	//	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
+		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
 		@Async
 		public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																	// Jobs(attachments)in inbox folder.
@@ -494,7 +506,7 @@ public class EMailJobScheduler {
 			// candidates table with parsed information.
 			logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
 			logger.info("******************  startEmailParsingProcessvalue is ::: "+startEmailParsingProcess);
-			if(environment != null && !environment.trim().equalsIgnoreCase("local") && startEmailParsingProcess) {
+			if(environment != null && !environment.trim().equalsIgnoreCase("local2") && startEmailParsingProcess) {
 				logger.debug("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
@@ -515,20 +527,22 @@ public class EMailJobScheduler {
 						List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 							File tempfolder = null;
 						for(EmailScenarioConfiguration email :  emailsList) {
+							try {
 							System.out.println(" ord is "+org.getId()+", orgLocationId ,"+orgLocationId+"**************Parsisng started for Email id is :" + email.getEmailId());
 							logger.debug("***********Parsisng started  Email id is :" + email.getEmailId());
 							tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 							if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
-							 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
-						
-						
+							 readEmail.readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
 							 List<File> fileList = Arrays.asList(tempfolder.listFiles());
 						
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
 							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user);
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,isResumeparserEnabled);
 		                    }
+							}catch(Exception e) {
+								logger.error("Exception Caught while parsing resume for the EmailId >>>:  "+ email.getEmailId());
+							}
 						}
 					}
 
@@ -546,8 +560,8 @@ public class EMailJobScheduler {
 	       }
 		}
 	
-   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-  //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
@@ -642,7 +656,7 @@ public class EMailJobScheduler {
 		 emailMessage.setToEmail(toUserObj.getEmail());
 		//configured Email
 			
-			String configuredFromEmail = null;
+			/*String configuredFromEmail = null;
 			 EmailConfigurationFromMail confFromMail=null;
 			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(ol.getId());
 			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
@@ -666,7 +680,7 @@ public class EMailJobScheduler {
 				 emailMessage.setFromEmail(configuredFromEmail);
 			 }else {
 				 emailMessage.setFromEmail(fromUser.toString());
-			 }
+			 }*/
 		
 	//	List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 		 StringBuilder sb = new StringBuilder();
@@ -750,6 +764,7 @@ public class EMailJobScheduler {
 		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 		// LCA manager Expired Notification 
+	    User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
 		EmailScenario notificationScenario = null;
 		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		//   System.out.println("notificationScenario :"+notificationScenario.getBody());
@@ -758,7 +773,7 @@ public class EMailJobScheduler {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("")
 				.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
-		emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 		}
 	
 	

@@ -762,7 +762,7 @@ public class FileUploadUtil {
 			ResumeParserJsonUtil resume = null;
 			  try {
 				   if("true".equalsIgnoreCase(isResumeparserEnabled)) {
-					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo);
+					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo,country);
 				   }else {
 					   resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
 				   }
@@ -865,7 +865,7 @@ public class FileUploadUtil {
 	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
-			String country, OrgLocations loginOrgLocation, User user) {
+			String country, OrgLocations loginOrgLocation, User user,String isResumeparserEnabled) {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -878,7 +878,14 @@ public class FileUploadUtil {
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
 			ResumeParserJsonUtil resume = null;
 			try {
-				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
+				//resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
+				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+					logger.info("*******Resume Parser Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+				}else {
+					logger.info("*******Resume Parser without Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
+				}
 				resume.setFileInfo(fileInfo);
 				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
 					throw new Exception("Email ID missing");
