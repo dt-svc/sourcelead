@@ -119,7 +119,7 @@
 							</tbody>
 							<tfoot>
 							    <tr><th><strong>Total Contribution  (B) </strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="employerEarningPayheadAmountTotal"> ${employeeEarningTotal}</label></td></tr>
-							    <tr><th><strong>Cost to Company (CTC)A+B</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="totalGrossPay"> ${indPayrollDTO.grossPay}</label></td></tr>
+							    <tr><th><strong>Cost to Company (CTC)A+B</strong></th><td ><span class="paddingLeft">&#8377;</span> <label id="totalGrossPay"> ${indPayrollDTO.grossPay + employeeEarningTotal}</label></td></tr>
 							</tfoot>
 					</table>
 				</td>
