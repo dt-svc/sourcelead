@@ -494,6 +494,7 @@ public class LoginSessionController {
 			model.addObject("dashboardItems", dashboardItems);
 			if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
 				model.setViewName("dashboard_configured");
+				//return new ModelAndView("redirect:/app/configureCustomDashBoardView?customDashBoardUUID=rhelzSk8");
 		}
 		return model;
 	}

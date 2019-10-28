@@ -20,7 +20,7 @@ $(document).ready(function(){
     
     <div id="loading"></div>
     <div class="project_wrap newDashSection newDashSectionMdu clearfix">
-    <form:form id="createUser_form"  name="createUser_form" method="post">
+    <form:form id="module_conf_form"  name="module_conf_form" method="post">
         <div class="newDashLeft">
         <div id="tabsListDiv"></div>
         </div>

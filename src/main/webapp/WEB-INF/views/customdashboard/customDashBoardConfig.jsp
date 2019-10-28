@@ -31,9 +31,11 @@
 		<div id="loading"></div>
 		<div class="positionRelative reportHead clearfix">
 			<ul class="pull-right list-unstyled list-inline">
-				<li><a class="newAdBtn mr5"
-					href='${SourceLeadWeb_sourceleadUrl}/addCustomDashBoardConf'
-					title="Add">+ Add</a></li>
+				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addCustomDashBoardConf' title="Add">+ Add</a></li>
+				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addDynamicHeadersWithData' title="Add">+ Dayana</a></li>
+				
+				
+				
 				<li><a href="javascript:void(0)" class="overIcon"
 					title="Actions" onclick="newActions();"></a>
 					<div class="newActPop" style="">
@@ -62,11 +64,8 @@
 	<input type="hidden" id="customDashBoardConfUUID"
 		name="customDashBoardConfUUID" />
 	<div class="popupContent adddashComp">
-		<a
-			href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardReport"><img
-			src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
-		<a onclick="returnCustomModulePage();"><img
-			src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
+		<a onclick="returnCustomReportPage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
+		<a onclick="returnCustomModulePage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
 	</div>
 </div>
 
@@ -83,12 +82,7 @@
 				.attr(
 						'style',
 						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-		$
-				.get(
-						sourceleadUrl + "/viewCustomDashBoardConfiguredList?"
-								+ tokenParamName + "=" + tokenValue,
-						function(res) {
-
+		$.get(sourceleadUrl + "/viewCustomDashBoardConfiguredList?"+ tokenParamName + "=" + tokenValue,function(res) {
 							var data = res.data;
 							var result = "";
 							result = result
@@ -138,8 +132,10 @@
 											result = result 
 											        + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
 											
-									result = result
-											+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+									result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+									
+									//result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardViewJSON?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+
 									result = result + ' </ul>';
 									result = result + ' </div>';
 									result = result + '  </td>';
@@ -246,6 +242,17 @@ function deleteCustomDashBoardConf(customDashBoardUUID){
 	}
 </script>
 
+<script>
+function returnCustomReportPage(){
+	
+	var customDashBoardConfUUID = $("#customDashBoardConfUUID").val();
+	var sourceleadUrl = "${SourceLeadWeb_sourceleadUrl}";
+	window.location.href = sourceleadUrl
+			+ "/configureCustomDashBoardReport?" + tokenParamName + "="
+			+ tokenValue + "&customDashBoardConfUUID="
+			+ customDashBoardConfUUID;
+}
+</script>
 
 
 

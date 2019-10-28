@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,16 +20,23 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
+import com.bis.sourcelead.dashboard.dto.CommonDataDto;
+import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.dto.ModuleConfigureDTO;
+import com.bis.sourcelead.dashboard.dto.ReportConfigureDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
+import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
+import com.bis.sourcelead.dashboard.service.ReportsDashboardConfService;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
@@ -37,6 +46,8 @@ import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @RestController
 @RequestMapping("/app")
@@ -68,6 +79,13 @@ public class CustomDashBoardRestController {
 	@Autowired
 	ModuleDashboardConfService moduleDashboardConfService;
 	
+	@Autowired
+	ReportsDashboardConfService reportsDashboardConfService;
+	
+	@Autowired
+	CustomDashBoardViewService customDashBoardViewService;
+	
+   
 	
 	/**
 	 * Return Dash board configuration jsp
@@ -105,10 +123,13 @@ public class CustomDashBoardRestController {
 	 */
 	
 	@RequestMapping(value="/configureCustomDashBoardReport")
-	public ModelAndView configureCustomDashBoardReport(HttpServletRequest request, HttpServletResponse response) {
+	public ModelAndView configureCustomDashBoardReport(@RequestParam(value = "customDashBoardConfUUID",required = false) String customDashBoardConfUUID,HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		try {
+			List<CustomReportConfiguration> reportCongList = reportsDashboardConfService.getAllReportConfiByCustomDashBoardReportUUID(customDashBoardConfUUID);
 			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.addObject("customDashBoardConfUUID",customDashBoardConfUUID);
+			model.addObject("reportCongList",reportCongList);
 			model.setViewName("customdashboard/customDashBoardReportConf");
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -144,9 +165,23 @@ public class CustomDashBoardRestController {
 	 */
 	
 	@RequestMapping(value="/configureCustomDashBoardView")
-	ModelAndView configureCustomDashBoardView(HttpServletRequest request, HttpServletResponse response) {
+	ModelAndView configureCustomDashBoardView(@RequestParam(value = "customDashBoardUUID", required = false) String customDashBoardUUID,HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
 		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
+			List<ConfigureDashBoardViewDTO> configureDashBoardView = customDashBoardViewService.getConfiguredDataByDashBoardId(dashBoard.getId());
+			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			CommonDataDto commonDataDto = new CommonDataDto();
+			commonDataDto.setOrgLocation(orgLocation);
+			commonDataDto.setLoginUserRole(loginUserRole);
+			commonDataDto.setUserId(user.getId());
+			commonDataDto.setOrgId(org.getId());
+			List<ConfigureDashBoardViewDTO>  resultData = customDashBoardViewService.getDashBoardData(configureDashBoardView,commonDataDto);
+			//System.out.println("configureDashBoardView size is >>>>>>>>>>>"+configureDashBoardView.size());
+			model.addObject("dashBoardConfData",resultData);
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("customdashboard/customDashBoardView");
 		}catch(Exception e) {
@@ -154,6 +189,25 @@ public class CustomDashBoardRestController {
 		}
 		return model;
 	}
+	
+	
+	
+	@RequestMapping(value="/configureCustomDashBoardViewJSON")
+	ModelAndView configureCustomDashBoardViewJSON(@RequestParam(value = "customDashBoardUUID", required = false) String customDashBoardUUID,HttpServletRequest request, HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			CustomDashBoardConfiguration  dashBoard = customDashboardConfService.getCustomDashboardConfByUUID(customDashBoardUUID, orgLocation.getId());
+//			List<ConfigureDashBoardViewDTO> configureDashBoardView = customDashBoardViewService.getConfiguredDataByDashBoardId(dashBoard.getId());
+//			model.addObject("dashBoardConfData",configureDashBoardView);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/customDashBoardViewJSON");
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
 	
 	
 	@RequestMapping(value = "/addCustomDashBoardConf")
@@ -387,4 +441,46 @@ public class CustomDashBoardRestController {
 		return response;
 	}
 	
+	
+	
+	@RequestMapping(value = "/customReportsConfiguration", method = RequestMethod.POST)
+	public @ResponseBody Response<CustomReportConfiguration> customReportsConfiguration(ReportConfigureDTO reportConfDto , HttpServletRequest request) throws Exception
+	{
+		
+		Response<CustomReportConfiguration> response = new Response<>();
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		try {
+			if (Validator.validate(reportConfDto)) {
+				CustomReportConfiguration moduleConfi =  reportsDashboardConfService.saveReportDashBoardConfiguration(reportConfDto,orgLocation,user.getId());
+				response.setObject(moduleConfi);
+				response.setResponse(Result.SUCCESS.name());
+			}
+			else {
+				response.setResponse(Result.INVALID_DATA.name());
+				response.setResponseMessage(Result.INVALID_DATA.getValue());
+			}
+		} catch (Exception e) {
+			response.setResponse(Result.AWKWARD.name());
+			response.setResponseMessage(Result.AWKWARD.getValue());
+			e.printStackTrace();
+		}
+		return response;
+	}
+	
+	
+	@RequestMapping(value = "/addDynamicHeadersWithData")
+	public ModelAndView addDynamicHeadersWithData(HttpServletRequest request,HttpServletResponse response) {
+		ModelAndView model = new ModelAndView();
+		try {
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/dynamicHeaderWithData");
+				
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		return model;
+
+	}
 }
