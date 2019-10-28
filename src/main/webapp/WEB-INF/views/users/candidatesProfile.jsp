@@ -38,7 +38,7 @@ function editCandidate(candidateId){
        
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {  
         	   var json = result.object;
 	      	   if(result.response === "SESSION_TIMEDOUT") {
@@ -1290,7 +1290,9 @@ function candidateProfile(candidateId,candidateType){
 		         			 $("#selector1").css({ display: "block" });
 				        	 $("#candMsgDiv").html("Success!!  Associate Updated");
 				        	candUpdateMsgFadeinFunction();
-				        	profileDetails(candidateId);						
+				        	var candidateType = "Associates";
+				        	candidateProfile(candidateGloalId,candidateType);
+				        	cancelEdit();
 						} else {
 							$("#update_candidate").removeAttr("disabled");
 							showError("Invalid data");
