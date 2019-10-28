@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,10 +23,23 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.FileInfo;
+import com.google.gson.Gson;
 
 
 @Component
@@ -43,196 +57,14 @@ public class SourceleadResumeParserNew {
 	@Value("${static.path}")
     private String staticPath;
 	
-	/*
-	private String serviceURL = "http://cvxdemo.daxtra.com";
-	private String account = "sourcelead";
-	private boolean outputFormat = true; //true - JSON , false - XML
-
-	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat) throws Exception {
-		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
-		try {
-			CVXtractorService cvXtractorService = new CVXtractorService(serviceURL, account, outputFormat);
-			String resumeData = cvXtractorService.ProcessCV(source);
-			if (resumeData == "") {
-				System.err.println("Error at processing :: " + cvXtractorService.getLastError());
-			} else {
-				jsonUtil = getResumeParserJsonUtil(resumeData, country, orgLocationDateFormat);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return jsonUtil;
-	}
-
-	public ResumeParserJsonUtil getCandidateDetailsFromResume1(File file, String country, String orgLocationDateFormat) throws Exception {
-		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
-		try {
-			CVXtractorService cvXtractorService = new CVXtractorService(serviceURL, account, outputFormat);
-			String resumeData = cvXtractorService.ProcessCV(file.getPath());
-			if (resumeData == "") {
-				System.err.println("Error at processing :: " + cvXtractorService.getLastError());
-			} else {
-				jsonUtil = getResumeParserJsonUtil(resumeData, country, orgLocationDateFormat);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return jsonUtil;
-	}
+	@Value("${env}")
+	private String environment;
 	
+	@Value("${resumeParserUrlLocal}")
+	private String resumeParserUrlLocal;
 	
-	public ResumeParserJsonUtil getResumeParserJsonUtil(String resumeData, String country, String orgLocationDateFormat) {
-		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
-		try {
-			JSONObject jsonObject = new JSONObject(resumeData);
-			JSONObject resume = jsonObject.getJSONObject("Resume");
-			if(resume != null) {
-				JSONObject structuredResume = resume.getJSONObject("StructuredResume");
-				if (structuredResume != null) {
-//					System.out.println(structuredResume.toString());
-					//Name & Gender
-					if(structuredResume.has("PersonName")) {
-						JSONObject personName = structuredResume.getJSONObject("PersonName");
-						if(personName != null) {
-							jsonUtil.setFirstName(personName.has("GivenName") ? personName.getString("GivenName") : "");
-							jsonUtil.setMiddleName(personName.has("MiddleName") ? ((String) personName.getJSONArray("MiddleName").get(0)) : "");
-							jsonUtil.setLastName(personName.has("FamilyName") ? personName.getString("FamilyName") : "");
-							
-							jsonUtil.setGender(personName.has("sex") ? personName.getString("sex") : "");
-						}
-					}
-					
-					//PhoneNumber, Email & Address
-					if(structuredResume.has("ContactMethod")) {
-						JSONObject contactMethod = structuredResume.getJSONObject("ContactMethod");
-						if(contactMethod != null) {
-							//Phone Number
-							Set<String> phoneNumberSet = new LinkedHashSet<>();
-							if(contactMethod.has("Telephone_home")) {
-								phoneNumberSet.add(contactMethod.getString("Telephone_home"));
-							} else if(contactMethod.has("Telephone_mobile")) {
-								phoneNumberSet.add(contactMethod.getString("Telephone_mobile"));
-							}
-							
-							if(contactMethod.has("Telephone_alt")) {
-								phoneNumberSet.add(contactMethod.getString("Telephone_alt"));
-							}
-							jsonUtil.setPhoneNumbers(phoneNumberSet);
-
-							//Email
-							String email = "";
-							if(contactMethod.has("InternetEmailAddress_main")) {
-								email = contactMethod.getString("InternetEmailAddress_main");
-							}
-							if(contactMethod.has("InternetEmailAddress_alt")) {
-								email += (email.isEmpty() ? "" : "<<>>") + contactMethod.getString("InternetEmailAddress_alt");
-							}
-							jsonUtil.setEmail(email);
-							
-							//Address
-							if(contactMethod.has("PostalAddress_main")) {
-								JSONObject postalAddress = contactMethod.getJSONObject("PostalAddress_main");
-								if(postalAddress != null) {
-									jsonUtil.setAddressLine1(postalAddress.has("AddressLine") ? postalAddress.getString("AddressLine") : "");
-									jsonUtil.setCity(postalAddress.has("Municipality") ? postalAddress.getString("Municipality") : "");
-									jsonUtil.setState(postalAddress.has("Region") ? postalAddress.getString("Region") : "");
-									jsonUtil.setCountry(postalAddress.has("CountryCode") ? postalAddress.getString("CountryCode") : "");
-									jsonUtil.setZipcode(postalAddress.has("PostalCode") ? postalAddress.getString("PostalCode") : "");
-								}
-							}
-						}
-					}
-						
-					//DOB
-					if(structuredResume.has("DOB")) {
-						try {
-							SimpleDateFormat sdf = new SimpleDateFormat(orgLocationDateFormat);
-							String dob = sdf.format(Constants.DF_YMD.parse(structuredResume.getString("DOB")));
-							jsonUtil.setDob(dob);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					
-					//Marital Status
-					jsonUtil.setMaritalStatus(structuredResume.has("MaritalStatus") ? structuredResume.getString("MaritalStatus") : "");
-					
-					//Skills
-					if(structuredResume.has("Competency")) {
-						Set<String> skillSet = new HashSet<>();
-						JSONArray competency = structuredResume.getJSONArray("Competency");
-						if (competency != null) {
-							for (int i = 0; i < competency.length(); i++) {
-								if (competency.getJSONObject(i).has("description") && (competency.getJSONObject(i).getString("description").equalsIgnoreCase("Skill") || competency.getJSONObject(i).getString("description").equalsIgnoreCase("Skill > IT"))) {
-									skillSet.add(competency.getJSONObject(i).getString("skillName"));
-								}
-							}
-						}
-						jsonUtil.setSkills(skillSet);
-					}
-					
-					String designation = "";
-					//Employeement History
-					if(structuredResume.has("EmploymentHistory")) {
-						Set<String> employeerSet = new HashSet<>();
-						JSONArray employmentHistory = structuredResume.getJSONArray("EmploymentHistory");
-						if (employmentHistory != null) {
-							for (int i = 0; i < employmentHistory.length(); i++) {
-								if(employmentHistory.getJSONObject(i).has("OrgName")) {
-									if(employmentHistory.getJSONObject(i).has("Title") && designation.isEmpty()) {
-										designation = (String) employmentHistory.getJSONObject(i).getJSONArray("Title").get(0);
-									}
-									employeerSet.add(employmentHistory.getJSONObject(i).getString("OrgName"));
-								}
-							}
-						}
-						jsonUtil.setEmployeers(employeerSet);
-					}
-					jsonUtil.setDesignation(designation);
-					
-					//Education History
-					if(structuredResume.has("EducationHistory")) {
-						Set<String> educationSet = new HashSet<>();
-						JSONArray educationHistory = structuredResume.getJSONArray("EducationHistory");
-						if (educationHistory != null) {
-							for (int i = 0; i < educationHistory.length(); i++) {
-								if(educationHistory.getJSONObject(i).has("Degree")) {
-									JSONObject degreeObject = educationHistory.getJSONObject(i).getJSONObject("Degree");
-									if(degreeObject != null) {
-										if(degreeObject.has("DegreeName")) {
-											educationSet.add(degreeObject.getString("DegreeName"));
-										}
-									}
-								}
-							}
-						}
-						jsonUtil.setEducations(educationSet);
-					}
-					
-					//Summary
-					jsonUtil.setSummary(structuredResume.has("ExecutiveSummary") ? structuredResume.getString("ExecutiveSummary") : "");
-				}
-				
-				//Experience
-				JSONObject experienceSummary = resume.getJSONObject("ExperienceSummary");
-				if(experienceSummary != null) {
-					int totalYearsOfExp = experienceSummary.has("TotalYearsOfWorkExperience") ? experienceSummary.getInt("TotalYearsOfWorkExperience") : 0;
-					int totalMonthsOfExp = experienceSummary.has("TotalMonthsOfWorkExperience") ? experienceSummary.getInt("TotalMonthsOfWorkExperience") : 0;
-					if(totalMonthsOfExp > 12) {
-						jsonUtil.setTotalYearsExp(totalMonthsOfExp / 12);
-						jsonUtil.setTotalMonthsExp(totalMonthsOfExp % 12);
-					} else {
-						jsonUtil.setTotalYearsExp(totalYearsOfExp);
-						jsonUtil.setTotalMonthsExp(totalMonthsOfExp);
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return jsonUtil;
-	}*/
-	
+	@Value("${resumeParserUrlQa}")
+	private String resumeParserUrlQa;
 	
 	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat, String fileName) throws Exception {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
@@ -419,10 +251,6 @@ public class SourceleadResumeParserNew {
 			String maritalStatus = getMartialStatusFromTextFile(resumeData);
 			jsonUtil.setMaritalStatus(maritalStatus);
 			
-			//Employeers
-			/*String employeers = getKeywordsFromTextFile(resumeData, "companies.txt");
-			System.out.println("Employeers : " + employeers);*/
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -457,18 +285,6 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 //		globalIndex.addAll(designationIndex);
 		Collections.sort(globalIndex);
 		globalIndex = globalIndex.stream().distinct().collect(Collectors.toList());
-//		System.out.println("globalIndex : " + globalIndex.toString());
-		
-		/*String summary = getSectionDetails(resumeData, objectiveIndex, globalIndex, RegEx.OBJECTIVE);
-		System.out.println("summary " + summary);
-		
-		String education = getSectionDetails(resumeData, educationIndex, globalIndex, RegEx.EDUCATION);
-		System.out.println("education " + education);
-		
-		String exp = getSectionDetails(resumeData, experienceIndex, globalIndex, RegEx.EXPERIENCE);
-		System.out.println("exp" + exp);*/
-		
-		//getting values from resume string
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
 		try {
 			String summary = getSectionDetails(resumeData, objectiveIndex, globalIndex, SourceleadResumeParserRegEx.OBJECTIVE);
@@ -567,9 +383,6 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 			String maritalStatus = getMartialStatusFromTextFile(resumeData);
 			jsonUtil.setMaritalStatus(maritalStatus);
 			
-			//Employeers
-			/*String employeers = getKeywordsFromTextFile(resumeData, "companies.txt");
-			System.out.println("Employeers : " + employeers);*/
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -989,35 +802,7 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 		return skillsSet;
 	}
 	
-	/*@SuppressWarnings("resource")
-	private String getDesignationFromTextFile(String parsedString) {
-		String designation = "";
-		Set<String> designationSet = new HashSet<>();
-		try {
-			String fn = "/dictionary/designation.txt";
-			URL url = getClass().getResource(fn);
-			File file = new File(url.toURI());
-			String designationKeywords = "";
-			BufferedReader br = new BufferedReader(new FileReader(file));
-			while (br.readLine() != null) {
-				designationKeywords += br.readLine();
-			}
-			List<String> designaitonList = Arrays.asList(designationKeywords.split("\\s*,\\s*"));
-			String desginationPattern = "\\b(" + StringUtils.join(designaitonList, "|") + ")\\b";
-			Pattern pattern = Pattern.compile(desginationPattern, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(parsedString);
-			while (matcher.find()) {
-				System.out.println("Desig : " + matcher.group(1));
-				designationSet.add(matcher.group(1).toLowerCase());
-			}
-			
-			designation = String.join(", ", designationSet);
-			designation = designation.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]", "");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return designation;
-	}*/
+	
 	
 	private String getExperienceFromTextFile(String text) {
 		String years = "", months = "";
@@ -1027,12 +812,6 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 					+ " \\d+\\.?\\d*\\W+\\s+(?:months?|years?|yrs?) |\\d+\\.?\\d*\\s+(?:months?|years?|yrs?)|"
 					+ "\\d+\\W*((?i)plus(?-i))\\W*\\s+(?:months?|years?|yrs?)", Pattern.CASE_INSENSITIVE);
 			
-			/*Pattern p = Pattern.compile("\\d+\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
-					+ "\\d+\\s*\\S*years?\\s+(?:and\\s*)?\\d+\\s*\\S*months?|\\d+\\s+(?:months?|years?|yrs?|mnths?) | "
-					+ "\\d+\\.?\\d*\\W+\\s*\\S*(?:months?|years?|yrs?|mnths?)"
-					+ "  | \\d+\\s*\\S*yrs?\\s+(?:and\\s*)?\\d+\\s*\\S*mnths?|\\d+\\s+(?:months?|years?|yrs?|mnths?)| "
-					+ "\\d+\\s*\\S*((?i)plus(?-i))\\s*\\S*(?:months?|years?|yrs?|mnths?) | "
-					+ "\\d+\\s*\\S*(?:months?|years?|yrs?|mnths?)", Pattern.CASE_INSENSITIVE);*/
 	
 			Matcher matcher = p.matcher(text);
 			String experience = "";
@@ -1076,12 +855,6 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 	private String getGenderFromTextFile(String text) {
 		String gender = "";
 		try {
-			/*String r="^(?:m|M|male|Male|f|F|female|Female)$";
-			Pattern pattern = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
-			Matcher n = pattern.matcher(text);
-			if (n.find()) {
-				gender = n.group(0);
-			}*/
 			
 			Pattern pattern = Pattern.compile("\\bMr.\\b", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(text);
@@ -1115,13 +888,6 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 	private String getMartialStatusFromTextFile(String text) {
 		String martialStatus = "";
 		try {
-			/*String r="^(?:single|Single|married|Married|divorsed|Divorsed|separated|Separated)$";
-			Pattern pattern = Pattern.compile(r, Pattern.CASE_INSENSITIVE);
-			Matcher n = pattern.matcher(text);
-			if (n.find()) {
-				martialStatus = n.group(0);
-			}*/
-			
 			Pattern pattern = Pattern.compile("\\bsingle|solo|unmarried|un married\\b", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(text);
 			if (matcher.find()) {
@@ -1150,5 +916,43 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 		}
 		return martialStatus;
 	}
+
+	/**
+	 * Getting Candidate details from Resume using resume parer service
+	 * @param file
+	 * @param fileInfo 
+	 * @return ResumeParserJsonUtil
+	 */
+	public ResumeParserJsonUtil getCandidateDetailsFromResumeParser(File file, FileInfo fileInfo) {
+		ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
+		try {
+			String baseServicesUrl = "";
+			if("qa".equalsIgnoreCase(environment)) {
+				baseServicesUrl = resumeParserUrlQa;
+			}else {
+				baseServicesUrl = resumeParserUrlLocal;
+			}
+			final String url = baseServicesUrl+Constants.RESUME_PARSE_FILE_URL;
+			 MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
+		      bodyMap.add("fileName",getUserFileResource(file));
+		      HttpHeaders headers = new HttpHeaders();
+		      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
+	            
+		      RestTemplate restTemplate = new RestTemplate();
+		      ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
+		      Gson gson = new Gson();
+		       resume = gson.fromJson(response.getBody().toString(), ResumeParserJsonUtil.class);
+		      resume.setFileInfo(fileInfo);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return resume;
+	}
+	
+	public static Resource getUserFileResource(File file) throws IOException {
+	      //to upload in-memory bytes use ByteArrayResource instead
+	      return new FileSystemResource(file);
+	  }
 
 }

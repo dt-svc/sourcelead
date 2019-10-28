@@ -370,91 +370,98 @@ public class TimesheetEmailUtil {
 			String redirectURL = "/timesheetApproval/";
 			Long redirectOrgLocationId = loginOrgLocation.getId();
 			for (ProjectApproverHierarchy approver : approverHierarchyList) {
+				boolean flag = true;
+				if(approver.getProjectId() != null && approver.getProjectId().getProjectApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL) &&
+						approver.getLevel() != null && approver.getLevel() == 2) {
+					flag = false;
+//					break;
+				}
+					
 
-			if (!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())) {
+			if (flag && !loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())) {
 
-			User projectManager = userService.getUserById(approver.getApproverUserId().getId());
-			// Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
+				User projectManager = userService.getUserById(approver.getApproverUserId().getId());
+				// Employees emp = employeesService.getEmployeeByUserId(loginUser.getId());
+	
+				EmailMessage emailMessage = new EmailMessage();
+				emailMessage.setFirstName(projectManager.getFirstName());
+				emailMessage.setLastName(projectManager.getLastName());
+				emailMessage.setToEmail(projectManager.getEmail());
+				emailMessage.setFromEmail(loginUser.getEmail());
+				emailMessage.setCreatedBy(loginUser.getUserCode());
+				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+				String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
+				String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
+				SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate,
+				frequencyEndDate, projectId, masterCanidateId);
+				if(sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null && sah.getSubmissionId().getProjectMembers().getProjects() != null) {
+					// setting the class filed values
+					Map<String, String> globalVarsMap = new HashMap<String, String>();
+					StringBuilder loginName = new StringBuilder();
+					if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
+					globalVarsMap.put("loginUserFullName", loginName.append(loginUser.getFirstName()).append(" ")
+					.append(loginUser.getLastName()).toString());
+					} else {
+					globalVarsMap.put("loginUserFullName", loginUser.getFirstName());
+					}
+					StringBuilder managerName = new StringBuilder();
+					if (null != projectManager.getLastName() && !"".equalsIgnoreCase(projectManager.getLastName())) {
+					globalVarsMap.put("managerFullName", managerName.append(projectManager.getFirstName()).append(" ")
+					.append(projectManager.getLastName()).toString());
+					} else {
+					globalVarsMap.put("managerFullName", projectManager.getFirstName());
+					}
+					globalVarsMap.put("OrgName", loginOrgLocation.getOrgLocationName());
+					globalVarsMap.put("TimeFrequency", startDateStr + " to " + endDateStr);
+					StringBuilder linkBuild = new StringBuilder();
+					globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Timesheet Submission</div></a>")
+					.toString());
+					globalVarsMap.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					// setting the Recipient information
+					//InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		
+					// getting the current EmailScenario by EmailScenario unique name and entity
+					// type
+					EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
+		
+					commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER_TIMESHEET,new ArrayList<EmailAttachment>());
+		
+		
+					// calling the sendNotification method of emailScenerioUtil
+					EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
+					Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_NOTIFICATION);
+					String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
+					notificationScenario.setBody(notificationBody);
+					notificationScenario.setOrgCode(loginOrgCode);
+					// String url = null;
+		
+					StringBuilder currentTimeFrequency = new StringBuilder();
+					currentTimeFrequency.append(startDateStr).append("To").append(endDateStr);
+					String actionLink = "";
+		
+					StringBuilder actionLinkBuilder = new StringBuilder();
+		
+					HashMap<String, String> paramList = new HashMap<>();
+					if (sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null) {
+					String frequencyMonth = CalendarUtil.getMonthFromGivenDate(frequencyStartDate);
+					String frequencyYear = CalendarUtil.getYearFromGivenDate(frequencyStartDate);
+					paramList.put("frequencyMonth", frequencyMonth + "-" + frequencyYear);
+					paramList.put("startDateStr", startDateStr);
+					paramList.put("endDateStr", endDateStr);
+					paramList.put("dateFormat", loginOrgLocation.getDateFormat());
+					paramList.put("timesheetFrequency", approver.getProjectId().getInvoiceFrequency());
+					paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
+					paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
+					actionLink = actionLinkBuilder.append(pmsUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
+					}
+					emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager,
+					approver.getProjectClientsId().getOrgLocationsId(), notificationScenario, paramList);
+				}
 
-			EmailMessage emailMessage = new EmailMessage();
-			emailMessage.setFirstName(projectManager.getFirstName());
-			emailMessage.setLastName(projectManager.getLastName());
-			emailMessage.setToEmail(projectManager.getEmail());
-			emailMessage.setFromEmail(loginUser.getEmail());
-			emailMessage.setCreatedBy(loginUser.getUserCode());
-			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
-			String startDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyStartDate);
-			String endDateStr = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),frequencyEndDate);
-			SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate,
-			frequencyEndDate, projectId, masterCanidateId);
-			if(sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null && sah.getSubmissionId().getProjectMembers().getProjects() != null) {
-			// setting the class filed values
-			Map<String, String> globalVarsMap = new HashMap<String, String>();
-			StringBuilder loginName = new StringBuilder();
-			if (null != loginUser.getLastName() && !"".equalsIgnoreCase(loginUser.getLastName())) {
-			globalVarsMap.put("loginUserFullName", loginName.append(loginUser.getFirstName()).append(" ")
-			.append(loginUser.getLastName()).toString());
-			} else {
-			globalVarsMap.put("loginUserFullName", loginUser.getFirstName());
 			}
-			StringBuilder managerName = new StringBuilder();
-			if (null != projectManager.getLastName() && !"".equalsIgnoreCase(projectManager.getLastName())) {
-			globalVarsMap.put("managerFullName", managerName.append(projectManager.getFirstName()).append(" ")
-			.append(projectManager.getLastName()).toString());
-			} else {
-			globalVarsMap.put("managerFullName", projectManager.getFirstName());
-			}
-			globalVarsMap.put("OrgName", loginOrgLocation.getOrgLocationName());
-			globalVarsMap.put("TimeFrequency", startDateStr + " to " + endDateStr);
-			StringBuilder linkBuild = new StringBuilder();
-			globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
-			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Timesheet Submission</div></a>")
-			.toString());
-			globalVarsMap.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-			// setting the Recipient information
-			//InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
-
-			// getting the current EmailScenario by EmailScenario unique name and entity
-			// type
-			EmailScenario emailScenario = emailScenarioService.getEmailScenarioByUniqueName(
-			Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
-
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_PROJECT_MANAGER_TIMESHEET,new ArrayList<EmailAttachment>());
-
-
-			// calling the sendNotification method of emailScenerioUtil
-			EmailScenario notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(
-			Constants.MAIL_PROJECT_MANAGER_TIMESHEET, Constants.ENTITY_TYPE_NOTIFICATION);
-			String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,emailScenario);
-			notificationScenario.setBody(notificationBody);
-			notificationScenario.setOrgCode(loginOrgCode);
-			// String url = null;
-
-			StringBuilder currentTimeFrequency = new StringBuilder();
-			currentTimeFrequency.append(startDateStr).append("To").append(endDateStr);
-			String actionLink = "";
-
-			StringBuilder actionLinkBuilder = new StringBuilder();
-
-			HashMap<String, String> paramList = new HashMap<>();
-			if (sah != null && sah.getSubmissionId() != null && sah.getSubmissionId().getProjectMembers() != null) {
-			String frequencyMonth = CalendarUtil.getMonthFromGivenDate(frequencyStartDate);
-			String frequencyYear = CalendarUtil.getYearFromGivenDate(frequencyStartDate);
-			paramList.put("frequencyMonth", frequencyMonth + "-" + frequencyYear);
-			paramList.put("startDateStr", startDateStr);
-			paramList.put("endDateStr", endDateStr);
-			paramList.put("dateFormat", loginOrgLocation.getDateFormat());
-			paramList.put("timesheetFrequency", approver.getProjectId().getInvoiceFrequency());
-			paramList.put("searchData",sah.getSubmissionId().getProjectMembers().getProjectMemberCandidteId().getEmail());
-			paramList.put("projectName",sah.getSubmissionId().getProjectMembers().getProjects().getProjectName());
-			actionLink = actionLinkBuilder.append(pmsUrl).append("/").append("timesheetApproval/").append(Constants.PLACE_UUID).toString();
-			}
-			emailScenerioUtil.sendNotification(actionLink, loginUser, projectManager,
-			approver.getProjectClientsId().getOrgLocationsId(), notificationScenario, paramList);
-			}
-
-			}
-			}
+		}
 	}
 	
 
@@ -972,4 +979,70 @@ public class TimesheetEmailUtil {
 			emailScenerioUtil.sendNotification(actionLink, loginUser,projectMember.getProjectMemberCandidteId().getConsultantUser(), loginOrgLocation, notificationScenario,paramList);
 		}
 	
+	
+	public void sendEmailNotificationToLevel2WhenLevel1Approves(String firstName, String lastName, 
+			User loginUser, User toUser, OrgLocations loginOrgLocation, ProjectMembers projectMember, String startDate,
+			String endDate, String status) throws Exception {
+		EmailMessage emailMessage = new EmailMessage();
+		emailMessage.setFirstName(firstName);
+		emailMessage.setLastName(lastName);
+		emailMessage.setToEmail(toUser.getEmail());
+		emailMessage.setFromEmail(loginUser.getEmail());
+		emailMessage.setCreatedBy(loginUser.getUserCode());
+
+		Long redirectOrgLocationId = loginOrgLocation.getId();
+		StringBuilder userNameSB = new StringBuilder();
+		if (loginUser.getLastName() != null && loginUser.getLastName() != "undefined" && loginUser.getLastName() != ""
+				&& !loginUser.getLastName().isEmpty()) {
+			emailMessage.setFromName(
+					userNameSB.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
+		} else {
+			emailMessage.setFromName(userNameSB.append(loginUser.getFirstName()).append(" ").toString());
+
+		}
+		emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
+		// setting the class filed values
+		Map<String, String> globalVarsMap = new HashMap<>();
+		globalVarsMap.put("loginUser", loginUser.getFullName());
+		globalVarsMap.put("loginOrg", loginOrgLocation.getOrgLocationName());
+		globalVarsMap.put("employeeName", projectMember.getEmpName());
+		globalVarsMap.put("projectName", projectMember.getProjects().getProjectName());
+		globalVarsMap.put("manager1", loginUser.getFullName());
+		globalVarsMap.put("manager2", toUser.getFullName());
+		globalVarsMap.put("frequencyType", projectMember.getProjects().getInvoiceFrequency());
+		StringBuilder timeFrequencySB = new StringBuilder();
+		globalVarsMap.put("frequency", timeFrequencySB.append(startDate).append(" to ").append(endDate).toString());
+		globalVarsMap.put("OrgName", loginOrgLocation.getOrgLocationName());
+
+		StringBuilder loginURLSB = new StringBuilder();
+
+		String redirectURL = "/timesheetApproval";
+
+		StringBuilder stringBuildforLink = new StringBuilder();
+		globalVarsMap.put("loginLink", stringBuildforLink.append("<a href='")
+				.append(sourceleadLoginUrl + "?redirectURL=" + pmsUrl + redirectURL + "&redirectOrgLocationId=" + redirectOrgLocationId)
+				.append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+				.toString());
+
+		EmailScenario emailScenario = null;
+
+		emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TO_MANAGER2_WHEN_MANAGER1_APPROVES_THE_TIMESHEET, Constants.ENTITY_TYPE_EMAIL);
+
+		commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, loginOrgLocation.getOrg(), loginOrgLocation, Constants.MAIL_TO_MANAGER2_WHEN_MANAGER1_APPROVES_THE_TIMESHEET, new ArrayList<EmailAttachment>());
+
+		EmailScenario notificationScenario = null;
+
+		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAIL_TO_MANAGER2_WHEN_MANAGER1_APPROVES_THE_TIMESHEET, Constants.ENTITY_TYPE_NOTIFICATION);
+
+		String notificationBody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,
+				emailScenario);
+		notificationScenario.setBody(notificationBody);
+		StringBuilder notificationLink = new StringBuilder();
+		String actionLink = "";
+		actionLink = notificationLink.append(pmsUrl).append("/timesheetApproval").append("").toString();
+
+		emailScenerioUtil.sendNotification(actionLink, loginUser, toUser, loginOrgLocation, notificationScenario,
+				new HashMap<String, String>());
+
+	}
 }

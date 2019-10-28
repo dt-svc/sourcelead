@@ -154,9 +154,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 			requirementWorkFlowStages.setRequirementWorkFlowId(reqWorkFlow);
 			requirementWorkFlowStages.setOrgLocationId(orgLocations);
-			requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
-			requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
-			requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setStageName(defaultWorkflowMap.getValue());
+			requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getKey());
+			requirementWorkFlowStages.setDescription(defaultWorkflowMap.getValue());
 			requirementWorkFlowStages.setSeqOrder(seqOrder);
 			requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 			requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
@@ -164,6 +164,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
 			requirementWorkFlowStages.setCommentRequired(Constants.YES);
 			requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+			// 11-october-2019.
+			// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
+			if(defaultWorkflowMap.getKey().equalsIgnoreCase("NORESPONSE") || defaultWorkflowMap.getKey().equalsIgnoreCase("ONHOLD")){
+				requirementWorkFlowStages.setChosenColumns(Constants.DEFAULT_STAGE_COLUMNS);
+			}
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -1536,9 +1541,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			for(Map.Entry<String, String> defaultWorkflowMap: Constants.DEFAULT_WORKFLOW_STAGES_AND_SHORTCODES_MAP.entrySet()) {
 				RequirementWorkFlowStages requirementWorkFlowStages = new RequirementWorkFlowStages();
 				requirementWorkFlowStages.setRequirementWorkFlowId(requirementWorkFlow);
-				requirementWorkFlowStages.setStageName(defaultWorkflowMap.getKey());
-				requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getValue());
-				requirementWorkFlowStages.setDescription(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setStageName(defaultWorkflowMap.getValue());
+				requirementWorkFlowStages.setStageShortCode(defaultWorkflowMap.getKey());
+				requirementWorkFlowStages.setDescription(defaultWorkflowMap.getValue());
 				requirementWorkFlowStages.setSeqOrder(seqOrder);
 				requirementWorkFlowStages.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
 				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
@@ -1546,6 +1551,11 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
 				requirementWorkFlowStages.setCommentRequired(Constants.YES);
 				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				// 11-october-2019.
+				// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
+				if(defaultWorkflowMap.getKey().equalsIgnoreCase("NORESPONSE") || defaultWorkflowMap.getKey().equalsIgnoreCase("ONHOLD")){
+					requirementWorkFlowStages.setChosenColumns(Constants.DEFAULT_STAGE_COLUMNS);
+				}
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setUpdatedDate(new Date());
 				requirementWorkFlowSet.add(requirementWorkFlowStages);
@@ -1629,14 +1639,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageUuid, Long submissionId,
 			Integer minutes, Integer seconds) {
-		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
+		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageUuid,submissionId, minutes, seconds);
 	}
 	
 	@Override
-	public RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id) throws Exception {
-		return requirementWorkFlowDao.getRequirementWorkflowByNameAndOrgLocationId(workflowId, id);
+	public String getWorkflowStageNameByShortCode(String shortCode) throws Exception {
+		return requirementWorkFlowDao.getWorkflowStageNameByShortCode(shortCode);
 	}
 	
 	 }

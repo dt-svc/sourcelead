@@ -138,8 +138,9 @@ public interface RequirementWorkFlowService {
 
 	String deleteAssignedTask(String currentStageUuid, Long id);
 
-	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
+	String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageId, Long submissionId, Integer minutes,
 			Integer seconds);
 	
-	RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id)throws Exception;
+	String getWorkflowStageNameByShortCode(String shortCode)throws Exception;	
+	
 }
