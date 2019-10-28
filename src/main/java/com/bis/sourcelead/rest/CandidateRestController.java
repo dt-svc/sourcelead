@@ -72,6 +72,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -175,6 +176,9 @@ public class CandidateRestController {
 	
 	@Autowired
 	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -284,7 +288,7 @@ public class CandidateRestController {
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			Candidate candidate = candidateService.findByCandidateEmail(email, orgLocation.getId());
+			CandidateGlobal candidate = candidateGlobalService.findByCandidateGlobalEmail(email, orgLocation.getId());
 			if (null != candidate) {
 				response.setObject("true");
 			} else {

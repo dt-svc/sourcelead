@@ -4319,7 +4319,7 @@ function profileDetails(candidateId){
 				 		/*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200); */
 					//	 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId,candidateType);
+						 candidateProfile(candidateGloalId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
