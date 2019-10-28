@@ -460,16 +460,17 @@ public class CustomDashBoardRestController {
 	
 	@RequestMapping(value = "/makeDefaultCustomDashBoard", method = RequestMethod.POST)
 	public boolean makeDefaultCustomDashBoard(@RequestParam(value = "customDashBoardUUID", required = true) String customDashBoardUUID,
-			@RequestParam(value = "isActiveStatus", required = true) Boolean isActiveStatus,	HttpServletRequest req,HttpServletResponse res) throws Exception
+			@RequestParam(value = "isActiveStatus", required = true) Boolean isActiveStatus,	HttpServletRequest request,HttpServletResponse response) throws Exception
 	{
 		boolean isMakeDefault = true;
-		customDashboardConfService.getCustomConfDashBoardListByOrgLocationId(orgLocationId,customDashBoardUUID);
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		customDashboardConfService.getCustomConfDashBoardListByOrgLocationId(orgLocation.getId(),customDashBoardUUID);
 		return isMakeDefault;
 		
 	}
 	
 	
-=======
+
 	@RequestMapping(value = "/customReportsConfiguration", method = RequestMethod.POST)
 	public @ResponseBody Response<CustomReportConfiguration> customReportsConfiguration(ReportConfigureDTO reportConfDto , HttpServletRequest request) throws Exception
 	{
