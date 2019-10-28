@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,6 +59,7 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
+@PropertySource("${propertyLocation:app.properties}")
 @RequestMapping("/app")
 public class RequirementWorkflowController {
 	
@@ -79,6 +81,7 @@ public class RequirementWorkflowController {
 	public ModelAndView workflowDashboard(HttpServletRequest request) throws Exception{
 		ModelAndView modelandview = new ModelAndView();
 		modelandview.setViewName("workflow/workflowDashboard");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	
@@ -91,6 +94,7 @@ public class RequirementWorkflowController {
 		user.setId(userId);
 		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
 		modelandview.setViewName("workflow/defaultWorkflow");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	
@@ -107,6 +111,7 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	
@@ -126,6 +131,7 @@ public class RequirementWorkflowController {
 		modelandview.setViewName("workflow/viewWorkflow");
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workflowDescription", requirementWorkFlowStagesDTO.get(0).getWorkflowDescription());
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	
@@ -145,6 +151,7 @@ public class RequirementWorkflowController {
 		modelandview.addObject("requirementWorkFlowStagesDTO", requirementWorkFlowStagesDTO);
 		modelandview.addObject("workFlowName", requirementWorkFlowDTO.getWorkFlowName());
 		modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.get(0).getRequirementWorkFlowUuid());
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	
@@ -157,6 +164,7 @@ public class RequirementWorkflowController {
 		modelandview.addObject("templateName", templateName);
 		}
 		modelandview.setViewName("workflow/questionnaireList");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	@RequestMapping(value = "/getQuestionnaireList" , method = RequestMethod.GET)
@@ -192,6 +200,7 @@ public class RequirementWorkflowController {
 		ModelAndView modelandview = new ModelAndView();
 		logger.debug(" inside addQuestionnaire >>>>>>>>>>>>>");
 		modelandview.setViewName("workflow/addQuestionnaire");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	@RequestMapping(value = "/editQuestionnaire")
@@ -200,6 +209,7 @@ public class RequirementWorkflowController {
 		modelandview.addObject("templateUuid",templateUuid);
 		modelandview.setViewName("workflow/addQuestionnaire");
 		logger.debug("after editQuestionnaireList>>> ");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
 		return modelandview;
 	}
 	 @RequestMapping(value = "/loadSavedQuestionnaireTemplate" , method = RequestMethod.GET)
@@ -740,6 +750,7 @@ public class RequirementWorkflowController {
 			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
 			modelandview.addObject("configureType", stages.getConfigureType());
 			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
+			modelandview.addObject("sourceleadUrl", sourceleadUrl);
 			return modelandview;
 		}
 		
