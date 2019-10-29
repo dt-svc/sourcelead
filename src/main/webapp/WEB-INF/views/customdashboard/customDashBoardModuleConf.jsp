@@ -50,22 +50,28 @@ $(document).ready(function(){
 		 $("input[name='subModule[]']:checked").each( function (i) {
 			 subModuleIds[i] = $(this).val();
 		});
-		if(subModuleIds.length > 0){
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-			$.ajax({ 
-		    	type: "POST",
-		    	url: sourceleadUrl+"/saveModuleDashBoardConfiguration?${_csrf.parameterName}=${_csrf.token}&customDashBoardConfUUID="+customDashBoardConfUUID+"&subModuleIds="+subModuleIds,
-		        success: function(json) {
-		        	if((json.response == 'SUCCESS')){
-		        		alert("Sucess");
-		        		//location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
-		        		location.replace(sourceleadUrl+"/configureCustomDashBoard"); 
-			        } 
-		        },
-		 }); 
-		}else{
-			alertMessage("Select atleast one Sub Module");
-		}
+		 alert("Length >>>> "+subModuleIds.length)
+		 if(subModuleIds.length  > 0){
+			 if(subModuleIds.length <= 15){
+					$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+					$.ajax({ 
+				    	type: "POST",
+				    	url: sourceleadUrl+"/saveModuleDashBoardConfiguration?${_csrf.parameterName}=${_csrf.token}&customDashBoardConfUUID="+customDashBoardConfUUID+"&subModuleIds="+subModuleIds,
+				        success: function(json) {
+				        	if((json.response == 'SUCCESS')){
+				        		alert("Sucess");
+				        		//location.replace(sourceleadUrl+"/enrollRoleActions?uuid="+uuid); 
+				        		location.replace(sourceleadUrl+"/configureCustomDashBoard"); 
+					        } 
+				        },
+				 }); 
+				}else{
+					alertMessage("Your Sub moudlues exceeded");
+				}
+		 }else{
+				alertMessage("Select atleast one Sub Module");
+		 }
+		
 	  
   }
   
