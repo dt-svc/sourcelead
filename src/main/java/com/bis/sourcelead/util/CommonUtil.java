@@ -2937,8 +2937,8 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 	        Collections.reverse(str);
 	        String Rupees = String.join(" ", str).trim();
 	 
-	        String paise = (decimal) > 0 ? " and " + words.get(Integer.valueOf((int) (decimal - decimal % 10))) + " " + words.get(Integer.valueOf((int) (decimal % 10))) +"paise": "";
-	        return Rupees + " rupees"+ paise + " only";
+	        String paise = (decimal) > 0 ? " and " + words.get(Integer.valueOf((int) (decimal - decimal % 10))) + " " + words.get(Integer.valueOf((int) (decimal % 10))) + " paisa ": "";
+	        return Rupees + " rupees "+ paise + " only";
 	    }
 
 	public void saveDefaultPayslipTemplate(OrgLocations orgLocations, User user) throws Exception {

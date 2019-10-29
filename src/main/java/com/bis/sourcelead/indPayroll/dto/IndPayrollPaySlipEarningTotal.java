@@ -9,6 +9,8 @@ public class IndPayrollPaySlipEarningTotal {
 	private BigDecimal  amount;
 
 	private BigDecimal grossSalary;
+	
+	private BigDecimal totalctc;
 
 	public String getTotal() {
 		return total;
@@ -33,5 +35,12 @@ public class IndPayrollPaySlipEarningTotal {
 	public void setGrossSalary(BigDecimal grossSalary) {
 		this.grossSalary = grossSalary;
 	}
-	
+
+	public BigDecimal getTotalctc() {
+		return totalctc;
+	}
+
+	public void setTotalctc(BigDecimal totalctc) {
+		this.totalctc = totalctc;
+	}
 }

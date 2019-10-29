@@ -124,7 +124,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
 								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
-								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""));
+								
+								
+								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]{10,25}" ,""));
+							
 							    InfoDataDTO.setEligibleForPf("Y");
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
 								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
@@ -194,7 +197,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
 						InfoDataDTO.setReason("Pf Number is required");
 						return false;
-					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""))){
+					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]{10,25}" ,""))){
 						InfoDataDTO.setReason("Pf number should be between 10-25 characters");
 						return false;
 					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
