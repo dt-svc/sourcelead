@@ -2210,7 +2210,7 @@ public class RequirementListRestController {
 						requirementSubmission.setLocation(requirementSubmissionTemplateFields.getLocation());
 						requirementSubmission.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmissionTemplateFields.getDateOfBirth()));
 						requirementSubmission.setCurrentCtc(requirementSubmissionTemplateFields.getCurrentCTC());
-						//requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
+						requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
 						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
 						requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
 						if(requirementSubmission.getCandidateResumes() != null) {
