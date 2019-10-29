@@ -79,16 +79,19 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	public List<ConfigureDashBoardViewDTO> getDashBoardData(List<ConfigureDashBoardViewDTO> configureDashBoardView,
 			CommonDataDto commonDataDto) {
 		try {
-			Map<String, String> data = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
-			JSONObject jsonObj = new JSONObject();
-			data.forEach((key, value) -> {
-				jsonObj.put(key, value);
-			});
-			JSONArray jsonArray = new JSONArray();
-			jsonArray.add(jsonObj);
-			String convertedString = jsonArray.toString().replace("\"", "\\\"");
+			
+			
+			
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
-				dtoObj.setJsonStringData(convertedString);
+				String jsonData = "";
+				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
+				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
+				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					
+				}
+				
+				
+				dtoObj.setJsonStringData(jsonData);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
