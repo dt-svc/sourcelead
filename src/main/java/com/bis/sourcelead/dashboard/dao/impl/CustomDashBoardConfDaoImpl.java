@@ -1,5 +1,6 @@
 package com.bis.sourcelead.dashboard.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -13,11 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dto.PaymentAccountDTO;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.SubTabs;
 
 import org.hibernate.Query;
 
 @Repository
+@Transactional
+@SuppressWarnings("unchecked")
 public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	private static final Logger logger = LoggerFactory.getLogger(CustomDashBoardConfDaoImpl.class);
@@ -28,7 +33,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	
 	@Override
-	@Transactional
 	public CustomDashBoardConfiguration saveCustomDashBoardConf(CustomDashBoardConfiguration customDashBoardConf)
 	{
 		Session session = this.sessionFactory.getCurrentSession();
@@ -45,7 +49,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional
 	public List<CustomDashBoardConfiguration> getCustomConfDashBoardByLocationId(Long locationId)
 	{
 		List<CustomDashBoardConfiguration> customDashBoardConf = null;
@@ -63,7 +66,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional
 	public CustomDashBoardConfiguration getCustomDashboardConfByUUID(String customDashBoardUUID, Long orgLocationId)
 	{
 		CustomDashBoardConfiguration customDashBoardConf = null;
@@ -83,7 +85,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional
 	public CustomDashBoardConfiguration getCustomDashboardConfById(Long customDashBoardConfID, Long orgLocationId)
 	{
 		CustomDashBoardConfiguration customDashBoardConf = null;
@@ -102,7 +103,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 
 	@Override
-	@Transactional
 	public int deleteExistedDashBoardAssociates(Long customDashBoardConfId)
 	{
 		int isDeleted = 0;
@@ -120,7 +120,6 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 
 
 	@Override
-	@Transactional
 	public List<SubTabs> getSubModules(Long tabId)
 	{
 		try {
@@ -134,4 +133,30 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 		return null;
 		
 	}
+
+
+	@Override
+	public void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId,String customDashBoardUUID) {
+	    try {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId  AND customDashBoardConf.status = 1 ";
+		List<CustomDashBoardConfiguration> list = session.createQuery(query).setLong("orgLocationId", orgLOcatinId).list();
+			for (CustomDashBoardConfiguration s : list) {
+				if(!customDashBoardUUID.equalsIgnoreCase(s.getDashboardConfUUID())) {
+					s.setMakeDefault(false);
+				}else {
+					s.setMakeDefault(true);
+				}
+	        	session.saveOrUpdate(s);
+	        }	
+	}     catch (Exception e) {
+		e.printStackTrace();
+	}   
+		
+	}
+
+
+	
+	 
+	
 }
