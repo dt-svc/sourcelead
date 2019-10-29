@@ -9,7 +9,6 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	<script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 	<script>
 	$(document).ready(function() {
-		
 		$("#searchtext").keyup(function(e) {
 			if (e.which == 13) {
 				requirementWorkflow.getViewWorkflowStagesList();
@@ -186,9 +185,11 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</div>
 				<div class="col-md-2">
 				
-					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow' && isWorkflowEditable == true}">
+					<c:if test = "${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow'}">
 					<ul class="list-inline list-unstyled pull-right mb0">
-						<c:if test = "${requirementWorkFlowStages.configureType == 'Client'}">
+					<c:choose>
+					<c:when test="${isWorkflowEditable eq true}">
+					<c:if test = "${requirementWorkFlowStages.configureType == 'Client'}">
 						    <sec:authorize access="hasRole('ROLE_EDIT_VIEW_WORKFLOW')">
 						<li>
 							<a title="Edit" 
@@ -198,10 +199,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 							<i class="fa fa-pencil"></i></a>
 						</li>
 						</sec:authorize>
-                             <sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
-                        
-                        <c:choose>
-                        <c:when test="${requirementWorkFlowStages.configureType == 'Client'}">
+                        	<sec:authorize access="hasRole('ROLE_DELETE_WORKFLOW')">
                         <li>
 							<a title="Delete" 
 							onclick = 'requirementWorkflow.deletepopup("${requirementWorkFlowStages.uuid}",
@@ -209,14 +207,26 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 							"${requirementWorkFlowStages.requirementWorkFlowUuid}")'>
 							<i class="fa fa-trash"></i></a>
 							</li>
-							</c:when>
-                        <c:otherwise>
-                        <li></li><li></li>
-                        </c:otherwise>
-                        </c:choose>   
-						
 						</sec:authorize>
-						</c:if>	
+						</c:if>
+					</c:when>
+					<c:otherwise>
+					<c:if test = "${requirementWorkFlowStages.configureType == 'Client'}">
+						    <sec:authorize access="hasRole('ROLE_EDIT_VIEW_WORKFLOW')">
+						<li>
+							<a title="Edit" 
+							onclick = 'requirementWorkflow.editStage("${requirementWorkFlowStages.uuid}",
+							"${requirementWorkFlowStages.requirementWorkFlowUuid}",
+							"<c:out value="${requirementWorkFlowStagesDTO[0].workFlowName}" />")'>
+							<i class="fa fa-pencil"></i></a>
+						</li>
+						</sec:authorize>
+						
+						</c:if>
+					</c:otherwise>
+					</c:choose>
+					
+							
 						<c:if test = "${requirementWorkFlowStages.editable == 'N'}">	
 						<li></li>
 						</c:if>	
