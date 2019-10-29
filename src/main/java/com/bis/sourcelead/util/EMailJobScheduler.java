@@ -506,7 +506,7 @@ public class EMailJobScheduler {
 			// candidates table with parsed information.
 			logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
 			logger.info("******************  startEmailParsingProcessvalue is ::: "+startEmailParsingProcess);
-			if(environment != null && !environment.trim().equalsIgnoreCase("local2") && startEmailParsingProcess) {
+			if(environment != null && !environment.trim().equalsIgnoreCase("local") && startEmailParsingProcess) {
 				logger.debug("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
