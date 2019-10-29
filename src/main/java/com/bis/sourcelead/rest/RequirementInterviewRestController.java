@@ -138,6 +138,7 @@ public class RequirementInterviewRestController {
 	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
+			                                              @RequestParam(value="isWorkflowConfigured", required=false) String isWorkflowConfigured,
 			                                              HttpServletRequest request) throws Exception {
 		ResponseList<RequirementSubmissionsDTO> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -149,7 +150,7 @@ public class RequirementInterviewRestController {
 			try {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				List<RequirementSubmissionsDTO> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+				List<RequirementSubmissionsDTO> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole, isWorkflowConfigured);
 				for (RequirementSubmissionsDTO sub : shortListCandidatesList) {
 					 StringBuilder nameBuilder = new StringBuilder();
 					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());
