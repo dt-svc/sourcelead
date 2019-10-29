@@ -176,13 +176,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 
 		 String subQuery = "";
 		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
 			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
 		 }else{
+			 //29-10-2019
+			 //checking isWorkflowConfigured to generate offer for applicant from any previous stage.
+			 if(!isWorkflowConfigured.equalsIgnoreCase(Constants.BOOLEAN_TRUE)){
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
 				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
 				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR "
@@ -191,7 +194,9 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
 					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') ";
 			}
-			 
+			 }else{
+				 subQuery = " and (rs.submissionStatus <> 'NORESPONSE' AND rs.submissionStatus <> 'ONHOLD' AND rs.submissionStatus <> 'JOINED' AND rs.submissionStatus <> 'REJECTED' AND rs.submissionStatus <> 'BACKOUT') ";
+			 }
 		 }
 		 
 		 String subQuery2 = "";
