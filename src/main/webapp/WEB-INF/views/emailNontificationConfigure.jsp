@@ -427,7 +427,7 @@ function changeDefaultemailConfig(ele, id) {
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
 
- <div id="emailparsingPopUp" class="popupWrap popupWrapFixed">
+ <div id="emailparsingPopUp" class="popupWrap">
 	 <jsp:include page="addParserMailPopUp.jsp"></jsp:include>
 </div>
 
@@ -442,6 +442,7 @@ function changeDefaultemailConfig(ele, id) {
  function addEmailparsingPopUp(){
 	 $(".mask").show();
 	 $("#emailparsingPopUp").show();
+	 acceptAgreement();
 	 $('#emailNotify').find('p.jquery_form_error_message').remove();
 	 $('#passwordsnotify').find('p.jquery_form_error_message').remove();	
 	 $(".colorBtn").removeClass("disableBtn");	  
