@@ -240,6 +240,8 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			leaveType.setLeaveEncashment(leaveTypeDTO.getLeaveEncashment());
 			leaveType.setLeaveEncashMinDays(leaveTypeDTO.getLeaveEncashMinDays());
 			leaveType.setLeaveEncashMaxDays(leaveTypeDTO.getLeaveEncashMaxDays());
+		}else {
+			leaveType.setLeaveEncashment(Constants.NO);
 		}
 		
 		leaveType.setMaxDaysToCarryforward(leaveTypeDTO.getNoOfdaysToCarryforward());
