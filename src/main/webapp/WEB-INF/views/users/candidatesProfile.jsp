@@ -1290,9 +1290,8 @@ function candidateProfile(candidateId,candidateType){
 		         			 $("#selector1").css({ display: "block" });
 				        	 $("#candMsgDiv").html("Success!!  Associate Updated");
 				        	candUpdateMsgFadeinFunction();
-				        	var candidateType = "Associates";
-				        	candidateProfile(candidateGloalId,candidateType);
-				        	cancelEdit();
+				            var candId = '${candidateId}';
+				            profileDetails(candId);
 						} else {
 							$("#update_candidate").removeAttr("disabled");
 							showError("Invalid data");
