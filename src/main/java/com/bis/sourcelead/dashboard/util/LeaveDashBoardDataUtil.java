@@ -3,6 +3,8 @@ package com.bis.sourcelead.dashboard.util;
 import java.util.Map;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +26,7 @@ public class LeaveDashBoardDataUtil {
 	 * @param commonDto
 	 * @return
 	 */
-	public Map<String, String> getLeaveDashBoardData(CommonDataDto commonDto) {
+	public String getLeaveDashBoardData(CommonDataDto commonDto) {
 		Map<String, String> map = new HashedMap();
 		try {
 			LeaveDTO leaveDto = leaveService.getAllEmployeesLeavesCounts(commonDto.getOrgLocation().getId(), commonDto.getUserId(), commonDto.getLoginUserRole(),commonDto.getOrgId());
@@ -35,7 +37,32 @@ public class LeaveDashBoardDataUtil {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return map;
+		return getJsonString(map);
+	}
+
+	
+	
+	/**
+	 * converting map to String
+	 * @param map
+	 * @return String
+	 */
+	@SuppressWarnings("unchecked")
+	private String getJsonString(Map<String, String> map) {
+		String convertedString ="";
+		try {
+			JSONObject jsonObj = new JSONObject();
+			map.forEach((key, value) -> {
+				jsonObj.put(key, value);
+			});
+			JSONArray jsonArray = new JSONArray();
+			jsonArray.add(jsonObj);
+			 convertedString = jsonArray.toString().replace("\"", "\\\"");
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return convertedString;
+		
 	}
 	
 	
