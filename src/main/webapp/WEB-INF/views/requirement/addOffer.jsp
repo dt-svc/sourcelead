@@ -585,6 +585,7 @@ function cancelOfferPopup(){
 
 <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
+	 var isWorkflowConfigured = '${workflowConfigured}';
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientOffer = "";
 	 if(clientSubmissions == 'Y'){
@@ -610,7 +611,8 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+
+		        		"&isClientOffer="+isClientOffer+"&isWorkflowConfigured="+isWorkflowConfigured, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -646,6 +648,7 @@ function cancelOfferPopup(){
 
 <script type="text/javascript">
  function getUpdatedSubmittedAndShortListedAndInterviewedCandidates() { 
+	 var isWorkflowConfigured = '${workflowConfigured}';
 	 var rowId = $("#maxOfferRowNum").val();
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
@@ -668,7 +671,8 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+
+		        		"&isClientOffer="+isClientOffer+"&isWorkflowConfigured="+isWorkflowConfigured, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
