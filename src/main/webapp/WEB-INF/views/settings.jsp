@@ -310,22 +310,14 @@
 					</div>
 				</div>
 				
-<<<<<<< HEAD
-				  <div class="col-md-2 reportNewCta">
-=======
 				 <div class="col-md-2 reportNewCta">
->>>>>>> 32213fe5b0ce609c0d0ce3ae0d822c937f51972c
 					<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Custom DashBoard</h4>
 					</div>
 				</div>  
-<<<<<<< HEAD
-				
-=======
 				 
->>>>>>> 32213fe5b0ce609c0d0ce3ae0d822c937f51972c
 				
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 

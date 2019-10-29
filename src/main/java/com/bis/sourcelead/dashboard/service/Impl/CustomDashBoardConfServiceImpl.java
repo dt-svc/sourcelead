@@ -135,7 +135,9 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 					dashBoardConfDTO.setDashBoardName(dashConf.getDashboardName());
 					dashBoardConfDTO.setDescription(dashConf.getDescription());
 					dashBoardConfDTO.setCustomDashBoardConfUUID(dashConf.getDashboardConfUUID());
-					dashBoardConfDTO.setActive(dashConf.getMakeDefault());
+					if(dashConf.getMakeDefault() != null) {
+						dashBoardConfDTO.setActive(dashConf.getMakeDefault());
+					}
 					resList.add(dashBoardConfDTO);
 					response.setData(resList);
 				}

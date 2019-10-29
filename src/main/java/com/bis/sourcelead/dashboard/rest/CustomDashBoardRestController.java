@@ -460,10 +460,11 @@ public class CustomDashBoardRestController {
 	
 	@RequestMapping(value = "/makeDefaultCustomDashBoard", method = RequestMethod.POST)
 	public boolean makeDefaultCustomDashBoard(@RequestParam(value = "customDashBoardUUID", required = true) String customDashBoardUUID,
-			@RequestParam(value = "isActiveStatus", required = true) Boolean isActiveStatus,	HttpServletRequest request,HttpServletResponse response) throws Exception
+			@RequestParam(value = "isActiveStatus", required = true) Boolean isActiveStatus,	HttpServletRequest req,HttpServletResponse res) throws Exception
 	{
 		boolean isMakeDefault = true;
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		
 		customDashboardConfService.getCustomConfDashBoardListByOrgLocationId(orgLocation.getId(),customDashBoardUUID);
 		return isMakeDefault;
 		
@@ -494,6 +495,7 @@ public class CustomDashBoardRestController {
 			e.printStackTrace();
 		}
 		return response;
+		
 	}
 	
 	

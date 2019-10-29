@@ -139,8 +139,8 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 	public void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId,String customDashBoardUUID) {
 	    try {
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId  AND customDashBoardConf.status = 1 AND customDashBoardConf.dashboardConfUUID <> :customDashBoardUUID";
-		List<CustomDashBoardConfiguration> list = session.createQuery(query).setLong("orgLocationId", orgLOcatinId).setString("customDashBoardUUID", customDashBoardUUID).list();
+		String query = "from CustomDashBoardConfiguration customDashBoardConf where customDashBoardConf.orgLocations.id = :orgLocationId  AND customDashBoardConf.status = 1 ";
+		List<CustomDashBoardConfiguration> list = session.createQuery(query).setLong("orgLocationId", orgLOcatinId).list();
 			for (CustomDashBoardConfiguration s : list) {
 				if(!customDashBoardUUID.equalsIgnoreCase(s.getDashboardConfUUID())) {
 					s.setMakeDefault(false);

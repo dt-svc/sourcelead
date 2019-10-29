@@ -32,13 +32,6 @@
 		<div class="positionRelative reportHead clearfix">
 			<ul class="pull-right list-unstyled list-inline">
 				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addCustomDashBoardConf' title="Add">+ Add</a></li>
-
-				<li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
-					<div class="newActPop" style=""><span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> 
-					<a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span>
-					</div> </li>
-				<li class=""><input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text"> <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-
 				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addDynamicHeadersWithData' title="Add">+ Dayana</a></li>
 				
 				
@@ -53,7 +46,6 @@
 				<li class=""><input class="repSearchBar" placeholder="Search"
 					id="dynamicUserDataTableSearch" type="text"> <span
 					class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
-
 			</ul>
 		</div>
 
@@ -72,38 +64,35 @@
 	<input type="hidden" id="customDashBoardConfUUID"
 		name="customDashBoardConfUUID" />
 	<div class="popupContent adddashComp">
-<<<<<<< HEAD
-		<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoardReport"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
-=======
 		<a onclick="returnCustomReportPage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-report.svg">Reports</a>
->>>>>>> 32213fe5b0ce609c0d0ce3ae0d822c937f51972c
 		<a onclick="returnCustomModulePage();"><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/add-module.svg">Modules</a>
 	</div>
 </div>
 
 
 
+
+
+
+
 <script>
 	function getCustomDashBoardConfiguredList() {
 		var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-<<<<<<< HEAD
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-=======
 		$("#loading")
 				.attr(
 						'style',
 						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
->>>>>>> 32213fe5b0ce609c0d0ce3ae0d822c937f51972c
 		$.get(sourceleadUrl + "/viewCustomDashBoardConfiguredList?"+ tokenParamName + "=" + tokenValue,function(res) {
 							var data = res.data;
 							var result = "";
-							result = result+ '<table id="dashBoardConfigure" class="display" cellspacing="0" width="100%">';
+							result = result
+									+ '<table id="dashBoardConfigure" class="display" cellspacing="0" width="100%">';
 							result = result + '<thead>';
 							result = result + '<tr>';
 							result = result + '<th>Name</th>';
 							result = result + '<th>No of Components</th>';
-							result = result + '<th>Make Default</th>';
 							result = result + '<th>Action</th>';
+							result = result + '<th>Make Default</th>';
 							result = result + '</tr>';
 							result = result + '</thead>';
 							result = result + '<tbody>';
@@ -118,9 +107,28 @@
 									} else {
 										result = result+ '<td><div>0</div></td>';
 									}
-									
 									result = result + '<td>';
-<<<<<<< HEAD
+									result = result+ '<div class="width150px">';
+									result = result+ ' <ul class="list-unstyled list-inline">';
+									result = result+ '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'+ opt.customDashBoardConfId
+											+ '" onclick="showPopup(\''
+											+ opt.customDashBoardConfUUID
+											+ '\');"></i></li>';
+									result = result+ '  <li class="mr5"><a href="'
+											+ sourceleadUrl
+											+ '/editCustomDashBoardConf?customDashBoardUUID='
+											+ opt.customDashBoardConfUUID
+											+ '"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
+									result = result  + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
+									result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+									
+									//result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardViewJSON?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
+
+									result = result + ' </ul>';
+									result = result + ' </div>';
+									result = result + '  </td>';
+									result = result + '<td>';
+
 									result = result + '<div>';
 										if(opt.active){
 								        	 result += '<label class="switch"><input type="checkbox" checked  value = "" onclick="makeDefaultCustomDashBoard(\''+opt.customDashBoardConfUUID+'\',\''+opt.active+'\');"> <div class="slider round"></div> </label>';
@@ -129,46 +137,7 @@
 								         }									
 									result = result + '</div>';	
 									result = result + '</td>';
-									
-									result = result + '<td>';
-									result = result+ '<div class="width150px">';
-									result = result+ ' <ul class="list-unstyled list-inline">';
-									result = result+ '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'+ opt.customDashBoardConfId+ '" onclick="showPopup(\''+ opt.customDashBoardConfUUID+ '\');"></i></li>';
-									result = result+ '  <li class="mr5"><a href="'+ sourceleadUrl+ '/editCustomDashBoardConf?customDashBoardUUID='+ opt.customDashBoardConfUUID+ '"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
-									result = result  + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
-									result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
-=======
-									result = result
-											+ '<div class="width150px">';
-									result = result
-											+ ' <ul class="list-unstyled list-inline">';
-									result = result
-											+ '  <li class="mr5"><i class="fa fa-plus cursorPointer text-primary" title="Add Components" id="addCustomComponents'
-											+ opt.customDashBoardConfId
-											+ '" onclick="showPopup(\''
-											+ opt.customDashBoardConfUUID
-											+ '\');"></i></li>';
-									result = result
-											+ '  <li class="mr5"><a href="'
-											+ sourceleadUrl
-											+ '/editCustomDashBoardConf?customDashBoardUUID='
-											+ opt.customDashBoardConfUUID
-											+ '"><i class="fa fa-pencil cursorPointer" title="Edit"></a></i></li>';
-											
-											result = result 
-											        + '  <li class="mr5"><a href="javascript:void(0)" title="Delete"><i class="fa fa-trash textDelete" onclick="deleteCustomDashBoardConf(\''+opt.customDashBoardConfUUID+'\');"></i></a></li> ';
-											
-									result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardView?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
-									
-									//result = result+ '  <li class="mr5"><a href="'+sourceleadUrl+'/configureCustomDashBoardViewJSON?customDashBoardUUID='+opt.customDashBoardConfUUID+'"><i class="fa fa-eye cursorPointer" title="Preview"></i></a></li>';
-
->>>>>>> 32213fe5b0ce609c0d0ce3ae0d822c937f51972c
-									result = result + ' </ul>';
-									result = result + ' </div>';
-									result = result + '  </td>';
 									result = result + ' </tr> ';
-									
-
 								}
 							}
 							result = result + '</tbody>';
@@ -258,16 +227,7 @@ function deleteCustomDashBoardConf(customDashBoardUUID){
 }
 </script>
 
-<script>
- function makeDefaultCustomDashBoard(customDashBoardUUID,active){
-	  
-	  $.post( sourceleadUrl+ "/makeDefaultCustomDashBoard?customDashBoardUUID="+customDashBoardUUID+"&isActiveStatus="+active, function(data) {
-		  if(data){
-			  getCustomDashBoardConfiguredList();
-		  }
-	  });
-  }
- </script>
+
 
 <script>
 	function returnCustomModulePage() {
@@ -291,6 +251,17 @@ function returnCustomReportPage(){
 			+ customDashBoardConfUUID;
 }
 </script>
+
+
+<script>
+ function makeDefaultCustomDashBoard(customDashBoardUUID,active){
+	  $.post( sourceleadUrl+ "/makeDefaultCustomDashBoard?customDashBoardUUID="+customDashBoardUUID+"&isActiveStatus="+active, function(data) {
+		  if(data){
+			  getCustomDashBoardConfiguredList();
+		  }
+	  });
+  }
+ </script>
 
 
 
