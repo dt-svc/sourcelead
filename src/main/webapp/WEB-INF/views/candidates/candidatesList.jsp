@@ -148,6 +148,7 @@ function candidateSideBar(candidateId){
 			            var currencyCodes = '';
 			            var generatedId = '';
 			            var middleName = '';
+			            var location = '';
          			 	if(json.experienceMonths != null && json.experienceMonths != '' && json.experienceMonths != 'undefined'){
          			 		experienceMonths = json.experienceMonths+'Month(s)';            			 		
          			 	}else{
@@ -194,6 +195,12 @@ function candidateSideBar(candidateId){
          			 		city =json.city+',';
              			 	}else{
              			 		city = '';
+             			 	}
+         			 	
+         			 	if(json.location != null && json.location != '' && json.location != 'undefined'){
+         			 		location =json.location+',';
+             			 	}else{
+             			 		location = '';
              			 	}
          			 	
          			 	 if(json.currentRate != null && json.currentRate != '' && json.currentRate != 'undefined'){
