@@ -4,8 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.mousewheel.js"></script> 
 <script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.jscrollpane.min.js"></script> 
-<script>
 
+<script>
 function prepareDynamicTableGrid(subTabName,dataSet){
 console.log(dataSet);
 		var my_columns = [];
@@ -21,6 +21,10 @@ console.log(dataSet);
 console.log(my_columns);
 		$('#'+subTabName).DataTable({
 			data: dataSet,
+			"paging":   false,
+	        "ordering": false,
+	        "info":     false,
+	        "searching":  false,
 			"columns": my_columns
 	   });
 }
@@ -48,61 +52,13 @@ console.log(my_columns);
 				                  </i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
 				                </span>
 				            </div>
-				             <table id="${configureDashBoard.subTabName}"></table>
+				             <table class="require_wrap_table tableFirstSecond clearfix" id="${configureDashBoard.subTabName}"></table>
 				               <script>
 				                    prepareDynamicTableGrid('${configureDashBoard.subTabName}', '${configureDashBoard.jsonStringData}');
-				                    		
-				                    		
-				                    				                    		
 				                     </script>
 				        </div>
     			</div>
 		</c:forEach> 
-    <%-- <div class="col-md-6 mb">
-        <div class="newDashBg mb10">
-            <div class="newDashhead clearfix">
-                <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 2</a>
-                <span class="pull-right">
-                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
-                </span>
-            </div>
-              <p>*********************Text for Test************************* </p>
-        </div>
-    </div>
-    <div class="col-md-12 mb">
-        <div class="newDashBg mb10">
-            <div class="newDashhead clearfix">
-                <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 3</a>
-                <span class="pull-right">
-                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
-                </span>
-               
-            </div>
-             <p>***********************Text for Test*************** </p>
-        </div>
-    </div>    
-    <div class="col-md-6 mb">
-        <div class="newDashBg mb10">
-            <div class="newDashhead clearfix">
-               <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 4</a>
-                <span class="pull-right">
-                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
-                </span>
-            </div>
-              <p>***********************Text for Test*************************** </p>
-        </div>
-    </div>
-    <div class="col-md-6 mb">
-        <div class="newDashBg mb10">
-            <div class="newDashhead clearfix">
-                <a href="javascript:void(0)" class="pull-left">Dashboard heading text... 5</a>
-                <span class="pull-right">
-                  <i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/edit.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/trash.svg"></i><i><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/drag.svg"></i>
-                </span>
-            </div>
-              <p>****************Text for Test*************************</p>
-        </div>
-    </div>    --%>
 </div>
 	
   </section>
