@@ -277,9 +277,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole, String isWorkflowConfigured) throws Exception {
 		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
-		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole, isWorkflowConfigured);
 		if(objList != null && !objList.isEmpty()) {
 			for(Object[] obj : objList) {
 				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
@@ -293,8 +293,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
-		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement);
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement,isWorkflowConfigured);
 	}
 
 	
