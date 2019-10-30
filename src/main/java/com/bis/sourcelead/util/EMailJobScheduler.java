@@ -506,7 +506,7 @@ public class EMailJobScheduler {
 			// candidates table with parsed information.
 			logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
 			logger.info("******************  startEmailParsingProcessvalue is ::: "+startEmailParsingProcess);
-			if(environment != null && !environment.trim().equalsIgnoreCase("local2") && startEmailParsingProcess) {
+			if(environment != null && !environment.trim().equalsIgnoreCase("local") && startEmailParsingProcess) {
 				logger.debug("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
 				System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
@@ -560,8 +560,8 @@ public class EMailJobScheduler {
 	       }
 		}
 	
-   @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
-  //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
+    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
+    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
 	@Async
 	public void runJobSchedulerDailyUpdateLCA() { // check if LCA is expired on not on daily basis, if expired updating
 													// LCA status in Database.
@@ -656,7 +656,7 @@ public class EMailJobScheduler {
 		 emailMessage.setToEmail(toUserObj.getEmail());
 		//configured Email
 			
-			String configuredFromEmail = null;
+			/*String configuredFromEmail = null;
 			 EmailConfigurationFromMail confFromMail=null;
 			 List<EmailConfigurationFromMail> emailConfigMailList=emailScenarioconService.getConfFromMailList(ol.getId());
 			 if(emailConfigMailList != null && !emailConfigMailList.isEmpty()){
@@ -680,7 +680,7 @@ public class EMailJobScheduler {
 				 emailMessage.setFromEmail(configuredFromEmail);
 			 }else {
 				 emailMessage.setFromEmail(fromUser.toString());
-			 }
+			 }*/
 		
 	//	List<String> employeeList = immigrationCommonService.getAllExpiredCandidatesFromLcaHistoryByLcaId(lcaId);
 		 StringBuilder sb = new StringBuilder();
@@ -764,6 +764,7 @@ public class EMailJobScheduler {
 		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
 		 
 		// LCA manager Expired Notification 
+	    User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
 		EmailScenario notificationScenario = null;
 		notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.LCA_MANAGER_EXPIRED_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
 		//   System.out.println("notificationScenario :"+notificationScenario.getBody());
@@ -772,7 +773,7 @@ public class EMailJobScheduler {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append("")
 				.append(vmsUrl).append("/immigration").append("/viewLCAList").toString();
-		emailScenerioUtil.sendNotification(actionLink, fromUser , toUserObj, ol, notificationScenario,new HashMap<String,String>());
+		emailScenerioUtil.sendNotification(actionLink, sourceLeadAdmin , toUserObj, ol, notificationScenario,new HashMap<String,String>());
 		}
 	
 	
