@@ -61,6 +61,7 @@ var requirementSubmissionId = '${requirementSubmissionId}';
 var autoSubmission = '${auto}';
 var manualSubmission = '${manual}';
 var submissionsCount = 1;
+var questionnaireMessage = "";
 window.onload = function () {
 	questionnaireTemplateForm();
  };
@@ -192,7 +193,7 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		                                 //questUUid, stageId, submissionId, minutes,seconds
 		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds, distance); 
 	}
-	window.timer = setInterval(showRemaining, 1000);
+	timer = setInterval(showRemaining, 1000);
 }
 
 </script>
@@ -221,7 +222,6 @@ function saveQuestionnaireTemplate(){
 	        var totalPointsArray = new Array();
 	        var totalPoints = 0;
 	        var submittedPoints = 0;
-	        var attemptsArray = new Array();
 	        $('.sjfb-field').each(function() {
 		    	  var $this = $(this); 
 		    	  var divId = $(this).attr('id');  
@@ -314,7 +314,6 @@ function saveQuestionnaireTemplate(){
 			     		pointsArray.push(points);
 			     		
 			     	  }
-		     	 	attemptsArray.push(attempts);
 		     	  }else{
 		     		 attempts = $('#attemptId').html().trim();
 			     	  if(inputValue != null && inputValue != ""){
@@ -325,7 +324,6 @@ function saveQuestionnaireTemplate(){
 			     		pointsArray.push(points);
 			     		
 			     	  }	
-			     	 attemptsArray.push(attempts);
 		     	  } 
 		     	 
 		     		fields.push({
@@ -363,7 +361,6 @@ function saveQuestionnaireTemplate(){
 			        	} else if (result != null) {
 			        		submissionsCount++;
 			        		generateQuestionnaireFeedbackTemplateForm(result, qTemplateUuid, workflowStageUuid, requirementSubmissionId);
-			        		checkTotalAttemptsAndDisableSubmit(attemptsArray);
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else {
 			        	    showError("Operation failed, please try again");
@@ -404,14 +401,32 @@ function checkTotalAttemptsAndDisableSubmit(attemptsArray){
 		totalAttempts += current;
 	}
 	if(totalAttempts == 0){
-		clearInterval(window.timer);
-		$('#countdownTimerLbl').remove();
-		alert('Form Auto Submitted Successfully!');
-		$("#submitButton").addClass("disabled");
-		$('#countdownTimerLbl').toggleClass("textSuccess textBold");		
+		console.log("timer "+timer);
+		clearInterval(timer);
+		//$('#countdownTimerLbl').text('Form Submitted Successfully!');
+		$('#countdownTimerLbl').toggleClass("textSuccess textBold");
+		showQuestionnaireAlert('Form Submitted Successfully!');
 	}
 }
 
+function showQuestionnaireAlert(questionnaireMessage){
+	$("#submitButton").addClass("disabled");
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +" <div class='project_inn_mask'></div>";
+	result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+	result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelWorkflowPopup();'></div>";
+	result = result +" </div>";
+	$("#popUp").empty().append(result);
+	$("#popupMsg").empty().append("<strong>"+questionnaireMessage+"</strong>");
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+cancelWorkflowPopup = function(){
+	$("#remove_user_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
 </script>
 <script type="text/javascript">
         var validationSettings = {
@@ -451,6 +466,7 @@ function checkTotalAttemptsAndDisableSubmit(attemptsArray){
     <nav class="header-nav navbar">
     </nav>
    </header>
+   <div id="popUp"></div> 
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
    <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
    <p><h3 class="col-md-5">
@@ -471,7 +487,7 @@ function checkTotalAttemptsAndDisableSubmit(attemptsArray){
 
 <script>
 function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
-	
+	var attemptsArray = new Array();
     //empty out the preview area
     $("#questionnairesjfb-fields").empty();
     var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -489,6 +505,7 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
     	type: "GET",
         url:sourceleadUrl+"/getQuestionnaireTemplateList?templateUuid="+templateUuid+"&workflowStageUuid="+workflowStageUuid+"&submissionId="+requirementSubmissionId, 
         success: function(result) {
+        	if(result != null && result.jsonString != 'false'){
         	if(result.timeLimitMinutes != null && result.timeLimitSeconds != null){
         		$("#timerDiv").show();
         		if(result.timeMinutesRemained == null && result.timeSecondsRemained == null){
@@ -515,7 +532,15 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
         	}else{
         		valuesData = eval(result.jsonStringValues);
         	}
-        	if(data){
+        	
+        	if(valuesData){
+        		 $.each( valuesData, function( k, v ) {
+        			 labelAndAttemptsMap.set(v['label'], v['attempts']);
+        			 attemptsArray.push(v['attempts']);
+        		 });
+        		checkTotalAttemptsAndDisableSubmit(attemptsArray);
+        	}
+        	else{
         		 $.each( data, function( k, v ) {
         			 labelAndAttemptsMap.set(v['label'], v['attempt']);
         		 });
@@ -979,8 +1004,17 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
                  }
                  
              });
-        },
-    });
+        
+            
+        	}
+        	else{
+        		questionnaireMessage = "Questionnaire Not Availabe !";
+             	showQuestionnaireAlert(questionnaireMessage);
+             }
+        	},
+    
+    
+        });
 }
 </script>
 <script>
@@ -1022,7 +1056,7 @@ function generateQuestionnaireFeedbackTemplateForm(resultUuid, qTemplateUuid, wo
 }
 
 function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, qTemplateUuid, workflowStageUuid, requirementSubmissionId){
-
+ var attemptsArray = new Array();
     //empty out the preview area
     $("#questionnairesjfb-fields").empty();
     $.ajax({
@@ -1052,7 +1086,9 @@ function generateSavedQuestionnaireTemplate(resultUuid, finalDateFormatScript, q
         	if(valuesData){
         		 $.each( valuesData, function( k, v ) {
         			 labelAndAttemptsMap.set(v['label'], v['attempts']);
+        			 attemptsArray.push(v['attempts']);
         		 });
+        		 checkTotalAttemptsAndDisableSubmit(attemptsArray);
         	}
         	
         	if(savedQuestionnaireUuid.get("savedQuestionnaireUuid") == null){
@@ -1739,19 +1775,11 @@ function saveAutoSubmitQuestionnaireForm(){
 		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
 		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
 		     	 	if(inputValue != null && inputValue != ""){
-			     		/* attempts = labelAndAttemptsMap.get(fieldLabel)-1;
-			     		 if(attempts <= 0){
-			     			attempts = 0;
-			     		 } */
 			     		pointsArray.push(points);
 			     	  }
 		     	  }else{
 		     		 attempts = $('#attemptId').html().trim();
 			     	  if(inputValue != null && inputValue != ""){
-			     		 /* attempts = attempts-1;
-			     		 if(attempts <= 0){
-			     			 attempts = 0;
-			     		 } */
 			     		pointsArray.push(points);
 			     	  }	
 		     	  } 
