@@ -4,7 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
+<%-- <script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -2158,7 +2159,7 @@ $("#editRoleDetailsList").empty();
 					
 					
 					result = result+'		<div class="col-md-4 mt5">';
-					result = result+'		<label class="ml10">Gender <span class="text-danger paddingLeft">*</span></label>  ';
+					result = result+'		<label class="ml10">Gender<span class="text-danger paddingLeft">*</span></label>  ';
 					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.gender == "Male"){
 					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
@@ -4365,6 +4366,7 @@ function assocSalarySummary(candidateId){
 			  			$('#editAssociateBtn').css('display','block');
 			  			$('#saveAssociateBtnDiv').css('display','none');
 			  			$('#associateSalary_form input').attr('disabled','true');
+			  			$('#associateSalary_form input#salaryPayheadDataTableSearch').prop('disabled',false);
 				  		$('#associateSalary_form select').prop('disabled', true);
 			  		}
 			       }
@@ -5011,3 +5013,5 @@ function clearDateValue(id){
 <jsp:include page="associateDeductionSummary.jsp" />
 <jsp:include page="associationContributionSummary.jsp" />
 <jsp:include page="associateSalSummary.jsp" />
+
+<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>

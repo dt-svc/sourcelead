@@ -160,7 +160,7 @@
 						<div class="col-md-5">
 			              	<label class="clearfix">Cost</label>
 							<div class="clearfix">
-			                	<input type="text" class="form-control input-sm" id="cost" name="cost" placeholder="Cost" field-name="Cost"  value="${assetAssignData.cost}" data-validation="validate_float validate_length length1-50" data-validation-optional="true">
+			                	<input type="text" class="form-control input-sm" id="cost" name="cost" placeholder="Cost" field-name="Cost"  value="${assetAssignData.cost}" data-validation="validate_float validate_length length2-10" data-validation-optional="true">
 			              	</div>
 				          </div>
 				          
@@ -420,7 +420,7 @@ function getCustomDependentField(sectionId){
 
 <script type="text/javascript">
  function validateAssetSno(assetId) {
-	 var assetSno = $("#sno").val(); 
+	 var assetSno = $("#sno").val().trim(); 
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");
