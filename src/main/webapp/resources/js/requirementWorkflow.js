@@ -630,11 +630,12 @@ function RequirementWorkflow(){
 					    	  	"targets": colIndex++,
 					    	  	"sortable": false,
 					    	  	"render": function(data, type, workflowTask, meta) {
+					    	  		var result = "";
 					    	  		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_WORKFLOW\')">';
-					    	  		 var result = "";
 					    	  		 result = result +"<div class='tbldata-dotdot-vsm'><a class='glyphicon glyphicon-trash text-danger ml' title='Delete' onclick='requirementWorkflow.deleteAssignTaskpoup(\""+workflowTask.uuid+"\",\""+workflowTask.workFlowTaskName+"\")'></a></div>";
-				  	             	 return result;
-				  	             	'</sec:authorize>';
+					    	  		'</sec:authorize>';
+					    	  		 return result;
+				  	             	
 					    	  	}
 					        }],
 					        "scrollCollapse": false,
