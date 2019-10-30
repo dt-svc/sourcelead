@@ -152,6 +152,7 @@ function updateFeedbackQuestionnaireTimer(questTemplUuid,stageId,submissionId,mi
 }
 </script>
 <script>
+var timer;
 function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, seconds) {
 	var end = new Date();
 	end.setMinutes(end.getMinutes() + minutes); 
@@ -160,13 +161,12 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 	var _minute = _second * 60;
 	var _hour = _minute * 60;
 	var _day = _hour * 24;
-	var timer;
 	 var timerDisplayText= "";
 	function showRemaining() {
 		var now = new Date();
 		var distance = end - now;
 		if (distance < 0) {
-			clearInterval(timer);
+			clearInterval(window.timer);
 			$('#countdownTimerLbl').text('Form Auto Submitted Successfully!');
 			$("#submitButton").addClass("disabled");
 			$('#countdownTimerLbl').toggleClass("textSuccess textBold");
@@ -192,7 +192,7 @@ function updateFeedbackTimerPerSecond(questUUid ,stageId, submissionId,minutes, 
 		                                 //questUUid, stageId, submissionId, minutes,seconds
 		updateFeedbackQuestionnaireTimer(questUUid,stageId,submissionId ,minutes,seconds, distance); 
 	}
-	timer = setInterval(showRemaining, 1000);
+	window.timer = setInterval(showRemaining, 1000);
 }
 
 </script>
@@ -221,7 +221,7 @@ function saveQuestionnaireTemplate(){
 	        var totalPointsArray = new Array();
 	        var totalPoints = 0;
 	        var submittedPoints = 0;
-	        var myArray = new Array();
+	        var attemptsArray = new Array();
 	        $('.sjfb-field').each(function() {
 		    	  var $this = $(this); 
 		    	  var divId = $(this).attr('id');  
@@ -312,7 +312,9 @@ function saveQuestionnaireTemplate(){
 			     			attempts = 0;
 			     		 }
 			     		pointsArray.push(points);
+			     		
 			     	  }
+		     	 	attemptsArray.push(attempts);
 		     	  }else{
 		     		 attempts = $('#attemptId').html().trim();
 			     	  if(inputValue != null && inputValue != ""){
@@ -321,7 +323,9 @@ function saveQuestionnaireTemplate(){
 			     			 attempts = 0;
 			     		 }
 			     		pointsArray.push(points);
+			     		
 			     	  }	
+			     	 attemptsArray.push(attempts);
 		     	  } 
 		     	 
 		     		fields.push({
@@ -359,6 +363,7 @@ function saveQuestionnaireTemplate(){
 			        	} else if (result != null) {
 			        		submissionsCount++;
 			        		generateQuestionnaireFeedbackTemplateForm(result, qTemplateUuid, workflowStageUuid, requirementSubmissionId);
+			        		checkTotalAttemptsAndDisableSubmit(attemptsArray);
 			        		$(".mask, #modalTasktype").fadeOut();
 			        	} else {
 			        	    showError("Operation failed, please try again");
@@ -381,13 +386,30 @@ $('body').on('blur', '#questionnaireTemplate_form', function() {
 
 function calculateTotalPoints(pointsArray){
 	var totalP = 0;
-	var current = 0
+	var current = 0;
 	for(var i = 0; i<pointsArray.length ; i++ )
 	{
 		current = parseInt(pointsArray[i]);
 		totalP += current;
 	}
 	return totalP;
+}
+
+function checkTotalAttemptsAndDisableSubmit(attemptsArray){
+	var totalAttempts = 0;
+	var current = 0;
+	for(var i = 0; i<attemptsArray.length ; i++ )
+	{
+		current = parseInt(attemptsArray[i]);
+		totalAttempts += current;
+	}
+	if(totalAttempts == 0){
+		clearInterval(window.timer);
+		$('#countdownTimerLbl').remove();
+		alert('Form Auto Submitted Successfully!');
+		$("#submitButton").addClass("disabled");
+		$('#countdownTimerLbl').toggleClass("textSuccess textBold");		
+	}
 }
 
 </script>
@@ -493,11 +515,12 @@ function generateQuestionnaireForm1(sourceleadUrl, templateUuid) {
         	}else{
         		valuesData = eval(result.jsonStringValues);
         	}
-        	if(valuesData){
-        		 $.each( valuesData, function( k, v ) {
-        			 labelAndAttemptsMap.set(v['label'], v['attempts']);
+        	if(data){
+        		 $.each( data, function( k, v ) {
+        			 labelAndAttemptsMap.set(v['label'], v['attempt']);
         		 });
         	}
+        	 
         	
         	if(result.uuid != null){
         	savedQuestionnaireUuid.set("savedQuestionnaireUuid", result.uuid);
