@@ -136,6 +136,7 @@ public class RequirementOfferRestController {
 	public @ResponseBody String getAllSubmittedAndShortListAndInterviewededCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientOffer", required=false) String isClientOffer,
+			                                              @RequestParam(value="isWorkflowConfigured", required=false) String isWorkflowConfigured,
 			                                              HttpServletRequest request) throws Exception {
 		
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -160,11 +161,11 @@ public class RequirementOfferRestController {
 			if(requirement.getParentRequirement() != null){
 				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidatesForClientOffer(requirement.getParentRequirement().getOrgLocationId(), requirement.getParentRequirement().getId(),existingApplicantsIds,isClientOffer);
 			}else{
-				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole,isClientRequirement);
+				shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole,isClientRequirement, isWorkflowConfigured);
 				
 			}
 		}else{
-			shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole,isClientRequirement);
+			shortListCandidatesList = requirementSubmissionService.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations, requirementId,existingApplicantsIds,isClientOffer,loginUser,loginUserRole,isClientRequirement,isWorkflowConfigured);
 			
 		}
 		
