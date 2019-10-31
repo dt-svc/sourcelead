@@ -44,11 +44,14 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 						       <b class='appStatusNewcolor'>${submissionStatus}</b>
 						  </c:if>
 						  <c:if test="${submissionStatus == 'REJECTED'}">
-						        <i class='pull-right glyphicon glyphicon-comment rejectedHover moveErrorMsgUp colB'>
-					            <div class='app_error_mes' id="rejectedMessage1${expenses.id}">${expenseApproverHierarchy}</div>
+						   <b class='appStatusRejcolor pull-left mr'>${submissionStatus}</b>
+						     <i class='glyphicon glyphicon-comment rejectedHoverDiv colorRed pull-left positionRelative mt10'>
+						       <div class="clearfix mt10"></div>
+						         <div class='clearfix submissionRejectedDiv' id="rejectedMessage1${expenses.id}">${expenseApproverHierarchy}</div>
 						      </i>
-						      <b class='proj_closed pull-right' style="width:75% !important;">${submissionStatus}</b>
 						  </c:if>
+					
+						  
 						</div>
              
 					<ul class="UiPado">
