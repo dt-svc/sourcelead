@@ -448,7 +448,7 @@ function changeDefaultemailConfig(ele, id) {
 	 $(".colorBtn").removeClass("disableBtn");	  
 	
 	 var domainName = $('#emailId').val().split("@")[1];
-	 if(typeof domainName != 'undefiend' && domainName != ""){
+	 if(typeof domainName != 'undefined' && domainName != ""){
 		 $('#parserEmailId').val("@"+domainName);
 		 $('#parserPasswordId').val("");
 	 }
