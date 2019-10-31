@@ -26,10 +26,12 @@
 							<tbody>
 								<c:forEach var="payheadErn" items="${orgLevelPayheads}">
 									<c:if test="${payheadErn.type == 'Earnings' && payheadErn.totalForfrequencyLevel != '0' && payheadErn.totalForfrequencyLevel != '0.0' && payheadErn.totalForfrequencyLevel != '0.00' && payheadErn.totalForfrequencyLevel != '00.00'}">
+										<c:if test="${payheadErn.tax eq 'Taxable'}">
 										<tr>
 											<td>${payheadErn.name}</td>
 											<td><span class="paddingRight">&#8377;</span><fmt:formatNumber value="${payheadErn.totalForfrequencyLevel}" pattern="0.00"/></td>
 										</tr>
+										</c:if>
 									</c:if>
 								</c:forEach>
 							</tbody>
@@ -42,6 +44,40 @@
 						</table>
 					</div>
 				</div>
+				
+				<div class="col-md-4 mb">
+					<h5>Employer Contribution</h5>
+					<div class="clearfix approveTabelesStyles-inner">
+						<table class="table">
+							<thead>
+								<tr>
+								<th>&nbsp;</th>
+								<th>Amount</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach var="payheadErn" items="${orgLevelPayheads}">
+									<c:if test="${payheadErn.type == 'Earnings' && payheadErn.totalForfrequencyLevel != '0' && payheadErn.totalForfrequencyLevel != '0.0' && payheadErn.totalForfrequencyLevel != '0.00' && payheadErn.totalForfrequencyLevel != '00.00'}">
+									<c:if test="${payheadErn.tax eq 'NonTaxable'}">
+										<tr>
+											<td>${payheadErn.name}</td>
+											<td><span class="paddingRight">&#8377;</span><fmt:formatNumber value="${payheadErn.totalForfrequencyLevel}" pattern="0.00"/></td>
+										</tr>
+									</c:if>
+									</c:if>
+								</c:forEach>
+							</tbody>
+							<tfoot>
+								<tr>
+									<th>Total</th>
+									<td><span class="paddingRight">&#8377;</span><fmt:formatNumber value="${employerContribution}" pattern="0.00"/></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+				
+				
 				<div class="col-md-4 mb">
 					<h5>Deductions</h5>
 					<div class="clearfix approveTabelesStyles-inner">

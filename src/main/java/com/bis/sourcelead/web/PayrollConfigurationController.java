@@ -176,8 +176,15 @@ public class PayrollConfigurationController {
 	public ModelAndView payheadList(HttpServletRequest request)
 	{
 		ModelAndView model = new ModelAndView();
+		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
 		model.setViewName("indPayroll/payheadList");
+		try {
+			Boolean flag = payrollPayheadService.getPayrollPayheadListByOrgLocationId(orgLocationId);
+			model.addObject("isPayrollList", flag);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}

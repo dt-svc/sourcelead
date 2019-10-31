@@ -2,6 +2,9 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
  
+ <script type="text/javascript" src='/pms/resources/js/expenseApproveOrReject.js'></script>
+ 
+ 
 <tr style="display: none;">
 		   <input type="hidden" id="totalRows" name="totalRows" value="${totalRows}">
 	       <input type="hidden" id="pageCount" name="totalRowsPage" value="${pageCount}">
@@ -70,7 +73,7 @@
 <td>
 	<div class="sm" title="${expApproverHierarchy.totalAmount}">
 	<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\',\'ROLE_VIEW_EMPLOYEE_EXPENSES\')">
-		<a  href="/pms/addApprovalExpense?expenseId=${expApproverHierarchy.expenseId}&expenseLocationCode=${expApproverHierarchy.locationsCode}&type=view" class="ExpAmount">${expApproverHierarchy.totalAmount}</a>
+		<a  href="/pms/addApprovalExpense?expenseId=${expApproverHierarchy.expenseId}&expenseLocationCode=${expApproverHierarchy.locationsCode}&type=view" onclick="autoRefreshStatus('${expApproverHierarchy.expenseId}');" class="ExpAmount">${expApproverHierarchy.totalAmount}</a>
 	</sec:authorize>
 	<sec:authorize access="!hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\',\'ROLE_VIEW_EMPLOYEE_EXPENSES\')">
 		<span>${expApproverHierarchy.totalAmount}</span>
@@ -89,8 +92,8 @@
       <c:if test="${not empty expApproverHierarchy.expenseApprovalStatus && expApproverHierarchy.expenseApprovalStatus == 'SUBMITTEDFORAPPROVAL'}" >
           <div class='sm text-center'id="action${expApproverHierarchy.expId}">
 	           <sec:authorize access="hasAnyRole(\'ROLE_APPROVE_EMPLOYEE_EXPENSES\')"> 
-		           <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveExpenseByExpenseId("${expApproverHierarchy.expId}","${expApproverHierarchy.tdSpanLength}","approval");'></i>
-		          |<i class='fa fa-times' title='Reject'  alt='Rejected' onclick='rejectExpenseByExpenseId("${expApproverHierarchy.expId}","${expApproverHierarchy.tdSpanLength}","approval");'></i>
+		           <i class='fa fa-check' title='Approve' alt='Approve'  onclick='approveExpenseByExpenseId("${expApproverHierarchy.expId}","${expApproverHierarchy.tdSpanLength}","approval","list");'></i>
+		          |<i class='fa fa-times' title='Reject'  alt='Rejected' onclick='rejectExpenseByExpenseId("${expApproverHierarchy.expId}","${expApproverHierarchy.tdSpanLength}","approval","list");'></i>
 	           </sec:authorize>
          </div> 
       </c:if>

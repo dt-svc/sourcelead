@@ -89,7 +89,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 								<table class="table table-itdeclaration table-bordered">
 									<thead>
 										<tr>
-											<th colspan="4" class="text-info">${section.name}</th>
+											<th colspan="1" class="text-info">${section.name}</th>  <th colspan="3" class="text-info">${section.maxLimit}</th>
 										</tr>
 										<tr>
 											<th>Items</th>
