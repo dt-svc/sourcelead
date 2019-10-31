@@ -1008,15 +1008,18 @@ function candidateEmptyVendorContact(){
 </script>
 <script>
     $(".clearUpload").click(function () {
+    	$('#candidate_form').trigger("reset");
         $("#uploadFile").val('');
         $(".clearUpload").hide();
         $("#candidate_form input[data-id*=uploadBtn]").remove();
-        $("#firstName").val('');
-        $("#lastName").val('');
-        $("#email").val('');
-        $("#mobilePhone").val('');
         $('#candidateSkills').val('').trigger('chosen:updated');
+        $('#candidateEducation').val('').trigger('chosen:updated');
         $('#emailDiv').find('p.jquery_form_error_message').remove();
+        $("#experienceYears option:selected").val('default');
+        $("#experienceYears").selectpicker("refresh");
+        $("#experienceMonths option:selected").val('default');
+        $("#experienceMonths").selectpicker("refresh");
+        
     });
 </script>
 
