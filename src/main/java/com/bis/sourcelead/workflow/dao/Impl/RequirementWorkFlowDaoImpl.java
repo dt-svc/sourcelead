@@ -1041,14 +1041,14 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			  // Below condition is added not show show interview and offer stage in drop down list added by SRINIVAS SABBU ON 25-SEP-2019.
 			  //16-october-2019
 			  //commented if blocks to remove the conditions for applicants when moved to next stage in jobs pipeline.
-			  /*if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
+			  if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
 					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
-				} */
+				} 
 			  	if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
-				} /*else {
+				} else {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
-				}*/
+				}
 			     query =query	+ " order by workflowstages.seqOrder";
 			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")|| stageShortCode.equalsIgnoreCase("INTERVIEW_ACCEPT")) {
 			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "INTERVIEW").setLong("orgLocationId", orgLocations.getId()).list();
