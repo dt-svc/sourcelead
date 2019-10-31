@@ -88,6 +88,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.SourceleadFormFields;
@@ -96,6 +97,7 @@ import com.bis.sourcelead.entity.UploadXlsHistory;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UsersImport;
 import com.bis.sourcelead.entity.XlsBulkUploadHistroy;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.CandidateService;
@@ -107,6 +109,7 @@ import com.bis.sourcelead.service.LookUpDataService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -218,6 +221,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	
 	@Autowired
 	RequirementWorkFlowService requirementWorkflowService;
+	
+	@Autowired
+	private RequirementApproverHierarchyService requirementApproverHierarchyService;
 	
 	@Value("${env}")
 	 private String environment;
@@ -778,6 +784,36 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 						
 						// pass dto as parameter
 						RequirementDTO requirementDTO = commonUtil.getRequirementDTO(req);
+						List<String> parallelApprover = new LinkedList<>();
+						List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(req.getId());
+						if(list1 != null && !list1.isEmpty()) {
+							for (RequirementApproverHierarchy rah : list1) {
+								if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+									parallelApprover.add(rah.getApproverUserId().getId() + "");
+									requirementDTO.setParallelApprover(parallelApprover);
+								}
+								if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+									if(rah.getLevel() == 1) {
+										String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = sequentialApprover1;
+										req.setLevel1ApproverUserId(levelUserIds);
+										
+										requirementDTO.setSequentialApprover1(sequentialApprover1);
+										requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+									}
+									if(rah.getLevel() == 2) {
+										String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = sequentialApprover2;
+										req.setLevel2ApproverUserId(levelUserIds);
+										
+										requirementDTO.setSequentialApprover2(sequentialApprover2);
+										requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+									}
+								}
+							}
+						}
 						requirementElkUtil.saveElkRequirement(req,requirementDTO);	
 					}
 				}catch (Exception e) {
