@@ -1915,6 +1915,25 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 							vendorCandidate.setCreatedDate(new Date());
 							vendorCandidate.setUpdatedDate(new Date());
 							
+							vendorCandidate.setExperienceYears(candidate.getExperienceYears());
+							vendorCandidate.setExperienceMonths(candidate.getExperienceMonths());	
+							vendorCandidate.setNoticePeriod(candidate.getNoticePeriod());	
+							vendorCandidate.setSkillsName(candidate.getSkillsName());
+							vendorCandidate.setVisaType(candidate.getVisaType());
+							vendorCandidate.setPrimarySkill(candidate.getPrimarySkill());
+							vendorCandidate.setSummary(candidate.getSummary());
+							vendorCandidate.setExpectedRate(candidate.getExpectedRate());
+							vendorCandidate.setRateType(candidate.getRateType());
+							vendorCandidate.setExpectedRateCurrencey(candidate.getExpectedRateCurrencey());
+							vendorCandidate.setDesignation(candidate.getDesignation());
+							vendorCandidate.setDesignationOtherType(candidate.getDesignationOtherType());
+							vendorCandidate.setGender(candidate.getGender());
+							vendorCandidate.setMaritalStatus(candidate.getMaritalStatus());
+							if(candidate.getDateOfBirth() != null) {
+								vendorCandidate.setDateOfBirth(candidate.getDateOfBirth());
+							}
+							
+							
 							Candidate savedCandidate = candidateDao.storeCandidate(vendorCandidate);
 	    					saveOrUpdateCandidateElkDocument(savedCandidate);
 	    					

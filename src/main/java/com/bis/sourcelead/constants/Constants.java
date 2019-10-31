@@ -1400,7 +1400,7 @@ public class Constants {
     
     public static final String[] GENDER = { "Male", "Female", "Transgender"};
 
-    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Offshore C2C", "Other" };
 
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
