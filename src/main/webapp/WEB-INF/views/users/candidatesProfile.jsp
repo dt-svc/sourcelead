@@ -3,7 +3,7 @@
 <meta http-equiv="Expires" content="0">
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/candidate-common.css?staticTime=${staticTime}" rel="stylesheet">
 <%-- 
      @author : David Raju.
      this script is for edit Candidate.
@@ -378,11 +378,11 @@ function editCandidate(candidateId){
 							if(loginCountryName == 'United States'){
 								result = result + '<div class="clearfix mb10" id="errSsnNoDiv">';
 								result = result + '<div class="col-md-6 custom-fields">';
-								result = result + '<input class="form-control" id="ssnNumber" name="ssnNumber" value="'+ssnNumber+'" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
+								result = result + '<input class="form-control" id="ssnNumberUs" name="ssnNumber" value="'+ssnNumber+'" onkeyup="validateSsnNumberDuplicateChek();" onblur="validateSsnNumberDuplicateChek();" placeholder="000-00-0000" type="text"></input>';
+								result = result + '<input type="hidden" id="tempSsnNumber" value="'+json.ssnNumber+'" />';
 								result = result + '</div>';
 								result = result + '</div>';
 	              		        }
-							
 							result = result + '</div>';
 							
 							result = result + '<div class="clearfix mb10">';
@@ -2068,32 +2068,7 @@ function validateAadharNumber() {
 </script>
 
 <script type="text/javascript">
-function validateSsnNumberDuplicateChek() {
-	
-	  var ssnNumber = document.getElementById("ssnNumber").value;
-	 
-	  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
-		 $.ajax({
-		    	type: "GET",
-		    	 url:atsUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
-		        success: function(data) {
-		        	if(data == true){
-		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
-		        		  $("input#ssnNumber").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
-						  $("#store_candidate").attr('disabled','disabled');
-		        	}
-		        	else{
-		        		 $('input#ssnNumber').removeAttr( "record-exist record-exist-errormsg");
-		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
-                        $("#store_candidate").removeAttr("disabled");
-		        	}
-		        }
-		    });
-};
-</script>
-
-<script type="text/javascript">
-$('input#ssnNumber').mask('000-00-0000', {
+$('#ssnNumberUs').mask('000-00-0000', {
     translation: {
         '#': {
             pattern: "/[0-9]{9}/", optional: true
@@ -2102,6 +2077,40 @@ $('input#ssnNumber').mask('000-00-0000', {
    placeholder: ""
 });
 </script>
+
+
+<script type="text/javascript">
+function validateSsnNumberDuplicateChek() {
+	
+	  var ssnNumber = document.getElementById("ssnNumberUs").value;
+	  
+	  var tempSsnNumber = $('#tempSsnNumber').val(); 
+		if(tempSsnNumber != ssnNumber){
+			 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+			 $("#update_candidate").removeAttr("disabled");
+	  
+	  if(ssnNumber != "" && ssnNumber != null && ssnNumber != "undefined"){
+		 $.ajax({
+		    	type: "GET",
+		    	 url:atsUrl+"/validateSsnNumber?"+tokenParamName+"="+tokenValue+"&ssnNumber="+ssnNumber, 
+		        success: function(data) {
+		        	if(data == true){
+		        		  $('#errSsnNoDiv').find('p.jquery_form_error_message').remove();
+		        		  $("input#ssnNumberUs").after("<p class='jquery_form_error_message'>"+ssnNumber+" is Already Existed</span>");
+						  $("#update_candidate").attr('disabled','disabled');
+		        	}
+		        	else{
+		        		 $('input#ssnNumberUs').removeAttr( "record-exist record-exist-errormsg");
+		        		 $('#errSsnNoDiv').find('p.jquery_form_error_message').remove(); 
+                        $("#update_candidate").removeAttr("disabled");
+		        	}
+		        }
+		    });
+	  }
+	}
+};
+</script>
+
 
 <!-- Notice Period Type Other Script written By Prasad K-->
 

@@ -4,7 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
+<%-- <script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -5012,3 +5013,5 @@ function clearDateValue(id){
 <jsp:include page="associateDeductionSummary.jsp" />
 <jsp:include page="associationContributionSummary.jsp" />
 <jsp:include page="associateSalSummary.jsp" />
+
+<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>

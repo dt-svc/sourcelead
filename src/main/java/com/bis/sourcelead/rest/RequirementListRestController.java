@@ -134,6 +134,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
@@ -2253,6 +2254,18 @@ public class RequirementListRestController {
 						List<Candidate> candidateList = new ArrayList<>();
 						candidateList.add(candidate);
 						requirementSubmission.setScore(requirementSubmission.getCandidateScore());
+						
+						RequirementWorkFlowStages workflowSatge = requirementWorkFlowService.getRequirementWorkFlowStagesDetails(submissionType,workflowId, loginOrgLocation.getId());
+						if(workflowSatge != null){
+							RequirementQuestionnaireFeedbackTemplate feedbacTemplate= requirementWorkFlowService.getSubmittedQuestionnaireUuidByWorkflowStage(workflowSatge.getUuid(), requirementSubmission.getId(), loginOrgLocation.getId());	
+						if(feedbacTemplate != null){
+							requirementSubmission.setSubmittedQuestionrUuid("Submitted");
+						}else{
+							if(workflowSatge.getRequirementQuestionnaireTemplateId() != null)
+							requirementSubmission.setSubmittedQuestionrUuid("Not Submitted");
+						}
+						}
+						
 				}
 			}
 			file = requirementPipelineExportService.getWorkflowExportRequirementFile(requirementStatusList, loginOrgLocation, exportType, requirementId, workflowId, submissionType, requirementSubmissionCounts);
