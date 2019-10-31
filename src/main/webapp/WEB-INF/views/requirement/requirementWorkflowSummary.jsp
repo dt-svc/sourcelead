@@ -1080,7 +1080,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"        <input id='saveBackOut' type='button' class='btn' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
-        $("#popUp").append(result);
+        $("#popUp").empty().append(result);
         $("#backOutApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
     }else if(selectBox == "REJECTED"){
@@ -1114,7 +1114,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
-        $("#popUp").append(result);
+        $("#popUp").empty().append(result);
         $("#rejectApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
     }else if(selectBox == "JOINED"){
@@ -1144,7 +1144,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
     	                result = result +"</form>";
     	                result = result +"</div>";
-    	                $("#popUp").append(result);
+    	                $("#popUp").empty().append(result);
     	                $("#joinedApplicant"+submissionId).slideDown(200);
     	                $(".project_inn_mask").fadeIn(200);
     	                var locationDate ='${SourceLeadWeb_dateFormat}'; 
@@ -1255,7 +1255,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
 		    		result =result+"for the "+responseData.stageName +"</div>";
 		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 		    		result = result +" </div>";
-					$("#popUp").append(result);
+					$("#popUp").empty().append(result);
 					$("#popUp").show();
 					$("#remove_user_pop").slideDown(200);
 					$(".project_inn_mask").fadeIn(200);
