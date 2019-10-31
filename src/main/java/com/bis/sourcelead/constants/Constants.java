@@ -1398,6 +1398,7 @@ public class Constants {
 	public static final String[] DAYWISE_TIMESHEET_REPORTS = {"Timesheet Date","Day","Employee Id","Employee Name","Employee Email","Department","Ref/Ticket No","Project Name","Task","Billable Hours","Non-Billable Hours","Status","Comments","Submitted On","Approved On","Location"};
 	
 	public static final String BOOLEAN_TRUE = "true";
+	public static final String BOOLEAN_FALSE = "false";
 	public static final String LOCAL_TAX_YES = "YES";
 	public static final String LOCAL_TAX_NO = "NO";
 
