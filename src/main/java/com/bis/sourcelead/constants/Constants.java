@@ -1537,6 +1537,8 @@ public class Constants {
 
 	public static final String NOTIFICATION_LEAVE_TITLE = "Leave Status";
 	
+	public static final String[] LEAVE_CONFIGURATION_ROLES = { "Reporting Manager", "Project Manager", "Team Leader"};
+
 	public static final String IT_DECRALARATION_HEADER1 = "INCOME TAX DECLARATION FORM - F.Y. ";
 	public static final String IT_DECRALARATION_HEADER2 = "(To be used to declare investment that will be made during the period from ";
 	public static final String[] IT_DECRALARATION_FOOTER = {"DECLARATIONS","I hereby declare that the information given above is correct and true in all respects. I am also aware that the company will be considering the above details in utmost good faith based on the details provided by me and that I am personally liable for any consequences arising out of errors, if any, in the above information",
