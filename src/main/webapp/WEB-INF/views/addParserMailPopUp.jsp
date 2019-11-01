@@ -80,7 +80,7 @@ function saveEmailParsers(){
 			//$("#save_title").addClass('button').val('Processing..');
 		//var formData = $($('#user_manuals_form')[0]).serialize();
 		var formData = getFormData1("email_parser_form");
-		$( "#save_email_parser" ).addClass('button').val('Processing..');
+		$( "#save_email_parser" ).addClass('disabled');
 		$("#ConfigLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 		$.ajax({
@@ -95,6 +95,8 @@ function saveEmailParsers(){
 			  			alert("Mail configured Successfully!")
 			  			closeEmailNotifications();
 			  			getParserEmailList();
+			  			$( "#save_email_parser" ).removeClass('disabled');
+			  			
 			  		}else if(result=="failure"){
 			  			$("#ConfigLoading").removeAttr("style");
 			  			//closeEmailNotifications();
