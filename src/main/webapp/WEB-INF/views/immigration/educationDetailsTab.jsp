@@ -195,7 +195,7 @@
 				<label class="col-md-4 padding_left">File</label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
-					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtnEducation"  class="upload">
 					  </span> </label>
 					<input type="text" class="form-control" name="docFile" id ="uploadFileEducation" readonly placeholder="Attachment" field-name="Attachment" data-validation-optional = "true" data-validation = "validatepdf">
