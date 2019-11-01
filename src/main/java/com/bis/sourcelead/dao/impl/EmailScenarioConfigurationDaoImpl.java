@@ -307,7 +307,7 @@ public class EmailScenarioConfigurationDaoImpl implements EmailScenarioConfigura
 	public Boolean validateParser(String parserEmailId, Long orgLocId) { 
 		Session  session = this.sessionFactory.getCurrentSession();
 		boolean flag=false;
-		String query = " from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId";
+		String query = " from EmailScenarioConfiguration esc where esc.emailId = :parserEmailId and USAGE_TYPE = "+Constants.RESUME_PARSING;
 		List<EmailScenarioConfiguration> parserEmailList = session.createQuery(query).setString("parserEmailId", parserEmailId).list();
 		if(parserEmailList != null && parserEmailList.size()>0){
 			flag =true;
