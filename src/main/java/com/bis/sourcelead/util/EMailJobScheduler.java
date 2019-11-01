@@ -4631,8 +4631,8 @@ public class EMailJobScheduler {
 	
 	
 	@SuppressWarnings({ "deprecation", "unused" })
-	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
 	@Async
 	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
 		try {
