@@ -7,7 +7,11 @@
 
 <script> 
 	$(document).ready(function(){
-		getPayRollPayheadList()
+		var booleanValue = '${isPayrollList}';
+		if(booleanValue == "false"){
+		    refreshPayheads();
+		} 
+		getPayRollPayheadList();
 	});
 </script>
 

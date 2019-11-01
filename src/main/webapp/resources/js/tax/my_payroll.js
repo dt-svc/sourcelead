@@ -47,7 +47,7 @@ function getFormSubmissionMasterList() {
 					text += "	<td>";
 					text += "		<ul class='list-unstyled list-inline mb0'>";
 					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + submissionList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
-					text += "			<li><a href=" + pmsUrl + "/forms/viewForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+					text += "			<li><a href=" + pmsUrl + "/myPayroll/forms/viewForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
 					if(submissionList[e].status === 0) {
 						text += "				<li><a href=" + pmsUrl + "/myPayroll/forms/editForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";	
 					}

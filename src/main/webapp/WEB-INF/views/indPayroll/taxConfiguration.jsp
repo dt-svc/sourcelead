@@ -51,7 +51,8 @@
 								value="${tax.employeePFContribution}" placeholder="Enter Organisation Contribution %">
 						</div>
 					</div>
-					<div class="col-md-5">
+					
+					<%-- <div class="col-md-5">
 						<label class="clearfix">EDLI</label>
 						<div class="clearfix">
 							<input type="text" class="form-control" field-name="EDLI" name="edli" 
@@ -80,7 +81,8 @@
 								field-name="EDLI Admin Charges" name="edliAdminCharges"
 								data-validation="required validate_float validate_length length1-5" name="edliAdminCharges" value="${tax.edliAdminCharges}" placeholder="Enter EDLI Admin Charges">
 						</div>
-					</div>
+					</div> --%>
+					
 					<div class="col-md-5">
 						<label class="clearfix">PF Ceil Value</label>
 						<div class="clearfix">
