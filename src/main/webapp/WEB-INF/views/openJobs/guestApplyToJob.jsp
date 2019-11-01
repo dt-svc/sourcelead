@@ -528,10 +528,11 @@ $(document.body).on('change', '#uploadBtn' ,function(){
 					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
 					     		 }
 					        	 
-					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
-					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
-					        	 $("input[name='city']").val(json.city === null && json.city !== "" ? json.city : "");
-					        	 $("input[name='zipcode']").val(json.zipcode === null && json.zipcode !== "" ? json.zipcode : "");
+					        	 $("input[name='country']").val(json.country !== null && json.country !== "" ? json.country : "");
+					        	 $("input[name='state']").val(json.state !== null && json.state !== "" ? json.state : "");
+					        	 $("input[name='city']").val(json.city !== null && json.city !== "" ? json.city : "");
+					        	 $("input[name='zipcode']").val(json.zipcode !== null && json.zipcode !== "" ? json.zipcode : "");
+					        	 $("input[name=location]").val(json.addressLine1 !== null && json.addressLine1 !== "" ? json.addressLine1 : "");
 					        	 
 					        	 $("#DOB").val(json.dob !== null && json.dob !== "" ? json.dob : "");
 					        	 $("input[name='Current/LastCompany']").val(json.employeers);

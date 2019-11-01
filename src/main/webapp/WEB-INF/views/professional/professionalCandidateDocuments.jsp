@@ -246,7 +246,7 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'<div class="clearfix mb10" id="uploadDocDiv">';
 	result = result+'<div class="col-md-12 validation_p validationPara">';
 	result = result+'<div class="input-group" id="uploadFileGroup">';
-	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();removeValidationProfCanDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'<label class="input-group-btn"   onchange="uploadFileDoc();removeValidationProfCanDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File';
 	result = result+'<input type="file" name="uploadBtn" id="uploadBtn" style="display: none;"  multiple="" class="upload">';
 	result = result+'</span> </label>';
 	result = result+'<input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Document..." field-name="Document" data-validation="required validate_Space validate_docimgpdf">';
