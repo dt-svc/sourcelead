@@ -793,20 +793,20 @@ public class FileUploadUtil {
 				    	  candidateDto.setGender(resume.getGender());
 				    	  candidateDto.setMaritalStatus(resume.getMaritalStatus());
 				    	  candidateDto.setCity(resume.getCity());
-				    	  candidateDto.setCandidateEducation(resume.getEducations().toString());
+				    	  candidateDto.setCandidateEducation(resume.getEducations().toString().replace("[", "").replace("]", ""));
 				    	 
-				    	  candidateDto.setCandidateSkills(resume.getSkills().toString());
+				    	  candidateDto.setCandidateSkills(resume.getSkills().toString().replace("[", "").replace("]", ""));
 				    	 if(resume.getEmployeers()!=null) {
 				    	 candidateDto.setCandidateEmployers(resume.getEmployeers().toString());
 				    	 }
-				    	 candidateDto.setCandidateEducation(resume.getEducations().toString());
+				    	 candidateDto.setCandidateEducation(resume.getEducations().toString().replace("[", "").replace("]", ""));
 				    	 for(int z=0;z<resume.getPhoneNumbers().size();z++) {
 				    		 if(z==0) {
 				    			 String abc = resume.getPhoneNumbers().toString().split(",")[0];
-				    			 candidateDto.setMobilePhone(abc.replace("[", ""));
+				    			 candidateDto.setMobilePhone(abc.replace("[", "").replace("]", ""));
 				    		 }if(z==1) {
 				    			 String bcd = resume.getPhoneNumbers().toString().split(",")[1];
-				    			 candidateDto.setAlternateMobilePhone(bcd.replace("]", ""));
+				    			 candidateDto.setAlternateMobilePhone(bcd.replace("[", "").replace("]", ""));
 				    		 }
 				    	 }
 				    	 candidateDto.setLocation(resume.getAddressLine1());
