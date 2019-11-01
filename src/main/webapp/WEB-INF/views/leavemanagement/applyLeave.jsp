@@ -204,7 +204,7 @@ window.onload = function() {
                   
                   <div class="input-group ratetype col-md-12 pull-left" title="" id="uploadFileGroup">
 	                      <label class="input-group-btn"> 
-	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Choose File
+	                        <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Choose File
 	                          <input type="file" id="uploadBtn" style="display: none;" class="upload">
 	                        </span> 
 	                      </label>
