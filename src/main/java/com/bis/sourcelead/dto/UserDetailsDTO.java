@@ -13,6 +13,8 @@ public class UserDetailsDTO implements Serializable{
 	private String password;
 	
 	private List<String> roles;
+	
+	private String orgLocationCode;
 
 	public String getUsername() {
 		return username;
@@ -36,6 +38,14 @@ public class UserDetailsDTO implements Serializable{
 
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+
+	public String getOrgLocationCode() {
+		return orgLocationCode;
+	}
+
+	public void setOrgLocationCode(String orgLocationCode) {
+		this.orgLocationCode = orgLocationCode;
 	}
 	
 	
