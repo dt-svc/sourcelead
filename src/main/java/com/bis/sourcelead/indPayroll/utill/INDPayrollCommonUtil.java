@@ -318,6 +318,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getGroupId())) {
 				UserGroup userGroup = new UserGroup();
 				userGroup.setId(Long.parseLong(paysheetFrequencyDTO.getGroupId()));
+				userGroup.setGroupName(paysheetFrequencyDTO.getGroupName());
 				indPaysheetFrequency.setUserGroup(userGroup);
 			}
 			if(StringUtils.isNotEmpty(paysheetFrequencyDTO.getFrequencyStartDateStr())) {
@@ -439,6 +440,27 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setLoanAdvHistoryDTOList(getAssociateLoanAndAdvancesHistoryDTOListFromAssociateLoanAndAdvancesHistoryList(employeePayroll, loanAdvHistorySet, orgLocations));
 				
 				
+				//get yearly taxable amount in current frequency
+				BigDecimal totalCtcAmountGrossPay = new BigDecimal("0.00");
+				for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : payHeadHistorySet) {
+					if(Constants.IND_PAYROLL_PAYHEAD_EARNINGS.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
+						if(Constants.TAXABLE.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getTax())) {
+							
+							totalCtcAmountGrossPay = totalCtcAmountGrossPay.add(associatePayrollPayheadHistory.getMonthly());
+						}
+					}
+				}
+				payrollDTO.setTotalCtc(totalCtcAmountGrossPay);
+				
+				//Monthly deduction total 
+				BigDecimal totalDeductions = new BigDecimal("0.00");
+				for(AssociatePayrollPayheadHistory associatePayrollPayheadHistory : payHeadHistorySet) {
+					if(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION.equalsIgnoreCase(associatePayrollPayheadHistory.getPayrollPayhead().getType())) {
+						totalDeductions = totalDeductions.add(associatePayrollPayheadHistory.getMonthly());
+					}
+				}
+				payrollDTO.setNetPay(totalCtcAmountGrossPay.subtract(totalDeductions));
+				
 				payrollDTO.setRegularHours(employeePayroll.getRegularHours());
 				payrollDTO.setRegularHrsAmt(employeePayroll.getRegularHoursAmount());
 				payrollDTO.setOvertimeHours(employeePayroll.getOverTimeHours());
@@ -446,7 +468,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payrollDTO.setNoOfLeaves(employeePayroll.getNoOfLeaves());
 				payrollDTO.setNoOfDays(employeePayroll.getNoOfDays());
 				payrollDTO.setGrossPay(employeePayroll.getGrossPay());
-				payrollDTO.setNetPay(employeePayroll.getNetPay());
 				payrollDTO.setLopAmount(employeePayroll.getLopAmount());
 				payrollDTO.setTds(employeePayroll.getTds());
 				payrollDTO.setProfessionalTax(employeePayroll.getProfessionalTax());
@@ -624,6 +645,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 					payHeadHistoryDTO.setPayrollPayheadName(payHeadHistory.getPayrollPayhead().getName());
 					payHeadHistoryDTO.setPayrollPayheadShortCode(payHeadHistory.getPayrollPayhead().getShortCode());
 					payHeadHistoryDTO.setPaySlip(payHeadHistory.getPayrollPayhead().getShowInPayslip());
+					payHeadHistoryDTO.setTaxStatus(payHeadHistory.getPayrollPayhead().getTax());
 				}
 				payHeadHistoryDTO.setMonthly(payHeadHistory.getMonthly());
 				payHeadHistoryDTO.setAnnualy(payHeadHistory.getAnnualy());
@@ -773,7 +795,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				}
 			}
 		}
-		associatePayrollPayheadDTOLists.addAll(associatePayrollPayheadDTOList);
+		//associatePayrollPayheadDTOLists.addAll(associatePayrollPayheadDTOList);
 		return associatePayrollPayheadDTOLists;
 	}
 	
@@ -786,6 +808,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadName(payHeadHistoryDTO.getPayrollPayheadName());
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadShortCode(payHeadHistoryDTO.getPayrollPayheadShortCode());
 		associatePayrollPayheadHistoryDTO.setPayrollPayheadType(payHeadHistoryDTO.getPayrollPayheadType());
+		
+		associatePayrollPayheadHistoryDTO.setTaxStatus(payHeadHistoryDTO.getTaxStatus());
+		
 		associatePayrollPayheadHistoryDTO.setMonthly(payHeadHistoryDTO.getMonthly());
 		associatePayrollPayheadHistoryDTO.setAnnualy(payHeadHistoryDTO.getMonthly().multiply(new BigDecimal("12")));
 		associatePayrollPayheadHistoryDTO.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
@@ -1089,6 +1114,8 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			emailMessage.setFromEmail(loginUser.getEmail());
 
 			emailMessage.setFromName(loginUser.getFullName());
+			User user = userService.findByEmail(payrollApprover.getUser().getEmail());
+			//emailMessage.setToEmail(payrollApprover.getUser().getEmail());
 
 			//redirection uRl
 			String redirectURL ="/employeePayrollList-params-paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID();
@@ -1114,11 +1141,11 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 			globalVarsMap.put("GetTheCountNoOfAssociates", "" + frequency.getIndEmployeepayroll().size());
 
-			BigDecimal totAmount = new BigDecimal(0.0);
-			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
-				totAmount.add(indEmployeepayroll.getNetPay());
-			}
 			
+			BigDecimal totAmount = BigDecimal.ZERO; 
+			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
+				totAmount = totAmount.add(indEmployeepayroll.getNetPay());
+			}
 			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
 			// Set the login link when user click this link the page goes to redirect the
 			// sourcelead login page..
@@ -1149,6 +1176,15 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,
 					Constants.SEND_MAIL_TO_INDPAYROLL_APPROVER, new ArrayList<EmailAttachment>());
+			
+			StringBuilder notificationLink = new StringBuilder();
+			String actionLink="";
+		    actionLink = notificationLink.append(pmsUrl).append("/")
+					    .append("employeePayrollList?paySheetFrequencyUUID=" + frequency.getPaySheetFrequencyUUID())
+					    .toString();
+
+		    emailScenerioUtil.sendNotification(actionLink, loginUser, user, orgLocation, notificationScenario,new HashMap<String,String>());
+
 		}
 	}
 	
@@ -1223,7 +1259,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 
 			BigDecimal totAmount = new BigDecimal(0.0);
 			for (IndEmployeePayroll indEmployeepayroll : frequency.getIndEmployeepayroll()) {
-				totAmount.add(indEmployeepayroll.getNetPay());
+				totAmount = totAmount.add(indEmployeepayroll.getNetPay());
 			}
 			globalVarsMap.put("GetTheTotalAmount", totAmount.toString());
 			// Set the login link when user click this link the page goes to redirect the sourcelead login page..
@@ -1233,7 +1269,6 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			globalVarsMap.put("loginLink", loginLinkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +pmsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
 			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Payroll Approved</div></a>")
 			.toString());
-
 
 			// Set the notification link when user click this link the page goes to respective payroll summary.......
 
@@ -1248,8 +1283,13 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 			String notificationbody = null;
 			notificationbody = emailScenerioUtil.buildTemplateBody(notificationScenario.getBody(), globalVarsMap,notificationScenario);
 			notificationScenario.setBody(notificationbody);
+			StringBuilder notificationLink = new StringBuilder();
+			String actionLink="";
+		    actionLink = notificationLink.append(pmsUrl).append("/").append("employeePayrollList?paySheetFrequencyUUID="+frequency.getPaySheetFrequencyUUID()).toString();
 
-			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,Constants.SEND_APPROVED_MAIL_TO_REQUESTED_USERIND, new ArrayList<EmailAttachment>());
+		    commonUtil.sendTemplateEmail(emailMessage, globalVarsMap, orgLocation.getOrg(), orgLocation,Constants.SEND_APPROVED_MAIL_TO_REQUESTED_USERIND, new ArrayList<EmailAttachment>());
+		
+		    emailScenerioUtil.sendNotification(actionLink, loginUser,user, orgLocation, notificationScenario,new HashMap<String,String>());
 		}
 	}
 	
@@ -1664,7 +1704,9 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 		 			indDTO.setEmployee(jsonEmployeeObject.getLong("employee"));
 		 			indDTO.setEmpName(jsonEmployeeObject.getString("empName"));
 		 			indDTO.setOvertimeHours(jsonEmployeeObject.getString("overtimeHours"));
-		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+//		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("grossPay")));
+		 			indDTO.setGrossPay(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
+		 			indDTO.setTotalCtc(new BigDecimal(jsonEmployeeObject.getString("totalCtc")));
 		 			indDTO.setNetPay(new BigDecimal(jsonEmployeeObject.getString("netPay")));
 		 			indDTO.setRegularHrsAmt(new BigDecimal(jsonEmployeeObject.getString("regularHrsAmt")));
 		 			indDTO.setNoOfLeaves(new BigDecimal(jsonEmployeeObject.getString("noOfLeaves")));

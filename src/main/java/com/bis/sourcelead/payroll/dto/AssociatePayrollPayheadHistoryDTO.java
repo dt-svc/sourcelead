@@ -29,6 +29,8 @@ public class AssociatePayrollPayheadHistoryDTO  implements Serializable{
     private BigDecimal monthlyOld;
 	private BigDecimal annualyOld;
 	private String paySlip;
+	
+	private String taxStatus;
   	
 	
 	public Long getId() {
@@ -150,5 +152,11 @@ public class AssociatePayrollPayheadHistoryDTO  implements Serializable{
 	}
 	public void setPaySlip(String paySlip) {
 		this.paySlip = paySlip;
+	}
+	public String getTaxStatus() {
+		return taxStatus;
+	}
+	public void setTaxStatus(String taxStatus) {
+		this.taxStatus = taxStatus;
 	}
 }

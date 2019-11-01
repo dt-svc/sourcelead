@@ -2756,14 +2756,14 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 
 			//Date of Birth
-			if(!dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+			if(!dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
 				try {
 					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
-					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
+					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofBirth"));
 					String dateofbirth = formatter.format(date);
-					dataMigrationDTOJsonCopy.put("dateOfBirth", dateofbirth);
+					dataMigrationDTOJsonCopy.put("dateofBirth", dateofbirth);
 				} catch (Exception e) {
-					errorSet.put("dateOfBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
+					errorSet.put("dateofBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
 				}
 			}
 			

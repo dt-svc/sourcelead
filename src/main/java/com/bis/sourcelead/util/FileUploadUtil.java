@@ -1,9 +1,11 @@
 package com.bis.sourcelead.util;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,34 +19,21 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
@@ -62,10 +51,6 @@ import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
-import com.google.gson.Gson;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 import net.coobird.thumbnailator.Thumbnails;
 
@@ -762,7 +747,7 @@ public class FileUploadUtil {
 			ResumeParserJsonUtil resume = null;
 			  try {
 				   if("true".equalsIgnoreCase(isResumeparserEnabled)) {
-					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo);
+					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo,country);
 				   }else {
 					   resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
 				   }
@@ -808,17 +793,25 @@ public class FileUploadUtil {
 				    	  candidateDto.setGender(resume.getGender());
 				    	  candidateDto.setMaritalStatus(resume.getMaritalStatus());
 				    	  candidateDto.setCity(resume.getCity());
-				    	  candidateDto.setCandidateEducation(resume.getEducations().toString());
+				    	  candidateDto.setCandidateEducation(resume.getEducations().toString().replace("[", "").replace("]", ""));
 				    	 
-				    	 candidateDto.setCandidateSkills(resume.getSkills().toString());
+				    	  candidateDto.setCandidateSkills(resume.getSkills().toString().replace("[", "").replace("]", ""));
 				    	 if(resume.getEmployeers()!=null) {
 				    	 candidateDto.setCandidateEmployers(resume.getEmployeers().toString());
 				    	 }
-				    	 candidateDto.setCandidateEducation(resume.getEducations().toString());
-				    	 candidateDto.setPhoneNumber(resume.getPhoneNumbers().toString());
-				    	 candidateDto.setAddress(resume.getAddressLine1());
+				    	 candidateDto.setCandidateEducation(resume.getEducations().toString().replace("[", "").replace("]", ""));
+				    	 for(int z=0;z<resume.getPhoneNumbers().size();z++) {
+				    		 if(z==0) {
+				    			 String abc = resume.getPhoneNumbers().toString().split(",")[0];
+				    			 candidateDto.setMobilePhone(abc.replace("[", "").replace("]", ""));
+				    		 }if(z==1) {
+				    			 String bcd = resume.getPhoneNumbers().toString().split(",")[1];
+				    			 candidateDto.setAlternateMobilePhone(bcd.replace("[", "").replace("]", ""));
+				    		 }
+				    	 }
+				    	 candidateDto.setLocation(resume.getAddressLine1());
 				    	candidateDto.setDesignation(resume.getDesignation());
-				    	List<FileInfo> fileInfoList1 = new ArrayList<>();
+			    	List<FileInfo> fileInfoList1 = new ArrayList<>();
 						fileInfoList1.add(fileInfo);
 						candidateDto.setFileInfo(fileInfoList1);
 						candidateDto.setExperienceYears(Integer.toString(resume.getTotalYearsExp()));
@@ -865,7 +858,7 @@ public class FileUploadUtil {
 	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
-			String country, OrgLocations loginOrgLocation, User user) {
+			String country, OrgLocations loginOrgLocation, User user,String isResumeparserEnabled) {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -878,7 +871,14 @@ public class FileUploadUtil {
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
 			ResumeParserJsonUtil resume = null;
 			try {
-				resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
+				//resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
+				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+					logger.info("*******Resume Parser Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+				}else {
+					logger.info("*******Resume Parser without Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
+				}
 				resume.setFileInfo(fileInfo);
 				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
 					throw new Exception("Email ID missing");

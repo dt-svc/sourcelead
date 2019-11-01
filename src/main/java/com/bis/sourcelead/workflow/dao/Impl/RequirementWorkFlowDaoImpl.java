@@ -404,10 +404,13 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = " from RequirementQuestionnaireTemplate rq where rq.uuid =:templateUuid";
 			template= (RequirementQuestionnaireTemplate) session.createQuery(query).setString("templateUuid", templateUuid).uniqueResult();
+			if(template != null){
 			logger.debug("loading RequirementQuestionnaireTemplate -->" + template.getName());
-		} catch (HibernateException e) {
+			}
+			} catch (HibernateException e) {
 			logger.error(e+" in getQuestionnaireTemplateById DAO");
 			e.printStackTrace();
+			return null;
 		}
 		}
 		return template;
@@ -1041,14 +1044,14 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			  // Below condition is added not show show interview and offer stage in drop down list added by SRINIVAS SABBU ON 25-SEP-2019.
 			  //16-october-2019
 			  //commented if blocks to remove the conditions for applicants when moved to next stage in jobs pipeline.
-			  /*if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
+			  if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
 					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
-				} */
+				} 
 			  	if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
-				} /*else {
+				} else {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
-				}*/
+				}
 			     query =query	+ " order by workflowstages.seqOrder";
 			     if(stageShortCode.equalsIgnoreCase("SELECTED_ON_INTERVIEW") || stageShortCode.equalsIgnoreCase("CLIENT_INTERVIEW")|| stageShortCode.equalsIgnoreCase("INTERVIEW_ACCEPT")) {
 			    	 workflowStagesList = session.createQuery(query).setLong("workflowId", workflowId).setString("stageShortCode", "INTERVIEW").setLong("orgLocationId", orgLocations.getId()).list();
@@ -1105,12 +1108,11 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 		String query = "SELECT  question.id AS questionnaireId, question.NAME AS questionnaireName, "+
 				       "          question.UUID AS questionnaireUuid, stages.ID AS stageId, stages.STAGE_NAME AS stageName, stages.uuid AS stageUuid, COUNT(tasks.id) AS tasksCount " + 
 		
-						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages, " + 
-						"                  REQUIREMENT_QUESTIONNAIRE_TEMPLATE question, "+
-						"                  REQUIREMENT_WORKFLOW_TASKS tasks " + 
+						"            FROM  REQUIREMENT_WORKFLOW_STAGES stages " + 
+						"                  LEFT JOIN  REQUIREMENT_WORKFLOW_TASKS tasks ON tasks.REQUIREMENT_WORKFLOW_STAGES_ID = stages.ID, " + 
+						"                    REQUIREMENT_QUESTIONNAIRE_TEMPLATE question "+
 						
 						"		   WHERE  stages.REQUIREMENT_QUESTIONNAIRE_TEMPLATE_ID=question.ID" + 
-						"                 AND  tasks.REQUIREMENT_WORKFLOW_STAGES_ID=stages.ID "+
 						"                 AND  stages.STAGE_SHORT_CODE =:stageName" + 
 						"                 AND  stages.REQUIREMENT_WORKFLOW_ID =:workflowId" + 
 						"                 AND  stages.ORG_LOCATION_ID =:orgLocationId " +
