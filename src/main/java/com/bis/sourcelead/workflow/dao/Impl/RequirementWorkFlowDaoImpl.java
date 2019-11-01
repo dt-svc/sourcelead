@@ -404,10 +404,13 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = " from RequirementQuestionnaireTemplate rq where rq.uuid =:templateUuid";
 			template= (RequirementQuestionnaireTemplate) session.createQuery(query).setString("templateUuid", templateUuid).uniqueResult();
+			if(template != null){
 			logger.debug("loading RequirementQuestionnaireTemplate -->" + template.getName());
-		} catch (HibernateException e) {
+			}
+			} catch (HibernateException e) {
 			logger.error(e+" in getQuestionnaireTemplateById DAO");
 			e.printStackTrace();
+			return null;
 		}
 		}
 		return template;

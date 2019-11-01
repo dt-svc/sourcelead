@@ -1608,7 +1608,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				qDto.setJsonString(requirementQuestionnaireTemplate.getJsonString());
 				qDto.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
 				qDto.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+			}else{
+				qDto.setJsonString(Constants.BOOLEAN_FALSE);
 			}
+			
 		}else {
 			qDto.setJsonString(feedbackTemplateDto.getJsonString());
 			qDto.setJsonStringValues(feedbackTemplateDto.getJsonStringValues());
