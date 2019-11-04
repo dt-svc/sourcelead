@@ -2163,10 +2163,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					}
 
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
-				errorSet.put("dateOfBirth", "DOB is missing");
-				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
-				errorSet.put("dateOfBirth", "DOB is invalid date");
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
+				errorSet.put("dateofBirth", "DOB is missing");
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+				errorSet.put("dateofBirth", "DOB is invalid date");
 				}
 
 				/* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
@@ -2623,7 +2623,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 			}
 			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
-				errorSet.put("email", "Email field is missing");
+				errorSet.put("email", "Associate Email field is missing");
 			}else {
 				User userEmail = userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("email").toString().trim(), orgLocation.getId());
 				if (userEmail != null) {
@@ -2769,7 +2769,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			//Employment type
 			if(dataMigrationDTOJsonCopy.getString("designationType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
-				errorSet.put("designationType", "Designation Type field is missing");
+				errorSet.put("designationType", "Employment Type field is missing");
 			}else {
 				   if(!dataMigrationDTOJsonCopy.getString("designationType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
 					String designationType = dataMigrationDTOJsonCopy.getString("designationType");
@@ -2838,12 +2838,12 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if (!dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
 				Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("reportingManager").toString().trim());
 				if(matcher.matches() == false) {
-					errorSet.put("reportingManager", "Invalid Email");
+					errorSet.put("reportingManager", "Invalid Manager Email");
 				}
 			}
 			
 			if(dataMigrationDTOJsonCopy.getString("reportingManager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("reportingManager"))) {
-				errorSet.put("reportingManager", "Email field is missing");
+				errorSet.put("reportingManager", "Manager Email field is missing");
 			}else {
 				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("reportingManager").toString().trim());
 				if (userEmail == null) {

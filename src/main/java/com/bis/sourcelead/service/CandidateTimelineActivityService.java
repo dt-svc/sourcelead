@@ -11,5 +11,5 @@ import com.bis.sourcelead.entity.User;
 public interface CandidateTimelineActivityService {
 	public List<CandidateTimelineActivity> getCandidateTimelineActivities(Long candidateId, Long orgLocationId) throws Exception;
 	
-	HashSet<CandidateTimelineActivity> getCandidateTimelineActivityDetails(User user, OrgLocations orgLocations, Candidate candidate, String actionOn, String actionDesc, String actionSummary, String actionIcon) throws Exception;
+	HashSet<CandidateTimelineActivity> getCandidateTimelineActivityDetails(User user, OrgLocations orgLocations, Long candidateId, String actionOn, String actionDesc, String actionSummary, String actionIcon) throws Exception;
 }
