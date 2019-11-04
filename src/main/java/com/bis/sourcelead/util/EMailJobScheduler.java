@@ -418,7 +418,11 @@ public class EMailJobScheduler {
 	private ProjectTasksService projectTasksService;
 	
 	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
 	private ReadEmail readEmail;
+
 
 	private static boolean startEmailParsingProcess = true;
 	
@@ -538,7 +542,7 @@ public class EMailJobScheduler {
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
 							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,isResumeparserEnabled);
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,candidateGlobalUtil,isResumeparserEnabled);
 		                    }
 							}catch(Exception e) {
 								logger.error("Exception Caught while parsing resume for the EmailId >>>:  "+ email.getEmailId());
@@ -4631,8 +4635,8 @@ public class EMailJobScheduler {
 	
 	
 	@SuppressWarnings({ "deprecation", "unused" })
-	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	//@Scheduled(cron = "0 * * * * *") // Scheduled for every minute
+	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
 	@Async
 	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
 		try {

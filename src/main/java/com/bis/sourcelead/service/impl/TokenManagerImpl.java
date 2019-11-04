@@ -57,7 +57,7 @@ public class TokenManagerImpl implements TokenManager {
 		if(tokens == null){
 			tokens = new HashMap<>();
 		}*/
-		
+		System.out.println(" ===========Creating new token stateted Here +++++++++++++++++++");
 		String token = generateToken();;
 		TokenInfo tokenInfo = new TokenInfo(token, userDetails);
 		/*Collection<TokenInfo> tokenInfoList = null;
@@ -84,11 +84,7 @@ public class TokenManagerImpl implements TokenManager {
 		    UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
 		    userDetailsDTO.setUsername(userDetails.getUsername());
 		    userDetailsDTO.setPassword(userDetails.getPassword());
-		    if(userDetails.getAuthorities() != null) {
-		    	List<String> roles = userDetails.getAuthorities().stream().map(ga -> ga.getAuthority()).collect(Collectors.toList());
-		    	userDetailsDTO.setRoles(roles);
-		    }
-			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbaseForMobiles(token, userDetailsDTO, request);
+		   
 			//tokens.put(userDetails, tokenInfo);
 			//(user.getId());
 			User user = userService.findByUserName(userDetails.getUsername());
@@ -97,6 +93,12 @@ public class TokenManagerImpl implements TokenManager {
 			try {
 				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
 				OrgLocations orgLocations = userRole.getOrgLocations();
+				 if(userDetails.getAuthorities() != null) {
+				    	List<String> roles = userDetails.getAuthorities().stream().map(ga -> ga.getAuthority()).collect(Collectors.toList());
+				    	userDetailsDTO.setRoles(roles);
+				    }
+				 userDetailsDTO.setOrgLocationCode(orgLocations.getLocationCode());
+				  userStatsCacheHelper.saveLoginUserSessionStoreToCouchbaseForMobiles(token, userDetailsDTO, request);
 				if(orgLocations.getTimezone() != null) {
 					orgLocations.setTimeZoneId(orgLocations.getTimezone().getId() + "");
 				}
@@ -110,10 +112,12 @@ public class TokenManagerImpl implements TokenManager {
 				SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 				SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+				System.out.println(" New token is created for the user id "+user.getId()+", Orglocation Id :"+orgLocations.getId()+", for user role id  : "+userRole.getId());
 			} catch (Exception e) {}
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+			System.out.println(" ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 		//}
-
+         
 		
 		//session.setAttribute("validUsers", validUsers);
 	   //	session.setAttribute("tokens", tokens);
