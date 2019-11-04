@@ -49,7 +49,7 @@ $(document).ready(function() {
             <div class="clearfix col-md-9">
               <div class="row">
                 <div style="margin:0 auto" class="input-group col-md-9 pull-left errorInptgroup">
-                  <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                  <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
                     <input type="file" name="file" style="display: none;" multiple id="uploadBtn" class="upload" >
                     </span></label>
                   <input class="form-control" readonly id="uploadFile" placeholder="No file chosen" field-name="Contact CSV"  data-validation="required">

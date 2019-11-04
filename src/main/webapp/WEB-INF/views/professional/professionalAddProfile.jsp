@@ -339,7 +339,7 @@
             <label class="col-md-3">Add Resume<span class="text-danger">&nbsp;*</span></label>
             <div class="col-md-9">
 			 <div class="input-group col-md-12" id="uploadFileGroup" style="margin:0 auto">
-               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
                 <input type="file" style="display: none;"  id="uploadBtn"  class="upload">
                  </span> </label>
                  <input type="text" class="form-control" readonly id="uploadFile" name="docFile" type="text"  name="" placeholder="Upload Resume ..." field-name="Resume" data-validation="required validate_Space validatedoc" >
