@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -21,6 +20,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -55,7 +55,7 @@ public class CandidateEducationServiceTest {
 		candidateEducationDTO.setCreatedDate("09-01-2001");
 		candidateEducationDTO.setCreatedBy("shiva");
 		candidateEducationDTO.setUpdatedBy("yogi");
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateId.setId(1l);
 		candidateEducation.setCandidateId(candidateId );
 		OrgLocations orglocationId = new OrgLocations();
@@ -82,13 +82,10 @@ public class CandidateEducationServiceTest {
 		candidateDTO.setCandidateEducation("NEWHORIZON");
 		OrgLocations orgLocations = new OrgLocations();
 		orgLocations.setId(1l);
-		Candidate candidate = new Candidate();
+		CandidateGlobal candidate = new CandidateGlobal();
 		candidate.setId(1l);
 		String userCode = "A001";
-		HashSet<CandidateEducation> candidateEducations = candidateEducationService.getCandidateEducationDetails(candidateDTO, orgLocations, candidate, userCode);
-		for(@SuppressWarnings("unused") CandidateEducation education :candidateEducations){
-			logger.info("getCandidateEducationDetails added successfully"+candidateEducations.size());
-		}
+		candidateEducationService.saveCandidateEducationDetails(candidateDTO, orgLocations, candidate, userCode);
 	}
 	
 	//@Test

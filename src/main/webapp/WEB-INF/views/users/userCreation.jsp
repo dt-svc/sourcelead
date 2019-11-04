@@ -502,7 +502,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				                        <option>Hourly</option>
 				                        <option>Daily</option>
 				                        <option>Weekly</option>
-				                        <option>Bi-Weekly</option>
+				                        <option>Bi-weekly</option>
 				                        <option>Semi-Monthly</option>
 				                        <option>Bi-Monthly</option>
 				                        <option>Monthly</option>
@@ -1168,6 +1168,7 @@ function getAssociateUserDetails(){
 	        		  $("#associateId").val(json['id']);
 	        		  $("#FirstName").val(json['firstName']);
 	        		  $("#lastName").val(json['lastName']);
+	        		  $("#middleName").val(json['middelName']);
 	        		  $("#EmailId").val(json['email']);
 	        		  $("#phoneNumber").val(json['mobilePhone']);
 	        		  $("#designationType").val(json['designationType']);
