@@ -208,16 +208,11 @@ function hideandshowHoliday(){
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Reminder To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9">
-											<select  class="chosen-select form-control" multiple name="reminderTo" id="reminderTo" >
-							                        <%-- <c:forEach var="option" items="${rolesList}">
-								                         <c:if test ="${option.roleName != 'ROLE_ADMIN' && option.roleName != 'ROLE_USER' && option.roleName != 'ROLE_MANAGER'}"> 
-															<option value="${option.id}">${option.displayName}</option>
-														 </c:if>
-													</c:forEach> --%>
-													<option value="Reporting Manager">Reporting Manager</option>
-													<option value="Project Manager">Project Manager</option>
-													<option value="Team Leader">Team Leader</option>
-											</select>
+								<select class="chosen-select form-control" multiple name="reminderTo" id="reminderTo" >
+										<c:forEach var="roleName" items="${leavesConfigurationRolesList}">
+												<option value="${roleName}" ${configuredRoles == roleName ? 'selected' : '' }>${roleName}</option>
+												</c:forEach>
+												</select>
 										</div>	
 										<%-- <div class="col-md-9" id="notifyToDiv_Leave_Configuration_form">
 											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${employeeonLeave.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
