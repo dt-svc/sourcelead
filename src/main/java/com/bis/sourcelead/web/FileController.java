@@ -9,12 +9,15 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -22,18 +25,33 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.Org;
@@ -50,13 +68,21 @@ import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParserNew;
+import com.google.gson.Gson;
+
+
 
 @Controller
 @RequestMapping("/app")
 public class FileController {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${env}")
+	private String environment;
+
 
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
@@ -81,6 +107,17 @@ public class FileController {
 	
 	@Autowired
 	CandidateGlobalUtil candidateGlobalUtil;
+
+	@Value("${resumeParserUrlLocal}")
+	private String resumeParserUrlLocal;
+	
+	@Value("${resumeParserUrlQa}")
+	private String resumeParserUrlQa;
+	
+	@Value("${isResumeparserEnabled}")
+	private String isResumeparserEnabled;
+	
+
 
 	@RequestMapping(value = { "/ws/upload/{type}", "/rest/upload/{type}" }, method = RequestMethod.POST)
 	@ResponseBody
@@ -224,8 +261,14 @@ public class FileController {
 				requirementId = requirement.getId();
 			}
 		}
+		String baseServicesUrl = "";
+		if("qa".equalsIgnoreCase(environment)) {
+			baseServicesUrl = resumeParserUrlQa;
+		}else {
+			baseServicesUrl = resumeParserUrlLocal;
+		}
 		String candidateIds = FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
-				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,candidateGlobalUtil);
+				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
 
 		if (requirementId > 0 && requirementRestController != null && !candidateIds.isEmpty()) {
 			requirementRestController.submitRecommendationCandidates(requirementId, candidateIds, "Y", needApplicantPermit, notifyToApplicant, request);
@@ -236,25 +279,39 @@ public class FileController {
 		return parsedList;
 	}
 
+	
 	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
+		
+		long startTime = System.currentTimeMillis();
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
+			ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
 			try {
-				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
-				resume.setFileInfo(fileInfo);
-				resumeContent.add(resume);
+				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+					logger.info("*******Resume Parser Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+				}else {
+					logger.info("*******Resume Parser without Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
+				}
+				
+			      resumeContent.add(resume);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
+		long endTime = System.currentTimeMillis();
+		long responseTime = endTime - startTime;
+		logger.info("Total Response Time of resume parser is "+responseTime+" MS");
 		return resumeContent;
 	}
+
 
 	@RequestMapping(value = "/process-uploaded-files", method = RequestMethod.POST)
 	@ResponseBody
@@ -292,8 +349,20 @@ public class FileController {
 					if (!fileInfoList.isEmpty()) {
 						Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
 
-						FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
-								candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,candidateGlobalUtil);
+						try {
+							String baseServicesUrl = "";
+							if("qa".equalsIgnoreCase(environment)) {
+								baseServicesUrl = resumeParserUrlQa;
+							}else {
+								baseServicesUrl = resumeParserUrlLocal;
+							}
+							FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
+									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
 
 						FileUploadUtil.saveLogMessage(uploadid, "<br/>Completed!<br/><br/>", candidateService);
 
