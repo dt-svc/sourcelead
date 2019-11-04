@@ -366,12 +366,12 @@ function RequirementQuestionnaireTemplate(){
 	    	                				 }
 	    	                			 }else if(fieldType == 'scale'){
 	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-	    	                					 qt.evaluatePostSlider(label.replace(/\s+/g, ''),v3['value'])
+	    	                					 qt.evaluatePostSlider(label.replace(/[^A-Z0-9]+/ig, ''),v3['value'])
 	    	                				 }
 	    	                			 }
 	    	                			 else if(fieldType == 'star'){
 	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-	    	                					 qt.fillStarValues(v['dropdown'],label.replace(/\s+/g, ''),v3['value'])
+	    	                					 qt.fillStarValues(v['dropdown'],label.replace(/[^A-Z0-9]+/ig, ''),v3['value'])
 	    	                				 }
 	    	                			 }
 	    	                			 
@@ -475,7 +475,7 @@ function RequirementQuestionnaireTemplate(){
 	      					}
 	                	 }else{
 	                		 for(var i=1; i<=dropdown; i++){
-	                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="qt.fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
+	                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="qt.fillStarValues('+i+',\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
 	      					}}
 	            		 
 	            	 }
@@ -614,10 +614,10 @@ function RequirementQuestionnaireTemplate(){
 	                     case 'scale':
 	                    	 if(attempt == 0){
 	                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
-	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
+	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
 	                    	 }else{
 	                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
-	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
+	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
 	                    	 }
 	                    	 if(labelAndAttemptsMap.get(label) != null){
 	                    		 attempt = labelAndAttemptsMap.get(label);
@@ -910,12 +910,12 @@ function RequirementQuestionnaireTemplate(){
 	    	                				 }
 	    	                			 }else if(fieldType == 'scale'){
 	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-	    	                					 qt.evaluatePostSlider(label.replace(/\s+/g, ''),v3['value'])
+	    	                					 qt.evaluatePostSlider(label.replace(/[^A-Z0-9]+/ig, ''),v3['value'])
 	    	                				 }
 	    	                			 }
 	    	                			 else if(fieldType == 'star'){
 	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-	    	                					 qt.fillStarValues(v['dropdown'],label.replace(/\s+/g, ''),v3['value'])
+	    	                					 qt.fillStarValues(v['dropdown'],label.replace(/[^A-Z0-9]+/ig, ''),v3['value'])
 	    	                				 }
 	    	                			 }
 	    	                			 
@@ -1019,7 +1019,7 @@ function RequirementQuestionnaireTemplate(){
 	      					}
 	                	 }else{
 	                		 for(var i=1; i<=dropdown; i++){
-	                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="qt.fillStarValues('+i+',\''+label.replace(/\s+/g, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
+	                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="qt.fillStarValues('+i+',\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
 	      					}}
 	            		 
 	            	 }
@@ -1142,10 +1142,10 @@ function RequirementQuestionnaireTemplate(){
 	                     case 'scale':
 	                    	 if(labelAndAttemptsMap.get(label) == 0){
 	                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
-	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
+	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
 	                    	 }else{
 	                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
-	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/\s+/g, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
+	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="qt.evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
 	                    	 }
 	                         return '' +
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
