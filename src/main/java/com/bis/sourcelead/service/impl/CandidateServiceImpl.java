@@ -2459,6 +2459,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setIsFavourite(0);
 		candidate.setIsFavouriteAssociate(0);
+		candidate.setOrgId(orgLocations.getOrg());
 		
 		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())) {
 			candidate.setAadharNumber(candidateDTO.getAadharNumber());
@@ -2485,7 +2486,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetailsList(candidateDTO, orgLocations,candidate,user);
 		candidate.setCandidateEducation(candidateEducationList);
 		
-		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetailsList(candidateDTO,orgLocations,candidate.getId(),user);
+		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetailsList(candidateDTO,orgLocations,candidate,user);
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
 		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
