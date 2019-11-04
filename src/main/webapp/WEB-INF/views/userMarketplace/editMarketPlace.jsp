@@ -6,27 +6,19 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	setPriorityValue();
+	
 });
-/* $("#priority > option").each(function() {
-console.log(priorityValue);
-if(this.value == priorityValue){
-	 $("#priority").val(priorityValue);
-}
 
-}); */
-function setPriorityValue(){
-	var priorityValue = '${marketPlaceDto.priority}';
-	if(priorityValue != null && priorityValue != ""){
-		console.log(priorityValue);
-		  $("#priority").val("Immediate");
-		/* document.getElementById(""+priorityValue).selected = "true"; */
-	}
-}
+
+
 </script>
 <section class="content-wraper">
     <section class="content-header clearfix">
     </section>
+    <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
+			
 <form:form id="edit_form"  name="edit_form">
 <%--  <c:if test="${not empty requirementWorkFlowStagesDTO}"> --%>
 
@@ -68,7 +60,7 @@ function setPriorityValue(){
         <label class="clearfix">Price</label>
         <div class="clearfix row">
             <div class="col-md-9">
-          <input type="text" id="price" name="price" value="${marketPlaceDto.price}" class="form-control" data-validation="validate_length length1-20 validate_phone"
+          <input type="text" id="price" name="price" value="${marketPlaceDto.price}" class="form-control" data-validation="validate_length validate_number length1-20"
 							field-name="Price"	data-validation-optional="true" value=" ">
         </div>
           <div class="col-md-3">
@@ -104,7 +96,7 @@ function setPriorityValue(){
         <div class="clearfix"></div>
 </div>
 
-<!-- <div class="col-md-4 minHeight">
+ <!-- <div class="col-md-4 minHeight">
     <label class="clearfix">Attach document for the Product<span class="text-danger paddingLeft">*</span></label>
             <div class="input-group col-md-12 clearfix">
               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
@@ -113,7 +105,7 @@ function setPriorityValue(){
               <input type="text" class="form-control" name="docFile" onclick="addFileUpload()" readonly="" id="uploadFile" placeholder="Upload Document ...">
             </div>
   <div class="clearfix"></div> 
-</div>    -->
+</div>   -->  
 
 <div class="col-md-4 minHeight">
     <label class="clearfix">&nbsp;</label>
@@ -187,16 +179,17 @@ function setPriorityValue(){
   <div class="clearfix"></div> 
 </div>
 
- <!-- <div class="clearfix ">
+  <!--  <div class="clearfix ">
           <div class="col-md-4 minHeight clearfix">
             <div style="float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ">
 	            <input id="file0" type="file" name="uploadPhotos" class="pull-left" onchange="uploadFileButton(0);">
-	              <a id="Button0value=" "="" onclick="addProductFileUpload()">
+	              <a id="Button0value" onclick="addProductFileUpload()">
 	               <i class="fa fa-plus btn btn-default btn-sm btn-sm2 pull-right"></i>
 	             </a>
 	         </div>
-            <div id="FileUploadContainer"></div>
+            <div id="FileUploadContainer" />
           </div>  
+                
       </div> -->
 
 
@@ -205,6 +198,7 @@ function setPriorityValue(){
           </div>
 </form:form>
 </section>
+ <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/projects.js"></script>
  <script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/slead-common.js"></script>
  
 
@@ -223,6 +217,7 @@ function SaveEdits(uuid){
 		      	    location.href = "/errorPage";
 		      	} else if (dataList.response === "SUCCESS") {
 		      		location.replace(atsUrl+"/redirectToAddproduct");
+		      		showSuccessMsg("Successfully Saved");
 		      	}
 		      		if(dataList.object === "DataMissing") {
 							showError("Invalid data");
@@ -232,6 +227,7 @@ function SaveEdits(uuid){
 	            });
 }
 }
+
 </script>
 <script>
 $(window).load(function() {
@@ -259,7 +255,50 @@ function clearExpiryDate(){
 }; 
 
 </script>
+<script>
+var fileCounter = 1;
+var fileCounterArray = new Array();
+function addProductFileUpload(){
+	if(fileCounterArray.length < 6){
+		fileCounter = fileCounter++;
+	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="uploadFileButton('+fileCounter+');"/>' +
+            '<a id="Button' + fileCounter + '' +
+            'value="" onclick = "RemoveFileUpload(this,\''+fileCounter+'\')"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
+	
+	fileCounterArray.push(fileCounter);
+	console.log(fileCounterArray);
+}
+}
 
+function RemoveFileUpload(div,fileCounter)
+{
+	document.getElementById("FileUploadContainer").removeChild(div.parentNode);
+	fileCounter = fileCounter--;
+	fileCounterArray.pop();
+	console.log(fileCounterArray);
+}
 
+function uploadFileButton(id){
+fileUpload("file"+id+"", "userMarketplace", "edit_form","uploadedFileInfo");
+}
+
+</script>
+<script>
+ document.getElementById("uploadBtn").onchange = function () {
+		$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+	};
+ </script>
+  <script>
+ document.getElementById("FileUploadContainer").onchange = function () {
+		$('#FileUploadContainer').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+	};
+ </script>
+ <script>
+ function showSuccessMsg(msg){
+		$('#selector').show();
+		$('#msgDiv').text(msg)
+		setTimeout(function(){ $('#selector').hide();$('#msgDiv').text("") }, 1000);
+	}
+ </script>
     
  <jsp:include page="../masterFooter.jsp" />	
