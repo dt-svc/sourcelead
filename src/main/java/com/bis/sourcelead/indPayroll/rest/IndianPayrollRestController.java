@@ -1092,7 +1092,7 @@ public class IndianPayrollRestController {
 	        return response;
 	    }
 	  
-	  @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
+	    @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
 		@ResponseBody
 		public List<PayrollLoanAndAdvances> getLoanNames(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1100,5 +1100,25 @@ public class IndianPayrollRestController {
 		 return padvList;
 		
 		}
+	  
+	  
+	    @RequestMapping (value = "/validateAccoutNumebr", method = RequestMethod.GET)
+		@ResponseBody
+		public Boolean validateAccoutNumebr(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
+				@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="paymentAccountId", required=false) Long paymentAccountId) throws Exception{
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			 PaymentAccount payment = null;
+	    	   if(null != paymentAccountId){
+	    		   account.setId(paymentAccountId);
+	    		   payment = paymentAccountService.valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(account);
+	    	   }
+			  Boolean flag = false;
+	    	   if(null == payment){
+	    		   flag = paymentAccountService.validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(account, orgLocationId);
+	    	   }
+			return flag;
+		}
+	  
+	  
 	  
 }
