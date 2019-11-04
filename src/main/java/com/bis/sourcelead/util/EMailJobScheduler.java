@@ -418,12 +418,11 @@ public class EMailJobScheduler {
 	private ProjectTasksService projectTasksService;
 	
 	@Autowired
-<<<<<<< HEAD
 	CandidateGlobalUtil candidateGlobalUtil;
 	
-=======
+	@Autowired
 	private ReadEmail readEmail;
->>>>>>> 063c66cb81a4445664bef46356bb6e3f6ff16d8d
+
 
 	private static boolean startEmailParsingProcess = true;
 	
