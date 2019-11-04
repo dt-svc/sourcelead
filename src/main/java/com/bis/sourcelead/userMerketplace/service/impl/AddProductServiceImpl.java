@@ -1,6 +1,8 @@
 package com.bis.sourcelead.userMerketplace.service.impl;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -117,7 +119,7 @@ public class AddProductServiceImpl implements AddProductService {
 			} catch (Exception e) {
 			}
 		}
-			
+		Set<MarketPlaceProductFilesHistory> marketPlaceProductFilesHistorySet= new HashSet<MarketPlaceProductFilesHistory>();
 		
 		addProductDao.saveMarketPlaceProducts(market);
 		if(marketPlaceProductsDTO.getFileInfo() != null) {
@@ -221,7 +223,7 @@ public class AddProductServiceImpl implements AddProductService {
 		productsDTO.setCurrencySpecification(productsEntity.getCurrencySpecification());
 		productsDTO.setPriority(productsEntity.getPriority());
 		productsDTO.setProductDescription(productsEntity.getProductDescription());
-		productsDTO.setDocFile(productsEntity.getFileUrl());
+		productsDTO.setBrowseFile(productsEntity.getFileUrl());
 		productsDTO.setUuid(productsEntity.getUuid());
 		productsDTO.setIsNegotiable(productsEntity.getIsNegotiable());
 		productsDTO.setProductShareType(productsEntity.getProductShareType());

@@ -139,9 +139,8 @@ public class AddProductDaoImpl implements AddProductDao {
 	        productDto.setPrice(source.getPrice());
 	        productDto.setCurrencySpecification(source.getCurrencySpecification());
 	        productDto.setPriority(source.getPriority());
+	        productDto.setBrowseFile(source.getFileUrl());
 	        productDto.setIsNegotiable(source.getIsNegotiable());
-	        productDto.setDocFile(source.getFileUrl());
-	        productDto.setUploadPhotos(source.getFileUrl());
 	        productDto.setShareContactDetails(source.getShareContactDetails());
 	        productDto.setProductShareType(source.getProductShareType());
 	        productDto.setProductDescription(source.getProductDescription());
