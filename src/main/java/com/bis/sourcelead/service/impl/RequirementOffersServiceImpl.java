@@ -980,7 +980,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    	if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() == orgLocations.getId().longValue()){
 		    		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),orgLocations.getId());
 			    	if(candidate != null){
-			    		candidate.setIsAssociate(Constants.YES);
+			    		candidate.setIsAssociate(Constants.NO);
 				    	candidate.setUpdatedBy(loginUser.getUserCode());
 				    	candidate.setUpdatedDate(commonUtil.currentDate());	
 			    	}else{
@@ -1585,7 +1585,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         			}
         		}
         		candidate.setOrgLocationId(orgLocations);
-        		candidate.setIsAssociate(Constants.YES);
+        		candidate.setIsAssociate(Constants.NO);
     		}else{
     			if(clientSubmission != null){
     				candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());

@@ -488,8 +488,10 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			}
 			candidate.setConsultantUser(onboardingUser);
 			candidate.setCandidateGlobalId(candidateGlobal);
+			candidate.setIsAssociate(Constants.YES);
 			candidateService.addCandidate(candidate);
 		}else {
+			candidateGlobal.setIsAssociate(Constants.YES);
 			candidate = candidateGlobalUtil.storeCandidateFromCandidateGlobal(candidateGlobal, onboardingUser);
 			if(candidateOnBoarding.getShift() != null) {
 				candidate.setShift(candidateOnBoarding.getShift());
