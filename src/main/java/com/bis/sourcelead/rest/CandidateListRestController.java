@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +57,6 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSearchDTO;
-import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.OrglocationFormFieldsDTO;
@@ -67,8 +64,10 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateGlobalIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateSource;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
@@ -88,6 +87,7 @@ import com.bis.sourcelead.service.CandidateCustomFieldDataService;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateHotListService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
@@ -101,6 +101,7 @@ import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -179,6 +180,15 @@ public class CandidateListRestController {
 	
 	@Autowired
 	SourceleadTagsService sourceleadTagsService;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
+	CandidateGlobalIndexHelper candidateGlobalIndexHelper;
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -722,8 +732,6 @@ public class CandidateListRestController {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
-
-		
 			//search.setLength(100);
 			SearchResponse searchResponse = null;
 			if (Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
@@ -733,6 +741,7 @@ public class CandidateListRestController {
 				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
 						Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
 						sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
+				
 			}
 			
 			SearchHit searchHits[] = searchResponse.getHits().getHits();
@@ -746,13 +755,10 @@ public class CandidateListRestController {
 						Date date1 = commonUtil.dateFromElk(candidateIndex.getUpdatedDate());
 						String updatedDate = commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), date1);
 						candidateIndex.setCandidateUpdateDateToString(updatedDate);
+						
 
 					}
 					candidateIndex.setCreatedBy(candidateIndex.getCreatedBy());
-					/*Candidate can = candidateService.getCandidateByCandidateId(candidateIndex.getCandidateId());
-					if(can.getCandidateProfilePercentage() != null) {
-						candidateIndex.setProfilePercentage(can.getCandidateProfilePercentage());
-					}*/
 					candidatesList.add(candidateIndex);
 				}
 				response.setRecordsFiltered(Long.valueOf(searchResponse.getHits().getTotalHits()).intValue());
@@ -823,12 +829,17 @@ public class CandidateListRestController {
 	
 	
 	@RequestMapping(value = "/getCandidateSubmittedRequirementCount" , method = RequestMethod.GET)
-	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) throws Exception {
+	 public @ResponseBody CandidateDTO getCandidateSubmittedRequirementCount(@RequestParam(value = "candidateId", required = true) Long candidateGlobalId, 
+			 @RequestParam(value = "candidateType", required = true) String candidateType,HttpServletRequest request) throws Exception {
 			
 		     OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		     CandidateDTO candidateDTO = new CandidateDTO();
-		     Integer submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateId, orgLocation.getId());
-		     Integer profilePercentage = candidateService.getCandidateProfilePercentageByCandidateId(candidateId);
+		     Integer profilePercentage = 0;
+		     Integer submittedJobCount = 0;
+		     
+		     profilePercentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidateGlobalId);
+	    	 submittedJobCount = requirementSubmissionService.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(candidateGlobalId, orgLocation.getId());
+		    
 		     candidateDTO.setSubmittedJobsCount(submittedJobCount);
 		     candidateDTO.setProfilePercentage(profilePercentage);
 			 return candidateDTO;
@@ -887,14 +898,7 @@ public class CandidateListRestController {
 				Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
 
 				CandidateDTO candidateDTO = new CandidateDTO();
-
 				Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
-				
-				/*
-				 * CandidateSourceDTO
-				 * candidateSource=candidateService.getCandidateSourceById(candidateSource.getId
-				 * ().longValue(),user.getId(), loginOrgLocation);
-				 */
 				int percentage = candidateService.getCandidatePercentage(can, loginOrgLocation);
 
 				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
@@ -1070,7 +1074,7 @@ public class CandidateListRestController {
 						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
 							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
 							Map<Long, String[]> candidateData = candidateCustomFieldDataService
-									.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrg().getId(), formFieldId, can.getId());
+									.getCandidateCustomFieldDataMapByLocationId(orgLoc.getOrgId(), formFieldId, can.getId());
 							Map<String, String> dataMap = new HashMap<>();
 							if (candidateData != null && !candidateData.isEmpty()) {
 								for (Entry<Long, String[]> candidateCustomData : candidateData.entrySet()) {
@@ -1129,14 +1133,14 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 
 				StringBuffer activitySummary = new StringBuffer();
-				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 						loginOrgLocation.getId());
 				candidate.setFileUrl(null);
 				candidate.setFileContentType(null);
 				activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName())
 						.append(Constants.OLD_VALUE_TAG_END);
 				candidate.setFileName(null);
-				candidateService.addCandidate(candidate);
+				candidateGlobalService.storeCandidateGlobal(candidate);
 
 				candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 				candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "",
@@ -1315,7 +1319,7 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 				candidateDTO.setStaticPath(staticPath);
-				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 						loginOrgLocation.getId());
 
 				if (candidateDTO.getFileInfo() != null) {
@@ -1338,12 +1342,12 @@ public class CandidateListRestController {
 						e.printStackTrace();
 					}
 				}
-				candidateService.addCandidate(candidate);
+				candidateGlobalService.storeCandidateGlobal(candidate);
 
 				candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 				candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "",
 						Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
-				Integer percentage = candidateService.getCandidatePercentage(candidate, loginOrgLocation);
+				Integer percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidate.getId());
 				response.setObject(percentage.toString());
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1456,12 +1460,26 @@ public class CandidateListRestController {
 			User user = userService.getUserById(Long.valueOf(candidateDto.getLoginUserId()));
 			if (user != null && Validator.validate(candidateDto)) {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(Long.valueOf(candidateDto.getOrgloationId()));
-				Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
-				if (candidate != null) {
+				
+				CandidateGlobal candidateGlobal = candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
+				if (candidateGlobal != null) {
 					response.setObject("success");
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				}
+				
+				Long candidateId =  candidateService.getCandidateIdByGlobalCandidateId(candidateGlobal.getId());
+				if(candidateId != null) {
+					Candidate candidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					if (candidate != null) {
+						response.setObject("success");
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				}
+				
+				
+			
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1491,15 +1509,15 @@ public class CandidateListRestController {
 	 */
 	@RequestMapping(value = "/deleteCandidateByCandidateId")
 	@ResponseBody
-	public Response<Candidate> deleteCandidateByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
+	public Response<CandidateGlobal> deleteCandidateByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
-		Response<Candidate> response = new Response<>();
+		Response<CandidateGlobal> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 						loginOrgLocation.getId());
 				StringBuffer activitySummary = new StringBuffer();
 				Boolean flag;
@@ -1527,8 +1545,8 @@ public class CandidateListRestController {
 					candidate.setUpdatedDate(commonUtil.currentDate());
 					candidate.setIsFavourite(0);
 					candidate.setTeamId(null);
-					candidateService.saveOrUpdateCandidate(candidate);
-					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					candidateGlobalService.storeCandidateGlobal(candidate);
+					candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 
 					//deleting candidate from marketplace and cart.
 					flag = candidateService.deleteCandidateFromMarketcartByCandidateUuid(candidate.getCandidateUUID());
@@ -1565,21 +1583,21 @@ public class CandidateListRestController {
 	
 	@RequestMapping(value = "/deleteCandidatePermanentlyByCandidateId")
 	@ResponseBody
-	public Response<Candidate> deleteCandidatePermanentlyByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
+	public Response<CandidateGlobal> deleteCandidatePermanentlyByCandidateId(@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "reason", required = false) String reason, HttpServletRequest request) throws Exception {
-		Response<Candidate> response = new Response<>();
+		Response<CandidateGlobal> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 						loginOrgLocation.getId());
 				StringBuffer activitySummary = new StringBuffer();
 				Boolean flag;
 				if (candidate != null) {
 					
 					SourceleadDeletedCandidates deletedCandiate = new SourceleadDeletedCandidates();
-					deletedCandiate.setCandidateId(candidate);
+					//deletedCandiate.setCandidateId(candidate);
 					deletedCandiate.setOrgLocationId(loginOrgLocation);
 					deletedCandiate.setEmail(candidate.getEmail());
 					deletedCandiate.setFirstName(candidate.getFirstName());
@@ -1613,12 +1631,12 @@ public class CandidateListRestController {
 					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "", Constants.CANDIDATE_DELETED,
 							activitySummary.toString(), "CANDIDATE");
 					candidate.setOrgLocationId(null);
-					candidateService.saveOrUpdateCandidate(candidate);
+					candidateGlobalService.storeCandidateGlobal(candidate);
 					OrgLocations orgLocations = new OrgLocations();
 					orgLocations.setId(1L);
 					candidate.setOrgLocationId(orgLocations);
-					candidateService.saveOrUpdateCandidate(candidate);
-					candidateService.deleteCandidateElkDocument(candidate);
+					candidateGlobalService.storeCandidateGlobal(candidate);
+					candidateGlobalService.deleteCandidateGlobalElkDocument(candidate);
 
 					StringBuilder candidateRemoveMsg = new StringBuilder();
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
@@ -1647,29 +1665,62 @@ public class CandidateListRestController {
 	@PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_HOTLIST','ROLE_CROWDSOURCING_CANDIDATES')")
 	@RequestMapping(value = "/saveCandidateAsFavourite", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveCandidateAsFavourite(@RequestParam(value = "candidateId", required = false) Long candidateId,
-			HttpServletRequest request) throws Exception {
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if (user != null) {
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				if (null != candidate) {
-					if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
-						candidate.setIsFavourite(Constants.RECORD_ACTIVE);
+				
+				if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.Candidates)) {
+					CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+					if (null != candidateGlobal) {
+						if (null == candidateGlobal.getIsFavourite() || candidateGlobal.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
+							candidateGlobal.setIsFavourite(Constants.RECORD_ACTIVE);
+						} else {
+							candidateGlobal.setIsFavourite(Constants.RECORD_INACTIVE);
+						}
+						candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+						candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+						response.setObject("success");
 					} else {
-						candidate.setIsFavourite(Constants.RECORD_INACTIVE);
+						response.setResponse(Result.INVALID_USER.name());
+						response.setResponseMessage(Result.INVALID_USER.getValue());
 					}
-					candidate.setTeamId(null);
-					candidateService.saveOrUpdateCandidate(candidate);
-					candidateService.saveOrUpdateCandidateElkDocument(candidate);
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-					response.setObject("success");
-				} else {
-					response.setResponse(Result.INVALID_USER.name());
-					response.setResponseMessage(Result.INVALID_USER.getValue());
+				}else {
+					Long candidateGlobalId = candidateService.getCandidateIdByGlobalCandidateId(candidateId);
+					Candidate candidate = candidateService.getCandidateByCandidateId(candidateGlobalId);
+					if (null != candidate) {
+						
+						if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
+							candidate.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+						} else {
+							candidate.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+						}
+						candidateService.saveOrUpdateCandidate(candidate);
+						candidateService.saveOrUpdateCandidateElkDocument(candidate);
+						
+						CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateGlobalId);
+						if(candidateGlobal != null) {
+							if (null == candidate.getIsFavourite() || candidate.getIsFavourite().equals(Constants.RECORD_INACTIVE)) {
+								candidateGlobal.setIsFavouriteAssociate(Constants.RECORD_ACTIVE);
+							} else {
+								candidateGlobal.setIsFavouriteAssociate(Constants.RECORD_INACTIVE);
+							}
+							candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+						}
+						
+						
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+						response.setObject("success");
+					} else {
+						response.setResponse(Result.INVALID_USER.name());
+						response.setResponseMessage(Result.INVALID_USER.getValue());
+					}
 				}
+				
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1748,7 +1799,7 @@ public class CandidateListRestController {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
-				Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.valueOf(candidateId),
 						loginOrgLocation.getId());
 				if (candidate != null) {
 					if (reActivate.equalsIgnoreCase("1")) {
@@ -1756,13 +1807,13 @@ public class CandidateListRestController {
 					}
 					candidate.setUpdatedBy(user.getUserCode());
 					candidate.setUpdatedDate(commonUtil.currentDate());
-					candidateService.saveOrUpdateCandidate(candidate);
+					candidateGlobalService.storeCandidateGlobal(candidate);
 
 					candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
 					candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "",
 							Constants.CANDIDATE_REACTIVATED, "", "CANDIDATE");
 
-					candidateService.saveOrUpdateCandidateElkDocument(candidate);
+					candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -1843,12 +1894,12 @@ public class CandidateListRestController {
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-		List<Candidate> candidatesList = null;
+		List<CandidateGlobal> candidatesList = null;
 
 		if (!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
-			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
+			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
-			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
+			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
 					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 
 		}
@@ -1898,18 +1949,23 @@ public class CandidateListRestController {
 	@RequestMapping(value = "/saveOrUpdateOnlySkillBycandidateId")
 	public Response<String> saveOrUpdateOnlySkillBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
-			@RequestParam(value = "skillName", required = false) String skillName, HttpServletRequest request) throws Exception {
+			@RequestParam(value = "skillName", required = false) String skillName, 
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
+		Candidate can = null;
+		CandidateGlobal candidateGlobal = null;
+		String candidateSkills = null;
 		try {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
-				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+				candidateSkills = candidateGlobal.getSkillsName();
+				
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				StringBuffer activitySummary = new StringBuffer();
-//				if (null != can && StringUtils.isNotEmpty(skillName)) {
 					ArrayList<String> oldSkills = new ArrayList<>();
-					if (StringUtils.isNotBlank(can.getSkillsName())) {
-						oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*")));
+					if (StringUtils.isNotBlank(candidateSkills)) {
+						oldSkills.addAll(Arrays.asList(candidateSkills.split("\\s*,\\s*")));
 					}
 					ArrayList<String> newSkills = new ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*")));
 					ArrayList<String> actualNewSkills = new ArrayList<>();
@@ -1921,41 +1977,26 @@ public class CandidateListRestController {
 							.append(String.join(",", oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
 							.append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills))
 							.append(Constants.NEW_VALUE_TAG_END);
-					can.setSkillsName("");
-					can.setSkillsName(skillName);
-					candidateService.saveOrUpdateCandidate(can);
-					candidateService.saveOrUpdateCandidateElkDocument(can);
-					candidateActivityCommonUtil.storeCandidateHistory(can, user);
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
+
+					candidateGlobal.setSkillsName("");
+					candidateGlobal.setSkillsName(skillName);
+					candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+					candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
+					
+					Long associateCandidateId = candidateService.getCandidateIdByGlobalCandidateId(candidateGlobal.getId());
+					if(associateCandidateId != null) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(associateCandidateId);
+						candidate.setSkillsName(skillName);
+						candidateService.addCandidate(candidate);
+					}
+					
+					candidateActivityCommonUtil.storeCandidateGlobalHistory(candidateGlobal, user);	
+					candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_SKILL_UPDATED,
 							activitySummary.toString(), "CANDIDATE");
-					// return "success";
-//				}
+				
+					
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
-//				} else {
-//					/*
-//					 * ArrayList<String> oldSkills = new ArrayList<>(); if
-//					 * (StringUtils.isNotBlank(can.getSkillsName())) {
-//					 * oldSkills.addAll(Arrays.asList(can.getSkillsName().split("\\s*,\\s*"))); }
-//					 * ArrayList<String> newSkills = new
-//					 * ArrayList<>(Arrays.asList(skillName.split("\\s*,\\s*"))); ArrayList<String>
-//					 * actualNewSkills = new ArrayList<>(); actualNewSkills.addAll(newSkills);
-//					 * newSkills.removeAll(oldSkills); oldSkills.removeAll(actualNewSkills);
-//					 * 
-//					 * activitySummary.append("Skills").append(" : ").append(Constants.
-//					 * OLD_VALUE_TAG_INITIATION) .append(String.join(",",
-//					 * oldSkills)).append(Constants.OLD_VALUE_TAG_END).append(" ")
-//					 * .append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",",
-//					 * newSkills)) .append(Constants.NEW_VALUE_TAG_END); can.setSkillsName("");
-//					 * candidateService.saveOrUpdateCandidate(can);
-//					 * candidateService.saveOrUpdateCandidateElkDocument(can);
-//					 * candidateActivityCommonUtil.storeCandidateHistory(can, user);
-//					 * candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can,
-//					 * "", Constants.CANDIDATE_SKILL_UPDATED, activitySummary.toString(),
-//					 * "CANDIDATE"); return "failed";
-//					 */
-//					response.setResponse(Result.INVALID_DATA.name());
-//					response.setResponseMessage(Result.INVALID_DATA.getValue());
 			} else {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -1978,7 +2019,7 @@ public class CandidateListRestController {
 		try {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
-				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				CandidateGlobal can = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 					Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(orgLocations.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
 					ArrayList<String> newTags = new ArrayList<>(Arrays.asList(tagName.split("\\s*,\\s*")));
@@ -2033,7 +2074,7 @@ public class CandidateListRestController {
 				    	candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_TAG_REMOVED, removedTagSummary.toString(), "CANDIDATE");
 				    }
 				    
-			    candidateService.saveOrUpdateCandidateElkDocument(can);
+			    candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(can);
 			    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(orgLocations.getId());
 			    SourceLeadSessionManager.removeSessionAttribute(request, "tagsList");
 			    SourceLeadSessionManager.setSessionAttribute(request, "tagsList", tagsList);
@@ -2061,26 +2102,36 @@ public class CandidateListRestController {
 	@RequestMapping(value = {"/saveOrUpdateOnlyVisaBycandidateId","/rest/saveOrUpdateOnlyVisaBycandidateId"})
 	public Response<String> saveOrUpdateOnlyVisaBycandidateId(@RequestParam(value = "loginUserId", required = false) Long loginUserId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId, @RequestParam(defaultValue = "0") long candidateId,
+			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "visaName", required = false) String visaName, HttpServletRequest request) throws Exception {
 		Response<String> response = new Response<>();
 		try {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
-				Candidate can = candidateService.getCandidateByCandidateId(candidateId);
+				
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				StringBuffer activitySummary = new StringBuffer();
-//				if (null != can && StringUtils.isNotEmpty(visaName)) {
 					activitySummary.append("Immigration Status").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
-							.append(can.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
+							.append(candidateGlobal.getVisaType()).append(Constants.OLD_VALUE_TAG_END).append(" ")
 							.append(Constants.NEW_VALUE_TAG_INITIATION).append(visaName).append(Constants.NEW_VALUE_TAG_END);
-					can.setVisaType(visaName);
-					candidateService.saveOrUpdateCandidate(can);
-					candidateService.saveOrUpdateCandidateElkDocument(can);
-					candidateActivityCommonUtil.storeCandidateHistory(can, user);
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_VISA_UPDATED,
+					candidateGlobal.setVisaType(visaName);
+					candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+					candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidateGlobal);
+					
+					Long associateCandidateId = candidateService.getCandidateIdByGlobalCandidateId(candidateGlobal.getId());
+					if(associateCandidateId != null) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(associateCandidateId);
+						candidate.setVisaType(visaName);
+						candidateService.addCandidate(candidate);
+					}
+					
+					
+					
+					candidateActivityCommonUtil.storeCandidateGlobalHistory(candidateGlobal, user);	
+					candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidateGlobal, "", Constants.CANDIDATE_VISA_UPDATED,
 							activitySummary.toString(), "CANDIDATE");
-					// return "success";
-//				}
+				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else {
@@ -2348,7 +2399,7 @@ public class CandidateListRestController {
 		try {
 			User user = userService.getUserById(loginUserId);
 			if (user != null) {
-				Candidate can = candidateService.getCandidateByCandidateId(Long.valueOf(candidateId));
+				CandidateGlobal can = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(candidateId));
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 				StringBuffer activitySummary = new StringBuffer();
 				if (null != can && StringUtils.isNotEmpty(skillName)) {
@@ -2368,8 +2419,17 @@ public class CandidateListRestController {
 							.append(Constants.NEW_VALUE_TAG_END);
 					// can.setSkillsName("");
 					can.setSkillsName(skillName.replaceAll("\\s*,\\s*$", ""));
-					candidateService.saveOrUpdateCandidate(can);
-					candidateService.saveOrUpdateCandidateElkDocument(can);
+					candidateGlobalService.storeCandidateGlobal(can);
+					candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(can);
+					
+					Long associateCandidateId = candidateService.getCandidateIdByGlobalCandidateId(can.getId());
+					if(associateCandidateId != null) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(associateCandidateId);
+						candidate.setSkillsName(skillName.replaceAll("\\s*,\\s*$", ""));
+						candidateService.addCandidate(candidate);
+					}
+					
+					
 					candidateActivityCommonUtil.storeCandidateHistory(can, user);
 					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
 							activitySummary.toString(), "CANDIDATE");
@@ -2391,8 +2451,16 @@ public class CandidateListRestController {
 							.append(Constants.NEW_VALUE_TAG_INITIATION).append(String.join(",", newSkills))
 							.append(Constants.NEW_VALUE_TAG_END);
 					can.setSkillsName("");
-					candidateService.saveOrUpdateCandidate(can);
-					candidateService.saveOrUpdateCandidateElkDocument(can);
+					candidateGlobalService.storeCandidateGlobal(can);
+					candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(can);
+					
+					Long associateCandidateId = candidateService.getCandidateIdByGlobalCandidateId(can.getId());
+					if(associateCandidateId != null) {
+						Candidate candidate = candidateService.getCandidateByCandidateId(associateCandidateId);
+						candidate.setSkillsName(skillName.replaceAll("\\s*,\\s*$", ""));
+						candidateService.addCandidate(candidate);
+					}
+					
 					candidateActivityCommonUtil.storeCandidateHistory(can, user);
 					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, can, "", Constants.CANDIDATE_SKILL_UPDATED,
 							activitySummary.toString(), "CANDIDATE");
@@ -2488,5 +2556,223 @@ public class CandidateListRestController {
 		}
 	}
 
+	@RequestMapping(value = { "/getCandidateGlobalById", "/rest/getCandidateGlobalById" }, method = RequestMethod.POST)
+	public @ResponseBody Response<CandidateDTO> getCandidateGlobalById(@RequestParam(value = "candidateId", required = false) String candidateId,
+			HttpServletRequest request) throws Exception {
+		Response<CandidateDTO> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		if (user != null) {
+			try {
+				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Countries countries = countriesService.getCountriesByCountryName(loginOrgLocation.getCountry());
 
+				CandidateDTO candidateDTO = new CandidateDTO();
+				CandidateGlobal can = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(candidateId));
+				int percentage = candidateGlobalUtil.getCandidatePercentage(can, loginOrgLocation);
+
+				LinkedHashSet<String> lhs = new LinkedHashSet<String>();
+				List<LookUpData> skillsList = lookUpDataService.getLookUpDataByCategory(Constants.SKILLS);
+				for (LookUpData lookUpData : skillsList) {
+					lhs.add(lookUpData.getName());
+				}
+
+				if (null != can.getSkillsName() && StringUtils.isNotEmpty(can.getSkillsName())) {
+					String[] csl = can.getSkillsName().split(",");
+					for (String sl : csl) {
+						lhs.add(sl);
+					}
+				}
+				candidateDTO.setAllAndCandidateSkills(lhs);
+
+				// visa type
+				LinkedHashSet<String> visa = new LinkedHashSet<String>();
+				List<LookUpData> visaList = lookUpDataService.getLookUpDataByCategory(Constants.VISA);
+				for (LookUpData lookUpData : visaList) {
+					visa.add(lookUpData.getName());
+				}
+				if (null != can.getVisaType() && StringUtils.isNotEmpty(can.getVisaType())) {
+					String[] csl = can.getVisaType().split(",");
+					for (String sl : csl) {
+						visa.add(sl);
+					}
+				}
+				candidateDTO.setAllAndCandidateVisa(visa);
+				candidateDTO.setVisaType(can.getVisaType());
+				
+				Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+				candidateDTO.setTagsList(tagsList);
+				Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES.getValue(), can.getId());
+				if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
+					StringBuilder candidateTagsStr = new StringBuilder();
+					for(String tags : candidateTagsList) {
+						candidateTagsStr = candidateTagsStr.append(tags).append(",");
+					}
+					candidateTagsStr.toString();
+					candidateDTO.setCandidateTags(candidateTagsStr.substring(0,candidateTagsStr.length()-1));
+				}
+				
+				if (null != can.getExpectedRateCurrencey()) {
+					candidateDTO.setExpectedRateCurrencey(can.getExpectedRateCurrencey());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						candidateDTO.setExpectedRateCurrencey(countries.getCurrency());
+					}
+				}
+
+				if (null != can.getCurrentRateCurrency()) {
+					candidateDTO.setCurrentRateCurrency(can.getCurrentRateCurrency());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						candidateDTO.setCurrentRateCurrency(countries.getCurrency());
+
+					}
+				}
+
+				if (null != can.getCurrentRateType()) {
+					candidateDTO.setCurrentRateType(can.getCurrentRateType());
+				} else {
+					if (null != countries && !countries.getCurrency().equalsIgnoreCase("")) {
+						String countryCheck = countries.getName();
+						switch (countryCheck) {
+						case "India":
+							candidateDTO.setCurrentRateType("Monthly");
+							break;
+						default:
+							candidateDTO.setCurrentRateType("Hourly");
+						}
+					}
+				}
+
+				if (null != can.getOrgRelationId()) {
+					candidateDTO.setVendorOrgRelationId(String.valueOf(can.getOrgRelationId().getId()));
+					if (can.getOrgRelationId().getResponderLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidateDTO.setVendorName(can.getOrgRelationId().getLocationId().getOrgLocationName());
+					}
+					if (can.getOrgRelationId().getLocationId().getId().longValue() == loginOrgLocation.getId().longValue()) {
+						candidateDTO.setVendorName(can.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+					}
+
+				}
+				if (null != can.getSpocId()) {
+					StringBuilder contactName = new StringBuilder();
+					candidateDTO.setVendorSpocId(can.getSpocId().getId().toString());
+					if (null != can.getSpocId().getClientUser().getLastName()) {
+						candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).append(" ")
+								.append(can.getSpocId().getClientUser().getLastName()).toString());
+					} else {
+						candidateDTO.setVendorContactName(contactName.append(can.getSpocId().getVendorUser().getFirstName()).toString());
+					}
+
+				}
+				candidateDTO.setProfilePercentage(percentage);
+				candidateDTO.setCountry(can.getCountry());
+				candidateDTO.setCandidateType(can.getCandidateType());
+				candidateDTO.setCity(can.getCity());
+				candidateDTO.setState(can.getState());
+				candidateDTO.setFirstName(can.getFirstName());
+				candidateDTO.setLastName(can.getLastName());
+				candidateDTO.setMiddleName(can.getMiddelName());
+				candidateDTO.setGender(can.getGender());
+				candidateDTO.setMaritalStatus(can.getMaritalStatus());
+				candidateDTO.setDateofBirth(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), can.getDateOfBirth()));
+				candidateDTO.setLocation(can.getLocation());
+				candidateDTO.setSummary(can.getSummary());
+				candidateDTO.setFileUrl(can.getFileUrl());
+				candidateDTO.setMobilePhone(can.getMobilePhone());
+				candidateDTO.setAlternateMobilePhone(can.getAlternateMobilePhone());
+				candidateDTO.setSkillsName(can.getSkillsName());
+				candidateDTO.setRateType(can.getRateType());
+				candidateDTO.setDesignationType(can.getDesignationType());
+				candidateDTO.setExpectedRate(can.getExpectedRate());
+				candidateDTO.setCurrentRate(can.getCurrentRate());
+				candidateDTO.setEmail(can.getEmail());
+				candidateDTO.setNoticePeriod(can.getNoticePeriod());
+				
+				if(can.getOtherNoticePeriod() != null) {
+				candidateDTO.setOtherNoticePeriod(can.getOtherNoticePeriod());
+				}
+				candidateDTO.setDesignation(can.getDesignation());
+				candidateDTO.setPrimarySkill(can.getPrimarySkill());
+				candidateDTO.setAddress(can.getAddress());
+				candidateDTO.setExperienceMonths(can.getExperienceMonths());
+				candidateDTO.setExperienceYears(can.getExperienceYears());
+				candidateDTO.setZipcode(can.getZipCode());
+				candidateDTO.setCandidateType(can.getCandidateType());
+				candidateDTO.setStatus(can.getStatus().toString());
+				candidateDTO.setTerminateReason(can.getTerminateReason());
+				candidateDTO.setIsAssociate(can.getIsAssociate());
+				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
+				candidateDTO.setId(can.getId());
+				
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				candidateDTO.setCandidateSourceList(candidateSourceList);
+				
+				if(null != can.getCandidateSource()) {
+					candidateDTO.setCandidateSource(can.getCandidateSource());
+				}
+				
+				if(can.getPanNumber() != null) {
+	 				candidateDTO.setPanNumber(can.getPanNumber());
+					}
+					
+				if(can.getAadharNumber() != null) {
+					candidateDTO.setAadharNumber(can.getAadharNumber());
+					}
+					
+				if(can.getSsnNumber() != null) {
+						candidateDTO.setSsnNumber(can.getSsnNumber());
+						}
+					
+				if(can.getConsultantUser() != null) {
+					candidateDTO.setUserId(can.getConsultantUser().getId());
+				}
+				candidateDTO.setCandidateId(String.valueOf(can.getId()));
+				SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_CREATE_CANDIDATE);
+				if (action != null && action.getId() != null) {
+					List<CustomFormFieldDTO> formFieldId = new ArrayList<>();
+					List<SourceleadSectionDTO> sections = sourceleadFormSectionsService.getSourceleadFormSectionsByActionId(action.getId(),
+							loginOrgLocation.getId());
+					if (sections != null && !sections.isEmpty()) {
+						for (SourceleadSectionDTO sec : sections) {
+							for (OrglocationFormFieldsDTO customFields : sec.getCustomFieldsList()) {
+								CustomFormFieldDTO custom = new CustomFormFieldDTO();
+								custom.setCustomFormFieldId(customFields.getId());
+								formFieldId.add(custom);
+							}
+						}
+						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
+							Map<Long, String[]> candidateData = candidateCustomFieldDataService
+									.getCandidateGlobalCustomFieldDataMapByLocationId(orgLoc.getOrgId(), formFieldId, can.getId());
+							Map<String, String> dataMap = new HashMap<>();
+							if (candidateData != null && !candidateData.isEmpty()) {
+								for (Entry<Long, String[]> candidateCustomData : candidateData.entrySet()) {
+									String labelName = candidateCustomData.getValue()[0];
+									String labelData = candidateCustomData.getValue()[1];
+									String labelId = candidateCustomData.getValue()[2];
+									Long id = candidateCustomData.getKey();
+									StringBuilder keyValue = new StringBuilder();
+									keyValue.append(labelName).append("$").append(labelData);
+									dataMap.put(id.toString(), keyValue.toString());
+									candidateDTO.setCandidateCustomFieldData(dataMap);
+								}
+							}
+						}
+					}
+				}
+
+				response.setObject(candidateDTO);
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
 }

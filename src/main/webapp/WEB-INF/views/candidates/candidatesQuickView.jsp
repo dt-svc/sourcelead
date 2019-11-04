@@ -14,7 +14,7 @@ function candidateQuickViewProfile(candidateId){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: atsUrl +"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl +"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {  
         	 var json = result.object;
       	     if(result.response === "SESSION_TIMEDOUT") {
@@ -198,7 +198,6 @@ function candidateQuickViewProfile(candidateId){
 					result = result+'      </div>                                                                                                                                                  ';
 					result = result+'      <!-- Work Experience and Skills -->                                                                                                                     ';
 					result = result+'  </div>                                                                                                                                                      ';
-// 						      <!-- resumeView -->
 						
 					$("#candidateQuickViewDiv").empty();
   				    $("#candidateQuickViewDiv").append(result); 
