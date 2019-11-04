@@ -49,4 +49,8 @@ public interface CandidateGlobalService {
 	Long getCandidateGlobalGeneratedIdByOrgLocationId(Long orgLocationId, Integer generatedIdcount);
 	
 	public List<CandidateGlobal> getAllRequestedGlboalCandidatesForCampaign(List<Long> candidateId)throws Exception;
+	
+	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationIDAndUserId(Long orgLocationId,Long userId) throws Exception;
+	
+	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationID(Long orgLocationId,Long orgId,Integer candidateStatus,String updatedDateRange,String candidateType,String isAssociate,String candidateFilterSkills,String availability,String candidateTypeFilter,String createdByFilter,User user) throws Exception;
 }

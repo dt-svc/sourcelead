@@ -927,10 +927,12 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
          if(submissionStatus.equalsIgnoreCase("ALL")){
         	 statusList.add("APPLICANTS");
         	 statusList.add("REQUEST_SENT");
+        	 
         	 statusList.addAll(Arrays.asList(workflowStages));
         	
         	 stagesCountMap.put("APPLICANTS", 0);
         	 stagesCountMap.put("REQUEST_SENT", 0);
+        
              for(String stage: workflowStages) {
             	 stagesCountMap.put(stage, 0);
              }
@@ -949,7 +951,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                  submissionStages = "and (reqSub.submissionStatus = 'SHORTLIST')";
              }else if(ss.equalsIgnoreCase("SUBMIT_TO_CLIENT")){
                  submissionStages = "and (reqSub.submissionStatus = 'SUBMIT_TO_CLIENT')";
-             }else if(ss.equalsIgnoreCase("INTERVIEWED")){
+             }else if(ss.equalsIgnoreCase("INTERVIEW")){
                  submissionStages = "and (reqSub.submissionStatus = 'INTERVIEW' OR reqSub.submissionStatus = 'CLIENT_INTERVIEW' OR reqSub.submissionStatus = 'SELECTED_ON_INTERVIEW' OR reqSub.submissionStatus = 'INTERVIEW_ACCEPT')";
              }else if(ss.equalsIgnoreCase("REJECTED")){
                  submissionStages = "and (reqSub.submissionStatus = 'REJECTED')";
@@ -957,7 +959,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
                  submissionStages = "and (reqSub.submissionStatus = 'REQUEST_SENT')";
              }else if(ss.equalsIgnoreCase("BACKOUT")){
                  submissionStages = "and (reqSub.submissionStatus = 'BACKOUT')";
-             }else if(ss.equalsIgnoreCase("OFFERED")){
+             }else if(ss.equalsIgnoreCase("OFFERMADE")){
                  submissionStages = "and (reqSub.submissionStatus = 'OFFERMADE' OR reqSub.submissionStatus = 'OFFERACCEPTED' OR reqSub.submissionStatus = 'OFFERREJECTED' OR reqSub.submissionStatus = 'OFFERHIRED' OR "
                          + " reqSub.submissionStatus = 'CLIENT_OFFERMADE' OR reqSub.submissionStatus = 'CLIENT_OFFERACCEPTED' OR reqSub.submissionStatus = 'CLIENT_OFFERREJECTED' OR reqSub.submissionStatus = 'CLIENT_OFFERHIRED' )";
              }else if(ss.equalsIgnoreCase("JOINED")){

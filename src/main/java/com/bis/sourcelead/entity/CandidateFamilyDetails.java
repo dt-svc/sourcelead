@@ -35,7 +35,9 @@ public class CandidateFamilyDetails implements Serializable {
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 	
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATIONS_ID")
+	private OrgLocations orgLocationId;
 	
 	@Column(name = "FIRST_NAME")
 	private String firstName;
@@ -113,6 +115,14 @@ public class CandidateFamilyDetails implements Serializable {
 
 	public void setCandidate(Candidate candidate) {
 		this.candidate = candidate;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public String getFirstName() {

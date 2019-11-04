@@ -117,4 +117,6 @@ public interface SubmissionApproverHierarchyService {
 	public LinkedHashMap<Date, Float> getSubmissionApproverHierarchyByMasterCandidateIdStartDateAndEndDateForApproverLogin(Long projectId, Long pmMasterCandidateId, Date startDate, Date endDate,DateFormat format,String dateFormat) throws Exception;
 	
 	public List<SubmissionApproverHierarchy> getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(Date frequencyStartDate,Date frequencyEndDate,Long projectMemberId);
+
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long approverId);
 }

@@ -1704,4 +1704,24 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 
 	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(Long orgLocationId,String subscriptionStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<UserRole> userRoleList = null;
+		if("Y".equalsIgnoreCase(subscriptionStatus)) {
+			 query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'ACTIVE' and userRole.isSubscription is null ";
+			 userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		}else {
+			if("N".equalsIgnoreCase(subscriptionStatus)) {
+				subscriptionStatus = "Y";
+			}
+			 query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'INACTIVE' and userRole.isSubscription =:isSubscription";
+			 userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("isSubscription", subscriptionStatus).list();
+		}
+		
+		return userRoleList;
+	}
 }

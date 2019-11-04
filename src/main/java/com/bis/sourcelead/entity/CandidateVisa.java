@@ -38,6 +38,10 @@ public class CandidateVisa implements Serializable {
 	@JoinColumn(name = "CANDIDATE_ID")
 	private Candidate candidate;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORG_LOCATIONS_ID")
+	private OrgLocations orgLocationId;
+	
 	@Column(name = "VISA_NUMBER")
 	private String  visaNumber;
 
@@ -93,6 +97,14 @@ public class CandidateVisa implements Serializable {
 
 	public void setCandidate(Candidate candidate) {
 		this.candidate = candidate;
+	}
+
+	public OrgLocations getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(OrgLocations orgLocationId) {
+		this.orgLocationId = orgLocationId;
 	}
 
 	public String getVisaNumber() {

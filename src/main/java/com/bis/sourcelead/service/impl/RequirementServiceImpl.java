@@ -1383,6 +1383,16 @@ public class RequirementServiceImpl implements RequirementService {
 		// emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		// setting the class filed values
 		Map<String, String> globalVarsMap = new HashMap<String, String>();
+		
+		//managerName
+		
+		if (assUser.getFirstName() != null && !"".equalsIgnoreCase(assUser.getFirstName())) {
+			StringBuilder sb = new StringBuilder();
+			globalVarsMap.put("managerName",
+					sb.append(assUser.getFirstName()).append(" ").append(assUser.getLastName()).toString());
+		} else {
+			globalVarsMap.put("managerName", "--");
+		}
 		if (requirement.getJobId() != null && !"".equalsIgnoreCase(requirement.getJobId())) {
 			StringBuilder reqsb = new StringBuilder();
 			globalVarsMap.put("RequirementTitle",

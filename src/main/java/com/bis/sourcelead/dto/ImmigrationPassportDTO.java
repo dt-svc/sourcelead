@@ -33,7 +33,7 @@ public class ImmigrationPassportDTO extends SearchDTO{
 
 	private String updatedBy;
 	
-	
+    private String currentStatus;	
 
 	public Long getCandidatePassportId() {
 		return candidatePassportId;
@@ -117,6 +117,14 @@ public class ImmigrationPassportDTO extends SearchDTO{
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getCurrentStatus() {
+		return currentStatus;
+	}
+
+	public void setCurrentStatus(String currentStatus) {
+		this.currentStatus = currentStatus;
 	}
 	
 }

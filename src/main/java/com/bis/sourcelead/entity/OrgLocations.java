@@ -1167,5 +1167,5 @@ public class OrgLocations implements Serializable{
 	public void setOrgImgUrl(String orgImgUrl) {
 		this.orgImgUrl = orgImgUrl;
 	}
-	
+
 }
