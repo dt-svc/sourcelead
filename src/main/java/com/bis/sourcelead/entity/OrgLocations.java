@@ -235,6 +235,9 @@ public class OrgLocations implements Serializable{
 	@Column(name = "IS_LAW_FIRM")
 	private String isLawFirm;
 	
+//	@Column(name = "IS_BACKGROUND_CHECK_FIRM")
+//	private String isBackgroundCheck;
+	
 	@Column(name = "IS_ACCOUNTING_FIRM")
 	private String isAccountingFirm;
 
@@ -1030,6 +1033,14 @@ public class OrgLocations implements Serializable{
 	public void setIsLawFirm(String isLawFirm) {
 		this.isLawFirm = isLawFirm;
 	}
+
+//	public String getIsBackgroundCheck() {
+//		return isBackgroundCheck;
+//	}
+//
+//	public void setIsBackgroundCheck(String isBackgroundCheck) {
+//		this.isBackgroundCheck = isBackgroundCheck;
+//	}
 
 	public String getIsAccountingFirm() {
 		return isAccountingFirm;

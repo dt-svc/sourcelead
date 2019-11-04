@@ -285,7 +285,7 @@ public class DataMigrationDTO extends CommonDTO {
     
     private String eadNumber;
     
-    private String dateOfBirth;
+    private String dateofBirth;
     
     private String maritalStatus;
     
@@ -1675,12 +1675,12 @@ public class DataMigrationDTO extends CommonDTO {
 		this.eadNumber = eadNumber;
 	}
 
-	public String getDateOfBirth() {
-		return dateOfBirth;
+	public String getDateofBirth() {
+		return dateofBirth;
 	}
 
-	public void setDateOfBirth(String dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
+	public void setDateofBirth(String dateofBirth) {
+		this.dateofBirth = dateofBirth;
 	}
 
 	public String getMaritalStatus() {

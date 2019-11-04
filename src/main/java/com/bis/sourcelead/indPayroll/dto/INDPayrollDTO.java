@@ -30,6 +30,8 @@ public class INDPayrollDTO implements Serializable {
 	
 	private BigDecimal netPay;
 	
+	private BigDecimal totalCtc;
+	
 	private BigDecimal lopAmount;
 	
 	private BigDecimal regularHrsAmt;
@@ -392,4 +394,13 @@ public class INDPayrollDTO implements Serializable {
 	public void setEmployeIndPayrollDTO(List<INDPayrollDTO> employeIndPayrollDTO) {
 		this.employeIndPayrollDTO = employeIndPayrollDTO;
 	}
+
+	public BigDecimal getTotalCtc() {
+		return totalCtc;
+	}
+
+	public void setTotalCtc(BigDecimal totalCtc) {
+		this.totalCtc = totalCtc;
+	}
+	
 }
