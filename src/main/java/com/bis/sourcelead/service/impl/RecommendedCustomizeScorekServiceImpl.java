@@ -20,12 +20,14 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -67,6 +69,10 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 	
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
 	@Override
 	public RecommendedCustomizeScore getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(Long requirementId, Long orgLocationId) throws Exception {
 		return recommendedCustomizeScoreDao.getRecommendedCustomizeScoreByRequirementIdAndOrgLocationId(requirementId,orgLocationId);
@@ -338,7 +344,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 		if (candidateList != null) {
 			for(int i = 0; i<candidateList.size(); i++){
 				CandidateIndex candidate = candidateList.get(i);
-				Candidate can = candidateService.getCandidateByCandidateId(candidate.getCandidateId());
+				CandidateGlobal can = candidateGlobalService.getCandidateGlobalByCandidateId(candidate.getCandidateId());
 				CandidateResumes candidateResume =  candidateResumeSerivce.getCandidateLatesResumes(can.getId(), Constants.RECORD_ACTIVE);
 				if(candidateResume != null){ 
 					candidate.setCurrentResumeId(candidateResume.getId());
@@ -347,7 +353,7 @@ public class RecommendedCustomizeScorekServiceImpl implements RecommendedCustomi
 					candidate.setCurrentResumeUUID(candidateResume.getResumeUUID());
 					candidate.setFileContentType(candidateResume.getFileContentType());
 				}
-				int percentage = candidateService.getCandidatePercentage(can,orglocation);
+				int percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(can.getId());
 				candidate.setProfilePercentage(percentage);
 			}
 			candidateCompare.setCandidateList(candidateList);

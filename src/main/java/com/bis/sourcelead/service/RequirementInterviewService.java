@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementInterview;
@@ -52,12 +53,12 @@ public interface RequirementInterviewService {
 
 	List<RequirementInterview> getCustomerInterviewsBySubmissionIdAndOrgLocationsId(Long submissionId, Long id, Long requirementId) throws Exception;
 
-	void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations orgLocations) throws Exception;
+	void sendEmailToVendors(CandidateGlobal candidate, RequirementSubmission requirementSubmission, User loginUser,Org loginOrg,RequirementInterview requirementInterview,OrgLocations orgLocations) throws Exception;
 
-	void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations, RequirementSubmission requirementSubmission, User loginUser,
+	void sendEmailToApplicants(CandidateGlobal candidate,OrgLocations loginOrgLocations, RequirementSubmission requirementSubmission, User loginUser,
 			Org loginOrg, RequirementInterview requirementInterview) throws Exception;
 	
-	void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception;
+	void sendEmailToInterviewrs(CandidateGlobal candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception;
 	
 	Integer getInterviewCountByCandidateId(Long candidateId,String submissionStatus,Date startDate,Date endDate) throws Exception;
 
