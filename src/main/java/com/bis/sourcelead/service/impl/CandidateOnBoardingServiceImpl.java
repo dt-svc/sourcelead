@@ -481,6 +481,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		
 		CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateOnBoarding.getCandidateId().getId());
+		candidateGlobal.setIsAssociate(Constants.YES);
+		candidateGlobalService.storeCandidateGlobal(candidateGlobal);
 		Candidate candidate = candidateService.findByCandidateEmail(candidateGlobal.getEmail(),candidateGlobal.getOrgLocationId().getId());
 		if(null != candidate){
 			if(candidateOnBoarding.getShift() != null) {
@@ -491,7 +493,6 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			candidate.setIsAssociate(Constants.YES);
 			candidateService.addCandidate(candidate);
 		}else {
-			candidateGlobal.setIsAssociate(Constants.YES);
 			candidate = candidateGlobalUtil.storeCandidateFromCandidateGlobal(candidateGlobal, onboardingUser);
 			if(candidateOnBoarding.getShift() != null) {
 				candidate.setShift(candidateOnBoarding.getShift());
