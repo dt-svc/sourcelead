@@ -69,4 +69,14 @@ public class EmailReminderDaoImpl implements EmailReminderDao {
 		List<EmailReminder> emailReminderList = session.createQuery(query).setLong("tabsId", tabsId).setLong("orgLocationsId", orgLocationsId).list();
 		return emailReminderList;
 	}
+
+
+	@Override
+	@Transactional
+	public List<EmailReminder> getReminderConfiguredOrgLocations(String scenarioName) {
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from EmailReminder emailRem left join emailRem.orgLocationsId loc where loc.id = emailRem.orgLocationsId.id AND emailRem.scenarionName =:scenarioName and emailRem.status = '1' ";
+	List<EmailReminder> emailReminderList = session.createQuery(query).setString("scenarioName", scenarioName).list();
+	return emailReminderList;
+	}
 }
