@@ -19,6 +19,8 @@ public class CandidateCommentsDTO extends CommonDTO {
 	private String updatedBy;
 	
 	private long candidateId;
+	
+	private String candidateType;
 
 	public String getComment() {
 		return comment;
@@ -66,6 +68,14 @@ public class CandidateCommentsDTO extends CommonDTO {
 
 	public void setCandidateId(long candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	}
 	
 

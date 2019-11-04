@@ -213,4 +213,65 @@ public class CandidateEducationDaoImpl implements CandidateEducationDao {
 		resumesCount = filterCount.intValue();
 		return resumesCount;
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer resumesCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(EDU.ID) AS EDU_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_EDUCATION EDU "
+					+ " WHERE EDU.CANDIDATE_ID = :candidateId AND EDU.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		resumesCount = filterCount.intValue();
+		return resumesCount;
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<CandidateEducation> getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEducation ce  left join fetch ce.candidateId where  ce.candidateId.id =:candidateId and ce.status ='1' ORDER BY ce.id DESC";
+		List<CandidateEducation> candidateEducation = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return candidateEducation;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEducation getCandidateGlobalEducationBycandidateIdandEducationId(Long candidateId,
+			Long candidateEducationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEducation  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orglocationId where cEmp.id = :candidateEducationId and cEmp.candidateId.id = :candidateId ";
+		List<CandidateEducation> educationList = session.createQuery(query.toString()).setLong("candidateEducationId", candidateEducationId).setLong("candidateId", candidateId).list();
+		CandidateEducation canEMp = null;
+		if (educationList != null && educationList.size() > 0) {
+			canEMp = (CandidateEducation) educationList.iterator().next();
+		}
+		return canEMp;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public Boolean validateCandidateGlobalEducationName(Long candidateId, String candidateEducation) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query = "from CandidateEducation cEmp where cEmp.name = :candidateEducation and cEmp.candidateId.id = :candidateId and cEmp.status ='1' ";
+		List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setString("candidateEducation", candidateEducation).list();
+		if (educationList != null && educationList.size() > 0) {
+			flag = true;
+			return flag;
+		}
+		else {
+			return flag;
+		}
+	}
 }

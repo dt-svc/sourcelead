@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateEmployersHistory;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEmployersService;
@@ -88,13 +88,12 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	public CandidateEmployers storeCandidateEmployers(CandidateEmployerDTO candidateEmployerDTO, User user, OrgLocations orgLocationId,Long candidateId) throws Exception {
 
         CandidateEmployers candidateEmployers = null;
-        CandidateEmployers currentEmployer = null;
-        Candidate can  = new Candidate();
         StringBuffer activitySummary = new StringBuffer();
+        CandidateGlobal can = null;
         if(candidateId!=null){
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getCandidateEmployeeId())){
-	       			candidateEmployers = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(Long.parseLong(candidateEmployerDTO.getCandidateEmployeeId()), candidateId);
-	       			// candidateEmployers.setId(Long.valueOf(jsonObject.getString("candidateEmployeeId")));
+        		candidateEmployers = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(Long.parseLong(candidateEmployerDTO.getCandidateEmployeeId()), candidateId);
+        		
        	    }else{
     	    	candidateEmployers = new CandidateEmployers();
     	    }
@@ -105,8 +104,10 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 				activitySummary.append("Name").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 			}
         	candidateEmployers.setName(candidateEmployerDTO.getName());
+        	can  = new CandidateGlobal();
         	can.setId(candidateId);
         	candidateEmployers.setCandidateId(can);
+        	
         	if(StringUtils.isNotBlank(candidateEmployerDTO.getAddress())){
         	if(candidateEmployers != null && candidateEmployers.getAddress() != null){
 				activitySummary.append("Address").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getAddress()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getAddress()).append(Constants.NEW_VALUE_TAG_END).append(" ");
@@ -155,7 +156,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     				activitySummary.append("Start Year").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getStartYear()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getStartYear()).append(Constants.NEW_VALUE_TAG_END).append(" ");
     			}
  				   candidateEmployers.setStartYear(candidateEmployerDTO.getStartYear());
- 				  // candidateEmployers.setStartMonth(jsonObject.getString("startMonth").split("&")[1]);
         	}else{
         		 candidateEmployers.setStartYear("");
         	}
@@ -167,7 +167,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
     				activitySummary.append("End Year").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateEmployers.getEndYear()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateEmployerDTO.getEndYear()).append(Constants.NEW_VALUE_TAG_END).append(" ");
     			}   
         		candidateEmployers.setEndYear(candidateEmployerDTO.getEndYear());
-  				   //candidateEmployers.setEndMonth(jsonObject.getString("endMonth").split("&")[1]);
         	}else{
        		 candidateEmployers.setEndYear("");
         	}
@@ -198,21 +197,12 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
         	candidateEmployers.setCreatedDate(commonUtil.currentDate());
         	candidateEmployers.setUpdatedBy(user.getUserCode());
         	candidateEmployers.setUpdatedDate(commonUtil.currentDate());
-		}
+		
 		
         candidateEmployers = candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
         candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
-        if(null != currentEmployer){
-        	candidateEmployersDao.storeCandidateEmployers(currentEmployer);
-        	candidateActivityCommonUtil.storeCandidateEmployersHistory(currentEmployer, user);
-        }
-        
         candidateActivityCommonUtil.storeCandidateActivity(user, orgLocationId, can, "", Constants.CANDIDATE_EMPLOYERS_UPDATED, activitySummary.toString(), "CANDIDATE");
-		
-		/*
-		 * updating Candidate Employer DB data in existing candidateindex
-		 */
-		saveOrUpdateCandidateElkDocumentWithEmployerDetails(candidateId,orgLocationId.getId());
+        }
 		
 		return candidateEmployers;
 	}
@@ -236,12 +226,6 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		 CandidateEmployers can = candidateEmployersDao.getCandidateEmployerBycandidateIdandCandidateEmployerID(candidateEmployerId, candidateId);
 		 can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
 		 can = candidateEmployersDao.storeCandidateEmployers(can);
-	 
-	     /*
-		 * updating Candidate Employer DB data in existing candidateindex
-		 */
-		 saveOrUpdateCandidateElkDocumentWithEmployerDetails(candidateId,can.getOrgLocationId().getId());
-			
 	    return can;
 	}
 
@@ -296,8 +280,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	 * @throws Exception
     */
 	@Override
-	public  HashSet<CandidateEmployers> getCandidateEmployersDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode)throws JSONException{
-		  HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
+	public void saveCandidateEmployersDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Long candidateId,String userCode)throws Exception{
 		  
 		  if(StringUtils.isNotBlank(candidateDTO.getCandidateEmployers())){
 	    	  String employers = candidateDTO.getCandidateEmployers();
@@ -308,15 +291,16 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		    		  CandidateEmployers cemp = new  CandidateEmployers();
 		    		  emps = emps.replace("\"", "");
 		    		  cemp.setName(emps);
+		    		  CandidateGlobal candidate = new CandidateGlobal();
+		    		  candidate.setId(candidateId);
 		    		  cemp.setCandidateId(candidate);
 		    		  cemp.setOrgLocationId(orgLocations);
 		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
-		    		  candidateEmployersList.add(cemp);
+		    		  saveCandidateEmployers(cemp);
 		    	  }
 	    	  }  
 	    }
 		 
-		return candidateEmployersList;
 	 }
 
 	
@@ -402,7 +386,7 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 
 	@Override
 	public HashSet<CandidateEmployers> getCandidateEmployersDetailsList(CandidateDTO candidateDTO,
-			OrgLocations orgLocations, Candidate candidate, User user) throws Exception {
+			OrgLocations orgLocations, Long candidateId, User user) throws Exception {
 		
           HashSet<CandidateEmployers> candidateEmployersList = new HashSet<CandidateEmployers>();
 		  
@@ -415,6 +399,8 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 		    		  CandidateEmployers cemp = new  CandidateEmployers();
 		    		  emps = emps.replace("\"", "");
 		    		  cemp.setName(emps);
+		    		  CandidateGlobal candidate = new CandidateGlobal();
+		    		  candidate.setId(candidateId);
 		    		  cemp.setCandidateId(candidate);
 		    		  cemp.setOrgLocationId(orgLocations);
 		    		  cemp.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -434,6 +420,33 @@ public class CandidateEmployersServiceImpl implements CandidateEmployersService 
 	    }
 		 
 		return candidateEmployersList;
+	}
+
+	@Override
+	public List<CandidateEmployers> getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		return candidateEmployersDao.getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(candidateId, orgLocationId);
+	}
+
+	@Override
+	public CandidateEmployers removeCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,
+			Long candidateEmployerId) throws Exception {
+		
+		 CandidateEmployers can = candidateEmployersDao.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
+		 can.setStatus(Constants.CANDIDATE_IN_ACTIVE);
+		 can = candidateEmployersDao.storeCandidateEmployers(can);
+	     return can;
+	}
+
+	@Override
+	public CandidateEmployers getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,
+			Long candidateEmployerId) throws Exception {
+		return candidateEmployersDao.getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(candidateId, candidateEmployerId);
+	}
+
+	@Override
+	public CandidateEmployers saveCandidateEmployers(CandidateEmployers candidateEmployers) throws Exception {
+		return candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
 	}
 
 }

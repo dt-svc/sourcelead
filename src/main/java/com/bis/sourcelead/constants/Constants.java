@@ -843,6 +843,7 @@ public class Constants {
 	public static final String ELK_CANDIDATE_INDEX = "candidates";
 	public static final String ELK_USER_INDEX = "users";
 	public static final String ELK_CANDIDATE_TYPE = "candidate";
+	public static final String ELK_GLOBAL_CANDIDATE_TYPE = "globalCandidate";
 	public static final String ELK_USER_TYPE = "user";
 	public static final String ELK_REQUIREMENT_INDEX = "requirement";
 	public static final String ELK_REQUIREMENT_TYPE = "requirement";
@@ -1168,6 +1169,7 @@ public class Constants {
 	public static final String WORK_FROM_HOME = "Work From Home";
 	
 	public static final String CANDIDATE_ENTITY = "CD";
+	public static final String CANDIDATE_GLOBAL_ENTITY = "GCD";
 	public static final String JOB_ENTITY = "JB";
 	public static final String JOB_FAIR = "JF";
 	public static final String IMMIGRATION_ENTITY = "IM";
@@ -1405,7 +1407,7 @@ public class Constants {
     
     public static final String[] GENDER = { "Male", "Female", "Transgender"};
 
-    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Other" };
+    public static final String[] EMPLOYMENT_TYPES = { "C2C", "C2C-1099", "W-2", "C2H", "C2H-1099", "Part Time", "Full Time", "Offshore C2C", "Other" };
 
     public static final String[] MARITAL_STATUS = { "Single", "Married", "Divorsed", "Separated"};
     
@@ -1580,6 +1582,9 @@ public class Constants {
 
 	public static final String RESUME_PARSE_FILE_URL ="/parseResume";
 	
+
+	public static final String CANDIDATE_GLOBAL = "candidateGlobal";
+
 	public static final String LCA_MANAGER_EXPIRES_IN_DAYS_NOTIFICATION ="LCAManagerExpiresInDaysNotification";
 
 }
