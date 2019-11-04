@@ -353,6 +353,7 @@ public class PerformanceGoalsRestController {
 						 performanceGoalsDTO.setPercentageDone(performanceGoals.getPercentageDone());
 						 performanceGoalsDTO.setGoalId(performanceGoals.getId());
 						 performanceGoalsDTO.setCreatedDate(performanceGoals.getCreatedDateStr());
+						 performanceGoalsDTO.setCreatedUserId(BigInteger.valueOf(performanceGoals.getCreatedBy().getId()));
 						 
 						 if(performanceGoals.getTeamId() != null) {
 							 performanceGoalsDTO.setTeamId(String.valueOf(performanceGoals.getTeamId().getId()));

@@ -503,8 +503,9 @@ function PerformanceGoals(){
 						        			 performanceGoalType = "selfGoal";
 						        		 }
 								         
-								         if(opt.createdUserId == loginUserId){
-								        	 var goalDelete = "";
+								         var goalDelete = "";
+								         
+								         if(response.object.createdUserId == loginUserId){
 									         goalDelete = goalDelete+"<a class='text-primary textBold' href='javascript:void(0)' onclick='performanceGoals.deletePerformanceParentGoal(\""+goalUUID+"\",\""+performanceGoalType+"\")'><i class='fa fa-trash  cursorPointer paddingRight'></i></a>";
 								         }
 								        
@@ -515,11 +516,11 @@ function PerformanceGoals(){
 								         var dateFormatStr = '';
 								         if(dateFormat.match("yyyy-MM-dd")){
 								   		     dateFormatStr = 'YYYY-MM-DD';
-								   		  }if(dateFormat.match("dd-MM-yyyy")){
+								   		  }else if(dateFormat.match("dd-MM-yyyy")){
 								   			  dateFormatStr = 'DD-MM-YYYY'; 
-								   		  }if(dateFormat.match("MM-dd-yyyy")){
+								   		  }else if(dateFormat.match("MM-dd-yyyy")){
 								   			  dateFormatStr = 'MM-DD-YYYY'; 
-								   		  }if(dateFormat.match("yyyy-dd-MM")){
+								   		  }else if(dateFormat.match("yyyy-dd-MM")){
 								   			  dateFormatStr = 'YYYY-DD-MM'; 
 								   		  }
 
