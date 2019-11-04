@@ -209,7 +209,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<div class="col-md-5">';
 		result = result + '<div class="col-md-12" id="browseDiv">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File';
 		result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
 		result = result + '<input type="text" class="form-control" data-validation="required validatedoc "  field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
