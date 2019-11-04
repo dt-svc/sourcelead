@@ -1582,4 +1582,6 @@ public class Constants {
 	
 	public static final String LCA_MANAGER_EXPIRES_IN_DAYS_NOTIFICATION ="LCAManagerExpiresInDaysNotification";
 
+	//added on 4th nov 2019
+	public static final String[] LEAVE_CONFIGURATION_ROLES = { "Reporting Manager", "Project Manager", "Team Leader"};
 }
