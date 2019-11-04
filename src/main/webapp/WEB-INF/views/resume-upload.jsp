@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, maximum-scale=1.0; user-scalable=0;">
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
 <link rel="manifest" href="/manifest.json">
 <title>::SourceLead::</title>
 <link
@@ -210,23 +210,7 @@ padding: 2px
 	<header>
 	
 		<div class="logo">
-		<c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
-  <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead"></a>
-  </c:if>
-  
-   <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
-   <a href="${SourceLeadWeb_sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead"></a>
-   </c:if>
-  
-  
-  
-  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-  <a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
-  </c:if>
-  
-  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-  <a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead"></a>
-  </c:if>
+
 		 <c:if test="${!empty SourceLeadWeb_org.fileContentType}">
  	 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
  	 	<img data-id="orgLogoImage" src="${SourceLeadWeb_org.fileUrl}" title="${SourceLeadWeb_displayName == 'Professional' ? 'Job Seeker' : SourceLeadWeb_displayName}" class="img-responsive mt5">
@@ -255,7 +239,27 @@ padding: 2px
 			</c:choose>
 			 (Resume) Bulk Import
 		</div>
-		<div class="clear"></div>
+		
+		 <div class="clear"></div>
+		 <div class="pull-right" style="padding: 10px 30px 0px 0px">
+			  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER' && SourceLeadWeb_prodSupportLoginUserRole == null}">
+			  <a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}" title="Source Lead">Home</a> &raquo; <a href="${SourceLeadWeb_atsUrl}/candidatesList" title="Source Lead">Candidates List</a>
+			  </c:if>
+			  
+			   <c:if test="${SourceLeadWeb_prodSupportLoginUserRole == 'ROLE_PRODUCTION_SUPPORT'}">
+			   <a href="${SourceLeadWeb_sourceleadUrl}/productionSupportdashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_prodSupportOrgLocationId}" title="Source Lead">Home</a>
+			   </c:if>
+			  <div class="clear"></div>
+			  
+			  
+			  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+			  <a href="${SourceLeadWeb_sourceleadUrl}/professionalDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">Home</a>
+			  </c:if>
+			  
+			  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
+			  <a href="${SourceLeadWeb_sourceleadUrl}/recruiterDashboard/${SourceLeadWeb_orgLocationId}/${SourceLeadWeb_displayName}" title="Source Lead">Home</a>
+			  </c:if>
+		</div>
 	</header>
 <div class="browseProgress">
             <div class="browseProgressInn">
@@ -277,7 +281,7 @@ padding: 2px
 	</div>
 </c:if>            
             
-<div id="uploader">
+<div id="uploader" style="margin-top: 40px">
     <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
 </div>
 <div class='links'>

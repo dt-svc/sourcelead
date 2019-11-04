@@ -90,7 +90,6 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("creating defalut workflow for the  orglocation id "+orgLocations.getId());
-		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		modelandview.setViewName("workflow/defaultWorkflow");
 		return modelandview;
 	}
@@ -108,7 +107,6 @@ public class RequirementWorkflowController {
 		User user = new User();
 		user.setId(userId);
 		logger.debug("before saving default workflow for the orglocation id: >>> "+orgLocations.getId());
-		//requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
 		return modelandview;
 	}
 	
@@ -251,7 +249,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
 			 logger.debug("inside createRequirementDefaultWorkFlow>>> templateUuid "+orgLocations.getId());
-			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+			workFlowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -281,7 +279,7 @@ public class RequirementWorkflowController {
 		OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
 		try {
 			 logger.debug("inside createRequirementDefaultWorkFlowStages>>> orgLocationid "+orgLocations.getId());
-			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages(orgLocations);
+			requirementDefaultWorkFlowStagesDTO = requirementWorkFlowService.getRequirementDefaultWorkFlowStages();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -855,7 +853,6 @@ public class RequirementWorkflowController {
 				paramsMap.put("candidate", candidate);
 				paramsMap.put("orgLocations", orgLocations);
 				paramsMap.put("loginUser", loginUser);
-				paramsMap.put("templateId", quesionnaireId);
 				paramsMap.put("templateUuid", questionnaireUuid);
 				paramsMap.put("stageName", stageName);
 				paramsMap.put("jobTitle", jobTitle);
@@ -906,7 +903,7 @@ public class RequirementWorkflowController {
 	}
 	
 	
-		 @RequestMapping(value = "/getQuestionnaireTemplateList" , method = RequestMethod.GET)
+		 @RequestMapping(value = {"/ws/getQuestionnaireTemplateList","/getQuestionnaireTemplateList"} , method = RequestMethod.GET)
 		 @ResponseBody
 		   public RequirementQuestionnaireTemplateDTO getQuestionnaireTemplateList(@RequestParam(value="templateUuid", required=false) String templateUuid,
 					@RequestParam(value = "workflowStageUuid", required = false) String workflowStageUuid,
@@ -936,7 +933,7 @@ public class RequirementWorkflowController {
 
 	}
 	
-	@RequestMapping(value = "/saveQuestionnaireFeedbackTemplate", method = RequestMethod.POST)
+	@RequestMapping(value = {"/ws/saveQuestionnaireFeedbackTemplate","/saveQuestionnaireFeedbackTemplate"}, method = RequestMethod.POST)
 	 @ResponseBody
 		public String saveQuestionnaireFeedbackTemplate(RequirementQuestionnaireFeedbackTemplateDTO qemplateDTO,
 				HttpServletRequest request)
@@ -957,7 +954,7 @@ public class RequirementWorkflowController {
 
 		}
 	 
-	 @RequestMapping(value = "/getQuestionnaireTemplateFeedbackList" , method = RequestMethod.GET)
+	 @RequestMapping(value = {"/ws/getQuestionnaireTemplateFeedbackList","/getQuestionnaireTemplateFeedbackList"} , method = RequestMethod.GET)
 	 @ResponseBody
 	   public RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(@RequestParam(value="templateUuid", required=false) String templateUuid) throws Exception {
 		 RequirementQuestionnaireFeedbackTemplateDTO templateDTO  = requirementWorkFlowService.getQuestionnaireTemplateFeedbackList(templateUuid);
@@ -1012,20 +1009,21 @@ public class RequirementWorkflowController {
 	}
 	
 	// below method is used to update remaining minutes and seconds in feedback table when time limit is configured for questionnaire.
-	@RequestMapping(value = { "/updateFeedbackQuestionnaireTimer" }, method = RequestMethod.POST)
-	public @ResponseBody String updateFeedbackQuestionnaireTimer(@RequestParam(value = "questTemplUuid", required = false) String questTemplUuid, 
-			@RequestParam(value = "stageId", required = false) Long stageId, 
+	@RequestMapping(value = { "/ws/updateFeedbackQuestionnaireTimer","/updateFeedbackQuestionnaireTimer" }, method = RequestMethod.POST)
+	@ResponseBody
+	public String updateFeedbackQuestionnaireTimer(@RequestParam(value = "questTemplUuid", required = false) String questTemplUuid, 
+			@RequestParam(value = "stageId", required = false) String stageUuId, 
 			@RequestParam(value = "submissionId", required = false) Long submissionId, 
 			@RequestParam(value = "minutes", required = false) Integer minutes, 
 			@RequestParam(value = "seconds", required = false) Integer seconds, 
 			HttpServletRequest request) throws Exception {
 
-		   String status = requirementWorkFlowService.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId,
+		   String status = requirementWorkFlowService.updateFeedbackQuestionnaireTimer(questTemplUuid, stageUuId,submissionId,
 				                                                                   minutes, seconds);
 		return status;
 	}
 	
-	@RequestMapping(value = "/saveQuestionnaireTemplateForSubmission", method = RequestMethod.GET)
+	@RequestMapping(value = {"/ws/saveQuestionnaireTemplateForSubmission","/saveQuestionnaireTemplateForSubmission"}, method = RequestMethod.GET)
 	@ResponseBody	
 	public RequirementQuestionnaireFeedbackTemplateDTO saveQuestionnaireTemplateForSubmission(RequirementQuestionnaireFeedbackTemplateDTO templateDTO, HttpServletRequest request)throws Exception{
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");

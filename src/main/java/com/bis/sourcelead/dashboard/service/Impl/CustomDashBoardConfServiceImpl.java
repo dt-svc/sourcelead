@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.apache.bcel.classfile.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,9 @@ import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.CustomModuleConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
+import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
@@ -34,6 +37,9 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 	
 	@Autowired
 	private TabsService tabsService;
+	
+	@Autowired
+	private ModuleDashboardConfService moduleDashboardConfService;
 	
 	@Override
 	public CustomDashBoardConfiguration saveCustomDashBoardConf(CustomDashBoardConfDTO customDashBoardConfDTO, OrgLocations orgLocation,Long loginUsrId)
@@ -151,7 +157,7 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId)
+	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId, Long confDashBoardId)
 	{
 		List<TabsDTO> tabs = new ArrayList<>();
 		try {
@@ -172,6 +178,12 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 							subTabsDTO.setSubTabId(sTab.getId());
 							subTabsDTO.setSubTabDisplayName(sTab.getSubtabDisplayName());
 							subTabsDTO.setSubTabName(sTab.getSubTabName());
+							CustomModuleConfiguration modConf =  moduleDashboardConfService.getSubModuleByIdAndConfDashBoardId(sTab.getId(),confDashBoardId);
+							if(modConf != null) {
+								subTabsDTO.setIsSubTabConfigured("YES");
+							}else {
+								subTabsDTO.setIsSubTabConfigured("NO");
+							}
 							stabList.add(subTabsDTO);
 						}
 						
@@ -210,6 +222,9 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		}
 		return stablist;
 	}
+
+
+
 	
 }
 

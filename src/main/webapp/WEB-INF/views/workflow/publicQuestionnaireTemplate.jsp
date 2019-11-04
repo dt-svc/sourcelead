@@ -44,7 +44,14 @@ width: auto !important; padding-right: 15px;
 </style>
 
 <script type="text/javascript">
-var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+var sessionId = '${SourceLeadWeb_sessionId}';
+var sourceleadUrl = null;
+if(sessionId == null || sessionId == "null" || sessionId == "" || sessionId == "undefined"){
+	sourceleadUrl = '${sourceleadUrl}'+'/ws';
+}else{
+	sourceleadUrl = '${sourceleadUrl}';
+}
+//var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 var labelAndAttemptsMap = new Map();
 var savedQuestionnaireUuid = new Map();
 var submissionType = new Map();

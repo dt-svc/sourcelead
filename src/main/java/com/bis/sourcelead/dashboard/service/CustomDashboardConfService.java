@@ -19,7 +19,7 @@ public interface CustomDashboardConfService {
 	
 	CustomDashBoardConfiguration getCustomDashboardConfById(Long customDashBoardConfID, Long orgLocationId);
 
-	List<TabsDTO> getRoleBasedModules(Long locationId, long roleId);
+	List<TabsDTO> getRoleBasedModules(Long locationId, long roleId, Long dashBoardId);
 
 	List<SubTabsDTO> getSubModules(Long tabId);
 }

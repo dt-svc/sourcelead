@@ -232,7 +232,7 @@ public class TicketManagementRestController {
 				String[] tableColumns = { "id", "name ", "description" ,"assignTo"};// should be
 
 				// entity names
-				int sortColumnIndex = 1; // by default sorting using invoice date
+				int sortColumnIndex = 1; // by default sorting using name
 				String sortColumnOrder = "asc"; // by default descending order
 				if (ticketCategorySorting.getOrder() != null && !ticketCategorySorting.getOrder().isEmpty()) {
 					sortColumnIndex = Integer.parseInt(ticketCategorySorting.getOrder().get(0).get("column"));
@@ -370,7 +370,7 @@ public class TicketManagementRestController {
 				String[] tableColumns = {"id","icon", "name","description" };// should be
 
 				// entity names
-				int sortColumnIndex = 1; // by default sorting using invoice date
+				int sortColumnIndex = 2; // by default sorting using name
 				String sortColumnOrder = "asc"; // by default descending order
 				if (ticketPrioritySorting.getOrder() != null && !ticketPrioritySorting.getOrder().isEmpty()) {
 					sortColumnIndex = Integer.parseInt(ticketPrioritySorting.getOrder().get(0).get("column"));
@@ -452,26 +452,6 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
-
-	/*
-	 * @RequestMapping(value ="/deleteTicketPriorityDataById", method =
-	 * RequestMethod.POST)
-	 * 
-	 * @ResponseBody public Response<Boolean>
-	 * deleteTicketPriorityDataById(HttpServletRequest request, long
-	 * ticketPriorityId) throws Exception { Response<Boolean> response = new
-	 * Response<>(); try { User user = (User)
-	 * SourceLeadSessionManager.getSessionAttribute(request, "user"); if (user !=
-	 * null) {
-	 * response.setObject(ticketManagementService.deleteTicketPriorityDataById(
-	 * ticketPriorityId)); response.setResponse(Result.SUCCESS.name());
-	 * response.setResponseMessage(Result.SUCCESS.getValue()); } else {
-	 * response.setResponse(Result.SESSION_TIMEDOUT.name());
-	 * response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue()); } } catch
-	 * (Exception e) { e.printStackTrace();
-	 * response.setResponse(Result.AWKWARD.name());
-	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
-	 */
 
 	@RequestMapping(value = "/changeTicketPriorityStatusDataById", method = RequestMethod.POST)
 	@ResponseBody
@@ -590,25 +570,6 @@ public class TicketManagementRestController {
 		}
 		return response;
 	}
-
-	/*
-	 * @RequestMapping(value ="/deleteTicketStatusDataById", method =
-	 * RequestMethod.POST)
-	 * 
-	 * @ResponseBody public Response<Boolean>
-	 * deleteTicketStatusDataById(HttpServletRequest request, long ticketStatusId)
-	 * throws Exception { Response<Boolean> response = new Response<>(); try { User
-	 * user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	 * if (user != null) {
-	 * response.setObject(ticketManagementService.deleteTicketStatusDataById(
-	 * ticketStatusId)); response.setResponse(Result.SUCCESS.name());
-	 * response.setResponseMessage(Result.SUCCESS.getValue()); } else {
-	 * response.setResponse(Result.SESSION_TIMEDOUT.name());
-	 * response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue()); } } catch
-	 * (Exception e) { e.printStackTrace();
-	 * response.setResponse(Result.AWKWARD.name());
-	 * response.setResponseMessage(Result.AWKWARD.getValue()); } return response; }
-	 */
 
 	@RequestMapping(value = {"/changeTicketStatusType", "/rest/changeTicketStatusType"}, method = RequestMethod.POST)
 	@ResponseBody
@@ -827,7 +788,7 @@ public class TicketManagementRestController {
 		return responseList;
 	}
 	
-	@RequestMapping(value = {"/saveTicketComment", "/rest/saveTicketComment"}, method = RequestMethod.POST)
+	@RequestMapping(value = "/saveTicketComment", method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> saveTicketComment(HttpServletRequest request, TicketCommentDTO ticketCommentDTO) {
 		Response<Boolean> response = new Response<>();
@@ -848,6 +809,12 @@ public class TicketManagementRestController {
 			response.setResponseMessage(Result.AWKWARD.getValue());
 		}
 		return response;
+	}
+	
+	@RequestMapping(value = {"/rest/saveTicketComment"}, method = RequestMethod.POST)
+	@ResponseBody
+	public Response<Boolean> saveTicketCommentForMobile(HttpServletRequest request, @RequestBody TicketCommentDTO ticketCommentDTO) {
+		return saveTicketComment(request, ticketCommentDTO);
 	}
 	
 	@RequestMapping(value = "/getTicketComment", method = RequestMethod.POST)
@@ -873,7 +840,7 @@ public class TicketManagementRestController {
 		return response;
 	}
 	
-	@RequestMapping(value = "/deleteTicketComment", method = RequestMethod.POST)
+	@RequestMapping(value = {"/deleteTicketComment", "/rest/deleteTicketComment"}, method = RequestMethod.POST)
 	@ResponseBody
 	public Response<Boolean> deleteTicketComment(HttpServletRequest request, @RequestParam(defaultValue = "0") long ticketCommentId) {
 		Response<Boolean> response = new Response<>();
