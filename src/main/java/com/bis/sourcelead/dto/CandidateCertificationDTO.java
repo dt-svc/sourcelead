@@ -48,6 +48,9 @@ public class CandidateCertificationDTO extends CommonDTO {
 
 	private long candidateCertificationId;
 
+	private String candidateType;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -198,6 +201,14 @@ public class CandidateCertificationDTO extends CommonDTO {
 
 	public void setCandidateCertificationId(long candidateCertificationId) {
 		this.candidateCertificationId = candidateCertificationId;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	}
 
 }
