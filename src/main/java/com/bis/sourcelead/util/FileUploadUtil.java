@@ -727,11 +727,7 @@ public class FileUploadUtil {
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
 			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user,
-<<<<<<< HEAD
-			Long requirementId, String needApplicantPermit, String notifyToApplicant,CandidateGlobalUtil candidateGlobalUtil) {
-=======
-			Long requirementId, String needApplicantPermit, String notifyToApplicant, String baseServicesUrl, String isResumeparserEnabled) throws IOException {
->>>>>>> 063c66cb81a4445664bef46356bb6e3f6ff16d8d
+			Long requirementId, String needApplicantPermit, String notifyToApplicant, String baseServicesUrl, String isResumeparserEnabled,CandidateGlobalUtil candidateGlobalUtil) throws IOException {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -784,8 +780,7 @@ public class FileUploadUtil {
 					fileInfoList1.add(fileInfo);
 					candidateResumeDTO.setStaticPath(staticPath);
 					candidateResumeDTO.setFileInfo(fileInfoList1);
-					Long candidateGlobalId = candidateService.getCandidateIdByGlobalCandidateId(c.getId());
-					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, candidateGlobalId, null, loginOrgLocation);
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c.getId(), null, loginOrgLocation);
 					addToResponse(2, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
 					successList.add(resume);
 					candidateIds += (candidateIds.isEmpty() ? "" : ",") + c.getId();
@@ -823,12 +818,8 @@ public class FileUploadUtil {
 						candidateDto.setExperienceYears(Integer.toString(resume.getTotalYearsExp()));
 						candidateDto.setExperienceMonths(Integer.toString(resume.getTotalMonthsExp()));
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-<<<<<<< HEAD
-					CandidateGlobal storedCandidate = candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
-=======
 					candidateDto.setStaticPath(staticPath);
-					Candidate storedCandidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
->>>>>>> 063c66cb81a4445664bef46356bb6e3f6ff16d8d
+					CandidateGlobal storedCandidate = candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
 					if(requirementId > 0) {
 						candidateIds += (candidateIds.isEmpty() ? "" : ",") + storedCandidate.getId();
 						System.out.println("Add Applicant for requirement " + requirementId + " to newly imported candidate");
