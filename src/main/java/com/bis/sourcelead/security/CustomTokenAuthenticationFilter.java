@@ -41,15 +41,16 @@ public final class CustomTokenAuthenticationFilter extends GenericFilterBean {
 	{
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
-
+		System.out.println("WWWWWWWWWWWWW     doFilter  calling WWWWWWWWWWWWWWWWWWWWWWWWWWW");
 		boolean authenticated = checkToken(httpRequest, httpResponse);
+		System.out.println(" ************** authenticated is *****************"+authenticated);
 		if (authenticated) {
 			 authenticationService.getAuthentication(httpRequest,httpRequest.getSession());
 		}
 		if (authenticated) {
 			checkLogout(httpRequest,httpResponse);
 		}
-		checkLogin(httpRequest, httpResponse,chain);
+		if(!authenticated)checkLogin(httpRequest, httpResponse,chain);
 		if (canRequestProcessingContinue(httpRequest)) {
 			chain.doFilter(request, response);
 		}
