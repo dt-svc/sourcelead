@@ -528,10 +528,8 @@ public class EmailScenarioConfigurationRestController {
 			EmailScenarioConfiguration emailconf = null;
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			 System.out.print("emailUUID is "+emailUUID);
 			if(StringUtils.isNotBlank(emailUUID) && StringUtils.isNotBlank(parserEmailId)){	
 				emailconf = emailScenarioconService.validateParserByEmail(parserEmailId,emailUUID,orgLocation.getId());
-				System.out.print("inside  is "+emailUUID);
 			}
 			Boolean flag = false;
 			if(emailconf == null){

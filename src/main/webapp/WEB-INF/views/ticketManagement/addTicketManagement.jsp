@@ -122,7 +122,7 @@ s	</section>
 				        			<div class="row mb" data-index="${attachmentCount}">
 							            <div class="input-group col-md-11 pull-left">
 											<label class="input-group-btn">
-												<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+												<span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
 													<input type="file" style="display: none;" id="uploadFile${attachmentCount}" data-name="file" data-index="${attachmentCount}" class="upload" onchange='validateUploadFile(this, ${attachmentCount})' >
 												</span>
 											</label>
@@ -149,7 +149,7 @@ s	</section>
 				        		<div class="row mb" data-index="0">
 						            <div class="input-group col-md-11 pull-left">
 										<label class="input-group-btn">
-											<span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+											<span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
 												<input type="file" style="display: none;" id="uploadFile0" data-name="file" data-index="0" class="upload" onchange='validateUploadFile(this, 0)'>
 											</span>
 										</label>

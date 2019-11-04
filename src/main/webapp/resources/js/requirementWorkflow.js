@@ -1089,9 +1089,11 @@ function RequirementWorkflow(){
 				                    if ($('#workflowNameDiv').find('p.jquery_form_error_message').length === 0)
 				                        $("#workFlowName").after("<p class='jquery_form_error_message'>" + workFlowName + " Already Exists</span>");
 				                    $("#saveReqWorkFlow").attr("disabled", "disabled");
+				                    $("#stageButton").attr("disabled", "disabled");
 				                } else {
 				                    $('#workflowNameDiv').find('p.jquery_form_error_message').remove();
 				                    $("#saveReqWorkFlow").removeAttr("disabled");
+				                    $("#stageButton").removeAttr("disabled");
 				                }
 						 }
 					 })
