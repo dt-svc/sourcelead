@@ -498,7 +498,11 @@ public class CandidateListRestController {
 			} else if (designationType.equalsIgnoreCase("Full Time")) {
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
 				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
-			} else {
+			} else if (designationType.equalsIgnoreCase("Other")) {
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Full Time"));
+				boolQueryBuilder.mustNot(QueryBuilders.matchPhrasePrefixQuery("designationType", "Part Time"));
+				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", "Other"));
+			}else {
 				boolQueryBuilder.must(QueryBuilders.matchPhrasePrefixQuery("designationType", designationType));
 			}
 
@@ -1890,12 +1894,12 @@ public class CandidateListRestController {
 		String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 
-		List<Candidate> candidatesList = null;
+		List<CandidateGlobal> candidatesList = null;
 
 		if (!isNullOrEmpty(userRole) && userRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
-			candidatesList = candidateService.getCandidatesListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
+			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
-			candidatesList = candidateService.getCandidatesListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
+			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
 					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
 
 		}
@@ -2763,6 +2767,7 @@ public class CandidateListRestController {
 			} catch (Exception e) {
 				response.setResponse(Result.AWKWARD.name());
 				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
 			}
 		} else {
 			response.setResponse(Result.SESSION_TIMEDOUT.name());

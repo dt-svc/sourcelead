@@ -83,6 +83,7 @@ function candidateDocuments(candidateId){
 	$("#tab-7").empty();
 	$("#tab-8").empty();
     $("#tab-9").empty();
+    $("#tab-10").empty();
     $("#tab-9").append(result); 
     candDocumentsList(candidateId);
 }

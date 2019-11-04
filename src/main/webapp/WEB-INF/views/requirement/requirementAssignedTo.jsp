@@ -20,6 +20,11 @@
 									title="--Select Assign Team--">
 								</select>
 							</div>
+							<div class="col-md-4 validLabel">
+								<input type="text" class="repSearchBar" placeholder="Search Employee" id="applicantSelection"> 
+								<span class="repSearchIcon" onclick=""></span>
+								<!-- <input type="text" class="form-control" id="applicantSelection"> -->
+							</div>
 							<!-- <div class="remove_search fa-pull-right">
 								<input placeholder="Search" type="text">
 							</div> -->
@@ -42,6 +47,12 @@
 								<tbody id="usersGrid">
 								</tbody>
 							</table>
+							<div class="panel-default text-center" id="noMembersDiv" style="display: none;">
+							    <div class="panel-body">
+								    <i class="fa fa-users fa-3x text-muted mt mb"></i>
+									<p>No Members</p>
+							    </div>
+							  </div>
 							<div class="clearfix"></div>
 						</div>
 					</div>
@@ -233,6 +244,7 @@ function getTeamsList(reqId){
 
 <script type="text/javascript">
 	function filterTeamMembers(){
+		$("#applicantSelection").val("");
 		var teamType = $("#teamSelectionCategory").val();
 		getUserList(teamType);
 	}
@@ -330,67 +342,72 @@ function getUserList(teamType){
                     location.href = "/errorPage";
                 } else if (data.response === "SUCCESS") {
 	                 if(data != null && data != 'undefined' && data != "" && data != '[]'){
-		                	    var result = '';
-		                	    //result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
-			                    var json = data.data;
-			                    //var selectedTempIds = $("#assignedTeamId").val();
-			                    for (var i = 0; i < json.length; i++) {
-			                    	 var opt = json[i];
-				                     var isSelected = "";
-				                     var isBlockedBySelected = "";
-				                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
-				                     var str_array = selectAssignUsersIdsStr.match(/[^,]+,[^,]+/g);
-				                     if(str_array != null && str_array != 'undefined' && str_array != "" && str_array != '[]'){
-					                     for(var j = 0; j < str_array.length; j++) {
-					                        if((""+str_array[j]+"") === (""+opt.id+','+opt.assignedTeamId+"")){
-						                    	 isSelected = "checked disabled";
-						                     }else if((""+str_array[j]+"") === (""+opt.id+"")){
-						                    	 isBlockedBySelected = "fa fa-ban";
-						                    	 isSelected = "disabled";
-						                     }
+	                	    var result = '';
+	                	    //result = result+"<input type='hidden' name='assignedTeamId' id='assignedTeamId' value='"+teamType+"'/>";
+		                    var json = data.data;
+		                    //var selectedTempIds = $("#assignedTeamId").val();
+		                    for (var i = 0; i < json.length; i++) {
+		                    	 var opt = json[i];
+			                     var isSelected = "";
+			                     var isBlockedBySelected = "";
+			                     var selectAssignUsersIdsStr = ""+selectAssignUsersIds+"";
+			                     var str_array = selectAssignUsersIdsStr.match(/[^,]+,[^,]+/g);
+			                     if(str_array != null && str_array != 'undefined' && str_array != "" && str_array != '[]'){
+				                     for(var j = 0; j < str_array.length; j++) {
+				                        if((""+str_array[j]+"") === (""+opt.id+','+opt.assignedTeamId+"")){
+					                    	 isSelected = "checked disabled";
+					                     }else if((""+str_array[j]+"") === (""+opt.id+"")){
+					                    	 isBlockedBySelected = "fa fa-ban";
+					                    	 isSelected = "disabled";
 					                     }
 				                     }
-				                     /* if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
-				                    	 isSelected = "checked disabled";
-				                     }else if(selectAssignUsersIdsStr.includes(opt.id)){
-				                    	 isBlockedBySelected = "fa fa-ban";
-				                    	 isSelected = "disabled";
-				                     } */
-			                    	 result = result +'<tr>';
-			                    	 
-			                    	 var lastName = '';
-			                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
-			                    		 lastName = ' '+opt.lastName;
-			                    	 }
-			                    	 var owner ='';
-			         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
-			         					 owner = opt.isAssignedOwner;
-			         				 }
-			         				 var assignedTeam = '';
-			         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
-			         					 assignedTeam = opt.assignedTeam;
-			         				 }
-			                    	 
-			         				 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox '+isBlockedBySelected+'" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" '+isSelected+' name="team" onchange="handleChange(this);"></td>';
-			         				 result = result +'             <td><span class="tbldata-dotdot-custom" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
-			                    	 result = result +'             <td><span class="tbldata-dotdot-100" title="'+opt.email+'">'+opt.email+'</span></td>';
-			                    	 result = result +'             <td><span class="tbldata-dotdot_80"><div id="'+opt.id+'assignedUserType"><i class="fa fa-spinner fa-pulse"></i></div></span></td>';
-			                    	 result = result +'             <td><span class="tbldata-dotdot_30 requirementAssignedCount"  id="'+opt.id+'"><div id="'+opt.id+'requirementAssignedCount"><i class="fa fa-spinner fa-pulse"></i></div></span></td>';
-			                    	 result = result +'           </tr>';
-		                       }
-			                    
-		                 	   //result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>'; */
-		                 	   $("#usersGrid-loader").removeAttr("style");
-		                       $("#usersGrid").append(result);
-		                       getUserAssingedJobCounts();
-		                       $("#checkAll").prop('checked', false);
-		                       if(isTeamExists && isRoleExists){
-		                    	   $("#checkAll").prop('disabled', true);
-		                       }else{
-		                    	   $("#checkAll").prop('disabled', false);
-		                       }
-		                      
-		                       //paginations(); 
+			                     }
+			                     /* if(selectAssignUsersIds.includes(opt.id+','+opt.assignedTeamId)){
+			                    	 isSelected = "checked disabled";
+			                     }else if(selectAssignUsersIdsStr.includes(opt.id)){
+			                    	 isBlockedBySelected = "fa fa-ban";
+			                    	 isSelected = "disabled";
+			                     } */
+		                    	 result = result +'<tr>';
+		                    	 
+		                    	 var lastName = '';
+		                    	 if(opt.lastName != null && opt.lastName != '' && opt.lastName != 'undefined'){
+		                    		 lastName = ' '+opt.lastName;
+		                    	 }
+		                    	 var owner ='';
+		         				 if(null != opt.isAssignedOwner && 'undefined' != opt.isAssignedOwner){
+		         					 owner = opt.isAssignedOwner;
+		         				 }
+		         				 var assignedTeam = '';
+		         				 if(null != opt.assignedTeam && 'undefined' != opt.assignedTeam && '' != opt.assignedTeam){
+		         					 assignedTeam = opt.assignedTeam;
+		         				 }
+		                    	 
+		         				 result = result +'  <td><input id="'+opt.id+'"  class="myCheckbox '+isBlockedBySelected+'" value="'+opt.id+','+opt.assignedTeamId+'"  type="checkbox" '+isSelected+' name="team" onchange="handleChange(this);"></td>';
+		         				 result = result +'             <td><span class="tbldata-dotdot-custom" title="'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'">'+opt.firstName+''+lastName+''+assignedTeam+''+owner+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot-100" title="'+opt.email+'">'+opt.email+'</span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot_80"><div id="'+opt.id+'assignedUserType"><i class="fa fa-spinner fa-pulse"></i></div></span></td>';
+		                    	 result = result +'             <td><span class="tbldata-dotdot_30 requirementAssignedCount"  id="'+opt.id+'"><div id="'+opt.id+'requirementAssignedCount"><i class="fa fa-spinner fa-pulse"></i></div></span></td>';
+		                    	 result = result +'           </tr>';
+	                       }
+		                    
+	                 	   //result = result +'	<span class="jquery_form_error_message" style="display:none;">Assign at least to a new member</span>'; */
+	                 	   $("#usersGrid-loader").removeAttr("style");
+	                       $("#usersGrid").append(result);
+	                       getUserAssingedJobCounts();
+	                       $("#checkAll").prop('checked', false);
+	                       if(isTeamExists && isRoleExists){
+	                    	   $("#checkAll").prop('disabled', true);
+	                       }else{
+	                    	   $("#checkAll").prop('disabled', false);
+	                       }
+	                      
+	                       	//paginations();
+	                       	if(data.data.length > 0) {
+		                       	$("#noMembersDiv").hide();
+	                       	} else {
+								$("#noMembersDiv").show();
+							}
 	                 	}
 	                } else if (data.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
@@ -464,6 +481,31 @@ function paginations(){
 
 
 <script>
+	$("#applicantSelection").keyup(function () {
+		var search = $(this).val().toLowerCase().trim();
+		var hasResults = false;
+		//console.log(search);
+		$("#usersGrid tr").each(function() {
+			var flag = false;
+			$(this).find("span").each(function() {
+				if($(this).attr("title") !== undefined && $(this).attr("title").toLowerCase().indexOf(search) !== -1) {
+					flag = true;
+					return;
+				}
+			});
+			if(flag) {
+				$(this).show();
+				hasResults = true;
+			} else {
+				$(this).hide();
+			}
+		});
+		if(!hasResults) {
+			$("#noMembersDiv").show();
+		} else {
+			$("#noMembersDiv").hide();
+		}
+	});
 	$(':checkbox[id=checkAll]').click(function() {
 		//toggle all checkboxes except disabled checkboxes
 		$(':checkbox[name=team]').not("[disabled]").prop('checked', this.checked);

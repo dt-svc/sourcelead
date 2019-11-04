@@ -139,7 +139,8 @@ public class CandidateEducationRestController {
 				candidateEducationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 				candidateEducationService.storeCandidateEducation(candidateEducationDTO, Long.parseLong(candidateId),
 						loginOrgLocation.getId(), user);
-				Integer percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(Long.parseLong(candidateId));
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.parseLong(candidateId));
+				Integer percentage = candidateGlobalUtil.getCandidatePercentage(candidateGlobal, loginOrgLocation);
 				response.setObject(percentage);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

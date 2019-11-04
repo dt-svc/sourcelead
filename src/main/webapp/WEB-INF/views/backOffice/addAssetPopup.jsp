@@ -35,7 +35,9 @@
 		            <div class="clearfix">
 						<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 							<option selected value="">-Select Working Status-</option>
-							<option value="Working" ${assetAssignData.workingStatus eq "Working" ? 'selected' : ''}>Working</option>
+							<option value="Assigned" ${assetAssignData.workingStatus eq "Assigned" ? 'selected' : ''}>Assigned</option>
+							<option value="Unassigned" ${assetAssignData.workingStatus eq "Unassigned" ? 'selected' : ''}>unassigned</option>
+							<option value="End Of Life" ${assetAssignData.workingStatus eq "End Of Life" ? 'selected' : ''}>end of life</option>
 							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
 						</select>	
 		            </div>
@@ -418,7 +420,7 @@ function getCustomDependentField(sectionId){
 
 <script type="text/javascript">
  function validateAssetSno(assetId) {
-	 var assetSno = $("#sno").val(); 
+	 var assetSno = $("#sno").val().trim(); 
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");

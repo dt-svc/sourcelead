@@ -56,6 +56,7 @@ import com.bis.sourcelead.service.BoComericaTransService;
 import com.bis.sourcelead.service.BoJmpcTransService;
 import com.bis.sourcelead.service.BoUploadedFilesService;
 import com.bis.sourcelead.service.EmployeesService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.SourceleadActionsService;
 import com.bis.sourcelead.service.SourceleadFormSectionsService;
 import com.bis.sourcelead.service.UserService;
@@ -119,6 +120,9 @@ public class BackOfficeRestController {
 	
 	@Autowired
 	DynamicReport dynamicReport;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@RequestMapping(value = "/getAccountsList")
 	@ResponseBody
@@ -732,7 +736,8 @@ public class BackOfficeRestController {
 	   public Response<String> addCategoryAssets(AssetDTO assetDTO,HttpServletRequest request) throws Exception {
 			
 		Response<String> response = new Response<>();
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 	    User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		try {
 			if (user != null && orgLocations != null) {

@@ -22,7 +22,7 @@ $(document).ready(function() {
 	  <div class="pull-left">
 	    <h2>Asset Management Summary</h2>
 	  </div>
-	  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceLeadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="${SourceLeadWeb_atsUrl}/assetManagement">Assets List</a> &raquo; Asset Summary</div>
+	  <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a>&raquo; <a href="${SourceLeadWeb_atsUrl}/assetManagement">Assets List</a> &raquo; Asset Summary</div>
 	</section>
 
 	   <div class="success_pop tagStyles" id="addTaskTagAlert">

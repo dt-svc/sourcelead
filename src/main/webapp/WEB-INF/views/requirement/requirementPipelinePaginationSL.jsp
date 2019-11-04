@@ -11,6 +11,8 @@
 	function requirementPipelinePaginationSL(url, requirementId, submissionType) {
 		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var clientSubmissions = '${clientSubmissions}';
+		var isSpocActive = '${isSpocActive}';
 		var colIndex = 0;
 		$('#requirementsPagination')
 				.DataTable(
@@ -614,7 +616,16 @@
 											  
 											}// Default Workflow Ends here.
 											else{ // Custom  Workflow Starts here.
-														result = result
+												//14-october-2019
+												// if not a client requirement remove option from the dropdown options list.
+												if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){
+													delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
+												}
+												'<sec:authorize access="!hasRole(\'ROLE_SHORTLIST\')">';
+												  delete opt.workflowStagesMap["SHORTLIST"];
+												'</sec:authorize>'; 
+												
+												result = result
 													+ '<td><div class="tblwidth-150">';
 												result = result
 													+ '<select id="rejectApplicantSelectspocState'
