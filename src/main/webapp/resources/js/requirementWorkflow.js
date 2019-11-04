@@ -516,8 +516,9 @@ function RequirementWorkflow(){
 						if(dataList == "Success"){
 							$("#popUp").empty();
 						     $(".project_inn_mask").fadeOut(200);
-							$("ul#stageList li:contains('"+stageName+"')").remove();
-							requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+							//$("ul#stageList li:contains('"+stageName+"')").remove();
+							//requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+						     location.reload();
 						}else{
 							 showError("Operation failed, please try again");
 						}

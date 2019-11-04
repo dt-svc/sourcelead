@@ -115,12 +115,12 @@ window.onload = function () {
    </div>
    
    
-   <footer class="clearfix stickyfooterDiv">
+   <!-- <footer class="clearfix stickyfooterDiv">
    <div class="container">
     <div class="pull-left"> @ Copyright : Source Lead, All right reserved </div>
     <div class="pull-right"> Powered by: businessintelli.com </div>
     </div>
-  </footer>
+  </footer> -->
 </div>
 <script>
 function saveQuestionnaireTemplate(){
@@ -469,6 +469,8 @@ function saveAutoSubmitQuestionnaireForm(){
 	    	return false;	
 	       } 
 }
+
+
 </script>
 </body>
 </html>
