@@ -873,7 +873,8 @@ public class IndianPayrollRestController {
 	@RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
 	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+    	OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<IndApprovePayrollDTO> res = null;
 		try {

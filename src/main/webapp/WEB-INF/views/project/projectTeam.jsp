@@ -1213,7 +1213,19 @@ function exportToPdf(projectId){
 			 values = "Active";
 		 } 
 		 
-	   window.location.href = pmsUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf";
+		 var roleIds = [];
+			$('input:checkbox[name=roleName]:checked').each(function() 
+		     {
+				roleIds.push($(this).val());
+		     });
+			
+			var teamIds = [];
+			$('input:checkbox[name=teams]:checked').each(function() 
+				    {
+				teamIds.push($(this).val());
+			    });
+			
+	   window.location.href = pmsUrl+"/exportProjectEmployeeList?&projectId="+projectId+"&status="+values+"&exportType=pdf&teamIds="+teamIds+"&roleIds="+roleIds;
 	}else{
 		var result = "";
 		result = result +"	<div class='project_inn_mask'></div>";

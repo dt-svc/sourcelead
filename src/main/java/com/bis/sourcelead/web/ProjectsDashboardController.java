@@ -176,7 +176,8 @@ public class ProjectsDashboardController {
 	 @PreAuthorize("hasAnyRole('ROLE_EXPORT_EMPLOYEE')")
 	 @RequestMapping(value = "/exportProjectEmployeeList")
 	 public void  exportProjectEmployeeList(@RequestParam(value="projectId", required=false) Long projectId,
-			 @RequestParam(value="status", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+			 @RequestParam(value="status", required=false) String status,@RequestParam(value="exportType", required=false) String exportType,
+			 @RequestParam(value="roleIds", required=false) String roleIds,@RequestParam(value="teamIds", required=false) String teamIds,HttpServletRequest request,HttpServletResponse response) throws Exception{ 
 		
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		 Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
@@ -189,7 +190,7 @@ public class ProjectsDashboardController {
 			 projectClients = projectClientService.getProjectClientsByProjectIdAndOrgLocationId(projectId, orgLocations.getId());
 		 }
 		
-		 List<ProjectMembers> projectMembersList = projectMembersService.getAllProjectMembersByProjectClientIdAndStatus(projectClients.getId(),status);
+		 List<ProjectMembers> projectMembersList = projectsService.getProjectEmployeeListByProjectIdAndStatus(projectId,status,orgLocations,roleIds,teamIds,isGlobalAccess);
 		 Projects project = projectsService.getProjectById(projectId);
 		 
 		 File file = clientVendorExport.getexportProjectEmployeeFile(projectMembersList,exportType,project,projectClients); 

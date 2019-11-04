@@ -393,11 +393,7 @@ function candidatesPagination(pmsUrl,url){
         		 var currentRateCurrency = '';
         		 var payrate = ''
         		 var flag = false;
-        			 if(report.lastName != null && report.lastName != '' && report.lastName != 'undefined'){
- 	        			candidate = report.firstName+" "+report.lastName;
- 	        		}else{
- 	        			candidate = report.firstName;
- 	        		}
+        			 
  	        		
  	        		if(report.currentRate != null && report.currentRate != '' && report.currentRate != 'undefined'){
  	        			currentRate = report.currentRate;
@@ -420,7 +416,7 @@ function candidatesPagination(pmsUrl,url){
  	        		 }
  	        		 if(!flag)
  	        			$("#checkAllAssociates").removeAttr('checked');
- 	    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" value="'+report.id+','+candidate+','+payrate+','+currentRateCurrency+','+currentRateType+'"  data-id="'+report.id+'"  onchange="checkAssociateUsers(this)"  type="checkbox" name="associates[]"  class="myAssociatesCheckbox" ></td>';
+ 	    	  		  result = result +'<td>&nbsp;&nbsp;<input'+(flag ? " checked='checked'" : "")+' id="'+report.id+'" value="'+report.id+','+report.fullName+','+payrate+','+currentRateCurrency+','+currentRateType+'"  data-id="'+report.id+'"  onchange="checkAssociateUsers(this)"  type="checkbox" name="associates[]"  class="myAssociatesCheckbox" ></td>';
  		              return result;
  		              
     	  		 
@@ -439,9 +435,9 @@ function candidatesPagination(pmsUrl,url){
 	    	  		
 	    	  		var result = "";
 	    	  		result = result +'<td>';
-		        	result = result +'<div title="'+candidate+'">';
+		        	result = result +'<div title="'+report.fullName+'">';
 		        	
-		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+candidate+'</p>';
+		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+report.fullName+'</p>';
 		        	result = result +'<div class="show_Empdetails">';
 		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
 
