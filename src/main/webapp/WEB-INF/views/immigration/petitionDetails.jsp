@@ -268,7 +268,7 @@
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
 								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
-								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								<a href="${SourceLeadWeb_vmsUrl}/addVendorContact" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 							 </span>			
 										
 								</div>
@@ -283,7 +283,7 @@
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
 								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
-								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								<a href="${SourceLeadWeb_vmsUrl}/addVendorContact" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 							 </span>			
 										
 								</div>

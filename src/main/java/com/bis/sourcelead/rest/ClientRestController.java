@@ -2388,13 +2388,13 @@ public class ClientRestController {
 				SearchHit searchHits[] = searchResponse.getHits().getHits();
 				
 				
-				logger.info("List from Elk Ends>>>>>"+Calendar.getInstance().getTime());
+//				logger.info("List from Elk Ends>>>>>"+Calendar.getInstance().getTime());
 				
 				List<ClientVendorContactsIndex> clientVendorContactsList = new ArrayList<ClientVendorContactsIndex>();
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				df.setTimeZone(TimeZone.getTimeZone("GMT"));
 				ResponseList<ClientVendorContactsIndex> response = new ResponseList<>();
-				logger.info("List Of contacts Starts>>>>>"+Calendar.getInstance().getTime());
+//				logger.info("List Of contacts Starts>>>>>"+Calendar.getInstance().getTime());
 				if(searchHits != null && searchHits.length >0){
 					ObjectMapper mapper = new ObjectMapper();
 					for (SearchHit hit : searchHits) {
@@ -2502,7 +2502,7 @@ public class ClientRestController {
 					}	
 					
 				}
-				logger.info("List Of contacts Ends>>>>>"+Calendar.getInstance().getTime());
+//				logger.info("List Of contacts Ends>>>>>"+Calendar.getInstance().getTime());
 				if(spocStatus != null){
 					response.setRecordsFiltered(clientVendorContactsList.size());
 				}else{

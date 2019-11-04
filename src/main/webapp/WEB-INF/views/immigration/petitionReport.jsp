@@ -38,7 +38,7 @@ $(document).ready(function(){
         <div class="clearfix row">
           <div class="col-md-5">
            <div class="clearfix mb">
-              <label class="clearfix">Petition Type</label>
+              <label class="clearfix">Petition Type<span class="text-danger">&nbsp;*</span></label>
 				<div class="clearfix">
                  <select multiple data-placeholder="Select Petition Type" class="chosen-select form-control" name="petitionType" id="petitionType"  field-name="Petition type" data-validation="required"> 
 	                <c:forEach var="visa" items="${petitionTypeList}">
