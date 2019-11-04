@@ -1045,7 +1045,6 @@ public Candidate storeCandidateFromCandidateGlobal(CandidateGlobal candidateGlob
 	candidate.setPrimarySkill(candidateGlobal.getPrimarySkill());
 	candidate.setCandidateGlobalId(candidateGlobal);
 	candidate.setOrgLocationId(candidateGlobal.getOrgLocationId());
-	
 	if(candidateGlobal.getOrgRelationId() != null && candidateGlobal.getParentCandidateId() != null) {
 		Candidate vendorCandidate = storeVendorCandidateDetailsForCandidateCreation(candidateGlobal, consultantUser);
 		candidate.setParentCandidateId(vendorCandidate);
