@@ -127,7 +127,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 					try {
 						 OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(userDetailsDTO.getOrgLocationCode());
 				         userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocation.getId());
-					//	userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+				         userDetails = sourceleadUserDetailsService.loadUserByUsernameForMobile(userRole); 
 						OrgLocations orgLocations = userRole.getOrgLocations();
 						if(orgLocations.getTimezone() != null) {
 							orgLocations.setTimeZoneId(orgLocations.getTimezone().getId() + "");
