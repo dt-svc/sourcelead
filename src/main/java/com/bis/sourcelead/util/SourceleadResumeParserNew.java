@@ -58,6 +58,9 @@ public class SourceleadResumeParserNew {
 	@Value("${resumeParserUrlQa}")
 	private String resumeParserUrlQa;
 	
+	@Value("${resumeParserUrlProd}")
+	private String resumeParserUrlProd;
+	
 	@Autowired
 	private RestTemplate  restTemplate;
 	
@@ -924,8 +927,11 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 			String baseServicesUrl = "";
 			if("qa".equalsIgnoreCase(environment)) {
 				baseServicesUrl = resumeParserUrlQa;
-			}else {
-				baseServicesUrl = resumeParserUrlLocal;
+			}else if(("prod".equalsIgnoreCase(environment))){
+				baseServicesUrl = resumeParserUrlProd;
+			}
+			else {
+				baseServicesUrl = resumeParserUrlLocal ;
 			}
 			final String url = baseServicesUrl+Constants.RESUME_PARSE_FILE_URL;
 			 MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
