@@ -580,7 +580,6 @@ public class IndianPayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 		try {
-			System.out.println(" inisde generateINDPayroll   >>>>>>>>>>>>>");
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
 			if(preCheckINDPayrollDTO.getIsPTConfigured() && preCheckINDPayrollDTO.getIsTDSConfigured()) {
 				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
