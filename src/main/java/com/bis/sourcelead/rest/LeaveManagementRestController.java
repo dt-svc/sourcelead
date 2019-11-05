@@ -228,8 +228,6 @@ public class LeaveManagementRestController {
 	ConversionUtil conversionUtil;
 	
 	
-	@Autowired
-	EMailJobScheduler eMailJobScheduler;
 	
 
 	/**
@@ -1203,7 +1201,6 @@ public class LeaveManagementRestController {
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		eMailJobScheduler.employeeLeaveReminderToSuperior();
 		return responseList;
 	}
 
