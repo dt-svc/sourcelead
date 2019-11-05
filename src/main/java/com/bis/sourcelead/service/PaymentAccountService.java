@@ -13,4 +13,8 @@ public interface PaymentAccountService {
 	PaymentAccount getPaymentAccountById(Long id) throws Exception;
 	
 	PaymentAccount getPaymentAccountDetailsByCandidateId(Long candidateId) throws Exception;
+	
+	PaymentAccount valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(IndAssociatePaymentAccountDTO paymentAccountDTO)throws Exception;
+	
+	Boolean validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(IndAssociatePaymentAccountDTO paymentAccountDTO,Long orgLocationId)throws Exception;
 }
