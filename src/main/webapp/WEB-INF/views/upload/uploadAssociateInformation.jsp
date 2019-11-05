@@ -105,6 +105,8 @@ var uploadflag= true;
 							</p>
 							<p>
 							  <label><i class="fa fa-user"></i>&nbsp;&nbsp;Associate Email</label>
+							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;UAN Number</label>
+							  <label><i class="fa fa-check"></i>&nbsp;&nbsp;PF Number</label>
 							  </p>
 						</span>
 					</div>

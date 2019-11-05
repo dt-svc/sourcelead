@@ -2,13 +2,10 @@ package com.bis.sourcelead.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -33,10 +30,10 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -45,17 +42,16 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.enums.TagEntites;
 import com.bis.sourcelead.service.AssetService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.InvoiceService;
-import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.SourceleadTagsService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import java.util.function.Function;
 
 /**
  * @author Laxman
@@ -98,6 +94,10 @@ private static final Logger logger = LoggerFactory.getLogger(SourceLeadTagsRestC
 	
 	@Autowired
 	private CandidateService candidateService; 
+	
+	@Autowired
+	private CandidateGlobalService candidateGlobalService;
+	
 	
     /**
      * @author Laxman
@@ -803,6 +803,27 @@ private static final Logger logger = LoggerFactory.getLogger(SourceLeadTagsRestC
 		    request.getSession().setAttribute("tagsList", tagsList);
 		    candidate.setTagsList(tagsList);
 		    Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES.getValue(), candidate.getId());
+			if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
+				StringBuilder candidateTagsStr = new StringBuilder();
+				for(String tags : candidateTagsList) {
+					candidateTagsStr = candidateTagsStr.append(tags).append(",");
+				}
+				candidateTagsStr.toString();
+				candidate.setCandidateTags(candidateTagsStr.substring(0,candidateTagsStr.length()-1));
+			} 
+		return candidate;
+	}
+	
+	
+	@RequestMapping(value = "/getCandidatesGlobalTags", method = RequestMethod.POST)
+	public CandidateGlobal getCandidatesGlobalTags(@RequestParam(value = "candidateId", required = false) Long candidateId , HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		 CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+		    Set<String> tagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationId(loginOrgLocation.getId());
+		    request.getSession().setAttribute("tagsList", tagsList);
+		    candidate.setTagsList(tagsList);
+		    Set<String> candidateTagsList = sourceleadTagsService.getSourceleadTagsByOrgLocationIdAndEntityName(loginOrgLocation.getId(), TagEntites.CANDIDATES_GLOBAL.getValue(), candidate.getId());
 			if(candidateTagsList != null && !candidateTagsList.isEmpty()) {
 				StringBuilder candidateTagsStr = new StringBuilder();
 				for(String tags : candidateTagsList) {
