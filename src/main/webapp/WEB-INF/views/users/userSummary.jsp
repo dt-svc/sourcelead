@@ -225,7 +225,7 @@ window.onload = function () {
 	 var result = "";
 	 var userState = '${userState}';
 	 var candidateId = '${candidateId}';
-	 var candidateGloalId = '${candidateGloalId}';
+	 var candidateGlobalId = '${candidateGlobalId}';
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
@@ -3863,7 +3863,7 @@ function profileDetails(candidateId){
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Associates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
-	  var candidateGloalId = '${candidateGloalId}';
+	  var candidateGlobalId = '${candidateGlobalId}';
 	  $.ajax({
 		  type: "GET",
 		    url: atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
@@ -4007,10 +4007,10 @@ function profileDetails(candidateId){
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);"  style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateGlobalId+',false);"  style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateGlobalId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
 						 result = result+'  </div>';
@@ -4185,7 +4185,7 @@ function profileDetails(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            
@@ -4200,14 +4200,14 @@ function profileDetails(candidateId){
 			            result = result+'         <div class="pull-right cmt-button">';
 			            result = result+'          <span class="comments-button">';
 			            
-			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGloalId+')">';
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGlobalId+')">';
 			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
 			            result = result+'            </button>';
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
 			            result = result+'          	<input type="hidden" id="totalCommentsCount" value="'+json.commentsCount+'">';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGloalId+');">View more <span class="label label-warning" id="commentsCount"></span></a>';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGlobalId+');">View more <span class="label label-warning" id="commentsCount"></span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -4225,42 +4225,42 @@ function profileDetails(candidateId){
 			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
 			            	 
 			              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateGloalId+',\''+candidateType+'\');">Detailed View</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateGlobalId+',\''+candidateType+'\');">Detailed View</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_RESUMES\',\'ROLE_VIEW_ASSOCIATE_RESUMES\',\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\',\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateGloalId+'); candidateResume('+candidateGloalId+','+json.status+');" >Resume</a></li>';
+			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateGlobalId+'); candidateResume('+candidateGlobalId+','+json.status+');" >Resume</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EMPLOYER\',\'ROLE_VIEW_ASSOCIATE_EMPLOYER\',\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\',\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateGloalId+');">Employers</a></li>';
+			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateGlobalId+');">Employers</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
 
-			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateGloalId+');">Education</a></li>';
+			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateGlobalId+');">Education</a></li>';
 
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateGloalId+');">Certifications</a></li>';
+			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateGlobalId+');">Certifications</a></li>';
 			              '</sec:authorize>'; 
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
 			              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">'; 
-			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateGloalId+');">Documents</a></li>';
+			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateGlobalId+');">Documents</a></li>';
 			              '</sec:authorize>'; 
 			             
 			             
-			             result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateGloalId+');">References</a></li>';
+			             result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateGlobalId+');">References</a></li>';
 			              
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateGloalId+');">Comments</a></li>';
+			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateGlobalId+');">Comments</a></li>';
 			               '</sec:authorize>'; 
 			              
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
-			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateGloalId+');">Job History</a></li>';
+			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateGlobalId+');">Job History</a></li>';
 			              '</sec:authorize>';
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
 			              result = result+'<li id="candidateImmigrationTab"><a href="#tab-12" onclick="candidatePassport('+candidateId+');">Immigration</a></li>';
@@ -4320,7 +4320,7 @@ function profileDetails(candidateId){
 				 		/*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200); */
 					//	 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateGloalId,candidateType);
+						 candidateProfile(candidateGlobalId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -4842,13 +4842,13 @@ function savedCommentAndCount(candidateId){
       				    result = result+'         <div class="pull-right cmt-button">';
       				    result = result+'          <span class="comments-button">';
       				            
-      				    result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGloalId+')">';
+      				    result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGlobalId+')">';
       				    result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
       				    result = result+'            </button>';
       				    result = result+'            <div class="add-comment">';
       				    result = result+'            </div>';
       				    result = result+'          </span>';
-      				    result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGloalId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+      				    result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGlobalId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
       				 	result = result+'		</div>';
       				    result = result+'     </div>';
       	 			           
