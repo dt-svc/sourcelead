@@ -99,7 +99,7 @@
 		          <div class="col-md-5" id="accountNumberDiv">
 		                  <label>Account Number<span class="text-danger">&nbsp;*</span></label>
 		                  <div>
-		                   <input type="text" id="accountNumber"  field-name="Account Number"  name="accountNumber" class="form-control" data-validation="required validate_Space validate_int validate_length length9-15"/>
+		                   <input type="text" id="accountNumber"  field-name="Account Number"  name="accountNumber" class="form-control" onblur="validateAccountNumber();" data-validation="required validate_Space validate_int validate_length length9-15"/>
 		                  </div>
 		          </div>
 		          
@@ -322,3 +322,37 @@ function changeAccType()
  		}
 	}
 </script>
+
+
+<script>
+function validateAccountNumber(){
+    var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+    var paymentAccountId = $("#paymentAccountId").val();
+    var accountNumber = document.getElementById("accountNumber").value.trim();
+    var accountType = $("#accountType").val();
+	var candidateId = '${candidateId}';
+	$('#accountNumberDiv').find('p.jquery_form_error_message').remove();
+	if(accountType != "" && accountType != null){
+		$.ajax({
+			 type : "GET",
+		     url : pmsUrl+"/validateAccoutNumebr?accountNumber="+accountNumber+"&candidateId="+candidateId+"&accountType="+accountType+"&paymentAccountId="+paymentAccountId,
+			 success : function(data) {
+				 if (data == true ) {
+						$("input#accountNumber").after("<p class='jquery_form_error_message'>"+ accountNumber+ " is Already Existed</span>");
+						document.getElementById("accountNumber").setAttribute('record-exist', 'yes');
+						document.getElementById("accountNumber").setAttribute('record-exist-errorMsg',accountNumber+ ' is Already Existed');
+						$('input#accountNumber').removeAttr( "record-exist record-exist-errormessage");
+					} else {
+						$('input#accountNumber').removeAttr("record-exist record-exist-errormsg");
+					} 
+			  		
+			 }
+		});
+	}else{
+		alert("First select the payment pype")
+	}
+
+}
+
+</script>
+ 
