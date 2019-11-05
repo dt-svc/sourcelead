@@ -292,7 +292,7 @@ function validateMinor(){
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		    	 url: atsUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(response) {
 		        	$("#informationDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {

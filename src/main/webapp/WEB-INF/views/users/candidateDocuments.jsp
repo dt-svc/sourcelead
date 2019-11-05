@@ -861,6 +861,7 @@ function removeDocNameDiv(){
     function requestDoc(){
     $(".requestDocuments").fadeIn();
     $(".requestDocSideMask").fadeIn();
+    closePopup();
     }
     function closeRD(){
     $(".requestDocuments").fadeOut();
