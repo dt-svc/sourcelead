@@ -213,7 +213,7 @@ function cancelFileImport(){
 	         result += '    <th>UAN Number</th>';
 	         result += '    <th>PF Number</th>';
 	         result += '    <th>ESI Number</th>'; 
-	         result += '    <th>Reson</th>';
+	         result += '    <th>Reason</th>';
 	         result += '  </tr>';
 	         result += '</thead>';
 	         result += '<tbody>';
