@@ -1668,7 +1668,8 @@ function resetInvoiceFilter(){
 	$(".custom_search").empty().hide();
 	$("#invoiceDataTableSearch").val('');
 	getInvoiceList();
-	getActions();
+	$(".action-pop").slideUp(200);
+	$(".newActPop").slideUp(200);
 	
 }
 function resetingInvoiceFilter(){
