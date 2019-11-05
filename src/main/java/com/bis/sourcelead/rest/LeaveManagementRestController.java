@@ -46,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.AssociateBalanceLeaveDao;
@@ -115,6 +116,7 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.ConversionUtil;
+import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.LeaveManagementUtil;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -224,6 +226,10 @@ public class LeaveManagementRestController {
 	
 	@Autowired
 	ConversionUtil conversionUtil;
+	
+	
+	@Autowired
+	EMailJobScheduler eMailJobScheduler;
 	
 
 	/**
@@ -1197,7 +1203,7 @@ public class LeaveManagementRestController {
 			responseList.setResponseMessage(Result.AWKWARD.getValue());
 			logger.error(ExceptionUtils.getFullStackTrace(e));
 		}
-		
+		eMailJobScheduler.employeeLeaveReminderToSuperior();
 		return responseList;
 	}
 
