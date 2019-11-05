@@ -719,7 +719,7 @@ public class LeaveManagementUtil {
 		Set<Long> roleIds = new HashSet<>();
 	
 	
-		
+	
 		
 		if(leaveType.getLeaveTypeRolesSet() != null){
 			for (LeaveRole leaveRole : leaveType.getLeaveTypeRolesSet()) {

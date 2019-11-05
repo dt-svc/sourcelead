@@ -380,6 +380,11 @@ public class ClientServiceImpl implements ClientService {
 			}else{
 				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
+//			if(StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")){
+//				clientOrgLocations.setIsBackgroundCheck(Constants.YES);	
+//			}else{
+//				clientOrgLocations.setIsBackgroundCheck(Constants.NO);	
+//			}
 			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
 				}else{
@@ -1467,6 +1472,13 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setIsLawFirm(Constants.NO);
 			}
+//			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())) {
+//				if (clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+//					orgLocations.setIsBackgroundCheck(Constants.YES);
+//				}
+//			} else {
+//				orgLocations.setIsBackgroundCheck(Constants.NO);
+//			}
 			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
 				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 					orgLocations.setIsAccountingFirm(Constants.YES);
@@ -1548,12 +1560,55 @@ public class ClientServiceImpl implements ClientService {
 					orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 				}
 			}
-			
+			// Below coded added for Background check vendor tags to be enabled
+			/*if(StringUtils.isNotBlank(orgRelation.getIsBackgroundCheck()) && orgRelation.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
+				OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
+				String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
+				List<Long> subscriptionTabIdsList = new ArrayList<>();
+				for(int i=0; i<subscriptionTabs.length;i ++){
+					subscriptionTabIdsList.add(Long.valueOf(subscriptionTabs[i]));
+				}
+				
+				if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_BACKGROUND_CHECK))){
+					List<Long> tabsIds = new ArrayList<>();
+					List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_BACKGROUND_CHECK));
+					if(childTabsList.size() > 0) {
+						for(Tabs childTabs : childTabsList) {
+							tabsIds.add(childTabs.getId());
+						}
+					}
+					
+					List<Long> sourceLeadActionsIdsList =  sourceleadActionsService.getAllSourceleadActionsIdsByTabsList(tabsIds);
+					StringBuilder immigrationTabIds  = new StringBuilder();
+					for(Long tabId : sourceLeadActionsIdsList){
+						immigrationTabIds.append(tabId).append(",");
+					}
+					
+					String tabIds = immigrationTabIds.toString();
+					tabIds = tabIds.substring(0, tabIds.length()-1);
+					
+					Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());
+					String adminIds = adminrole.getActionId()+","+tabIds;
+					adminrole.setActionId(adminIds);
+					rolesService.storeRoles(adminrole);
+					
+					Roles managerrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_MANAGER, orgLocations.getId());
+					String managerIds = managerrole.getActionId()+","+tabIds;
+					managerrole.setActionId(managerIds);
+					rolesService.storeRoles(managerrole);
+					
+					String subscriptionRegisteredTabs = subscription.getSubscriptionTabs();
+					subscriptionRegisteredTabs = subscriptionRegisteredTabs+","+Constants.TAB_BACKGROUND_CHECK;
+					subscription.setSubscriptionTabs(subscriptionRegisteredTabs);
+					orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
+				}
+			}*/
 		} else {
 			StringBuilder message = new StringBuilder(MessageFormat.format(statusUpdate, "ORG RELATIONS"));
 			throw new SourceLeadObjectNotFoundException(message.toString());
 		}
-
+      
+	
 		saveOrUpdateClientVendorElkDocument(orgForElk, orgLocationsForElk, null, null, orgRelationsForElk, null, user,
 				loginOrgLocation);
 

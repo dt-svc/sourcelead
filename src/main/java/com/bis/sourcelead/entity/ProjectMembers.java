@@ -442,6 +442,18 @@ public class ProjectMembers implements Serializable {
 	
 	
 	@Transient
+	@JsonProperty
+	private String profileImage;
+	
+	public String getProfileImage() {
+		return profileImage;
+	}
+
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
+	}
+
+	@Transient
 	private String employmentTypeVendors;
     //For Expenses 
 

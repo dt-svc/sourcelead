@@ -184,6 +184,8 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 	
 	private BigDecimal annualSalary;
 	
+	private BigDecimal totalCtc;
+	
 	public Long getId() {
 		return id;
 	}
@@ -859,6 +861,14 @@ public class IndEmployeePayrollDTO  extends SearchDTO{
 
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
+	}
+
+	public BigDecimal getTotalCtc() {
+		return totalCtc;
+	}
+
+	public void setTotalCtc(BigDecimal totalCtc) {
+		this.totalCtc = totalCtc;
 	}
 	
 }

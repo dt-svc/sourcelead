@@ -15,7 +15,8 @@ public class RequirementQuestionnaireTasksDTO{
 
 	private String stageName;
 	
-
+    private String stageUuid;
+    
 	public String getQuestionnaireUuid() {
 		return questionnaireUuid;
 	}
@@ -62,6 +63,14 @@ public class RequirementQuestionnaireTasksDTO{
 
 	public void setStageName(String stageName) {
 		this.stageName = stageName;
+	}
+
+	public String getStageUuid() {
+		return stageUuid;
+	}
+
+	public void setStageUuid(String stageUuid) {
+		this.stageUuid = stageUuid;
 	}
 
 	

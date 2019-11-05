@@ -1708,10 +1708,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						dataMigrationDTOJsonCopy.put("category", category.getId().toString());	
 					}
 				}
-				
+				// add unassigned and end of life options are added in asset working status
 				if(!dataMigrationDTOJsonCopy.getString("workingStatus").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("workingStatus"))) {
 					String status = dataMigrationDTOJsonCopy.getString("workingStatus").toLowerCase();
-					if(status.equalsIgnoreCase("working") || status.equalsIgnoreCase("out of service")){
+					if(status.equalsIgnoreCase("assigned") || status.equalsIgnoreCase("unassigned") || status.equalsIgnoreCase("end of life") || status.equalsIgnoreCase("out of service")){
 						// capitalize the words starting letter
 						status=	WordUtils.capitalizeFully(status);
 						dataMigrationDTOJsonCopy.put("workingStatus", status);
@@ -1721,7 +1721,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 				
 				if(!dataMigrationDTOJsonCopy.getString("sno").equals("sno") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("sno"))) {
-					String serialNo = dataMigrationDTOJsonCopy.getString("sno");
+					String serialNo = dataMigrationDTOJsonCopy.getString("sno").trim();
 				       Asset asset = assetService.validateAssetSno(dataMigrationDTOJsonCopy.getString("sno"), orgLocation.getId());
 					 	if (asset != null) {
 					 		errorSet.put("sno", dataMigrationDTOJsonCopy.getString("sno")+" is Already Existed");
@@ -1791,7 +1791,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			  
 				if(!dataMigrationDTOJsonCopy.getString("vendorDetails").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("vendorDetails"))) {
 					int length = dataMigrationDTOJsonCopy.getString("vendorDetails").trim().length();	
-					if(length < 101 && length > 1 ) {
+					if(length < 101 && length >= 1 ) {
 						dataMigrationDTOJsonCopy.put("vendorDetails", dataMigrationDTOJsonCopy.getString("vendorDetails").trim());
 					}else {
 						errorSet.put("vendorDetails", dataMigrationDTOJsonCopy.getString("vendorDetails").trim()+"  should be between 1-100 characters");
@@ -1800,7 +1800,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 				if(!dataMigrationDTOJsonCopy.getString("antiVirus").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("antiVirus"))) {
 					int length = dataMigrationDTOJsonCopy.getString("antiVirus").trim().length();	
-					if(length < 101 && length > 1 ) {
+					if(length < 101 && length >= 1 ) {
 						dataMigrationDTOJsonCopy.put("antiVirus", dataMigrationDTOJsonCopy.getString("antiVirus").trim());
 					}else {
 						errorSet.put("antiVirus", "Anti-Virus  " + dataMigrationDTOJsonCopy.getString("antiVirus").trim()+"  should be between 1-100 characters");
@@ -1810,7 +1810,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 				if(!dataMigrationDTOJsonCopy.getString("osKey").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("osKey"))) {
 					int length = dataMigrationDTOJsonCopy.getString("osKey").trim().length();	
-					if(length < 51 && length > 5 ) {
+					if(length < 51 && length >= 5 ) {
 						dataMigrationDTOJsonCopy.put("osKey  ", dataMigrationDTOJsonCopy.getString("osKey").trim());
 					}else {
 						errorSet.put("osKey", "OS Key"+dataMigrationDTOJsonCopy.getString("osKey").trim()+"  should be between 5-100 characters");
@@ -1819,7 +1819,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 				if(!dataMigrationDTOJsonCopy.getString("operatingSystem").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("operatingSystem"))) {
 					int length = dataMigrationDTOJsonCopy.getString("operatingSystem").trim().length();	
-					if(length < 101 && length > 1 ) {
+					if(length < 101 && length >= 1 ) {
 						dataMigrationDTOJsonCopy.put("operatingSystem", dataMigrationDTOJsonCopy.getString("operatingSystem").trim());
 					}else {
 						errorSet.put("operatingSystem", "Operating System "+ dataMigrationDTOJsonCopy.getString("operatingSystem").trim()+"  should be between 1-100 characters");
@@ -1828,7 +1828,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				
 				if(!dataMigrationDTOJsonCopy.getString("macAddress").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("macAddress"))) {
 					int length = dataMigrationDTOJsonCopy.getString("macAddress").trim().length();	
-					if(length < 51 && length > 8 ) {
+					if(length < 51 && length >= 8 ) {
 						dataMigrationDTOJsonCopy.put("macAddress", dataMigrationDTOJsonCopy.getString("macAddress").trim());
 					}else {
 						errorSet.put("macAddress", "MAC Address  "+dataMigrationDTOJsonCopy.getString("macAddress").trim()+"  should be between 8-50 characters");
@@ -2163,10 +2163,10 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					}
 
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
-				errorSet.put("dateOfBirth", "DOB is missing");
-				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
-				errorSet.put("dateOfBirth", "DOB is invalid date");
+				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
+				errorSet.put("dateofBirth", "DOB is missing");
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+				errorSet.put("dateofBirth", "DOB is invalid date");
 				}
 
 				/* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
@@ -2623,7 +2623,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 			}
 			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
-				errorSet.put("email", "Email field is missing");
+				errorSet.put("email", "Associate Email field is missing");
 			}else {
 				User userEmail = userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("email").toString().trim(), orgLocation.getId());
 				if (userEmail != null) {
@@ -2756,20 +2756,20 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 
 			//Date of Birth
-			if(!dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
+			if(!dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
 				try {
 					DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
-					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
+					Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofBirth"));
 					String dateofbirth = formatter.format(date);
-					dataMigrationDTOJsonCopy.put("dateOfBirth", dateofbirth);
+					dataMigrationDTOJsonCopy.put("dateofBirth", dateofbirth);
 				} catch (Exception e) {
-					errorSet.put("dateOfBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
+					errorSet.put("dateofBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
 				}
 			}
 			
 			//Employment type
 			if(dataMigrationDTOJsonCopy.getString("designationType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
-				errorSet.put("designationType", "Designation Type field is missing");
+				errorSet.put("designationType", "Employment Type field is missing");
 			}else {
 				   if(!dataMigrationDTOJsonCopy.getString("designationType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
 					String designationType = dataMigrationDTOJsonCopy.getString("designationType");
@@ -2838,12 +2838,12 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if (!dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
 				Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("reportingManager").toString().trim());
 				if(matcher.matches() == false) {
-					errorSet.put("reportingManager", "Invalid Email");
+					errorSet.put("reportingManager", "Invalid Manager Email");
 				}
 			}
 			
 			if(dataMigrationDTOJsonCopy.getString("reportingManager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("reportingManager"))) {
-				errorSet.put("reportingManager", "Email field is missing");
+				errorSet.put("reportingManager", "Manager Email field is missing");
 			}else {
 				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("reportingManager").toString().trim());
 				if (userEmail == null) {

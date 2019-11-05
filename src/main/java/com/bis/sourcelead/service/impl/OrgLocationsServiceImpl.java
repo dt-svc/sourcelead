@@ -486,4 +486,9 @@ public class OrgLocationsServiceImpl implements OrgLocationService {
 	public OrgLocations getOrgLocationById(Long id) throws Exception {
 		return orgLocationsDao.getOrgLocationById(id);
 	}
+
+	@Override
+	public OrgLocations getOrgLocationByOrgIdAndCountry(Long orgId, String country) throws Exception {
+		return orgLocationsDao.getOrgLocationByOrgIdAndCountry(orgId, country);
+	}
 }

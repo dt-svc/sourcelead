@@ -371,7 +371,7 @@ public class ExpensesApprovalServiceImpl implements ExpensesApprovalService{
 	     cell1.setColspan(18);
 	     headerCellStyle(cell1);
 	     table.setWidthPercentage(100);
-	table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5,5,5});
+	table.setWidths(new int[]{7,7,7,7,4,5,5,5,7,6,6,4,5,5,7,5});
 	table.addCell(cell1);
 	     for (int i = 0; i < headers.length; i++) {
 	     String header = headers[i];

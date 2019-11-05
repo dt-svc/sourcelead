@@ -310,5 +310,11 @@ public interface CandidateDao {
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
 	
 	Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	Long getGlobalCandidateIdByCandidateId(Long candidateId) throws Exception;
+	
+	public Candidate getCandidateByCandidateGlobalId(Long candidateGlobalId) throws Exception;
+	
+	Long getCandidateIdByGlobalCandidateId(Long globalCandidateId) throws Exception;
 			
 }

@@ -321,11 +321,19 @@ public class ExpensesServiceImpl implements ExpensesService{
 			            			}else{
 			            				orderedList.add(new ListItem(emailBuilder.append("Email Id :").append("--").toString()));
 			            			}
-			            			if(pm.getProjectMemberCandidteId().getMobilePhone()!= null){
-			            				 orderedList.add(new ListItem(mobileBuilder.append("Phone Number :").append(pm.getProjectMemberCandidteId().getMobilePhone()).toString()));	
-			            			}else{
-			            				orderedList.add(new ListItem(mobileBuilder.append("Phone Number :").append("--").toString()));
-			            			}
+			            			
+			            			
+			            			if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getMobilePhone())) {
+			            				orderedList.add(new ListItem(mobileBuilder.append("Phone Number :").append(pm.getProjectMemberCandidteId().getMobilePhone()).toString()));	
+			        				}else {
+			        					if(pm.getProjectMemberCandidteId().getParentCandidateId() != null) {
+			        						Candidate parentCandidate = candidateService.getCandidateByCandidateId(pm.getProjectMemberCandidteId().getParentCandidateId().getId());
+			        						if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+			        							orderedList.add(new ListItem(mobileBuilder.append("Phone Number :").append(parentCandidate.getMobilePhone()).toString()));	
+			        						}
+			        					}
+			        				}
+			            			
 			            		if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getDesignationType())){
 		            				 orderedList.add(new ListItem(empType.append("Employment Type :").append(pm.getProjectMemberCandidteId().getDesignationType()).toString()));	
 		            			}else{
@@ -434,23 +442,8 @@ public class ExpensesServiceImpl implements ExpensesService{
 			   }else{
 				   userArray[5] = "--";
 			
-			/*if(expEntries.getAmount() != 0){
-				StringBuilder str = new StringBuilder();
-				BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
-				bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );				
-				   userArray[5] = str.append(bd).toString();
-			   }else{
-				   userArray[5] = "00.00";*/
 			 }
 			
-			/*Countries country = countriesService.getCountriesByCountryName(orgLoc.getCountry());
-			if(!country.getCurrency().equalsIgnoreCase(expEntries.getCurrencyType())){
-				 Float amount = conversionUtil.convert(expEntries.getCurrencyType(),country.getCurrency(),expEntries.getAmount());
-				 String countryCode = country.getCurrency();
-				 userArray[6] =countryCode+""+amount.toString();
-				}else{
-					userArray[6] ="--";	
-				}*/
 			 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
 				   userArray[6] = expEntries.getDescription();
 			   }else{
@@ -551,19 +544,6 @@ public class ExpensesServiceImpl implements ExpensesService{
 	
 	if(expEntries.getAmount() != null && !"".equalsIgnoreCase(expEntries.getCurrencyType()))
 	
-	
-	
-	/*StringBuilder amount = new StringBuilder();
-	if(expEntries.getAmount() != 0){
-		StringBuilder str = new StringBuilder();
-		BigDecimal bd = new BigDecimal(Double.toString(expEntries.getExpensesId().getTotalAmount()));
-		bd = bd.setScale(2,BigDecimal.ROUND_HALF_UP );			
-		writeRow.createCell(5).setCellValue(str.append(bd).toString());
-		createExcelsheet.autoSizeColumn(5);
-	   }else{
-		writeRow.createCell(5).setCellValue(amount.append("00.00").toString());
-		createExcelsheet.autoSizeColumn(5);
-	}*/
 	 if(expEntries.getDescription() != null && !"".equalsIgnoreCase(expEntries.getDescription())){	
 		 writeRow.createCell(6).setCellValue( expEntries.getDescription());
 		 createExcelsheet.autoSizeColumn(6);
@@ -765,11 +745,19 @@ public class ExpensesServiceImpl implements ExpensesService{
         			}else{
         				emailBuilder.append("--").toString();
         			}
-        			if(pm.getProjectMemberCandidteId().getMobilePhone()!= null){
+        			
+        			if(StringUtils.isNotEmpty(pm.getProjectMemberCandidteId().getMobilePhone())) {
         				 mobileBuilder.append(pm.getProjectMemberCandidteId().getMobilePhone()).toString();	
-        			}else{
-        				mobileBuilder.append("--").toString();
-        			}
+    				}else {
+    					if(pm.getProjectMemberCandidteId().getParentCandidateId() != null) {
+    						Candidate parentCandidate = candidateService.getCandidateByCandidateId(pm.getProjectMemberCandidteId().getParentCandidateId().getId());
+    						if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+    							 mobileBuilder.append(parentCandidate.getMobilePhone()).toString();	
+    						}
+    					}
+    				}
+        		
+        			
         		if(pm.getProjectMemberCandidteId().getDesignationType()!= null){
     				 empType.append(pm.getProjectMemberCandidteId().getDesignationType()).toString();	
     			}else{

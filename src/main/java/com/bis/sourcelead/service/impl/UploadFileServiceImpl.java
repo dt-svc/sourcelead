@@ -783,6 +783,11 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setCountry(orgLocations.getCountry());
 				candidate.setIsAssociate(Constants.YES);
 				candidate.setEmail(user.getEmail());
+				candidate.setGender(user.getGender());
+				
+				if(user.getDateOfBirth() !=null) {
+				candidate.setDateOfBirth(user.getDateOfBirth());
+				}
 				if(StringUtils.isNotBlank(userImport.getDesignationType())) {
 					candidate.setDesignationType(userImport.getDesignationType());
 				}else {
@@ -796,7 +801,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setMobilePhone(user.getMobilePhone());
 				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
-				candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+				candidate.setCandidateProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
 				candidate.setMaritalStatus(userImport.getMaritalStatus());
 				
 				
@@ -2072,6 +2077,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setEmail(userImport.getEmail());
 			user.setMaritalStatus(userImport.getMaritalStatus());
 			user.setGender(userImport.getGenderValue());
+			
+			if(StringUtils.isNotBlank(userImport.getDateofBirth())){
+				try {
+					user.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofBirth()));
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}
 			user.setMobilePhone(userImport.getPhoneNumber());
 			user.setExtensionNumber(userImport.getExtensionNumber());
 			user.setEmploymentType(userImport.getEmploymentType());

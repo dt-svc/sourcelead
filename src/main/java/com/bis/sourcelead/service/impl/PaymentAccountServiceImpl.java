@@ -67,4 +67,14 @@ public class PaymentAccountServiceImpl implements PaymentAccountService{
 		return paymentAccountDao.getPaymentAccountDetailsByCandidateId(candidateId);
 	}
 
+	@Override
+	public PaymentAccount valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(IndAssociatePaymentAccountDTO paymentAccountDTO) throws Exception {
+		return paymentAccountDao.valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(paymentAccountDTO);
+	}
+
+	@Override
+	public Boolean validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(IndAssociatePaymentAccountDTO paymentAccountDTO, Long orgLocationId) throws Exception {
+		return paymentAccountDao.validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(paymentAccountDTO, orgLocationId);
+	}
+
 }
