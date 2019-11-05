@@ -25,7 +25,7 @@ $(document).ready(function(){
  <div class="timesheet_out timesheet_background">
  <div class="positionRelative timesheet_head clearfix minHeight40"></div>
 	<div class="clearfix">
-	<div class="project_tabs_inn_table positionRelative">
+	<div class="project_wrap_table positionRelative">
 	<div id="indPaySlipViewDivId" class="datatable_filter mt5"></div>
 	</div>
 	</div>

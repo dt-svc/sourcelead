@@ -44,7 +44,7 @@
 	<div class="styleTables positionRelative">
 	<div id="bonusListLoading"></div>
 	<div id="choicepopUp"></div>
-	<div id="payrollBonusList" class="datatable_filter"></div>
+	<div id="payrollBonusList" class="datatable_filter project_wrap_table"></div>
 	</div>
 	</div>
 </div>

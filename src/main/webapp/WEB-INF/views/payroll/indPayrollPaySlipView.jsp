@@ -82,6 +82,13 @@ display: inline-block;
 /* -webkit-print-color-adjust: unset; */
 }
 }
+
+.fontSize18 {
+	font-size: 18px;
+}
+.fontSize17 {
+	font-size: 17px;
+}
 </style>
    <!-- Content Area -->
 <section class="content-wraper contentWraper">
@@ -320,20 +327,48 @@ display: inline-block;
 		     			<tbody>
 		     			<c:set var="earningTotal" value="${0.00}"/>
 		     			<c:forEach var="earning" items="${earningPayhead}" varStatus="loop1">
+		     			  <c:if test="${earning.taxStatus eq 'Taxable'}">
 		     			   <tr>
 			     			   <th>${earning.payrollPayheadName}</th>
 			     			   <td>${earning.monthly}</td>
 			     			   <td>${earning.monthly}</td>
 		     			   </tr>
 		     			   <c:set var="earningTotal" value="${earningTotal + earning.monthly}"/>
+		     			   </c:if>
 		     			</c:forEach>
 		     		    </tbody>
 		     		    <tfoot>
-		     		    <tr><th><strong>Total</strong></th><td>${earningTotal}</td><td>${earningTotal}</td></tr>
+		     		    <tr class="fontSize17"><th><strong>Gross Salary</strong></th><td>${earningTotal}</td><td>${earningTotal}</td></tr>
+		     		    </tfoot>
+		     	</table>
+		     	
+		     	<table class="table table1">
+		     		 
+		     		<thead>
+						<tr>
+		     			<th>Employer Contribution</th><th>Amount</th><th>Gross Salary</th>
+		     			</tr>
+		     		</thead>
+		     			<tbody>
+		     			<c:set var="enployerEarningTotal" value="${0.00}"/>
+		     			<c:forEach var="earning" items="${earningPayhead}" varStatus="loop1">
+		     			<c:if test="${earning.taxStatus eq 'NonTaxable'}">
+		     			   <tr>
+			     			   <th>${earning.payrollPayheadName}</th>
+			     			   <td>${earning.monthly}</td>
+			     			   <td>${earning.monthly}</td>
+		     			   </tr>
+		     			   <c:set var="enployerEarningTotal" value="${enployerEarningTotal + earning.monthly}"/>
+		     			   </c:if>
+		     			</c:forEach>
+		     		    </tbody>
+		     		    <tfoot>
+		     		    <tr><th><strong>Total Contribution</strong></th><td>${enployerEarningTotal}</td><td>${enployerEarningTotal}</td></tr>
+		     		    <tr><th><strong>Cost to Company (CTC)</strong></th><td>${indPayrollDTO.grossPay + enployerEarningTotal}</td><td>${indPayrollDTO.grossPay + enployerEarningTotal}</td></tr>
 		     		    </tfoot>
 		     	</table>
 		     	</div>
-		     	<div class="col-md-5 padding_left">
+		     	<div class="col-md-5">
 		     	<table class="table table2">
 		     		 
 		     		<thead>
@@ -349,12 +384,13 @@ display: inline-block;
 		     			</c:forEach>
 		     		    </tbody>
 		     		    <tfoot>
-		     		    <tr><th><strong>Total</strong></th><td>${decuctionTotal}</td></tr>
+		     		    <tr><th><strong>Total Deductions</strong></th><td>${decuctionTotal}</td></tr>
+		     		    <tr class="fontSize18"><th><strong>Net Salary</strong></th><td>${indPayrollDTO.netPay}</td></tr>
 		     		    </tfoot>
 		     	</table>
 		     	</div>
 		     	<div class="clearfix"></div>
-		     	<div class="col-md-7 padding_right hiden">
+		     <%-- 	 <div class="col-md-7 padding_right hiden">
 		     	<table class="table mb0" style="width:100%">
 		     		<tbody>
 		     		<tr>
@@ -362,8 +398,8 @@ display: inline-block;
 		     		</tr>
 		     		</tbody>
 		     	</table>
-		     	</div>
-		     	<div class="col-md-5 padding_left hiden">
+		     	</div> 
+		    	<div class="col-md-5 padding_left hiden">
 		     	<table class="table" style="width:100%">
 		     		<tbody>
 		     	<th style="width:310px;"><div class=""><strong>Net Salary</strong></div>	</th>
@@ -371,7 +407,7 @@ display: inline-block;
 		     			</td>
 		     			</tbody>
 		     	</table>
-		     	</div>
+		     	</div>  --%>
 		     	</div>
 		     	
 		     	</div>

@@ -31,7 +31,7 @@
 								<i class="fa fa-search" onclick="getItDeclarationSubmissionList('${uuid}', '${financialYear}', 0);"></i>
 							</div>
 						</li>
-						<li><a href="getForm?uuid=${uuid}" class="addBtn">+ Add Form</a>
+						<li><a href="/pms/myPayroll/forms/getForm?uuid=${uuid}" class="addBtn">+ Add Form</a>
 						</li>
 					</ul>
 				</div>

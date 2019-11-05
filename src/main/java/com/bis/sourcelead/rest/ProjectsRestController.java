@@ -922,7 +922,7 @@ public class ProjectsRestController {
 					 globalVarsMap.put("employeeName",emailMessage.getFirstName());
 				}
 			 globalVarsMap.put("projectName", projects.getProjectName());
-			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrg().getOrgName());
+			 globalVarsMap.put("loginOrgName",loginOrgLocation.getOrgName());
 			 
 			 
 			 //calling the sendEmail method of emailScenerioUtil

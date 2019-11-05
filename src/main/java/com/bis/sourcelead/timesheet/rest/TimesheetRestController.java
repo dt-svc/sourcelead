@@ -2152,9 +2152,8 @@ public class TimesheetRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Candidate candidate = (Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		Long shiftId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "shiftId");
-		
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocationId);
 		if (loginUser != null && orgLocations != null) {
 			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId());
 			loginUser = userService.getUserById(loginUser.getId());
@@ -6847,7 +6846,11 @@ public class TimesheetRestController {
 			Date sDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate);
 			Date eDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate);
 			String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+			
 			submissionApproverHierarchyService.updateApprovalStatusByApproverForProjectMemberId(projectMemberId,user.getId(), sDate, eDate, approvalStatus, rejectedReason, loginOrgLocation,isGlobalAccess);
+			
+			
+			
 			sendEmailToEmployeeTimesheetApprovalStatus(projectMemberId, user, startDate, endDate, approvalStatus,
 					rejectedReason, loginOrgLocation, loginOrgCode);
 			resp.setResponse(Result.SUCCESS.name());
@@ -6864,6 +6867,7 @@ public class TimesheetRestController {
 			String status, String rejectedReason, OrgLocations loginOrgLocation, String loginOrgCode) throws Exception {
 
 		ProjectMembers projectMember = projectMembersService.getProjectMemberById(pmId);
+
 		Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),
 				startDate.replaceAll("/", "-"));
 		Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(),
@@ -6896,17 +6900,54 @@ public class TimesheetRestController {
 								approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(),
 								approver.getApproverUserId().getEmail(), loginUser, loginOrgLocation, projectMember,
 								startDate, endDate, submissionStatusStr, rejectedReason);
+		Date frequencyStartDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), startDate.replaceAll("/", "-"));
+		Date frequencyEndDate = commonUtil.orgLocationDateFormat(loginOrgLocation.getDateFormat(), endDate.replaceAll("/", "-"));
+
+		//SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyForEmployeeByProjectIdAndMasterCandidateId(frequencyStartDate, frequencyEndDate, projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId());
+		SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(frequencyStartDate, frequencyEndDate, projectMember.getProjects().getId(), projectMember.getMasterCandidateId().getId(), loginUser.getId());
+		projectMember.getProjects().getId();
+		
+		if (sah.getProjectId() != null && sah.getProjectId().getProjectApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL)
+				&& sah.getHierarchyId().getLevel() != 2) {
+			//---------------- Send Approval Email to Level 2 Manager ----------------
+			List<SubmissionApproverHierarchy> sahList = submissionApproverHierarchyService.getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMember.getId());
+			if(sahList != null && !sahList.isEmpty()) {
+				for(SubmissionApproverHierarchy s : sahList) {
+					if(s.getHierarchyId().getLevel() == 2) {
+						timesheetEmailUtil.sendEmailNotificationToLevel2WhenLevel1Approves(s.getHierarchyId().getApproverUserId().getFirstName(),
+								s.getHierarchyId().getApproverUserId().getLastName(), loginUser, s.getHierarchyId().getApproverUserId(), loginOrgLocation, projectMember, startDate, endDate, status);
+
 					}
 				}
 			}
+		} else {
+			String submissionStatusStr = sah.getSubmissionStatus().getValue();
+			if (!isNullOrEmpty(submissionStatusStr) && (submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("approved").getValue())
+					|| submissionStatusStr.equalsIgnoreCase(Submission_Status.getNameByValue("rejected").getValue()))) {
+				// For Employee
+				timesheetEmailUtil.sendEmailNotificationToEmployeeAndApproversOfEndClient(
+						projectMember.getProjectMemberCandidteId().getFirstName(),
+						projectMember.getProjectMemberCandidteId().getLastName(),
+						projectMember.getProjectMemberCandidteId().getEmail(), loginUser, loginOrgLocation, projectMember,
+						startDate, endDate, submissionStatusStr, rejectedReason);
 
-			//
+				// For Approvers of EndClient
+				List<ProjectApproverHierarchy> approverList = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(projectMember.getProjects().getId(), loginOrgLocation.getId());
+				if (approverList != null && !approverList.isEmpty()) {
+					for (ProjectApproverHierarchy approver : approverList) {
+						if (!loginUser.getUserCode().equalsIgnoreCase(approver.getApproverUserId().getUserCode())) {
+							timesheetEmailUtil.sendEmailNotificationToApproversOfEndClient(
+									approver.getApproverUserId().getFirstName(), approver.getApproverUserId().getLastName(),
+									approver.getApproverUserId().getEmail(), loginUser, loginOrgLocation, projectMember,
+									startDate, endDate, submissionStatusStr, rejectedReason);
+						}
+					}
+				}
 
+			}
+			// Send Emails & Notifications to vendors
+			timesheetEmailUtil.sendEmailToVendorAtTimesheetApprovalStatus(projectMember, loginUser, loginOrgLocation, startDate, endDate, status, rejectedReason);
 		}
-		// Send Emails & Notifications to vendors
-		timesheetEmailUtil.sendEmailToVendorAtTimesheetApprovalStatus(projectMember, loginUser, loginOrgLocation, startDate,
-				endDate, status, rejectedReason);
-
 	}
 
 	

@@ -16,7 +16,7 @@
       <div class="pull-left">
         <h2>View New Request Resources</h2>
       </div>
-		<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/projectDashboard'/>">Home</a>  <a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&tabType=resources"></a> &raquo; View New Request Resources</div>
+		<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/projectDashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>  <a href="${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&tabType=resources"></a> &raquo; View New Request Resources</div>
 </section>
 
  <div class="content-area content-new clearfix">
