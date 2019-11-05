@@ -323,8 +323,10 @@ public class AssociateImportController {
 	        
 	        if(payHeadDTOList.size() > 0)
 	        for(PayrollPayheadDTO ph : payHeadDTOList) {
-	        	Cell cell = row.createCell(cellnum++);
-	            cell.setCellValue((String)ph.getName());
+	        	if(ph.getActive().equalsIgnoreCase("YES")) {
+	        		Cell cell = row.createCell(cellnum++);
+	        		cell.setCellValue((String)ph.getName());
+	        	}
 	        }
 	        
 	        try {
