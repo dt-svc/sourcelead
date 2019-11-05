@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
@@ -3098,7 +3099,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String panNumber = dataMigrationDTOJsonCopy.get("panNumber").toString();
 						if (panNumber.length() == 10) {
 							flag = panNumber.matches(panNumberRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("panNumber", "Duplicate Pan Number");
 						    }
@@ -3116,7 +3117,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String aadharNo = dataMigrationDTOJsonCopy.get("aadharNumber").toString();
 						if (aadharNo.length() == 12) {
 							flag = aadharNo.matches(aadharNoRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("aadharNumber", "Duplicate Aadhar Number");
 						    }
@@ -3135,7 +3136,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String ssnNo = dataMigrationDTOJsonCopy.get("ssnNumber").toString().replaceAll("-", "");
 						if (ssnNo.length() == 9) {
 							flag = ssnNo.matches(ssnNoRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("ssnNumber", "Duplicate SSN Number");
 						    }
