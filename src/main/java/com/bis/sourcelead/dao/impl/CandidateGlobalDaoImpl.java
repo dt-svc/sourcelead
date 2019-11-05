@@ -93,8 +93,9 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 			}
 			logger.debug("CandidateGlobal Stored Successfully");
 		} catch (Exception exception) {
-			StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CandidateGlobal"));
-			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());
+			/*StringBuilder message = new StringBuilder(MessageFormat.format(duplicateValue, "CandidateGlobal"));
+			throw new SourceLeadConstraintViolationException(message.toString() + exception.getCause().toString());*/
+			exception.printStackTrace();
 		}
 		return candidateGlobal;
 	}
