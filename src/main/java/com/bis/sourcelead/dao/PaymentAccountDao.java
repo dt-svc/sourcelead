@@ -19,5 +19,9 @@ public interface PaymentAccountDao {
 	int saveBankingDetailInPaymentAccount(Long orgLocationId, List<IndAssociatePaymentAccountDTO> list, Map<String, Long> map)  throws Exception;
 	
 	List<PaymentAccount> getPaymentAccountDetailsByOrglocationId(Long id) throws Exception;
+	
+    PaymentAccount valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(IndAssociatePaymentAccountDTO paymentAccountDTO)throws Exception;
+	
+	Boolean validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(IndAssociatePaymentAccountDTO paymentAccountDTO,Long orgLocationId)throws Exception;
 }
 
