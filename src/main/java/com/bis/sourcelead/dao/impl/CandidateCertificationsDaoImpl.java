@@ -132,5 +132,37 @@ public class CandidateCertificationsDaoImpl implements CandidateCertificationsDa
 		}
 		return canEMp;
 	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateCertifications> getCandidateGlobalCertificationListByCandidateIdAndOrgLocationID(
+			Long candidateId, Long orgLocationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCertifications cc where cc.candidateId.id =:candidateId and cc.status = '1' ORDER BY cc.createdDate DESC";  
+		List<CandidateCertifications> candidateCertifications = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return candidateCertifications;	
+	
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateCertifications getCandidateGlobalCertificateBycandidateIdandCertificateId(Long candidateId,
+			Long candidateCertificateId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCertifications  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orgLocationId where cEmp.id = :candidateCertificateId and cEmp.candidateId.id = :candidateId ";
+		List<CandidateCertifications> certificatesList =  session.createQuery(query.toString()).setLong("candidateCertificateId", candidateCertificateId).setLong("candidateId", candidateId)
+				.list();
+		
+
+		CandidateCertifications canEMp = null;
+		if (certificatesList != null && certificatesList.size() > 0) {
+			canEMp = (CandidateCertifications) certificatesList.iterator().next();
+		}
+		return canEMp;
+	}
 }
 

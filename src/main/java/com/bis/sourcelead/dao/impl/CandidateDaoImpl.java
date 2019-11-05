@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
@@ -39,7 +40,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
-import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
@@ -48,15 +49,14 @@ import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
 import com.bis.sourcelead.entity.CandidateResumes;
-import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.CandidateSource;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RecruiterReportCandidateCountView;
 import com.bis.sourcelead.entity.SourceleadDeletedCandidates;
 import com.bis.sourcelead.entity.SubmissionCandidateListView;
-import com.bis.sourcelead.entity.TicketType;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
@@ -619,7 +619,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			subQuery = "candidate.isAssociate = 'N' ";
 		}
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and "
+		String query = "select count(*) from CandidateGlobal candidate  where candidate.orgLocationId.id = :orgLocationId and "
 				+ subQuery
 				+ " and candidate.status = '1' and (candidate.isFavourite = '0' OR candidate.isFavourite IS NULL) ";
 		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
@@ -638,7 +638,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		logger.debug("In getAllHotlistCandidatesCountNotAssignedToTeamByLocation method");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = "select count(*) from Candidate candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and (candidate.isFavourite = '1' OR candidate.isFavouriteAssociate = '1') and candidate.teamId IS NULL ";
+		String query = "select count(*) from CandidateGlobal candidate  where candidate.orgLocationId.id = :orgLocationId and candidate.status = '1' and (candidate.isFavourite = '1' OR candidate.isFavouriteAssociate = '1') and candidate.teamId IS NULL ";
 		List<Long> candidatesCount = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId)
 				.list();
 		Integer count = 0;
@@ -1986,7 +1986,7 @@ public class CandidateDaoImpl implements CandidateDao {
 					+ "OL.ORG_ID AS orgId, " + "(SELECT " + "ORG_NAME " + "FROM "
 					+ "ORG_LOCATIONS OL,ORG_RELATIONS ORL " + "WHERE "
 					+ "(OL.ID = ORL.LOCATION_ID OR OL.ID = ORL.RESPONDER_LOCATION_ID) AND OL.ID != :orgLocationId AND ORL.ID = CAND.ORG_RELATION_ID) AS vendorName "
-					+ "FROM " + "CANDIDATE CAND, " + "ORG_LOCATIONS OL "
+					+ "FROM " + "CANDIDATE_GLOBAL CAND, " + "ORG_LOCATIONS OL "
 					+ "WHERE  CAND.ORG_LOCATION_ID = OL.ID  AND CAND.STATUS = '1' "
 					+ "AND CAND.ORG_LOCATION_ID = :orgLocationId "
 					+ "AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
@@ -2107,7 +2107,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		String query = "SELECT " + " CAND.ID AS candId, "
 				+ " CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName,"
-				+ " CAND.IS_ASSOCIATE AS isAssociate " + " FROM CANDIDATE CAND " + " WHERE CAND.STATUS = '1' "
+				+ " CAND.IS_ASSOCIATE AS isAssociate " + " FROM CANDIDATE_GLOBAL CAND " + " WHERE CAND.STATUS = '1' "
 				+ " AND CAND.ORG_LOCATION_ID = :orgLocationId " + " AND CAND.PROFILE_PERCENTAGE >= :profilePercentage "
 				+ subQuery
 				+ " AND CAND.ID NOT IN (SELECT SUB.CANDIDATE_ID FROM REQUIREMENT_SUBMISSION SUB WHERE SUB.REQUIREMENT_ID = :requirementId) "
@@ -2136,14 +2136,14 @@ public class CandidateDaoImpl implements CandidateDao {
 		if (!employeementType.equalsIgnoreCase("All")) {
 			query = "SELECT CAND.ID AS candId,"
 					+ "CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
-					+ " FROM CANDIDATE CAND " + " WHERE CAND.ORG_LOCATION_ID = :orgLocationId"
+					+ " FROM CANDIDATE_GLOBAL CAND " + " WHERE CAND.ORG_LOCATION_ID = :orgLocationId"
 					+ " AND CAND.DESIGNATION_TYPE = '" + employeementType
 					+ "' AND CAND.STATUS = '1' AND CAND.CONSULTANT_USER_ID IS NULL"
 					+ " AND CAND.ID NOT IN (SELECT ONBOARDING.CANDIDATE_ID FROM CANDIDATE_ON_BOARDING ONBOARDING WHERE ONBOARDING.ORG_LOCATION_ID = :orgLocationId AND ONBOARDING.CANDIDATE_ID IS NOT NULL)";
 		} else {
 			query = "SELECT CAND.ID AS candId,"
 					+ "CONCAT (CAND.FIRST_NAME,' ',IFNULL(CAND.LAST_NAME,'')) AS candidateName"
-					+ " FROM CANDIDATE CAND " + " WHERE CAND.ORG_LOCATION_ID = :orgLocationId"
+					+ " FROM CANDIDATE_GLOBAL CAND " + " WHERE CAND.ORG_LOCATION_ID = :orgLocationId"
 					+ " AND CAND.STATUS = '1' AND CAND.CONSULTANT_USER_ID IS NULL"
 					+ " AND CAND.ID NOT IN (SELECT ONBOARDING.CANDIDATE_ID FROM CANDIDATE_ON_BOARDING ONBOARDING WHERE ONBOARDING.ORG_LOCATION_ID = :orgLocationId AND ONBOARDING.CANDIDATE_ID IS NOT NULL)";
 		}
@@ -2289,9 +2289,9 @@ public class CandidateDaoImpl implements CandidateDao {
 		ResponseList<CandidateDTO> responseList = new ResponseList<>();
 		List<Long> countlist = null;
 		Integer filterCount = 0;
-		String query = "from Candidate candidate where candidate.id IN ( :candidateIds )";
-		List<Candidate> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
-		String listQueryCount = "select count(candidate) from Candidate candidate where candidate.id IN ( :candidateIds )";
+		String query = "from CandidateGlobal candidate where candidate.id IN ( :candidateIds )";
+		List<CandidateGlobal> candidates = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
+		String listQueryCount = "select count(candidate) from CandidateGlobal candidate where candidate.id IN ( :candidateIds )";
 		countlist = session.createQuery(query).setParameterList("candidateIds", candidateIds).list();
 		int totalCount = 0;
 		if (countlist != null && !countlist.isEmpty()) {
@@ -2305,7 +2305,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		// responseList.setRecordsFiltered(totalCount);
 		// }
 		List<CandidateDTO> candidateDTOList = new ArrayList<>();
-		for (Candidate candidate : candidates) {
+		for (CandidateGlobal candidate : candidates) {
 			CandidateDTO dto = new CandidateDTO();
 			BeanUtils.copyProperties(candidate, dto);
 			candidateDTOList.add(dto);
@@ -2522,7 +2522,7 @@ public class CandidateDaoImpl implements CandidateDao {
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.ALL_RECORDS)) {
-				typeQuery.append(" and (marketplace.candidateId.isFavourite = 0) ");
+				typeQuery.append(" and (marketplace.candidateId.isFavourite = 0 OR marketplace.candidateId.isFavourite IS NULL) ");
 			}
 			if (candidateMarketPlaceDTO != null
 					&& candidateMarketPlaceDTO.getIsFavourite().equals(Constants.Favourite)) {
@@ -3473,7 +3473,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public String getCandidatePanNumberByUserId(long userId, Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+			String query = "from CandidateGlobal c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
 						Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id).uniqueResult();
 						if (pan != null) {
 							return pan.getPanNumber();
@@ -3488,7 +3488,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		String query = "from CandidateGlobal can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
 		List<Candidate> panNumberList =  session.createQuery(query) .setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
 		Candidate can = null;
 		if(panNumberList != null && !panNumberList.isEmpty())
@@ -3503,7 +3503,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
+		String query = "from CandidateGlobal can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
 		List<Candidate> panNumbersList = session.createQuery(query).setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
 		if (panNumbersList != null && panNumbersList.size() > 0) {
 			flag = true;
@@ -3515,7 +3515,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		String query = "from CandidateGlobal can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
 		List<Candidate> aadharNumberList =  session.createQuery(query) .setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
 		Candidate can = null;
 		if(aadharNumberList != null && !aadharNumberList.isEmpty())
@@ -3530,7 +3530,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
+		String query = "from CandidateGlobal can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
 		List<Candidate> aadharNumberList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
 		if (aadharNumberList != null && aadharNumberList.size() > 0) {
 			flag = true;
@@ -3542,7 +3542,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		String query = "from CandidateGlobal can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
 		List<Candidate> ssnNumberList =  session.createQuery(query) .setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
 		Candidate can = null;
 		if(ssnNumberList != null && !ssnNumberList.isEmpty())
@@ -3806,6 +3806,60 @@ public class CandidateDaoImpl implements CandidateDao {
 			canidate = (Candidate) candidateList.iterator().next();
 		}
 		return canidate;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Long getGlobalCandidateIdByCandidateId(Long candidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query =  "SELECT "
+				+" CAND.CANDIDATE_GLOBAL_ID "           
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.ID = :candidateId ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		BigInteger candidateGlobalId = (BigInteger) queryObj.uniqueResult();
+		
+		return candidateGlobalId.longValue();
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Candidate getCandidateByCandidateGlobalId(Long candidateGlobalId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from Candidate cnadidate  " + "left join fetch cnadidate.consultantUser "
+				+ "left join fetch cnadidate.teamId " + "left join fetch cnadidate.recruiterUserId "
+				+ "left join fetch cnadidate.masterCandidateId " + "left join fetch cnadidate.parentCandidateId "
+				+ "left join fetch cnadidate.orgRelationId left "
+				+ "join fetch cnadidate.spocId left join fetch cnadidate.orgLocationId left join fetch cnadidate.orgLocationId.user where cnadidate.candidateGlobalId.id =:candidateGlobalId";
+		List candidateList = session.createQuery(query).setLong("candidateGlobalId", candidateGlobalId).list();
+		Candidate candidate = null;
+		if (candidateList != null && !candidateList.isEmpty()) {
+			candidate = (Candidate) candidateList.iterator().next();
+		}
+		return candidate;
+	
+	}
+
+	@Override
+	@Transactional
+	public Long getCandidateIdByGlobalCandidateId(Long globalCandidateId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		Long candidateId = null;
+		String query =  "SELECT "
+				+" CAND.ID "           
+				+" FROM CANDIDATE CAND "
+				+" WHERE CAND.CANDIDATE_GLOBAL_ID = :globalCandidateId ";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("globalCandidateId", globalCandidateId);
+		BigInteger candidateGlobalId = (BigInteger) queryObj.uniqueResult();
+		if(candidateGlobalId != null) {
+			candidateId = candidateGlobalId.longValue();
+		}
+		return candidateId;
 	}
 
 

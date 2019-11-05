@@ -3,6 +3,7 @@ package com.bis.sourcelead.enums;
 public enum TagEntites {
 	
 	CANDIDATES("Candidates"),
+	CANDIDATES_GLOBAL("CandidatesGlobal"),
 	JOBS("Jobs"),
 	CLIENTS("Clients"),
 	VENDORS("Vendors"),

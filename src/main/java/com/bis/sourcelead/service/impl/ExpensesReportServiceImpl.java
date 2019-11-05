@@ -1032,7 +1032,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 
 				 for(Expenses exp:expenses){
 					 if(null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployee()!= null ){
+							if(projectMember.getEmployee()!= null && exp.getProjectMembers().getEmployee() != null){
 								writeRow.createCell(0).setCellValue(exp.getProjectMembers().getEmployee().getEmployeeId());
 								 createExcelsheet.autoSizeColumn(0);
 							}else{

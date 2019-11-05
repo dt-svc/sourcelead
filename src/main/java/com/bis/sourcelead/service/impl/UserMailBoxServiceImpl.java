@@ -2,15 +2,11 @@ package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserMailBoxDao;
@@ -19,8 +15,9 @@ import com.bis.sourcelead.dto.HotListEmailCampaignDTO;
 import com.bis.sourcelead.elk.index.CampaignIndex;
 import com.bis.sourcelead.elk.index.helper.CampaignIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
-import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.UserMailBox;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.UserMailBoxService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -44,6 +41,9 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 	
 	@Autowired
 	CandidateService candidateService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -143,8 +143,8 @@ public class UserMailBoxServiceImpl implements UserMailBoxService{
 			 candidateId.add(Long.parseLong(s));
 		 }
 		 
-		 List<Candidate> candidatesList = candidateService.getAllRequestedCandidatesForCampaign(candidateId);
-		 for(Candidate candidate : candidatesList){
+		 List<CandidateGlobal> candidatesList = candidateGlobalService.getAllRequestedGlboalCandidatesForCampaign(candidateId);
+		 for(CandidateGlobal candidate : candidatesList){
 			
 			 String candidateName = null;
 			 String experienceInYears = null;
