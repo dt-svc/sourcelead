@@ -3473,7 +3473,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public String getCandidatePanNumberByUserId(long userId, Long id) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from Candidate c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
+			String query = "from CandidateGlobal c where c.consultantUser.id=:userId and c.orgLocationId.id =:id";
 						Candidate pan = (Candidate) session.createQuery(query).setLong("userId", userId).setLong("id", id).uniqueResult();
 						if (pan != null) {
 							return pan.getPanNumber();
@@ -3488,7 +3488,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		String query = "from CandidateGlobal can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId and can.status = 1";
 		List<Candidate> panNumberList =  session.createQuery(query) .setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
 		Candidate can = null;
 		if(panNumberList != null && !panNumberList.isEmpty())
@@ -3503,7 +3503,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query = "from Candidate can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
+		String query = "from CandidateGlobal can where can.panNumber = :panNumber and can.orgLocationId=:orgLocationId";
 		List<Candidate> panNumbersList = session.createQuery(query).setString("panNumber", panNumber).setLong("orgLocationId", orgLocationId).list();
 		if (panNumbersList != null && panNumbersList.size() > 0) {
 			flag = true;
@@ -3515,7 +3515,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		String query = "from CandidateGlobal can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId and can.status = 1";
 		List<Candidate> aadharNumberList =  session.createQuery(query) .setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
 		Candidate can = null;
 		if(aadharNumberList != null && !aadharNumberList.isEmpty())
@@ -3530,7 +3530,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query = "from Candidate can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
+		String query = "from CandidateGlobal can where can.aadharNumber = :aadharNumber and can.orgLocationId=:orgLocationId";
 		List<Candidate> aadharNumberList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("orgLocationId", orgLocationId).list();
 		if (aadharNumberList != null && aadharNumberList.size() > 0) {
 			flag = true;
@@ -3542,7 +3542,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	@Transactional(rollbackFor = { Exception.class })
 	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
 		Session session =  this.sessionFactory.getCurrentSession();
-		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
+		String query = "from CandidateGlobal can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId and can.status = 1";
 		List<Candidate> ssnNumberList =  session.createQuery(query) .setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
 		Candidate can = null;
 		if(ssnNumberList != null && !ssnNumberList.isEmpty())
