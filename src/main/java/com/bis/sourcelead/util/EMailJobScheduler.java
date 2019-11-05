@@ -4821,7 +4821,7 @@ public class EMailJobScheduler {
 	 * @param leaveStatus
 	 */
 	   //@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-		@Scheduled(cron = "	0 0/1 * 1/1 * ?") // Scheduled for every minute
+		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
 		@Async
 	public void employeeLeaveReminderToSuperior() {
 		try {
@@ -4829,6 +4829,7 @@ public class EMailJobScheduler {
 			
 			//List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.EMPLOYEE_ON_LEAVE);
 			List<EmailReminder> emailReminderList  = emailReminderService.getReminderConfiguredOrgLocations(Constants.EMPLOYEE_ON_LEAVE);
+			
 			if(emailReminderList != null && !emailReminderList.isEmpty()) {
 			for (EmailReminder emailReminder : emailReminderList) {
 				if (emailReminder.getEmailReminderHierarchyList().size() > 0) {
