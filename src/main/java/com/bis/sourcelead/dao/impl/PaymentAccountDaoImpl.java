@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -164,4 +165,30 @@ public class PaymentAccountDaoImpl implements PaymentAccountDao{
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public PaymentAccount valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(IndAssociatePaymentAccountDTO paymentAccountDTO) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from PaymentAccount paymentAccount  where paymentAccount.id =:paymentId and paymentAccount.accountType =:accountType and paymentAccount.accountNumber =:accountNumber";
+		List<PaymentAccount> paymentAccounttList =session.createQuery(query) .setLong("paymentId", paymentAccountDTO.getId()).setString("accountType", paymentAccountDTO.getAccountType()).setString("accountNumber", paymentAccountDTO.getAccountNumber()).list();
+		PaymentAccount paymentAccount = null;
+		if(paymentAccounttList != null && !paymentAccounttList.isEmpty())
+		{
+			paymentAccount = (PaymentAccount) paymentAccounttList.iterator().next();
+		}
+		return paymentAccount;
+ }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Boolean validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(IndAssociatePaymentAccountDTO paymentAccountDTO, Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		 boolean flag = false;
+			String query = "from PaymentAccount paymentAccount  where paymentAccount.orgLocation.id =:orgLoationId and paymentAccount.accountType =:accountType and paymentAccount.accountNumber =:accountNumber";
+				Collection<PaymentAccount> paymentAccounttList = session.createQuery(query).setLong("orgLoationId", orgLocationId).setString("accountType", paymentAccountDTO.getAccountType()).setString("accountNumber", paymentAccountDTO.getAccountNumber()).list();
+				if (paymentAccounttList != null && paymentAccounttList.size() > 0) {
+					flag = true;
+				}
+		return flag;
+	}
 }
