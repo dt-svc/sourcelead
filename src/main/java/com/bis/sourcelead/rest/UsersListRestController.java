@@ -2444,6 +2444,9 @@ public class UsersListRestController {
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
 			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
+			if (isUserActive == false) {
+				candidate.setEmail(addUserDTO.getEmail());
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());
