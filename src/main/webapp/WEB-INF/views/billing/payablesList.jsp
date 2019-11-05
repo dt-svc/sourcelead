@@ -1858,6 +1858,8 @@ function resetBillsFilter(){
 	$(".custom_search").empty().hide();
 	$("#payableDataTableSearch").val('');
 	getPayableInvoiceList();
+	$(".action-pop").slideUp(200);
+	$(".newActPop").slideUp(200);
 	
 }
 function resetingBillsFilter(){
