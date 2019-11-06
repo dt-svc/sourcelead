@@ -101,6 +101,7 @@ function saveEmailParsers(){
 			  			$("#ConfigLoading").removeAttr("style");
 			  			//closeEmailNotifications();
 			  			alert("Please check your configuration details.")
+			  			$( "#save_email_parser" ).removeClass('disabled');
 			  			//$("#msgConfigDiv").html("Configured Mail is wrong.Please update the correct Mail");
 			  		}
 		    		
@@ -216,7 +217,7 @@ function editEmailParsing(emailUUID){
 function deleteEmail(emailId){ 
 	var result = "";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete?</p>";
 	result = result + ' <div id="reasonForEmailDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteParserEmail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteEMail()"></b>';
 	result = result +"	</div>";
