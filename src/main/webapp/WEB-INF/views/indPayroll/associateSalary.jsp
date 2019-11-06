@@ -400,6 +400,7 @@ function cnfToSaveAssociateSalaryInd(){
 		var status = $("#status").val();
 		var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		var atsUrl ='${SourceLeadWeb_atsUrl}';
+		var candidateId = '${candidate.id}';
 		$.ajax({
 			 type : "POST",
 			 data: formData,
@@ -417,6 +418,7 @@ function cnfToSaveAssociateSalaryInd(){
 				  		$('#saveAssociateBtnDiv').css('display','none');
 				  		$('#editSectionDiv').css('display','none');
 				  		$('#stopSalaryDiv').show();
+				  		assocSalarySummary(candidateId);
 			  		}
 			 }
 		});
