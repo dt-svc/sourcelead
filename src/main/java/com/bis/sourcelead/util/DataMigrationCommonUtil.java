@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
@@ -2163,10 +2164,23 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					}
 
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
+		 		/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
 				errorSet.put("dateofBirth", "DOB is missing");
 				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
 				errorSet.put("dateofBirth", "DOB is invalid date");
+				}*/
+		 		
+		 		if(!dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+					try {
+						DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+						Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofBirth"));
+						String dateofbirth = formatter.format(date);
+						dataMigrationDTOJsonCopy.put("dateofBirth", dateofbirth);
+					} catch (Exception e) {
+						errorSet.put("dateofBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
+					}
+				}else {
+					errorSet.put("dateofBirth", "DOB is missing");
 				}
 
 				/* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
@@ -3098,7 +3112,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String panNumber = dataMigrationDTOJsonCopy.get("panNumber").toString();
 						if (panNumber.length() == 10) {
 							flag = panNumber.matches(panNumberRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("panNumber", "Duplicate Pan Number");
 						    }
@@ -3116,7 +3130,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String aadharNo = dataMigrationDTOJsonCopy.get("aadharNumber").toString();
 						if (aadharNo.length() == 12) {
 							flag = aadharNo.matches(aadharNoRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("aadharNumber", "Duplicate Aadhar Number");
 						    }
@@ -3135,7 +3149,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String ssnNo = dataMigrationDTOJsonCopy.get("ssnNumber").toString().replaceAll("-", "");
 						if (ssnNo.length() == 9) {
 							flag = ssnNo.matches(ssnNoRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("ssnNumber", "Duplicate SSN Number");
 						    }

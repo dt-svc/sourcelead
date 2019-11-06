@@ -4821,12 +4821,13 @@ public class EMailJobScheduler {
 	 * @param leaveStatus
 	 */
 	   //@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
+	//	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
+		@Scheduled(cron = "0 0/5 * 1/1 * ?") // Scheduled for every 5 minutes
 		@Async
 	public void employeeLeaveReminderToSuperior() {
 		try {
 			String leaveStatus = Constants.EMPLOYEE_ON_LEAVE;
-			
+			logger.info("**********Reminder to Mangers ,Admin and Reporting mangers about employee leaves*********STARTED");
 			//List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.EMPLOYEE_ON_LEAVE);
 			List<EmailReminder> emailReminderList  = emailReminderService.getReminderConfiguredOrgLocations(Constants.EMPLOYEE_ON_LEAVE);
 			
@@ -4987,6 +4988,7 @@ public class EMailJobScheduler {
 			}
 			}
 			}
+			logger.info("**********Reminder to Mangers ,Admin and Reporting mangers about employee leaves*********ENDED");
 		} catch (Exception e) {
 			e.printStackTrace();
 
