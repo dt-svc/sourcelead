@@ -364,11 +364,7 @@ function saveCandidateImage(candidateId, formId, data){
 	                          success: function(result) {
 	                        	  if(result){
 	                        		  $("img[data-id=profileImage]").each(function(i) { $(this).attr('src', data[0].fileURL); });
-	                        		  cancel(candidateId);
-	                        		  candidateQuickViewProfile(candidateId);
 	                        	  }
-	                        	  else
-	                        		  cancel(candidateId);
 	    			          },  
 	            });
 	            return true;         
