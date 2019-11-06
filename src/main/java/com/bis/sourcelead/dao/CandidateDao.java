@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
@@ -19,8 +20,8 @@ import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
-import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.CandidateSource;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MarketplaceSalesOrder;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -269,17 +270,17 @@ public interface CandidateDao {
 	
 	public String getCandidatePanNumberByUserId(long userId, Long id);
 	
-    public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
+    public CandidateGlobal getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
 	
-	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception;
+	public CandidateGlobal getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
 	
 	public List<Candidate> getCandidatesForUpdateWorkLocation(Long masterCandidateId,Long orgId) throws Exception;
 	
-    public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
+    public CandidateGlobal getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 	
@@ -310,5 +311,11 @@ public interface CandidateDao {
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
 	
 	Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	Long getGlobalCandidateIdByCandidateId(Long candidateId) throws Exception;
+	
+	public Candidate getCandidateByCandidateGlobalId(Long candidateGlobalId) throws Exception;
+	
+	Long getCandidateIdByGlobalCandidateId(Long globalCandidateId) throws Exception;
 			
 }

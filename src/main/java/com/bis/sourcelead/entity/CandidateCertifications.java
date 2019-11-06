@@ -14,11 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -43,8 +38,8 @@ public class CandidateCertifications implements Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
-
+	private CandidateGlobal candidateId;
+	
 	@Column(name = "NAME")
 	private String name;
 
@@ -111,11 +106,11 @@ public class CandidateCertifications implements Serializable {
 		this.orgLocationId = orgLocationId;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -246,5 +241,7 @@ public class CandidateCertifications implements Serializable {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
+
+	
 
 }
