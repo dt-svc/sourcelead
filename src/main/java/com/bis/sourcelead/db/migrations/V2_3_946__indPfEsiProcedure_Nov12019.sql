@@ -1,4 +1,4 @@
-DROP PROCEDURE associateInfoDataProcedure;
+DROP PROCEDURE IF EXISTS associateInfoDataProcedure;
 DELIMITER //
 CREATE PROCEDURE associateInfoDataProcedure 
 (                                                       
