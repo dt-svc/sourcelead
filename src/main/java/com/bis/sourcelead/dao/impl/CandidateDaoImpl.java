@@ -3557,7 +3557,7 @@ public class CandidateDaoImpl implements CandidateDao {
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception {
 		Session session = this.sessionFactory.getCurrentSession();
 		boolean flag = false;
-		String query = "from Candidate can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId";
+		String query = "from CandidateGlobal can where can.ssnNumber = :ssnNumber and can.orgLocationId=:orgLocationId";
 		List<CandidateGlobal> ssnNumberList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("orgLocationId", orgLocationId).list();
 		if (ssnNumberList != null && ssnNumberList.size() > 0) {
 			flag = true;
