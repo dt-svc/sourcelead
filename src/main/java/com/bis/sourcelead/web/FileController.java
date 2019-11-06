@@ -117,6 +117,9 @@ public class FileController {
 	@Value("${isResumeparserEnabled}")
 	private String isResumeparserEnabled;
 	
+	@Value("${resumeParserUrlProd}")
+	private String resumeParserUrlProd;
+	
 
 
 	@RequestMapping(value = { "/ws/upload/{type}", "/rest/upload/{type}" }, method = RequestMethod.POST)
@@ -264,8 +267,11 @@ public class FileController {
 		String baseServicesUrl = "";
 		if("qa".equalsIgnoreCase(environment)) {
 			baseServicesUrl = resumeParserUrlQa;
-		}else {
-			baseServicesUrl = resumeParserUrlLocal;
+		}else if(("prod".equalsIgnoreCase(environment))){
+			baseServicesUrl = resumeParserUrlProd;
+		}
+		else {
+			baseServicesUrl = resumeParserUrlLocal ;
 		}
 		String candidateIds = FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
 				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
@@ -353,8 +359,11 @@ public class FileController {
 							String baseServicesUrl = "";
 							if("qa".equalsIgnoreCase(environment)) {
 								baseServicesUrl = resumeParserUrlQa;
-							}else {
-								baseServicesUrl = resumeParserUrlLocal;
+							}else if(("prod".equalsIgnoreCase(environment))){
+								baseServicesUrl = resumeParserUrlProd;
+							}
+							else {
+								baseServicesUrl = resumeParserUrlLocal ;
 							}
 							FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
 									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
