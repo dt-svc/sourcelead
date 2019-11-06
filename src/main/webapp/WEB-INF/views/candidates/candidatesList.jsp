@@ -128,7 +128,7 @@ function candidateSideBar(candidateId){
 	  var locationCode = '${SourceLeadWeb_locationCode}';
 	  $.ajax({
 		  type: "GET",
-		    url: atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
+		    url: atsUrl+"/getGlobalCandidateInfo?candidateId="+candidateId+"&locationCode="+locationCode,
            success :function(json) { 
                 if(json != null && json != 'undefined' && json != ""){  
                 	// var json = JSON.parse(data);
@@ -495,7 +495,8 @@ function candidateSideBar(candidateId){
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
+			            result = result+'          	<input type="hidden" id="totalCommentsCount" value="'+json.commentsCount+'">';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning" id="commentsCount"></span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -627,6 +628,7 @@ function candidateSideBar(candidateId){
 				 		 $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200);
 						 $("body").css('overflow-y', 'hidden');
+						 $('#commentsCount').html(json.commentsCount);
 						 getCandidateTagsList(candidateId);
 						 
 						 
@@ -702,7 +704,7 @@ function candidateSideBar(candidateId){
            
       }); 
 	  
-	  savedCommentAndCount(candidateId);
+	//  savedCommentAndCount(candidateId);
 				
 }
 </script>
@@ -712,7 +714,7 @@ function candidateSideBar(candidateId){
 function getCandidateTagsList(candidateId){
 	$.ajax({  
         type : "POST",
-        url: atsUrl+"/getCandidatesTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+        url: atsUrl+"/getCandidatesGlobalTags?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
         success :function(json) {
         	var result = "";
 			$.each( json.tagsList, function( i, tags ) {
@@ -893,7 +895,7 @@ function deleteProfileImage(candidateId){
 function refreshImageBlock(candidateId){   
 	  $.ajax({
           type : "POST",
-           url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+           url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
            success :function(result) { 
         	   var json = result.object;
         	   if(result.response === "SESSION_TIMEDOUT") {
@@ -955,10 +957,13 @@ function refreshImageBlock(candidateId){
 <script>
 function addFavourite(candidateId){
 	
+	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
+	
 	var checked = document.getElementById("fav"+candidateId).checked;
 	 	$.ajax({
 			type : "POST",
-			url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,
+			url : atsUrl+"/saveCandidateAsFavourite?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId+"&candidateType="+candidateTypeFilter,
 			success : function(response) {
 				if(checked){
 					 document.getElementById("favourite"+candidateId).removeAttribute("class");
@@ -1952,11 +1957,8 @@ function exportToPdf(){
 	       availability.push($(this).val());
 		 });
 	 
-	 var candidateTypeFilter = []
-	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-	     {
-		 candidateTypeFilter.push($(this).val());
-		 });
+	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 	 
 	 var createdByRadio = $('input[name=createdByFilter]');
 	  var createdByFilter = createdByRadio.filter(':checked').val();
@@ -2045,11 +2047,8 @@ function exportToExcel(){
 		       availability.push($(this).val());
 			 });
 		 
-		 var candidateTypeFilter = []
-		 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-		     {
-			 candidateTypeFilter.push($(this).val());
-			 });
+		 var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+		 var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 		 
 		 var createdByRadio = $('input[name=createdByFilter]');
 		  var createdByFilter = createdByRadio.filter(':checked').val();
@@ -2119,7 +2118,25 @@ function closeComment(){
 		    		} else if (result.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
-		    			savedCommentAndCount(candidateId);
+		    			 $('#candidateProfileTab').removeClass('current');
+		    			 $('#candidateResumeTab').removeClass('current');
+		    			 $('#candidateEmployersTab').removeClass('current');
+		    			 $('#candidateEducationTab').removeClass('current');
+		    			 $('#candidateCertificationsTab').removeClass('current');
+		    			 $('#candidateDocumentsTab').removeClass('current');
+		    			 $('#candidateReferencesTab').removeClass('current');
+		    			 $('#candidateCommentTab').removeClass('current');
+		    			 $('#candidateHistoryTab').removeClass('current');
+		    			 $('#candidateImmigrationTab').removeClass('current');
+		    			 $('#candidateCommentTab').addClass('current');
+		    			 
+		    			 var element = document.getElementById('candidateCommentTab');
+		    			 element.onclick = candidateCommentsList(candidateId); 
+		    			 
+		    			 var commentsCount = $('#totalCommentsCount').val();
+		    			 commentsCount = parseInt(commentsCount)+1;
+		    			 $('#totalCommentsCount').val(commentsCount);
+		    			 $('#commentsCount').html(commentsCount);
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);
 					} else {
@@ -3162,7 +3179,7 @@ function resetCandidateFilter(){
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
-	$("ul#candidateTypeFilter > li input:checkbox").prop("checked",false);
+	$("ul#candidateTypeFilter > li input:radio").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
 	$("#mySkillsInput").val('');
 	
@@ -3216,9 +3233,9 @@ function resetCandidateFilter(){
 				<label><strong>Candidate Type</strong></label>
 				 <div class="clearfix">
 					<ul class="list-unstyled" id="candidateTypeFilter">
-					    <li class="checkBox positionRelative" ><input  type="checkbox" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
+					    <li class="radioIput positionRelative" ><input  type="radio" id="candidateCheck" name="candidateTypeFilter" checked value ="Candidates"  ><label>Candidates</label></li>
 						 <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-						<li class="checkBox positionRelative" ><input  type="checkbox" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
+						<li class="radioIput positionRelative" ><input  type="radio" id="associateCheck"  name="candidateTypeFilter"  value ="Associates" ><label>Associates</label></li>
                    </c:if>
                     </ul>
 				 </div>
