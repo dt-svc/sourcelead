@@ -1623,6 +1623,9 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	    	candidate.setLongitude(candidateGlobal.getLongitude());
 	    	candidate.setLatitude(candidateGlobal.getLatitude());
 	    	candidate.setCandidateSource(candidateGlobal.getCandidateSource());
+	    	candidate.setPanNumber(candidateGlobal.getPanNumber());
+	    	candidate.setAadharNumber(candidateGlobal.getAadharNumber());
+	    	candidate.setSsnNumber(candidateGlobal.getSsnNumber());
 	    }
 	    
 		candidateDao.storeCandidate(candidate);
@@ -2459,6 +2462,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 		candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		candidate.setIsFavourite(0);
 		candidate.setIsFavouriteAssociate(0);
+		candidate.setOrgId(orgLocations.getOrg());
 		
 		if(StringUtils.isNotBlank(candidateDTO.getAadharNumber())) {
 			candidate.setAadharNumber(candidateDTO.getAadharNumber());
@@ -2485,7 +2489,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 		HashSet<CandidateEducation>	 candidateEducationList = candidateEducationService.getCandidateEducationDetailsList(candidateDTO, orgLocations,candidate,user);
 		candidate.setCandidateEducation(candidateEducationList);
 		
-		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetailsList(candidateDTO,orgLocations,candidate.getId(),user);
+		HashSet<CandidateEmployers> candidateEmployersList = candidateEmployersService.getCandidateEmployersDetailsList(candidateDTO,orgLocations,candidate,user);
 		candidate.setCandidateEmployers(candidateEmployersList);
 		
 		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
@@ -3899,7 +3903,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	}
 	
 	@Override
-	public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
+	public CandidateGlobal getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsByPanNumberAndId(panNumber, orgLocationId);
 	}
 
@@ -3909,7 +3913,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	}
 
 	@Override
-	public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
+	public CandidateGlobal getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocationId);
 	}
 
@@ -3919,7 +3923,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	}
 
 	@Override
-	public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
+	public CandidateGlobal getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception {
 		return candidateDao.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocationId);
 	}
 

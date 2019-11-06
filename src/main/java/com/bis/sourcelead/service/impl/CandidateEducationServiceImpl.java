@@ -449,7 +449,7 @@ public class CandidateEducationServiceImpl implements CandidateEducationService 
 	  	    	  for(int i=0; i<educations.length; i++) {
 	  	    		  CandidateEducation ce = new CandidateEducation();
 	  	    		  ce.setName(educations[i].trim());
-		    		 // ce.setCandidateGlobalId(candidate);
+		    		  ce.setCandidateId(candidate);
 		    		  ce.setOrglocationId(orgLocations);
 		    		  ce.setStatus(Constants.CANDIDATE_ACTIVE);
 		    		  
