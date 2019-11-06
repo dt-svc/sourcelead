@@ -641,7 +641,7 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 				for (LeaveType l : roleLeaveType) {
 					float totalLeaves = 0;
 					if(Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
-						 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),loginUser.getId(),orgLocation.getId(),orgLocation.getOrgId());
+						 totalLeaves = associateBalanceLeaveService.getTotalLeavesCountByUserIdAndLeaveTypeId(l.getId(),loginUser.getId(),orgLocation.getId(),orgLocation.getOrg().getId());
 					}
 
 //					totalLeaves = leaveManagementUtil.getBalanceCountForLeaveType(type, emp, orgLocations, loginUser);
@@ -683,22 +683,22 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 					ablv.setIncludeHolidays(l.getIncludeHolidays());
 					if (Constants.MONTHLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 						Date[] monthDates = conversionUtil.getMonthStartDateEndDate();
-						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), monthDates[0], monthDates[1], loginUser.getId(),orgLocation.getOrgId());
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), monthDates[0], monthDates[1], loginUser.getId(),orgLocation.getOrg().getId());
 						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,monthDates[0],monthDates[1],l);
 					}
 					else if (Constants.QUARTERLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 						LocalDate[] currentMonthQuarter = conversionUtil.getThisMonthQuarterDates(todayDate);
-						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), loginUser.getId(),orgLocation.getOrgId());
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), currentMonthQuarter[0].toDate(), currentMonthQuarter[1].toDate(), loginUser.getId(),orgLocation.getOrg().getId());
 						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,currentMonthQuarter[0].toDate(),currentMonthQuarter[1].toDate(),l);
 					}
 					else if (Constants.HALFYEARLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 						LocalDate[] currentHalfYear = conversionUtil.getThisMonthHalfyearyDates(todayDate);
-						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), loginUser.getId(),orgLocation.getOrgId());
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), currentHalfYear[0].toDate(), currentHalfYear[1].toDate(), loginUser.getId(),orgLocation.getOrg().getId());
 						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,currentHalfYear[0].toDate(),currentHalfYear[1].toDate(),l);
 					}
 					else if (Constants.ANNUALLY.equalsIgnoreCase(l.getPeriod()) && Constants.YES.equalsIgnoreCase(l.getVisibleInBalanceLeaves())) {
 						LocalDate[] thisYearDates = conversionUtil.getThisYearStartDateEndDate();
-						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), loginUser.getId(),orgLocation.getOrgId());
+						appliedLeaves = appliedLeaveDateService.getAppliedLeaveDatesByLeaveTypeIdAndOrgLocationIdAndUserId(orgLocation.getId(), l.getId(), thisYearDates[0].toDate(), thisYearDates[1].toDate(), loginUser.getId(),orgLocation.getOrg().getId());
 						appliedLeavesCount = (float) leaveManagementUtil.getExcludeHolidayLeaveCount(appliedLeaves, orgLocation, ablv,thisYearDates[0].toDate(),thisYearDates[1].toDate(),l);
 					}
 					appliedLeaveCount = totalLeaves - appliedLeavesCount;
