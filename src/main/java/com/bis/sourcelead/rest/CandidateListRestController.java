@@ -1133,17 +1133,27 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = orgLocationService.getOrgLocations(orgLocationId);
 
 				StringBuffer activitySummary = new StringBuffer();
-				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 						loginOrgLocation.getId());
-				candidate.setFileUrl(null);
-				candidate.setFileContentType(null);
-				activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidate.getFileName())
+				candidateGlobal.setFileUrl(null);
+				candidateGlobal.setFileContentType(null);
+				activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateGlobal.getFileName())
 						.append(Constants.OLD_VALUE_TAG_END);
-				candidate.setFileName(null);
-				candidateGlobalService.storeCandidateGlobal(candidate);
+				candidateGlobal.setFileName(null);
+				candidateGlobalService.storeCandidateGlobal(candidateGlobal);
+				
+				
+				Candidate candidate = candidateService.getCandidateByCandidateGlobalId(candidateGlobal.getId());
+				if(candidate != null) {
+					candidate.setFileContentType(null);
+					candidate.setFileUrl(null);
+					candidate.setFileName(null);
+					candidateService.addCandidate(candidate);
+				}
+				
 
-				candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-				candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "",
+				candidateActivityCommonUtil.storeCandidateHistory(candidateGlobal, user);
+				candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateGlobal, "",
 						Constants.CANDIDATE_DELETED_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1319,7 +1329,7 @@ public class CandidateListRestController {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 
 				candidateDTO.setStaticPath(staticPath);
-				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(Long.parseLong(candidateId),
 						loginOrgLocation.getId());
 
 				if (candidateDTO.getFileInfo() != null) {
@@ -1327,27 +1337,36 @@ public class CandidateListRestController {
 					try {
 						if (info.getFileName() != null && info.getFileName() != "") {
 							activitySummary.append("File").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION)
-									.append(candidate.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ")
+									.append(candidateGlobal.getFileName()).append(Constants.OLD_VALUE_TAG_END).append(" ")
 									.append(Constants.NEW_VALUE_TAG_INITIATION).append(info.getFileName())
 									.append(Constants.NEW_VALUE_TAG_END).append(" ");
 						} else {
 							activitySummary.append("File").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION)
 									.append(info.getFileName()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 						}
-						candidate.setFileContentType(info.getContentType());
-						candidate.setFileUrl(info.getFileURL());
-						candidate.setFileName(info.getFileName());
+						candidateGlobal.setFileContentType(info.getContentType());
+						candidateGlobal.setFileUrl(info.getFileURL());
+						candidateGlobal.setFileName(info.getFileName());
 						FileUploadUtil.moveFile(candidateDTO.getStaticPath(), info, "profile");
+						
+						Candidate candidate = candidateService.getCandidateByCandidateGlobalId(candidateGlobal.getId());
+						if(candidate != null) {
+							candidate.setFileContentType(info.getContentType());
+							candidate.setFileUrl(info.getFileURL());
+							candidate.setFileName(info.getFileName());
+							candidateService.addCandidate(candidate);
+						}
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
-				candidateGlobalService.storeCandidateGlobal(candidate);
+				candidateGlobalService.storeCandidateGlobal(candidateGlobal);
 
-				candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-				candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidate, "",
+				candidateActivityCommonUtil.storeCandidateHistory(candidateGlobal, user);
+				candidateActivityCommonUtil.storeCandidateActivity(user, loginOrgLocation, candidateGlobal, "",
 						Constants.CANDIDATE_UPLOAD_NEW_PROFILE_IMAGE, activitySummary.toString(), "CANDIDATE");
-				Integer percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidate.getId());
+				Integer percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidateGlobal.getId());
 				response.setObject(percentage.toString());
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());

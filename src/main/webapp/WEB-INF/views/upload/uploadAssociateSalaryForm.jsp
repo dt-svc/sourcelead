@@ -114,7 +114,8 @@ var uploadflag= true;
 											<label><i class="fa fa-envelope"></i>&nbsp;&nbsp;Associate
 												Email</label> <label><i class="fa fa-check"></i>&nbsp;&nbsp;Pay
 												Type</label><label><i class="fa fa-check"></i>&nbsp;&nbsp;Pay
-												Frequency</label> <label><i class="fa fa-check"></i>&nbsp;&nbsp;Pay
+												Frequency</label><label><i class="fa fa-check"></i>&nbsp;&nbsp;Standard
+												Hours</label><label><i class="fa fa-check"></i>&nbsp;&nbsp;Pay
 												Group</label> <label><i class="fa fa-check"></i>&nbsp;&nbsp;Annual
 												Salary</label>
 										</p>

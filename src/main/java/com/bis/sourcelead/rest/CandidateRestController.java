@@ -1568,7 +1568,7 @@ public class CandidateRestController {
 				HttpServletRequest request)
 				throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate can = null;
+			CandidateGlobal can = null;
 			if (null != candidateId) {
 				can = candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocations.getId());
 			}
@@ -1586,7 +1586,7 @@ public class CandidateRestController {
 				HttpServletRequest request)
 				throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate can = null;
+			CandidateGlobal can = null;
 			if (null != candidateId) {
 				can = candidateService.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocations.getId());
 			}
@@ -1603,7 +1603,7 @@ public class CandidateRestController {
 				HttpServletRequest request)
 				throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate can = null;
+			CandidateGlobal can = null;
 			if (null != candidateId) {
 				can = candidateService.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocations.getId());
 			}
