@@ -11,9 +11,9 @@
  WHERE `UNIQUE_SCENARIO_NAME`='LCAManagerExpiredNotification';
  
 INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) 
-	VALUES ((select id from EMAIL_SCENARIO where UNIQUE_SCENARIO_NAME like 'LCAManagerExpiredNotification') , 'No_Of_Lcas', '[No_Of_Lcas]');
+	VALUES ((select ID from EMAIL_SCENARIO where UNIQUE_SCENARIO_NAME like 'LCAManagerExpiredNotification') , 'No_Of_Lcas', '[No_Of_Lcas]');
  INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) 
- VALUES ((select id from EMAIL_SCENARIO where UNIQUE_SCENARIO_NAME like 'LCAManagerExpiredNotification'), 'Lca_Manager', '[Lca_Manager]');
+ VALUES ((select ID from EMAIL_SCENARIO where UNIQUE_SCENARIO_NAME like 'LCAManagerExpiredNotification'), 'Lca_Manager', '[Lca_Manager]');
  
  
    UPDATE `EMAIL_SCENARIO` SET `BODY`='Hi [Lca_Manager],\n This is to notify that [No_Of_Lcas] LCA/s expiring in ([Expiring_Days] Days) .' 
@@ -21,7 +21,7 @@ INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`)
   
  
  INSERT INTO `CLASS_FIELD` (`EMAIL_SCENARIO_ID`, `FIELD_NAME`, `DELIMITER_STR`) 
- VALUES ((select id from EMAIL_SCENARIO where UNIQUE_SCENARIO_NAME like 'LCAManagerExpiresInDaysNotification'), 'Lca_Manager', '[Lca_Manager]');
+ VALUES ((select ID from EMAIL_SCENARIO where UNIQUE_SCENARIO_NAME like 'LCAManagerExpiresInDaysNotification'), 'Lca_Manager', '[Lca_Manager]');
  
  SET SQL_SAFE_UPDATES=1;
  
