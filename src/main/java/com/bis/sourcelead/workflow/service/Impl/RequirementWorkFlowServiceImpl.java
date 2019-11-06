@@ -804,7 +804,70 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	if(orgLocations != null){
 		workFlow.setOrgLocationId(orgLocations);
 		}
-	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName()+"Copy"); // appending "Copy" post fix to identify cloned work flow.
+	
+	// appending "Copy1" post fix to identify cloned work flow.	
+	if(!requirementWorkFlowDTO.getWorkFlowName().contains("Copy")){
+		
+		StringBuilder clonedWorkflow = new StringBuilder("");
+		List<RequirementWorkFlow> workflow = requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+		
+		
+		Long existingCloneCount = 0l;
+		if(workflow != null){
+		Stream<RequirementWorkFlow> workflowStream = workflow.stream().filter(wf -> wf.getWorkFlowName().contains("Copy"));
+			existingCloneCount = workflowStream.count();
+		}
+		if(existingCloneCount > 0l){
+			existingCloneCount = existingCloneCount + 1;
+			workFlow.setWorkFlowName(clonedWorkflow.append(requirementWorkFlowDTO.getWorkFlowName()).append("(Copy").append(existingCloneCount).append(")").toString());	
+		}
+		else{
+			workFlow.setWorkFlowName(clonedWorkflow.append(requirementWorkFlowDTO.getWorkFlowName()).append("(Copy").append(Constants.LEVEL1).append(")").toString());
+		}
+		
+	}else{
+		List<RequirementWorkFlow> workflow = requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+		String check1 = requirementWorkFlowDTO.getWorkFlowName();
+		Long existingCloneCount = 0l;
+		if(workflow != null){
+		Stream<RequirementWorkFlow> workflowStream = workflow.stream().filter(wf -> wf.getWorkFlowName().contains("Copy"));
+			existingCloneCount = workflowStream.count();
+		}
+		
+		Integer startIndex = check1.lastIndexOf("(");
+		StringBuilder cloneCopyString = new StringBuilder("");
+		StringBuilder cloneCount  = new StringBuilder("");
+		StringBuilder finalCloneString = new StringBuilder(check1);
+		
+		for(int j=startIndex; j< check1.length(); j++){
+			cloneCopyString.append(check1.toCharArray()[j]);
+		}
+		
+		char copyString[] = cloneCopyString.toString().toCharArray();
+		
+		for(char c: copyString){
+			int asciiValue = (int)c;
+			if(asciiValue >= 48 && asciiValue <= 57){
+				char ch = (char)asciiValue;
+				cloneCount.append(ch);
+			}
+		}
+		
+		Long addedCloneCount = Long.valueOf(cloneCount.toString());
+		
+		finalCloneString.replace(startIndex, check1.length(), "");
+		if(existingCloneCount > 0l){
+			addedCloneCount = existingCloneCount + 1;
+			finalCloneString.append("(Copy").append(addedCloneCount).append(")");
+		}else{
+			addedCloneCount = addedCloneCount + 1;
+			finalCloneString.append("(Copy").append(addedCloneCount).append(")");
+		}
+		
+	
+		workFlow.setWorkFlowName(finalCloneString.toString());
+	}
+	
 	workFlow.setDescription(requirementWorkFlowDTO.getDescription());
 	
 	

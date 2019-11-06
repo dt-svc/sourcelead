@@ -1889,7 +1889,7 @@ public class CommonUtil {
 		
 		
 		
-		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User user) throws Exception{
 			  Candidate candidate = null;
 			  OrgLocations vendorOrgLocation = null;
 			  if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
@@ -1910,7 +1910,7 @@ public class CommonUtil {
 				  MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginUser);
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, user);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 				  
@@ -1933,7 +1933,7 @@ public class CommonUtil {
 					if(StringUtils.isNotBlank(candidateDTO.getCountry())){
 						candidate.setCountry(candidateDTO.getCountry());
 					}
-				
+				candidate.setConsultantUser(user);
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setDesignationType("W-2");
 				if(candidateDTO.getWorkLocation() != null) {

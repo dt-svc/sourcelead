@@ -2164,10 +2164,23 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					}
 
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
+		 		/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
 				errorSet.put("dateofBirth", "DOB is missing");
 				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
 				errorSet.put("dateofBirth", "DOB is invalid date");
+				}*/
+		 		
+		 		if(!dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+					try {
+						DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+						Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofBirth"));
+						String dateofbirth = formatter.format(date);
+						dataMigrationDTOJsonCopy.put("dateofBirth", dateofbirth);
+					} catch (Exception e) {
+						errorSet.put("dateofBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
+					}
+				}else {
+					errorSet.put("dateofBirth", "DOB is missing");
 				}
 
 				/* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
@@ -2645,7 +2658,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 					Long vendorId = 0l;
 					for(OrgRelations rel : vendorsList) {
-						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 							vendorId = rel.getId();
 							break;
 						}
