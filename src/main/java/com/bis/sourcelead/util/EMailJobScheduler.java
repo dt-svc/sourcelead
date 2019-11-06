@@ -847,11 +847,10 @@ public class EMailJobScheduler {
 			 Date endDate=commonUtil.dateFromElk(expDate);		
 			 long diff = endDate.getTime()-startDate.getTime();
 			 
-			 Long expiredInDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 			 
 		//	 System.out.println("expiredInDays>>>>>>>>>>>>>>>>>>>>>"+expiredInDays);
 			 globalVarsMap.put("Lca_Table", sb.toString());
-			 globalVarsMap.put("Expiring_Days",String.valueOf(expiredInDays+1));// date difference returning 1 less value, then added manually added 1 day.
+			 globalVarsMap.put("Expiring_Days",String.valueOf(currLcaDaysStatus));// date difference returning 1 less value, then added manually added 1 day.
 			 
 			StringBuilder loginBuilder = new StringBuilder();
 			globalVarsMap.put("URL_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
