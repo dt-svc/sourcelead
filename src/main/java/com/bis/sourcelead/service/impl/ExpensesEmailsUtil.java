@@ -430,9 +430,16 @@ public class ExpensesEmailsUtil {
           
          Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries(); 
          for(ExpensesEntries expList: expensesEntriesList) { 
-              
-             globalVarsMap.put("amount", expList.getSubmittedamount().toString()); 
-             globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString()); 
+              if(expList.getSubmittedamount() != null) {
+            	  globalVarsMap.put("submittedAmount", expList.getSubmittedamount().toString()); 
+              }else {
+            	  globalVarsMap.put("submittedAmount", "--"); 
+              }
+              if(expenses.getTotalAmount() != null) {
+            	  globalVarsMap.put("amount",expenses.getTotalAmount().toString()); 
+              }else {
+            	  globalVarsMap.put("amount","--"); 
+              }
               
              
          } 
@@ -463,7 +470,8 @@ public class ExpensesEmailsUtil {
          Long redirectOrgLocationId = loginOrgLocation.getId();
           
          StringBuilder stringBuildforLink = new StringBuilder(); 
-         globalVarsMap.put("loginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+//         globalVarsMap.put("loginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+         globalVarsMap.put("loginURL",stringBuildforLink.append("<a href='").append(pmsUrl+ "/expenses").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
           
          if("REJECTED".equalsIgnoreCase(status)){ 
              commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>()); 
