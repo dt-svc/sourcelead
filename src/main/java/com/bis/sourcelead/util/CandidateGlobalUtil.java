@@ -1146,7 +1146,11 @@ public Candidate storeVendorCandidateDetailsForCandidateCreation(CandidateGlobal
 
 public CandidateGlobal storeCandidateGlobalFromCandidate(Candidate candidate) throws Exception {
 	CandidateGlobal candidateGlobal = null;
-	candidateGlobal = candidateGlobalService.getCandidateGlobalByConsultantUserId(candidate.getConsultantUser().getId(), candidate.getOrgLocationId().getId());
+	
+	if(candidate.getConsultantUser() != null) {
+		candidateGlobal = candidateGlobalService.getCandidateGlobalByConsultantUserId(candidate.getConsultantUser().getId(), candidate.getOrgLocationId().getId());
+	}
+	
 	if(candidateGlobal == null) {
 		candidateGlobal = candidateGlobalService.findByCandidateGlobalEmail(candidate.getEmail(), candidate.getOrgLocationId().getId());	
 	}
