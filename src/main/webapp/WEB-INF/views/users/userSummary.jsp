@@ -4010,7 +4010,7 @@ function profileDetails(candidateId){
 					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateGlobalId+',false);"  style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateGlobalId+')">';
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteCandidateProfileImage('+candidateGlobalId+','+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
 						 result = result+'  </div>';
@@ -4473,6 +4473,47 @@ function deleteImage(candidateId){
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
+
+
+
+function deleteCandidateProfileImage(globalCandidateId,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteCandidateImage("+globalCandidateId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+
+function deleteCandidateImage(globalCandidateId,candidateId){   
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 $.ajax({
+		    type: "GET",
+            url: atsUrl+"/deleteCandidateImage?candidateId="+globalCandidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+		        	  refreshImageBlock(candidateId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(atsUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	       },
+     }); 
+}
+
 </script>
 
 <%-- 
