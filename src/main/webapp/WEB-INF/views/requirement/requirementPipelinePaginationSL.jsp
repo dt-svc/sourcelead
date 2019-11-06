@@ -11,6 +11,8 @@
 	function requirementPipelinePaginationSL(url, requirementId, submissionType) {
 		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+		var clientSubmissions = '${clientSubmissions}';
+		var isSpocActive = '${isSpocActive}';
 		var colIndex = 0;
 		$('#requirementsPagination')
 				.DataTable(
@@ -493,6 +495,7 @@
 										"render" : function(data, type, opt,
 												meta) {
 											var result = "";
+											if(workflowConfigured == 'false'){// Default Workflow Starts here if workflowConfigured is false.
 											if (opt.requirementCurrentStatus != 'SUBMITTED'
 													&& opt.requirementCurrentStatus != 'CLOSED'
 													&& opt.requirementCurrentStatus != 'REJECTED'
@@ -604,15 +607,53 @@
 													result = result
 															+ '</div></td>';
 												}
-											} else {
+											  }else {
 												result = result
 														+ '<td><div class="tblwidth-150"><span>'
 														+ opt.submissionDisplayStatus
 														+ '</span>';
 											}
+											  
+											}// Default Workflow Ends here.
+											else{ // Custom  Workflow Starts here.
+												//14-october-2019
+												// if not a client requirement remove option from the dropdown options list.
+												/* if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){ */
+													delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
+												/* } */
+												'<sec:authorize access="!hasRole(\'ROLE_SHORTLIST\')">';
+												  delete opt.workflowStagesMap["SHORTLIST"];
+												'</sec:authorize>'; 
+												
+												result = result
+													+ '<td><div class="tblwidth-150">';
+												result = result
+													+ '<select id="rejectApplicantSelectspocState'
+													+ opt.id
+													+ '" onChange="rejectApplicant('
+													+ opt.id + ','
+													+ requirementId
+													+ ',\''
+													+ submissionType
+													+ '\')";>';
+												 result = result
+													+ "<option value='Status'>"
+													+ opt.submissionDisplayStatus
+													+ "</option>";
+												 $.each( opt.workflowStagesMap, function(val, name ) {
+													 if(opt.submissionDisplayStatus != name ){
+														result = result+"<option value='"+val+"'>"+name+"</option>";
+													 }
+													});
+												 result = result
+																+ '</select>';
+														result = result
+																+ '</div></td>';
+											}// Custom Workflow Ends here.
+											
 											return result;
-										}
-									} ],
+										} // main column  end.
+									}  ],
 							"scrollCollapse" : false,
 							"initComplete" : function(settings, json) {
 								$('#tab-1').hide();

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -65,9 +67,11 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -194,6 +198,9 @@ public class RequirementRestController {
 	 
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
@@ -602,6 +609,8 @@ public class RequirementRestController {
 							requirement.setUpdatedDate(commonUtil.currentDate());
 							requirementService.addRequirement(requirement);
 							List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+							String approverArray[] = new String[list1.size()];
+							int i = 0;
 							for (RequirementApproverHierarchy rah : list1) {
 								if (status.equalsIgnoreCase("APPROVED")) {
 									rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
@@ -612,8 +621,10 @@ public class RequirementRestController {
 								}
 								rah.setUpdatedBy(loginUser.getUserCode());
 								rah.setUpdatedDate(commonUtil.currentDate());
+								approverArray[i++] = rah.getApproverUserId().getId() + "";
 								requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 							}
+							requirement.setLevel1ApproverUserId(approverArray);
 							// for URL redirections from mail
 							String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
 							Long redirectOrgLocationId = orgLocation.getId();
@@ -638,17 +649,45 @@ public class RequirementRestController {
 									requirement.setUpdatedDate(commonUtil.currentDate());
 									requirementService.addRequirement(requirement);
 									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+//									String approverArray[] = new String[list1.size()];
+									List<String> parallelApprover = new LinkedList<>();
+									int i = 0;
 									for (RequirementApproverHierarchy rah : list1) {
-										if (status.equalsIgnoreCase("APPROVED")) {
-											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
-										} else if (status.equalsIgnoreCase("REJECTED")) {
-											rah.setRejectedReason(reason);
-											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
-										}
+										
 										rah.setUpdatedBy(loginUser.getUserCode());
 										rah.setUpdatedDate(commonUtil.currentDate());
+//										approverArray[i++] = rah.getApproverUserId().getId() + "";
+										if(rah.getLevel() == 1) {
+											String[] levelUserIds = new String[1];
+											levelUserIds[0] = rah.getApproverUserId().getId() + "";
+											requirement.setLevel1ApproverUserId(levelUserIds);
+											
+											
+											if (status.equalsIgnoreCase("APPROVED")) {
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+												requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
+											} else if (status.equalsIgnoreCase("REJECTED")) {
+												rah.setRejectedReason(reason);
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+												requirement.setReqlevel1ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
+											}
+										}
+										if(rah.getLevel() == 2) {
+											String[] levelUserIds = new String[1];
+											levelUserIds[0] = rah.getApproverUserId().getId() + "";
+											requirement.setLevel2ApproverUserId(levelUserIds);
+											if (status.equalsIgnoreCase("APPROVED")) {
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
+												requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED.toString());
+											} else if (status.equalsIgnoreCase("REJECTED")) {
+												rah.setRejectedReason(reason);
+												rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED);
+												requirement.setReqlevel2ApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.REJECTED.toString());
+											}
+										}
 										requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 									}
+//									requirement.setLevel1ApproverUserId(approverArray);
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
 									
@@ -688,6 +727,22 @@ public class RequirementRestController {
 					    				}
 					    		}
 						}else{
+							
+							List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+							if(list1 != null && !list1.isEmpty()) {
+								for (RequirementApproverHierarchy rah : list1) {
+									if(rah.getLevel() == 1) {
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = rah.getApproverUserId().getId() + "";
+										requirement.setLevel1ApproverUserId(levelUserIds);
+									}
+									if(rah.getLevel() == 2) {
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = rah.getApproverUserId().getId() + "";
+										requirement.setLevel2ApproverUserId(levelUserIds);
+									}
+								}
+							}
 
 							    RequirementApproverHierarchy level1approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
 								User approverUser = userService.getUserById(level1approver.getApproverUserId().getId());
@@ -727,6 +782,44 @@ public class RequirementRestController {
 						
 					}
 					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					
+					List<String> parallelApprover = new LinkedList<>();
+					String sequentialApprover1 = "";
+					String sequentialApprover2 = "";
+					
+					List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+					if(list1 != null && !list1.isEmpty()) {
+						for (RequirementApproverHierarchy rah : list1) {
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+								parallelApprover.add(rah.getApproverUserId().getId() + "");
+								requirementDTO.setParallelApprover(parallelApprover);
+							}
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+								if (rah.getLevel() == 1) {
+									sequentialApprover1 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover1(sequentialApprover1);
+									requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+								}
+								if (rah.getLevel() == 2) {
+									sequentialApprover2 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover2(sequentialApprover2);
+									requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+								}
+							}
+							
+							if(rah.getLevel() == 1) {
+								String[] levelUserIds = new String[1];
+								levelUserIds[0] = rah.getApproverUserId().getId() + "";
+								requirement.setLevel1ApproverUserId(levelUserIds);
+							}
+							if(rah.getLevel() == 2) {
+								String[] levelUserIds = new String[1];
+								levelUserIds[0] = rah.getApproverUserId().getId() + "";
+								requirement.setLevel2ApproverUserId(levelUserIds);
+							}
+						}
+					}
+					
 					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
 			
 					return "success";
@@ -1373,8 +1466,8 @@ public class RequirementRestController {
 		if(loginUser != null) {
 			try {
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
+				CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
+				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidateGlobal);
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
 				}catch(Exception e) {
@@ -1400,13 +1493,13 @@ public class RequirementRestController {
 				String[] candidateId = candidateIds.split(",");
 				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
 					for(String candidateid   : candidateId){
-						Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
+						CandidateGlobal candidateGlobal = candidateGlobalService.getCandidateGlobalByCandidateId(Long.valueOf(candidateid));
 								JobShareCandidate jobShareCandidate = new JobShareCandidate();
-								jobShareCandidate.setCandidateId(candidates);
+								jobShareCandidate.setCandidateId(candidateGlobal);
 								jobShareCandidate.setJobId(requirement);
 								jobShareCandidate.setCreatedDate(new Date());
 								jobShareService.saveJobShareCandidate(jobShareCandidate);
-								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
+								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidateGlobal);
 						}
 				}
 				response.setResponse(Result.SUCCESS.name());
@@ -1427,6 +1520,7 @@ public class RequirementRestController {
 	@RequestMapping(value = "/submitRecommendationCandidates", method = RequestMethod.POST)
 	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
 			@RequestParam(value = "candidateIds", required = false) String candidateIds,
+			@RequestParam(value = "candidateType", required = false) String candidateType,
 			@RequestParam(value = "candidateResume", required = false) String candidateResume,
 			@RequestParam(value = "N", required = false) String needApplicantPermit,
 			@RequestParam(value = "N", required = false) String notifyToApplicant,
@@ -1445,11 +1539,10 @@ public class RequirementRestController {
 				if(candidateId != null &&  candidateId.length > 0){
 					for(String candidateid   : candidateId){
 						
-						
 						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
 						if(flag == false) {
 						
-							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
+							CandidateDTO candidate = candidateGlobalService.getCandidateGlobalDTOByCandidateGlobalId(Long.valueOf(candidateid));
 							if(candidate.getProfilePercentage() >= requirement.getProfilePercentage()) {
 								
 								JSONObject labelItems = new JSONObject();
@@ -1601,6 +1694,38 @@ public class RequirementRestController {
 									
 									// pass dto as parameter
 									RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+
+									List<String> parallelApprover = new LinkedList<>();
+									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+									if(list1 != null && !list1.isEmpty()) {
+										for (RequirementApproverHierarchy rah : list1) {
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+												parallelApprover.add(rah.getApproverUserId().getId() + "");
+												requirementDTO.setParallelApprover(parallelApprover);
+											}
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+												if(rah.getLevel() == 1) {
+													String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover1;
+													requirement.setLevel1ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover1(sequentialApprover1);
+													requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+												if(rah.getLevel() == 2) {
+													String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover2;
+													requirement.setLevel2ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover2(sequentialApprover2);
+													requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+											}
+										}
+									}
+									
 									requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 								}
 							}else {

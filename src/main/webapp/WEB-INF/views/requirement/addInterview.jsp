@@ -862,6 +862,7 @@ function cancelInterviewPopup(){
   
 <script type="text/javascript">
  function getShortListCandidates(rowId) {
+	 var isWorkflowConfigured = '${workflowConfigured}';
 	 $("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientInterview = "";
@@ -887,7 +888,8 @@ function cancelInterviewPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
+		        url: atsUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+
+		        		"&isClientInterview="+isClientInterview+"&isWorkflowConfigured="+isWorkflowConfigured,  
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);
@@ -899,7 +901,8 @@ function cancelInterviewPopup(){
 			        	for (var i=0; i<json.length; i++)
 						{
 				        		var opt = json[i];
-				        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+				        		if(opt.createdUser != "null" && opt.createdUser != null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+				        			console.log(opt.candidateName+"("+opt.createdUser+")");
 				        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
 				        		}else{
 				        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
@@ -931,6 +934,7 @@ function cancelInterviewPopup(){
 
 <script type="text/javascript">
  function getUpdatedShortListCandidates() {
+	 var isWorkflowConfigured = '${workflowConfigured}';
 	 var rowId = $("#maxTsRowNum").val();
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
@@ -953,7 +957,8 @@ function cancelInterviewPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview, 
+		        url: atsUrl+"/getAllShortListCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+
+		        		"&isClientInterview="+isClientInterview+"&isWorkflowConfigured="+isWorkflowConfigured, 
 		        success: function(data) {
 		        	if (data.response === "FAILED") {
 			    		showError(data.responseMessage);

@@ -953,6 +953,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     var subType = submissionType;
     var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
     if(selectBox == "backout"){
+    	$("#popUp").empty();
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
         result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
@@ -987,6 +988,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         $("#backOutApplicant"+submissionId).slideDown(200);
         $(".project_inn_mask").fadeIn(200);
     }else if(selectBox == "Reject"){
+    	$("#popUp").empty();
         var result = "";
         //result = result +"    <div class='project_inn_mask'></div>";
         result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
@@ -1014,7 +1016,7 @@ function rejectApplicant(submissionId,requirementId,submissionType){
         result = result +"    </div>";
         result = result +" </div>";
         result = result + ' <div id="reasonForApplicantDiv"/>';
-        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+submissionType+"\");'>";
         result = result +"</form>";
         result = result +"    </div>";
         $("#popUp").append(result);
@@ -1206,7 +1208,7 @@ function cancelRejectApplicant(submissionId,requirementId,submissionType){
 		 document.getElementById("backOutOtherCategoryDiv").style.display="none";
 		 $("#backOutCategory").val("");
 	 }
-	pipelineBySubmissionType(requirementId,submissionType);
+	 requirementPipeline(requirementId,submissionType);
 };
 
 function cancelBackOutApplicant(submissionId,requirementId,submissionType){ 
@@ -1216,14 +1218,15 @@ function cancelBackOutApplicant(submissionId,requirementId,submissionType){
 	 $("#backOutCategorytDiv").find('p.jquery_form_error_message').remove();
 	 document.getElementById("backOutOtherCategoryDiv").style.display="none";
 	 $("#backOutCategory").val("");
-	 pipelineBySubmissionType(requirementId,submissionType);
+	 requirementPipeline(requirementId,submissionType);
 };
 
 function cancelJoinedRequest(submissionId,requirementId,submissionType){ 
 	 $("#joinedApplicant"+submissionId).fadeOut(200);
 	 $(".project_inn_mask").fadeOut(200);
 	 $("#joinDate"+submissionId+"").val("");
-	 pipelineBySubmissionType(requirementId,submissionType);
+	 //pipelineBySubmissionType(requirementId,submissionType);
+	 requirementPipeline(requirementId,submissionType);
 };
 
 function pipelineBySubmissionType(requirementId,submissionType){

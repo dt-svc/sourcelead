@@ -4,7 +4,8 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>
+
+<%-- <script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 <jsp:include page="userProjectSummary.jsp" />
 <jsp:include page="userAssetManagement.jsp" />
@@ -224,6 +225,7 @@ window.onload = function () {
 	 var result = "";
 	 var userState = '${userState}';
 	 var candidateId = '${candidateId}';
+	 var candidateGlobalId = '${candidateGlobalId}';
 	 var timesheet = '${SourceLeadWeb_timesheet}';
 	 var loginUserRole = '${SourceLeadWeb_loginUserRole}'; 
 	 var loginCurrencyCode = '${SourceLeadWeb_currencyCode}';
@@ -2158,7 +2160,7 @@ $("#editRoleDetailsList").empty();
 					
 					
 					result = result+'		<div class="col-md-4 mt5">';
-					result = result+'		<label class="ml10">Gender <span class="text-danger paddingLeft">*</span></label>  ';
+					result = result+'		<label class="ml10">Gender<span class="text-danger paddingLeft">*</span></label>  ';
 					result = result+'		<div class="clearfix ml10">    ';
 					if(json.user.gender == "Male"){
 					result = result+'		<label class="paddingLeft"><input type="radio"  checked value="Male" name="gender"><span class="mr5"></span>Male</label>                   ';
@@ -3861,6 +3863,7 @@ function profileDetails(candidateId){
 	  var loginUserId = '${SourceLeadWeb_userId}';
 	  var candidateType = "Associates";
 	  var locationCode = '${SourceLeadWeb_locationCode}';
+	  var candidateGlobalId = '${candidateGlobalId}';
 	  $.ajax({
 		  type: "GET",
 		    url: atsUrl+"/getProfessionalInfo?candidateId="+candidateId+"&locationCode="+locationCode,
@@ -4004,10 +4007,10 @@ function profileDetails(candidateId){
 						 //result = result+'  <button type="button" class="btn btn-sm btn-primary">';
 						 //result = result+'  <i class="fa fa-upload"></i></button>';
 						 result = result+'  <label class="btn btn-sm btn-primary">';
-					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateId+',false);"  style="display: none;">';
+					     result = result+'  <i class="fa fa-upload paddingRight"></i>Upload / Change<input type="file" name="file" id="uploadedImage"  accept="image/*" onchange="cropImage(this,\'candidate_form\','+candidateGlobalId+',false);"  style="display: none;">';
 					     result = result+'  </label>';
 					     if(json.fileContentType != null && json.fileContentType != '' && json.fileContentType != 'undefined'){
-						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteImage('+candidateId+')">';
+						     result = result+'  <button type="button" class="btn btn-sm btn-danger" onclick="deleteCandidateProfileImage('+candidateGlobalId+','+candidateId+')">';
 							 result = result+'  <i class="fa fa-trash"></i></button>';
 					     } 
 						 result = result+'  </div>';
@@ -4182,7 +4185,7 @@ function profileDetails(candidateId){
 			            result = result+'    <i class="fa fa-comments"></i>';
 			            result = result+'        <div class="commentsimg-inner">';
 			            
-			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_user.fileUrl}"/>';
+			            result = result+'        	<img data-id="userProfileImage" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"/>';
 			            result = result+'        </div>';
 			            result = result+'    </div>';
 			            
@@ -4197,13 +4200,14 @@ function profileDetails(candidateId){
 			            result = result+'         <div class="pull-right cmt-button">';
 			            result = result+'          <span class="comments-button">';
 			            
-			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+			            result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGlobalId+')">';
 			            result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
 			            result = result+'            </button>';
 			            result = result+'            <div class="add-comment">';
 			            result = result+'            </div>';
 			            result = result+'          </span>';
-			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+json.commentsCount+'</span></a>';
+			            result = result+'          	<input type="hidden" id="totalCommentsCount" value="'+json.commentsCount+'">';
+			            result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGlobalId+');">View more <span class="label label-warning" id="commentsCount"></span></a>';
 			 			result = result+'		</div>';
 			            result = result+'     </div>';
 			            result = result+'</div>';
@@ -4221,40 +4225,45 @@ function profileDetails(candidateId){
 			             result = result+'     <ul class="project-tabs-menu custom_tab">'; 
 			            	 
 			              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE\',\'ROLE_VIEW_EDIT_ASSOCIATE\',\'ROLE_VIEW_DELETE_ASSOCIATE\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateId+',\''+candidateType+'\');">Detailed View</a></li>';
+			              result = result+'<li id="candidateProfileTab" class="current"><a href="#tab-1" onclick="candidateProfile('+candidateGlobalId+',\''+candidateType+'\');">Detailed View</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_RESUMES\',\'ROLE_VIEW_ASSOCIATE_RESUMES\',\'ROLE_VIEW_EDIT_ASSOCIATE_RESUMES\',\'ROLE_VIEW_DELETE_ASSOCIATE_RESUMES\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateId+'); candidateResume('+candidateId+','+json.status+');" >Resume</a></li>';
+			               result = result+'<li id="candidateResumeTab"><a href="#tab-2" onclick="candidateResumesList('+candidateGlobalId+'); candidateResume('+candidateGlobalId+','+json.status+');" >Resume</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EMPLOYER\',\'ROLE_VIEW_ASSOCIATE_EMPLOYER\',\'ROLE_VIEW_EDIT_ASSOCIATE_EMPLOYER\',\'ROLE_VIEW_DELETE_ASSOCIATE_EMPLOYER\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateId+');">Employers</a></li>';
+			               result = result+'<li id="candidateEmployersTab"><a href="#tab-3" onclick="candidateExperience('+candidateGlobalId+');">Employers</a></li>';
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_EDUCATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateId+');">Education</a></li>';
+
+			              result = result+'<li id="candidateEducationTab"><a href="#tab-4" onclick="candidateEducation('+candidateGlobalId+');">Education</a></li>';
+
 			              '</sec:authorize>'; 
 			             
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_EDIT_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_VIEW_DELETE_ASSOCIATE_CERTIFICATION_DETAILS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateId+');">Certifications</a></li>';
+			               result = result+'<li id="candidateCertificationsTab"><a href="#tab-5" onclick="candidateCertificate('+candidateGlobalId+');">Certifications</a></li>';
 			              '</sec:authorize>'; 
 			             
 			             <%--- This is for Documents(tab-9) Tab in Candidate Summary -----%>
 			              '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSOCIATE_DOCUMENT\',\'ROLE_VIEW_EDIT_ASSOCIATE_DOCUMENT\',\'ROLE_DELETE_ASSOCIATE_DOCUMENT\',\'ROLE_CREATE_ASSOCIATE_DOCUMENT\')">'; 
-			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateId+');">Documents</a></li>';
+			             result = result+'<li id="candidateDocumentsTab"><a href="#tab-9" onclick="candidateDocuments('+candidateGlobalId+');">Documents</a></li>';
 			              '</sec:authorize>'; 
 			             
 			             
-			             result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateId+');">References</a></li>';
+			             result = result+'<li id="candidateReferencesTab"><a href="#tab-10" onclick="candidateReferences('+candidateGlobalId+');">References</a></li>';
 			              
 			             '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_COMMENTS\',\'ROLE_CROWDSOURCING_CANDIDATES\')">'; 
-			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateId+');">Comments</a></li>';
+			                result = result+'<li id="candidateCommentTab"><a href="#tab-7" onclick="candidateCommentsList('+candidateGlobalId+');">Comments</a></li>';
 			               '</sec:authorize>'; 
 			              
 			              
 			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
-			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateId+');">Job History</a></li>';
+			              result = result+'<li id="candidateHistoryTab"><a href="#tab-8" onclick="requirementHistory('+candidateGlobalId+');">Job History</a></li>';
+			              '</sec:authorize>';
+			              '<sec:authorize access="hasAnyRole(\'ROLE_ASSOCIATE_REQUIREMENT_HISTORY\')">';
+			              result = result+'<li id="candidateImmigrationTab"><a href="#tab-12" onclick="candidatePassport('+candidateId+');">Immigration</a></li>';
 			              '</sec:authorize>';
 			             result = result+'       <div class="clearfix"></div>';
 			             result = result+'     </ul>';
@@ -4287,6 +4296,18 @@ function profileDetails(candidateId){
 						 result = result + '</div>';
 						 result = result + '<div id="tab-7" class="project_tabs_inn">';
 						 result = result + '</div>';
+						 result = result + '<div id="tab-12" class="project_tabs_inn">';
+							result  = result + '<div class="clearfix zIndex-div">';
+							
+							result  = result + '<div class="clearfix project-tabs-menu project-tabs-menu-custom">';
+							result  = result + '<ul class="list-unstyled list-inline col-md-12 mb0 mt2">';
+							result  = result + '<li class="cursorPointer" id ="passportli" onClick="candidatePassport('+candidateId+');" value="passport"><a>Passport</a></li><li id ="visali" value="visa" onClick="candidateVisa('+candidateId+');" class="cursorPointer"><a>Visa</a></li><li id ="lcali" onClick="candidateLca('+candidateId+');" class="cursorPointer" value="lca"><a>LCA</a></li>';
+							result  = result + '</ul>';
+							result  = result + '</div>';
+							result = result + '</div>';
+							result  = result + '<div class="clearfix" style="height:35px;"></div>';
+						 result = result + '<div id="immigrationCandidate"></div>';
+						 result = result + '</div>';
 			             result = result+'     </div>';
 			             result = result+'   </div>';
 			             $("#tab-18").empty();  
@@ -4294,10 +4315,12 @@ function profileDetails(candidateId){
 			             $("#tab-25").empty();
 			             $("#candidateSideDiv").empty();  
 			 		     $("#candidateSideDiv").append(result);  
+			 		     $("#commentsCount").html(json.commentsCount);
+			 		    
 				 		/*  $(".clients_side_wrap").addClass("clients_side_wrap_active");
 						 $(".side_mask").fadeIn(200); */
 					//	 $("body").css('overflow-y', 'hidden');
-						 candidateProfile(candidateId,candidateType);
+						 candidateProfile(candidateGlobalId,candidateType);
 			 			 
                 }else{
                	 $("#candidateSideDiv").removeAttr("style");
@@ -4319,7 +4342,6 @@ function profileDetails(candidateId){
            
       }); 
 	  
-	  savedCommentAndCount(candidateId);
 				
 }
 </script>
@@ -4350,6 +4372,7 @@ function assocSalarySummary(candidateId){
 			  			$('#editAssociateBtn').css('display','block');
 			  			$('#saveAssociateBtnDiv').css('display','none');
 			  			$('#associateSalary_form input').attr('disabled','true');
+			  			$('#associateSalary_form input#salaryPayheadDataTableSearch').prop('disabled',false);
 				  		$('#associateSalary_form select').prop('disabled', true);
 			  		}
 			       }
@@ -4450,6 +4473,47 @@ function deleteImage(candidateId){
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
+
+
+
+function deleteCandidateProfileImage(globalCandidateId,candidateId){
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +"		<p>Are you sure you want to delete this image ?</p>";
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='deleteCandidateImage("+globalCandidateId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel("+candidateId+");'></b>";
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+
+function deleteCandidateImage(globalCandidateId,candidateId){   
+	var loginUserId = '${SourceLeadWeb_userId}';
+	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
+	 $.ajax({
+		    type: "GET",
+            url: atsUrl+"/deleteCandidateImage?candidateId="+globalCandidateId+"&loginUserId="+loginUserId+"&orgLocationId="+orgLocationId,
+	        success: function(response) {
+	        	if (response.response === "AWKWARD") {
+	        	    location.href = "/errorPage";
+	        	} else if (response.response === "SUCCESS") {
+	        		var result = response.object;
+		        	 $("#popUp").empty();
+		        	 $(".project_inn_mask").fadeOut(200);
+		        	 $("[data-id=profileImage]").attr('src', 'resources/images/userprofileImg.jpg');
+		        	  refreshImageBlock(candidateId);
+	        	} else if (response.indexOf('Sign In') !== -1) {
+	        		location.replace(atsUrl);
+	        	} else {
+	        	    showError("Operation failed, please try again");
+	        	}
+	       },
+     }); 
+}
+
 </script>
 
 <%-- 
@@ -4741,7 +4805,27 @@ function closeComment(){
 		    		} else if (result.response === "AWKWARD") {
 		    		    location.href = "/errorPage";
 		    		} else if (result.response === "SUCCESS") {
-		    			savedCommentAndCount(candidateId);
+		    			
+		    			 $('#candidateProfileTab').removeClass('current');
+		    			 $('#candidateResumeTab').removeClass('current');
+		    			 $('#candidateEmployersTab').removeClass('current');
+		    			 $('#candidateEducationTab').removeClass('current');
+		    			 $('#candidateCertificationsTab').removeClass('current');
+		    			 $('#candidateDocumentsTab').removeClass('current');
+		    			 $('#candidateReferencesTab').removeClass('current');
+		    			 $('#candidateCommentTab').removeClass('current');
+		    			 $('#candidateHistoryTab').removeClass('current');
+		    			 $('#candidateImmigrationTab').removeClass('current');
+		    			 $('#candidateCommentTab').addClass('current');
+		    			 
+		    			 var element = document.getElementById('candidateCommentTab');
+		    			 element.onclick = candidateCommentsList(candidateId); 
+		    			 
+		    			 var commentsCount = $('#totalCommentsCount').val();
+		    			 commentsCount = parseInt(commentsCount)+1;
+		    			 $('#totalCommentsCount').val(commentsCount);
+		    			 $('#commentsCount').html(commentsCount);
+		    			 
 		    		} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(atsUrl);
 					} else {
@@ -4799,13 +4883,13 @@ function savedCommentAndCount(candidateId){
       				    result = result+'         <div class="pull-right cmt-button">';
       				    result = result+'          <span class="comments-button">';
       				            
-      				    result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateId+')">';
+      				    result = result+'          	<button type="button" class="btn btn-sm btn-primary" onClick="showComment('+candidateGlobalId+')">';
       				    result = result+'            	<i class="fa fa-plus"></i>&nbsp;Comments';
       				    result = result+'            </button>';
       				    result = result+'            <div class="add-comment">';
       				    result = result+'            </div>';
       				    result = result+'          </span>';
-      				    result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
+      				    result = result+'          <a href="javascript:void(0)" class="comments-view" onclick="candidateCommentsList('+candidateGlobalId+');">View more <span class="label label-warning">'+totalComments+'</span></a>';
       				 	result = result+'		</div>';
       				    result = result+'     </div>';
       	 			           
@@ -4921,15 +5005,58 @@ function sendMailConfirmation(userId,confirmationDate,designation){
 	});
 	
 }
-
+function showSuccessMsg(msg){
+	$("#selector4").fadeIn(200);
+	$('#msgDiv').text(msg)
+	setTimeout(function(){ $('#selector4').hide();$('#msgDiv').text("") }, 1000);
+}
 function cancelRejectPopup() {
 	$("#remove_user_pop, .project_inn_mask").fadeOut();
 
 }
-</script>
-<script>
 
+function deleteImmigrationRecord(elem,arg1,arg2){
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>";
+	result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <b>Do you want to remove record permanently?</b>";
+	result = result + ' <div id="reasonForTemplateDiv"/>';
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+	result = result +"	</div>";
+	$("#deletepopUp").append(result);
+	$("#remove_immigration_popup").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+
+	}
+function cancelImmigrationDelete(){
+	 deleteImmigrationPopupDiv();
+	}
+function deleteImmigrationPopupDiv(){
+	$("#remove_immigration_popup").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+	$("#deletepopUp").empty();
+}
+function deleteImmigrationRecordById(elem, arg1, arg2){	
+	if(typeof elem ==='function') {
+		if(typeof arg2 == 'undefiend'){
+			elem(arg1);
+		}
+		else{
+		elem(arg1, arg2);
+	}
+	}
+	else{
+		alert("Not a valid Function call.");
+	}
+}
+function clearDateValue(id){
+	   $("#"+id).val(""); 
+}
 </script>
+<div id="deletepopUp"></div>
+<input type="hidden" id = "candidateID" value = "${candidateId}">
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/immigration.js?staticTime=${staticTime}"></script>
 
 
 <%-- <jsp:include page="associatePay.jsp"></jsp:include> --%>
@@ -4937,6 +5064,9 @@ function cancelRejectPopup() {
 <jsp:include page="candidatesResumes.jsp"></jsp:include>
 <jsp:include page="candidatesExperience.jsp"></jsp:include>
 <jsp:include page="candidatesEducation.jsp"></jsp:include>
+<jsp:include page="candidatePassport.jsp"></jsp:include>
+<jsp:include page="candidateVisa.jsp"></jsp:include>
+<jsp:include page="candidateLca.jsp"></jsp:include>
 <jsp:include page="candidatesCertificates.jsp"></jsp:include>
 <jsp:include page="candidateDocuments.jsp"></jsp:include>
 <jsp:include page="candidateReferences.jsp"></jsp:include>
@@ -4950,3 +5080,5 @@ function cancelRejectPopup() {
 <jsp:include page="associateDeductionSummary.jsp" />
 <jsp:include page="associationContributionSummary.jsp" />
 <jsp:include page="associateSalSummary.jsp" />
+
+<script src="${SourceLeadWeb_atsUrl}/resources/js/jquery.maskedinput-1.3.min.js?staticTime=${staticTime}"></script>

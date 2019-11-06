@@ -116,6 +116,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 //import org.apache.commons.collections.ListUtils;
 import com.ibm.icu.util.Calendar;
@@ -593,19 +594,13 @@ public class RequirementController {
 		List<SubmissionTemplate>   submissionTempletesList = submissionTemplateService.getOrgSubmissionTemplatesByOrgLocationIdAndTemplateType(orgLocations.getId(),"Submission");
 		model.addObject("submissionTempletesList", submissionTempletesList);
 		
-		/*// workflow List commented by SRINIVAS SABBU.
+		// workflow List commented by SRINIVAS SABBU.
 		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
 		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		if (workflowList == null || workflowList.size() == 0) {
-			User user = new User();
-			user.setId(userId);
-			requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
-			workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		}
 		if (workflowList != null && workflowList.size() > 0) {
 			model.addObject("workflowList", workflowList);
 		}
-			*/
+			
 		//client submission template 
 		if(null != requirement.getClientId()){
 			List<SubmissionTemplate>   clientSubmissionTempletesList = submissionTemplateService.getSubmissionTemplateByClientLocationIdAndOrgLocationIdAndTemplateType(requirement.getClientId().getResponderLocationId().getId(), orgLocations.getId(),"Submission");
@@ -887,8 +882,23 @@ public class RequirementController {
 			
 			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 				Long requirementId = requirement.getId();
+				/*RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+				System.out.println(" defalt workflow id is :>>>"+workflowDTO.getId());
+				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());*/
+				if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+						              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+					logger.debug("DEFAULT WORKFLOW IS FOUND WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME : "+requirement.getWorkflowId().getWorkFlowName());
+					model.addObject("workflowConfigured", false);
+					model.setViewName("requirement/requirementSummary");	 
+				}else {
+					logger.debug("OTHER THAN DEFAULT WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME :  "+requirement.getWorkflowId().getWorkFlowName());
+					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
+					model.addObject("stagesList", stagesList);
+					model.addObject("workflowId", requirement.getWorkflowId().getId());
+					model.addObject("workflowConfigured", true);
+					model.setViewName("requirement/requirementWorkflowSummary");
+				}
 				
-				model.setViewName("requirement/requirementSummary");
 				model.addObject("requirementId",requirementId);
 				
 				model.addObject("requirement",requirement);
@@ -1264,9 +1274,9 @@ public class RequirementController {
 		List<RequirementOfferHistory> requirementOfferHistories = requirementOfferHistoryService.getAllRequirementOfferHistoriesByOfferId(offerId);
 		
 		String permission = "NO";
-		if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE){
+		if(requirementOffers.getSubmissionId().getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.OFFERMADE.toString())){
 			permission = "YES";
-		}else if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.CLIENT_OFFERMADE){
+		}else if(requirementOffers.getSubmissionId().getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString())){
 			permission = "YES";
 		}
 		
@@ -1278,6 +1288,7 @@ public class RequirementController {
 		model.addObject("SourceLeadWeb_atsUrl", atsUrl);
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("permission",permission);
+	
 		
 		if(offerStatus.equalsIgnoreCase("Accepted") && permission.equalsIgnoreCase("YES")){
 			
@@ -1286,22 +1297,22 @@ public class RequirementController {
 			    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 			    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 				    		if(null != requirementOfferHistory.getOfferSourceType() && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
-				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 				    		}else{
-				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+				    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());
 				    		}
 							 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 							 requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 							 
 							//Strote RequirementSubmissionHistory
 						    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().getValue());
+							requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus());
 							if(null != requirementOfferHistory.getOfferSourceType() && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
 							requirementSubmissionHistory.setFromStage("OFFERMADE");
-							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+							requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 							}else{
 								requirementSubmissionHistory.setFromStage("CLIENT_OFFERMADE");
-								requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);	
+								requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());	
 							}
 							requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 					  }
@@ -1309,7 +1320,7 @@ public class RequirementController {
 					
 			    	  //Changing the status of offerTable 
 				      if(null != requirementOffers){
-				    	  if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE){
+				    	  if(requirementOffers.getSubmissionId().getSubmissionStatus() == ApplicantSubmissionStatus.OFFERMADE.toString()){
 						    requirementOffers.setOfferStatus("OFFERACCEPTED");
 				    	  }else{
 				    		  requirementOffers.setOfferStatus("CLIENT_OFFERACCEPTED");  
@@ -1331,7 +1342,7 @@ public class RequirementController {
 				      if((null != requirementOffers.getSubmissionId().getVendorLocationId() && null != requirementOffers.getSubmissionId().getSourceSubmission()) &&
 					      	  ("C2C".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "C2H".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType()) || "Contract".equalsIgnoreCase(requirementOffers.getSubmissionId().getRequirement().getJobType())) ){
 					      		ContractsDTO contractsDTO = populateContractsDTO(requirementOffers,null,requirementOffers.getSubmissionId().getOrgLocations());
-					      		contractsTemplateService.saveNewContract(contractsDTO, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", null, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW");
+					      		contractsTemplateService.saveNewContract(contractsDTO, requirementOffers.getSubmissionId().getOrgLocations(), "DRAFT", user, requirementOffers.getSubmissionId().getOrgLocations().getOrg(), "NEW");
 						      }
 				      
 				      requirementOffersService.sendApplicantOfferAcceptMail(requirementOffers);

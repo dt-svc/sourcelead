@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
@@ -35,6 +37,7 @@ import com.bis.sourcelead.service.CandidateCertificationsService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -62,6 +65,12 @@ public class CandidateCertificationsRestController {
 
 	@Autowired
 	private SourceleadELKBaseIndexer<CandidateIndex> sourceleadELKBaseIndexer;
+	
+	@Autowired
+	CandidateIndexHelper candidateIndexHelper;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
 
 	private static final Logger logger = LoggerFactory.getLogger(CandidateCertificationsRestController.class);
 
@@ -95,7 +104,6 @@ public class CandidateCertificationsRestController {
 		return response;
 	}
 
-	// @PreAuthorize("hasAnyRole('ROLE_ADD_CANDIDATE_CERTIFICATION','ROLE_CROWDSOURCING_PROFILE','ROLE_CROWDSOURCING_CANDIDATES','ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS')")
 	@RequestMapping(value = "/storeCandidateCertifications", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeCandidateCertifications(CandidateCertificationDTO candidateCertificationDTO,
 			@RequestParam(value = "candidateId", required = false) Long candidateId, HttpServletRequest request) throws Exception {
@@ -106,14 +114,8 @@ public class CandidateCertificationsRestController {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				candidateCertificationDTO.setDateFormat(loginOrgLocation.getDateFormat());
 				candidateCertificationsService.storeCandidateCertifications(candidateCertificationDTO, user, loginOrgLocation, candidateId);
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				if (candidate != null) {
-					response.setResponse(Result.SUCCESS.name());
-					response.setResponseMessage(Result.SUCCESS.getValue());
-				} else {
-					response.setResponse(Result.FAILED.name());
-					response.setResponseMessage(Result.FAILED.getValue());
-				}
+				response.setResponse(Result.SUCCESS.name());
+				response.setResponseMessage(Result.SUCCESS.getValue());
 			} else if (user == null) {
 				response.setResponse(Result.SESSION_TIMEDOUT.name());
 				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
@@ -144,15 +146,17 @@ public class CandidateCertificationsRestController {
 	@RequestMapping(value = { "/getCandidateCertificationListByCandidateIdAndOrgLocationID",
 			"rest/getCandidateCertificationListByCandidateIdAndOrgLocationID" }, method = RequestMethod.POST)
 	public ResponseList<CandidateCertificationDTO> getCandidateCertificationListByCandidateIdAndOrgLocationID(
-			@RequestParam(defaultValue = "0") long candidateId, HttpServletRequest request) throws Exception {
+			@RequestParam(defaultValue = "0") long candidateId,@RequestParam(value = "candidateType", required = false) String candidateType, HttpServletRequest request) throws Exception {
 		ResponseList<CandidateCertificationDTO> reponseList = new ResponseList<>();
 		try {
 			List<CandidateCertificationDTO> candidateCertificationDTOList = new ArrayList<>();
 			if (candidateId > 0) {
 				OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				if (loginOrgLocation != null) {
-					List<CandidateCertifications> candidateCertificationsList = candidateCertificationsService
+					List<CandidateCertifications> candidateCertificationsList = null;
+					candidateCertificationsList = candidateCertificationsService
 							.getCandidateCertificationListByCandidateIdAndOrgLocationID(candidateId, loginOrgLocation.getId());
+					
 					for (CandidateCertifications candidateCertifications : candidateCertificationsList) {
 						CandidateCertificationDTO candidateCertificationDTO = new CandidateCertificationDTO();
 						candidateCertificationDTO.setCandidateId(candidateId + "");
@@ -215,21 +219,22 @@ public class CandidateCertificationsRestController {
 		Response<String> response = new Response<>();
 		try {
 			User user = userService.getUserById(candidateCertificationDTO.getLoginUserId());
+			CandidateCertifications candidatesCertificate =  null;
 			if (user != null) {
 				OrgLocations orgLocations = orgLocationService.getOrgLocations(candidateCertificationDTO.getOrgLocationId());
-				Candidate candidate = candidateService.getCandidateById(Long.parseLong(candidateCertificationDTO.getCandidateId()));
-				CandidateCertifications candidatesCertificate = candidateCertificationsService
-						.removeCandidateCertificateBycandidateIdandcandidateCertificateId(
-								Long.parseLong(candidateCertificationDTO.getCandidateId()),
-								candidateCertificationDTO.getCandidateCertificationId(), user, orgLocations);
-				if (null != candidate && null != candidate.getId() && candidatesCertificate != null) {
-					CandidateIndex candidateIndex = new CandidateIndex();
-					candidateIndex.setCandidateId(candidate.getId());
-					DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-					candidateIndex.setUpdatedDate(dateFormat.format(new Date()));
-					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX,
-							Constants.ELK_CANDIDATE_TYPE, candidate.getId().toString());
-				} else if (candidatesCertificate == null) {
+				if(StringUtils.isNotBlank(candidateCertificationDTO.getCandidateType()) && candidateCertificationDTO.getCandidateType().equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+					candidatesCertificate = candidateCertificationsService
+							.removeCandidateGlobalCertificateBycandidateIdandcandidateCertificateId(
+									Long.parseLong(candidateCertificationDTO.getCandidateId()),
+									candidateCertificationDTO.getCandidateCertificationId(), user, orgLocations);
+				}else {
+					candidatesCertificate = candidateCertificationsService
+							.removeCandidateCertificateBycandidateIdandcandidateCertificateId(
+									Long.parseLong(candidateCertificationDTO.getCandidateId()),
+									candidateCertificationDTO.getCandidateCertificationId(), user, orgLocations);
+				}
+				
+		         if (candidatesCertificate == null) {
 					response.setResponse(Result.INVALID_DATA.name());
 					response.setResponseMessage(Result.INVALID_DATA.getValue());
 				} else {
@@ -268,26 +273,33 @@ public class CandidateCertificationsRestController {
 	@RequestMapping(value = "/getCandidateCertificateBycandidateIdandCertificateId")
 	public Response<CandidateCertifications> getCandidateCertificateBycandidateIdandCertificateId(
 			@RequestParam(value = "candidateId", required = false) Long candidateId,
-			@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId, HttpServletRequest request)
+			@RequestParam(value = "candidateCertificationId", required = false) Long candidateCertificationId,
+			@RequestParam(value = "candidateType", required = false) String candidateType,HttpServletRequest request)
 			throws Exception {
 		Response<CandidateCertifications> response = new Response<>();
 		try {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			CandidateCertifications candidateCertifications = null;
 			if (user != null) {
 				if (candidateId > 0 && candidateCertificationId > 0) {
-					Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-					OrgLocations orgLocations = orgLocationService.getOrgLocations(candidate.getOrgLocationId().getId());
-					CandidateCertifications candidateCertificationsList = candidateCertificationsService
-							.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
-					if (candidateCertificationsList.getValidFrom() != null) {
-						candidateCertificationsList.setCandidatevalidFromDateToString(commonUtil
-								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidFrom()));
+					if(StringUtils.isNotBlank(candidateType) && candidateType.equalsIgnoreCase(Constants.CANDIDATE_GLOBAL)) {
+						candidateCertifications = candidateCertificationsService
+								.getCandidateGlobalCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
+					}else{
+						candidateCertifications = candidateCertificationsService
+								.getCandidateCertificateBycandidateIdandCertificateId(candidateId, candidateCertificationId);
 					}
-					if (candidateCertificationsList.getValidTo() != null) {
-						candidateCertificationsList.setCandidatevalidToDateToString(commonUtil
-								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertificationsList.getValidTo()));
+					
+					if (candidateCertifications.getValidFrom() != null) {
+						candidateCertifications.setCandidatevalidFromDateToString(commonUtil
+								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertifications.getValidFrom()));
 					}
-					response.setObject(candidateCertificationsList);
+					if (candidateCertifications.getValidTo() != null) {
+						candidateCertifications.setCandidatevalidToDateToString(commonUtil
+								.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), candidateCertifications.getValidTo()));
+					}
+					response.setObject(candidateCertifications);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {

@@ -45,6 +45,9 @@ import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
+import com.bis.sourcelead.workflow.dao.RequirementWorkFlowDao;
+import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 /**
  * 
  * @author Rajashekar
@@ -84,7 +87,11 @@ public class RequirementReleaseRestController {
 	RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
+<<<<<<< HEAD
 	MspVendorService mspVendorService;
+=======
+	RequirementWorkFlowDao requirementWorkFlowDao;
+>>>>>>> 28d2c15106c8f42deab952a07bc04296f4f204b9
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -394,9 +401,7 @@ public class RequirementReleaseRestController {
 					String[] vendors = vendorIds.split(",");
 					if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
 						for(String vendor   : vendors){
-							//isMspVendor comment the code this is multiple vendors
-							//MspVendor mspVendor = mspVendorService.getMspVendorListByOrgLocationIdAndMspRelationId(loginOrgLocation.getId(),Long.valueOf(vendor)) throws Exception;
-							releaseToVendors(vendor,loginOrgLocation,loginUser,requirementId,releasetype,parentRequirement);
+ 							releaseToVendors(vendor,loginOrgLocation,loginUser,requirementId,releasetype,parentRequirement);
 						}
 					}
 					
@@ -523,11 +528,10 @@ public class RequirementReleaseRestController {
 		requirement.setNoticePeriod(parentRequirement.getNoticePeriod());
 		requirement.setFileContentType(parentRequirement.getFileContentType());
 		requirement.setUrl(parentRequirement.getUrl());
-		//WORKFLOWID added by SRINIVAS SABBU on 24-May-2019.
-		// below lines is commented for to move in next release build.
-		/*if(parentRequirement.getWorkflowId() !=null){
-		requirement.setWorkflowId(parentRequirement.getWorkflowId());
-		}*/
+		// Below Code is used to set default WORKFLOW id for the vendor job,  if job is mapped with custom WORKFLOW id of current login ORGLOCATION.
+    	RequirementWorkFlow defaultWorkflow = requirementWorkFlowDao.getRequirementDefaultWorkflow();
+    	requirement.setWorkflowId(defaultWorkflow);
+    	// End of setting default WORKFLOW for the vendor job
 		if(parentRequirement.getMedicalClearence() != null){
 		requirement.setMedicalClearence(parentRequirement.getMedicalClearence());
 		}

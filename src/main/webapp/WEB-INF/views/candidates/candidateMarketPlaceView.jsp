@@ -538,7 +538,7 @@ function withdrawCandidateFromMarketPlace(id){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	<div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"	<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
+	result = result +"	<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForMarketPlaceDiv"/>';
 	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Withdraw' onclick='withdrawCandidate("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
 	result = result +"	</div>";
@@ -547,7 +547,7 @@ function withdrawCandidateFromMarketPlace(id){
 	$(".project_inn_mask").fadeIn(200);
 }
 function withdrawCandidate(id) {
-    var reason = $("#reasonForMarketPlace").val();
+    var reason = $("#reasonForMarketPlace").val().trim();
     if(reason.match(/^[^\s-](.*)*$/) != null && reason !="" && reason.length <= 250){
     $("#reasonForMarketPlaceDiv").empty();
    $.ajax({

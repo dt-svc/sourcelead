@@ -928,6 +928,7 @@ function removeEmployer(candidateemployerId, candidateId){
 			$('#endMonth').removeAttr('data-validation');
 			$("#endMonth").val("");
 			$('#endYear').val("");
+			$('#err').parent().find('p.jquery_form_error_message').remove();
 			document.getElementById("endYearValidation").style.display="none";
 			endYearFlag = true;
 		} else if (document.getElementById("endDateDiv").style.display == 'none') {

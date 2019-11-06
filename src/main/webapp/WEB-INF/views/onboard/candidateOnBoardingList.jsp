@@ -285,7 +285,7 @@ function onboardPagination(url,atsUrl){
                 		 }else{
                 			 if(opt.onboardSubmitted == 'Y'){
                 				 '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_ON_BOARD_USER\')">'
-                    			 result = result	+ '<td><div class="tblminwidth-50 pull-left ml"><div class="pull-left"><a><i class="fa fa-check text-success" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></div> <div class="pull-left mt2 ml5"><a><i class="fa fa-close text-danger" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></div></div></td>';
+                    			 result = result	+ '<td><span title="ACCEPT"><div class="tblminwidth-50 pull-left ml"><div class="pull-left"><a><i class="fa fa-check text-success cursorPointer" onclick="acceptOnboardingCandiate(\''+opt.onboardCandidateUUID+'\');"></i></a></span></div><span title="REJECT"> <div class="pull-left mt2 ml5"><a><i class="fa fa-close text-danger cursorPointer" onclick="rejectedReason(\''+opt.onboardCandidateUUID+'\',\''+opt.candidateName+'\',\''+opt.userEmail+'\');"></i></a></div></div></span></td>';
                     			 '</sec:authorize>';
                 			 }else{
                     			 result = result	+ '<td><div>-----</div></td>';

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,15 +39,16 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.RecommendedCustomizeScore;
 import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementApproverHierarchy;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
@@ -56,19 +58,21 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateCommentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
-import com.bis.sourcelead.service.OrglocationBankingDetailsService;
 import com.bis.sourcelead.service.RecommendationsService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
+import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementLocationsService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -80,6 +84,7 @@ import com.bis.sourcelead.service.RequirementSubmissionTemplateFieldsService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.impl.RequirementSubmissionServiceImpl;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -179,8 +184,14 @@ public class SubmissionsRestController {
 	
 	@Autowired
 	private RequirementSubmissionHistoryDao requirementSubmissionHistoryDao;
-
-	 @RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
+	
+	@Autowired
+	RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@RequestMapping(value = { "/getCandidateResumes", "/rest/getCandidateResumes" }, method = RequestMethod.POST)
 	@ResponseBody ResponseList<CandidateResumes> getCandidateResumes(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			HttpServletRequest request) throws Exception {
 		ResponseList<CandidateResumes> response = new ResponseList<>();
@@ -199,14 +210,14 @@ public class SubmissionsRestController {
 	}
 
 	@RequestMapping(value = "/getCandidateDetails")
-	@ResponseBody Response<Candidate> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
+	@ResponseBody Response<CandidateGlobal> getCandidateDetails(@RequestParam(value = "candidateId", required = false) Long candidateId,
 			@RequestParam(value = "requirementId", required = false) Long requirementId,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
 			HttpServletRequest request) throws Exception {
-		Response<Candidate> response = new Response<>();
+		Response<CandidateGlobal> response = new Response<>();
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations"); 
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 			List<String> educationList = candidateEducationService.getCandidateEducationNamesByCandidateId(candidateId);
 			StringBuilder education = new StringBuilder();
 			if (educationList != null && educationList.size() > 0) {
@@ -224,7 +235,7 @@ public class SubmissionsRestController {
 			if(requirementId != null){
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 				RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
-				String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+				String score = recommendationsService.getCandidateGlobalScore(candidate,requirement,recommendedCustomizeScore);
 				if(score != null && !"".equalsIgnoreCase(score)){
 					candidate.setCandidateScore(score);
 				}
@@ -236,7 +247,7 @@ public class SubmissionsRestController {
 					candidate.setIsCandidateSubmitted(Constants.NO);
 				}
 			}
-			int percentage = candidateService.getCandidatePercentage(candidate,orgLocation);
+			int percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(candidate.getId());
 			candidate.setProfilePercentage(percentage);
 			
 			CandidateResumes candidateResume = candidateResumesService.getCandidateLatesResumes(candidateId, Constants.RECORD_ACTIVE);
@@ -400,6 +411,32 @@ public class SubmissionsRestController {
 					
 					// pass dto as parameter
 					RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+					
+					List<String> parallelApprover = new LinkedList<>();
+					String sequentialApprover1 = "";
+					String sequentialApprover2 = "";
+					
+					List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+					if (list1 != null && !list1.isEmpty()) {
+						for (RequirementApproverHierarchy rah : list1) {
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+								parallelApprover.add(rah.getApproverUserId().getId() + "");
+								requirementDTO.setParallelApprover(parallelApprover);
+							}
+							if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+								if (rah.getLevel() == 1) {
+									sequentialApprover1 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover1(sequentialApprover1);
+									requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+								}
+								if (rah.getLevel() == 2) {
+									sequentialApprover2 = rah.getApproverUserId().getId() + "";
+									requirementDTO.setSequentialApprover2(sequentialApprover2);
+									requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+								}
+							}
+						}
+					}
 					requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 				}
 				response.setObject("success");
@@ -732,9 +769,9 @@ public class SubmissionsRestController {
 				for (int i = 0; i < submissionId.length; i++) {
 					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					RequirementSubmission submission = requirementSubmissionService .getRequirementSubmissionById(Long.parseLong(submissionId[i]));
-					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+					requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
 					submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
-					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+					submission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST.toString());
 					submission.setUpdatedBy(user.getUserCode());
 					submission.setUpdatedUser(user.getFullName());
 					if(null != submission.getSourceSubmission()){
@@ -819,7 +856,7 @@ public class SubmissionsRestController {
 		
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
-		int percentage = candidateService.getCandidatePercentage(submission.getCandidate(),orgLocations);
+		int percentage = candidateGlobalService.getCandidateGlobalProfilePercentageByCandidateId(submission.getCandidate().getId());
 		submission.setProfilePercentage(percentage);
 		
 		List<CandidateComments> candidateCommentsList = candidateCommentsService.getAllCommentsOnCandidateByCandidateIdAndOrgLocation(submission.getCandidate().getId(), orgLocations);
@@ -877,7 +914,7 @@ public class SubmissionsRestController {
 				if (StringUtils.isNotBlank(applicantRejectBackOutDTO.getRejectedCategoryOther())) {
 					requirementSubmission.setRejectedCategoryOther(applicantRejectBackOutDTO.getRejectedCategoryOther());
 				}
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1210,9 +1247,9 @@ public class SubmissionsRestController {
 		
 		if ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit())
 				&& requirementSubmission.getPreviousSubmissionStatus() != null
-				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus().getValue())
+				&& ApplicantSubmissionStatus.REQUEST_SENT.getValue().equalsIgnoreCase(requirementSubmission.getPreviousSubmissionStatus())
 				&& requirementSubmission.getSubmissionStatus() != null
-				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus().getValue())) {
+				&& ApplicantSubmissionStatus.REJECTED.getValue().equalsIgnoreCase(requirementSubmission.getSubmissionStatus())) {
 			requirementSubmissionServiceImpl.applicantReceiveMailAboutRequirement(requirementSubmission.getId(), requirementSubmission.getRequirement(), requirementSubmission.getCandidate(), user, orgLocations);
 		}
 
@@ -1264,7 +1301,7 @@ public class SubmissionsRestController {
 			requirementSubmission.setBackOutCategoryOther(applicantRejectBackOutDTO.getBackOutCategoryOther());
 		}
 		
-		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT);
+		requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT.toString());
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		StringBuilder sb = new StringBuilder();
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1317,7 +1354,7 @@ public class SubmissionsRestController {
 
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1356,7 +1393,7 @@ public class SubmissionsRestController {
 
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SHORTLIST.toString());
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();
 				requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
@@ -1540,26 +1577,31 @@ public class SubmissionsRestController {
 		else if(status.equalsIgnoreCase("NoResponse")){
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.NORESPONSE.toString());
 		}
-
+		else if(StringUtils.isNotBlank(status)){ // Added for custom work flow changes
+			requirementSubmissionHistory.setToStage(status);
+		}
 				// to update Submission status
 				requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
 				if(status.equalsIgnoreCase("Status")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 				}
 				else if(status.equalsIgnoreCase("On Hold")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.ONHOLD);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.ONHOLD.toString());
 				}
 				else if(status.equalsIgnoreCase("Interview")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW.toString());
 				}
 				else if(status.equalsIgnoreCase("Selected on Interview")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SELECTED_ON_INTERVIEW.toString());
 				}
 				else if(status.equalsIgnoreCase("Offer Made")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE.toString());
 				}
 				else if(status.equalsIgnoreCase("NoResponse")){
-					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE);
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE.toString());
+				}
+				else if(StringUtils.isNotBlank(status)){ // Added for custom work flow changes
+					requirementSubmission.setSubmissionStatus(status);
 				}
 				requirementSubmission.setUpdatedBy(user.getUserCode());
 				StringBuilder sb = new StringBuilder();

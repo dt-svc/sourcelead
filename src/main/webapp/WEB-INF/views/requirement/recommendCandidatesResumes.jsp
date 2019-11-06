@@ -98,7 +98,7 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group positionRelative uploadFileGroup_error_message" id="uploadFileGroup">';
-	result = result+'	                          <label class="input-group-btn" onchange="uploadCandResume();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                          <label class="input-group-btn" onchange="uploadCandResume();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn1" style="display: none;" class="upload">';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="File not selected..." field-name="Resume" data-validation="required validate_Space validatedoc">';
@@ -144,10 +144,13 @@ function addResume(candidateId) {
 		$(".edit-details").removeClass("edit-details-active");
 	   });	
 	 
-	 	/* upload file script to show selected file name*/
-	    document.getElementById("uploadBtn1").onchange = function () {
-	    document.getElementById("uploadFile").value = this.value;
-	    };
+	 	
+	    
+		/* upload file script to show selected file name*/
+	     document.getElementById("uploadBtn1").onchange = function () {
+	    	$('#uploadFile').val($(this).val().replace(/C:\\fakepath\\/i, ''))
+	  
+	     };  
 	    
 	    /* upload file script for size validation 2MB*/
 	    

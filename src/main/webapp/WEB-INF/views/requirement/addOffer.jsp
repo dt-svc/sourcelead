@@ -143,7 +143,7 @@ function addOffer(requirementId){
 				result= result + '<label class="clearfix">Attachment</label>                                       ';
 				result= result + '<div class="clearfix">                                                           ';
 				result= result + '	<div class="input-group errorInptgroup width100percnt" id="OfferAttachmentuploadFileGroup">';
-				result= result + '    <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+				result= result + '    <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File';
 				result= result + '      <input type="file" style="display: none;" id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>';
 				result= result + '	</label> ';
 				result= result + '	<input type="text" class="form-control" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >';
@@ -327,7 +327,7 @@ function selectOfferApplicants(){
             
 <div id="divOfferTd5" style="display: none; float: left;">
 	<div class="input-group errorInptgroup" id="OfferAttachmentuploadFileGroup">
-        <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+        <label class="input-group-btn"> <span class="btn btn-primary file-btn"><i class="fa fa-folder-open-o mr10"></i>Browse File
           <input type="file" style="display: none;" id="OfferAttachmentuploadBtn"  class="upload" id="REPLACEROWIDOfferAttachment" name="REPLACEROWIDOfferAttachment" onblur="validateDoc(this);"></span>
 		</label> 
 		<input type="text" class="form-control file1" readonly id="OfferAttachmentuploadFile" placeholder="Upload File."  >
@@ -585,6 +585,7 @@ function cancelOfferPopup(){
 
 <script type="text/javascript">
  function getShortListAndSubmittedAndInterviewedCandidates(rowId) { 
+	 var isWorkflowConfigured = '${workflowConfigured}';
 	 var clientSubmissions = '${clientSubmissions}';
 	 var isClientOffer = "";
 	 if(clientSubmissions == 'Y'){
@@ -610,7 +611,8 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+
+		        		"&isClientOffer="+isClientOffer+"&isWorkflowConfigured="+isWorkflowConfigured, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
@@ -618,9 +620,12 @@ function cancelOfferPopup(){
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
-			        		output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";
+			        		if(opt.createdUser !=null && opt.createdUser !='null' && opt.createdUser !='' && opt.createdUser != 'undefined'){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		}
 					}
-		        	
 		        	var isFlushCandidateRequired = $("#isFlushCandidateRequired").val();
 		        	if(clientSubmissions == 'Y' && isFlushCandidateRequired == 'Y'){
 		        		for(i=rowId ; i > 0; i--){
@@ -643,6 +648,7 @@ function cancelOfferPopup(){
 
 <script type="text/javascript">
  function getUpdatedSubmittedAndShortListedAndInterviewedCandidates() { 
+	 var isWorkflowConfigured = '${workflowConfigured}';
 	 var rowId = $("#maxOfferRowNum").val();
 	 var existingApplicantsIds = [];    
 	 for(i=rowId ; i > 0; i--){
@@ -665,7 +671,8 @@ function cancelOfferPopup(){
      
 		 $.ajax({
 		    	type: "POST",
-		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientOffer="+isClientOffer, 
+		        url: atsUrl+"/getAllSubmittedAndShortListAndInterviewededCandidates?"+tokenParamName+"="+tokenValue+"&requirementId="+requirementId+"&existingApplicantsIds="+existingApplicantsIds+
+		        		"&isClientOffer="+isClientOffer+"&isWorkflowConfigured="+isWorkflowConfigured, 
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
