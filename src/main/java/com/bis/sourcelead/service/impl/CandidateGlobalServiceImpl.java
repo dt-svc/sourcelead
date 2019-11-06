@@ -237,6 +237,12 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 		return candidateList;
 	}
 
+	@Override
+	public CandidateGlobal getCandidateGlobalByConsultantUserId(Long consultantUserId, Long orgLocationId)
+			throws Exception {
+		return candidateGlobalDao.getCandidateGlobalByConsultantUserId(consultantUserId, orgLocationId);
+	}
+
 	
 
 }
