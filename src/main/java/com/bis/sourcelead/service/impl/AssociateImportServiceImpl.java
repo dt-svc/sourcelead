@@ -398,7 +398,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
-					    	if(pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
+					    	if(pList.getEmail() != null && !pList.getEmail().isEmpty() && pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType() != null && !pList.getAccountType().isEmpty() && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
 					    	{			                        				
 					 			flag = true;
 					 		}	

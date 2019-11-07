@@ -2658,7 +2658,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 					Long vendorId = 0l;
 					for(OrgRelations rel : vendorsList) {
-						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 							vendorId = rel.getId();
 							break;
 						}
