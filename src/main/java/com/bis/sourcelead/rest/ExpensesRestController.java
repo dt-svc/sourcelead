@@ -112,7 +112,8 @@ public class ExpensesRestController {
 	@RequestMapping(value = "/rest/getExpensesList")
     public ResponseList<ExpensesDTO> getExpensesListForMobile(@RequestBody ExpensesListUtilDTO elDTO,HttpServletRequest request) throws Exception{
 		try {
-			return getExpensesList( elDTO, request);
+			ResponseList<ExpensesDTO> response = getExpensesList( elDTO, request);
+			return response;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
