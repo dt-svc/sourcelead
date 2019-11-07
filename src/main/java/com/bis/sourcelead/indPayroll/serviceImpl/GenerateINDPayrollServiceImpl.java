@@ -194,7 +194,7 @@ public class GenerateINDPayrollServiceImpl implements GenerateINDPayrollService{
 				UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assoSal.getCandidate().getConsultantUser().getId(), orgLocation.getId());
 				long frequencyPayrollDays = TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - paySheetFreq.getFrequencyStartDate().getTime()) + 1;
 				long applincablePayrollDays = frequencyPayrollDays;
-				if(employee.getHireDate().after(freqEndDate) || (userRole.getTerminateDate() != null && userRole.getUserState().toString().equalsIgnoreCase("INACTIVE") &&  userRole.getTerminateDate().before(freqStartDate))) {
+				if((employee.getHireDate() != null && employee.getHireDate().after(freqEndDate)) || (userRole.getTerminateDate() != null && userRole.getUserState().toString().equalsIgnoreCase("INACTIVE") &&  userRole.getTerminateDate().before(freqStartDate))) {
 					continue;
 				}else if(employee.getHireDate() != null && paySheetFreq.getFrequencyStartDate().compareTo(employee.getHireDate()) * employee.getHireDate().compareTo(paySheetFreq.getFrequencyEndDate()) >= 0){
 					applincablePayrollDays =  TimeUnit.MILLISECONDS.toDays(paySheetFreq.getFrequencyEndDate().getTime() - employee.getHireDate().getTime()) + 1;

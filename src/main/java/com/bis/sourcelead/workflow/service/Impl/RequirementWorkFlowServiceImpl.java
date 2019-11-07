@@ -37,6 +37,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -1235,7 +1236,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
 		
 		try {
-		Candidate candidate = (Candidate) paramList.get("candidate");
+			CandidateGlobal candidate = (CandidateGlobal) paramList.get("candidate");
 		User loginUser = (User) paramList.get("loginUser");
 		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
 		String templateUuid = (String) paramList.get("templateUuid");
@@ -1642,7 +1643,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
+	public CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId) {
 		return requirementWorkFlowDao.getCandidateByRequirementSubmissionId(submissionId);
 	}
 	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
