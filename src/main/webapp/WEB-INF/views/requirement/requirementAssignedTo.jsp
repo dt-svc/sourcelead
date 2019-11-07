@@ -106,7 +106,7 @@
 					  </c:otherwise>
 					</c:choose>
 					<c:if test="${empty requirement.id}"> 
-					<button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="clearAssignedTeamsOrUsers();">Reset</button>
+					<button type="button" class="btn btn-default btn-sm" onclick="clearAssignedTeamsOrUsers();">Reset</button>
 					</c:if>
 				</div>
 				<div class="pull-right mr" id="listButtonsDiv" style="display: none;">
@@ -547,11 +547,15 @@ function paginations(){
 		$("#showGrid").prop('disabled', 'disabled');
 		teamRoleIds = [];
 		selectAssignUsersIds = [];
-		$("#teamSelectionCategory").empty();
-		$("#usersGrid").empty();
+		//$("#teamSelectionCategory").empty();
+		//$("#usersGrid").empty();
+		$("button[data-id='teamSelectionCategory']").html('<span class="filter-option pull-left">--Select Assign Team--</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span>')
 		allTeamsAndRoles.length = 0;
 		selectedUserIds.length = 0;
 		dynamicSelectedUsers.length = 0;
+		getUserList();
+		reqId = "";
+		getTeamsList(reqId);
 	}
 	
 	function editAssignedTeamsOrUsers(requirementId){
