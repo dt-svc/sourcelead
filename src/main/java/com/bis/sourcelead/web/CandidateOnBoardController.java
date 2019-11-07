@@ -1,6 +1,5 @@
 package com.bis.sourcelead.web;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,21 +19,20 @@ import org.springframework.web.servlet.ModelAndView;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.PaymentAccountDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
-import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementOffers;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.payroll.dto.AssociateBankDataDTO;
-import com.bis.sourcelead.payroll.dto.AssociatePfEsiDetailsDTO;
 import com.bis.sourcelead.payroll.dto.AssociateTaxDTO;
 import com.bis.sourcelead.payroll.entity.AssociatePfEsiDetails;
 import com.bis.sourcelead.payroll.service.AssociateBankDataService;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.payroll.service.AssociateTaxService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -68,9 +66,6 @@ public class CandidateOnBoardController {
 	OnBoardingTemplateDocumentsService onBoardingTemplateDocumentsService;
 	
 	@Autowired
-	CandidateService CandidateService;
-	
-	@Autowired
 	OnboardTasksService onboardTasksService;
 	
 	@Autowired
@@ -96,6 +91,9 @@ public class CandidateOnBoardController {
 	
 	@Autowired
 	private CandidateService candidateService;
+	
+	@Autowired
+	private CandidateGlobalService candidateGlobalService;
 	
 	@Value("${GoogleMaps_Location_API_KEY}")
 	private String googleMapsLocationApiKey;
@@ -135,7 +133,7 @@ public class CandidateOnBoardController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 model.addObject("userId", user.getId());
-		 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+		 Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 		 if(candidate != null) {
 			 model.addObject("candidateId", candidate.getId());
 			 List<PaymentAccountDTO> paymentList  = orgService.getPaymentAccountListByCandidateId(candidate.getId(), false);
@@ -159,7 +157,7 @@ public class CandidateOnBoardController {
 		 OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
-			 Candidate candidate = CandidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+			 Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
 			 if(candidate != null) {
 			 AssociatePfEsiDetails aped = associatePfEsiService.findAssociatePfEsiByCandidateId(candidate.getId(), orgLocations);
 			 if(aped != null) {
@@ -264,7 +262,7 @@ public class CandidateOnBoardController {
 		}
 		sessionData.setNav(Constants.OnAndOffboard);
 		
-		Candidate candidate = CandidateService.getCandidateByUUID(candidateUUId);
+		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByUUID(candidateUUId);
 		RequirementOffers offer = requirementOffersService.getRequirementOffersByUUID(offerUUID);
 		
 		if(candidate != null && offer != null){

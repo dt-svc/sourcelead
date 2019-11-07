@@ -833,44 +833,17 @@ function deleteSelectedEducation(candidateEducationId,candidateId){
       		} else if (result.response === "AWKWARD") {
       		    location.href = "/errorPage";
       		} else if (result.response === "SUCCESS") {
-      			var data = result.object;
-      			$('#perVal').attr('aria-valuenow', data).css('width',data+'%');
-      			 if(data<50){
-      			  /* $("#perVal").removeClass("progress-bar-success"); */
-      			   $("#perVal").removeClass('progress-bar-success')
-      			   $("#perVal").addClass("progress-bar-danger");
-      			 }
-      			 if(data>=50){
-      				 $("#perVal").removeClass('progress-bar-danger');
-      				 $("#perVal").addClass("progress-bar-success");
-      			 }
-      			 $("#disVal").empty();
-      			$("#disVal").append(data+'%');
-      			
-      			$('#quickPerVal').attr('aria-valuenow', data).css('width',data+'%');
-    			 if(data<50){
-         			   $("#quickPerVal").removeClass('progress-bar-success');
-         			   $("#quickPerVal").addClass("progress-bar-danger");
-         			 }
-         			 if(data>=50){
-         				 $("#quickPerVal").removeClass('progress-bar-danger');
-         				 $("#quickPerVal").addClass("progress-bar-success");
-         			 }
-
-  				$("#quickDisVal").empty();
-  				$("#quickDisVal").append(data+'%');
-      			
-      			
-      			 	 $("#selector4").removeAttr("style");
-       			 $("#selector4").css({ display: "block" });
-       			 $("#eduMsgDiv").html("Education deleted");
         			 $("#popUpDiv").removeClass("edit-details-active");
-        			$("#remove_user_pop, .project_inn_mask").fadeOut();
-        			 candidateEducationList(candidateId);
-        			eduMsgFadeinFunction();
-        			 setTimeout(function(){
+        			 $("#selector4").removeAttr("style");
+         			 $("#selector4").css({ display: "block" });
+         			 $("#eduMsgDiv").html("Education deleted");
+         			$("#remove_user_pop, .project_inn_mask").fadeOut();
+         			candidateEducationList(candidateId);
+         			eduMsgFadeinFunction();
+         			 setTimeout(function(){
 			 			candidateList();					 			
-			 	    },100);
+			 	     },100);
+        			 
       		} else if (result.indexOf('Sign In') !== -1) {
       			location.replace(sourceleadUrl);
       		} else {

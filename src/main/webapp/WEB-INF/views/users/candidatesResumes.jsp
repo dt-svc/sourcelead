@@ -133,7 +133,7 @@ function addResume(candidateId) {
 	result = result+'	                  <div class="clearfix mb10" id="uploadResumeDiv">';
 	result = result+'	                    <div class="col-md-12">';
 	result = result+'							<div class="input-group clearUpload uploadFileGroup_error_message" id="uploadFileGroup" onClick="clearUpload()">';
-	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFile();"><i class="fa fa-folder-open-o mr10"></i>Browse File';
 	result = result+'	                            <input type="file" id="uploadBtn" style="display: none;" class="upload" >';
 	result = result+'	                            </span> </label>';
 	result = result+'	                          <input type="text" class="form-control" readonly id="uploadFile" name="docFile" placeholder="Upload Resume..." field-name="Resume" data-validation="required validate_Space validatedoc">';
