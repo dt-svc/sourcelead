@@ -5,7 +5,6 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -27,11 +26,13 @@ import com.bis.sourcelead.dto.AddUserProfileDTO;
 import com.bis.sourcelead.dto.PasswordSettingsDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.UserMailUnsubscribeDTO;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserMailUnsubscribe;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.UserMailUnsubscribeService;
@@ -76,6 +77,9 @@ public class UserProfileRestController {
 	
 	@Autowired
 	UserStatsCacheHelper userStatsCacheHelper;
+	
+	@Autowired
+	CandidateService candidateService;
 	
 	@Value("${isCouchbaseEnabled}")
 	private String isCouchbaseEnabled;
@@ -163,7 +167,11 @@ public class UserProfileRestController {
 					 * updating user in the Spock
 					 * 
 					 */
-
+					
+					Candidate candi  =	candidateService.getCandidateByConsultantUserId(user.getId(), orgLocationId);
+					candi.setMobilePhone(user.getMobilePhone());
+					candidateService.saveOrUpdateCandidate(candi);
+					
 					commonUtil.updateSpockDetails(user, orgLocations);
 					userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 

@@ -47,17 +47,32 @@
            <div class="clearfix bg-info">
              <label class="modal-body"><strong class="text-danger paddingRight">Note:</strong>To configure the Gmail account, enable the  <a href="https://mail.google.com/mail/u/0/#settings/fwdandpop" target="_blank">IMAP</a> and <a href="https://www.google.com/settings/security/lesssecureapps" target="_blank">Allow less secure</a></label>
            </div>
+           
+           <div class="clearfix bg-warning emailTerms">
+             <p><strong class="text-danger paddingRight">Warning:</strong>All the <b>inbox</b> emails are moved to newly created <b>processed</b> folder.
+             <span>
+             	<label><input type="checkbox" id="agrementChk" onclick ="acceptAgreement();"/> I agree and accept terms and conditions mentioned above.</label>
+             </span>
+             </p>
+           </div>
           
 			</div>
 			<div class="popupFoot text-right">
 				<input type="hidden" name="emailUUID" id="parserEmailUUID" value="">
-					<button type="button" id="save_title_parser" class="slBtn md colorBtn" onclick="saveEmailParsers();">Save</button>
+					<button type="button" id="save_email_parser" class="slBtn md colorBtn" onclick="saveEmailParsers();">Save</button>
 					<button type="button" class="slBtn md popClose" onclick="closeEmailNotifications();">Cancel</button>
 			</div>
 		</div>
 	</form>	
 		<script>
 		
+function acceptAgreement(){
+	if($("#agrementChk").is(":checked")){
+		$("#save_email_parser").removeClass("disabled");
+	}else{
+		$("#save_email_parser").addClass("disabled");
+	}
+}
 function saveEmailParsers(){
 	if ($('#email_parser_form').validate(false, validationSettings)) {
 		
@@ -65,7 +80,7 @@ function saveEmailParsers(){
 			//$("#save_title").addClass('button').val('Processing..');
 		//var formData = $($('#user_manuals_form')[0]).serialize();
 		var formData = getFormData1("email_parser_form");
-		$( "#save" ).addClass('button').val('Processing..');
+		$( "#save_email_parser" ).addClass('disabled');
 		$("#ConfigLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 		$.ajax({
@@ -80,10 +95,13 @@ function saveEmailParsers(){
 			  			alert("Mail configured Successfully!")
 			  			closeEmailNotifications();
 			  			getParserEmailList();
+			  			$( "#save_email_parser" ).removeClass('disabled');
+			  			
 			  		}else if(result=="failure"){
 			  			$("#ConfigLoading").removeAttr("style");
 			  			//closeEmailNotifications();
 			  			alert("Please check your configuration details.")
+			  			$( "#save_email_parser" ).removeClass('disabled');
 			  			//$("#msgConfigDiv").html("Configured Mail is wrong.Please update the correct Mail");
 			  		}
 		    		
@@ -114,6 +132,8 @@ function allowOnlyConfigResumeEmailParserForOrg(){
 		    	if(response >=1){
 		    		// add button should be disable when count >=1
 		    		$('#parserEmailAdd').addClass("disabled");
+		    	}else{
+		    		$('#parserEmailAdd').removeClass("disabled");
 		    	}
 		    },
      });
@@ -173,6 +193,7 @@ function editEmailParsing(emailUUID){
 		url : sourceleadUrl+ "/editEmailParsing?"+tokenParamName+"="+tokenValue+"&emailUUID="+emailUUID,
 		success : function(data) {
 			addEmailparsingPopUp();
+			acceptAgreement();
 			$('#parserEmailId').val(data.emailId);
 			$('#parserPasswordId').val(data.emailPassword);
 			$('#parserServerName').val(data.serverName);
@@ -196,7 +217,7 @@ function editEmailParsing(emailUUID){
 function deleteEmail(emailId){ 
 	var result = "";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete?</p>";
 	result = result + ' <div id="reasonForEmailDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteParserEmail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteEMail()"></b>';
 	result = result +"	</div>";
@@ -224,6 +245,7 @@ function deleteParserEmail(emailId){
     			 $("#deleteParserEmailDiv").empty();
  			     $(".mask").hide();
  				getParserEmailList();
+ 				allowOnlyConfigResumeEmailParserForOrg();
     		}else if (response.indexOf('Sign In') !== -1) {
     			location.replace(sourceleadUrl);
     		} else {
