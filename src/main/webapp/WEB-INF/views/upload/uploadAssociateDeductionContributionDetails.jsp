@@ -253,7 +253,7 @@ function cancelFileImport(){
 	         result += '    <th>Bank Name</th>';
 	         result += '    <th>Account Number</th>';
 	         result += '    <th>Routing Number</th>';
-	         result += '    <th>Reson</th>';
+	         result += '    <th>Reason</th>';
 	         result += '  </tr>';
 	         result += '</thead>';
 	         result += '<tbody>';
