@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -128,7 +129,7 @@ public interface RequirementWorkFlowService {
 	
 	String saveDefaultRequirementWorkflowAndStages()throws Exception;
 
-	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId);
 	
 	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
 	
