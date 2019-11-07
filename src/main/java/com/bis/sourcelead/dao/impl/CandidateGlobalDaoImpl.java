@@ -470,6 +470,24 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 	}
 
 
+	@Override
+	public CandidateGlobal getCandidateGlobalByConsultantUserId(Long consultantUserId, Long orgLocationId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		CandidateGlobal candidate = null;
+		try {
+			String query = "from CandidateGlobal candidate left join fetch candidate.orgRelationId left join fetch candidate.masterCandidateId "
+					+ " where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+			List<CandidateGlobal> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId)
+					.setLong("consultantUserId", consultantUserId).list();
+			if (null != candidateList && candidateList.size() > 0) {
+				candidate = candidateList.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return candidate;
+	}
 	
 
 }
