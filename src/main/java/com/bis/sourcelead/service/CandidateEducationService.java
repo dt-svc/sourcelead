@@ -4,12 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -45,7 +45,7 @@ public interface CandidateEducationService {
 	 * @return HashSet<CandidateEducation>
 	 * @throws JSONException
 	 */
-	HashSet<CandidateEducation> getCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,String userCode) throws Exception;
+	void saveCandidateEducationDetails(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,String userCode) throws Exception;
 
 	/**
 	 * @param candidateId
@@ -84,6 +84,19 @@ public interface CandidateEducationService {
 	
 	Integer getCandidateActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
 	
-	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,Candidate candidate,User user) throws Exception;
+	HashSet<CandidateEducation> getCandidateEducationDetailsList(CandidateDTO candidateDTO,OrgLocations orgLocations,CandidateGlobal candidate,User user) throws Exception;
+	
+	Integer getCandidateGlobalActiveEducationsCountByCandidateId(Long candidateId) throws Exception;
+	
+	public List<CandidateEducation>   getCandidateGlobalEducationListByCandidateIdAndOrgLocationID(Long candidateId, Long orgLocationId) throws Exception;
+	
+	public CandidateEducation getCandidateGlobalEducationBycandidateIdandEducationId(Long candidateId,Long candidateEducationId)  throws Exception;
+	
+	public Boolean validateCandidateGlobalEducationName(Long candidateId, String candidateEducation) throws Exception;
+	
+	public CandidateEducation removeCandidateGlobalEducationBycandidateIdandcandidateEducationId(Long candidateId, Long candidateEducationId, User user, OrgLocations orgLocations) throws Exception;
+	
+	public CandidateEducation saveCandidateEducation(CandidateEducation candidateEducation) throws Exception;
+	
 
 }

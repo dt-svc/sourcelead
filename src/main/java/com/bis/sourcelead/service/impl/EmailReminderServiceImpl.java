@@ -104,6 +104,11 @@ public class EmailReminderServiceImpl implements EmailReminderService {
 	public List<EmailReminder> getEmailReminderListByTabsIdAndOrgLocationId(Long tabsId, Long orgLocationsId) {
 		return emailReminderDao.getEmailReminderListByTabsIdAndOrgLocationId(tabsId, orgLocationsId);
 	}
+
+	@Override
+	public List<EmailReminder> getReminderConfiguredOrgLocations(String scenarioName) {
+		return emailReminderDao.getReminderConfiguredOrgLocations(scenarioName);
+	}
 	
 	
 

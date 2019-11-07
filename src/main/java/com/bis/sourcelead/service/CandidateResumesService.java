@@ -10,6 +10,7 @@ import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.dto.CandidateResumesDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -33,7 +34,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws Exception
 	 */
-	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Candidate candidate, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
+	public CandidateResumes storeCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, Long candidateId, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
 	
 	
 	/**
@@ -45,7 +46,7 @@ public interface CandidateResumesService {
 	 * @throws JSONException
 	 * @throws IOException
 	 */
-	public HashSet<CandidateResumes> getCandidateResumesDetails(OrgLocations orgLocations,String userCode,Candidate candidate,FileInfo fileInfo)throws Exception;
+	public void storeCandidateResumesDetails(OrgLocations orgLocations,String userCode,Long candidateId,FileInfo fileInfo)throws Exception;
 	 
 	/**
 	 * @param candidateId
@@ -97,5 +98,13 @@ public interface CandidateResumesService {
 	Integer getCandidateActiveResumeCountByCandidateId(Long candidateId) throws Exception;
 	
 	public CandidateResumesDTO  getCandidateLatesResumeDetails(Long candidateId) throws Exception;
+	
+	public CandidateResumesDTO  getCandidateGlobalLatesResumeDetails(Long candidateId) throws Exception;
+	
+	Integer getCandidateGlobalActiveResumeCountByCandidateId(Long candidateId) throws Exception;
+	
+	public List<CandidateResumes> getCandidateGlobalResumesListByCandidateIdAndStatus(Long candidateId, Integer status) throws Exception;
+	
+	public CandidateResumes storeGlobalCandidateResume(CandidateResumeDTO candidateResumeDTO, User user, CandidateGlobal candidate, String resumeId, OrgLocations orgLocation) throws JSONException,Exception;
 	
 }

@@ -45,6 +45,7 @@ import com.bis.sourcelead.dto.ImportTimesheetDTO;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.AssetCategory;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LookUpData;
@@ -2163,10 +2164,23 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					}
 
-				if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth")) || dataMigrationDTOJsonCopy.getString("dateOfBirth").equals("null")) {
-				errorSet.put("dateOfBirth", "DOB is missing");
-				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
-				errorSet.put("dateOfBirth", "DOB is invalid date");
+		 		/*if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("dateofBirth")) || dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null")) {
+				errorSet.put("dateofBirth", "DOB is missing");
+				}else if(!CommonUtil.isValidDate(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+				errorSet.put("dateofBirth", "DOB is invalid date");
+				}*/
+		 		
+		 		if(!dataMigrationDTOJsonCopy.getString("dateofBirth").equals("null") && StringUtils.isNotEmpty(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+					try {
+						DateFormat formatter = new SimpleDateFormat("DD-MM-yyyy"); 
+						Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("dateofBirth"));
+						String dateofbirth = formatter.format(date);
+						dataMigrationDTOJsonCopy.put("dateofBirth", dateofbirth);
+					} catch (Exception e) {
+						errorSet.put("dateofBirth", dataMigrationDTOJsonCopy.getString("dateofBirth")+" is invalid Date Of Birth");
+					}
+				}else {
+					errorSet.put("dateofBirth", "DOB is missing");
 				}
 
 				/* if (StringUtils.isBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))) {
@@ -2623,7 +2637,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 				}
 			}
 			if(dataMigrationDTOJsonCopy.getString("email").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("email"))) {
-				errorSet.put("email", "Email field is missing");
+				errorSet.put("email", "Associate Email field is missing");
 			}else {
 				User userEmail = userService.findByEmailAndOrgLocationsId(dataMigrationDTOJsonCopy.getString("email").toString().trim(), orgLocation.getId());
 				if (userEmail != null) {
@@ -2644,7 +2658,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					List<OrgRelations> vendorsList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocation.getId());
 					Long vendorId = 0l;
 					for(OrgRelations rel : vendorsList) {
-						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendor").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
+						if((dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getLocationId().getOrgLocationName())) || (dataMigrationDTOJsonCopy.get("vendors").toString().equalsIgnoreCase(rel.getResponderLocationId().getOrgLocationName()))) {
 							vendorId = rel.getId();
 							break;
 						}
@@ -2769,7 +2783,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			
 			//Employment type
 			if(dataMigrationDTOJsonCopy.getString("designationType").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
-				errorSet.put("designationType", "Designation Type field is missing");
+				errorSet.put("designationType", "Employment Type field is missing");
 			}else {
 				   if(!dataMigrationDTOJsonCopy.getString("designationType").equals("null") &&  !StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("designationType"))) {
 					String designationType = dataMigrationDTOJsonCopy.getString("designationType");
@@ -2838,12 +2852,12 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 			if (!dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("reportingManager").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("email").toString().equalsIgnoreCase("undefined")) {
 				Matcher matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("reportingManager").toString().trim());
 				if(matcher.matches() == false) {
-					errorSet.put("reportingManager", "Invalid Email");
+					errorSet.put("reportingManager", "Invalid Manager Email");
 				}
 			}
 			
 			if(dataMigrationDTOJsonCopy.getString("reportingManager").equals("null") || StringUtils.isEmpty(dataMigrationDTOJsonCopy.getString("reportingManager"))) {
-				errorSet.put("reportingManager", "Email field is missing");
+				errorSet.put("reportingManager", "Manager Email field is missing");
 			}else {
 				User userEmail = userService.findByEmail(dataMigrationDTOJsonCopy.getString("reportingManager").toString().trim());
 				if (userEmail == null) {
@@ -3098,7 +3112,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String panNumber = dataMigrationDTOJsonCopy.get("panNumber").toString();
 						if (panNumber.length() == 10) {
 							flag = panNumber.matches(panNumberRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("panNumber", "Duplicate Pan Number");
 						    }
@@ -3116,7 +3130,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String aadharNo = dataMigrationDTOJsonCopy.get("aadharNumber").toString();
 						if (aadharNo.length() == 12) {
 							flag = aadharNo.matches(aadharNoRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsByAadharNoAndId(aadharNo, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("aadharNumber", "Duplicate Aadhar Number");
 						    }
@@ -3135,7 +3149,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						String ssnNo = dataMigrationDTOJsonCopy.get("ssnNumber").toString().replaceAll("-", "");
 						if (ssnNo.length() == 9) {
 							flag = ssnNo.matches(ssnNoRegEx);
-							Candidate candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
+							CandidateGlobal candidate=candidateService.getCandidateDetailsBySsnNoAndId(ssnNo, orgLocation.getId());
 						    if(candidate != null) {
 						    	errorSet.put("ssnNumber", "Duplicate SSN Number");
 						    }

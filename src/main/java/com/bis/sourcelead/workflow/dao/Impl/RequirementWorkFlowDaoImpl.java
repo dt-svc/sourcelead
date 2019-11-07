@@ -28,6 +28,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.ImmigrationTasks;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -1137,12 +1138,12 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 	}
 
 	@Override
-	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
-		Candidate candidate = null;
+	public CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId) {
+		CandidateGlobal candidate = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String query = "select submission.candidate from RequirementSubmission submission where submission.id=:submissionId";
-			candidate =  (Candidate) session.createQuery(query).setLong("submissionId", submissionId).uniqueResult();
+			candidate =  (CandidateGlobal) session.createQuery(query).setLong("submissionId", submissionId).uniqueResult();
 		} catch (Exception e) {
 			logger.error(e +" in getQuestionnaireIdAssignedToStage DAO");
 			e.printStackTrace();

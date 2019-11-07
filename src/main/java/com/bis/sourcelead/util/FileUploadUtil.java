@@ -43,6 +43,7 @@ import com.bis.sourcelead.dto.OrgStorageDetailDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
@@ -726,7 +727,7 @@ public class FileUploadUtil {
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
 			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user,
-			Long requirementId, String needApplicantPermit, String notifyToApplicant, String baseServicesUrl, String isResumeparserEnabled) throws IOException {
+			Long requirementId, String needApplicantPermit, String notifyToApplicant, String baseServicesUrl, String isResumeparserEnabled,CandidateGlobalUtil candidateGlobalUtil) throws IOException {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -779,7 +780,7 @@ public class FileUploadUtil {
 					fileInfoList1.add(fileInfo);
 					candidateResumeDTO.setStaticPath(staticPath);
 					candidateResumeDTO.setFileInfo(fileInfoList1);
-					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c.getId(), null, loginOrgLocation);
 					addToResponse(2, session, uploadid, resume, fileInfo, count, i++, sourceleadUrl, candidateService);
 					successList.add(resume);
 					candidateIds += (candidateIds.isEmpty() ? "" : ",") + c.getId();
@@ -793,20 +794,20 @@ public class FileUploadUtil {
 				    	  candidateDto.setGender(resume.getGender());
 				    	  candidateDto.setMaritalStatus(resume.getMaritalStatus());
 				    	  candidateDto.setCity(resume.getCity());
-				    	  candidateDto.setCandidateEducation(resume.getEducations().toString());
+				    	  candidateDto.setCandidateEducation(resume.getEducations().toString().replace("[", "").replace("]", ""));
 				    	 
-				    	  candidateDto.setCandidateSkills(resume.getSkills().toString());
+				    	  candidateDto.setCandidateSkills(resume.getSkills().toString().replace("[", "").replace("]", ""));
 				    	 if(resume.getEmployeers()!=null) {
 				    	 candidateDto.setCandidateEmployers(resume.getEmployeers().toString());
 				    	 }
-				    	 candidateDto.setCandidateEducation(resume.getEducations().toString());
+				    	 candidateDto.setCandidateEducation(resume.getEducations().toString().replace("[", "").replace("]", ""));
 				    	 for(int z=0;z<resume.getPhoneNumbers().size();z++) {
 				    		 if(z==0) {
 				    			 String abc = resume.getPhoneNumbers().toString().split(",")[0];
-				    			 candidateDto.setMobilePhone(abc.replace("[", ""));
+				    			 candidateDto.setMobilePhone(abc.replace("[", "").replace("]", ""));
 				    		 }if(z==1) {
 				    			 String bcd = resume.getPhoneNumbers().toString().split(",")[1];
-				    			 candidateDto.setAlternateMobilePhone(bcd.replace("]", ""));
+				    			 candidateDto.setAlternateMobilePhone(bcd.replace("[", "").replace("]", ""));
 				    		 }
 				    	 }
 				    	 candidateDto.setLocation(resume.getAddressLine1());
@@ -818,7 +819,7 @@ public class FileUploadUtil {
 						candidateDto.setExperienceMonths(Integer.toString(resume.getTotalMonthsExp()));
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
 					candidateDto.setStaticPath(staticPath);
-					Candidate storedCandidate = candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					CandidateGlobal storedCandidate = candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
 					if(requirementId > 0) {
 						candidateIds += (candidateIds.isEmpty() ? "" : ",") + storedCandidate.getId();
 						System.out.println("Add Applicant for requirement " + requirementId + " to newly imported candidate");
@@ -858,7 +859,8 @@ public class FileUploadUtil {
 	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
-			String country, OrgLocations loginOrgLocation, User user,String isResumeparserEnabled) {
+			String country, OrgLocations loginOrgLocation, User user,CandidateGlobalUtil candidateGlobalUtil,String isResumeparserEnabled) {
+
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -901,7 +903,8 @@ public class FileUploadUtil {
 					fileInfoList1.add(fileInfo);
 					candidateResumeDTO.setStaticPath(staticPath);
 					candidateResumeDTO.setFileInfo(fileInfoList1);
-					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, c, null, loginOrgLocation);
+					Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(c.getId());
+					candidateResumeService.storeCandidateResume(candidateResumeDTO, user, candidateGlobalId, null, loginOrgLocation);
 					successList.add(resume);
 				} else {
 					CandidateDTO candidateDto = new CandidateDTO();
@@ -925,7 +928,7 @@ public class FileUploadUtil {
 					candidateDto.setFirstName(resume.getFirstName() != null ? resume.getFirstName() : "");
 					candidateDto.setLastName(resume.getLastName() != null ? resume.getLastName() : "");
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
-					candidateService.storeCandidate(candidateDto, loginOrgLocation, user);
+					candidateGlobalUtil.storeCandidateGlobal(candidateDto, loginOrgLocation, user);
 					successList.add(resume);
 				}
 			} catch (Exception ex) {

@@ -49,8 +49,7 @@ public class CandidateEmployers implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	private Candidate candidateId;
-		
+	private CandidateGlobal candidateId;
 	
 	@Column(name = "NAME")
 	private String name ;
@@ -150,11 +149,11 @@ public class CandidateEmployers implements Serializable{
 	}
 
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -351,5 +350,5 @@ public class CandidateEmployers implements Serializable{
 	public void setCandidateEmployersHistoryList(Set<CandidateEmployersHistory> candidateEmployersHistoryList) {
 		this.candidateEmployersHistoryList = candidateEmployersHistoryList;
 	}
-	
+
 }

@@ -398,7 +398,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
-					    	if(pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
+					    	if(pList.getEmail() != null && !pList.getEmail().isEmpty() && pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType() != null && !pList.getAccountType().isEmpty() && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
 					    	{			                        				
 					 			flag = true;
 					 		}	
@@ -506,15 +506,21 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
 								}
-								if(row.getCell(5) != null && getCellValueAsString(row.getCell(5), fileName).trim() != null) {
+								if(row.getCell(5) != null && getCellValueAsString(row.getCell(5), fileName).trim() != null&&getCellValueAsString(row.getCell(5), fileName).trim()!= "") {
 									try{
 										  Integer.parseInt(getCellValueAsString(row.getCell(5), fileName).trim());
 										  associateSalaryIndDTO.setStandardHours(getCellValueAsString(row.getCell(5), fileName));
 										} catch (NumberFormatException e) {
-											associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
+											associateSalaryIndDTO.setErrorMessage("Invalid Standard Hours");
+											associateSalaryIndDTOList.add(associateSalaryIndDTO);
+											continue;
+											//associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
 										}
 								}else {
-									associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
+									associateSalaryIndDTO.setErrorMessage("Enter Standard Working Hrs");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
+									continue;
+									//associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
 								}
 								
 								if(row.getCell(6) != null && StringUtils.isNumeric(getCellValueAsString(row.getCell(6), fileName).trim())) {

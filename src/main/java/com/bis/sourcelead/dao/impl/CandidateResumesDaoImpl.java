@@ -171,7 +171,7 @@ public class CandidateResumesDaoImpl implements CandidateResumesDao {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
 
-		String query = " from CandidateResumes candidateResumes   where candidateResumes.id = :resumeId" ;
+		String query = " from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId  where candidateResumes.id = :resumeId" ;
 		List<CandidateResumes> candidateResumesList =session.createQuery(query).setLong("resumeId", resumeId).list(); 
 		CandidateResumes candidateResumes = null;
 		if(candidateResumesList != null && !candidateResumesList.isEmpty()){
@@ -353,6 +353,72 @@ public CandidateResumesDTO getCandidateLatesResumeDetails(Long candidateId) thro
 		
 		return candidateResumesDTO;
 
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public CandidateResumesDTO getCandidateGlobalLatesResumeDetails(Long candidateId) throws Exception {
+	
+	List<CandidateResumesDTO> candidateResumesDTOList = null;
+	CandidateResumesDTO candidateResumesDTO = null;
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = null;
+			query ="SELECT "
+			+" CR.ID AS resumeId, "
+			+" CR.FILE_NAME AS resumeName, "
+			+" CR.FILE_CONTENT_TYPE AS fileContentType, "
+			+" CR.FILE_URL AS fileUrl "
+			+" FROM CANDIDATE_RESUMES CR "
+			+" WHERE "
+			+" CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' "
+			+" ORDER BY CR.CREATED_DATE DESC ";
+			
+        Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("candidateId", candidateId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(CandidateResumesDTO.class));
+		candidateResumesDTOList = queryObj.list();
+		if(candidateResumesDTOList != null && !candidateResumesDTOList.isEmpty()) {
+			candidateResumesDTO = candidateResumesDTOList.get(0);
+		}
+		
+		return candidateResumesDTO;
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public Integer getCandidateGlobalActiveResumeCountByCandidateId(Long candidateId) throws Exception {
+	
+
+	Session session = this.sessionFactory.getCurrentSession();
+	Integer educationsCount = 0;
+	
+	String countQuery ="SELECT"
+			+ " COUNT(CR.ID) AS RESUMES_COUNT"
+			+ " FROM "
+			    + " CANDIDATE_RESUMES CR "
+				+ " WHERE CR.CANDIDATE_ID = :candidateId AND CR.STATUS = '1' ";
+	
+	
+	Query countqueryString = session.createSQLQuery(countQuery);
+	countqueryString.setParameter("candidateId", candidateId);
+	BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+	educationsCount = filterCount.intValue();
+	return educationsCount;
+
+}
+
+
+@Override
+@Transactional(rollbackFor = { Exception.class })
+public List<CandidateResumes> getCandidateGlobalResumesListByCandidateIdAndStatus(Long candidateId, Integer status)
+		throws Exception {
+	logger.debug("In get Resumes list by candidateid and status method");
+	Session session = this.sessionFactory.getCurrentSession();
+	String query = "from CandidateResumes candidateResumes left join fetch candidateResumes.candidateId where candidateResumes.candidateId =:candidateId and candidateResumes.status = :status ORDER BY candidateResumes.id DESC";  
+	List<CandidateResumes> candidateResumesList = session.createQuery(query).setLong("candidateId", candidateId).setInteger("status", status).list();
+	return candidateResumesList;
 }
 
 
