@@ -30,6 +30,7 @@ import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
@@ -855,7 +856,7 @@ public class RequirementWorkflowController {
 		    //copy Tasks end here.
 			 String QuestMailstatus=Constants.FAILED;
 			 try {
-			 Candidate candidate = new Candidate();// these are the details of the candidate to whom to need to send email.
+				 CandidateGlobal candidate = new CandidateGlobal();// these are the details of the candidate to whom to need to send email.
 		    candidate = requirementWorkFlowService.getCandidateByRequirementSubmissionId(submissionId);
 		    
 			if (candidate != null) {
