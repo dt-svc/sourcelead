@@ -32,6 +32,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.InvoicePaymentDTO;
 import com.bis.sourcelead.dto.OrgLicenseSubscriptionDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 
 import com.bis.sourcelead.entity.CandidateMarketPlace;
@@ -59,6 +60,7 @@ import com.bis.sourcelead.service.OrgLicenseSubscriptionHistoryService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionService;
 import com.bis.sourcelead.service.OrgLicenseSubscriptionTypesService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -124,6 +126,9 @@ public class PaymentController {
 
     @Autowired
 	private CandidateService candidateService;
+    
+    @Autowired
+    private CandidateGlobalService candidateGlobalService;
     
     @Autowired
 	EmailScenarioService emailScenarioService;
@@ -830,7 +835,7 @@ public class PaymentController {
                 		String transactionDate = dateFormat.format(date);
                 		int amount=0;
                 		for(Long candidateId : candidateIdList){
-                		Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+                		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
                 		if(null != candidate.getLastName() && !"".equalsIgnoreCase(candidate.getLastName())){ 
                 			cb.append(candidate.getFirstName()).append(" ").append(candidate.getLastName()).toString();
                 			
