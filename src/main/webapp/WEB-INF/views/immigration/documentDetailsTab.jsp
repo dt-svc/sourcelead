@@ -269,7 +269,7 @@
               	<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
 					<div class="col-md-10 paddingRight">
 					<div class="input-group validation_p">
-					<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadRerqDocsList(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					<label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadRerqDocsList(0);"><i class="fa fa-folder-open-o mr10"></i>Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtn0" onchange="uploadBtnFilesList(0);" class="upload">
 					  </span> </label>
 					<input type="text" class="form-control" readonly id="uploadFile0" name = "docFile0" field-name ="Document" data-validation = "required validatepdf" placeholder="Upload Document ...">
@@ -500,7 +500,7 @@ function prepareDynamicUploadRow(rowId){
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+" <input type='hidden' id='docHisoryId"+rowId+"' name='immigrationCandidateDocHistoryId["+rowId+"]' value=''>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"<div class='col-md-10' id= 'uploadDocSaveDiv"+rowId+"'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<div class='input-group validation_p'>";
-	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o'></i>&nbsp;Browse File";
+	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<label class='input-group-btn'> <span class='btn btn-primary' onchange='uploadRerqDocsList("+rowId+")'><i class='fa fa-folder-open-o mr10'></i>Browse File";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"	<input type='file' style='display:none'; onchange='uploadBtnFilesList(" + rowId + ");' multiple id='uploadBtn"+rowId+"'  class='upload'>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		  </span> </label>";
 	  dynamicUploadRowHtml =dynamicUploadRowHtml+"		<input type='text' class='form-control' readonly id='uploadFile"+rowId+"' data-validation ='required' field-name ='Document' name = 'docFile"+rowId+"' placeholder='Upload Document ...'>";

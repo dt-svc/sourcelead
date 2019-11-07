@@ -134,7 +134,7 @@
 				<label class="col-md-4 padding_left">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right">
 					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
-					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
 					  <input type="file" style="display: none;" multiple id="uploadBtnForm"  class="upload">
 					  </span> </label>
 					<input type="text" class="form-control" name="docFile" id ="uploadFileForm" readonly placeholder="Attachment" field-name="Attachment" data-validation="required validatepdf">
@@ -187,7 +187,7 @@
 				<label class="col-md-2">File<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-10">
 					<div class="input-group col-md-12 validation_p" style="margin:0 auto">
-					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
 					  <input type="file" style="display: none;" multiple id="uploadFormBtn"  class="upload">
 					  </span> </label>
 					<input type="text" class="form-control" readonly id="uploadFormFile" field-name = "Document" placeholder="Upload Form ..." data-validation="required validatepdf">
