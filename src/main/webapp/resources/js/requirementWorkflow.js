@@ -516,8 +516,9 @@ function RequirementWorkflow(){
 						if(dataList == "Success"){
 							$("#popUp").empty();
 						     $(".project_inn_mask").fadeOut(200);
-							$("ul#stageList li:contains('"+stageName+"')").remove();
-							requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+							//$("ul#stageList li:contains('"+stageName+"')").remove();
+							//requirementWorkflow.showSuccessMsg("Successfully Deleted "+stageName);
+						     location.reload();
 						}else{
 							 showError("Operation failed, please try again");
 						}
@@ -1081,6 +1082,15 @@ function RequirementWorkflow(){
 				 this.validateWorkflowName = function(workflowUuid){
 					 var workFlowName = $("#workFlowName").val();
 					 if(workFlowName != null)
+						 if(workFlowName.includes("Copy")){
+							 if ($('#workflowNameDiv').find('p.jquery_form_error_message').length === 0)
+			                    $("#workFlowName").after("<p class='jquery_form_error_message'>Word 'Copy' Is Not Allowed!</span>");
+			                    $("#saveReqWorkFlow").attr("disabled", "disabled");
+			                    $("#stageButton").attr("disabled", "disabled");
+						 }else{
+							    $('#workflowNameDiv').find('p.jquery_form_error_message').remove();
+			                    $("#saveReqWorkFlow").removeAttr("disabled");
+			                    $("#stageButton").removeAttr("disabled");
 					 $.ajax({
 						 type: "GET",
 						 url : sourceleadUrl+"/validateWorkflowName?workflowUuid="+workflowUuid+"&workFlowName="+workFlowName,
@@ -1088,14 +1098,16 @@ function RequirementWorkflow(){
 							 if (dataList.response =="true") {
 				                    if ($('#workflowNameDiv').find('p.jquery_form_error_message').length === 0)
 				                        $("#workFlowName").after("<p class='jquery_form_error_message'>" + workFlowName + " Already Exists</span>");
-				                    $("#saveReqWorkFlow").attr("disabled", "disabled");
+				                    $("#saveReqWorkFlow ").attr("disabled", "disabled");
+				                    $("#stageButton").attr("disabled", "disabled");
 				                } else {
 				                    $('#workflowNameDiv').find('p.jquery_form_error_message').remove();
 				                    $("#saveReqWorkFlow").removeAttr("disabled");
+				                    $("#stageButton").removeAttr("disabled");
 				                }
 						 }
 					 })
-					 
+						 }
 				 }
 				 
 				 this.validateWorkflowStageName = function(workflowUuid){

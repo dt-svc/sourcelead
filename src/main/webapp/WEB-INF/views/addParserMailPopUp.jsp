@@ -80,7 +80,7 @@ function saveEmailParsers(){
 			//$("#save_title").addClass('button').val('Processing..');
 		//var formData = $($('#user_manuals_form')[0]).serialize();
 		var formData = getFormData1("email_parser_form");
-		$( "#save_email_parser" ).addClass('button').val('Processing..');
+		$( "#save_email_parser" ).addClass('disabled');
 		$("#ConfigLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:10000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	    
 		$.ajax({
@@ -95,10 +95,13 @@ function saveEmailParsers(){
 			  			alert("Mail configured Successfully!")
 			  			closeEmailNotifications();
 			  			getParserEmailList();
+			  			$( "#save_email_parser" ).removeClass('disabled');
+			  			
 			  		}else if(result=="failure"){
 			  			$("#ConfigLoading").removeAttr("style");
 			  			//closeEmailNotifications();
 			  			alert("Please check your configuration details.")
+			  			$( "#save_email_parser" ).removeClass('disabled');
 			  			//$("#msgConfigDiv").html("Configured Mail is wrong.Please update the correct Mail");
 			  		}
 		    		
@@ -214,7 +217,7 @@ function editEmailParsing(emailUUID){
 function deleteEmail(emailId){ 
 	var result = "";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
+	result = result +"		<p style='text-align: center;'>Do you want to delete?</p>";
 	result = result + ' <div id="reasonForEmailDiv"/>';
 	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteParserEmail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteEMail()"></b>';
 	result = result +"	</div>";
