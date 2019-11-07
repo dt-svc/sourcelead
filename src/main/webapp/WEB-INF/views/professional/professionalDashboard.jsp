@@ -3,16 +3,14 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
+<%-- <script src="resources/js/amcharts.js?staticTime=${staticTime}"></script>
 <script src="resources/js/serial.js?staticTime=${staticTime}"></script>
 <script src="resources/js/light.js?staticTime=${staticTime}"></script>
-<script src="resources/js/pie.js?staticTime=${staticTime}"></script>
+<script src="resources/js/pie.js?staticTime=${staticTime}"></script> --%>
 
-<style>
-dataTables_empty {
-    height: 285px !important;
-}
-</style>
+<script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -175,7 +173,7 @@ $(document).ready(function(){
   
   
 <jsp:include page="../masterFooter.jsp" />
-<div class="backtotop" style="display: none;"><img src="resources/images/backtotop.png"></div> 
+<div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div> 
 
 <script>
   function dailyStatusChangeMonth(type){
@@ -248,7 +246,7 @@ function flushDate(){
 	  
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		   	url: atsUrl+"/getJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 		    	
@@ -257,7 +255,7 @@ function flushDate(){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-warning">Referred To Me</span>';
-              result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
+              result = result +'<img src="/resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
               if(json['referToMeJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredToMeProtletList(\''+startDate+'\',\''+endDate+'\',\'referToMe\');"><span class="count text-primary">'+json['referToMeJobs']+'</span></a>';
               }else{
@@ -270,7 +268,7 @@ function flushDate(){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Applied</span>';
                         
-              result = result +'<img src="resources/images/applied_icon.png" title="Applied" alt="Applied">';
+              result = result +'<img src="/resources/images/applied_icon.png" title="Applied" alt="Applied">';
               if(json['appliedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredToMeProtletList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
               }else{
@@ -282,7 +280,7 @@ function flushDate(){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Shortlisted</span>';
-              result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
+              result = result +'<img src="/resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
               if(json['shortlistJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredToMeProtletList(\''+startDate+'\',\''+endDate+'\',\'SHORTLIST\');"><span class="count text-primary">'+json['shortlistJobs']+'</span></a>';  
               }else{
@@ -295,7 +293,7 @@ function flushDate(){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Interviews</span>';
-              result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
+              result = result +'<img src="/resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
               if(json['interviews'] > 0){
             	  result = result +'<a href="#" onClick="getReferredToMeProtletList(\''+startDate+'\',\''+endDate+'\',\'INTERVIEW\');"><span class="count text-primary">'+json['interviews']+'</span></a>';  
               }else{
@@ -309,7 +307,7 @@ function flushDate(){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Offered</span>';
                         
-              result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
+              result = result +'<img src="/resources/images/offered_icon.png" title="Offered" alt="Offered">';
               if(json['offeredJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredToMeProtletList(\''+startDate+'\',\''+endDate+'\',\'OFFERMADE\');"><span class="count text-primary">'+json['offeredJobs']+'</span></a>';  
               }else{
@@ -319,21 +317,24 @@ function flushDate(){
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+              
+/*               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
-              result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
+              result = result +'<img src="/resources/images/hired_icon.png" title="Hired" alt="Hired">';
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+              
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';
               result = result +'</span>';
               
-              result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
+              result = result +'<img src="/resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
               if(json['rejectedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredToMeProtletList(\''+startDate+'\',\''+endDate+'\',\'REJECTED\');"><span class="count text-primary">'+json['rejectedJobs']+'</span></a>';
               }else{
@@ -355,7 +356,7 @@ function flushDate(){
   </script>
 <script>
 function getReferredToMeProtletList(startDate,endDate,status){
-	window.location.href = sourceleadUrl + '/referredToMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
+	window.location.href = atsUrl + '/referredToMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 }
 </script>
   
@@ -368,7 +369,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
 	  
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		   	url: atsUrl+"/getReferByMeJobSummaryPortlets?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	    	 var json = JSON.parse(data);
 		    	
@@ -377,7 +378,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-warning">Referred By Me</span>';
-              result = result +'<img src="resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
+              result = result +'<img src="/resources/images/refer-icon.png" title="Referrals" alt="Referrals">';
           	 if(json['referByMeJobs'] > 0){
           		result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'referByMe\');"><span class="count text-primary">'+json['referByMeJobs']+'</span></a>'; 
           	 }else{
@@ -390,7 +391,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Applied</span>';
                         
-              result = result +'<img src="resources/images/applied_icon.png" title="Applied" alt="Applied">';
+              result = result +'<img src="/resources/images/applied_icon.png" title="Applied" alt="Applied">';
               if(json['appliedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'\');"><span class="count text-primary">'+json['appliedJobs']+'</span></a>';  
               }else{
@@ -402,7 +403,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Shortlisted</span>';
-              result = result +'<img src="resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
+              result = result +'<img src="/resources/images/short_listed.png" title="Shortlisted" alt="Shortlisted">';
               if(json['shortlistJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'SHORTLIST\');"><span class="count text-primary">'+json['shortlistJobs']+'</span></a>';  
               }else{
@@ -415,7 +416,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-success">Interviews</span>';
-              result = result +'<img src="resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
+              result = result +'<img src="/resources/images/interview_icons.png" title="Interviews" alt="Interviews">';
               if(json['interviews'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'INTERVIEW\');"><span class="count text-primary">'+json['interviews']+'</span></a>';  
               }else{
@@ -429,7 +430,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-info">Offered</span>';
                         
-              result = result +'<img src="resources/images/offered_icon.png" title="Offered" alt="Offered">';
+              result = result +'<img src="/resources/images/offered_icon.png" title="Offered" alt="Offered">';
               if(json['offeredJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'OFFERMADE\');"><span class="count text-primary">'+json['offeredJobs']+'</span></a>';  
               }else{
@@ -439,21 +440,24 @@ function getReferredToMeProtletList(startDate,endDate,status){
               result = result +'</div>';
 
               result = result +'</div>';
-              result = result +'<div class="col-sm-6 col-md-3">';
+             
+          /*  result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-primary">Hired</span>';
               
-              result = result +'<img src="resources/images/hired_icon.png" title="Hired" alt="Hired">';
+              result = result +'<img src="/resources/images/hired_icon.png" title="Hired" alt="Hired">';
               result = result +'<span class="count">0</span>';
               result = result +'</div>';
 
-              result = result +'</div>';
+              result = result +'</div>'; */
+             
+              
               result = result +'<div class="col-sm-6 col-md-3">';
               result = result +'<div class="content_widget jobs-graphview buttonView">';
               result = result +'<span class="label label-danger">Rejected';
               result = result +'</span>';
               
-              result = result +'<img src="resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
+              result = result +'<img src="/resources/images/reject_icon.png" title="Rejected" alt="Rejected">';
               if(json['rejectedJobs'] > 0){
             	  result = result +'<a href="#" onClick="getReferredByMeProtletList(\''+startDate+'\',\''+endDate+'\',\'REJECTED\');"><span class="count text-primary">'+json['rejectedJobs']+'</span></a>';
               }else{
@@ -476,7 +480,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
   
 <script>
 	function getReferredByMeProtletList(startDate,endDate,status){
-			window.location.href = sourceleadUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
+			window.location.href = atsUrl + '/referredByMePortletList?${_csrf.parameterName}=${_csrf.token}&startDate='+startDate+'&endDate='+endDate+'&requirementStatus='+status;
 	}
 </script>
   
@@ -489,7 +493,7 @@ function getReferredToMeProtletList(startDate,endDate,status){
 	
 	$.ajax({ 
 		   	type: "GET",
-		   	url: sourceleadUrl+"/getJobSummaryDoNutChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+		   	url: atsUrl+"/getJobSummaryDoNutChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 		    success: function(data) {
 	        	var json = JSON.parse(data);
 	        	
@@ -503,14 +507,13 @@ function getReferredToMeProtletList(startDate,endDate,status){
   
   <script>
   function getJobSummarySerialChart(){
-		
 		var startDate = document.getElementById("serialfromdate").value; 
 		var endDate = document.getElementById("serialtodate").value; 
 		
 		
 		$.ajax({ 
 			   	type: "GET",
-			   	url: sourceleadUrl+"/getJobSummarySerialChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
+			   	url: atsUrl+"/getJobSummarySerialChart?${_csrf.parameterName}=${_csrf.token}&startDate="+startDate+"&endDate="+endDate,
 			    success: function(data) {
 		        	var json = JSON.parse(data);
 		        	

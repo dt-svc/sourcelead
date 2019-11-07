@@ -1,0 +1,3 @@
+set sql_safe_updates=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{ShareRecomendedApplicant.candidateName}},\n\nWe have an excellent opportunity that matches your technical skills and expertise. Please go through the job details and apply if it suits your profile and career aspirations.\nJob Name : {{ShareRecomendedApplicant.jobName}}\nJob Location :{{ShareRecomendedApplicant.jobLocation}}\nExperience : {{ShareRecomendedApplicant.jobExperience}}\nRate : {{ShareRecomendedApplicant.jobRate}}\nJob Description : {{ShareRecomendedApplicant.jobDescription}}\n{{ShareRecomendedApplicant.viewJobLink}}\n' WHERE `UNIQUE_SCENARIO_NAME`='Share Recomended Applicant';
+set sql_safe_updates=1;

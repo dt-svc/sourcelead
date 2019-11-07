@@ -14,23 +14,23 @@
 
 
 
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead :: Job Summary</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
-<script src="resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
-<script src="resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<script src="/resources/js/InterViewFormBuilder.js?staticTime=${staticTime}" type="text/javascript" ></script>
+<script src="/resources/js/interViewForm-html-generator.js?staticTime=${staticTime}" type="text/javWascript" ></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
  
-<script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="resources/css/style.css?staticTime=${staticTime}" />
-<script src="resources/js/jquery-ui.js"></script>
-<link rel="stylesheet" href="resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
+<script src="/resources/js/jquery-ui.js"></script>
+<link rel="stylesheet" href="/resources/css/jquery-ui.css?staticTime=${staticTime}" type="text/css" >
 
 
 <style type="text/css">
@@ -137,7 +137,7 @@ window.onload = function () {
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/SourceLead-logo.png" alt="Source Lead"> </i>
     </a>
     </span>
     <nav class="header-nav navbar">
@@ -230,7 +230,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +' 			 <div class="company-logo">';
-				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive">';
+				 result = result +' 				<img id="orgImage" onerror="predefineProfileImage(this);"  data-id="orgLogoImage" src="'+json.fileUrl+'" alt="Company" title="Company Logo" class="img-responsive">';
 				 result = result +' 				</div>';
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
@@ -293,7 +293,7 @@ function publicRequirementProfile(requirementUUID){
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt" href=\"'+sourceleadUrl+'/downloadRequirementAttachment?requirementId='+json.id+'\"></a> ';
 		            }
 		            else{
 		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';	
@@ -317,7 +317,7 @@ function publicRequirementProfile(requirementUUID){
 </script>
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 <jsp:include page="../socialinviterscripts.jsp" />

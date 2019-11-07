@@ -15,9 +15,9 @@
 
 <title>Welcome to SourceLead:: Login Page</title>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="resources/css/bootstrap.min.css?staticTime=${staticTime}">
-<link rel="stylesheet" href="resources/css/font-awesome.min.css?staticTime=${staticTime}" type="text/css">
-<link rel="stylesheet" href="resources/css/login-styles.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/css/bootstrap.min.css?staticTime=${staticTime}">
+<link rel="stylesheet" href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" type="text/css">
+<link rel="stylesheet" href="/resources/css/login-styles.css?staticTime=${staticTime}" type="text/css" >
 
 <title>Edit Customer</title>
 </head>

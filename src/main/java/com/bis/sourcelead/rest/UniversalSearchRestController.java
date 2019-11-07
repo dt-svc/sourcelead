@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.UniversalSearchService;
@@ -30,6 +28,7 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @RestController
+@RequestMapping("/app")
 public class UniversalSearchRestController {
 	
 	 @Value("${sourceleadUrl}")
@@ -101,7 +100,7 @@ public class UniversalSearchRestController {
 			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 			String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-			Collection<Tabs> tabList= (Collection<Tabs>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
+			List<String> tabList= (List<String>) SourceLeadSessionManager.getSessionAttribute(request, "tabsList");
 			
 			List<List<Object>> searchList = universalSearchService.univesalSearchForAll(orgLocation, searchType,searchValue,org,userRole,user,tabList);
 			for (List<Object> list : searchList) {

@@ -1,0 +1,5 @@
+set sql_safe_updates=0;
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{AcceptReopenTimeSheet.managerName}},\n\n{{ReopenTimeSheet.employeeName}} Time cart has been re-opened for you to modify.\nPlease Login into the SourceLead to update\n\n{{AcceptReopenTimeSheet.loginURL}}' WHERE `UNIQUE_SCENARIO_NAME`='AcceptReopenTimeSheet' and `ENTITY_TYPE`='Email';
+
+UPDATE `EMAIL_SCENARIO` SET `BODY`='Dear {{InterviewerInvitation.InterviewerFirstName}} {{InterviewerInvitation.InterviewerLastName}},\n\nInterview scheduled on the {{InterviewerInvitation.InterviewDate}} for the job.\n\nJob name : {{InterviewerInvitation.RequirementTitle}}\nInterview date : {{InterviewerInvitation.InterviewDate}}\nDetails : {{InterviewerInvitation.Details}}\n  Interview Type : {{InterviewerInvitation.InterviewType}}\n  Applicants : {{InterviewerInvitation.ApplicantName}} \n\nFor clear details login into the system.' WHERE `UNIQUE_SCENARIO_NAME`='Interviewer Invitation' and `ENTITY_TYPE`='Email';
+set sql_safe_updates=1;

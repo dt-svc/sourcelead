@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.service.LookUpDataService;
 
 @RestController
-@RequestMapping(value = "/lookupdata")
+@RequestMapping(value = "/app/lookupdata")
 public class LookUpDataRestController {
 
     

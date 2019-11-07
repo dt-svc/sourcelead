@@ -1,28 +1,24 @@
-<jsp:include page="../masterHeader.jsp" />
-<jsp:include page="../masterSideNav.jsp" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
- <link href="resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
-<style>
-.margin-down{
-    margin-bottom: 100px;
-}
-</style>
-<script> 
+ <link href="/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
+ <!--  <script> 
 $(document).ready(function(){
+	 var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	
+	 if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
 	addCandidate();
+	 }
 	//getProfessionalInfo();
 });
-</script>
-
+</script>   -->
 <div class="addcandidate-popup">
 			<div class="row">
                   <div class="col-md-offset-2 col-md-8">
 				  <a href="javascript:void(0)" class="close-popdiv" onClick="closeCandidate()"><i class="fa fa-close"></i></a>
                           <div class="col-md-6 mt">
 	                        <div class="small-widget bg-purple">
-	                            <a href="<c:url value='/professionalPraseCandidate'/>"  title="Parse Resume">
+	                            <a href="<c:url value='${appPath}/professionalPraseCandidate'/>"  title="Parse Resume">
 	                                <div class="clearfix mb10">
 	                                <i class="fa fa-file-text-o fa-4x"></i>
 	                                    <span class="fa fa-arrow-right"></span>
@@ -33,7 +29,7 @@ $(document).ready(function(){
 					  </div>
 					  <div class="col-md-6 mt">
                           <div class="small-widget bg-yellow">
-                              <a href="<c:url value='/professionalAddProfile'/>" title="Add Profile">
+                              <a href="<c:url value='${appPath}/professionalAddProfile'/>" title="Add Profile">
                                   <div class="clearfix mb10">
                                       <i class="fa fa-user-circle fa-4x"></i>
                                       <span class="fa fa-plus"></span>
@@ -61,7 +57,7 @@ $(document).ready(function(){
 	      $('.addcandidate-popup').fadeOut(200);
 	      $('.pop_mask').fadeOut(200);
 	      
-	      var loginUserRole = '${SourceLeadWeb_loginUserRole}';
+	      /*    var loginUserRole = '${SourceLeadWeb_loginUserRole}';
 	     
 	      if(loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'){
 	      	location.replace(sourceleadUrl+"/professionalDashboard");
@@ -69,14 +65,14 @@ $(document).ready(function(){
 	      else if(loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'){
 	      	location.replace(sourceleadUrl+"/recruiterDashboard");
 	      }
-	      else{
+	      /*  else{
 	      	var orgLocationId = '${SourceLeadWeb_orgLocationId}';
-	      	location.replace(sourceleadUrl+"/dashboardLinks?orgLocationId="+orgLocationId);
-	      }
+	      	location.replace(sourceleadUrl+"/dashboard/"+orgLocationId);
+	      } */
     }
 </script>
 
-<section class="content-wraper">
+<!-- <section class="content-wraper">
         
      <section class="content-header clearfix">
       <div class="pull-left">
@@ -84,7 +80,6 @@ $(document).ready(function(){
       </div>
     </section>
  
-</section>
+</section> -->
 
 
-<jsp:include page="../masterFooter.jsp" />

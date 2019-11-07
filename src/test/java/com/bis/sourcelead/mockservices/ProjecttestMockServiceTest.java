@@ -1,20 +1,12 @@
 package com.bis.sourcelead.mockservices;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.stub;
-import javax.rmi.CORBA.Stub;
-
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,15 +14,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.bis.sourcelead.dao.CitiesDao;
 import com.bis.sourcelead.dao.ProjectsDao;
-import com.bis.sourcelead.entity.Cities;
 import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.ProjectsService;
-import com.bis.sourcelead.service.impl.CitiesServiceImpl;
-
 import com.bis.sourcelead.service.impl.ProjectsServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)

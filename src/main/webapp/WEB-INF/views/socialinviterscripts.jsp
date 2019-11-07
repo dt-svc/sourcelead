@@ -1,5 +1,5 @@
 <link href="//fonts.googleapis.com/css?family=Lato:100,300,400" rel="stylesheet">
-<script type="text/javascript" id="apiscript" src="resources/js/all.js?burst=1"></script>
+<script type="text/javascript" id="apiscript" src="/resources/js/all.js?burst=1"></script>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page session="true"%>
 <style type="text/css">
@@ -113,6 +113,10 @@
 	}
 	 function socialInviterScripts() {
 		 var sourceleadUrl ='${sourceleadUrl}';
+		 var sourceleadWebUrl = sourceleadUrl.replace('/app','');
+		 var cssUrl = sourceleadWebUrl+"/resources/css/";
+		 var jsUrl = sourceleadWebUrl+"/resources/js/";
+		 
          socialinviter.load({
              dock:false,
              showmodal: true,
@@ -127,8 +131,8 @@
              },
              apikeys:{
             	 "facebook":{
-                     "consumerKey":"200281393793197",
-                     "consumerSecret":"3a62bba550c343eb4f42bbeabd2e0f5e"
+                     "consumerKey":"2066960683592341",
+                     "consumerSecret":"a5e28872fb1b6456392f1c58b1649ca0"
                  }
              },
              callbacks: {
@@ -170,10 +174,10 @@
              },
              
              path: {
-                 css: "resources/css/",
-                 js: "resources/js/",
-                 authpage : sourceleadUrl+"/resources/oauth.html",
-                 apiurl:sourceleadUrl+"/getAPIService"
+                 css: cssUrl,
+                 js: jsUrl,
+                 authpage :sourceleadWebUrl + "/resources/oauth.html",
+                 apiurl:sourceleadUrl+"/ws/getAPIService"
              }
          });
         /*  var shareObj = {

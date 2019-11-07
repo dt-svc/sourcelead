@@ -19,6 +19,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -30,7 +31,6 @@ import org.springframework.web.servlet.view.JstlView;
  */
 
 import com.bis.sourcelead.aspect.LoggingAspect;
-import com.bis.sourcelead.rest.UserRestController;
 import com.bis.sourcelead.web.HomeController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
@@ -44,7 +44,7 @@ import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
  */
 
 @Configuration
-@ComponentScan(basePackageClasses = { HomeController.class, UserRestController.class },
+@ComponentScan(basePackageClasses = { HomeController.class},
 	    excludeFilters = @Filter(
 	        type = FilterType.ASSIGNABLE_TYPE,
 	        value = SecurityConfig.class),
@@ -87,12 +87,16 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	    CommonsMultipartResolver resolver=new CommonsMultipartResolver();
 	    resolver.setDefaultEncoding("utf-8");
 	// max upload size in bytes 
-	    resolver.setMaxUploadSize(20971520); // 20 MB
+	    resolver.setMaxUploadSize(2147483648l); // 20 MB 2147483648
 	    // max size of file in memory (in bytes)
-	    resolver.setMaxInMemorySize(1048576); // 1 MB
+	    resolver.setMaxInMemorySize(10485760); // 1 MB
 	    return resolver;
 	}
-
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+	
 	/*
 	 * @Bean public MessageSource messageSource() { ResourceBundleMessageSource
 	 * messageSource = new ResourceBundleMessageSource();

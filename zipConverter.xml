@@ -17,7 +17,7 @@
 			<outputDirectory>Sourcelead_Db_Scripts/bin</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/sourcelead/WEB-INF/classes/com/bis/sourcelead/db</directory>
+			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/db</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/db</outputDirectory>
 		</fileSet>
 		<fileSet>
@@ -25,15 +25,15 @@
 			<outputDirectory>Sourcelead_Db_Scripts/elk_bin</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/sourcelead/WEB-INF/classes/com/bis/sourcelead/elk</directory>
+			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/elk</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/elk</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/sourcelead/WEB-INF/classes/com/bis/sourcelead/constants</directory>
+			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/constants</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/constants</outputDirectory>
 		</fileSet>
 		<fileSet>
-			<directory>${project.build.directory}/sourcelead/WEB-INF/classes/com/bis/sourcelead/util</directory>
+			<directory>${project.build.directory}/admin/WEB-INF/classes/com/bis/sourcelead/util</directory>
 			<outputDirectory>Sourcelead_Db_Scripts/com/bis/sourcelead/util</outputDirectory>
 		</fileSet>
 	</fileSets>

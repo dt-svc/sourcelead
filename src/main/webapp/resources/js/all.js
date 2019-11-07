@@ -2331,6 +2331,8 @@ var contactimporter = (function () {
             authmsg = authmsg.replace("{0}", convertName(service));
         }
         if (service == "csv") {
+        	  $("#myModal").addClass('modal');
+        	  $("#myModal").show().removeClass("fade");
             socialinviter.modalSI.load({ "title": convertName(service), "icon": icons[service], "body": "<div class='CI-loading'>Please authenticate your " + convertName(service) + " account, make sure the authenticating window is not blocked by popup blocker.</div>" }, "show");
             $(".modal-SI-CI").find(".modal-SI-holder").addClass("modal-SI-small");
             scrollToWindow();
@@ -2879,6 +2881,7 @@ var contactimporter = (function () {
         //        csvStr += "<li><img src=\"" + tgturl + "assets/img/icons/hotmail-icon.png\" /></li><li><img src=\"" + tgturl + "assets/img/icons/linkedin-icon.png\" /></li>";
         //        csvStr += "</ul>";
         csvStr += "</div></div></div>";
+        
         if (addressbookData.addressbook) {
             csvStr += "<div class=\"CI-list-container-footer CI-footer-back-list\">";
             csvStr += "<div class=\"CI-contact-refresh-holder\">";
@@ -4432,7 +4435,11 @@ var modalSI = (function () {
                 $(".modal-SI-CI").find(".modal-SI-holder").addClass("inModal");
             }
             attachModalEvents();
-            $(".modal-SI-CI").fadeIn("slow");
+            $(".modal-SI-CI").hide();
+            $(".modal-SI-CI-BG").hide();
+           
+          
+            
             if (type == "large") {
                 $(".modal-SI-CI").find(".modal-SI-holder").removeClass("modal-SI-small");
             } else {

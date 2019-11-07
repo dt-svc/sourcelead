@@ -35,6 +35,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
+@RequestMapping("/app")
 public class CandidateOffBoardController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CandidateOffBoardController.class);
@@ -66,126 +67,6 @@ public class CandidateOffBoardController {
 	
 	
 	
-	@RequestMapping(value = "/offboardStep2")
-	public ModelAndView offboardStep2(HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		
-		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 
-		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
-		 
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.addObject("offboardingId", offboarding.getId());
-		 model.setViewName("offboard/offboardStep2");
-		 return model;
-	}
-	
-	
-	
-	@RequestMapping(value = "/offboardStep3")
-	public ModelAndView offboardStep3(HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		
-		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 
-		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
-		 
-		 //SimpleDateFormat simpleDateFormat = loginOrgLocation.getLocFullFormDateFormatter();
-		 List<Tasks> tasksList = taskService.getTasskByAssignedUserIdAndOrgLocationIdAndOffboardingId(loginOrgLocation.getId(),user.getId(),offboarding.getId());
-			List<Tasks> taskList = new ArrayList<Tasks>();
-			if(null != tasksList && tasksList.size() > 0){
-				for(Tasks tasks : tasksList){
-					tasks.setTaskDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),tasks.getTaskDate()));
-					taskList.add(tasks);
-				}
-				
-			}
-			
-			model.addObject("tasksList", taskList);
-			model.addObject("tasksListSize", taskList.size());
-			
-		 
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("offboard/offboardStep3");
-		 return model;
-	}
-	
-	
-	
-	@RequestMapping(value = "/offboardStep4")
-	public ModelAndView offboardStep4(HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		
-		 OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
-		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		 
-		 CandidateOffBoarding offboarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(user.getId(), loginOrgLocation.getId());
-		 
-		 List<OffBoardingDocuments> resignationDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Resignation");
-		 model.addObject("resignationDocumentsList", resignationDocumentsList);
-		 model.addObject("resignationDocumentsListSize", resignationDocumentsList.size());
-		 
-		 List<OffBoardingDocuments> offboardPackDocumentsList = offBoardingDocumentsService.getOffBoardingDocumentsByCandidateOffBoardingId(offboarding.getId(), "Offboard Pack");
-		 model.addObject("offboardPackDocumentsList", offboardPackDocumentsList);
-		 model.addObject("offboardPackDocumentsListSize", offboardPackDocumentsList.size());
-		 
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.addObject("offboardingId", offboarding.getId());
-		 model.setViewName("offboard/offboardStep4");
-		 return model;
-	}
-	
-	
-	
-	@RequestMapping(value = "/offboardSuccess")
-	public ModelAndView offboardSuccess(HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.setViewName("offboard/offboardSuccess");
-		 return model;
-	}
-	
-	
-	@PreAuthorize("hasRole('ROLE_VIEW_EDIT_OFF_BOARD_USER')")
-	@RequestMapping(value = "/viewOffboardCandidateSummaryDetails")
-	public ModelAndView viewOffboardCandidateSummaryDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,HttpServletRequest request) throws Exception {
-		ModelAndView model = new ModelAndView();
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.OnAndOffboard);
-		
-		 model.addObject("sourceleadUrl", sourceleadUrl);
-		 model.addObject("offboardUUID", offboardUUID);
-		 
-		 model.setViewName("offboard/viewOffboardCandidateSummaryDetails");
-		 return model;
-	}
-	
-	
-	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
-	@RequestMapping(value = "/candidateOffBoardCreation")
-	public ModelAndView candidateOffBoardCreation(HttpServletRequest request) {
-		ModelAndView model = new ModelAndView();
-		
-		SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-		if(sessionData == null)
-		{
-			sessionData = new SessionMaintainanceData();
-		}
-		sessionData.setNav(Constants.OnAndOffboard);
-		
-		request.getSession().setAttribute("sessionData",sessionData);
-		model.addObject("sourceleadUrl", sourceleadUrl);
-		model.setViewName("offboard/candidateOffBoardCreation");
-		return model;
-	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_CREATE_OFF_BOARD_TEMPLATE','ROLE_VIEW_EDIT_OFF_BOARD_TEMPLATE')")
 	@RequestMapping(value = "/offboardingTemplatesList")
@@ -193,9 +74,13 @@ public class CandidateOffBoardController {
 		    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 		    ModelAndView model = new ModelAndView();
  			commonUtil.highLightMenu(Constants.OrgSettings, request);
- 			
  			model.setViewName("offboard/offboardingTemplatesList");
  			model.addObject("sourceleadUrl", sourceleadUrl);
+ 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "OffboardCreateMsg");
+ 			if(!isNullOrEmpty(msg)){
+ 				model.addObject("msg", msg);
+ 				SourceLeadSessionManager.removeSessionAttribute(request, "OffboardCreateMsg");
+ 			}
  			return model;
  	}
 	
@@ -229,28 +114,7 @@ public class CandidateOffBoardController {
  			return model;
  	}
 	
-	@PreAuthorize("hasRole('ROLE_CREATE_OFF_BOARD_USER')")
-	@RequestMapping(value = "/viewOffboardCandidateDetails")
- 	public ModelAndView viewOffboardCandidateDetails(@RequestParam(value="offboardUUID", required=false) String offboardUUID,
- 			HttpServletRequest request) throws Exception {
-		   
-		    ModelAndView model = new ModelAndView();
- 			
-		    SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
-			if(sessionData == null)
-			{
-				sessionData = new SessionMaintainanceData();
-			}
-			sessionData.setNav(Constants.OnAndOffboard);
- 			
- 			CandidateOffBoarding offBoarding = candidateOffBoardingService.getCandidateOffBoardingByOffboardUUID(offboardUUID);
- 			
- 			model.setViewName("offboard/candidateOffBoardCreation");
- 			model.addObject("sourceleadUrl", sourceleadUrl);
- 			model.addObject("offBoardingId", offBoarding.getId());
- 			model.addObject("offBoardingUUID", offBoarding.getOffboardUUID());
- 			return model;
- 	}
+
 	
 	
 

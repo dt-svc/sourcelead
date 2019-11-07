@@ -87,7 +87,7 @@ $(document).ready(function() {
 
 
 
- $(function() {
+ /*$(function() {
             var availableTutorials = [
                "Australia",
                "France",
@@ -103,7 +103,7 @@ $(document).ready(function() {
                 $(this).autocomplete("search");
            });
 
-         });
+         });*/
  
  
  $(function() {

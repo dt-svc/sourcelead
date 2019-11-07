@@ -4,18 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
- <style type="text/css">
- .require_wrap_details_cta b {
-    width: 150px;
-}
-.require_wrap_details.require_textarea textarea {
-height: 225px;
-}
-.profile_details h4 {width: 68%;}
-ul.can-perdt li span { max-width: 80%;}
-
- </style>
-
 <script>
 $(document).ready(function() {
 	 var requirementUUID = '${requirementUUID}'; 
@@ -29,11 +17,11 @@ $(document).ready(function() {
       <h2>Job Details</h2>
     </div>
     <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL' || SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/professionalRequirements'/>">Jobs List </a> &raquo; Job Details</div>
     </c:if>
     
     <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
-    <div class="pull-right brud-crum"><a href="<c:url value='requirementList'/>">Jobs List </a> &raquo; <a href="<c:url value='professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
+    <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/jobs'/>">Jobs List </a> &raquo; <a href="<c:url value='${appPath}/professionalRequirements'/>">Crowdsourcing Jobs List </a> &raquo; Job Details</div>
     </c:if>
   
   </section>
@@ -154,7 +142,7 @@ function requirementProfile(requirementUUID){
 
 		    	result = result +'	<div class="timesheet_out">';
 				 result = result +'    <div class="clients_side_wrap_inn no_pad">';
-				 result = result +'      <div class="profile_details requirement_details requirement_details_a clearfix">';
+				 result = result +'      <div class="profile_details profile_detailsh4 requirement_details requirement_details_a clearfix">';
 				
 				 
 				 if(json.jobId != '' && json.jobId != null && json.jobId != 'undefined' && json.jobType != '' && json.jobType != null && json.jobType != 'undefined' && json.jobType != 'Other'){
@@ -176,20 +164,22 @@ function requirementProfile(requirementUUID){
        			}
 				 
 				 
-				 
 				 result = result +'        <div class="hide-row" style="display: block;">';
 				 result = result +'          <div class="col-md-9">';
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" src="<c:url value="'+sourceleadUrl+'/displayOrgImage/'+json.orgcode+'"/>" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 if(json.orgImageUrl != null && json.orgImageUrl != '' && json.orgImageUrl != 'undefined'){
+				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.orgImageUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
+				 }
 				 result = result +'                 </div>';
+				 
 				 result = result +'              </div>';
 				 result = result +'              <div class="col-md-9">';
 				 result = result +'                <div class="canDetails clearfix">';
 				 result = result +'                  <div class="row">';
 				 result = result +'                    <div class="col-md-12">';
-				 result = result +'                      <ul class="list-unstyled can-perdt">';
+				 result = result +'                      <ul class="list-unstyled can-perdt canPerdt">';
 				 
 				 result = result +'                        <li><i class="fa fa-building" title="Company"></i><span>'+json.postedOrgName+'</span></li>';
 				 if((json.maxExp != null && json.maxExp != '' && json.maxExp !='undefined' && (json.minExp != null) && json.minExp != '' && json.minExp != 'undefined')){
@@ -202,8 +192,21 @@ function requirementProfile(requirementUUID){
 						 result = result+'						<li><i class="fa fa-briefcase" title="Experience"></i><span> -- </span></li>';
 					 }
 				 
-				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' '+rateType+' '+currencyCode+'</span></li>';
-				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
+				 result = result +'                        <li><i class="fa fa-rupee" title="Job Rate"></i><span>'+rate+' - '+maxRate+' '+rateType+' '+currencyCode+'</span></li>';
+				 
+				 
+				 if(json.locationsList != null){
+					 result = result +'<li><i class="fa fa-map-marker pull-left"></i>';
+					 result = result +'<ul class="list-unstyled list-inline joblocations pull-left">';
+	 					for(var k=0; k<json.locationsList.length; k++){
+	 						result = result +'<li>'+json.locationsList[k]+'</li>';
+	 					}
+	 					result = result +'</ul>';
+	 					result = result +'</li>';
+	 				}
+				 
+				 
+// 				 result = result +'                        <li><i class="fa fa-map-marker" title="Location"></i><span>'+location+'</span></li>';
 				 result = result +'                        <li><i class="fa fa-calendar" title="Notice Period"></i><span>'+noticePeriod+'</span>';
 				 result = result+' 						<li><i class="fa fa-cab" title="Travel allowance"></i><span title="'+json.travelAllowance+'">'+json.travelAllowance+'</span></li>';
 				 result = result +'                      </ul>';
@@ -302,38 +305,121 @@ function requirementDetails(requirementUUID){
 				 result = result +'              <div class="RDdetails">'+description+'</div>';
 				 result = result +'              <h2>Other details:</h2>';
 				 result = result +'              <div class="require_one">';
-				 result = result +'                <div class="require_wrap_details_cta"> <b>No. of positions:</b> <span>'+positions+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>No. of positions:</b> <span>'+positions+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Education:</b> <span title="'+education+'">'+education+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Education:</b> <span title="'+education+'">'+education+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
-				 result = result +'                <div class="require_wrap_details_cta"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Industry:</b> <span title="'+industryName+'">'+industryName+'</span>';
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 
+				 if(json.backgroundCheck != null && json.backgroundCheck != '' && json.backgroundCheck != 'undefined'){
+					 if(json.backgroundCheck == "Y"){
+						 backgroundCheck = "Yes" 
+					 }else{
+						 backgroundCheck = "No" 
+					 }
+				 }else{
+					 backgroundCheck = "--";
+				 }
+				 
+				 if(json.overTime != null && json.overTime != '' && json.overTime != 'undefined') {
+					 if(json.overTime == "Y"){
+						 overTime = "Yes";
+					 }else{
+						 overTime = "No"
+					 }
+				}else{
+					overTime = "--";
+				}
+				 
+				 if(json.medicalClearence != null && json.medicalClearence != '' && json.medicalClearence != 'undefined') {
+					 if(json.medicalClearence == "Y"){
+						 medicalClearence = "Yes";
+					 }else{
+						 medicalClearence = "No";
+					 }
+				 }else{
+					 medicalClearence = "--";
+				 }
+				 
+				 if(json.securityClearance != null && json.securityClearance != '' && json.securityClearance != 'undefined') {
+					 if(json.securityClearance == "Y"){
+						 securityClearance = "Yes";
+					 }else{
+						 securityClearance = "No";
+					 }
+				}else{
+						securityClearance = "--";
+				}
+				 
+				
+				 
 				 if(json.fileName != null && json.fileName != '' && json.fileName != 'undefined'){
-		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile"><b>Attachment:</b><span>'+json.fileName+'</span><a class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
+		            	result = result +'<div class="require_wrap_details_cta require_wrap_details_view require_uploadfile require_wrap_details_ctaB150"><b>Attachment:</b><span>'+json.fileName+'</span><a download class="glyphicon glyphicon-download-alt ml10" href=\"'+json.fileURL+'\"></a><a class="fa fa-eye ml10" onClick="viewFile(\''+json.fileURL+'\',\''+json.fileName+'\',\''+json.fileContentType+'\');"></a> ';
 		            	result = result +'                  <div class="clearfix"></div>';
 						 result = result +'                </div>';   
 				 }
 		            else{
-		            result = result +'<div class="require_wrap_details_cta"> <b>Attachment:</b> <span> -- </span>';
+		            result = result +'<div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Attachment:</b> <span> -- </span>';
 		            result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 		            }
 				 if(json.visaType != null && json.visaType != '' && json.visaType != 'undefined')
 					{
-					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Immigration Type:</b> <span title="'+json.visaType+'">'+json.visaType+'</span>';
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 					}
 				 else{
-					 result = result +'                <div class="require_wrap_details_cta"> <b>Immigration Type:</b> <span title="--">--</span>';
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Immigration Type:</b> <span title="--">--</span>';
 					 result = result +'                  <div class="clearfix"></div>';
 					 result = result +'                </div>';
 				 }
+				  
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Medical Clearence:</b> <span title="'+medicalClearence+'">'+medicalClearence+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
 				 
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Security Clearance:</b> <span title="'+securityClearance+'">'+securityClearance+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Over Time:</b> <span title="'+overTime+'">'+overTime+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Background Check:</b> <span title="'+backgroundCheck+'">'+backgroundCheck+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					 
+				 if(json.gender != null && json.gender != '' && json.gender != 'undefined')
+					{
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Gender:</b> <span title="'+json.gender+'">'+json.gender+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Gender:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>'; 
+				 }
+				 if(json.experienceLevel != null && json.experienceLevel != '' && json.experienceLevel != 'undefined')
+					{
+				 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Experience Level:</b> <span title="'+json.experienceLevel.name+'">'+json.experienceLevel.name+'</span>';
+				 result = result +'                  <div class="clearfix"></div>';
+				 result = result +'                </div>';
+					}
+				 else{
+					 result = result +'                <div class="require_wrap_details_cta require_wrap_details_ctaB150"> <b>Experience Level:</b> <span title="--">--</span>';
+					 result = result +'                  <div class="clearfix"></div>';
+					 result = result +'                </div>'; 
+				 }
 				 result = result +'                  <div class="clearfix"></div>';
 				 result = result +'                </div>';
 				 result = result +'                  <div class="clearfix"></div>';
@@ -480,7 +566,7 @@ function getSubmissionDetails(requirementUUID){
 			        	   result = result +'         <td><div class="tbldata-dotdot-vsm">'+report.phoneNumber+'</div></td>';
 			        	   
 			        	   result = result + '<td><div class="tblwidth-150"><span>'+report.submissionStatus+'</span>';
-			        	   if(report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
+			        	   if(report.submissionStatus == "REJECTED" && report.rejectedReason != null && report.rejectedReason != '' && report.rejectedReason != 'undefined'){
 			        	 		  result = result + '<i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectedReason+'</p></div></i></div></td>';
 			        	   }	
 			        	   result = result + '</div></td>';
@@ -510,185 +596,195 @@ function getRateNegotiationDetails(submissionId, candidateId){
 	   	type: "POST",
 	   	url: sourceleadUrl+"/getRateHistoryBySubmissionId?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&candidateId="+candidateId+"&orgLocationId="+orgLocationId, 	   
 		    success: function(data) {
-		    	if(data != null && data != 'undefined' && data != "" && data != '[]'){
-	            	 var json = JSON.parse(data);
-          			    var result = "";
-          			   	result = result + '<div class="timesheetHead proposeNewRate clearfix">';
-          			   	 
-          			   	 
-		          		result = result +'   <div class="panel-group" id="accordion">';
-		          		result = result +'  <div class="clearfix">';
-		          		result = result +'    <div class="panel-heading clearfix">';
-		          		result = result +'      <h4 class="panel-title pull-right">';
-		          		result = result +'        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onClick="iconFun(this);">';
-		          		result = result +'          Propose New Rate';
-		          		result = result +'        <i class="indicator glyphicon glyphicon-chevron-down"></i></a>';
-		          		result = result +'      </h4>';
-		          		result = result +'    </div>';
-		          		result = result +'    <div id="collapseOne" class="panel-collapse collapse in clearfix">';
-		          		result = result +'      <div class="panel-body">';
-		          		
-		          		
-		          		result = result + '<div class="clearfix row">';
-	                    result = result + '<form name="rate_form" id="rate_form" method="post">';
-	                    
-	                    result = result + '<div class="col-md-6">';
-	                    result = result + '<label class="col-md-12">Rate<span class="paddingLeft text-danger">*</span></label>';
-	                    result = result + '<div class="col-md-12">';
-	                    result = result + '<input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
-	                    result = result + '</div>';
-	                    result = result + '</div>';
-	                    
-		          		result = result + '<div class="col-md-6">';
-		          		result = result + '<label class="col-md-12">Rate Per<span class="paddingLeft text-danger">*</span></label>';
-		          		result = result + '<div class="col-md-12 dropdown-select">';
-		                result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
-		                result = result + '	<option value="">Rate Per</option>';
-		                result = result + '    <option>Hourly</option>';
-		                result = result + '    <option>Weekly</option>';
-		                result = result + '    <option>Bi-weekly</option>';
-		                result = result + '    <option>Semi-Monthly</option>';
-		                result = result + '    <option>Monthly</option>';
-		                result = result + '    <option>Bi-Monthly</option>';
-		                result = result + '    <option>Yearly</option>';
-		                result = result + ' </select>';
-		                result = result + '</div>';
-		                result = result + '</div>';
-	                    
-	                    result = result + '  <div class="col-md-12 mt">';
-	                    result = result + '  <label class="col-md-12">Comment</label>';
-	                    result = result + '  <div class="col-md-12">';
-	                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
-	                    result = result + '  </div>';
-	                    result = result + '  </div>';
-	                    
-	                    result = result + '  <div class="col-md-12 mt">';
-	                    result = result + '    <div class="pull-right mr">';
-	                    result = result + '      <input type="button" value="Submit" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
-	                    result = result + '      <input type="button" value="Clear" class="btn btn-default btn-sm" onClick="clearRatediv();">';
-	                    result = result + '    </div>';
-	                    result = result + '  </div>';
-	                    result = result + '</form>';
-	                    result = result + '</div>';
-		          		
-	                    
-		          		result = result +'      </div>';
-		          		result = result +'    </div>';
-		          		result = result +'  </div>';
-		          		result = result +'</div> ';
-          			   	 
-          			   	 
-          			   	 result = result +' <div class="require_wrap_table col-md-12 mb">';
-  						 result = result +' <h4>Rate Negotiation History</h4>';
-	                     result = result + '  <table id="candidatePagination" class="display" cellspacing="0" width="90%" >';
-	                     result = result + '    <thead>';
-	                     result = result + '      <tr>';
-	                     result = result + '        <th>By</th>';
-	                     result = result + '        <th>Rate</th>';
-	                     result = result + '        <th>Comment</th>';
-	                     result = result + '        <th>Date</th>';
-	                     result = result + '        <th>Status</th>';
-	                     result = result + '      </tr>';
-	                     result = result + '    </thead>';
-	                     result = result + '    <tbody>';
-	                     var divState = "";
-	                     var isLastNegotiator = "";
-	                     for (var i=0; i<json.length; i++)
-			   				{
-					    	 var report = json[i];
-					    	 if(i == json.length-1){
-		                    	 divState = report.rateInitiatorType;
-		                    	 /* if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
-		                    		 isLastNegotiator = "true";
-		                    	 }else{
-		                    		 isLastNegotiator = "false";
-		                    	 } */
-		                    	 
-		                    	 if(report.isLastProposedUser == "Y"){
-		                    		 isLastNegotiator = "true";
-		                    	 }else if(report.isLastProposedUser == "N"){
-		                    		 isLastNegotiator = "false";
-		                    	 }
-	                    	 }
-		                     result = result + '<tr>';
-		                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
-		                     result = result + '<td><div class="tbldata-dotdot-sm" title="'+report.proposeByName+'">'+report.proposeByName+'</div></td>';
-		                     }
-		                     else{
-		                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
-		                     }
+		    	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+			    	if(data.data != null && data.data != 'undefined' && data.data != ""){
+		            	 var json = data.data;
+	          			    var result = "";
+	          			   	result = result + '<div class="timesheetHead proposeNewRate clearfix">';
+	          			   	 
+	          			   	 
+			          		result = result +'   <div class="panel-group" id="accordion">';
+			          		result = result +'  <div class="clearfix">';
+			          		result = result +'    <div class="panel-heading clearfix">';
+			          		result = result +'      <h4 class="panel-title pull-right">';
+			          		result = result +'        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onClick="iconFun(this);">';
+			          		result = result +'          Propose New Rate';
+			          		result = result +'        <i class="indicator glyphicon glyphicon-chevron-down"></i></a>';
+			          		result = result +'      </h4>';
+			          		result = result +'    </div>';
+			          		result = result +'    <div id="collapseOne" class="panel-collapse collapse in clearfix">';
+			          		result = result +'      <div class="panel-body">';
+			          		
+			          		
+			          		result = result + '<div class="clearfix row">';
+		                    result = result + '<form name="rate_form" id="rate_form" method="post">';
 		                    
-		                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
-		                         result = result + '<td><div class="tblminwidth-75" title="'+report.rateAndType+'">'+report.rateAndType+'</div></td>';
-		                     } 
-		                     else{
-		                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
-		                     }
-		                     
-		                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
-		                         result = result + '<td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
-		                     }
-		                     else{
-		                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
-		                     }
-		                     
-		                     if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
-		                         result = result + '<td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
-		                     }
-		                     else{
-		                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
-		                     }
-		                     result = result + '    <td><div class="tblminwidth-75" id="rateActionDiv">';
-		                     
-		                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
-		                    	 var Accepted = 'Accepted';
-		                    	 var Rejected = 'Rejected';
-		                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
-		                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
-		                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\',\''+candidateId+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\',\''+candidateId+'\');"><i class="fa fa-times"></i></a>';	 
-		                    		 }else{
-		                    			 result = result + '----';
-		                    		 }
-		                    	 }
-		                     }else{
-		                    	 if(report.rateStage == 'ACCEPTED'){
-			                    	 result = result + ' Accepted';
-			                     	}else if(report.rateStage == 'REJECTED'){
-			                     		result = result + 'Rejected';
-			                     	}else{
-			                     		result = result + '----';
-			                     	}
-		                     }
-		                     result = result + '		</div></td>';
+		                    result = result + '<div class="col-md-6">';
+		                    result = result + '<label class="col-md-12">Rate<span class="paddingLeft text-danger">*</span></label>';
+		                    result = result + '<div class="col-md-12">';
+		                    result = result + '<input type="text" class="form-control input-sm" placeholder="Rate" id="rateProposal" name="rateProposal" field-name="Rate" data-validation="required  validate_Space validate_float validate_length length1-8">';
+		                    result = result + '</div>';
+		                    result = result + '</div>';
+		                    
+			          		result = result + '<div class="col-md-6">';
+			          		result = result + '<label class="col-md-12">Rate Per<span class="paddingLeft text-danger">*</span></label>';
+			          		result = result + '<div class="col-md-12 dropdown-select">';
+			                result = result + ' <select class="form-control input-sm" id="rateType" name="rateType" field-name="Rate Per" data-validation="required">';
+			                result = result + '	<option value="">Rate Per</option>';
+			                result = result + '    <option>Hourly</option>';
+			                result = result + '    <option>Weekly</option>';
+			                result = result + '    <option>Bi-weekly</option>';
+			                result = result + '    <option>Semi-Monthly</option>';
+			                result = result + '    <option>Monthly</option>';
+			                result = result + '    <option>Bi-Monthly</option>';
+			                result = result + '    <option>Yearly</option>';
+			                result = result + ' </select>';
+			                result = result + '</div>';
+			                result = result + '</div>';
+		                    
+		                    result = result + '  <div class="col-md-12 mt">';
+		                    result = result + '  <label class="col-md-12">Comment</label>';
+		                    result = result + '  <div class="col-md-12">';
+		                    result = result + '    <textarea rows="2" class="form-control" placeholder="Comment" id="comment" name="comment" data-validation-optional="true" data-validation="validate_length length2-500" field-name="Reason"></textarea>';
+		                    result = result + '  </div>';
+		                    result = result + '  </div>';
+		                    
+		                    result = result + '  <div class="col-md-12 mt">';
+		                    result = result + '    <div class="pull-right mr">';
+		                    result = result + '      <input type="button" value="Submit" class="btn btn-primary btn-sm mr" id="add_rate" onClick="proposeNewRate('+submissionId+','+candidateId+');">';
+		                    result = result + '      <input type="button" value="Clear" class="btn btn-default btn-sm" onClick="clearRatediv();">';
+		                    result = result + '    </div>';
+		                    result = result + '  </div>';
+		                    result = result + '</form>';
+		                    result = result + '</div>';
+			          		
+		                    
+			          		result = result +'      </div>';
+			          		result = result +'    </div>';
+			          		result = result +'  </div>';
+			          		result = result +'</div> ';
+	          			   	 
+	          			   	 
+	          			   	 result = result +' <div class="require_wrap_table col-md-12 mb">';
+	  						 result = result +' <h4>Rate Negotiation History</h4>';
+		                     result = result + '  <table id="candidatePagination" class="display" cellspacing="0" width="90%" >';
+		                     result = result + '    <thead>';
+		                     result = result + '      <tr>';
+		                     result = result + '        <th>By</th>';
+		                     result = result + '        <th>Rate</th>';
+		                     result = result + '        <th>Comment</th>';
+		                     result = result + '        <th>Date</th>';
+		                     result = result + '        <th>Status</th>';
 		                     result = result + '      </tr>';
-			   				}
-	                     result = result + '    </tbody>';
-	                     result = result + '  </table>';
-	                     result = result+"  </div> ";
-	                     result = result+" </div> ";
-	                     $("#professionalRequirementProfileDiv").empty();
-	  		           	 $("#professionalRequirementProfileDiv").append(result);
-	        	 	}else{
-	        	 		$("#professionalRequirementProfileDiv").removeAttr("style");
-			    	     var result ="";
-			    	     result = result + '<div class="require_wrap_table overflow-data filter-position mt25 timesheetHead">';
-    		    	   	 result = result +' <div class="require_wrap_details require_textarea">';
-    					 result = result +' <h2>Rate Negotiation History</h2>';
-			    	     result = result+"   <div class='row'>"; 
-						 result = result+"	<div class='col-lg-12'>"; 
-						 result = result+"		<div class='clearfix'>"; 
-						 result = result+"			<div class='blank-data'>";
-						 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
-						 result = result+"			        <p>No rate history found</p>";
-						 result = result+"			 </div>";
-						 result = result+"		</div>"; 
-						 result = result+"	</div>"; 
-						 result = result+"  </div> ";
-						 result = result+"  </div> ";
-	                     result = result+" </div> ";
-	                     $("#professionalRequirementProfileDiv").empty();
-	  		           	 $("#professionalRequirementProfileDiv").append(result);
-	            	}
+		                     result = result + '    </thead>';
+		                     result = result + '    <tbody>';
+		                     var divState = "";
+		                     var isLastNegotiator = "";
+		                     for (var i=0; i<json.length; i++)
+				   				{
+						    	 var report = json[i];
+						    	 if(i == json.length-1){
+			                    	 divState = report.rateInitiatorType;
+			                    	 /* if((report.rateInitiatorType != "ORG" && report.rateInitiatorType != "CANDIDATE") && (report.initiatorOrgLocationIdStr==orgLocationId)){
+			                    		 isLastNegotiator = "true";
+			                    	 }else{
+			                    		 isLastNegotiator = "false";
+			                    	 } */
+			                    	 
+			                    	 if(report.isLastProposedUser == "Y"){
+			                    		 isLastNegotiator = "true";
+			                    	 }else if(report.isLastProposedUser == "N"){
+			                    		 isLastNegotiator = "false";
+			                    	 }
+		                    	 }
+			                     result = result + '<tr>';
+			                     if(report.proposeByName != null && report.proposeByName != '' && report.proposeByName != 'undefined'){
+			                     result = result + '<td><div class="tbldata-dotdot-sm" title="'+report.proposeByName+'">'+report.proposeByName+'</div></td>';
+			                     }
+			                     else{
+			                    	 result = result + ' <td><div class="tbldata-dotdot-sm">----</div></td>'; 
+			                     }
+			                    
+			                     if(report.rateAndType != null && report.rateAndType != '' && report.rateAndType != 'undefined'){
+			                         result = result + '<td><div class="tblminwidth-75" title="'+report.rateAndType+'">'+report.rateAndType+'</div></td>';
+			                     } 
+			                     else{
+			                    	 result = result + ' <td><div class="tblminwidth-75">----</div></td>'; 
+			                     }
+			                     
+			                     if(report.rateReason != null && report.rateReason != '' && report.rateReason != 'undefined'){
+			                         result = result + '<td><div class="tbldata-dotdot" title="'+report.rateReason+'">'+report.rateReason+'</div></td>';
+			                     }
+			                     else{
+			                         result = result + '<td><div class="tbldata-dotdot">----</div></td>';
+			                     }
+			                     
+			                     if(report.createdDateStr != null && report.createdDateStr != '' && report.createdDateStr != 'undefined'){
+			                         result = result + '<td><div class="tblminwidth-75">'+report.createdDateStr+'</div></td>';
+			                     }
+			                     else{
+			                         result = result + '<td><div class="tblminwidth-75">----</div></td>'; 
+			                     }
+			                     result = result + '    <td><div class="tblminwidth-75" id="rateActionDiv">';
+			                     
+			                     if(i == json.length-1 && report.rateStage == 'NEWRATE' && isLastNegotiator=="false"){
+			                    	 var Accepted = 'Accepted';
+			                    	 var Rejected = 'Rejected';
+			                    	 if(null != report.submissionRateStatus && '' != report.submissionRateStatus && 'undefined' != report.submissionRateStatus && 'REJECTED' != report.submissionRateStatus){
+			                    		 if(report.rateAndType != null && report.rateAndType != 'undefined' && report.rateAndType !=''){
+			                    			 result = result + '<a href="javascript:void(0)" class="text-primary" title="Accept" onclick="acceptRejectRate('+submissionId+',\''+Accepted+'\',\''+candidateId+'\');"><i class="fa fa-check"></i></a> <a href="javascript:void(0)" class="text-danger" title="Reject" onclick="acceptRejectRate('+submissionId+',\''+Rejected+'\',\''+candidateId+'\');"><i class="fa fa-times"></i></a>';	 
+			                    		 }else{
+			                    			 result = result + '----';
+			                    		 }
+			                    	 }
+			                     }else{
+			                    	 if(report.rateStage == 'ACCEPTED'){
+				                    	 result = result + ' Accepted';
+				                     	}else if(report.rateStage == 'REJECTED'){
+				                     		result = result + 'Rejected';
+				                     	}else{
+				                     		result = result + '----';
+				                     	}
+			                     }
+			                     result = result + '		</div></td>';
+			                     result = result + '      </tr>';
+				   				}
+		                     result = result + '    </tbody>';
+		                     result = result + '  </table>';
+		                     result = result+"  </div> ";
+		                     result = result+" </div> ";
+		                     $("#professionalRequirementProfileDiv").empty();
+		  		           	 $("#professionalRequirementProfileDiv").append(result);
+		        	 	}else{
+		        	 		$("#professionalRequirementProfileDiv").removeAttr("style");
+				    	     var result ="";
+				    	     result = result + '<div class="require_wrap_table overflow-data filter-position mt25 timesheetHead">';
+	    		    	   	 result = result +' <div class="require_wrap_details require_textarea">';
+	    					 result = result +' <h2>Rate Negotiation History</h2>';
+				    	     result = result+"   <div class='row'>"; 
+							 result = result+"	<div class='col-lg-12'>"; 
+							 result = result+"		<div class='clearfix'>"; 
+							 result = result+"			<div class='blank-data'>";
+							 result = result+"			        <p><i class='fa fa-5x fa-bar-chart'></i></p>";
+							 result = result+"			        <p>No rate history found</p>";
+							 result = result+"			 </div>";
+							 result = result+"		</div>"; 
+							 result = result+"	</div>"; 
+							 result = result+"  </div> ";
+							 result = result+"  </div> ";
+		                     result = result+" </div> ";
+		                     $("#professionalRequirementProfileDiv").empty();
+		  		           	 $("#professionalRequirementProfileDiv").append(result);
+		            	}
+		    	}else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
 		    }
 	});
 }
@@ -718,17 +814,28 @@ function clearRatediv(){
 
 function proposeNewRate(submissionId, candidateId) {
 	 if ($('#rate_form').validate(false, validationSettings)){
-			var type = "Candidate";
-			var frm = $('#rate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-		    var jsonData = encodeURIComponent(con);
+		 
+		    var type = "Candidate";
+		    var formData = getFormData1("rate_form");
 		    $("#add_rate").attr("disabled", "disabled");
+		    
 			$.ajax({
 			type: "POST",
-			url: sourceleadUrl+"/storeNegotiation?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&submissionId="+submissionId+"&type="+type,
-				success: function(data) {
-					getRateNegotiationDetails(submissionId, candidateId);
+			processData: false,
+		    contentType:false, 
+			data: formData,
+			url : sourceleadUrl+'/ws/storeNegotiation?'+tokenParamName+'='+tokenValue+'&submissionId='+submissionId+'&type='+type,
+				success: function(output) {
+					if (output.response === "FAILED") {
+			    		showError(output.responseMessage);
+			    	} else if (output.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (output.response === "SUCCESS") {
+			    		getRateNegotiationDetails(submissionId, candidateId);
+			    	}else {
+			    		showError("Operation failed, please try again");
+			    		$("#add_rate").removeAttr("disabled");
+			    	}
 				},
 			});
 			return true;
@@ -742,12 +849,22 @@ function proposeNewRate(submissionId, candidateId) {
 	function acceptRejectRate(submissionId, status, candidateId) {
 		$("#rateActionDiv").empty();
 		$("#rateActionDiv").prepend('<i class="fa fa-cog fa-spin"></i>');
-			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({
 			type: "POST",
 			url: sourceleadUrl+"/acceptRejectRate?${_csrf.parameterName}=${_csrf.token}&submissionId="+submissionId+"&status="+status,
 				success: function(data) {
-					getRateNegotiationDetails(submissionId, candidateId);
+					if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		getRateNegotiationDetails(submissionId, candidateId);
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 				},
 			});
 			  return true;
@@ -927,26 +1044,22 @@ function getContactsCount(){
 </script>
 
 
-
 <script type="text/javascript">
 $('body').on('submit', '#referToContacts', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
+      var formData = $($('#referToContacts')[0]).serialize();
      
-      var frm = $('#referToContacts').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_contacts").attr("disabled", "disabled");
 		$( "#submit_contacts" ).addClass('button').val('Processing..');
-	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 	
 	 	  $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
+		    	data: formData,
+		    	processData :false,
+		    	 url: sourceleadUrl+"/submitUserContactsToRequirement?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(result) {
 		        	cancelReferPopUp();
 		        },
@@ -970,24 +1083,22 @@ $('body').on('submit', '#referToContacts', function(e){
 $('body').on('submit', '#referToJob_form', function(e){
 	  if ($(this).validate(false, validationSettings)){
       e.preventDefault();
-     
-      var frm = $('#referToJob_form').serializeFormJSON();
-      var con = JSON.stringify(frm);
-      con = con.replace(/[{}]/g, "");
-      
-      //It will escape all the special characters
-      var jsonData = encodeURIComponent(con);
       
         $("#submit_refer").attr("disabled", "disabled");
 		$( "#submit_refer" ).addClass('button').val('Processing..');
-		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-	      $.ajax({
-		    	type: "POST",
-		    	 url: sourceleadUrl+"/submitReferToJob?${_csrf.parameterName}=${_csrf.token}&json="+jsonData, 
-		        success: function(result) {
-		        	cancelReferPopUp();
-		        },
-		    });  
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		var formData = getFormData1("referToJob_form");
+    		
+		       $.ajax({
+    					type : "POST",
+    					 data: formData,
+    	  		         processData: false,
+    	  		         contentType:false, 
+    					url : sourceleadUrl+"/submitReferToJob?"+tokenParamName+"="+tokenValue+"",
+    					success : function(result) {
+    						cancelReferPopUp();
+    					},
+    				});
       return true; 
     }
     else{
@@ -1064,7 +1175,7 @@ function cancelReferPopUp(){
 </script>
 <script>
 	function predefineOrgProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 

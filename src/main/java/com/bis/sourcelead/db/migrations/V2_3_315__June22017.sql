@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `sourcelead`.`EXPENSE_CATEGORY`;
-CREATE TABLE `sourcelead`.`EXPENSE_CATEGORY` (
+DROP TABLE IF EXISTS `EXPENSE_CATEGORY`;
+CREATE TABLE `EXPENSE_CATEGORY` (
 ID BIGINT NOT NULL AUTO_INCREMENT,
 LOCATION_ID BIGINT DEFAULT NULL,
 NAME VARCHAR(250) DEFAULT NULL,
@@ -12,10 +12,10 @@ CREATED_BY VARCHAR(10),
 UPDATED_DATE DATETIME,
 UPDATED_BY VARCHAR(10),
 PRIMARY KEY (`ID`),
-FOREIGN KEY(LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID)
+FOREIGN KEY(LOCATION_ID) REFERENCES `ORG_LOCATIONS`(ID)
 );
-DROP TABLE IF EXISTS `sourcelead`.`EXPENSES`;
-CREATE TABLE `sourcelead`.`EXPENSES` (
+DROP TABLE IF EXISTS `EXPENSES`;
+CREATE TABLE `EXPENSES` (
 ID BIGINT NOT NULL AUTO_INCREMENT,
 EXPENSE_ID VARCHAR(20) DEFAULT NULL,
 LOCATION_ID BIGINT DEFAULT NULL,
@@ -31,13 +31,13 @@ CREATED_BY VARCHAR(10),
 UPDATED_DATE DATETIME,
 UPDATED_BY VARCHAR(10),
 PRIMARY KEY (`ID`),
-FOREIGN KEY(LOCATION_ID) REFERENCES `sourcelead`.`ORG_LOCATIONS`(ID),
-FOREIGN KEY(PROJECT_MEMBERS_ID) REFERENCES `sourcelead`.`PROJECT_MEMBERS`(ID)
+FOREIGN KEY(LOCATION_ID) REFERENCES `ORG_LOCATIONS`(ID),
+FOREIGN KEY(PROJECT_MEMBERS_ID) REFERENCES `PROJECT_MEMBERS`(ID)
 );
 
 
-DROP TABLE IF EXISTS `sourcelead`.`EXPENSES_ENTRIES`;
-CREATE TABLE `sourcelead`.`EXPENSES_ENTRIES` (
+DROP TABLE IF EXISTS `EXPENSES_ENTRIES`;
+CREATE TABLE `EXPENSES_ENTRIES` (
 ID BIGINT NOT NULL AUTO_INCREMENT,
 EXPENSESID BIGINT DEFAULT NULL,
 EXPENSE_CATEGORY_ID BIGINT DEFAULT NULL,
@@ -53,12 +53,12 @@ CREATED_BY VARCHAR(10),
 UPDATED_DATE DATETIME,
 UPDATED_BY VARCHAR(10),
 PRIMARY KEY (`ID`),
-FOREIGN KEY(EXPENSESID) REFERENCES `sourcelead`.`EXPENSES`(ID),
-FOREIGN KEY(EXPENSE_CATEGORY_ID) REFERENCES `sourcelead`.`EXPENSE_CATEGORY`(ID)
+FOREIGN KEY(EXPENSESID) REFERENCES `EXPENSES`(ID),
+FOREIGN KEY(EXPENSE_CATEGORY_ID) REFERENCES `EXPENSE_CATEGORY`(ID)
 );
 
-DROP TABLE IF EXISTS `sourcelead`.`EXPENSES_ENTRIES_DOCUMENTS`;
-CREATE TABLE `sourcelead`.`EXPENSES_ENTRIES_DOCUMENTS` (
+DROP TABLE IF EXISTS `EXPENSES_ENTRIES_DOCUMENTS`;
+CREATE TABLE `EXPENSES_ENTRIES_DOCUMENTS` (
   ID BIGINT NOT NULL AUTO_INCREMENT,
   EXPENSES_ENTRIES_ID BIGINT DEFAULT NULL,
   DOC_FILE MEDIUMBLOB,
@@ -70,11 +70,11 @@ CREATE TABLE `sourcelead`.`EXPENSES_ENTRIES_DOCUMENTS` (
   UPDATED_DATE DATE,
   UPDATED_BY VARCHAR(10),
   PRIMARY KEY (`ID`),
-  FOREIGN KEY(EXPENSES_ENTRIES_ID) REFERENCES `sourcelead`.`EXPENSES_ENTRIES`(ID)
+  FOREIGN KEY(EXPENSES_ENTRIES_ID) REFERENCES `EXPENSES_ENTRIES`(ID)
 );  
 
-DROP TABLE IF EXISTS `sourcelead`.`EXPENSES_APPROVER_HIERARCHY`;
-CREATE TABLE `sourcelead`.`EXPENSES_APPROVER_HIERARCHY` (
+DROP TABLE IF EXISTS `EXPENSES_APPROVER_HIERARCHY`;
+CREATE TABLE `EXPENSES_APPROVER_HIERARCHY` (
   ID BIGINT NOT NULL AUTO_INCREMENT,
   HIERARCHY_ID BIGINT,
   EXPENSESID BIGINT,
@@ -88,49 +88,49 @@ CREATE TABLE `sourcelead`.`EXPENSES_APPROVER_HIERARCHY` (
   UPDATED_DATE DATE,
   UPDATED_BY VARCHAR(10),
   PRIMARY KEY (`ID`),
-  FOREIGN KEY(HIERARCHY_ID) REFERENCES `sourcelead`.`PROJECT_APPROVER_HIERARCHY`(ID),
-  FOREIGN KEY(EXPENSESID) REFERENCES `sourcelead`.`EXPENSES`(ID)
+  FOREIGN KEY(HIERARCHY_ID) REFERENCES `PROJECT_APPROVER_HIERARCHY`(ID),
+  FOREIGN KEY(EXPENSESID) REFERENCES `EXPENSES`(ID)
 ) ;
 
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('966','Accommodation - Hotel / Lodging','Accommodation - Hotel / Lodging','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('967','Airways','Airways','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('968','Train','Train','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('969','Cab','Cab','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('970','Car','Car','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('966','Accommodation - Hotel / Lodging','Accommodation - Hotel / Lodging','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('967','Airways','Airways','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('968','Train','Train','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('969','Cab','Cab','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('970','Car','Car','Expense Category');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('971','Rental','Rental','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('972','Furniture & Equipment Rental','Furniture & Equipment Rental','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('973','Gasoline','Gasoline','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('974','Taxi','Taxi','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('975','Mileage','Mileage','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('971','Rental','Rental','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('972','Furniture & Equipment Rental','Furniture & Equipment Rental','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('973','Gasoline','Gasoline','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('974','Taxi','Taxi','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('975','Mileage','Mileage','Expense Category');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('976','Parking ','Parking','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('977','Relocation Expenses','Relocation Expenses','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('978','Visa Expenses Per','Visa Expenses Per','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('979','Deim Internet & Data Card Charges','Deim Internet & Data Card Charges','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('980','Postage & Courier','Postage & Courier','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('976','Parking ','Parking','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('977','Relocation Expenses','Relocation Expenses','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('978','Visa Expenses Per','Visa Expenses Per','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('979','Deim Internet & Data Card Charges','Deim Internet & Data Card Charges','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('980','Postage & Courier','Postage & Courier','Expense Category');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('981','Shipment','Shipment','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('982','Cellphone','Cellphone','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('983','Telephone / Fax','Telephone / Fax','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('984','Gifts','Gifts','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('985','Refreshment','Refreshment','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('981','Shipment','Shipment','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('982','Cellphone','Cellphone','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('983','Telephone / Fax','Telephone / Fax','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('984','Gifts','Gifts','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('985','Refreshment','Refreshment','Expense Category');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('986','Breakfast','Breakfast','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('987','Meals','Meals','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('988','Lunch','Lunch','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('989','Dinner','Dinner','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('990','Snacks','Snacks','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('986','Breakfast','Breakfast','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('987','Meals','Meals','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('988','Lunch','Lunch','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('989','Dinner','Dinner','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('990','Snacks','Snacks','Expense Category');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('991','Advertisement','Advertisement','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('992','Business Promotion','Business Promotion','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('993','Conference / Seminar','Conference / Seminar','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('994','Dues / Subscription','Dues / Subscription','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('995','Gratuities / Tips','Gratuities / Tips','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('991','Advertisement','Advertisement','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('992','Business Promotion','Business Promotion','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('993','Conference / Seminar','Conference / Seminar','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('994','Dues / Subscription','Dues / Subscription','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('995','Gratuities / Tips','Gratuities / Tips','Expense Category');
 
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('996','License & Permits','License & Permits','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('997','Tolls','Tolls','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('998','Training','Training','Expense Category');
-INSERT INTO `sourcelead`.`LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('999','Miscellaneous','Miscellaneous','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('996','License & Permits','License & Permits','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('997','Tolls','Tolls','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('998','Training','Training','Expense Category');
+INSERT INTO `LOOKUP_DATA` (`ID`,`NAME`,`DESCRIPTION`,`CATEGORY`) VALUES ('999','Miscellaneous','Miscellaneous','Expense Category');
 

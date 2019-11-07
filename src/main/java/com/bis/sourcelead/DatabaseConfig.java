@@ -5,20 +5,14 @@
 package com.bis.sourcelead;
 
 import java.beans.PropertyVetoException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.annotation.PreDestroy;
 import javax.sql.DataSource;
 
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -111,11 +105,11 @@ public class DatabaseConfig {
 		hibernateProperties.setProperty("hibernate.c3p0.c3p0.numHelperThreads", "8");
 		hibernateProperties.setProperty("hibernate.jdbc.batch_size", "1000");
 				
-		hibernateProperties.setProperty("hibernate.cache.provider_class", "net.sf.ehcache.hibernate.SingletonEhCacheProvider");
+		/*hibernateProperties.setProperty("hibernate.cache.provider_class", "net.sf.ehcache.hibernate.SingletonEhCacheProvider");
 		hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true"); 
 		hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
 		hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
-		hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "hibernateCache.xml");
+		hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "hibernateCache.xml");*/
 		
 		sfb.addProperties(hibernateProperties);
 

@@ -3,22 +3,20 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<link href="resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/crowdsourcingstyles.css?staticTime=${staticTime}" rel="stylesheet">
 
-<style>
-.margin-down{
-    margin-bottom: 100px;
-}
-</style>
 <script> 
 $(document).ready(function(){
 	getProfessionalInfo();
+	if('${candidateResumeCount}' < 1 ){
+		addCandidate();
+	}
 });
 </script>
 
 <script>
 	function predefineProfileImage(imageId){   
-		$(imageId).attr('src','resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
@@ -30,16 +28,18 @@ $(document).ready(function(){
       </div>
        
        <!-- Redirect to main dashboard -->
-       <div class="pull-right brud-crum"><a href="<c:url value='/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo; Update Profile</div>
+       <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home </a> &raquo;<a href="<c:url value='${appPath}/professionalProfile'/>">Profile </a> &raquo; Update Profile</div>
    
     </section>
     
   <!-- Profile Content Start-->
     <div id="professionalInfoDiv"></div>
      <!-- Profile Content End -->
-     
+    
+     <!-- New jsp's added here -->
      
 </section>
+
 
 <script>
 function getProfessionalInfo(){ 
@@ -62,11 +62,16 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 lastName = "";
 		    	 }
+		    	 if(json.middelName != null && json.middelName != '' && json.middelName !='undefined'){
+		    		 middelName = json.middelName;
+		    	 }else{
+		    		 middelName = "";
+		    	 }
 		    	 
 		    	 if(json.noticePeriod != null && json.noticePeriod != '' && json.noticePeriod !='undefined'){
 		    		 noticePeriod = json.noticePeriod;
 		    	 }else{
-		    		 noticePeriod = "";
+		    		 noticePeriod = "---";
 		    	 }
 		    	 
 		    	 if(json.designation != null && json.designation != '' && json.designation !='undefined'){
@@ -77,7 +82,7 @@ function getProfessionalInfo(){
 		    	 if(json.designationType != null && json.designationType != '' && json.designationType !='undefined'){
 		    		 designationType = json.designationType;
 		    	 }else{
-		    		 designationType = "";
+		    		 designationType = "---";
 		    	 }
 		    	 
 		    	 if(json.designationOtherType != null && json.designationOtherType != '' && json.designationOtherType !='undefined'){
@@ -126,17 +131,11 @@ function getProfessionalInfo(){
 		    	 }else{
 		    		 primarySkill = " --- ";
 		    	 }
-		    	/*  if(json.skillsName != null  && json.skillsName != '' && json.skillsName != 'undefiend'){
-		    		 skillsName = json.skillsName;
-		    	 }else{
-		    		 skillsName = " --- ";
-		    		 
-		    	 } */
 		    	 
 		    	 if(json.experienceYears != null  && json.experienceYears != '' && json.experienceYears != 'undefiend'){
 		    		 experienceYears = json.experienceYears +' Years';
 		    	 }else{
-		    		 experienceYears = "";
+		    		 experienceYears = "---";
 		    	 }
 		    	 
 		    	 if(json.experienceMonths != null  && json.experienceMonths != '' && json.experienceMonths != 'undefiend'){
@@ -191,7 +190,7 @@ function getProfessionalInfo(){
 				 result = result +'	        <img data-id="userProfileImage" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_user.fileUrl}" alt="Profile Image" width="96" height="96">';
 				 
 				 result = result +'	        <span>';
-				  result = result +'	        <strong>'+firstName+' '+lastName+'</strong> <br>'; 
+				  result = result +'	        <strong>'+firstName+' '+middelName+' '+lastName+'</strong> <br>'; 
 				 result = result +'	        </span>';
 				 result = result +'	        </div>';
 				 
@@ -210,15 +209,21 @@ function getProfessionalInfo(){
 				result = result+' </div> ';
 				
 				 result = result +'	        <ul class="list-unstyled professional-details">';
-				 result = result +'	            <li><i class="fa fa-magnet" title="Designation"></i><strong>'+designation+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-clock-o" title="Employment Type"></i><span class="text-muted">'+designationType+' '+designationOtherType+'</strong></li>';
-				 result = result +'	            <li><i class="fa fa-briefcase" title="Experience"></i>'+experienceYears+' &nbsp; '+experienceMonths+'</li>';
-				 result = result +'	            <li><i class="fa fa-calendar" title="Notice Period"></i>'+noticePeriod+'</li>';
+				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Designation</span><span class="col-md-7 padding_left padding_right tbldata-dotdot-sm" title= '+designation+'> '+designation+'</span></li>';
+				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Employment Type</span><span class="col-md-7 padding_left padding_right">'+designationType+'</span></li>';
+            	 if(json.gender != null && json.gender !="" && json.gender !='undefined'){
+				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Gender</span><span class="col-md-7 padding_left padding_right">'+json.gender+'</span></li>';
+            	 }
+            	 if(json.maritalStatus != null && json.maritalStatus !="" && json.maritalStatus !='undefined'){
+    				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Marital Status</span><span class="col-md-7 padding_left padding_right">'+json.maritalStatus+'</span></li>';
+                	 }
+				 result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Experience</span><span class="col-md-7 padding_left padding_right">'+experienceYears+' '+experienceMonths+'</span></li>';
+	             result = result+'<li><span class="col-md-5 padding_left paddingRight text-muted">Notice Period</span><span class="col-md-7 padding_left padding_right">'+noticePeriod+'</span></li>';
 				 
 				 result = result +'	        </ul>';
 				 result = result +'	    </div>';
 				 result = result +'	    <div class="col-md-3">';
-				 result = result +'	        <h5>Can be Reached at</h5>';
+				 result = result +'	        <h5>Contact information</h5>';
 				 result = result +'<div class="socialnetwork-details">';
 				 result = result +'<ul class="list-inline list-unstyled">';
 				 if(json.consultantUser !=null && json.consultantUser.id != null && json.consultantUser.facebook != null && json.consultantUser.facebook !="undefined" && json.consultantUser.facebook != ""){
@@ -239,10 +244,18 @@ function getProfessionalInfo(){
 				 result = result +'	        <p><i class="fa fa-at" title="Mail me"></i>'+email+'</p>';
 				 result = result +'	        <p><i class="fa fa-phone" title="Call us"></i>'+mobilePhone+' '+alternateMobilePhone+'</p>';
 				 result = result +'	        <p><i class="fa fa-map-marker" title="Location"></i>'+location+'</p>';
+				 if(json.dateofBirthString !=null && json.dateofBirthString !="" && json.dateofBirthString !="undefined"){
+				 result = result +'	        <p><i class="fa fa-clock-o" title="Date of Birth"></i>'+json.dateofBirthString+'</p>';
+				 }
 				 result = result +'	        </div>';
 				 result = result +'	    </div>';
 				 
 				 result = result +'	    <div class="col-md-4">';
+				 
+				
+				 result = result +'	         <div class="reportsH profileanchor pull-right"><a title="Account Settings" href="<c:url value='${sourceleadUrl}/userProfile'/>"><i class="userSettingImages"><img src="/resources/images/usersetting-img.png" alt="User settings image"></i></a>';
+				 result = result +'	            </div>';
+				 
 				 result = result +'	        <h5>Primary Skill</h5>';
 				 result = result +'	        <div class="skills mt10 mb10">';
 				 result = result +'	            <p><strong>';
@@ -252,20 +265,28 @@ function getProfessionalInfo(){
 				 result = result +'	    </div>';
 				 
 				 result = result +'	    <div class="col-md-4">';
-				 result = result +'	        <h5>Rates</h5>';
+				 result = result +'	        <h5>Remuneration</h5>';
 				 result = result +'	        <div class="skills mt10">';
-				 result = result +'	            <li> <i class="fa fa-rupee" title="Current Rate"></i>';
-				 result = result +'	                <span><strong>Current Rate: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
+				 result = result +'<ul class ="list-unstyled">';
+				 result = result +'	            <li> <i class="fa fa-money" title="Current Rate"></i>';
+				 result = result +'	                <span><strong>Current: </strong>'+currentRate+'&nbsp;'+currentRateCurrency+' '+currentRateType+'</span>';
 				 result = result +'	            </li>';
-				 result = result +'	            <li> <i class="fa fa-rupee" title="Expected Rate"></i>';
-				 result = result +'	                <span><strong>Expected Rate:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
+				 result = result +'	            <li> <i class="fa fa-money" title="Expected Rate"></i>';
+				 result = result +'	                <span><strong>Expected:</strong> '+expectedRate+' &nbsp;'+expectedRateCurrencey+' '+rateType+'</span>';
 				 result = result +'	            </li>';
+				 result = result +'</ul>';
 				 result = result +'	            </div>';
 				 result = result +'	    </div>';
 				 
+				
+				 
 				 result = result +'	</section>';
+				 // account settings icon code
+				 
 				 result = result +'	</div>';
-				 result = result +' <section class="clearfix mt25 margin-down">';
+				
+				 if('${candidateResumeCount}' > 0){
+				 result = result +' <section class="clearfix mt25 margin-down100">';
 				 result = result +'<div class="project_side_wrap_inn_tabs">';
 			     result = result +'   <ul class="project-tabs-menu">';
 			     result = result +'     <li class="current"><a href="#tab-1" onclick="professionalProfile('+candidateId+');">Profile</a></li>';
@@ -278,7 +299,7 @@ function getProfessionalInfo(){
 			     
 			     result = result +'     <div class="clearfix"></div>';
 			     result = result +'   </ul>';
-			     
+			 
 			     result = result+'     <div class="project_tabs candiateInfo">';
 		         result = result + ' <div id="tab-1" class="project_tabs_inn">';
 				 result = result + '</div>';
@@ -308,8 +329,9 @@ function getProfessionalInfo(){
 				 result = result + '</div>';
 				 
 			     result = result +'	</div>';
+			    
 			     result = result +' </section>';
-				 
+				 }
 				 $("#professionalInfoDiv").empty();
 				 $("#professionalInfoDiv").append(result); 
 				 professionalProfile(candidateId);
@@ -320,7 +342,7 @@ function getProfessionalInfo(){
 
 </script>
 
-
+<jsp:include page="updateProfessionalProfile.jsp"></jsp:include>
 <jsp:include page="professionalCandidatesProfile.jsp"></jsp:include>
 <jsp:include page="professionalCandidateResumes.jsp"></jsp:include>
 <jsp:include page="professionalCandidateEmployers.jsp"></jsp:include>
@@ -328,5 +350,4 @@ function getProfessionalInfo(){
 <jsp:include page="professionalCandidateCertificates.jsp"></jsp:include>
 <jsp:include page="professionalCandidateDocuments.jsp"></jsp:include>
 <jsp:include page="professionalCandidateReferences.jsp"></jsp:include>
-
 <jsp:include page="../masterFooter.jsp" />

@@ -1,0 +1,3 @@
+SET SQL_SAFE_UPDATES = 0;
+UPDATE `EMAIL_SCENARIO` SET `SUBJECT`='Congratulations ,You are Scheduled for an Interview at {{ApplicantInterview.loginOrgName}} for the {{ApplicantInterview.RequirementTitle}} position',`BODY`='Dear {{ApplicantInterview.ApplicantFirstName}},\n\nYou have been scheduled to attend an interview for the {{ApplicantInterview.requirementTitle}} position\n   {{ApplicantInterview.Details}} \n Pre Interview Questionnaire if any \n {{ApplicantInterview.AcceptURL}}    {{ApplicantInterview.RejectURL}}    {{ApplicantInterview.TentativeURL}}' WHERE `UNIQUE_SCENARIO_NAME`='Applicant Interview' and `ENTITY_TYPE`='Email';
+SET SQL_SAFE_UPDATES = 1;

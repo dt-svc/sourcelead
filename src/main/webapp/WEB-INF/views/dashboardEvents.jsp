@@ -1,201 +1,443 @@
 <meta http-equiv="Pragma" content="private">
 <meta http-equiv="Cache-Control" content="private">
 <meta http-equiv="Expires" content="0">
-<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <style type="text/css">
-.chosen-container {
-    width: 100% !important;
-}
-.validationError p.jquery_form_error_message {
-width: 75px; padding: 0 !important;
-}
+#eventCalendar .ui-widget.ui-widget-content { width:100% !important; background: #ededed !important; }
 </style>
+
+<script>
+$(document).on('click', '.ui-datepicker-next', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+$(document).on('click', '.ui-datepicker-prev', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+$(document).on('click', '#interviewsTab', function () {
+	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
+});
+
+
+</script>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  <!-- Applicant Authorization -->
-      <div class="dashboard-widget clearfix mb eventAlert">
-        <div class="row">
-        <div class="col-xs-12 col-md-12 event_calendar">
-            <h4 class="pull-left mb10">Events</h4>
+      <div class="mb eventAlert clearfix col-md-12 noPad">
+        <div class="dashNewWrap clearfix mb10">
+        <div class="dashNewWrapHead event_calendar">
+            <h4 class="pull-left">Events</h4>
             <sec:authorize access="hasAnyRole(\'ROLE_ADD_INTERVIEW\')">
-            <button class="btn btn-primary pull-right btn-sm mb10" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
+            <button id="scheduleInterview" class="btn btn-primary pull-left btn-sm ml mt7" onclick="dashboardAddInterview();" type="button">Schedule Interview</button>
             </sec:authorize>
-        </div>
-      <!-- show Calendar -->
-        <div class="col-xs-12 col-md-5 mb">
-            <div id="eventCalendar"></div>    
+            
+            
+        <div class="dashboardoverIcon pull-right">
+			<a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+			<div class="newActPop">
+				<span>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Pdf');" title="PDF" >Export PDF</a>
+						<a href="javascript:void(0)" onclick="exportInterviewsListSheet('Excel');" title="Excel">Export Excel</a>					
+				</span>
+			</div>
+		</div>
+
+		<ul class="nav nav-tabs pull-right">
+			<li id="jobFairsTab"><a href="javascript:void(0)" onclick="getJobFairs()">Job Fairs</a></li>
+			<li id="interviewsTab" class="active"><a href="javascript:void(0)" onclick="getInterviewsandTasks()">Interviews & Tasks</a></li>
+			<div class="clearfix"></div>
+		</ul>            
         </div>
         
       <!-- show Calendar -->
-            <div class="col-xs-12 col-md-7 mb eventCalendr_content alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+        <div class="col-xs-12 col-md-5 mb mt">
+            <div id="eventCalendar" class="eventCalendarDashboad"></div>
+            <div id="jobFairCalendar" style="display: none;"></div>
+        </div>
+
+
+		<!-- show Calendar -->
+            <div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id ="dashboardEventsDiv">
+                  
+                  <div class="eventHeader">                                               
+				        <div class="media">                                               
+				          <div class="media-left bg-success paddingRight">                
+				              <i class="fa fa-calendar fa-3x"></i>                        
+				          </div>                                                          
+				          <div class="media-body paddingLeft">                            
+				            <h4 class="media-heading" id="dayOfweek"></h4>             
+				            <p class="small" id="selectedDate"></p>                    
+				          </div>                                                          
+				        </div>                                                            
+  			  </div>			                                                      
+
+            <div class="eventCalendr_content">
             	<div id ="interviewDiv"></div>
            	 	<div id ="taskDiv"></div>
+           	 	</div>
 	     </div>
-      </div>
+
+		<div class="col-xs-12 col-md-7 mb mt alert alert-dismissable positionRelative" id="dashboardJobFairsDiv" style="display: none;">
+			<div class="eventHeader">
+				<div class="media">
+					<div class="media-left bg-success paddingRight">
+						<i class="fa fa-calendar fa-3x"></i>
+					</div>
+					<div class="media-body paddingLeft">
+						<h4 class="media-heading" id="dayOfweekForJobFair"></h4>
+						<p class="small" id="selectedDateForJobFair"></p>
+					</div>
+				</div>
+			</div>
+			<div class="eventCalendr_content">
+				<div id="fairJobsDiv"></div>
+			</div>
+		</div>
+	</div>
 		<div class="add_inter_wrap">
 			<div class="new_side_wrap_inn" id="addInterviewDiv"></div>
 		</div> 
     </div>
     
 <script type="text/javascript">
-window.onload = function() { 
-	getInterviewsandTasks();
+	window.onload = function() {
+		/* getInterviewsandTasks();
+		getInterviewsDates(); */
+		getJobFairDates();
+		getJobFairs();
+	}
+</script>
+
+<script>
+	var allDates = {};
+	var interviewDates = {};
+	var atsUrl = "${SourceLeadWeb_atsUrl}";
+	function getInterviewsDates() {
+		var sourceleadUrl = '${sourceleadUrl}';
+		var dates = {}
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getInterviewsTaskDates?${_csrf.parameterName}=${_csrf.token}",
+			success : function(result) {
+				if (result.response === "FAILED") {
+					showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var data = result.data;
+					if (data.length > 0) {
+						for (var i = 0; i < data.length; i++) {
+							dates[new Date(data[i]).getTime()] = 'visible';
+						}
+					}
+					interviewDates = dates;
+					eventCalendar(dates);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			}
+		});
+	}
+
+	var jobFairDates = {};
+	function getJobFairDates() {
+		var sourceleadUrl = '${sourceleadUrl}';
+		var atsUrl = "${SourceLeadWeb_atsUrl}";
+		var dates = {}
+		$.ajax({
+			type : "POST",
+			url : sourceleadUrl
+					+ "/getAllJobFairDatesForCalendar?${_csrf.parameterName}=${_csrf.token}",
+			success : function(result) {
+				if (result.response === "FAILED") {
+					showError(result.responseMessage);
+				} else if (result.response === "AWKWARD") {
+					location.href = "/errorPage";
+				} else if (result.response === "SUCCESS") {
+					var data = result.data;
+					if (data.length > 0) {
+						for (var i = 0; i < data.length; i++) {
+							dates[new Date(data[i]).getTime()] = 'visible';
+						}
+					}
+					jobFairDates = dates;
+					getJobFairCalendar(dates);
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			}
+		});
+	}
+	function test() {
+		for(var e in jobFairDates) {
+			alert(jobFairDates[e]);
+		}
 	}
 </script>
 
 <script type="text/javascript">
-	function getInterviewsandTasks() {
+function getJobFairs() {
+	$("#scheduleInterview").hide();
+	$("#interviewsTab").removeClass("active");
+	$("#dashboardEventsDiv").hide();
+	$(".dashboardoverIcon").hide();
+	
+	$("#jobFairsTab").addClass("active");
+	$("#dashboardJobFairsDiv").show();
+	getJobFairDates();
+	getJobsForSelectedFairDate();
+}
+
+function getInterviewsandTasks() {
+	$("#eventCalendar").find("select.ui-datepicker-month, select.ui-datepicker-year").addClass("sel");
+	$("#scheduleInterview").show();
+	$("#interviewsTab").addClass("active");
+	$("#dashboardEventsDiv").show();
+	$(".dashboardoverIcon").show();
+	
+	$("#jobFairsTab").removeClass("active");
+	$("#dashboardJobFairsDiv").hide();
+	
+	getInterviewsDates();
+	getInterviewsandTasksForSelectedDate();
+}
+
+function getSelectedDateFromCalendar(selectedDate) {
+	var date = selectedDate;
+	if(date == null || date == '' || date == 'undefined'){
+		date = new Date(); 
+		var month = parseInt(date.getMonth())+parseInt(1);
+		  var locationDate ='${SourceLeadWeb_dateFormat}'; 
+		  if(locationDate.match("yyyy-MM-dd")){
+		      date = date.getFullYear()+"-"+month+"-"+date.getDate();
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  date = date.getDate()+"-"+month+"-"+date.getFullYear();
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  date = month+"-"+date.getDate()+"-"+date.getFullYear();
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  date = date.getFullYear()+"-"+date.getDate()+"-"+month;
+		  }
+	}
+	return date;
+}
+
+	function getInterviewsandTasksForSelectedDate() {
 		var sourceleadUrl ='${sourceleadUrl}';
-		var date = $("#eventCalendar").val();
+		var date = getSelectedDateFromCalendar($("#eventCalendar").val());
+		
 		$.ajax({
 	    	type: "POST",
 	        url: sourceleadUrl+"/getInterviewsandTasks?${_csrf.parameterName}=${_csrf.token}&dateRange="+date,
 	        success: function(data) {
-	        	 var json = JSON.parse(data);
-	        	 var result = "";
-	        	 var opt = "";
-	        	 
-				     result = result + '    <div class="eventHeader">                                                      ';
-				     result = result + '          <div class="media">                                                      ';
-				     result = result + '            <div class="media-left bg-success paddingRight">                       ';
-				     result = result + '                <i class="fa fa-calendar fa-3x"></i>                               ';
-				     result = result + '            </div>                                                                 ';
-				     result = result + '            <div class="media-body paddingLeft">                                   ';
-				     result = result + '              <h4 class="media-heading">'+json.dayOfweek+'</h4>                               ';
-				     result = result + '              <p class="small">'+json.selectedDate+'</p>                               ';
-				     result = result + '            </div>                                                                 ';
-				     result = result + '          </div>                                                                   ';
-				     result = result + '    </div>																		   ';
-	        	 for(var i=0; i<json.interviewerList.length; i++)
-					{
-	        		 
-	        		 var report = json.interviewerList[i];
-	        			var clientName = "---";
-	        		 if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
- 		       			clientName = report.clientName;
- 		       		}
-			         result = result + '   <div class="eventList clearfix">  ';
-					 result = result + '      <div class="media">              ';
-					 result = result + '          <div class="media-left">     ';
-					 result = result + '              <div>'+report.startTimeStr+'</div>       ';
-					 result = result + '              <div>'+report.endTimeStr+'</div>        ';
-					 result = result + '          </div>                       ';
-					 result = result + '              <div class="media-body paddingLeft">   ';
-					 result = result + '                  <figure class="pull-left">         ';
-					 result = result + '                  <img src="resources/images/interview_icons.png" class="img-responsive" width="40">    ';
-					 result = result + '                  </figure>                                                                   ';
-					 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
-					 result = result + '									 <div class="personalInfo pull-right">                                          ';
-					 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
-					 result = result + '										<div class="userdetails">                                                      ';
-					 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
-					 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
-					 result = result + ' 									</div>                                                                         ';
-					 result = result + ' 								</div>                                                                         ';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Req.:</label> <a href="'+sourceleadUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
-					 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
-					 result = result + '                          <div class="feedBack"> ';
-					
-					 
-					 /*  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN"){
+	        	if (data.response === "FAILED") {
+		    		showError(data.responseMessage);
+		    	} else if (data.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (data.response === "SUCCESS") {
+		    		var atsUrl ='${SourceLeadWeb_atsUrl}';
+		        	 var json = data.object;
+		        	 var result = "";
+		        	 var opt = "";
+		        	 $("#dayOfweek").text(json.dayOfweek);
+		        	 $("#selectedDate").text(json.selectedDate);
+	 
+		        	 for(var i=0; i<json.interviewerList.length; i++)
+						{
+		        		 
+		        		 var report = json.interviewerList[i];
+		        			var clientName = "---";
+		        		 if(report.clientName != null && report.clientName != "" && report.clientName != 'undefined' && report.interviewSourceType != 'INTERVIEW'){
+	 		       			clientName = report.clientName;
+	 		       		}
+		        		 
+		        		 result = result + '   <div class="clearfix">  ';
+		        		 result = result + '   <div class="eventList clearfix">  ';
+						 result = result + '      <div class="media">              ';
+						 result = result + '          <div class="media-left">     ';
+						 result = result + '              <div>'+report.startTimeStr+'</div>       ';
+						 result = result + '              <div>'+report.endTimeStr+'</div>        ';
+						 result = result + '          </div>                       ';
+						 result = result + '              <div class="media-body paddingLeft">   ';
+						 result = result + '                  <figure class="pull-left">         ';
+						 result = result + '                  <img src="/resources/images/interview_icons.png" class="img-responsive" width="40">    ';
+						 result = result + '                  </figure>                                                                   ';
+						 result = result + '                      <div class="pull-left event_details form-horizontal">                   ';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Name:</label>'+report.candidateName+' </p>    ';
+						 result = result + '									 <div class="personalInfo pull-right">                                          ';
+						 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
+						 result = result + '										<div class="userdetails">                                                      ';
+						 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
+						 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+						 result = result + ' 									</div>                                                                         ';
+						 result = result + ' 								</div>                                                                         ';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+atsUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
+						 result = result + '                          <p><label class="text-muted small col-md-2">Client:</label> '+clientName+'</p>    ';
+						 result = result + '                          <div class="feedBack"> ';
 						
-						  if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined'){
-						      result = result+'	 <a title="Feedback Given" href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
-						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
-						  }else{
-							  result = result+'<i class="fa fa-handshake-o"></i>';
-						  }
-						  result = result+'</a>';
-						  }else{
-							  alert("hello1111");
-							  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
-							  
-						  }
-                      }else */ if(report.interviewerId != null  &&  report.interviewerId !='' && report.interviewerId !='undefined' && report.interviewTemplateid != null && report.interviewTemplateid != '' && report.interviewTemplateid != 'undefined'){
-                    	  result = result+'	 <a  href="'+sourceleadUrl+'/'+'dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateid+'&requirementInterviewid='+report.interviewerId+'" >';
-						  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
-                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
-						  }else{
-							  result = result+'<i class="fa fa-handshake-o"></i>';
-						  }
-						  result = result+'</a>';
-                      }   
-					  
-// 					  result = result+'<a title="Feedback Not Given" onClick="feedbackView('+report.requirementIntervieweId+',\''+report.interviewTemplateid+'\')"><i class="fa fa-handshake-o warning_color"></i></a>';
-					  
-					  
-					 //result = result + '                          <a href="javascript:void(0)" title="FeedBack"><i class="fa fa-handshake-o"></i></a>    ';
-					 result = result + '                          </div>                                                                               ';
-					 result = result + '                      </div>                                                                                   ';
-					 result = result + '              </div>                                                                                           ';
-					 result = result + '      </div>   ';
-					 result = result+' <div id="feedbackInterviewerId"></div>';
-					 result = result + '  </div>                                                                                                       ';
-					}
-	        	 
-	        	 for(var i=0; i<json.tasksList.length; i++)
-					{
-	        		 var report = json.tasksList[i];
-	        		 var taskTime ="";
-	        		 var priority = "";
-	        		 var description="";
-	        		 if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
-		        			taskTime = report.taskTime;
-		        		}
-	        		 if(report.priority != null && report.priority != '' &&  report.priority != 'undefined'){
-		        			priority = report.priority;
-		        		}
-	        		 else{
-		        			priority = "--";
-		        		}
-	        		 if(report.description != null && report.description != '' &&  report.description != 'undefined'){
-	        			 description = report.description;
-		        		}
-	        		 else{
-	        			 description = "--";
-		        		}
-					     opt = opt + '  <div class="eventList clearfix">       ';
-					 	 opt = opt + '     <div class="media">                 ';
-					 	 opt = opt + '         <div class="media-left">        ';
-					 	 opt = opt + '             <div>'+taskTime+'</div>           ';
-					 	 opt = opt + '         </div>                          ';
-					 	 opt = opt + '             <div class="media-body paddingLeft"> ';
-					 	 opt = opt + '                 <figure class="pull-left">       ';
-					 	 opt = opt + '                 <img src="resources/images/task-icon.png" class="img-responsive" width="40">    ';
-					 	 opt = opt + '                 </figure>                                                             ';
-					 	 opt = opt + '                     <div class="pull-left event_details">                             ';
-					 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
-					 	 opt = opt + '                     <div class="clearfix"></div>            ';
-					 	 opt = opt + '                     <div class="row">            ';
-					 	 opt = opt + '                     <div class="col-md-5">            ';
-					 	 opt = opt + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
-					 	 opt = opt + '                     </div>            ';
-					 	 opt = opt + '                     <div class="col-md-5">            ';
-					 	 opt = opt + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
-					 	 opt = opt + '                     </div>            ';
-					 	 
-					 	opt = opt + '                     </div>            ';
-					 	 
-					 	opt= opt+ '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
-					 	opt =opt + '                     </div>            ';
-					 	opt =opt + '             </div>                    ';
-					 	opt =opt + '     </div>                            ';
-					 	opt =opt + ' </div>                                ';
-					}
-	        	 if(json.tasksList.length<=0 && json.interviewerList.length<=0){
-			        	result = result + '<div class="row">                                            ';
-						result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
-						result = result + '	</div>                                                      ';
-						result = result + ' </div>                                                      ';
-	        	 }
-	        	 result = result + '<div class="mask_inner"></div>';
-	        	 $("#interviewDiv").empty();
-	           	 $("#interviewDiv").append(result);
-	           	 $("#taskDiv").empty();
-	           	 $("#taskDiv").append(opt);
-	        }
+						 
+						  if(report.interviewerUUID != null  &&  report.interviewerUUID !='' && report.interviewerUUID !='undefined' && report.interviewTemplateUUId != null && report.interviewTemplateUUId != '' && report.interviewTemplateUUId != 'undefined'){
+	                    	  result = result+'	 <a  href="'+sourceleadUrl+'/dashboardInterviewFeedBackTemplate?templateId='+report.interviewTemplateUUId+'&requirementInterviewid='+report.interviewerUUID+'" >';
+	                    	  if(report.feedbackDate != null && report.feedbackDate != '' && report.feedbackDate != 'undefined'){
+	                        	   result = result+'<i class="fa fa-handshake-o success_color"></i>';
+							  }else{
+								  result = result+'<i class="fa fa-handshake-o"></i>';
+							  }
+							  result = result+'</a>';
+	                      }   
+						  
+	 				 result = result + '                          </div>                                                                               ';
+						 result = result + '                      </div>                                                                                   ';
+						 result = result + '              </div>                                                                                           ';
+						 result = result + '      </div>   ';
+						 result = result+' <div id="feedbackInterviewerId"></div>';
+						 result = result + '  </div>                                                                                                       ';
+						}
+		        	 
+		        	 for(var i=0; i<json.tasksList.length; i++)
+						{
+		        		 var report = json.tasksList[i];
+		        		 var taskTime ="";
+		        		 var priority = "";
+		        		 var description="";
+		        		 if(report.taskTime != null && report.taskTime != '' && report.taskTime != 'undefined'){
+			        			taskTime = report.taskTime;
+			        		}
+		        		 if(report.priority != null && report.priority != '' &&  report.priority != 'undefined'){
+			        			priority = report.priority;
+			        		}
+		        		 else{
+			        			priority = "--";
+			        		}
+		        		 if(report.description != null && report.description != '' &&  report.description != 'undefined'){
+		        			 description = report.description;
+			        		}
+		        		 else{
+		        			 description = "--";
+			        		}
+						     opt = opt + '  <div class="eventList clearfix">       ';
+						 	 opt = opt + '     <div class="media">                 ';
+						 	 opt = opt + '         <div class="media-left">        ';
+						 	 opt = opt + '             <div>'+taskTime+'</div>           ';
+						 	 opt = opt + '         </div>                          ';
+						 	 opt = opt + '             <div class="media-body paddingLeft"> ';
+						 	 opt = opt + '                 <figure class="pull-left">       ';
+						 	 opt = opt + '                 <img src="/resources/images/task-icon.png" class="img-responsive" width="40">    ';
+						 	 opt = opt + '                 </figure>                                                             ';
+						 	 opt = opt + '                     <div class="pull-left event_details">                             ';
+						 	 opt = opt + '                         <p><label class="text-muted small col-md-2">Subject:</label> '+report.subject+'</p>         ';
+						 	 opt = opt + '                     <div class="clearfix"></div>            ';
+						 	 opt = opt + '                     <div class="row">            ';
+						 	 opt = opt + '                     <div class="col-md-5">            ';
+						 	 opt = opt + '                         <p class="text-danger"><label class="text-muted small col-md-6" style="width:45%;">Priority:</label> '+priority+'</p>   ';
+						 	 opt = opt + '                     </div>            ';
+						 	 opt = opt + '                     <div class="col-md-5">            ';
+						 	 opt = opt + '                         <p><label class="text-muted small col-md-6">Status:</label> '+report.taskStatus+'</p>                    ';
+						 	 opt = opt + '                     </div>            ';
+						 	 
+						 	opt = opt + '                     </div>            ';
+						 	 
+						 	opt= opt+ '                         <p><label class="text-muted small col-md-2" style="width:15.7%;">Des.:</label><div class="col-md-10 paddingLeft">'+description+'</div></p>';
+						 	opt =opt + '                     </div>            ';
+						 	opt =opt + '             </div>                    ';
+						 	opt =opt + '     </div>                            ';
+						 	opt =opt + ' </div>                                ';
+						}
+		        	 if(json.tasksList.length<=0 && json.interviewerList.length<=0){
+				        	result = result + '<div class="row">                                            ';
+							result = result + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">                                     ';
+							result = result + '	</div>                                                      ';
+							result = result + ' </div>                                                    ';
+							result = result + ' </div>                                                    ';
+		        	 }
+		        	 result = result + '<div class="mask_inner"></div>';
+		        	 $("#interviewDiv").empty();
+		           	 $("#interviewDiv").append(result);
+		           	 $("#taskDiv").empty();
+		           	 $("#taskDiv").append(opt);
+		    	} else if (data.indexOf('Sign In') !== -1) {
+		    		location.replace(sourceleadUrl);
+		    	} else {
+		    		showError("Operation failed, please try again");
+		    	}
+		    }
 		});
+	}
+	
+	function getJobsForSelectedFairDate() {
+		var sourceleadUrl ='${sourceleadUrl}';
+		var atsUrl = "${SourceLeadWeb_atsUrl}";
 		
+		var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
+		$("#fairJobsDiv").empty();
+		$("#fairJobsDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$.ajax({
+	    	type: "POST",
+	        url: sourceleadUrl+"/getAllJobFairRequirements?${_csrf.parameterName}=${_csrf.token}&date="+date,
+	        success: function(result) {
+	        	if (result.response === "FAILED") {
+		    		showError(result.responseMessage);
+		    	} else if (result.response === "AWKWARD") {
+		    		location.href = "/errorPage";
+		    	} else if (result.response === "SUCCESS") {
+		    		var dateFormat = "";
+		    		if(locationDate.match("yyyy-MM-dd")) {
+		    			dateFormat = 'yy-mm-dd';
+		    		} if(locationDate.match("dd-MM-yyyy")) {
+		    			dateFormat = 'dd-mm-yy'; 
+		    		} if(locationDate.match("MM-dd-yyyy")) {
+		    			dateFormat = 'mm-dd-yy'; 
+		    		} if(locationDate.match("yyyy-dd-MM")) {
+		    			dateFormat = 'yy-dd-mm'; 
+		    		}
+		    		
+					$("#dayOfweekForJobFair").text(result.responseMessage.split("<>")[0]);
+					$("#selectedDateForJobFair").text(result.responseMessage.split("<>")[1]);
+
+					var data = result.data;
+					if (data != null && data.length > 0) {
+						var jobFairsText = "";
+						for (var e in data) {
+							var text = "<div class='eventList clearfix'>";
+							text += "	<div class='pull-left event_details form-horizontal dashboard_fair_table'>";
+							text += "		<p>";
+							text += "			<a target='_blank' href='" + atsUrl + "/requirementSummary?requirementUUID=" + data[e].requirementUUID + "'>" + data[e].jobTitle + "</a>";
+							text += "		</p>";
+							if(data[e].clientId != null) {								
+								text += "		<p>";
+								text += " 			<a target='_blank' href='" + atsUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
+								text += "		</p>";
+							}
+							text += "		<p>";
+							for (var i in data[e].jobFairList) {
+								text += "<span class='dashboard_span'>" + data[e].jobFairList[i].name + "</span>";
+							}
+							text += "		</p>";
+							text += "	</div>";
+							text += "</div>";
+
+							/* $("#fairJobsDiv").append(text); */
+							jobFairsText += text;
+						}
+						$("#fairJobsDiv").append(jobFairsText);
+					} else {
+						var text = '<div class="row">';
+						text = text + '	<div class="dataTables_empty" style="border: 1px solid #ddd;margin: 0px 15px;">';
+						text = text + '	</div>';
+						text = text + ' </div>';
+						text = text + ' </div>';
+						$("#fairJobsDiv").append(text);
+					}
+					$("#fairJobsDiv").removeAttr("style");
+				} else if (result.indexOf('Sign In') !== -1) {
+					location.replace(sourceleadUrl);
+				} else {
+					showError("Operation failed, please try again");
+				}
+			}
+		});
 	}
 </script>
 
@@ -206,7 +448,7 @@ function dashboardAddInterview(){
 	$('.action-pop').slideUp();
 	interviewTemplate();
 	
-	 var locationList ='${SourceLeadWeb_orgLocations.dateFormat}';	
+	 var locationList ='${SourceLeadWeb_dateFormat}';	
 	  if(locationList.match("yyyy-MM-dd")){
 		  DashBoardInterViewDate = 'YYYY-MM-DD';
 	  }if(locationList.match("dd-MM-yyyy")){
@@ -218,7 +460,7 @@ function dashboardAddInterview(){
 	  }  
 	
 	var result = "";
-	result = result + '<div class="add_inter addinterview_dashboard">';
+	result = result + '<div class="add_inter addinterview_dashboard add_inter_chosen">';
 	result = result + '<form id="addInterview_form" name="addInterview_form" >';
 	result = result + '<div class="add_inter_head"> <span>Schedule Interview</span>';
 	result = result + '<div class="clearfix"></div>';   
@@ -300,7 +542,7 @@ function dashboardAddInterview(){
 		result = result + '		</td>';
 
 		result = result + '		<td>';
-		result = result + '			<div class="pull-left timeZone validationError" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
+		result = result + '			<div class="pull-left timeZone validationError_paragraph" id="timeDiv"> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="Start Time" name="1startTime" id="1startTime" onBlur="validateEndTime();" type="text" data-validation="required" field-name="Start Time"/></span> <span class="positionRelative"><input class="form-control input-sm timepicker" placeholder="End Time" name="1endTime" id="1endTime" onBlur="validateEndTime();" type="text" field-name="End Time"/></span></div>';
 		result = result + '		</td>';
 
 		result = result + '		<td>';
@@ -326,15 +568,15 @@ function dashboardAddInterview(){
 	
 	result = result + '<div class="row pad2">';
 	result = result + '<div class="col-md-12 mt10">';
-	result = result + '<div class="ne-ch">';
+	result = result + '<div class="ne-ch row">';
 	result = result + '<label><input type="checkbox" name="notificationToApplicant" value="Y" checked="checked" ><b>Notify to Applicants</b></label>';
 	result = result + '<label><input type="checkbox" name="proposeTime" value="Y" checked="checked" ><b>Propose time</b></label>';
 	result = result + '</div>';
 	
 	
-	result = result + '<div id="emptyTemplate" style="dispaly:none">';
+	result = result + '<div id="emptyTemplate" style="dispaly:none" class="row">';
 	result = result + '<strong class="clearfix col-md-12">Interview Template</strong>';
-	result = result + '<div class="chosen-select col-md-3 select-field">';
+	result = result + '<div class="chosen-select col-md-4 customchosen-select">';
 	result = result + '<select class="form-control mt10" id="interviewSubmissionTemplate" name="interviewSubmissionTemplate">';
 	result = result + '</select>';
 	result = result + '</div>';
@@ -393,27 +635,37 @@ function interviewTemplate(){
 	 $.ajax({
 	    	type: "POST",
 	    	url : sourceleadUrl+"/getInterviewFeedbackTemplatesList?${_csrf.parameterName}=${_csrf.token}", 
-	        success: function(data) {
-	        var json = JSON.parse(data);
-	        var output = "";
-	        if(json.length > 0){
-	         	for (var i=0; i<json.length; i++)
-	 			{
-	 	        		var opt = json[i];
-	 	        		
-	 	        		output = output + "<option value='" +opt.id+ "'>"+opt.templateName+"</option>";
-	 			}
-	         	$("#interviewSubmissionTemplate").empty();
-	 	        $("#interviewSubmissionTemplate").append(output);
-	 	       
-	 	        $("#interviewSubmissionTemplate").chosen();
-	 			$("#interviewSubmissionTemplate").trigger('chosen:update');
-	 			$('.chosen-container').css({'width': '100% !important'});
-	 			
-	        }else{
-	        	$("#emptyTemplate").empty();
-	        }
-	       
+	        success: function(result) {
+	        	if (result.response === "FAILED") {
+  		    		showError(result.responseMessage);
+  		    	} else if (result.response === "AWKWARD") {
+  		    		location.href = "/errorPage";
+  		    	} else if (result.response === "SUCCESS") {
+  		    		var json = result.data;
+			        var output = "";
+			        if(json.length > 0){
+			         	for (var i=0; i<json.length; i++)
+			 			{
+			 	        		var opt = json[i];
+			 	        		if(opt.isDefault == "Y"){
+			 	        			output = output + "<option value='" +opt.uuid+ "' selected>"+opt.templateName+"</option>";
+			 	        		}else{
+				 	        		output = output + "<option value='" +opt.uuid+ "'>"+opt.templateName+"</option>";
+			 	        		} 
+			 			}
+			         	$("#interviewSubmissionTemplate").empty();
+			 	        $("#interviewSubmissionTemplate").append(output);
+			 	       
+			 	        $("#interviewSubmissionTemplate").chosen();
+			 			$("#interviewSubmissionTemplate").trigger('chosen:update');
+			 			$('.chosen-container').css({'width': '100% !important'});
+			 			$(".chosen-container").attr('style', 'width:100% !important');
+			        }else{
+			        	$("#emptyTemplate").empty();
+			        }
+  		    	}else {
+		    		showError("Operation failed, please try again");
+		    	}
 	        },
 	    });
 }
@@ -458,12 +710,13 @@ function selectInterviewApplicants(){
 <script>
 function getSeheduledInterviewsList(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var selectedReqId = $("#requirementsList").val();
 	var selectedSubmissions = $("#1applicant").val();
 	$("#scheduledInterviewsList").empty();
 	$.ajax({
         type : "POST",
-        url: sourceleadUrl+"/getScheduledInterviewsListForSelectedApplicants?${_csrf.parameterName}=${_csrf.token}&selectedReqId="+selectedReqId+"&selectedSubmissions="+selectedSubmissions,    
+        url: atsUrl+"/getScheduledInterviewsListForSelectedApplicants?${_csrf.parameterName}=${_csrf.token}&selectedReqId="+selectedReqId+"&selectedSubmissions="+selectedSubmissions,    
          success :function(data) {
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
@@ -576,7 +829,7 @@ function getRequirements(){
               if(data != null && data != 'undefined' && data != "" && data != '[]'){
             	  var json = JSON.parse(data);
             	  var result = "";
-            	  result = result + '<option value="">--- Select Requirement ---</option>';
+            	  result = result + '<option value="">--- Select Job ---</option>';
                   for (var i = 0; i < json.length; i++) {
                  	 var opt = json[i]; 
                  	var jobId = "";
@@ -620,6 +873,7 @@ function getRequirements(){
 
 <script>
 function selectAndGetApplicantsForRequirement(){
+	$("#reqDiv").find('p.text-primary').empty();
 		$('#isClientInterview').attr('checked', false);
 		$("#isClientInterviewDiv").hide();
 		getApplicantsForRequirement();
@@ -630,6 +884,7 @@ function selectAndGetApplicantsForRequirement(){
 <script>
 function getApplicantsForRequirement(){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var selectedReqId = $("#requirementsList").val();
 	if(selectedReqId != ""){
 		 var isClientInterview = "";
@@ -641,33 +896,42 @@ function getApplicantsForRequirement(){
 		 var existingApplicantsIds = [];
 		 $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
+		        url: atsUrl+"/getAllShortListCandidates?${_csrf.parameterName}=${_csrf.token}&requirementId="+selectedReqId+"&existingApplicantsIds="+existingApplicantsIds+"&isClientInterview="+isClientInterview,  
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var appCount = json.length;
-		        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
-		        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
-		        	var output = "";
-		        	for (var i=0; i<appCount; i++)
-					{
-		        		var opt = json[i];
-		        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
-		        		}
-		        		
-		        		if(opt.isClientSubmission == 'Y'){
-		        			$("#isClientInterviewDiv").css("display","block");
-		        		}else{
-		        			$('#isClientInterview').attr('checked', false);
-		        			$("#isClientInterviewDiv").hide();
-		        		}
-					}
-		        	$("#1applicant").empty();
-		        	$("#1applicant").append(output);
-		        	$("#1applicant").trigger("chosen:updated");
-			       
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var json = data.data;
+			        	var appCount = json.length;
+			        	$("#1applicant").attr("data-placeholder", appCount+" Applicants available");
+			        	$("#reqDiv").find('p.jquery_form_error_message').remove();		        	
+			        	var output = "";
+			        	for (var i=0; i<appCount; i++)
+						{
+			        		var opt = json[i];
+			        		if(opt.createdUser !=null && opt.createdUser !='' && opt.createdUser != 'undefined'){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+" ("+opt.createdUser+")</option>";	
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.candidateName+"</option>";
+			        		}
+			        		
+			        		if(opt.isClientSubmission == 'Y'){
+			        			$("#isClientInterviewDiv").css("display","block");
+			        		}else{
+			        			$('#isClientInterview').attr('checked', false);
+			        			$("#isClientInterviewDiv").hide();
+			        		}
+						}
+			        	$("#1applicant").empty();
+			        	$("#1applicant").append(output);
+			        	$("#1applicant").trigger("chosen:updated");
+			    	}else if (data.indexOf('Sign In') !== -1) {
+			    		location.replace(sourceleadUrl);
+			    	} else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        },
 		    });
 	}else{
@@ -688,10 +952,11 @@ function myFunction(){
 <script type="text/javascript">
 function getTimezonesListForInterview(){
 	var sourceleadUrl ='${sourceleadUrl}';
-	var timezone = '${timezone}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	var timezone = '${SourceLeadWeb_timeZone}';
 	 $.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
+	    	url : atsUrl+"/getTimezonesList?${_csrf.parameterName}=${_csrf.token}", 
 	        success: function(data) {
 	        var json = JSON.parse(data);
 	        var output = "";
@@ -717,25 +982,34 @@ function getTimezonesListForInterview(){
 <script type="text/javascript">
  function getInterviewers() {
 	 var sourceleadUrl ='${sourceleadUrl}';
+	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	  $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
+		        url: atsUrl+"/getAllInterviewers?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(data) {
-		        	var json = JSON.parse(data);
-		        	var output = "";
-		        	for (var i=0; i<json.length; i++)
-					{
-		        		var opt = json[i];
-		        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
-		        		}else{
-		        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
-		        		}
-					}
-		        	$("#1interviewer").empty();
-		        	$("#1interviewer").append(output);
-		        	$("#1interviewer").chosen();
-		        	$("#1interviewer").trigger("chosen:updated");
+		        	if (data.response === "FAILED") {
+			    		showError(data.responseMessage);
+			    	} else if (data.response === "AWKWARD") {
+			    		location.href = "/errorPage";
+			    	} else if (data.response === "SUCCESS") {
+			    		var json = data.data;
+			        	var output = "";
+			        	for (var i=0; i<json.length; i++)
+						{
+			        		var opt = json[i];
+			        		if(opt.lastName != 'undefined' && opt.lastName != null && opt.lastName!=""){
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+" "+opt.lastName+"</option>";
+			        		}else{
+			        			output = output + "<option value='" +opt.id+ "'>"+opt.firstName+"</option>";
+			        		}
+						}
+			        	$("#1interviewer").empty();
+			        	$("#1interviewer").append(output);
+			        	$("#1interviewer").chosen();
+			        	$("#1interviewer").trigger("chosen:updated");
+			    	}else {
+			    		showError("Operation failed, please try again");
+			    	}
 		        },
 		    });
  	}
@@ -788,20 +1062,19 @@ function cancelAddInterviewDiv(){
         e.preventDefault();
         var frm = $('#addInterview_form').serializeFormJSON();
         var con = JSON.stringify(frm);
-        con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
         var sourceleadUrl ='${sourceleadUrl}';
         var requirementId = '${requirementId}';
         
         var selectedInterviewApplicants =  $('#1applicant_chosen  span').size();
-        
+        var atsUrl = '${SourceLeadWeb_atsUrl}';
         if(selectedInterviewApplicants <= 50){
 	        $("#add_interview").attr("disabled", "disabled");
 	 		$("#add_interview" ).addClass('button').val('Processing..');
-	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 		$("#interviewLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	   	     $.ajax({
 		    	type: "POST",
-		        url: sourceleadUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
+		        url: atsUrl+"/saveInterview?${_csrf.parameterName}=${_csrf.token}&jsonData="+jsonData,
 		        success: function(result) {
 		        	    $(".add_inter_wrap").removeClass("add_inter_wrap_active");
 		        		$(".side_mask").fadeOut(200);
@@ -834,33 +1107,69 @@ function cancelAddInterviewDiv(){
 	});	
 </script>
 	
-  <script>
-  $(function() {
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
-	  var finalDateFormatEDashboardeventCalendar = '';
-	  if(locationDate.match("yyyy-MM-dd")){
-		  finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
-	  }if(locationDate.match("dd-MM-yyyy")){
-		  finalDateFormatEDashboardeventCalendar = 'dd-mm-yy'; 
-	  }if(locationDate.match("MM-dd-yyyy")){
-		  finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
-	  }if(locationDate.match("yyyy-dd-MM")){
-		  finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
-	  }
-    $("#eventCalendar" ).datepicker({
-	  changeMonth: true,
-      changeYear: true,
-      dateFormat : finalDateFormatEDashboardeventCalendar,
-      onSelect : function(selected) {
-  		getInterviewsandTasks();
-	   }
-    });
-  });
+<script>
+	var locationDate ='${SourceLeadWeb_dateFormat}'; 
+	var finalDateFormatEDashboardeventCalendar = '';
+	$(document).ready(function () {		
+		if(locationDate.match("yyyy-MM-dd")) {
+			finalDateFormatEDashboardeventCalendar = 'yy-mm-dd';
+		} if(locationDate.match("dd-MM-yyyy")) {
+			finalDateFormatEDashboardeventCalendar = 'dd-mm-yy'; 
+		} if(locationDate.match("MM-dd-yyyy")) {
+			finalDateFormatEDashboardeventCalendar = 'mm-dd-yy'; 
+		} if(locationDate.match("yyyy-dd-MM")) {
+			finalDateFormatEDashboardeventCalendar = 'yy-dd-mm'; 
+		}
+	});
+	function eventCalendar(dates) {
+		$("#eventCalendar").show();
+		$("#jobFairCalendar").hide();
+	    $("#eventCalendar").datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat : finalDateFormatEDashboardeventCalendar,
+	      onSelect : function(selected) {
+	    	  getInterviewsandTasksForSelectedDate();
+		   },
+		    beforeShowDay: function(date) {
+		  	  var hlText = dates[date.getTime()];
+		        return (hlText)?[true, "Highlighted", '']: [true, '', ''];
+		  	}
+	    });
+	}
+  
+	function getJobFairCalendar(dates) {
+		$("#eventCalendar").hide();
+		$("#jobFairCalendar").show();
+		$("#jobFairCalendar").find("select.ui-datepicker-month, select.ui-datepicker-year").addClass("sel");
+		$("#jobFairCalendar").datepicker({
+		  changeMonth: true,
+	      changeYear: true,
+	      dateFormat : finalDateFormatEDashboardeventCalendar,
+	      onSelect : function(selected) {
+	    	  getJobsForSelectedFairDate();
+		   },
+		    beforeShowDay: function(date) {
+		  	  var hlText = dates[date.getTime()];
+		        return (hlText)?[true, "HighlightedFair", '']: [true, '', ''];
+		  	}
+	    });	
+	}
       
-      $(function(){
-   $('#example').timepicker(); 
+$(function(){
+	$('#example').timepicker(); 
 });
-  </script> 	
+</script>  
+ 
+<style>
+#jobFairCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a,
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight,
+#eventCalendar .ui-widget-content a, #scheduleCalendar .ui-widget-content a
+{
+	border-radius:8px; border: 1px solid #ededed; height: 32px;
+}
+</style>
+  	
  <!-- <script>
  function personalInfo(){
      $(".userdetails").toggle();
@@ -941,10 +1250,29 @@ function feedbackView(interviewId,templateId){
 	
 }
 </script>
+
+<script>
+function exportInterviewsListSheet(exportType){
+	
+	var date = getSelectedDateFromCalendar($("#eventCalendar").val());
+		window.location.href = sourceleadUrl+"/getInterviewListExportList?"+tokenParamName+"="+tokenValue+"&exportType="+exportType+"&dateRange="+date;
+	}
+</script>
+
 <script>
 function closePop(){
 $(".feedback_view").hide();
 $(".mask_inner").hide();
 }
 </script>
-      
+<script>
+function newActions(){
+	$(".newActPop").slideToggle(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});
+</script>    

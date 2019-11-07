@@ -14,21 +14,22 @@
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
  </c:if>
  
-<link rel="icon" type="image/png" href="resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 
 <title>Welcome to Source Lead :: The Recruitment Application</title>
 <!-- Bootstrap -->
-<link href="resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link href="resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/font-awesome.min.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link href="/resources/css/timesheet.css?staticTime=${staticTime}" rel="stylesheet">
 
-<script src="resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
-<script src="resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
+<script src="/resources/js/jquery-1.11.1.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script> 
 </head>
 
- <script src="resources/js/formvalidator.js?staticTime=${staticTime}"></script>
- <script src="resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+ <script src="/resources/js/slead-common.js"></script> 
 <script>
 		$(document).ready(function() { 
 			var UUID = '${UUID}';
@@ -38,7 +39,9 @@
 			
 		});
 </script>
-
+<script>
+var sourceleadUrl = '${sourceleadUrl}';
+</script>
 <style>
 body {
 background-color:#e1e6fa;
@@ -67,7 +70,7 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
-   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="resources/images/logo-sourceld.png" alt="Source Lead"> </i>
+   	 	<a href="javascript:void(0)" title="Source Lead"> <i> <img src="/resources/images/logo-sourceld.png" alt="Source Lead"> </i>
     <h1>Source Lead</h1>
     </a>
     </span>
@@ -97,14 +100,15 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
 								  <input type="text" class="form-control input-sm" data-validation-optional="true" field-name="Phone" placeholder="Phone" id="phone" name="phone" data-validation="validate_Space validate_int validate_length length9-20">
 								  </div>
 								    <div class="clearfix"></div>
-						          <div class="col-md-6 mt">
+						          <div class="col-md-6 mt attachment">
 						            <div class="input-group">
-						              <label class="input-group-btn"> <b class="btn btn-default"><i class="fa fa-paperclip"></i>
-						                <input type="file" name="attachfile" style="display: none;" multiple id="attachfileBtn" class="upload">
+						              <label class="input-group-btn"> <b class="btn btn-primary"><i class="fa fa-paperclip ColWhite"></i>
+						                <input type="file"  style="display: none;"  id="attachfileBtn" class="upload">
 						                </b> </label>
 						              <input type="text" class="form-control" readonly id="attachfile-mail" placeholder="File Attachment">
 						            </div>
 						          </div>
+						          
 								  <div class="clearfix"></div>
 								  <div class="col-md-6 mt">
 									  <textarea class="form-control" rows="5" data-validation-optional="true" name="comment" placeholder="Comment" id="comment"></textarea>	
@@ -128,7 +132,14 @@ padding: 0 !important; padding-left: 165px !important; margin-top: 15px;
 </div>
 </body>
 </html>
+<script>
+$(function() {
+	$("#attachfileBtn").change(function() {
+		fileUpload("attachfileBtn", "Hotlist Campaign Documents", "candidate_form" ,"" ,"${orgId}","${orgLocationId}");
+	});
+ });
 
+</script>
 <script type="text/javascript">
 function alertCandidates(){
 	
@@ -165,16 +176,11 @@ function cancel(){
 
 <script type="text/javascript">
 	function sendRequest() {
-			var sourceleadUrl = '${sourceleadUrl}';
 			var UUID = '${UUID}';
 			if ($('#candidate_form').validate(false, validationSettings)){ 
 			$('#candidateButtonId').attr('disabled','disabled');
-			var frm = $('#candidate_form').serializeFormJSON();
-			var con = JSON.stringify(frm);
-			con = con.replace(/[{}]/g, "");
-			var jsonData = encodeURIComponent(con);
-		    var form = $('#candidate_form')[0];
-	  		var formData = new FormData(form)
+			 
+	  		var formData = getFormData1("candidate_form");
 			
 			 var candidatesIds = [];
 			 var oTable = $('#candidateTable').dataTable();
@@ -185,16 +191,13 @@ function cancel(){
 				
 			 
 			if(candidatesIds.length > 0){
-				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+				$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 				   $.ajax({
 					    type : "POST",
 			    	    data: formData,
-			    	    contentType : 'application/json; charset=utf-8',
-			    	    enctype: 'multipart/form-data',
 				        processData: false,
 				        contentType:false, 
-			    	    dataType : 'json',
-							url : sourceleadUrl+"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&json="+jsonData+"&candidatesIds="+candidatesIds+"&UUID="+UUID,
+						url :"/sendRequestForResume?${_csrf.parameterName}=${_csrf.token}&candidatesIds="+candidatesIds+"&UUID="+UUID,
 							success : function(result) {
 								
 								if(result == 'success'){
@@ -232,10 +235,10 @@ var email = document.getElementById("email").value;
 var sourceleadUrl = '${sourceleadUrl}';
 
 if(email){
-$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:70px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 $.ajax({
 		type : "POST",
-		url : sourceleadUrl+"/validateCampaignToEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&UUID="+UUID,
+		url :"/validateCampaignToEmail?${_csrf.parameterName}=${_csrf.token}&email="+email+"&UUID="+UUID,
 		success : function(data) {
 			
 			if (data == 'Invalid') {
@@ -271,7 +274,7 @@ $.ajax({
 			
 			 $.ajax({
 						type : "POST",
-						url : sourceleadUrl+"/getRequestedCandidates?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,
+						url :"/getRequestedCandidates?${_csrf.parameterName}=${_csrf.token}&UUID="+UUID,
 						success : function(data) {
 							
 								var json = JSON.parse(data);
@@ -382,4 +385,4 @@ document.getElementById("attachfileBtn").onchange = function () {
 		};
 	})(jQuery);
 </script>
-
+<script type="text/javascript" src='/resources/js/slead-common.js'></script>
