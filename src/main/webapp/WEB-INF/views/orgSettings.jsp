@@ -1442,6 +1442,11 @@ function changefunction(){
 </script>
 <script>
 function savePaymentAccountTestRun(){
+	 var val = $("#paymentAccountType").val();
+	 if(val == "SAVINGS"||val == "CHECKING"){
+		 $('#emailErr').find('p.jquery_form_error_message').remove(); 
+			$('#paymentAccountEmail').removeAttr('data-validation');
+	 }
 	 if ($('#paymentaccount_form').validate(false, validationSettings)){
 		 var data =  {};
 		 var val = $("#paymentAccountType").val();
