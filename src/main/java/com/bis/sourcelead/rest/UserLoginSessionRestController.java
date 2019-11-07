@@ -3,6 +3,7 @@ package com.bis.sourcelead.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,9 +30,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.bis.sourcelead.SourceleadUserDetailsService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dto.MobilePushNotificationDTO;
 import com.bis.sourcelead.dto.OrgLocationDTO;
+import com.bis.sourcelead.dto.UserDetailsDTO;
 import com.bis.sourcelead.dto.UserProfileDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -54,6 +59,8 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 public class UserLoginSessionRestController {
 	
 private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRestController.class);
+
+private static final String HEADER_TOKEN = "X-CustomToken";
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -84,6 +91,12 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
 	
 	@Autowired
 	private MobilePushNotificationService mobilePushNotificationService;
+	
+	@Autowired
+	private UserStatsCacheHelper userStatsCacheHelper;
+
+	@Autowired
+	private SourceleadUserDetailsService sourceleadUserDetailsService;
 		 
 	 @RequestMapping(value = "/rest/", method = RequestMethod.POST)
 	 public void authenticate() {
@@ -266,20 +279,39 @@ private static final Logger logger = LoggerFactory.getLogger(UserLoginSessionRes
          return imageUrl;
      }
 	 
-	 @RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
-     public int refreshSessionAttributes(@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="locationCode", required=true) String locationCode,HttpServletRequest request) throws Exception {
-         int output =  HttpServletResponse.SC_NOT_FOUND;
-		 User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-         if(loginUser == null && userId != null){
-        	 loginUser = userService.getUserById(userId);
-         }
-         OrgLocations orgLoc = orgLocationService.getOrgLocationsByLocationCode(locationCode);
-         if(loginUser != null && orgLoc != null){
-        	 SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLoc);
-        	 Candidate candidate = candidateService.getCandidateByConsultantUserId(loginUser.getId(), orgLoc.getId());
-			 SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
-			 output =  HttpServletResponse.SC_OK;
-         }
-         return output;
-     }
+	@RequestMapping(value = "/rest/refreshSessionAttributes", method = RequestMethod.GET)
+	public int refreshSessionAttributes(@RequestParam(value = "userId", required = false) Long userId,
+			@RequestParam(value = "locationCode", required = true) String locationCode, HttpServletRequest request)
+			throws Exception {
+		System.out.println(" swith user details refreshSessionAttributes method is called >>>>>>>>>>>>>>");
+		int output = HttpServletResponse.SC_NOT_FOUND;
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		System.out.println(" userId:::is " + userId + ", locationCode is " + locationCode);
+		System.out.println(" loginUser:::is " + loginUser.getId());
+		if (userId != null) {
+			loginUser = userService.getUserById(userId);
+		}
+		String token = request.getHeader(HEADER_TOKEN);
+		OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(locationCode);
+
+		System.out.println("orgLocation id latest passed by mobile team :::is " + orgLocation.getId());
+
+		UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(loginUser.getId(), orgLocation.getId());
+		UserDetailsDTO userDetailsDTO = userStatsCacheHelper.getUserDetails(token);
+
+		UserDetails userDetails = sourceleadUserDetailsService.loadUserByUsernameForMobile(userRole);
+		userDetailsDTO.setOrgLocationCode(locationCode);
+		if (userDetails.getAuthorities() != null) {
+			List<String> roles = userDetails.getAuthorities().stream().map(ga -> ga.getAuthority())
+					.collect(Collectors.toList());
+			userDetailsDTO.setRoles(roles);
+		}
+		if (userRole != null && orgLocation != null) {
+			userStatsCacheHelper.saveLoginUserSessionStoreToCouchbaseForMobiles(token, userDetailsDTO, request);
+			output = HttpServletResponse.SC_OK;
+		}
+		System.out.println(" swith user details are updated for the user id " + loginUser.getId() + ", Orglocation Id :"
+				+ orgLocation.getId() + ", for user role id : " + userRole.getId());
+		return output;
+	}
 }
