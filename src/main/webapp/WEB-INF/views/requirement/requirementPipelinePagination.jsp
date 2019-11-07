@@ -756,9 +756,9 @@
 											+ opt.submissionDisplayStatus
 											+ "</option>";
 										// if not a client requirement remove option from the dropdown options list.
-										if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){
+										/* if(clientSubmissions != 'Y' && isSpocActive != 'Y' ){ */
 											delete opt.workflowStagesMap["SUBMIT_TO_CLIENT"];
-										}
+										/* } */
 										'<sec:authorize access="!hasRole(\'ROLE_SHORTLIST\')">';
 										  delete opt.workflowStagesMap["SHORTLIST"];
 										'</sec:authorize>';

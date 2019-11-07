@@ -19,6 +19,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.dto.CandidateCertificationDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -38,7 +39,7 @@ public class CandidateCertificationsServiceTest {
 	public void storeCandidateCertifications() throws Exception {
 		CandidateCertifications candidateCertifications = new CandidateCertifications();
 
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateId.setId(1l);
 		candidateCertifications.setCandidateId(candidateId);
 
@@ -70,7 +71,7 @@ public class CandidateCertificationsServiceTest {
 		candidate.setProvider("businessintelli");
 		candidate.setScore("10");
 		candidate.setScoreType("gpa");
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateId.setId(1l);
 		candidate.setCandidateId(candidateId);
 		OrgLocations orgLocationId = new OrgLocations();

@@ -1021,7 +1021,7 @@ $(document).ready(function () {
 											<div class="input-group attachfile" id="uploadFileGroup">
 												<label class="input-group-btn"> <span
 													class="btn btn-primary"><i
-														class="fa fa-folder-open-o"></i>&nbsp;Browse File <input
+														class="fa fa-folder-open-o mr10"></i>Browse File <input
 														type="file" id="uploadBtn" class="hidden upload">
 												</span>
 												</label> <input type="text" class="form-control" readonly
@@ -1040,7 +1040,7 @@ $(document).ready(function () {
 												<div class="input-group attachfile" id="uploadFileGroup">
 													<label class="input-group-btn"> <span
 														class="btn btn-primary" onchange="uploadButton();"><i
-															class="fa fa-folder-open-o"></i>&nbsp;Browse File <input
+															class="fa fa-folder-open-o mr10"></i>Browse File <input
 															type="file" id="uploadBtn" class="hidden upload">
 													</span>
 													</label> <input type="text" class="form-control input-sm" readonly
@@ -1060,7 +1060,7 @@ $(document).ready(function () {
 													style="display: none;">
 													<label class="input-group-btn"> <span
 														class="btn btn-primary"><i
-															class="fa fa-folder-open-o"></i>&nbsp;Browse File <input
+															class="fa fa-folder-open-o mr10"></i>Browse File <input
 															type="file" id="uploadBtn" class="hidden upload">
 													</span>
 													</label> <input type="text" class="form-control input-sm" readonly
@@ -3569,6 +3569,7 @@ function approvalType(type){
 				$('#sequentialApprover2').removeAttr('data-validation-optional');
 				
 				$('#parallelApprover').val('').trigger('chosen:updated');
+				$("#seqentialApprovers").prop("checked", true);
 		  }
 		}
 		else{

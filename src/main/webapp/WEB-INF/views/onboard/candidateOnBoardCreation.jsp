@@ -887,7 +887,6 @@ function validateUploadFile(id)
 	  var candidate = onboardCandiate.split(",");
 	  var candidateId = candidate[0];
 	  
-	  
 	  if(candidateId != null && candidateId != "" && candidateId != 'undefined'){
 		  
 		  $.ajax({
