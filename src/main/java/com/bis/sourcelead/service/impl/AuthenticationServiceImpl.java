@@ -30,6 +30,7 @@ import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.service.AuthenticationService;
 import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.TokenManager;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
@@ -65,10 +66,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     @Autowired
     private  UserStatsCacheHelper userStatsCacheHelper;
+    
+    @Autowired
+	private OrgLocationService orgLocationService;
 	 
 	@PostConstruct
 	public void init() {}
 	
+	private static final String HEADER_TOKEN = "X-CustomToken";
 
 	@Override
 	public TokenInfo authenticate(String login, String password,HttpServletRequest request,HttpSession session) throws AuthenticationException {
@@ -95,7 +100,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 	@Override
 	public void getAuthentication(HttpServletRequest request,HttpSession session) throws AuthenticationException {
+		System.out.println(" $$$$$$$$$$$$$$$$$$ ===getAuthentication stateted Here======$$$$$$$$$$$$$$$$");
 		Authentication authentication =null;
+		String token = request.getHeader(HEADER_TOKEN);
 			try {
 				authentication = SecurityContextHolder.getContext().getAuthentication();
 			}catch(BadCredentialsException e) {
@@ -107,7 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			if (authentication.getName() != null) {
 				String userName =  (String) authentication.getName();
 				UserDetails userDetails = sourceleadUserDetailsService.loadUserByUsername(userName);
-				 UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+				  UserDetailsDTO userDetailsDTO =  userStatsCacheHelper.getUserDetails(token);
 				    userDetailsDTO.setUsername(userDetails.getUsername());
 				    userDetailsDTO.setPassword(userDetails.getPassword());
 				    if(userDetails.getAuthorities() != null) {
@@ -118,12 +125,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 					
 					UserRole userRole;
 					try {
-						userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
+						 OrgLocations orgLocation = orgLocationService.getOrgLocationsByLocationCode(userDetailsDTO.getOrgLocationCode());
+				         userRole = userRoleService.getUserDetailsByUserIdAndLocationId(user.getId(), orgLocation.getId());
+				         userDetails = sourceleadUserDetailsService.loadUserByUsernameForMobile(userRole); 
 						OrgLocations orgLocations = userRole.getOrgLocations();
 						if(orgLocations.getTimezone() != null) {
 							orgLocations.setTimeZoneId(orgLocations.getTimezone().getId() + "");
 						}
-						OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+						//OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 						SourceLeadSessionManager.setSessionAttribute(request, "org", orgLocations.getOrg());
 						SourceLeadSessionManager.setSessionAttribute(request, "orgId", orgLocations.getOrg().getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
@@ -136,6 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
 					} catch (Exception e) {}
 					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
+					System.out.println("SSSSSSSSSSSSSSSSSSs===getAuthentication END Here SSSSSSSSSSSSSSSSSSSSSSSSS");
 			}
 	}
 

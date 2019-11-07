@@ -47,6 +47,8 @@ public class CandidateResumeDTO {
     private String loginUserId;
     
     private String orgLocationId;
+    
+    private String candidateType;
 
 	public Long getId()
 	{
@@ -226,6 +228,14 @@ public class CandidateResumeDTO {
 	public void setOrgLocationId(String orgLocationId)
 	{
 		this.orgLocationId = orgLocationId;
+	}
+
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
 	} 
 
 	

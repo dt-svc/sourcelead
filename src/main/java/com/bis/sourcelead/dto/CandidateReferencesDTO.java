@@ -37,6 +37,8 @@ public class CandidateReferencesDTO {
 	private long orgLocationId;
 
 	private String userCode;
+	
+	private String candidateType;
 
 	public String getName() {
 		return name;
@@ -150,4 +152,13 @@ public class CandidateReferencesDTO {
 		this.userCode = userCode;
 	}
 
+	public String getCandidateType() {
+		return candidateType;
+	}
+
+	public void setCandidateType(String candidateType) {
+		this.candidateType = candidateType;
+	}
+
+	
 }

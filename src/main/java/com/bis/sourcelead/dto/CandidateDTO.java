@@ -290,6 +290,8 @@ public class CandidateDTO extends SearchDTO{
 	private String shift;
 	
 	private String shiftName;
+	
+	private String candType;
 
 	public List<CandidateSource> getCandidateSourceList() {
 		return candidateSourceList;
@@ -1398,5 +1400,13 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public String getCandType() {
+		return candType;
+	}
+
+	public void setCandType(String candType) {
+		this.candType = candType;
 	}
 }
