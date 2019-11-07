@@ -1120,9 +1120,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				immDto.setEadNumber(dataMigrationDTOJsonCopy.getString("eadNumber"));
 			}
 			
-			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateOfBirth"))
-					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateOfBirth"))) {
-				immDto.setBirthDate(dataMigrationDTOJsonCopy.getString("dateOfBirth"));
+			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("dateofBirth"))
+					&& !"null".equals(dataMigrationDTOJsonCopy.getString("dateofBirth"))) {
+				immDto.setBirthDate(dataMigrationDTOJsonCopy.getString("dateofBirth"));
 			}
 			//
 			if (StringUtils.isNotBlank(dataMigrationDTOJsonCopy.getString("maritalStatus"))

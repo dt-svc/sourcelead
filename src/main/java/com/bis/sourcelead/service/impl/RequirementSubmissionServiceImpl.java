@@ -405,6 +405,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidate.setCity(jsonObj.getString("city"));
 					}
 					
+					if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
+						 candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
+					}
+					
 					 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
 				        	candidate.setZipCode(jsonObj.getString("zipcode"));
 						}
