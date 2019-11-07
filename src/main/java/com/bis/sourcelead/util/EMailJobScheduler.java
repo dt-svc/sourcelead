@@ -847,11 +847,10 @@ public class EMailJobScheduler {
 			 Date endDate=commonUtil.dateFromElk(expDate);		
 			 long diff = endDate.getTime()-startDate.getTime();
 			 
-			 Long expiredInDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 			 
 		//	 System.out.println("expiredInDays>>>>>>>>>>>>>>>>>>>>>"+expiredInDays);
 			 globalVarsMap.put("Lca_Table", sb.toString());
-			 globalVarsMap.put("Expiring_Days",String.valueOf(expiredInDays+1));// date difference returning 1 less value, then added manually added 1 day.
+			 globalVarsMap.put("Expiring_Days",String.valueOf(currLcaDaysStatus));// date difference returning 1 less value, then added manually added 1 day.
 			 
 			StringBuilder loginBuilder = new StringBuilder();
 			globalVarsMap.put("URL_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
@@ -2832,7 +2831,7 @@ public class EMailJobScheduler {
 	  * @throws Exception
 	  */
 	@Scheduled(cron = "0 0 9 1/1 * ?")
-	//@Scheduled(cron = "0 0/3 * 1/1 * ?") //testing related every 3minit  run the cron
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?") //testing related every 3minit  run the cron
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
 		DateTime zoned = new DateTime();	
@@ -4821,12 +4820,13 @@ public class EMailJobScheduler {
 	 * @param leaveStatus
 	 */
 	   //@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-		@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
+	//	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
+		@Scheduled(cron = "0 0/5 * 1/1 * ?") // Scheduled for every 5 minutes
 		@Async
 	public void employeeLeaveReminderToSuperior() {
 		try {
 			String leaveStatus = Constants.EMPLOYEE_ON_LEAVE;
-			
+			logger.info("**********Reminder to Mangers ,Admin and Reporting mangers about employee leaves*********STARTED");
 			//List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.EMPLOYEE_ON_LEAVE);
 			List<EmailReminder> emailReminderList  = emailReminderService.getReminderConfiguredOrgLocations(Constants.EMPLOYEE_ON_LEAVE);
 			
@@ -4987,6 +4987,7 @@ public class EMailJobScheduler {
 			}
 			}
 			}
+			logger.info("**********Reminder to Mangers ,Admin and Reporting mangers about employee leaves*********ENDED");
 		} catch (Exception e) {
 			e.printStackTrace();
 
