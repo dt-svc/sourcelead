@@ -271,6 +271,7 @@ window.onload = function () {
 				 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
 				 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
 				 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+				 result = result + '<li><a href="#tab-30" onClick="itDecalartionForm('+candidateId+');">ITD Form</a></li>';
 			 '</sec:authorize>';
 		 }
 		
@@ -4376,6 +4377,26 @@ function assocSalarySummary(candidateId){
 				  		$('#associateSalary_form select').prop('disabled', true);
 			  		}
 			       }
+			});
+	}
+</script>
+
+<script>
+function itDecalartionForm(candidateId){
+	//Added userCode in url, to be used in associateSalary page.
+	var userCode = '${userCode}';
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$.ajax({
+		  type: "GET",
+		    url: pmsUrl+"/associateItDecalartionForm?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
 			});
 	}
 </script>
