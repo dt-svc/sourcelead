@@ -381,4 +381,17 @@ public class TaxSubmissionControllerPMS {
 		}
 	}
 	
+	@RequestMapping(value = { "/associateItDecalartionForm", "/rest/associateItDecalartionForm" })
+	public ModelAndView getItDecalartionForm(@RequestParam(value="candidateId", required=false) Long candidateId, HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			modelAndView.setViewName("payroll_india/org/associate_it_dec_form");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
+	
 }
