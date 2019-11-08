@@ -97,17 +97,21 @@ function getVendorDetails(){
 		    	type: "GET",
 		    	 url: vmsUrl+"/getOrgRelationDetailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
 		        success: function(json) {
-		        	
+		        	console.log("isBackgroundCheck>>>>>>>>>>>>");
 		        	   $("input[name=orgName]").val(json.orgName);
 		        	   $("input[name=orgName]").attr("readonly","readonly");
 	        		   $('#orgName').removeAttr('onblur');
 		        	   var isLawFirm = json.isLawFirm;
 		        	   var isAccountingFirm = json.isAccountingFirm;
-	        		   $("#isLawFirm").attr('checked', isLawFirm);
+		        	   var isBackgroundCheck = json.isBackgroundCheck;
+	        		    $("#isLawFirm").attr('checked', isLawFirm);
 				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
 				        $("#isLawFirm").val(isLawFirm?'Y':'N');
 				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
-	        		   
+				        
+				        $("#isBackgroundCheck").attr('checked', isBackgroundCheck);
+				        $("#isBackgroundCheck").val(isBackgroundCheck?'Y':'N');
+				        
 	        		   if(json.webSite != null && json.webSite != 'undefined' && json.webSite != ''){
 	        			   $("input[name=webSite]").val(json.webSite);
 	        		   }
@@ -705,6 +709,7 @@ function allowBackgroundCheck(){
 	}else{
 		$("#isBackgroundCheck").val("N");
 	}
+	console.log($("#isBackgroundCheck").val());
 }
 function getCustomDependentField(sectionId){
 	 $.ajax({
