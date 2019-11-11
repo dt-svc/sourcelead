@@ -1216,7 +1216,6 @@
 
 <script type="text/javascript">
 function validatePanNumber() {
-	
 	  var panNumber = document.getElementById("panNumber").value;
 	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 	  if (panNumber != null && panNumber != "") {
@@ -1225,7 +1224,6 @@ function validatePanNumber() {
 		    	 url:atsUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
 		        success: function(data) {
 		        	if(data == true){
-		        		
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
 						  $("#store_candidate").attr('disabled','disabled');
