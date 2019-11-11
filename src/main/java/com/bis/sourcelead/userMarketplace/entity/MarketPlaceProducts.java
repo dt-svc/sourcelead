@@ -400,10 +400,16 @@ public void setFileName(String fileName) {
 	this.fileName = fileName;
 }
 
-public void setMarketPlaceProductFilesHistorySet(Set<MarketPlaceProductFilesHistory> productFilesHistorySet) {
-	// TODO Auto-generated method stub
-	
+public Set<MarketPlaceProductFilesHistory> getMarketPlaceProductFilesHistorySet() {
+	return marketPlaceProductFilesHistorySet;
 }
+
+public void setMarketPlaceProductFilesHistorySet(
+		Set<MarketPlaceProductFilesHistory> marketPlaceProductFilesHistorySet) {
+	this.marketPlaceProductFilesHistorySet = marketPlaceProductFilesHistorySet;
+}
+
+
 
 
 }
