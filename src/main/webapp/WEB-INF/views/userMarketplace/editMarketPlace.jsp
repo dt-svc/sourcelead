@@ -216,7 +216,7 @@ function SaveEdits(uuid){
 					 if (dataList.response === "AWKWARD") {
 		      	    location.href = "/errorPage";
 		      	} else if (dataList.response === "SUCCESS") {
-		      		location.replace(atsUrl+"/redirectToAddproduct");
+		      		location.replace(atsUrl+"/addProduct");
 		      		showSuccessMsg("Successfully Saved");
 		      	}
 		      		if(dataList.object === "DataMissing") {
