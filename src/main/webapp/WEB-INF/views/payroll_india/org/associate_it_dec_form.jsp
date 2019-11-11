@@ -44,16 +44,28 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				</tbody>
 			</table>
 			<table id="noResultsTable" style="display: none;">
+			<thead>
+					<tr>
+						<th>Assessment Year</th>
+						<th>Form Type</th>
+						<th>Filling Date</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
 				<tr class='odd'>
 					<td colspan='7' class='dataTables_empty' valign='top'></td>
 				</tr>
+				</tbody>
 			</table>
 		</div>
 		<div class="clearfix"></div>
 
 <script type="text/javascript">
 	$(document).ready(function () {
-		getFormSubmissionMasterList();
+		var candidateId = '${candidateId}';
+		getAssociateFormSubmissionMasterList(candidateId);
 	});
 	function getActions(){
 		$(".action-pop").slideToggle(200);
