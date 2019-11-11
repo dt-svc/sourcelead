@@ -1545,4 +1545,15 @@ public class Constants {
 	public static final String[] ELIMINATE_NAME_KEYWORDS = { "CANDIDATE", "FIRST NAME", "NAME" };
 	
 	public static final String CANDIDATE_QUESTIONNARIE_TEMPLATE = "MailToCandidateWorkflowSatgeQuestionnaire";
+	
+	
+	public static final String PRODUCT_SHORT_CODE_HOME = "HM";
+	public static final String PRODUCT_SHORT_CODE_VEHICLES = "VL";
+	public static final String PRODUCT_SHORT_CODE_HOME_APPLIANCE = "HA";
+	public static final String PRODUCT_SHORT_CODE_UTENSILS = "UL";
+	public static final String PRODUCT_SHORT_CODE_ELECTRONICS = "EG";
+	public static final String PRODUCT_SHORT_CODE_FURNITURES = "FU";
+	public static final String PRODUCT_SHORT_CODE_OTHER = "OT";
+
+	
 }
