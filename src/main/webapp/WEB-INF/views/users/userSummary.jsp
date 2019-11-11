@@ -271,7 +271,7 @@ window.onload = function () {
 				 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
 				 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
 				 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
-				 result = result + '<li><a href="#tab-30" onClick="itDecalartionForm('+candidateId+');">ITD Form</a></li>';
+				 result = result + '<li><a href="#tab-30" onClick="associateItDecalartionForms('+candidateId+');">ITD Forms</a></li>';
 			 '</sec:authorize>';
 		 }
 		
@@ -4382,9 +4382,8 @@ function assocSalarySummary(candidateId){
 </script>
 
 <script>
-function itDecalartionForm(candidateId){
-	//Added userCode in url, to be used in associateSalary page.
-	var userCode = '${userCode}';
+function associateItDecalartionForms(candidateId){
+	
 	var locationCode = '${SourceLeadWeb_locationCode}';
 	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	$.ajax({
