@@ -577,6 +577,13 @@ public class PayrollConfigurationRestController {
 					payrollPayheadDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					payrollPayheadDTO.setSortOrder(sortColumnOrder);
 					ResponseList<PayrollPayheadDTO> payrollPayheadList = payrollPayheadService.getPayrollPayheadListWithPagination(payrollPayheadDTO, loginOrgLocation);
+					payrollPayheadList.getData().forEach(payHead -> {
+						if(Arrays.asList(Constants.CONSTANT_PAYHEAD_SHORTCODES).contains(payHead.getShortCode())) {
+							payHead.setIsFormulaEditable("N");
+						}else {
+							payHead.setIsFormulaEditable("Y");
+						}
+					});
 					return payrollPayheadList;
 				}
 			 
