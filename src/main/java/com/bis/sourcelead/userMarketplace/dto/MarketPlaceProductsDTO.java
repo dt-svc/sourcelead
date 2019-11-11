@@ -39,7 +39,7 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
 	private List<FileInfo> fileInfo;
 	private List<FileInfo> uploadInfo;
 	private List<MarketPlaceProductFilesHistoryDTO>filesHystoryList;
-	private String docFile;
+	private String browseFile;
 	private String staticPath;
 	private String createdDate;
 	private String updatedDate;
@@ -248,11 +248,11 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
 	}
-	public String getDocFile() {
-		return docFile;
+	public String getBrowseFile() {
+		return browseFile;
 	}
-	public void setDocFile(String docFile) {
-		this.docFile = docFile;
+	public void setBrowseFile(String browseFile) {
+		this.browseFile = browseFile;
 	}
 	public String getMarketPlaceId() {
 		return marketPlaceId;
