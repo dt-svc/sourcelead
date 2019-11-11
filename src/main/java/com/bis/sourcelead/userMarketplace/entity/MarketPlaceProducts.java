@@ -3,7 +3,9 @@ package com.bis.sourcelead.userMarketplace.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
@@ -20,8 +23,9 @@ import org.hibernate.annotations.FetchMode;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "MARKETPLACE_PRODUCT")
 public class MarketPlaceProducts implements Serializable{
@@ -129,6 +133,9 @@ private Date toDate;
 
 @Column(name = "UPDATED_DATE")
 private Date updatedDate;
+
+@OneToMany(cascade = CascadeType.ALL, mappedBy = "marketPlaceProductId")
+private Set<MarketPlaceProductFilesHistory> marketPlaceProductFilesHistorySet;
 
 public Long getId() {
 	return id;
@@ -392,6 +399,17 @@ public String getFileName() {
 public void setFileName(String fileName) {
 	this.fileName = fileName;
 }
+
+public Set<MarketPlaceProductFilesHistory> getMarketPlaceProductFilesHistorySet() {
+	return marketPlaceProductFilesHistorySet;
+}
+
+public void setMarketPlaceProductFilesHistorySet(
+		Set<MarketPlaceProductFilesHistory> marketPlaceProductFilesHistorySet) {
+	this.marketPlaceProductFilesHistorySet = marketPlaceProductFilesHistorySet;
+}
+
+
 
 
 }
