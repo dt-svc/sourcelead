@@ -157,13 +157,5 @@ public class MarketPlaceController {
 	}
 		 return response;
 }
-	@RequestMapping(value="/redirectToAddproduct")
-	public ModelAndView redirectToAddProduct() throws Exception{
-		ModelAndView model =new ModelAndView();
-		model.addObject(sourceleadUrl, sourceleadUrl);
-		model.addObject(atsUrl, atsUrl);
-		model.setViewName("userMarketplace/addProduct");
-		return model;
-	}
 	
 	}

@@ -107,7 +107,7 @@ window.onload = function () {
     <div class="col-md-4 minHeight">
             <label class="clearfix">Manufacturer</label>
             <div class="clearfix">
-              <input type="text" id="manufacturerName"  name="manufacturerName" class="form-control">
+              <input type="text" id="manufacturerName"  name="manufacturerName" class="form-control" data-validation="required validate_Space validate_Alphabets">
             </div>
             <div class="clearfix"></div>
     </div>
@@ -157,8 +157,8 @@ window.onload = function () {
         <label class="clearfix">Price</label>
         <div class="clearfix row">
             <div class="col-md-9">
-          <input type="text" id="price" name="price"  class="form-control" data-validation="validate_length length1-20 validate_phone"
-							field-name="Price"	data-validation-optional="true" value=" ">
+          <input type="text" id="price" name="price"  class="form-control" 
+							field-name="Price" data-validation="validate_length validate_number length1-10"	 value=" ">
         </div>
           <div class="col-md-3">
        <select class="form-control sel" name ="currencySpecification" id="currencySpecification" >
@@ -200,9 +200,9 @@ window.onload = function () {
     <label class="clearfix">Attach document for the Product<span class="text-danger paddingLeft">*</span></label>
             <div class="input-group col-md-12 clearfix">
               <label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
-              <input type="file" style="display: none;" multiple="" id="uploadBtn" class="upload">
+              <input type="file" style="display: none;" multiple="" id="uploadBtn" class="upload" >
               </span> </label>
-              <input type="text" class="form-control" name="docFile" onclick="addFileUpload()" readonly="" id="uploadFile" placeholder="Upload Document ...">
+              <input type="text" class="form-control" name="browseFile" onclick="addFileUpload()" readonly="" id="uploadFile" placeholder="Upload Document ..." field-name="Browse File" data-validation="required" >
             </div>
   <div class="clearfix"></div> 
 </div>   
@@ -259,7 +259,7 @@ window.onload = function () {
          <input checked="" type="checkbox" name="productShareType" value ="Y"  id="productShareType" >
         </c:when>
         <c:otherwise>
-         <input checked="" type="checkbox" name="productShareType" value ="N"  id="productShareType" >
+         <input type="checkbox" name="productShareType" value ="N"  id="productShareType" >
         </c:otherwise>
         </c:choose>
            
@@ -294,7 +294,7 @@ window.onload = function () {
 	               <i class="fa fa-plus btn btn-default btn-sm btn-sm2 pull-right"></i>
 	             </a>
 	         </div>
-            <div id="FileUploadContainer" />
+            <div id="FileUploadContainer" />       
           </div>  
                 
       </div>
@@ -321,7 +321,7 @@ window.onload = function () {
 <div class="form-footer clearfix mt">
     <div class="col-lg-12">
       <div class="pull-right">
-        <input type="button" value="Finish" class="btn btn-primary" id="finish" onclick="finishFunction()">
+        <input type="button" value="Finish" class="btn btn-primary" id="finish" location.href = "${SourceLeadWeb_atsUrl}/productList"; onclick="finishFunction()">
       </div>
     </div>
   </div>
@@ -376,6 +376,10 @@ function saveProduct(){
    }
         }
         
+        
+ function finishFunction(){
+	location.href = "${SourceLeadWeb_atsUrl}/productList";
+} 
 function deletepopup(uuid){
 	
 	 var result = "";
@@ -413,7 +417,6 @@ function deletepopup(uuid){
            function getmarketPlaceList()
            {
 					$("#dynamicMarketPlaceList").empty();
-					
 					var result = "";
 				  	var url = "";
 				  	result = result +"<table id='marketPlaceList' class='display' cellspacing='0' width='100%'>";
@@ -444,7 +447,7 @@ function deletepopup(uuid){
 	  console.log("getDynamicMarketPlaceList");
 					   var colIndex = 0;
 					    $('#marketPlaceList').DataTable( { 
-					    	"processing": true,
+					    	/* "processing": true, */
 					        "serverSide": true,
 					        "searching": false,
 					        "searchHighlight": true,
@@ -461,7 +464,7 @@ function deletepopup(uuid){
 					        	{ "data": "price" },
 					        	{ "data": "currencySpecification" },
 					        	{ "data": "priority" },
-					        	{ "data": "docFile" },
+					        	{ "data": "browseFile" },
 					        	{ "data": "isNegotiate" },
 					        	{ "data": "shareContactDetails" },
 					        	{ "data": "productShareType" },
@@ -558,10 +561,10 @@ function deletepopup(uuid){
 					        },{
 					    	  	"targets": colIndex++,
 					    	  	"sortable": false,
-					    	  	"data": "docFile",
+					    	  	"data": "browseFile",
 					    	  	"render": function(data, type, productList, meta) {
 					    	  		var result = "";
-					    	  		result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt"  href=\"'+productList.docFile+'\" download title="Warranty Document"></a>';
+					    	  		result = result+'<td><div class="tblicons_4"> <a download class="glyphicon glyphicon-download-alt"  href=\"'+productList.browseFile+'\" download title="Warranty Document"></a>';
 				  	             	 return result;
 					    	  	}
 					        },{
@@ -636,7 +639,6 @@ function deletepopup(uuid){
 		                             result = result + ' <span title="Share the Product" class="paddingRight pull-left"><i class="fa fa-share-alt cursorPointer"></i></span>';
 		                             result = result + '  <span title="Share Later" class="paddingLeft  pull-left"><i class="fa fa-clock-o cursorPointer"></i></span>';
 		                             result = result + '  <span title="Edit" class="paddingLeft  pull-left"  onclick="editMarketPlace(\''+productList.uuid+'\');" ><i class="fa fa-pencil cursorPointer"></i></span>';
-// 		                     		result = result +"<div class='tbldata-dotdot-200'><a onclick='editMarketPlace(\""+uuid+"\")' title='"+productCode+"'>"+manufacturerName+"</a></div>";
 		                             result = result + '  <span title="Delete" onclick="deletepopup(\''+productList.uuid+'\')" class="paddingLeft  pull-left"><i class="fa fa-trash cursorPointer"></i></span>';
 		                             result = result + '</div>';
 				  	             	 return result;
@@ -652,7 +654,8 @@ function deletepopup(uuid){
 					    	"oLanguage": {
 					     		"sSearch": "",
 					     		 "sZeroRecords": "", "sEmptyTable": "", 
-					     		 "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+					     		  "sProcessing": "<img src='/resources/images/norecords.png' style='width: 90px; height:75px; margin:50px 0px 0px 0px'/>" 
+					     		 /* "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>" */
 					     }
 					        
 					    } );
@@ -795,6 +798,7 @@ function RemoveFileUpload(div,fileCounter)
 function uploadFileButton(id){
 fileUpload("file"+id+"", "userMarketplace", "personalAndProductInfo_form","uploadedFileInfo");
 }
+        
         
 </script>
  <script>
