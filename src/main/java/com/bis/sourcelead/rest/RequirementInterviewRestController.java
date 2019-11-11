@@ -146,6 +146,14 @@ public class RequirementInterviewRestController {
 		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null && user.getId() == requirement.getPrimaryRecruiterUserId().getId()) {
 			user = requirement.getManagerUserId();
 		}
+		if(isWorkflowConfigured == null){
+		if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+	              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+			isWorkflowConfigured = Constants.BOOLEAN_FALSE;
+		}else{
+			isWorkflowConfigured = Constants.BOOLEAN_TRUE;
+		}
+		}
 		if(user != null) {
 			try {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
