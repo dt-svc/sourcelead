@@ -265,6 +265,12 @@ function getPendingApprovalExpenseReports(){
 		        $("#loadingId").removeAttr('style');
 				$("#pendingForApprovalExpenseDivDiv").append(result);
 				dynamicMissingTimesheetReportPagination();
+				if(data.length == 0){
+					$("#customSearch").show();
+				}else{
+					$("#customSearch").hide();
+				}
+				
 		    }
 		 });
 	  }	  
