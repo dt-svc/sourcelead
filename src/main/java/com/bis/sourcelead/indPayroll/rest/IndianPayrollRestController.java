@@ -1118,6 +1118,37 @@ public class IndianPayrollRestController {
 			return flag;
 		}
 	  
+	    
+	    @RequestMapping(value = "/associateItdForms", method = RequestMethod.POST)
+		@ResponseBody
+		public ResponseList<SourceleadTaxSubmissionMasterDTO> getAssociateCentralTaxes(HttpServletRequest request,
+				@RequestParam(defaultValue = "") String financialYear,@RequestParam(value="candidateId", required=false) Long candidateId, Paginator paginator) {
+			ResponseList<SourceleadTaxSubmissionMasterDTO> response = new ResponseList<>();
+			try {
+				
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId); 
+			//	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (candidate != null) {
+					if(candidate.getConsultantUser() != null) {
+						List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterList = taxService.getTaxSubmissionMaster(candidate.getConsultantUser().getId(), orgLocations.getDateFormat(), financialYear, paginator);
+						response.setData(taxSubmissionMasterList);
+						response.setPaginator(paginator);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+		}
 	  
 	  
 }
