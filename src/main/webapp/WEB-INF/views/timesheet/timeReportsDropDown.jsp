@@ -32,7 +32,7 @@
 				<div id="" class="repSelBtn"> <button type="button" class="btn btn-primary btn-sm" onclick="timesheetReportsDiv();">Run</button></div> 
     		</li>
 			<li class="staPdfExl"><i onclick="exportTimeSheetReportsToPdf('pdf');" title="PDF" class="fa fa-file-pdf-o text-danger"></i><i onclick="exportTimeSheetReportsToPdf('Excel');" title="Excel" class="fa fa-file-excel-o text-primary"></i></li>
-    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchExpenses'/><span class="repSearchIcon" onclick=""></span></li>
+    		<li class=""><input type="text" class="repSearchBar" placeholder='Search' id='dataTableSearchTimesheetReports'/><span class="repSearchIcon" onclick="dataTableSearchTime();"></span></li>
     	</ul>
     </div> 
 	
@@ -54,15 +54,40 @@
 			$("div[data-year="+year+"]").show();
 		}
 	</script>
-
+	
 	<script>
-	$("#dataTableSearchExpenses").keyup(function(event) {
-	    if (event.keyCode === 13) {
-	    	var searchData = $('#dataTableSearchExpenses').val();
-	    	timesheetReportsDiv(searchData)
-	    	$('#dataTableSearchExpenses').val(searchData);
+	/* works based on enter-button */
+	$("#dataTableSearchTimesheetReports").keyup(function(event) {
+		if (event.keyCode === 13) {
+	    	$('#dataTableSearchTimesheetReports').parent().find('p.jquery_form_error_message').remove();
+	    	var searchData = $('#dataTableSearchTimesheetReports').val();
+	    	var regex =  new RegExp(/[\\]/g);
+	    	if(regex.test(searchData) == false){
+	    		timesheetReportsDiv(searchData)
+	    	}else{
+	    		$("#dataTableSearchTimesheetReports").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+	    	}
+	    	$('#dataTableSearchTimesheetReports').val(searchData);
 	    }
 	});
+
+	/* works based on onclick funtion */
+	function dataTableSearchTime(){
+		alert("1");
+		$('#dataTableSearchTimesheetReports').parent().find('p.jquery_form_error_message').remove();
+		alert("2");
+		var searchData = $('#dataTableSearchTimesheetReports').val();
+		alert("3");
+		var regex =  new RegExp(/[\\]/g);
+		alert("4");
+		if(regex.test(searchData) == false){
+			timesheetReportsDiv(searchData)
+		}else{
+			$("#dataTableSearchTimesheetReports").after("<p class='jquery_form_error_message'><span>Enter valid Search Data</span>");
+		}
+		$('#dataTableSearchTimesheetReports').val(searchData);
+	 }
 	</script>
+	
 	
 	

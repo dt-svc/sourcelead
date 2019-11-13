@@ -2466,6 +2466,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
    		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().toString());
+   		 submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());

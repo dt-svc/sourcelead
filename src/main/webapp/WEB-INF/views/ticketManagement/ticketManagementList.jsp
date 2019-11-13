@@ -6,6 +6,12 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script type="text/javascript" src="/resources/js/ticketManagement/ticket.js"></script>
 
+<script>
+function resetFilter(){
+	$("#ticketListSearch").val('');
+	getTicketManagementList();
+}
+</script>
  <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -15,6 +21,9 @@
     </section>
     <div class="content-area clearfix timesheet_out">
           <div class="positionRelative reportHead clearfix">
+          <span class="pull-left refreIcon">
+           <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a>
+          <div></div></span>
             <ul class="pull-right list-unstyled list-inline">
             <sec:authorize access="hasRole('ROLE_ADD_TICKET')">
               <li><a href="/app/addTicket" class="newAdBtn mr5" title="Add" id="addPop">+ Add</a></li>

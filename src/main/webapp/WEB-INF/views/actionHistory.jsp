@@ -47,13 +47,6 @@
 <script src="/resources/js/bootstrap.min.js?staticTime=${staticTime}"></script>
  <script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 <body>
-<style type="text/css">
-
-.actionHistory {
-margin-top: 52px; padding:10px; border: 1px solid #ddd; background-color: #fff;
-}
-</style>
-
 <div class="wraper"> 
   <!-- Header Area -->
   <header class="main-header">

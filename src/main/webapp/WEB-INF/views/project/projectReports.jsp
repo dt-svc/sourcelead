@@ -6,12 +6,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-.validation_p p.jquery_form_error_message {
-    bottom: -26px;
-}
-</style>
-<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
 	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>

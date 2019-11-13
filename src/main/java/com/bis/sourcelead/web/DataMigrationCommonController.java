@@ -382,13 +382,13 @@ public class DataMigrationCommonController {
 	            Cell cell = row.createCell(cellnum++);
 	            cell.setCellValue((String)key);
 	            
-	            if(key.equalsIgnoreCase("Category")) {
+	            if(key.equalsIgnoreCase("Category*")) {
 	            	List<String> categoryList = assetCategoryService.getAssetCategoryStringtByLocationId(orgLocation.getId());
 	            	if(categoryList != null && !categoryList.isEmpty()) {
 	            		String [] category = categoryList.toArray(new String[categoryList.size()]);
 		            	sheet.addValidationData(getDropDownListForCell(category, cellnum-1, "xls"));
 	            	}
-	            }else if(key.equalsIgnoreCase("Work Status")) {
+	            }else if(key.equalsIgnoreCase("Work Status*")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.ASSET_WORKING_STATUS, cellnum-1, "xls"));
 	            }
 	        }

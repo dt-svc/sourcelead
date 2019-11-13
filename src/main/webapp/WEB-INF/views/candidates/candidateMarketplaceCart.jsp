@@ -574,6 +574,7 @@ var finalDateFormatPetitionSave = getJSDateFormat(locationDate);
 		emptyMarketCartSearchValues();
 		$("#customDates").hide();
 		$("ul#MarketCartCheckBox > li input:radio").prop("checked", false);
+		$("ul#myRolesUL > li input:checkbox").prop("checked",false);
 	}
 	
 	function emptyMarketCartSearchValues(){
@@ -609,7 +610,10 @@ $("#trashHdr").click(function() {
 	 $("#deleteAll").toggle();
 })
 function refreshPage(){
-  location.reload(); // refresh the page.
+	resetMarketCartFilter();
+	$("#dynamicUserDataTableSearch").val('');
+	getCandidateDetailsFromMarketcart();
+   // refresh the page.
 }
 function predefineProfileImage(imageId){
 	$(imageId).attr('src','/resources/images/userprofileImg.jpg');

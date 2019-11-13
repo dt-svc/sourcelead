@@ -6,19 +6,6 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-.validation_p p.jquery_form_error_message {
-    bottom: -26px;
-}
-.file_mask {
-    z-index: 999999  !important;
-}
-.popupMid {
-	min-height: 100px;
-}
-</style>
- 
-
 <div class="backtotop" style="display: none;"><img src="/resources/images/backtotop.png"></div>  
 <!-- this script is for Tasks list functionality at Projects screen -->
 <script>
@@ -414,7 +401,7 @@
 		 result = result  +'	<div class="popupHead">';
 		 result = result  +'		<h2>Rename Folder</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeFolder();"></a>';
 		 result = result  +'	</div>';
-		 result = result  +'	<div class="popupMid clearfix">';
+		 result = result  +'	<div class="popupMid clearfix minHeight100">';
 		 result = result  +'      <div class="col-sm-12 noPad mt clearfix">';
 		 result = result  +'			<label class="col-md-4 padding_left">Create Folder<span class="text-danger">&nbsp;*</span></label>';
 		 result = result  +'          	<div class="col-md-8 padding_right" id="rmoveErrMsgEditCF">';
@@ -836,7 +823,7 @@ $('body').on('blur', '#reNameFile_form', function() {
 		<div class="popupHead">
 			<h2>Create Folder</h2><a href="javascript:void(0)" class="fa fa-close popCan" onclick="closeFolder();"></a>
 		</div>
-		<div class="popupMid clearfix">
+		<div class="popupMid clearfix minHeight100">
           <div class="col-sm-12 noPad mt clearfix">
 				<label class="col-md-4 padding_left">Create Folder<span class="text-danger">&nbsp;*</span></label>
               	<div class="col-md-8 padding_right" id="rmoveErrMsgCF">

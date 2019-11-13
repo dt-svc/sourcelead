@@ -107,7 +107,7 @@ window.onload = function () {
 	$("#dataTableSearchExpenses123").keyup(function(event) {
 	    if (event.keyCode === 13) {
 	    	var searchData = $('#dataTableSearchExpenses123').val();
-	    	getStatusListData(1,searchData)
+	    	getStatusListData(1,0,searchData)
 	    	$('#dataTableSearchExpenses123').val(searchData);
 	    }
 	});
@@ -145,10 +145,10 @@ function getTimesheetApprovalListByStatus(){
 
 <script>		
 	function getTableDataByPageSize(){
-		  getStatusListData(1);
+		  getStatusListData(1,0,"");
 		}
 	
-				function getStatusListData(pageNo,searchValue){
+				function getStatusListData(pageNo,noOfRecords,searchValue){
 					 var status = '${status}';
 					 var sourceleadUrl ='${sourceleadUrl}';
 					 var pageSize = $("#pageSize").val();
@@ -159,7 +159,7 @@ function getTimesheetApprovalListByStatus(){
 					$("#TimeshgeetStatusListIdLoading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
 					$.ajax({
 						    	type: "POST",
-						        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,
+						        url: sourceleadUrl+"/getTimesheetListByStatus?${_csrf.parameterName}=${_csrf.token}&dashboardTimeStatus="+status+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&totalRows="+noOfRecords+"&searchValue="+searchValue,
 						        success: function(data) {
 						        	   if(data != null && data !='undefined' && data != ''){
 							                	 $("#timesheetApprList").empty();
@@ -211,7 +211,7 @@ function getTimesheetApprovalListByStatus(){
 				              ellipsePageSet :false,
 				              cssStyle: 'light-theme',
 				               onPageClick: function (pageNumber, event) {
-				            	   getStatusListData(""+pageNumber+"",searchData);
+				            	   getStatusListData(""+pageNumber+"",""+totalRows+"",searchData);
 				              }
 			      };
 			      $("#pagination-demo").pagination(options);

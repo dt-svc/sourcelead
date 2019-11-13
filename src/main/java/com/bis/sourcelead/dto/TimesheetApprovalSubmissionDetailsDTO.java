@@ -1,16 +1,13 @@
 package com.bis.sourcelead.dto;
 
-import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 
 
-public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class TimesheetApprovalSubmissionDetailsDTO {
 
-	private BigInteger projectMemberId;
-	private BigInteger projectId;
-	private BigInteger masterCandidateId;
+	private Long projectMemberId;
+	private Long projectId;
+	private Long masterCandidateId;
 	
 	private String employeeName;
 	private String profileImageFileUrl;
@@ -19,7 +16,7 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String designation;
 	private String project;
 	private String clientName;
-	private BigInteger clientId;
+	private Long clientId;
 	private String vendorOrgName;
 	private List<String> weeekTotal;
 	private List<String> submissionTotal;
@@ -39,27 +36,27 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	private String dashboardDateList;
 	private String tableFor;
 	
-	private BigInteger consultantUserId;
-	private BigInteger workLocationId;
+	private Long consultantUserId;
+	private Long workLocationId;
 	
 	private String total;
 	private String stage;
-	public BigInteger getProjectMemberId() {
+	public Long getProjectMemberId() {
 		return projectMemberId;
 	}
-	public void setProjectMemberId(BigInteger projectMemberId) {
+	public void setProjectMemberId(Long projectMemberId) {
 		this.projectMemberId = projectMemberId;
 	}
-	public BigInteger getProjectId() {
+	public Long getProjectId() {
 		return projectId;
 	}
-	public void setProjectId(BigInteger projectId) {
+	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
 	}
-	public BigInteger getMasterCandidateId() {
+	public Long getMasterCandidateId() {
 		return masterCandidateId;
 	}
-	public void setMasterCandidateId(BigInteger masterCandidateId) {
+	public void setMasterCandidateId(Long masterCandidateId) {
 		this.masterCandidateId = masterCandidateId;
 	}
 	public String getEmployeeName() {
@@ -104,10 +101,10 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setClientName(String clientName) {
 		this.clientName = clientName;
 	}
-	public BigInteger getClientId() {
+	public Long getClientId() {
 		return clientId;
 	}
-	public void setClientId(BigInteger clientId) {
+	public void setClientId(Long clientId) {
 		this.clientId = clientId;
 	}
 	public String getVendorOrgName() {
@@ -206,16 +203,16 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setTableFor(String tableFor) {
 		this.tableFor = tableFor;
 	}
-	public BigInteger getConsultantUserId() {
+	public Long getConsultantUserId() {
 		return consultantUserId;
 	}
-	public void setConsultantUserId(BigInteger consultantUserId) {
+	public void setConsultantUserId(Long consultantUserId) {
 		this.consultantUserId = consultantUserId;
 	}
-	public BigInteger getWorkLocationId() {
+	public Long getWorkLocationId() {
 		return workLocationId;
 	}
-	public void setWorkLocationId(BigInteger workLocationId) {
+	public void setWorkLocationId(Long workLocationId) {
 		this.workLocationId = workLocationId;
 	}
 	public String getTotal() {
@@ -230,8 +227,4 @@ public class TimesheetApprovalSubmissionDetailsDTO implements Serializable {
 	public void setStage(String stage) {
 		this.stage = stage;
 	}
-	
-	
-	
-	
 }

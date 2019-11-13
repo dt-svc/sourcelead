@@ -30,7 +30,7 @@ public class TicketType implements Serializable {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION", columnDefinition = "LONGTEXT default NULL")
 	private String description;
 
 	@Column(name = "STATUS")

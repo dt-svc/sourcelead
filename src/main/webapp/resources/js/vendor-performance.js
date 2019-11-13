@@ -128,20 +128,7 @@ function getVendorsReportGraphData() {
 	if(orgRelationId > 0) {
 		getReleasedJobsGraph();
 		
-		$("#avgPercentMovingFwdloadingDiv").show();
-		$("#avgPercentMovingFwdNoRecordsDiv").hide();
-		$("#avgPercentMovingFwdChartDiv").hide();
-		
-		$("#qualityCandidatesloadingDiv").show();
-		$("#qualityCandidatesNoRecordsDiv").hide();
-		$("#qualityCandidatesChartDiv").hide();
-		
-		$("#applicantDeclineloadingDiv").show();
-		$("#applicantDeclineNoRecordsDiv").hide();
-		$("#applicantDeclineChartDiv").hide();
-		
-		getAverageTimeToFillGraph();
-	}
+		}
 }
 
 // Released Jobs
@@ -222,9 +209,33 @@ function getReleasedJobsGraph() {
             		getQualityCandidatesGraph();
             		getApplicantDeclineGraph();
             		getApplicantBackoutGraph();
+					getAverageTimeToFillGraph();
             	} else {
             		$("#releaseJobsNoRecordsDiv").show();
-            		$('#releasedJobsResultDiv').hide();
+					$('#releasedJobsResultDiv').hide();
+					
+					$("#avgPercentMovingFwdNoRecordsDiv").show();
+					$("#avgPercentMovingFwdChartDiv").hide();
+					
+					$("#qualityCandidatesNoRecordsDiv").show();
+					$("#qualityCandidatesChartDiv").hide();
+					
+					$("#applicantsDeclineCount").html(0);
+					$("#applicantDeclineNoRecordsDiv").show();
+					$("#applicantDeclineChartDiv").hide();
+					
+					$("#backoutCandidatesCount").html(0);
+					$("#backoutCandidatesNoRecordsDiv").show();
+					$("#backoutCandidatesChartDiv").hide();
+					
+					$("#offerAcceptanceRateNoRecordsDiv").show();
+					$("#offerAcceptanceRateChartDiv").hide();
+					
+					$("#totalReceivedCandidates").html(0);
+					$("#hiredReceivedCandidates").html(0);
+					$("#rejectedReceivedCandidates").html(0);
+					
+					
             	}
         		$("#releaseJobsloadingDiv").hide();
             } else if (response.response === "SESSION_TIMEDOUT" || response.indexOf('Sign In') !== -1) {
@@ -364,6 +375,9 @@ function getOfferAcceptanceRateGraph() {
 }
 
 function getAveragePercentageMovingForwardGraph() {
+	$("#avgPercentMovingFwdloadingDiv").show();
+	$("#avgPercentMovingFwdNoRecordsDiv").hide();
+	$("#avgPercentMovingFwdChartDiv").hide();
 	$.ajax({
 		type : "POST",
 		url : sourceleadUrl + "/getAllJobsPipelineReoportsList?orgRelationId=" + orgRelationId + "&spocId=" + contactUserId,
@@ -534,7 +548,7 @@ function getAveragePercentageMovingForwardGraph() {
 
 // Quality Candidates
 function getQualityCandidatesGraph() {
-	/*$("#qualityCandidatesloadingDiv").show();*/
+	$("#qualityCandidatesloadingDiv").show();
 	$("#qualityCandidatesNoRecordsDiv").hide();
 	$("#qualityCandidatesChartDiv").hide();
 	$.ajax({

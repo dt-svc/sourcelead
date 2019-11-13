@@ -84,6 +84,9 @@ import com.bis.sourcelead.entity.User;
 	@JoinColumn(name = "UPDATED_BY")
 	private User updatedBy;
 	
+	@Column(name = "COMMENT_REQUIRED")
+	private String commentRequired;
+	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requirementWorkFlowStagesId")
 	private Set<RequirementWorkFlowTasks> workflowTasks;
@@ -205,6 +208,14 @@ import com.bis.sourcelead.entity.User;
 
 	public void setRequirementQuestionnaireTemplateId(RequirementQuestionnaireTemplate requirementQuestionnaireTemplateId) {
 		this.requirementQuestionnaireTemplateId = requirementQuestionnaireTemplateId;
+	}
+
+	public String getCommentRequired() {
+		return commentRequired;
+	}
+
+	public void setCommentRequired(String commentRequired) {
+		this.commentRequired = commentRequired;
 	}
 
 	public Set<RequirementWorkFlowTasks> getWorkflowTasks() {

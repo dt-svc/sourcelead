@@ -258,7 +258,7 @@
 												      </td>
 										              <td>
 										                  <c:if test="${timeSheetSubmissionStatus != 'APPROVED' && timeSheetSubmissionStatus != 'SUBMITTED' &&  employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
-													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
+													         <div><input type="text" ${!empty isTicketNumberRequired && isTicketNumberRequired == 'Y' ? 'data-validation="required validate_Space validate_Alphanumeric validate_length length1-100"' : ''}  id="${leaveIndex+entryCount.index+1}ticketNumber1Id" name="${leaveIndex+entryCount.index+1}ticketNumber1Id"  value="${entry.ticketNumber}" field-name=" " onblur='setTicketNumber("${entryIndex}","${leaveIndex+entryCount.index+1}ticketNumber1Id");' class="timeTick"></div>
 													      </c:if>
 													      <c:if test="${timeSheetSubmissionStatus == 'APPROVED' || timeSheetSubmissionStatus == 'SUBMITTED' ||  !employeeTimesheetEntryDetailsDTO.saveButtonVisible}">
 													         <c:if test="${!empty entry.ticketNumber}">
@@ -500,7 +500,7 @@
 															 </div>
 														</td>
 														<td>
-															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment" />
+															<input type="text" name="timsheetAttachments[${attCount.index}].weekComment" ${timeSheetSubmissionStatus != 'SUBMITTED' && timeSheetSubmissionStatus != 'APPROVED' ? '' : 'readonly="readonly"'}  class="form-control  input-sm" value="${attachment.weekComment}" placeholder="Comment"  title ="'${attachment.weekComment}'"/>
 														</td>
 													    </tr>
 												    </c:forEach>
@@ -2119,7 +2119,7 @@ function timesheetApprovalTableRowByProjectMemberId(timesheetFrequency,projectMe
 	    	 $(".side_mask").fadeOut(200); 
      		 $("body").css('overflow-y', 'scroll');
 			 var currentPageNumber =  $("#currentPageNumber").val();
-   		     getStatusListData(""+currentPageNumber+"","");
+   		     getStatusListData(""+currentPageNumber+"",0,"");
 		 }
 		 else if(from != null && from != '' && from != 'undefined' && (from == 'approver' || from == 'approverClose' ||  from == 'dashboardClose')){
 			 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';

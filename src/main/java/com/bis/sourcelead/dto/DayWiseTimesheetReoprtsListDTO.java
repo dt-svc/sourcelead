@@ -6,6 +6,7 @@ import java.util.Date;
 public class DayWiseTimesheetReoprtsListDTO {
 	private BigInteger timeEntryId;
 	private String timesheetDate;
+	private String employeeId;
 	private String employeeName;
 	private String employeeEmail;
 	private String ticketNo;
@@ -30,7 +31,15 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private Date approvedDate;
 	private Date sahFrequenchStartDate;
 	private Date sahFrequenchEndDate;
+	private BigInteger parentCandidteId;
+	private BigInteger candidateId;
 	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
 	public String getEmployeeName() {
 		return employeeName;
 	}
@@ -187,6 +196,18 @@ public class DayWiseTimesheetReoprtsListDTO {
 	}
 	public void setApprovedDate(Date approvedDate) {
 		this.approvedDate = approvedDate;
+	}
+	public BigInteger getParentCandidteId() {
+		return parentCandidteId;
+	}
+	public void setParentCandidteId(BigInteger parentCandidteId) {
+		this.parentCandidteId = parentCandidteId;
+	}
+	public BigInteger getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(BigInteger candidateId) {
+		this.candidateId = candidateId;
 	}
 	
 }

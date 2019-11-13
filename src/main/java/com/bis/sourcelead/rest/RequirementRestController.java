@@ -70,6 +70,7 @@ import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -190,6 +191,9 @@ public class RequirementRestController {
 	 
 	 @Autowired
 	 RequirementSubmissionTemplateFieldsService requirementSubmissionTemplateFieldsService;
+	 
+	 @Autowired
+	 CandidateEducationService candidateEducationService;
 	 
 	@Autowired
 	private PdfUtil pdfUtil;
@@ -1385,6 +1389,8 @@ public class RequirementRestController {
 	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
 			@RequestParam(value = "candidateIds", required = false) String candidateIds,
 			@RequestParam(value = "candidateResume", required = false) String candidateResume,
+			@RequestParam(value = "N", required = false) String needApplicantPermit,
+			@RequestParam(value = "N", required = false) String notifyToApplicant,
 			HttpServletRequest request)throws Exception {
 		Response<String> response = new Response<>();
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1441,6 +1447,17 @@ public class RequirementRestController {
 									labelItems.put("PhoneNumber", candidate.getPhoneNumber());
 								}
 								
+								if(StringUtils.isNotBlank(candidate.getAlternateMobilePhone())) {
+									JSONObject altPhoneItem = new JSONObject();
+									altPhoneItem.put("label", "Alternate Number");
+									altPhoneItem.put("type", "text");
+									altPhoneItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									altPhoneItem.put("name", "AlternateNumber");
+									altPhoneItem.put("value", candidate.getAlternateMobilePhone());
+									array.put(altPhoneItem);
+									labelItems.put("AlternateNumber", candidate.getAlternateMobilePhone());
+								}
+								
 								JSONObject emailItem = new JSONObject();
 								emailItem.put("label", "Email Id");
 								emailItem.put("type", "text");
@@ -1490,6 +1507,53 @@ public class RequirementRestController {
 									array.put(cityItem);
 								}
 								
+								if(StringUtils.isNotBlank(candidate.getZipcode())) {
+									JSONObject zipcodeItem = new JSONObject();
+									zipcodeItem.put("label", "ZipCode");
+									zipcodeItem.put("type", "text");
+									zipcodeItem.put("id", "submissionZipCode");
+									zipcodeItem.put("name", "zipcode");
+									zipcodeItem.put("value", candidate.getZipcode());
+									labelItems.put("zipcode", candidate.getZipcode());
+									array.put(zipcodeItem);
+								}
+								
+								if(StringUtils.isNotBlank(candidate.getDateofBirth())) {
+									JSONObject dobItem = new JSONObject();
+									dobItem.put("label", "DOB");
+									dobItem.put("type", "text");
+									dobItem.put("id", "DOB");
+									dobItem.put("name", "DOB");
+									dobItem.put("value", candidate.getDateofBirth());
+									labelItems.put("DOB", candidate.getDateofBirth());
+									array.put(dobItem);
+								}
+								
+								List<String> eduList = candidateEducationService.getCandidateEducationNamesByCandidateId(Long.valueOf(candidateid));
+								
+								if(eduList != null && !eduList.isEmpty()) {
+									JSONObject educationItem = new JSONObject();
+									educationItem.put("label", "Education");
+									educationItem.put("type", "text");
+									educationItem.put("id", "text-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									educationItem.put("name", "Education");
+									educationItem.put("value", String.join(", ", eduList));
+									array.put(educationItem);
+									labelItems.put("Education", String.join(", ", eduList));
+								}
+								
+								
+								if(StringUtils.isNotBlank(candidate.getExperienceYears())) {
+									JSONObject expYearsItem = new JSONObject();
+									expYearsItem.put("label", "Work Experience");
+									expYearsItem.put("type", "select");
+									expYearsItem.put("id", "select-"+SourceLeadRandomCodeHelper.generateRandomBulkSubmissionId());
+									expYearsItem.put("name", "WorkExperience");
+									expYearsItem.put("value", candidate.getExperienceYears() + " Years " + (candidate.getExperienceMonths() != null ? candidate.getExperienceMonths() : "0") + " Months");
+									array.put(expYearsItem);
+									labelItems.put("WorkExperience", candidate.getExperienceYears() + "." + (candidate.getExperienceMonths() != null ? candidate.getExperienceMonths() : "0"));
+								}
+								
 								if(StringUtils.isNotBlank(candidate.getNoticePeriod())) {
 									JSONObject npItem = new JSONObject();
 									npItem.put("label", "Notice Period");
@@ -1527,6 +1591,13 @@ public class RequirementRestController {
 									array.put(ectcItem);
 								}
 								
+								if(needApplicantPermit != null && !needApplicantPermit.isEmpty() && needApplicantPermit.equalsIgnoreCase("Y")) {
+									labelItems.put("needApplicantPermit", "Y");
+								}
+								
+								if(notifyToApplicant != null && !notifyToApplicant.isEmpty() && notifyToApplicant.equalsIgnoreCase("Y")) {
+									labelItems.put("notifyToApplicant", "Y");
+								}
 								
 								String con = array.toString();
 								RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmission(labelItems,loginUser, orgLocation, con, loginUserRole);
@@ -1753,5 +1824,19 @@ public class RequirementRestController {
 		}
 		return null;
 	}
+	
+	@RequestMapping(value = "/updateApplicantSourceMember", method = RequestMethod.POST)
+		public String updateApplicantSourceMember(@RequestParam(value = "reqId", required = false) String reqId, HttpServletRequest request) throws Exception {
+		String resultJson = null;
+			List<RequirementAssignTo> requirementAssignToList = requirementAssignToService.getRequirementAssignToListByRequirementId(Long.parseLong(reqId));
+			for (RequirementAssignTo requirementAssignTo : requirementAssignToList) {
+				requirementAssignTo.setAssignedUserName(requirementAssignTo.getAssignUserId().getFullName());
+				requirementAssignTo.setAssignedUserIdTemp(requirementAssignTo.getAssignUserId().getId());
+			}
+			
+			resultJson = toJSON(requirementAssignToList);
+			return resultJson;
+	
+		}
 	
 }

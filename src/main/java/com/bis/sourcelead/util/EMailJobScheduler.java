@@ -252,7 +252,7 @@ public class EMailJobScheduler {
 	CandidateResumesService candidateResumesService;
 	
 	@Autowired
-	SourceleadResumeParser sourceleadResumeParser;
+	SourceleadResumeParserNew sourceleadResumeParser;
 	
 	@Autowired
 	RequirementInterviewService requirementInterviewService;
@@ -411,6 +411,7 @@ public class EMailJobScheduler {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EMailJobScheduler.class);
 	
+	private static boolean startEmailParsingProcess = true;
 	
 	
 	//=============================================== EMPLOYEE TIME SHEETS MAILS STARTED==========================================
@@ -480,17 +481,22 @@ public class EMailJobScheduler {
 	 * @Reason as this schedule job is blocking IPAddress in QA server, and anyhow we aren't using this functionality.
 	 *  	   So, commented for now. If needed will open later
 	 **/
-   // 
-	//@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
-	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
+   // commented on 07 July 2019 .
+	/*@Scheduled(cron = "0/30 * * * * *")// Scheduled for every 30 seconds for testing need to comment after testing.
+	//@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every 15 Minutes.
 	@Async
 	public void runJobSchedulerEmailJobParsingAtOrgLevel() { // reads the email configured at org level and parse the
 																// Jobs(attachments)in inbox folder.
 		// Saves the resumes at org level specific folder and updates the org level
 		// candidates table with parsed information.
 		logger.info("******************  Parsing resumes is Started each org level environment value is ::: "+environment);
-		System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
-		if(environment != null && !environment.trim().equalsIgnoreCase("local")) {
+		logger.info("******************  startEmailParsingProcessvalue is ::: "+startEmailParsingProcess);
+		if(environment != null && !environment.trim().equalsIgnoreCase("local") && startEmailParsingProcess) {
+			logger.debug("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			System.out.println("****************** Parsing resumes is Started..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			System.out.println("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
+			logger.debug("=========== isEmailParsingProcess started ======================="+startEmailParsingProcess);
+			startEmailParsingProcess = false;
 		try {
 			List<Org> orgList = orgService.getOrgs();
 			User user = null;
@@ -506,8 +512,8 @@ public class EMailJobScheduler {
 					List<EmailScenarioConfiguration> emailsList = emailScenarioconService.getConfParserMailList(orgLocationId, Constants.RESUME_PARSING, true);
 						File tempfolder = null;
 					for(EmailScenarioConfiguration email :  emailsList) {
-						//System.out.println(" Email id is :" + email.getEmailId());
-						logger.debug("*********** Email id is :" + email.getEmailId());
+						System.out.println("orgLocationId is "+orgLocationId+" **************Parsisng started for Email id is :" + email.getEmailId());
+						logger.debug("orgLocationId is "+orgLocationId+" **************Parsisng started for Email id is :" + email.getEmailId());
 						tempfolder = new File(staticPath+ System.getProperty("file.separator") +"tempResumes" );
 						if (!tempfolder.exists()) tempfolder.mkdirs(); // if not exist create the folder with path.
 						 new ReadEmail().readEMailAttachments(orgLocationId, email, tempfolder);  //downloads the attachments from the configured email by user level to temp folder.
@@ -524,15 +530,18 @@ public class EMailJobScheduler {
 				}
 
 			}
-			logger.debug("******************  parsing resume Jobs on org locations Completed **********************");
-			//System.out.println("=========== parsing resume Jobs on org locations Completed =======================");
-
+			startEmailParsingProcess = true;
+			System.out.println("****************** Parsing resumes is Completed..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			logger.debug("****************** Parsing resumes is Completed..@ time  *****  >>>> :   "+Calendar.getInstance().getTime());
+			logger.debug("=========== isEmailParsingProcessComplted ======================="+startEmailParsingProcess);
+			System.out.println("=========== isEmailParsingProcessComplted ======================="+startEmailParsingProcess);
 		} catch (Exception e) {
 			logger.error("*****************Exception caught while Job parsing shceduler *************"+e.getMessage());
+			startEmailParsingProcess = true;
 			e.printStackTrace();
 		}
        }
-	}
+	}*/
 	
    @Scheduled(cron = "0 0 9 1/1 * ?") // Scheduled for every day at @ 9.a.m on united states time.
    //@Scheduled(cron = "0/30 * * * * *") // used for dev testing run for every 30 seconds..
@@ -4779,41 +4788,52 @@ public class EMailJobScheduler {
 										approvePendingInfoGrid.append("</table>");
 
 									
-									  // loop for notify to emails for (String email :
+									  // loop for notify to emails 
 										
-										for(String email : emailReminder.getNotifyTo().split(",")) {
-											User toUser = new User();
-											toUser.setEmail(email.trim());
-											toUser.setFirstName("");
-											toUser.setLastName("");
-											sendConfiguredMailTo(toUser, emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus); 
+										if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+											for(String email : emailReminder.getNotifyTo().split(",")) {
+												User toUser = new User();
+												toUser.setEmail(email.trim());
+												toUser.setFirstName("");
+												toUser.setLastName("");
+												sendConfiguredMailTo(toUser, emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus); 
+											}
+											//project Manager
+											 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+											for(ProjectMembers members :projectMemberList) {
+												List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
+												for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
+													sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+												}
+											}
 										}
  
-										
-										String[] roleIds = emailReminder.getRoles().split(",");
-										
-										for(String roleType :roleIds) {
-											if(roleType.equalsIgnoreCase("Reporting Manager")) {
-												//sending the mail to reporting manger
-												for(LeaveApproveHierarchy lah : pendingLeave.getApproverHierarchyList()) {
-												sendConfiguredMailTo(lah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+										else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+											String[] roleIds = emailReminder.getRoles().split(",");
+											
+											for(String roleType :roleIds) {
+												if(roleType.equalsIgnoreCase("Reporting Manager")) {
+													//sending the mail to reporting manger
+													for(LeaveApproveHierarchy lah : pendingLeave.getApproverHierarchyList()) {
+													sendConfiguredMailTo(lah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+													}
+												} 
+												else if(roleType.equalsIgnoreCase("Team Leader")) {
+													//Team lead
+													 List<TeamMembers>  teamMemberList = teamMembersService.getTeamMembersListByUserIdAndLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+													for(TeamMembers team:teamMemberList) {
+														sendConfiguredMailTo(team.getTeamId().getOwnerUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+													}
+	
 												}
-											} 
-											else if(roleType.equalsIgnoreCase("Team Leader")) {
-												//Team lead
-												 List<TeamMembers>  teamMemberList = teamMembersService.getTeamMembersListByUserIdAndLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
-												for(TeamMembers team:teamMemberList) {
-													sendConfiguredMailTo(team.getTeamId().getOwnerUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
-												}
-
-											}
-											else if(roleType.equalsIgnoreCase("Project Manager")){
-												//project Manager
-												 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
-												for(ProjectMembers members :projectMemberList) {
-													List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
-													for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
-														sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+												else if(roleType.equalsIgnoreCase("Project Manager")){
+													//project Manager
+													 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+													for(ProjectMembers members :projectMemberList) {
+														List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
+														for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
+															sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+														}
 													}
 												}
 											}

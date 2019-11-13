@@ -15,6 +15,88 @@ public class MissingTimesheetResultRepotDTO {
 	private Long dueDays;
 	
 	private String submittedOn;
+	
+	private String manager1;
+	
+	private String manager2;
+	
+	private String approvalMechanism;
+	
+	private String noOfHours;
+	
+	private String approved_By;
+	
+	private String approvedDate;
+	
+	private String empId;
+	
+	private String projectFrequency;
+	
+	
+
+	public String getManager1() {
+		return manager1;
+	}
+
+	public void setManager1(String manager1) {
+		this.manager1 = manager1;
+	}
+
+	public String getManager2() {
+		return manager2;
+	}
+
+	public void setManager2(String manager2) {
+		this.manager2 = manager2;
+	}
+
+	public String getApprovalMechanism() {
+		return approvalMechanism;
+	}
+
+	public void setApprovalMechanism(String approvalMechanism) {
+		this.approvalMechanism = approvalMechanism;
+	}
+
+	public String getNoOfHours() {
+		return noOfHours;
+	}
+
+	public void setNoOfHours(String noOfHours) {
+		this.noOfHours = noOfHours;
+	}
+
+	public String getApproved_By() {
+		return approved_By;
+	}
+
+	public void setApproved_By(String approved_By) {
+		this.approved_By = approved_By;
+	}
+
+	public String getApprovedDate() {
+		return approvedDate;
+	}
+
+	public void setApprovedDate(String approvedDate) {
+		this.approvedDate = approvedDate;
+	}
+
+	public String getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
+
+	public String getProjectFrequency() {
+		return projectFrequency;
+	}
+
+	public void setProjectFrequency(String projectFrequency) {
+		this.projectFrequency = projectFrequency;
+	}
 
 	public String getEmployeName() {
 		return employeName;

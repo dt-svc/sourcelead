@@ -10,8 +10,6 @@ import com.bis.sourcelead.annotations.CleanHtml;
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Phone;
 import com.bis.sourcelead.annotations.Required;
-import com.bis.sourcelead.entity.OrgLocations;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -93,6 +91,8 @@ public class CandidateDTO extends SearchDTO{
 	private String experienceMonths;
 
 	private String noticePeriod;
+	
+	private String otherNoticePeriod;
 	
 	private String vendor;
 
@@ -277,6 +277,8 @@ public class CandidateDTO extends SearchDTO{
 	private String marketPrice;
 	
 	private String ssnNumber;
+	
+	private String employmentType;
 	
 	public String getCandidateId() {
 		return candidateId;
@@ -494,6 +496,15 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setNoticePeriod(String noticePeriod) {
 		this.noticePeriod = noticePeriod;
+	}
+	
+
+	public String getOtherNoticePeriod() {
+		return otherNoticePeriod;
+	}
+
+	public void setOtherNoticePeriod(String otherNoticePeriod) {
+		this.otherNoticePeriod = otherNoticePeriod;
 	}
 
 	public String getDesignation() {
@@ -1312,6 +1323,14 @@ public class CandidateDTO extends SearchDTO{
 
 	public void setSsnNumber(String ssnNumber) {
 		this.ssnNumber = ssnNumber;
+	}
+
+	public String getEmploymentType() {
+		return employmentType;
+	}
+
+	public void setEmploymentType(String employmentType) {
+		this.employmentType = employmentType;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dto;
 
+import java.io.Serializable;
+
 import com.bis.sourcelead.annotations.Email;
 import com.bis.sourcelead.annotations.Required;
 
@@ -7,8 +9,12 @@ import com.bis.sourcelead.annotations.Required;
  *
  * @author Raja Gopal Reddy P
  */
-public class PaymentAccountDTO {
-    private long id;
+public class PaymentAccountDTO implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5513697838360081280L;
+	private long id;
     @Required(desc = "email", dependsOn = "accountType", parentValue = "WEPAY")
     @Email
     private String email;

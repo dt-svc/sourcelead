@@ -2,16 +2,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-
-<style>
-.zindex{
-z-index: 1000 !important;
-}
-.collapse-div-adduser.orgsummary-adduser {
-	left: 165px; top: 97px;
-}
-</style>
-
 <div id="users" class="tab-pane fade">
 			 
 			 <div class="success_pop" id="mailSendSuccessMsg"  style="display: none;">
@@ -20,7 +10,7 @@ z-index: 1000 !important;
 			 
 			 <div class="clearfix">
 			 <!-- Popup Div -->
-                    <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser col-md-4 zindex" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
+                    <div class="collapse-div-adduser orgsummaryuser-pop orgsummary-adduser orgsummary-adduser-custom col-md-4 zindex" id="addNewUserPopup"> <i class="fa fa-close close-div closediv-pop" onclick="flushUser();"></i>
                           <div class="form-horizontal clearfix">
                           <div id="userLoading"></div> 
                         <form:form id="adduser_form"  name="adduser_form" method="post">                             

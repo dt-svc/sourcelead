@@ -75,7 +75,6 @@ public class MobilePushNotificationDaoImpl implements MobilePushNotificationDao	
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "from MobileDeviceTokenInformaion mdti  where mdti.userId.id =:userId and mdti.deviceType =:deviceType";
 		List<MobileDeviceTokenInformaion> tokenList = session.createQuery(query).setLong("userId", userId).setString("deviceType", deviceType).list();
-		
 		return tokenList;
 	}
 
@@ -114,6 +113,15 @@ public class MobilePushNotificationDaoImpl implements MobilePushNotificationDao	
 		Session session = this.sessionFactory.getCurrentSession();
 		String query = "delete from MobileDeviceTokenInformaion mdti where mdti.deviceToken =:toeknId";
 		Query querq = session.createQuery(query);
+	}
+
+
+	@Override
+	public List<MobileDeviceTokenInformaion> mobileDeviceTokenInformaionLisByUserId(Long userId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from MobileDeviceTokenInformaion mdti  where mdti.userId.id =:userId and mdti.status = 1";
+		List<MobileDeviceTokenInformaion> tokenList = session.createQuery(query).setLong("userId", userId).list();
+		return tokenList;
 	}
 
  

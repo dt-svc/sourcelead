@@ -99,11 +99,26 @@ function saveEmailParsers(){
 </script>
 <script>
 $(document).ready(function () {
+	allowOnlyConfigResumeEmailParserForOrg();
 	getParserEmailList();
 });
 
 </script>
 <script>
+function allowOnlyConfigResumeEmailParserForOrg(){
+	// Dont allow more than one email for each Org, if one email configured disable the "Add" button to add another email.
+	$.ajax({
+	   	type: "POST",
+	    url: sourceleadUrl+"/getResumeParserEmailCountForOrg?${_csrf.parameterName}=${_csrf.token}", 	   
+		    success: function(response) {
+		    	if(response >=1){
+		    		// add button should be disable when count >=1
+		    		$('#parserEmailAdd').addClass("disabled");
+		    	}
+		    },
+     });
+	
+}
 function getParserEmailList(){
 	$.ajax({
 	   	type: "POST",
@@ -145,7 +160,7 @@ function getParserEmailList(){
 		    	
 		    	 $("#emailparsingList").empty();
 	        	 $("#emailparsingList").append(result);
-	        	 
+	        	 allowOnlyConfigResumeEmailParserForOrg();// disables the add buttion for adding anohter email to the resume parsing. 
 		    },
      });
 	

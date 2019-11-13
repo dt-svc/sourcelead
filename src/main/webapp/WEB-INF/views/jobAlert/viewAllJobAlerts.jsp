@@ -32,15 +32,11 @@
 
 
 <style type="text/css">
-.jobAlerts {
+.job-alerts {
 margin-top: 65px;
 }
 #jobAlerts {
-min-height: 50px;
-    max-height: 525px;
-    overflow-y: auto;
-    width: 900px;
-    margin: 0 auto; 
+min-height: 50px; max-height: 525px; overflow-y: auto; width: 900px; margin: 0 auto;
 }
 
 </style>
@@ -68,7 +64,7 @@ min-height: 50px;
     </nav>
    </header>
    
-   <div class="jobAlerts">
+   <div class="jobAlerts job-alerts">
    <h4 class="text-center">Your Matching Jobs</h4>
    <p id="jobAlerts"></p>
    </div>

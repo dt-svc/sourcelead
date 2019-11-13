@@ -6,38 +6,11 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-
-<style>
-.reportsCount.req_Crowd ul li {
-    width: 25% !important;
-}
-.approvedPop {
-    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
-    }
-.approvedPop ul {
- width:100% !important; float: none; padding: 0;
- }
- .approvedPop ul li {
- clear: both; width: 100%; margin: 0;
- }
- 
- 
- .approvedPop1 {
-    position:absolute; z-index:100; width:150px; top:35px; right:2px; display:none; background-color: #fff;
-    }
-.approvedPop1 ul {
- width:100% !important; float: none; padding: 0;
- }
- .approvedPop1 ul li {
- clear: both; width: 100%; margin: 0;
- }
-</style>
-
 <script type="text/javascript">
 		window.onload = function () {
 			getDemoOrgsList();
 		 };
-	</script>
+</script>
 
 <section class="content-wraper">
         <section class="content-header clearfix">
@@ -46,7 +19,7 @@
           </div>
           <div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Demo Requests </div>
            <div class="clearfix"></div> 
-		      <div class="reportsCount req_Crowd clearfix">
+		      <div class="reportsCount req_Crowd req_crowd clearfix">
 		          <ul class="clearfix">
 		          <li id="crowd"><label class="mr10"><span><i class="fa fa-registered"></i></span><b id="crowdActive"><input class="myCheckbox valid" type="radio"  name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/enrolledOrgsList'/>'" >&nbsp;Registered Companies</label></b></li>
 		          <li id="crowd"><label class="mr10"><span><i class="fa fa-cubes"></i></span><b id="savedActive"><input class="myCheckbox valid" type="radio"  name="sourceleadOrgType" id="sourceleadOrg" onClick="javascript:window.location.href = '<c:url value='${sourceleadUrl}/requestedOrgs'/>'" >&nbsp;Requested Companies</label></b></li>
@@ -62,7 +35,7 @@
         	<ul>
 				
                 <li id="filterDropDown"><i class="fa fa-filter"></i><span>Requested</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter1ApprovePop" class="approvedPop">
+                	<div id="filter1ApprovePop" class="approvedPop approved_pop">
                     	<ul>
                     	    <li><input id="c6"  type="radio" name="requestedStatus" value ="All"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;All</label></li>
                         	<li><input id="c7"  type="radio" name="requestedStatus" value ="Today"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Today</label></li>
@@ -77,8 +50,8 @@
                 
                 
                 <li id="filterDropDown1"><i class="fa fa-filter"></i><span>Status</span><i class="glyphicon glyphicon-play" ></i>|
-                	<div id="filter1ApprovePop1" class="approvedPop1">
-                    	<ul>
+                	<div id="filter1ApprovePop1" class="approved_pop approvedPop1">
+                    	<ul class="noPad">
                     	    <li><input id="c6"  type="checkbox" name="filterStatus" value ="Requested"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Requested</label></li>
                         	<li><input id="c7"  type="checkbox" name="filterStatus" value ="Onhold"  onclick="getDemoOrgsList();"><label for="c7">&nbsp;Onhold</label></li>
 							<li><input id="c9" type="checkbox" name="filterStatus" value ="Completed"  onclick="getDemoOrgsList();"><label for="c9">&nbsp;Completed</label></li>
@@ -294,7 +267,7 @@ function demoOrgsListPagination(url,sourceleadUrl){
 	            			  result = result +"<option value='Completed'>Completed</option>";
 	            		  }
 	            		  else if(opt.orgRequestStatus == "Completed"){
-	            			  result = result + '<td><div class="tblminwidth-75">'+opt.orgRequestStatus+'</div></td>';
+	            			  result = result + "<option disabled selected>"+opt.orgRequestStatus+"</option>";
 	            		  }
 	            	 
 	            		return result;

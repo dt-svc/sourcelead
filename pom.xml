@@ -747,24 +747,6 @@
      </dependency> -->
 
 
-	<!-- https://mvnrepository.com/artifact/com.github.fernandospr/javapns-jdk16 -->
-	<dependency>
-		<groupId>com.github.fernandospr</groupId>
-		<artifactId>javapns-jdk16</artifactId>
-		<version>2.3.1</version>
-	</dependency>
-	<dependency>
-		<groupId>com.sun.jersey</groupId>
-		<artifactId>jersey-server</artifactId>
-		<version>1.9</version>
-	</dependency>
-	<dependency>
-		<groupId>javax</groupId>
-		<artifactId>javaee-web-api</artifactId>
-		<version>7.0</version>
-	</dependency>
-	
-	
 	<!-- https://mvnrepository.com/artifact/com.google.firebase/firebase-core -->
 	<dependency>
       <groupId>com.google.gcm</groupId>
@@ -782,11 +764,12 @@
       <version>3.0.0</version>
     </dependency>
     
-	    <dependency>
-	     <groupId>org.apache.httpcomponents</groupId> 
-	     <artifactId>httpclient</artifactId> 
-	     <version>4.5.2</version> 
-	     </dependency>
+    <dependency>
+            <groupId>com.maxmind.geoip</groupId>
+            <artifactId>geoip-api</artifactId>
+            <version>1.2.14</version>
+        </dependency>
+     
     </dependencies>
 
     <build>

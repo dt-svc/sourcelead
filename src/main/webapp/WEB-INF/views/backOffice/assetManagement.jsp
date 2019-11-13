@@ -530,8 +530,11 @@ function resetAssetFilter(){
 	$("ul#myShiftUL > li input:checkbox").prop("checked",false);
 	$("ul#myTagsUL > li input:checkbox").prop("checked",false);
 	$("#assetDataTableSearch").val('');
+	$("#myCategoryInput, #myShiftInput, #myTagsInput").val('');
+	myCategoryFunction();
+	myShiftFunction();
+	myTagsFunction();
 	getDynamicAssetList();
-	
 }
 function resetAssignAssetFilter(){
 	$("ul#workStatusFilter > li input:checkbox").prop("checked",false);
@@ -1015,14 +1018,13 @@ function assignAssetPagination(url){
     } );
     $("#assignAssetPagination").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>"); 
     $("input[type=search]").hide();
-    $("#assignAssetDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   getDynamicAssignedList();
-    	   }
-    	});
 }
  
- 
+$("#assignAssetDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   getDynamicAssignedList();
+	   }
+	});
 </script>
 
 

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.timesheet.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,18 @@ public class TimesheetSubmissionsDocumentsServiceImpl implements TimesheetSubmis
 	@Override
 	public List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId) throws Exception {
 		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentIdsBySubmissionId(submissionId);
+	}
+
+	@Override
+	public List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(
+			Long masterCandidateId, Long projectId, Date freqStartDate, Date freqEndDate) throws Exception {
+		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(masterCandidateId, projectId, freqStartDate, freqEndDate);
+	}
+
+	@Override
+	public List<Long> getAllTimesheetSubmissionsDocumentIdsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(
+			Long masterCandidateId, Long projectId, Date freqStartDate, Date freqEndDate) throws Exception {
+		return timesheetSubmissionsDocumentsDao.getAllTimesheetSubmissionsDocumentIdsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(masterCandidateId, projectId, freqStartDate, freqEndDate);
 	}
 
 	

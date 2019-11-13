@@ -1468,10 +1468,10 @@ function preparedVendorContractListWFAPagination(url,tabType){
 			    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot-vsm">';
 			    	    	    	    	 	        	  if(report.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 			    	    	    	    	 	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.approverUserId){
-			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\');"></i></div></div>';
+			    	    	    	    	 		      	        	 result = result +' <div><div class="CurDiv" id="removeStatus'+report.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+report.id+',\'WAITING_FOR_APPROVER\',\'Vendor\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+report.id+',\'REJECTED\',\'Vendor\');"></i></div></div>';
 			    	    	    	    	 		      	         }
 			    	    	    	    	 	        	  }else if(report.templateSubmissionStatus == "WAITING_TO_SEND" && (report.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
-			    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\');"></i></a>';
+			    	    	    	    	 	        		  result = result + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+report.contractUUID+'\',\'Vendor\');"></i></a>';
 			    	    	    	    	 	        	  }
 			    	    	    	    		        		  
 			    	    	    	    	 	      	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
@@ -1569,6 +1569,8 @@ function preparedClientContractListWFA(url,tabType){
 	
 function preparedClientContractListWFAPagination(url,tabType){	
 	var colIndex = 0;
+	var loginUserCode= '${SourceLeadWeb_userCode}';
+	var loginUserRole= '${SourceLeadWeb_loginUserRole}';
     $('#contractListTableWFA1').DataTable( {
             "processing": true,
         "serverSide": true,
@@ -1687,17 +1689,17 @@ function preparedClientContractListWFAPagination(url,tabType){
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot-vsm">';
 		    	    	    	    	        	  if(output.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		    	    	    	    	        		  if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == output.approverUserId){
-		    	    	    	    	      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\');"></i></div></div>';
+		    	    	    	    	      	        	 opt = opt +' <div><div class="CurDiv" id="removeStatus'+output.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+output.id+',\'WAITING_FOR_APPROVER\',\'Client\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+output.id+',\'REJECTED\',\'Client\');"></i></div></div>';
 		    	    	    	    	      	         }
 		    	    	    	    	        	  }else if(output.templateSubmissionStatus == "WAITING_TO_SEND" && (output.isOwner == "Y" || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
-		    	    	    	    	        		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\');"></i></a>';
+		    	    	    	    	        		  opt = opt + '<a title="Send Contract"><i class="fa fa-share-square" onclick="sendContractFromOwner(\''+output.contractUUID+'\',\'Client\');"></i></a>';
 		    	    	    	    	        	  }
 		    	    	    	    	        		  
 		    	    	    	    	     	         '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_CONTRACT\')">';
-		    	    	    	    	     	     		if(output.typeOfContract == "New"){
+		    	    	    	    	     	     		if(output.typeOfContract == "New" && (loginUserCode == output.createdBy || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
 		    	    	    	    	     	     			opt = opt + '| <a href="<c:url value="/app/addNewContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	     	     		}
-		    	    	    	    	     	     		if(output.typeOfContract == "Custom"){
+		    	    	    	    	     	     		if(output.typeOfContract == "Custom" && (loginUserCode == output.createdBy || '${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN")){
 		    	    	    	    	     	     			opt = opt + '| <a href="<c:url value="/app/addCustomContract?contractUUID='+output.contractUUID+'" />" title="Edit"><i class="fa fa-pencil editAA"></i></a>';
 		    	    	    	    	     	     		}
 		    	    	    	    	       			'</sec:authorize>';
@@ -1886,7 +1888,7 @@ function preparedApplicantContractListWFAPagination(url,tabType){
 		    	    	    	    	    	      result = result + '<div class="tbldata-dotdot_80">';
 		    	    	    	    			     	if(res.templateSubmissionStatus == "WAITING_FOR_APPROVER"){
 		    	    	    	    						if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == res.approverUserId){
-		    	    	    	    							result = result +' <div><div class="CurDiv" id="removeStatus'+res.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+res.id+',\'WAITING_FOR_APPROVER\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+res.id+',\'REJECTED\');"></i></div></div>';
+		    	    	    	    							result = result +' <div><div class="CurDiv" id="removeStatus'+res.id+'"><i class="fa fa-check" title="Approve" alt="Approve" onclick="approveContract('+res.id+',\'WAITING_FOR_APPROVER\',\'Full time offer\');"></i>|<i class="fa fa-times" title="Reject" alt="Rejected" onclick="rejectedContractReason('+res.id+',\'REJECTED\',\'Full time offer\');"></i></div></div>';
 		    	    	    	    						}
 		    	    	    	    			     		'<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
 		    	    	    	    			     		if(res.typeOfContract == "New"){
@@ -2720,7 +2722,7 @@ function preparedVendorContractListWTVPagination(url,tabType){
 			    	    	    	    	    	    	result = result + '<div class="tbldata-dotdot_80">';
 			    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == report.ownerUser){
 			    	    	    	    			        	 if(report.contractStatus != "completed" && report.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && report.templateSubmissionStatus != "FINALIZED"){
-			    	    	    	    				     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+			    	    	    	    				     			result = result + '<a id="removeStatus'+report.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+report.id+',\'WAITING_TO_BE_VERIFY\',\'Vendor\');"></a> | ';
 			    	    	    	    		            	 }
 			    	    	    	    			         }
 			    	    	    	    			         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -2935,7 +2937,7 @@ function preparedClientContractListWTVPagination(url,tabType){
 		    	    	    	    	    	      opt = opt + '<div class="tbldata-dotdot_80">';
 		    	    	    	    	  	         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_loginUserRole}' == "ROLE_MANAGER" ||'${SourceLeadWeb_user.id}' == output.ownerUser){
 		    	    	    	    	 	        	 if(output.contractStatus != "completed" && output.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && output.templateSubmissionStatus != "FINALIZED"){
-		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		    	    	    	    	 		     			opt = opt +  '<a id="removeStatus'+output.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+output.id+',\'WAITING_TO_BE_VERIFY\',\'Client\');"></a> | ';
 		    	    	    	    	 		     		}
 		    	    	    	    	  	         }
 		    	    	    	    	 	         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -3120,7 +3122,7 @@ function preparedContractApplicantListWTVPagination(url,tabType){
 		    	    	    	    	    	      res = res + '<div class="tbldata-dotdot_80">';
 		    	    	    	    	 		         if('${SourceLeadWeb_loginUserRole}' == "ROLE_ADMIN" || '${SourceLeadWeb_user.id}' == appReport.ownerUser){
 		    	    	    	    			        	 if(appReport.contractStatus != "completed" && appReport.templateSubmissionStatus == "WAITING_TO_BE_VERIFY" && appReport.templateSubmissionStatus != "FINALIZED"){
-		    	    	    	    				        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\');"></a> | ';
+		    	    	    	    				        	 res = res +  '<a id="removeStatus'+appReport.id+'" class="fa fa-thumbs-o-up" title="finalize" onclick="finalizeContract('+appReport.id+',\'WAITING_TO_BE_VERIFY\',\'Full time offer\');"></a> | ';
 		    	    	    	    				     		}
 		    	    	    	    			         }
 		    	    	    	    			         '<sec:authorize access="hasAnyRole(\'ROLE_VIEW_CONTRACT\')">';
@@ -3217,21 +3219,21 @@ function finalizeContract(recordId,status){
 		}
    </script>
 <script>
-function sendContractFromOwner(contractUUID){
+function sendContractFromOwner(contractUUID,tabType){
 	var sourceleadUrl ='${sourceleadUrl}';
 	 $.ajax({
       type : "POST",
        url: sourceleadUrl+"/sendContractFromOwnertoReceiver?contractUUID="+contractUUID,       
        success :function(data) {
     	   if(data)
-	        getTemplateList();
+	        getTemplateList(tabType);
       },
   }); 
 }
 </script>
 
 <script>
-function approveContract(recordId,status){
+function approveContract(recordId,status,tabType){
 	var rejectReason =  $("#rejectContractId").val();
 	var rowHtmlContent =  $("#row"+recordId).html();
 	var sourceleadUrl ='${sourceleadUrl}';
@@ -3253,33 +3255,33 @@ function approveContract(recordId,status){
     	        $("#removeStatus"+recordId).html("<span>Approved</span>").addClass('text-success');
         	}
         	$("#loading").removeAttr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-        	getTemplateList();
+        	getTemplateList(tabType);
        },
    });  
 }
 </script>
 
 <script>
-function rejectedContractReason(recordId,status){
+function rejectedContractReason(recordId,status,tabType){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Do you want to reject this contract?</p>";
 	result = result +"		<textarea  id='rejectContractId' name='rejectContractId'  placeholder='Reason here'></textarea>";
 	result = result + ' <div id="rejectContractIdDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='validateReason("+recordId+",\""+status+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='validateReason("+recordId+",\""+status+"\",\""+tabType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
 }
 
-function validateReason(recordId,status){
+function validateReason(recordId,status,tabType){
 	
 	var rejectReason =  $("#rejectContractId").val();
 	if(rejectReason != null && rejectReason !='undefined' && rejectReason !=''){
 		$("#rejectContractIdDiv").find('p.jquery_form_error_message').remove();
-		approveContract(recordId,status);
+		approveContract(recordId,status,tabType);
 		cancelTermination();
 	}else{
 		$("#rejectContractIdDiv").append("<p class='jquery_form_error_message'>Reason Is Required</p>");

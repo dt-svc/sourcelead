@@ -106,14 +106,14 @@
 		          <div class="col-md-5" id="bsrNumberDiv">
 		                  <label>BSR Number</label>
 		                  <div>
-		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="validate_Space validate_length length9-15" data-validation-optional="true"/>
+		                   <input type="text" id="bsrNumber"  field-name="BSR Number"  name="bsrNumber" class="form-control" data-validation="validate_Space validate_int validate_length length4-15" data-validation-optional="true"/>
 		                  </div>
 		          </div>
 		          
 		          <div class="col-md-5" id="micrCodeDiv">
 		                  <label>MICR Code</label>
 		                  <div>
-		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="validate_Space validate_length length9-15" data-validation-optional="true"/>
+		                  <input type="text" id="micrCode"  field-name="MICR Code" name="micrCode" class="form-control" data-validation="validate_Space validate_int validate_length length9-15" data-validation-optional="true"/>
 		                  </div>
 		          </div>
 		          

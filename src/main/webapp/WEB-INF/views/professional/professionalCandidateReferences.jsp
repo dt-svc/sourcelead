@@ -9,10 +9,6 @@
 .addUser-org {
 	overflow-x: auto;
 }
-
-.validation_p p.jquery_form_error_message {
-	bottom: -25px !important;
-}
 </style>
 <%-- 
      @author : prasadK.

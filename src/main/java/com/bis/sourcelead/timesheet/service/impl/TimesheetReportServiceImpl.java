@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +36,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.TimesheetReportsDTO;
+import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
@@ -44,6 +44,7 @@ import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
@@ -89,6 +90,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	@Autowired
 	private OrgLocationService orgLocationService;
 	
+	@Autowired
+	private EmployeesService employeesService;
+	
 	
 	@Autowired
 	private AppliedLeaveDateService appliedLeaveDateService;
@@ -101,445 +105,6 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	
 	
 	private static final Logger logger = LoggerFactory.getLogger(TimesheetReportServiceImpl.class);
-	
-	@Override
-	public String prepareTimeSheetDiv(String frequencyYear, String frequencyMonth,User loginUser,OrgLocations orgLocations) throws Exception {
-		StringBuilder prepareTimeSheetDiv = new StringBuilder("");
-		StringBuilder prepareMonthsHiddenDiv = new StringBuilder("");
-		StringBuilder currentMonthsHiddenDiv = new StringBuilder("");
-		StringBuilder selectedYear = new StringBuilder("");
-		StringBuilder selectedMonth = new StringBuilder("");
-		frequencyMonth = frequencyMonth.trim();
-		prepareTimeSheetDiv.append("<div class='content-area content-new clearfix'>");
-		prepareTimeSheetDiv.append("<div class='timesheet_head timesheetRep'>");
-		          prepareTimeSheetDiv.append("<div class='timeReFi'>");
-			  	          LinkedHashSet<String>  tsrYearsList = CalendarUtil.getYearsListFromCurrentDate(1);
-			  	          
-			  	         LinkedList<String>  allMonthsList = CalendarUtil.getAllMonths();
-						 LinkedList<String>  tsrMonthsList = new LinkedList<>();
-						 LinkedList<String>  currentMonthsList = new LinkedList<>();
-						 LinkedList<String>  nextyrMonthsList = new LinkedList<>();
-						 
-						 Calendar currentCal = Calendar.getInstance(TimeZone.getDefault());
-						 int cMonth = Integer.parseInt(Constants.DF_MM.format(currentCal.getTime()));
-						 String currentYear = CalendarUtil.getCurrentYear();
-						 String currentMonth = CalendarUtil.getCurrentMonth();
-						 
-						 /**
-						  * for to show months for current year
-						  */
-						 if(cMonth> 9){
-							 currentMonthsList.addAll(allMonthsList);
-						 }
-						 else{
-						     for(int i = 0;i< cMonth+2;i++){
-						    	 currentMonthsList.add(allMonthsList.get(i));
-						     }
-						 }
-						
-						 /**
-						  * for to show months for next year
-						  */
-						 if(cMonth == 11){
-							 nextyrMonthsList.add(allMonthsList.get(0));
-						 }
-						 else if(cMonth == 12){
-							 nextyrMonthsList.add(allMonthsList.get(0));
-							 nextyrMonthsList.add(allMonthsList.get(1));
-						 }
-						 
-				          prepareTimeSheetDiv.append("		                <select id='frequencyYear' name='frequencyYear' class='form-control chosen-select'  onchange='getMonths(this);'  >");
-							for (String yrStr : tsrYearsList) {
-								    StringBuilder isSelected = new StringBuilder("");
-								    if(StringUtils.isEmpty(frequencyYear) && currentYear.equalsIgnoreCase(yrStr)){
-								    	isSelected.append("selected='selected'");
-								    	selectedYear.append(yrStr);
-								    }
-								    else if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
-								    	isSelected.append("selected='selected'");
-								    	selectedYear.append(yrStr);
-								    } 
-								    
-								    /**
-								     * for to highlight the current  year
-								     */
-								    if(currentYear.equalsIgnoreCase(yrStr)){
-								    	 currentMonthsHiddenDiv.append("<input type='hidden' id='currentYear' value='"+yrStr.trim()+"'>");
-								    }
-								    prepareTimeSheetDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+yrStr+"'>");
-								    prepareTimeSheetDiv.append(yrStr);
-								    prepareTimeSheetDiv.append("		                  </option>");
-								    
-								    /**
-									  * for to calculate months for selected year
-									  */
-								    if(Integer.parseInt(currentYear)>Integer.parseInt(yrStr)){
-								    	if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
-								    		tsrMonthsList.addAll(CalendarUtil.getAllMonths());
-								    	}
-								    		
-								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+CalendarUtil.getAllMonths().toString()+"'>");
-								    }
-								    else if(Integer.parseInt(currentYear)==Integer.parseInt(yrStr)){
-								    	if((StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)) || (StringUtils.isEmpty(frequencyYear))){
-								    		tsrMonthsList.addAll(currentMonthsList);
-								    	}
-								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+currentMonthsList.toString()+"'>");
-								    }
-								    else if(Integer.parseInt(currentYear)<Integer.parseInt(yrStr)){
-								    	if(StringUtils.isNotEmpty(frequencyYear) && frequencyYear.equalsIgnoreCase(yrStr)){
-								    		tsrMonthsList.addAll(nextyrMonthsList);
-								    	}
-								    	prepareMonthsHiddenDiv.append("<input type='hidden' id='"+yrStr+"MonthList' value='"+nextyrMonthsList.toString()+"'>");
-								    }
-							}
-							prepareTimeSheetDiv.append("		                </select>");
-							prepareTimeSheetDiv.append(prepareMonthsHiddenDiv);
-					 prepareTimeSheetDiv.append("	            </div>");
-					 prepareTimeSheetDiv.append("<div class='timeReFi'>");
-			          prepareTimeSheetDiv.append("		                <select id='frequencyMonth' name='frequencyMonth' class='form-control chosen-select'  >");
-						for (String monthStr : tsrMonthsList) {
-							    StringBuilder isSelected = new StringBuilder("");
-							    if(StringUtils.isEmpty(frequencyMonth) && currentMonth.equalsIgnoreCase(monthStr)){
-							    	isSelected.append("selected='selected'");
-							    	selectedMonth.append(monthStr);
-							    }
-							    else if(StringUtils.isNotEmpty(frequencyMonth) && frequencyMonth.equalsIgnoreCase(monthStr)){
-							    	isSelected.append("selected='selected'");
-							    	selectedMonth.append(monthStr);
-							    } 
-							    
-							    /**
-							     * for to highlight the current month,if selected year is current year
-							     */
-							    if(currentMonth.equalsIgnoreCase(monthStr)){
-							    	 currentMonthsHiddenDiv.append("<input type='hidden' id='currentMonth' value='"+monthStr.trim()+"'>");
-							    }
-							   
-							     
-							    prepareTimeSheetDiv.append("		                  <option data-icon='fa fa-calendar' "+isSelected.toString()+" value='"+monthStr+"'>");
-							    prepareTimeSheetDiv.append(monthStr);
-							    prepareTimeSheetDiv.append("		                  </option>");
-							    
-						}
-						prepareTimeSheetDiv.append("		                </select>");
-				prepareTimeSheetDiv.append("	            </div>");
-				 prepareTimeSheetDiv.append("<div class='timeReFi'>");
-					prepareTimeSheetDiv.append("	            <input type='button' onclick='timesheetReportsDiv();' class='btn btn-success' value='View'>	");
-					prepareTimeSheetDiv.append(currentMonthsHiddenDiv);
-				 prepareTimeSheetDiv.append("	            </div>");
-				 
-				 String pdf = "pdf";
-				 String excel = "excel";
-				 prepareTimeSheetDiv.append("<ul>");
-				 prepareTimeSheetDiv.append("<li title='Export' class='mrPOP' id='mypop' onclick='exportToggle();'><i class='glyphicon glyphicon-export'></i>");
-				 prepareTimeSheetDiv.append("<div id='exportPop'>");
-				 prepareTimeSheetDiv.append(" <ul>");
-				 prepareTimeSheetDiv.append("<li onclick='exportTimeSheetReportsToPdf(\""+pdf+"\");'><i class='fa fa-file-pdf-o'></i>&nbsp;&nbsp;PDF</li>");
-				 prepareTimeSheetDiv.append("<li onclick='exportTimeSheetReportsToPdf(\""+excel+"\");'><i class='fa fa-file-excel-o text-primary'></i>&nbsp;&nbsp;Excel</li>");
-				 prepareTimeSheetDiv.append("</ul>");
-				 prepareTimeSheetDiv.append("</div>");
-				 prepareTimeSheetDiv.append("</li>");
-		         prepareTimeSheetDiv.append("</ul>");
-				 
-				 prepareTimeSheetDiv.append("<div class='clearfix'></div>");
-				 StringBuilder statusDiv = timesheetReportsTableDiv(selectedYear.toString(),selectedMonth.toString(),orgLocations,loginUser);
-				 prepareTimeSheetDiv.append(statusDiv);		
-		prepareTimeSheetDiv.append("</div>");
-		prepareTimeSheetDiv.append("</div>");
-		return prepareTimeSheetDiv.toString(); 
-		
-	}
-	
-	
-	 public StringBuilder timesheetReportsTableDiv(String year,String month,OrgLocations orgLocations,User loginUser) throws Exception{
-		 //DateFormat format = Constants.DF_DMY;
-		 //DateFormat format= LoginSessionController.DATEFORMAT;
-		  DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-		  Map<String,Date> dateList =  CalendarUtil.getMonthStartDateAndEndDateFromGivenMonthStringForTsReports(month,year);
-		  Date startDate = dateList.get("STARTDATE");
-		  Date endDate = dateList.get("ENDDATE");
-		  
-
-        StringBuilder timesheetApprovalDiv = new StringBuilder();
-        List<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByOrgLocationsIdAndApproverUserId(startDate, endDate, orgLocations.getId(), loginUser.getId());
-        if(projectMembers != null && !projectMembers.isEmpty()){
-
-        	int tdSpanLength = 6;
-        	timesheetApprovalDiv.append("			<div class='timesheetRepTab overflow_inherint'>");
-			timesheetApprovalDiv.append("	    	<table id='timesheetReportsPageNation' style='width:100%'>");
-			timesheetApprovalDiv.append("				<thead>");   
-			timesheetApprovalDiv.append("	            	<tr>");
-			timesheetApprovalDiv.append("	                	<th>Employee</th>           ");
-			timesheetApprovalDiv.append("	                    <th>Project</th>            ");
-			timesheetApprovalDiv.append("	                    <th>Frequency</th>             ");
-			timesheetApprovalDiv.append("	                    <th>Rate</th>            ");
-			
-			LinkedHashMap<Date, Date> displayWeeksList = new LinkedHashMap<>();
-			Map<String,String> frequencyDropDown =  timesheetApprovalFrequencyGeneratorUtil.getTabFrequencyListFromProjectInvoiceFrequency(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),startDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),endDate),orgLocations.getDateFormat());
-			if(frequencyDropDown != null && !frequencyDropDown.isEmpty()){
-				for (Map.Entry<String,String> entry : frequencyDropDown.entrySet()) {
-		    		 String  k = entry.getKey();
-		    		 String  v = entry.getValue();
-					tdSpanLength =tdSpanLength+1;
-				        Date weekStartDate;
-				        Date weekEndDate;
-					try {
-						 weekStartDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),k.replaceAll("/", "-"));
-						 weekEndDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),v.replaceAll("/", "-"));
-						 displayWeeksList.put(weekStartDate, weekEndDate);
-						 if(weekStartDate.equals(weekEndDate)){
-							 timesheetApprovalDiv.append("	                    <th>").append(shortormat.format(weekStartDate)).append("</th>  ");
-						 }else{
-							 timesheetApprovalDiv.append("	                    <th>").append(shortormat.format(weekStartDate)).append("-").append(shortormat.format(weekEndDate)).append("</th>  ");
-						 }
-	   					
-					} catch (Exception e) {}
-				}
-			}
-			timesheetApprovalDiv.append("	                    <th>Total</th>             ");
-			timesheetApprovalDiv.append("	                    <th>Stage</th>             ");
-			timesheetApprovalDiv.append("	                    <th>Project to Date</th>   ");
-			timesheetApprovalDiv.append("	                    <th>Last month</th>        ");
-			timesheetApprovalDiv.append("	                </tr>");
-			timesheetApprovalDiv.append("				</thead>");
-			timesheetApprovalDiv.append("	        	<tbody>");
-			for (ProjectMembers projectMember : projectMembers)
-			{
-				  User consultantUser = null;
-					 String fileUrl = "";
-				 if(projectMember != null && projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getConsultantUser() != null) {
-						consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser(); 
-						fileUrl = consultantUser.getFileUrl();
-					}
-				 timesheetApprovalDiv.append("<tr id='row").append(projectMember.getId()).append("'>");
-					 timesheetApprovalDiv.append("  <td>")
-					                       .append("<div class='lg clearfix'>")
-					                                 .append("   <div class='uimg'><img  id='userImage' onerror='predefineProfileImage(this);' src='").append(fileUrl).append("' alt='Profile Image' class='img-circle img-responsive'/>")
-					                                 .append("</div>")
-					                                 .append("    <div class='Utext'>")
-				                                             .append("<i title='").append(projectMember.getProjectMemberCandidteId().getFullName()).append("'>").append(projectMember.getProjectMemberCandidteId().getFullName()).append("</i>");
-				                                             if(null != projectMember.getProjectMemberCandidteId().getDesignationType() && !"".equalsIgnoreCase(projectMember.getProjectMemberCandidteId().getDesignationType())){
-				                                            	 timesheetApprovalDiv.append("<i title='");
-				                                            	 if(null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
-				                                            		 timesheetApprovalDiv.append("Emp Id :").append(projectMember.getEmployee().getEmployeeId()).append(" , ");
-				                                            	 }
-				                                            	 timesheetApprovalDiv.append("Emp Type :").append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("'>");
-				                                            	 if(null != projectMember.getEmployee().getEmployeeId() && !"".equalsIgnoreCase(projectMember.getEmployee().getEmployeeId())){
-				                                            		 timesheetApprovalDiv.append(projectMember.getEmployee().getEmployeeId()).append(",");
-				                                            	 }
-				                                            	 timesheetApprovalDiv.append(projectMember.getProjectMemberCandidteId().getDesignationType()).append("</i>");	 
-				                                             }
-					 											timesheetApprovalDiv.append("</div>")
-				                               .append("   <div>")
-					                        .append(" </td>");
-				     
-				     if(null != projectMember.getProjectMemberCandidteId() && null != projectMember.getProjectMemberCandidteId().getOrgRelationId()){
-				    	 OrgRelations orgRelation = projectMember.getProjectMemberCandidteId().getOrgRelationId();
-			    	     timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append(" ").append(",").append(" ").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("'>").append(projectMember.getProjects().getProjectName()).append("<br>").append(orgRelation.getResponderLocationId().getOrgLocationName()).append("</i></div></td>");
-				     }else{
-				        timesheetApprovalDiv.append("<td><div class='md'><i title='").append(projectMember.getProjects().getProjectName()).append("'>").append(projectMember.getProjects().getProjectName()).append("</i></div></td>");
-				     }
-				     if(null != projectMember.getProjects().getInvoiceFrequency()){
-				     timesheetApprovalDiv.append("<td><div class='sm'>").append(projectMember.getProjects().getInvoiceFrequency()).append("</div></td>");
-				     }else{
-				     timesheetApprovalDiv.append("<td><div class='sm'>").append("--").append("</div></td>"); 
-				     }
-				     if(null != projectMember.getEmployee().getRate() && !"".equalsIgnoreCase(projectMember.getEmployee().getRate())){
-				    	 if(null != projectMember.getEmployee().getCurrentCurrency() && !"".equalsIgnoreCase(projectMember.getEmployee().getCurrentCurrency())){
-				    		 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getCurrentCurrency()).append("-").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>"); 
-				    	 }else{
-				    		 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("'>").append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).append("</i></div></td>");
-				    	 }
-				     
-				     }else{
-				    	 timesheetApprovalDiv.append("<td><div class='sm'><i title='").append("--").append("'>").append("--").append("</i></div></td>");	 
-				     }
-				     SubmissionApproverHierarchy sah = submissionApproverHierarchyService.getSubmissionApproverHierarchyByProjectMemberIdStartDateAndEndDateForApproverLoginForTsReports(loginUser.getId(),orgLocations.getId(),projectMember.getId(),startDate,endDate,"");
-			    	 Submission_ApprovalStatus combinedApprovalStatus = null; 
-				     float monthTotalHours            = 0f;
-					 float monthBillableTotalHours    = 0f;
-					 float monthNonBillableTotalHours = 0f;
-				     if(displayWeeksList != null && !displayWeeksList.isEmpty()){
-				    	    for (Map.Entry<Date,Date> entry : displayWeeksList.entrySet()) { 
-				    	    	HashSet<Date> pmhDateList = projectMembersHistoryService.getAllProjectMemberHistoryDatesByProjectMemberIdAndWeekStartDateEndDate(projectMember.getId(), entry.getKey(), entry.getValue());
-				    	    	Submission_ApprovalStatus approvalStatus = Submission_ApprovalStatus.NEW;
-				    	    	if(sah.getWeekApprovalStatusMap().get(entry.getKey()) != null){
-				    	    		approvalStatus = sah.getWeekApprovalStatusMap().get(entry.getKey());
-				    	    	}
-				    	    	if(pmhDateList == null  ||  pmhDateList.isEmpty()){
-				    	    		approvalStatus = Submission_ApprovalStatus.NOTAPPLICABLE;
-				    	    	}
-				    	    	Float  weekBillableHours = 0f;
-				    	    	if(sah.getWeekBillableHoursMap().get(entry.getKey()) != null){
-				    	    		weekBillableHours = sah.getWeekBillableHoursMap().get(entry.getKey());
-				    	    	}
-				    	    	Float  weekNonBillableHours = 0f;
-				    	    	if(sah.getWeekNonBillableHoursMap().get(entry.getKey()) != null){
-				    	    		weekNonBillableHours = sah.getWeekNonBillableHoursMap().get(entry.getKey());
-				    	    	}
-				    	    	Float  weekTotalHours = 0f;
-				    	    	if(sah.getWeekTotalHoursMap().get(entry.getKey()) != null){
-				    	    		 weekTotalHours = sah.getWeekTotalHoursMap().get(entry.getKey());
-				    	    	}
-				    	    	 String approvalClass = "class='draft'";
-				    	         if(approvalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
-				    	        	  approvalClass = "class='subm'";
-				    	    	 }
-				    	    	 else  if(approvalStatus.equals(Submission_ApprovalStatus.APPROVED)){
-				    	    		 approvalClass = "class='appr'";
-				    	    	 }
-				    	    	 else  if(approvalStatus.equals(Submission_ApprovalStatus.REJECTED)){
-				    	    		 approvalClass = "class='reje'";
-				    	    	 }
-				    	         
-				    	         
-				    	        if(approvalStatus == Submission_ApprovalStatus.REJECTED){
-				    	        	if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.REJECTED){
-				    	        		combinedApprovalStatus = Submission_ApprovalStatus.REJECTED;
-				    	        	}
-				    	        	else{
-				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
-				    	        	}
-				 					
-				 				}
-				 				else if(approvalStatus == Submission_ApprovalStatus.NEW){
-				 					if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.NEW){
-				 						combinedApprovalStatus = Submission_ApprovalStatus.NEW;
-				 					}
-				 					else{
-				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
-				    	        	}
-				 					
-				 				}
-				 				else if(approvalStatus == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-				 					if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL){
-				 						combinedApprovalStatus = Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL;
-				 					}
-				 					else{
-				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
-				    	        	}
-				 					
-				 				}
-				 				else if(approvalStatus == Submission_ApprovalStatus.APPROVED){
-				 					if(combinedApprovalStatus == null || combinedApprovalStatus == Submission_ApprovalStatus.APPROVED){
-				 						combinedApprovalStatus = Submission_ApprovalStatus.APPROVED;
-				 					}
-				 					else{
-				    	        		combinedApprovalStatus = Submission_ApprovalStatus.ACTIONREQUIRED;
-				    	        	}
-				 					
-				 				}
-				    	        monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
-				    	        monthBillableTotalHours = CommonUtil.getCombinedHours(monthBillableTotalHours, weekBillableHours);
-				    	        monthNonBillableTotalHours =  CommonUtil.getCombinedHours(monthNonBillableTotalHours, weekNonBillableHours);
-				    	    	 timesheetApprovalDiv.append("<td>")
-				    	    	                        .append(" <div class='week'>")
-				    	    	                          .append(" <span "+approvalClass+">").append("<d title='").append("week-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).append("'>").append(CommonUtil.getHoursDisplayFormat(weekTotalHours,null)).append("</d>").append("</span>")
-				    	    	                             .append(" <div class='progress'>")
-				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("Billable").append(":").append(CommonUtil.getHoursDisplayFormat(weekBillableHours,null)).append("'>")
-				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekBillableHours,null))
-				    	    	                                     .append("</d>").append("</div>")
-				    	    	                                     .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("Non-Billable").append(":").append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null)).append("'>")
-				    	    	                                        .append(CommonUtil.getHoursDisplayFormat(weekNonBillableHours,null))
-				    	    	                                        .append("</d>").append("</div>")
-				    	    	                             .append(" </div>")
-				    	    	                           
-				    	    	                        .append(" </div>")
-				    	    	                     .append("</td>");
-				    	    	 
-				    	    	 
-				    	    	
-				    	     }
-				     }
-			    	 
-				     timesheetApprovalDiv.append("<td>")
-                     .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append("<d title='").append("Month-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthTotalHours,null)).append("'>").append(CommonUtil.getHoursDisplayFormat(monthTotalHours,null)).append("</d>").append("</span>")
-                          .append(" <div class='progress'>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("Month-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null)).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(monthBillableTotalHours,null))
-                                     .append("</d>").append("</div>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("Month-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null)).append("'>")
-                                 .append(CommonUtil.getHoursDisplayFormat(monthNonBillableTotalHours,null))
-                                 .append("</d>").append("</div>")
-                          .append(" </div>")
-                        
-                     .append(" </div>")
-                  .append("</td>");
-				     
-				     String combinedApprovalClass = "class='action'";
-				     String combinedApprStatus = "Action Required";
-	    	         if(combinedApprovalStatus.equals(Submission_ApprovalStatus.APPROVED)){
-	    	    		 combinedApprovalClass = "class='proj_active'";
-	    	    		  combinedApprStatus = "Approved";
-	    	    	 }
-	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.REJECTED)){
-	    	    		 combinedApprovalClass = "class='proj_closed'";
-	    	    		  combinedApprStatus = "Rejected";
-	    	    	 }
-	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.SUBMITTEDFORAPPROVAL)){
-	    	    		 combinedApprovalClass = "class='proj_process'";
-	    	    		  combinedApprStatus = "Submitted";
-	    	    	 }
-	    	    	 else  if(combinedApprovalStatus.equals(Submission_ApprovalStatus.NEW)){
-	    	    		 combinedApprovalClass = "class='bgGReen'";
-	    	    		  combinedApprStatus = "NEW";
-	    	    	 }
-				     
-				     timesheetApprovalDiv.append("<td><div class='sm'><b "+combinedApprovalClass+">"+combinedApprStatus+"</b></div></td>");
-				     
-				     timesheetApprovalDiv.append("<td>")
-                     .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append("<d title='").append("ProjectToDate-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null)).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateTotalHours(),null)).append("</d></span>")
-                          .append(" <div class='progress'>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("ProjectToDate-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null)).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateBillableHours(),null))
-                                  .append("</d></div>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("ProjectToDate-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null)).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getProjectToDateNonBillableHours(),null))
-                                  .append("</d></div>")
-                          .append("</div>")
-                        
-                     .append(" </div>")
-                  .append("</td>");
-				     
-				     timesheetApprovalDiv.append("<td>")
-                     .append(" <div class='week'>")
-                       .append(" <span class='draft'>").append("<d title='").append("PreMonth-Total-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null)).append("'>").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthTotalHours(),null)).append("</d></span>")
-                          .append(" <div class='progress'>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-info' role='progressbar' style='width:60%'>").append("<d title='").append("PreMonth-Billable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null)).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthBillableHours(),null))
-                                  .append("</d></div>")
-                                  .append(" <div class='progress-bar progress-bar-striped active progress-bar-warning' role='progressbar' style='width:40%'>").append("<d title='").append("PreMonth-NonBillable-Hours").append(":").append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null)).append("'>")
-                                     .append(CommonUtil.getHoursDisplayFormat(sah.getPreviousMonthNonBillableHours(),null))
-                                  .append("</d></div>")
-                          .append(" </div>")
-                        
-                     .append(" </div>")
-                  .append("</td>");
-				     
-				     
-				     
-			        timesheetApprovalDiv.append("</tr>");
-		  }
-		
-		  timesheetApprovalDiv.append("	        </tbody>");
-		  timesheetApprovalDiv.append("	     </table> ");
-	      timesheetApprovalDiv.append("	</div>");
-		
-        	
-        	
-        }
-        else{
-        	timesheetApprovalDiv.append("   <div class='dataTables_empty'>");
-        	timesheetApprovalDiv.append("  <input type='hidden' id='hideExport' value='EmptyList'>");
-			timesheetApprovalDiv.append("  </div> "); 
-        }
-
-     return timesheetApprovalDiv;
-  }
-
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -651,7 +216,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	            table.addCell(cell);
 	        }
             table.completeRow();
-            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+            ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),null, 0,0,"reports",globalUser);
             
             java.util.List<String[]> reportList = new ArrayList<>();
             for(ProjectMembers promembers:projectMembers.getData()){
@@ -678,43 +243,45 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 	}
 	
 	private String[] prepareTimesheetReportData(ProjectMembers projectMember,Long locationId, String[] header, LinkedHashMap<Date, Date> displayWeeksList, User loginUser, Date startDate, Date endDate) throws Exception {
+		 ProjectMembers pm = projectMembersService.getConsultantUserProjectMemberByProjectMemberId(projectMember.getId());
 		String timeSheetReportsArray[] = new String[header.length];
 		 User consultantUser = null;
 		 Long workLocationId = 0l;
 		 StringBuilder nameAndId = new StringBuilder();
-		    if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getWorkLocation() != null && projectMember.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
-				workLocationId = projectMember.getProjectMemberCandidteId().getWorkLocation().getId();
+		    if(pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getWorkLocation() != null && pm.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
+				workLocationId = pm.getProjectMemberCandidteId().getWorkLocation().getId();
 			 }
-			if(null != projectMember.getProjectMemberCandidteId()){
+			if(null != pm.getProjectMemberCandidteId()){
 				        nameAndId.append(projectMember.getProjectMemberCandidteId().getFullName());
-				        consultantUser = projectMember.getProjectMemberCandidteId().getConsultantUser();
-						if(projectMember.getEmployee() != null && projectMember.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(projectMember.getEmployee().getEmployeeId())){
-							nameAndId.append("-").append(projectMember.getEmployee().getEmployeeId()).toString();
+				        consultantUser = pm.getProjectMemberCandidteId().getConsultantUser();
+				        Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(consultantUser.getId(),locationId);
+						if(employee!= null &&employee.getEmployeeId() != null && StringUtils.isNotBlank(employee.getEmployeeId())){
+							nameAndId.append("-").append(employee.getEmployeeId()).toString();
 						}
 						timeSheetReportsArray[0] =	nameAndId.toString();	
 						
 			}else{
 					timeSheetReportsArray[0] = nameAndId.append("--").toString();	
 			}
-			if(projectMember.getProjectMemberCandidteId() !=null){
+			if(projectMember.getProjectMemberCandidteId() !=null && StringUtils.isNotEmpty(projectMember.getProjectMemberCandidteId().getEmail())){
 				timeSheetReportsArray[1] = projectMember.getProjectMemberCandidteId().getEmail();
 			 }else{
 				 timeSheetReportsArray[1] = "--";
 			 }
-			if(projectMember.getProjectMemberCandidteId().getMobilePhone() !=null && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getMobilePhone() )){
+			if(projectMember.getProjectMemberCandidteId() !=null && StringUtils.isNotBlank(projectMember.getProjectMemberCandidteId().getMobilePhone() )){
 				 timeSheetReportsArray[2] = projectMember.getProjectMemberCandidteId().getMobilePhone();
 			 }else{
 				 timeSheetReportsArray[2] = "--";
 			 }
 			
-			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getUserEmploymentType() !=null){
-				 timeSheetReportsArray[3] = projectMember.getEmployee().getUserEmploymentType();
+			 if(projectMember.getProjectMemberCandidteId() != null && StringUtils.isNotEmpty(projectMember.getProjectMemberCandidteId().getDesignationType())){
+				 timeSheetReportsArray[3] = projectMember.getProjectMemberCandidteId().getDesignationType();
 			 }else{
 				 timeSheetReportsArray[3] = "--";
 			 }
-			 if(projectMember.getEmployee() != null && projectMember.getEmployee().getRate() != null && StringUtils.isNotBlank(projectMember.getEmployee().getRate())){
+			 if(projectMember.getPayRate() != null){
 				 StringBuilder rateString = new StringBuilder();
-				 timeSheetReportsArray[4] = rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString();
+				 timeSheetReportsArray[4] = rateString.append(projectMember.getPayRate()).append("/").append(projectMember.getPayRateType()).toString();
 			 }else{
 				 timeSheetReportsArray[4] = "--";
 			 }
@@ -943,7 +510,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		
 		
 		int column = 0;
-		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate,null,null,null, orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),"", 0, timesheetReportsDTO.getTotalRows(),"reports",globalUser);
+		 ResponseList<ProjectMembers> projectMembers = projectMembersService.getProjectMembersListByTimesheetFrequencyOrgLocationsIdAndApproverUserId(null,startDate, endDate, null,null,null,orgLocations.getId(), loginUser.getId(), timesheetReportsDTO.getSearchValue(),null, 0,0,"reports",globalUser);
 		 for(ProjectMembers promembers:projectMembers.getData()){
 			 writeRow = createExcelsheet.createRow(column + 1);
 			 createExcelsheet = prepareTimesheetReportDataExcel(promembers,displayWeeksList,loginUser,createExcelsheet,writeRow,startDate,endDate,orgLocations);
@@ -991,14 +558,15 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 		StringBuilder sbid = new StringBuilder();
 		Long workLocationId = 0l;
 		if(projectMember.getProjectMemberCandidteId() != null && projectMember.getProjectMemberCandidteId().getWorkLocation() != null && projectMember.getProjectMemberCandidteId().getWorkLocation().getId() != null) {
-			workLocationId = projectMember.getProjectMemberCandidteId().getWorkLocation().getId();
+			workLocationId = consultantProjectMembers.getProjectMemberCandidteId().getWorkLocation().getId();
 		 }
 		if(projectMember.getProjectMemberCandidteId()!= null) {
-		if(consultantProjectMembers.getEmployee() != null && consultantProjectMembers.getEmployee().getEmployeeId() != null && StringUtils.isNotBlank(consultantProjectMembers.getEmployee().getEmployeeId())){
 			 consultantUser = consultantProjectMembers.getProjectMemberCandidteId().getConsultantUser(); 
-			 writeRow.createCell(0).setCellValue(sbid.append(consultantProjectMembers.getEmployee().getEmployeeId()).toString());
-			 createExcelsheet.autoSizeColumn(0);
-		}
+			 Employees employee = employeesService.getEmployeeByUserAndOrgLocationId(consultantUser.getId(),orgLocations.getId());
+		  if(employee != null && StringUtils.isNotEmpty(employee.getEmployeeId())) {
+		    	 writeRow.createCell(0).setCellValue(sbid.append(employee.getEmployeeId()).toString());
+				 createExcelsheet.autoSizeColumn(0);
+		 }
 		if(null != projectMember.getProjectMemberCandidteId()){
 			 writeRow.createCell(1).setCellValue(projectMember.getProjectMemberCandidteId().getFullName()); 
 			 createExcelsheet.autoSizeColumn(1);
@@ -1015,9 +583,9 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 			 writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 			 createExcelsheet.autoSizeColumn(4);
 		}
-		if( projectMember.getProjectMemberCandidteId().getRate() != null){
+		if( projectMember.getPayRate() != null){
 			StringBuilder rateString = new StringBuilder();
-			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getEmployee().getRate()).append("/").append(projectMember.getEmployee().getRatePer()).toString());
+			 writeRow.createCell(5).setCellValue(rateString.append(projectMember.getPayRate()).append("/").append(projectMember.getPayRateType()).toString());
 			 createExcelsheet.autoSizeColumn(5);
 		}
 	}

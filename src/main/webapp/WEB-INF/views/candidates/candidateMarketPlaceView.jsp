@@ -41,6 +41,9 @@
 		<div class="immigraInnWrap">
 		<!-- Filter Global market place-->
 		<div class="positionRelative reportHead clearfix">
+		      <span class="pull-left refreIcon mb10">
+				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="refreshPage();"></a>
+			  </span>
      	 <ul class="pull-right list-unstyled list-inline">
 	       <li class="tableShare" style="display: none;">
 	       <a class="marketplaceIcon mr5" title="Withdraw" onclick="withdrawCandidatesFromMarketPlace()"></a>
@@ -574,7 +577,12 @@ function withdrawCandidate(id) {
     }
 }
 
-
+function refreshPage(){
+	toggleShareCandidates();
+	$("#globalMarketSearh").val('');
+	getDynamicGlobalMarketCandidateList();
+	
+}
 
 </script>
 <jsp:include page="../masterFooter.jsp" /> 	

@@ -166,16 +166,23 @@ function getTicketCommetList(ticketId) {
 	});
 }
 
+var validationSettings = {
+        errorMessagePosition : 'element',
+        borderColorOnError : '',
+		scrollToTopOnError : true,
+		dateFormat : 'yyyy/mm/dd' 
+        };
 function saveTicketComment(ticketId) {
-	if ($("#ticketComment").html() !== "" && $("#ticketComment").html() !== "<br>"){
-		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId, {id: $("#ticketCommentId").val(), comment : $("#ticketComment").html(), mentionedUserIds : selectedUsers.toString()}, function(response) {
+	 if ($('#ticketComment_form').validate(false, validationSettings)) {
+		var formData = getFormData("ticketComment_form");
+		$.post(sourceleadUrl + "/saveTicketComment?ticketId="+ticketId,formData, function(response) {
 			if (response && response.response === "INVALID_DATA") {
 				showError(response.responseMessage);
 			} else if (response.response === "AWKWARD") {
 				location.href = "/errorPage";
 			} else if (response.response === "SUCCESS") {
 				if(response.object === true) {
-					$(".success_pop span").html("Ticket " + ($("#ticketCommentId").val() > 0 ? "edited" : "added") + " successfully...");
+					$(".success_pop span").html("Ticket Comment Saved successfully...");
 					$(".success_pop").show();
 					setTimeout(function() {
 						$(".success_pop").hide();
@@ -189,23 +196,29 @@ function saveTicketComment(ticketId) {
 				showError("Operation failed, please try again");
 			}
 		});
-	} else {
-		alert("Add Comment text");
-	}
+		return true;
+	}else{
+			return false;
+		  } 
 }
-function closeTicketComment() {
-	$("#add-comment").fadeOut();	
-	$("#ticketCommentId").val(0);
-	$("#ticketComment").html("");
-	selectedUsers = [];
+$('body').on('blur', '#ticketComment_form', function() {
+	$("#ticketComment_form").showHelpOnFocus();
+	$("#ticketComment_form").validateOnBlur(false, validationSettings);  
+});
+function closeTicketComment(){
+	var ticketIdEdit = $("#ticketCommentId").val();
+	$('#ticketComment_form').find('p.jquery_form_error_message').remove();
+	if(ticketIdEdit ==null || ticketIdEdit =="" || ticketIdEdit =="undefined"){
+	$("#ticketComment").val("");
+	}
+	$("#ticketComment").val("");
 	$('.fr-element.fr-view').html("");
 	$("#ticketCommentPopup, .mask").hide();
-	
 }
 
-function editTicketComment(id) {
+function editTicketComment(ticketId) {
 	selectedUsers = [];
-	$.post(sourceleadUrl + "/getTicketComment?ticketCommentId="+id, {}, function(response) {
+	$.post(sourceleadUrl + "/getTicketComment?ticketCommentId="+ticketId, {}, function(response) {
 		if (response && response.response === "INVALID_DATA") {
 			showError(response.responseMessage);
 		} else if (response.response === "AWKWARD") {

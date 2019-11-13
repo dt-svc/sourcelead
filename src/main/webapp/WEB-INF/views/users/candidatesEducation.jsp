@@ -9,9 +9,7 @@
 <%-- <jsp:include page="candidatesQuickView.jsp"></jsp:include>
  --%>
 <style>
-.addUser-org {
-    overflow-x: auto;
-}
+.addUser-org { overflow-x: auto; }
 </style>
 
 <%-- 

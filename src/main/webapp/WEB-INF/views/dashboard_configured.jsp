@@ -4,39 +4,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style>
-
-.dashboard-widget.dashboard-widget-icons{
-	min-height: 125px !important;
-}
-.dashboard-widget .blank-pages{
-	padding: 0;
-	min-height: 100px;
-}
-.custom-datatble table{
- 	margin-top: 20px !important;
-}
-#requirementList {
-	border-bottom: 1px solid #eae6e6;
-}
-.custom-datatble .dataTables_filter{
-	top: -35px !important;
-    padding: 0 !important;
-}
-.dashboard-datepkr{
-	position:relative;
-}
-.ui-timepicker-wrapper {
-	z-index: 999999;
-	width: 11.5%;
-}
-
-</style>
-<style type="text/css">
-.clients_wrap_table {
-	overflow-x: auto;
-}
-</style>
 
 <script type="text/javascript">
 $( document ).ready(function() {

@@ -1,5 +1,7 @@
 package com.bis.sourcelead.clockInOutDTO;
 
+import java.sql.Time;
+
 public class ClockInOutDTO {
 	
 	private Long clockInOutId;
@@ -12,6 +14,14 @@ public class ClockInOutDTO {
 	private String type;
 	private String totalTime;
 	private String totalBreakTime;
+	
+	private String previousClockInStr;
+	private String previousClockOutStr;
+	
+	private Time previousClockInTime;
+	private Time previousClockOutTime;
+	
+	private String ipAddress;
 	
 	public Long getClockInOutId() {
 		return clockInOutId;
@@ -72,6 +82,36 @@ public class ClockInOutDTO {
 	}
 	public void setTotalBreakTime(String totalBreakTime) {
 		this.totalBreakTime = totalBreakTime;
+	}
+	public String getPreviousClockInStr() {
+		return previousClockInStr;
+	}
+	public void setPreviousClockInStr(String previousClockInStr) {
+		this.previousClockInStr = previousClockInStr;
+	}
+	public String getPreviousClockOutStr() {
+		return previousClockOutStr;
+	}
+	public void setPreviousClockOutStr(String previousClockOutStr) {
+		this.previousClockOutStr = previousClockOutStr;
+	}
+	public Time getPreviousClockInTime() {
+		return previousClockInTime;
+	}
+	public void setPreviousClockInTime(Time previousClockInTime) {
+		this.previousClockInTime = previousClockInTime;
+	}
+	public Time getPreviousClockOutTime() {
+		return previousClockOutTime;
+	}
+	public void setPreviousClockOutTime(Time previousClockOutTime) {
+		this.previousClockOutTime = previousClockOutTime;
+	}
+	public String getIpAddress() {
+		return ipAddress;
+	}
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 	
 }

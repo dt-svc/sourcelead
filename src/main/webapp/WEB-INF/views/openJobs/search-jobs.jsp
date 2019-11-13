@@ -83,12 +83,6 @@ function getPostValueDetails(){
 // 	  }
 	});
 </script>
- 
-<style>
-.footer-area {
- display: table; margin: 0 auto;
-}
-</style>
 
 <!-- Content Area -->
 <jsp:include page="../staticHeader.jsp" />	

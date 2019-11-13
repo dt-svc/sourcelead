@@ -554,8 +554,8 @@ function removeValidation(id){
 	        maxDate: null} );
 		$("#shiftFile"+id).val("");
 	}else{
-		document.getElementById("shiftStart"+id+"").style.display="inline-block";
-		$("#shiftAEmp"+id).attr("data-validation","required");
+// 		document.getElementById("shiftStart"+id+"").style.display="inline-block";
+// 		$("#shiftAEmp"+id).attr("data-validation","required");
 	}
 	 
 }

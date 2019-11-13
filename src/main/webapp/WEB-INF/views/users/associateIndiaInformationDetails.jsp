@@ -346,6 +346,7 @@ function validateMinor(){
  <script>
 	  function getIndAssociateInformationDetails(){
 		  var userId = $("#associateId").val();
+		  var pfel = document.getElementById("pfEligible");
 		  if(userId != null && userId != 'undefined' && userId != ''){    
 			  $("#pfassociateUserId").val(userId);
 		      $.ajax({
@@ -509,7 +510,7 @@ $("#nomineeShow").click(function() {
  function saveNomineeDetails(){
 	 illnessFunction();
 	 minorFunction();
-	 var userId = '${userId}';
+	 var userId = $("#associateId").val();
 	 var id = $('#id').val();
 	 if ($('#nomineeDetails_form').validate(false, validationSettings)){ 
 	        var formData = getFormData("nomineeDetails_form");

@@ -1982,20 +1982,20 @@ public class ImmigrationController {
 		// logger.debug(" Record not found for the Tab Nme:::--> : " + tabNameArray[i]);
 		HashMap<String, Integer> tabRecordCountMap = new HashMap<String, Integer>();
 		try {
-			String entityArray[] = new String[] { "CandidatePassportVisa", "CandidatePassportVisa",
-					"CandidateEmployers", "Candidate", "CandidateEducation", "CandidateFamilyDetails", "Tasks" };
+			String entityArray[] = new String[] { "CandidatePassport", "CandidateVisa",
+					"CandidateEmployers", "Candidate", "CandidateEducation", "CandidateFamilyDetails", "Tasks" ,"LcaHistory"};
 			String tabNameArray[] = new String[] { "Passport", "Visa", "Employers", "Residence", "Education", "Family",
-					"Tasks" };
+					"Tasks","Lca" };
 			Integer count = 0;
 			for (int i = 0; i < entityArray.length; i++) {
 				if (i == 0) { // CandidatePassportVisa for passport
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidate.id=:candidateId and idType='Passport'");
+							"where candidate.id=:candidateId ");
 					tabRecordCountMap.put(tabNameArray[i], count);
 
 				} else if (i == 1) {// CandidatePassportVisa for Visa
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
-							"where candidate.id=:candidateId and idType='Visa'");
+							"where candidate.id=:candidateId ");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				} else if (i == 2) { // CandidateEmployers
 					count = immigrationCommonService.getTableRecordCountByCandidateId(entityArray[i], candidateId,
@@ -2016,6 +2016,10 @@ public class ImmigrationController {
 				} else if (i == 6) {// CandidateFamilyDetails
 					count = immigrationCommonService.getTableRecordCountByImmigrationId(entityArray[i], immigrationId,
 							"where immigrationId.id=:immigrationId and taskStatus='Open'");
+					tabRecordCountMap.put(tabNameArray[i], count);
+				} else if (i == 7) {// CandidateLcaDetails
+					count = immigrationCommonService.getTableRecordCountByImmigrationId(entityArray[i], immigrationId,
+							"where immigrationId.id=:immigrationId ");
 					tabRecordCountMap.put(tabNameArray[i], count);
 				}
 

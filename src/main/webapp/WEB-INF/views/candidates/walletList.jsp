@@ -222,7 +222,8 @@
 		location.href = "${appPath}/SalesOrderList";
 	}
 	function refreshPage(){
-		location.reload();
+		$("#walletSearch").val('');
+		getDynamicWalletList();
 	}
 	/* function goToWalletList(){
 		location.href = "${appPath}/walletList";
@@ -394,7 +395,7 @@
 	         ],
 	         "scrollCollapse": false,
 	         "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-	         "aaSorting": [],
+	         "aaSorting": [[3,'desc']],
 	         "bLengthChange": true,
 	         "bDestroy": true,
 	         "ordering": true,

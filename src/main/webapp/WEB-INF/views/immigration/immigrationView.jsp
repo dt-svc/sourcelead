@@ -14,6 +14,7 @@
 <c:set var ="visaOnLoadCount" value = "${tabRecordCountMap['Visa']}" scope="request"/>
 <c:set var ="empOnLoadCount" value  =  "${tabRecordCountMap['Employers']}" scope="request"/>
 <c:set var ="resiOnLoadCount" value = "${tabRecordCountMap['Residence']}" scope="request"/>
+<c:set var ="lcaOnLoadCount" value = "${tabRecordCountMap['Lca']}" scope="request"/>
 <c:set var ="eduOnLoadCount" value  = "${tabRecordCountMap['Education']}" scope="request"/>
 <c:set var ="familyOnLoadCount" value  = "${tabRecordCountMap['Family']}" scope="request"/>
 <c:set var ="taskOnLoadCount" value  = "${tabRecordCountMap['Tasks']}" scope="request"/>
@@ -76,7 +77,7 @@
               <li><a href="#passportsTab"><i id ="passportfilled" class="fa fa-check-circle-o"></i>Passport</a></li>
               <li><a href="#visasTab"  id="visaInfoTab" class="${visaOnLoadCount==null?'disabledLink':''}"><i id ="visafilled" class="fa fa-check-circle-o"></i>Visa</a></li>
             
-              <li><a href="#lcaTab"><i id ="lcafilled" class="fa fa-check-circle-o"></i>LCA</a></li>
+              <li><a href="#lcaTab" id="lcaInfoTab" class="${lcaOnLoadCount==null?'disabledLink':''}"><i id ="lcafilled" class="fa fa-check-circle-o"></i>LCA</a></li>
               
               <li><a href="#employersTab" id="employersInfoTab" class="${empOnLoadCount==null?'disabledLink':''}"><i id ="employersfilled" class="fa fa-check-circle-o"></i>Employers</a></li>
               <li><a href="#educationsTab" id="educationInfoTab" class="${eduOnLoadCount==null?'disabledLink':''}"><i id ="educationfilled" class="fa fa-check-circle-o"></i>Educations</a></li>
@@ -240,7 +241,6 @@ $(document).ready(function() {
         immigration.getCandidateResidenceList(candidateId);
         }else if(tab=='#passportsTab'){
         showLoading("immigrationLoadingPassportsTab");
-        //immigration.displayPassportDetails(candidateId,'Passport');
         immigration.displayPassportDetails(candidateId);
         }else if(tab=='#visasTab'){
         showLoading("immigrationLoadingVisasTab");
@@ -369,8 +369,8 @@ $("#packageZipfile").click(function() {
 				elem(arg1);
 			}
 			else{
-			  elem(arg1, arg2);
-			}
+			elem(arg1, arg2);
+		}
 		}
 		else{
 			alert("Not a valid Function call.");
@@ -443,7 +443,7 @@ $("#packageZipfile").click(function() {
 		$("a[href='" + tabName + "']").click();
 	}
 	function changeUscisStatusForImmigration(uscisStatusId,uscisOldId){
-		 $.ajax({
+		$.ajax({
 		    	type: "GET",
 		        url: sourceleadUrl+"/immigration/updateUscisTypeDropDown?templateId="+immigrationId+"&uscisId="+uscisStatusId+"&uscisOldId="+uscisOldId, 
 		        success: function(data) {

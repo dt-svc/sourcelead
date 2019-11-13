@@ -1,5 +1,6 @@
 package com.bis.sourcelead.timesheet.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.entity.TimesheetSubmissionsDocuments;
@@ -13,6 +14,10 @@ public interface TimesheetSubmissionsDocumentsService {
 	public TimesheetSubmissionsDocumentsHistory addTimesheetSubmissionsDocumentsHistory(TimesheetSubmissionsDocumentsHistory timesheetSubmissionsDocuments)throws Exception;
 	
 	List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsBySubmissionId(Long submissionId)throws Exception;  
+	
+	List<TimesheetSubmissionsDocuments> getAllTimesheetSubmissionsDocumentsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(Long masterCandidateId,Long projectId,Date freqStartDate,Date freqEndDate)throws Exception;  
+	
+	List<Long> getAllTimesheetSubmissionsDocumentIdsByProjectIdMasterCandidateIdAndFrequencyStartDateEndDate(Long masterCandidateId,Long projectId,Date freqStartDate,Date freqEndDate)throws Exception;
 	
 	List<Long> getAllTimesheetSubmissionsDocumentIdsBySubmissionId(Long submissionId)throws Exception; 
 	

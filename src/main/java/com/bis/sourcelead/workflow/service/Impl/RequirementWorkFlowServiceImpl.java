@@ -188,7 +188,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
        return requirementWorkFlowDao.saveQuestionnaireTemplate(template);
 		
 	}
-
+	
+	@Override
+	public RequirementQuestionnaireTemplate getQuestionnaireByTemplateId(long templateId) throws Exception {
+		
+       return requirementWorkFlowDao.getQuestionnaireByTemplateId(templateId);
+		
+	}
 
 	@Override
 	public ResponseList<RequirementQuestionnaireTemplateDTO> getQuestionnaireTemplateListByOrgLocationId(
@@ -238,8 +244,14 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public String deleteQuestionnaireTemplateById(String templateUuid) {
-		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(templateUuid);
+	public String deleteQuestionnaireTemplateById(String templateUuid, Long id)throws Exception {
+		RequirementQuestionnaireTemplate requirementQuestionnaireTemplate = requirementWorkFlowDao.getQuestionnaireTemplateById(templateUuid);
+		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getRequirementworkflowStageByQuestionnaireId(requirementQuestionnaireTemplate.getId(), id);
+		for(RequirementWorkFlowStages stages : requirementWorkFlowStages) {
+			stages.setRequirementQuestionnaireTemplateId(null);
+			requirementWorkFlowDao.saveRequirementWorkFlowStages(stages);
+		}
+		return requirementWorkFlowDao.deleteQuestionnaireTemplateById(requirementQuestionnaireTemplate.getId());
 	}
 
 
@@ -396,6 +408,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		workFlowStage.setRequirementQuestionnaireTemplateId(requirementQuestionnaireTemplate);
 		}
 		
+		if(requirementWorkFlowStagesDTO.getCommentRequired() != null && !requirementWorkFlowStagesDTO.getCommentRequired().equals("")) {
+			workFlowStage.setCommentRequired(requirementWorkFlowStagesDTO.getCommentRequired());
+		}
+		
 		workFlowStage.setOrgLocationId(orgLocations);
 		workFlowStage.setConfigureType(Constants.CLIENT);
 		workFlowStage.setEditable(Constants.YES);
@@ -409,7 +425,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		Set<RequirementWorkFlowTasks> requirementWorkFlowTasks = new HashSet<RequirementWorkFlowTasks>();
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
-			workFlowStage.setStatus(Constants.RECORD_INACTIVE);
 			List<RequirementWorkFlowTasksDTO> requirementWorkFlowTasksDTO = requirementWorkFlowStagesDTO.getTaskList();
 			for(RequirementWorkFlowTasksDTO workFlowTasksDTO : requirementWorkFlowTasksDTO) {
 				RequirementWorkFlowTasks tasks = new RequirementWorkFlowTasks();
@@ -647,6 +662,15 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		return workFlowStagesDTO;
 	}
+
+
+	@Override
+	public void deleteInactiveRequirementWorkflowStagesByWorkflowIdAndOrgLocationId(String uuid, Long id) throws Exception {
+		List<RequirementWorkFlowStages> requirementWorkFlowStages = requirementWorkFlowDao.getInactiveRequirementWorkflowStagesListByUuidAndOrgLocationId(uuid, id);
+		if(requirementWorkFlowStages.size() > 0) {
+		requirementWorkFlowDao.deleteInactiveRequirementWorkflowStagesByStageId(requirementWorkFlowStages);
+	}
+		}
 
 
 	}

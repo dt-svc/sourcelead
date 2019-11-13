@@ -8,13 +8,7 @@
 	uri="http://www.springframework.org/security/tags"%>
 <%-- <jsp:include page="candidatesQuickView.jsp"></jsp:include> --%>
 <style>
-.addUser-org {
-	overflow-x: auto;
-}
-
-.validation_p p.jquery_form_error_message {
-	bottom: -25px !important;
-}
+.addUser-org { overflow-x: auto; }
 </style>
 <%-- 
      @author : prasadK.

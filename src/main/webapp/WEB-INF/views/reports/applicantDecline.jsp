@@ -34,9 +34,9 @@ $(window).load(function() {
         	<a title="Graphical View"  id="graphView" class="btn btn-default rAct"><i class="fa fa-pie-chart"></i></a>
           <a title="List View" id="listView" class="btn btn-default" ><i class="fa fa-list"></i></a>		
 	</div>
-    	<ul class="clearfix pull-right">
+    	<ul class="clearfix pull-right overIndex">
     		<li>
-				<div class="ReqRepHead-chosen repChosen">
+				<div class="ReqRepHead-chosen repChosen choseMini">
 		          <select class="chosen-select form-control" multiple data-placeholder="Select Job" name="jobIds" id="jobIds">
 		            <c:forEach var="option" items="${requirementsList}">
 						<option value="${option.requirementId}">${option.generatedId} - ${option.jobTitle}</option>

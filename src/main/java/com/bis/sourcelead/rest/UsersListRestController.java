@@ -1219,6 +1219,7 @@ public class UsersListRestController {
 			 HttpServletRequest request) throws Exception {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
@@ -1405,9 +1406,31 @@ public class UsersListRestController {
 				projectsService.tereminateAsProjectApprover(Long.valueOf(addUserDTO.getProjectApproverUser()), user, userId, orgLocations);
 			} else {
 
-				List<ProjectMembers> projectmembersList = projectMembersService
-						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE);
-				if (null != projectmembersList) {
+				
+				List<ProjectMembers> projectmembersList = new ArrayList<>();
+				List<ProjectMembers> loginOrgLocPMList = projectMembersService
+						.getAllProjectsAssigendToUserByIdAndStatus(userId, Constants.MEMBER_ACTIVE,orgLocations.getId());
+				if(loginOrgLocPMList != null && !loginOrgLocPMList.isEmpty()) {
+					projectmembersList.addAll(loginOrgLocPMList);
+				}
+				List<OrgLocations> orgLocationsList = orgLocationService.getAllRegisteredWorkLocationsByOrgId(org.getId());
+				if(orgLocationsList != null && !orgLocationsList.isEmpty()) {
+					for(OrgLocations orgLoc : orgLocationsList) {
+						Candidate candidate = candidateService.getCandiateByConsultantUserIdAndOrgLocationId(userId, orgLoc.getId());
+						
+						if(StringUtils.isNotBlank(candidate.getDesignationType()) && candidate.getDesignationType().equalsIgnoreCase("Offshore C2C") 
+								&& StringUtils.isNotBlank(candidate.getIsAssociate()) && candidate.getIsAssociate().equalsIgnoreCase(Constants.NO)) {
+							List<ProjectMembers> pmList = projectMembersService.getAllProjectsAssigendToCandidateIdAndStatus(candidate.getId(), Constants.MEMBER_ACTIVE);
+							if(pmList != null && !pmList.isEmpty()) {
+								projectmembersList.addAll(pmList);
+							}
+						}
+						
+					}
+				}
+				
+				
+				if (null != projectmembersList && !projectmembersList.isEmpty()) {
 					for (ProjectMembers pm : projectmembersList) {
 						   try {
 							   List<ProjectMembers> pmList = projectMembersService.getAllProjectMembersByMasterCandidateId(pm.getMasterCandidateId().getId(), pm.getProjects().getId());
@@ -2420,6 +2443,10 @@ public class UsersListRestController {
 					   if(canlist != null && !canlist.isEmpty()) {
 						   for(Candidate can :canlist) {
 							   can.setWorkLocation(workLocation);
+							   can.setFirstName(addUserDTO.getFirstName());
+							   can.setLastName(addUserDTO.getLastName());
+							   can.setMiddelName(addUserDTO.getMiddleName());
+							   can.setMobilePhone(addUserDTO.getPhoneNumber());
 							   candidateService.saveOrUpdateCandidate(can);
 							   candidateService.saveOrUpdateCandidateElkDocument(can);
 						   }
@@ -2438,6 +2465,17 @@ public class UsersListRestController {
 			}
 			candidateService.saveOrUpdateCandidate(candidate);
 			candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			
+			//For offshoreC2C candidates
+			if(candidate != null && candidate.getWorkLocation() != null) {
+				List<Candidate> candidatesList = candidateService.getCandidatesForUpdateWorkLocation(candidate.getMasterCandidateId().getId(), orgLocations.getOrg().getId());
+				if(candidatesList != null && !candidatesList.isEmpty()) {
+					for(Candidate offshoreCandiate : candidatesList) {
+						offshoreCandiate.setWorkLocation(candidate.getWorkLocation());
+						candidateService.saveOrUpdateCandidate(offshoreCandiate);
+					}
+				}
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getVendors())){
 				if(currentVendorOrgRelation == null || (currentVendorOrgRelation != null && !currentVendorOrgRelation.getId().equals(orgRelation.getId()))) {

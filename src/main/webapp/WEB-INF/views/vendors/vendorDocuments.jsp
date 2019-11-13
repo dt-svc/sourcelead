@@ -5,51 +5,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
-<style type="text/css">
-.edit-details {
-text-align:left;
-}
-.edit-details ul {
-float:none;
-}
-.edit-details ul li {
-float:none;
-}
-
-.addUser-org {
-    overflow-x: auto;
-}
-
-
-#uploadFileGroup p.jquery_form_error_message{
-	position: absolute;
-	left:0;
-	bottom:-16px;
-	}
-	.tblicons a{
-	font-size:13px;
-	}
-	.tblicons a:first-child{
-	margin-left: 0;
-	}
-	.tblicons .glyphicon-trash{
-	margin-left: 5px;
-	}
-	.tblicons a{
-	margin:0px 8px;
-	padding: 0 !important;
-	} 
-	.vendor_wrap_inn_table table tr th:last-child{
-	width:100px;
-	}
-	.removeIcon{
-	font-size:22px; position:relative; top:-5px; margin-left:15px; color:#F22613; cursor: pointer;
-	}
-</style>
-
 <div id="deleteDocpopUp"></div>
 
 <script>
+$(".addUser-org").css({"overflow-x": "auto"});
+
 function vendorDocuments(orgRelationId,vendorLocationId){
 	
 	var result = "";
@@ -67,11 +27,11 @@ function vendorDocuments(orgRelationId,vendorLocationId){
 		 '<sec:authorize access="!hasAnyRole(\"ROLE_CREATE_VENDOR_DOCUMENT\")">';
 		      result = result  +'    	<a href="javascript:void(0)" class="addUser-org" ><i class=""></i></a>                                                            ';
 		 '</sec:authorize>';
-		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4"> ';
+		result = result  +'     <div id="popUpDiv" class="edit-details col-md-4 editDetails"> ';
 		result = result  +'     </div>  ';
 		result = result  +'  <div class="clearfix"></div> ';
 		result = result + '</ul>';
-		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table">';
+		result  = result + '   <div class="project_tabs_inn_table vendor_wrap_inn_table vendor_wrap_inn_table_last_child">';
 		result  = result + '   <div id="vendorDocumentsList" class="datatable_filter"></div>';
 		result  = result + '   </div>';
 	result = result+'	    </div>';
@@ -172,7 +132,7 @@ function vendorDocumentsList(vendorLocationId,orgRelationId){
 	                    	 }else{
 	                    		 result  = result + ' <td><div><span>--</span></div></td>';
 	                    	 }
-	                    	 result = result+'	 <td><div class="tblicons tblminwidth-75">';
+	                    	 result = result+'	 <td><div class="tbl_Icons tblminwidth-75">';
 	                    	 '<sec:authorize access="hasAnyRole(\"ROLE_DOWNLOAD_VENODR_DOCS\")">';
 	                    	 result = result+'<a download class="glyphicon glyphicon-download-alt" target="_blank" href=\"'+opt.fileUrl+'\"></a>';
 	                    	 result = result+'<a class="fa fa-eye" onClick="viewFile(\''+opt.fileUrl+'\',\''+opt.fileName+'\',\''+opt.fileType+'\');"></a>';
@@ -276,7 +236,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb" id="uploadDocumentDiv">';
 	result = result+'	                    <div class="col-md-12">';
-	result = result+'							<div class="input-group" id="uploadFileGroup">';
+	result = result+'							<div class="input-group uploadFileGroup_error_message" id="uploadFileGroup">';
 	result = result+'	                          <label class="input-group-btn"> <span class="btn btn-primary" onChange="vendorDocFileSaving();"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
 	result = result+'	                            <input type="file"  id="uploadBtn" style="display: none;"  class="upload">';
 	result = result+'	                            </span> </label>';
@@ -328,7 +288,7 @@ function addDocument(vendorLocationId,orgRelationId) {
 	
 	result = result+'	                  <div class="clearfix mb10" id="docNameDiv" style="display: none;">';
 	result = result+'	                    <div class="col-md-12 mt">';
-	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon"></i></span>';
+	result = result+'	                      <label id="documentName" name="documentName" class="text-primary tbldata-dotdot-vsm pull-left"></label>&nbsp;&nbsp;<span id="delete_resume" onclick="removeResumeNameDiv();"><i class="fa fa-trash removeIcon_styles"></i></span>';
 	result = result+'	                    </div>';
 	result = result+'	                  </div>';
 	

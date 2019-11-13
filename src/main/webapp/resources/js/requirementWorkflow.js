@@ -3,6 +3,7 @@ var requirementWorkflow = new RequirementWorkflow();
 var iconSpan = "";
 var editAndDeleteAnchor = "";
 var lastStage = "";
+var commentReq = "";
 
 function RequirementWorkflow(){
 	
@@ -562,7 +563,6 @@ function RequirementWorkflow(){
 						stageUuid = $("#previousStageUuid").val();
 					}
 					var currentStageUuid = $("#currentStageUuid").val();
-
 					
 					 if ($('#addStageForm').validate(false, validationSettings)) {
 						  var formData = getFormData("addStageForm");
@@ -572,7 +572,8 @@ function RequirementWorkflow(){
 						type : "GET",
 						 data : formData,
 						url : sourceleadUrl + "/saveRequirementWorkflowStage?description="+description+"&uuid="+stageUuid+
-								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+"&lastStage="+lastStage,
+								"&requirementWorkFlowUuid="+workflowUuid+"&requirementQuestionnaireTemplateId="+qTemplateId+"&currentStageUuid="+currentStageUuid+
+								"&lastStage="+lastStage+"&commentRequired="+commentReq,
 						success : function(dataList) {
 							if (dataList.response === "AWKWARD") {
 				      	    location.href = "/errorPage";
@@ -582,7 +583,6 @@ function RequirementWorkflow(){
 									$("#saveStageButton").removeAttr('button').val('Save');	
 									showError("Invalid data");
 								}else{
-									sessionStorage.clear();
 									window.location.replace(sourceleadUrl+"/workflowList");
 								}
 				      	} else if (dataList.indexOf('Sign In') !== -1) {
@@ -609,9 +609,15 @@ function RequirementWorkflow(){
 								if(dataList != null && dataList.length > 1){
 									lastStage = "";
 									for(var i=0 ; i<dataList.length;i++){
+										
 										if(dataList[i].uuid == stageUuid){
+											if(dataList[i+1].uuid == currentStageUuid ){
+												result = result + "<option value="+dataList[i+2].uuid+">"+dataList[i+2].stageName+"</option>";
+											}
+											else{
 											result = result + "<option value="+dataList[i+1].uuid+">"+dataList[i+1].stageName+"</option>";
-										}
+											}
+											}
 										$("#workflowStageUuid option[value='"+dataList[i].uuid+"']").remove();
 									}
 								}
@@ -710,7 +716,6 @@ function RequirementWorkflow(){
 								requirementWorkflow.getRequirementWorkflowTasks(dataList.response);
 								
 								$("#currentStageUuid").val(dataList.response);
-								sessionStorage.setItem("currentStage", dataList.response);
 							
 							}if(dataList.response == null){
 								showError("Operation failed, please try again");
@@ -899,5 +904,6 @@ function RequirementWorkflow(){
 				 $("#previousStageUuid option[value='"+stageUuid[stageIndex]+"']").remove();
 				 }
 				 }
+				 
 				 
 }

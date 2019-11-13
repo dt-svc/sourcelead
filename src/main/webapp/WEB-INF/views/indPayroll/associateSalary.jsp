@@ -168,7 +168,21 @@
                   <div class="col-md-6">
                    <div class="pull-right" id="saveAssociateBtnDiv">
                     <input value="Save & Finish" class="btn btn-success btnSuccess" type="button" onclick="saveAssociateSalaryInd();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button">
+                    <!-- <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '/app/usersList'" type="button"> -->
+                    
+                    <c:choose>
+                    <c:when test="${userCode == null || userCode == ''}">
+                    <input value="Cancel" class="btn btn-default ml10" 
+                    onclick="javascript:window.location.href = '/app/usersList'"
+                    type="button">
+                    </c:when>
+                    <c:otherwise>
+                    <input value="Cancel" class="btn btn-default ml10" 
+                    onclick="javascript:window.location.href = '/app/userSummary/${userCode}'"
+                    type="button">
+                    </c:otherwise>
+                    </c:choose>
+                    
 <%--                    <c:if test="${status == 'NEW' || status == 'NODATA'}">						     --%>
 <!-- 						<input value="Cancel" class="btn btn-default ml10" type="button" id="cancelAssociateSalaryIndBtn">                     -->
 <%--                     </c:if>  --%>

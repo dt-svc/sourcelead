@@ -58,6 +58,8 @@ public class CandidateBulkUploadDTO implements Serializable{
 	    
 	    private String ssnNumber;
 	    
+	    private String employmentType;
+	    
 	    
 		public String getFirstName() {
 			return firstName;
@@ -265,6 +267,14 @@ public class CandidateBulkUploadDTO implements Serializable{
 
 		public void setSsnNumber(String ssnNumber) {
 			this.ssnNumber = ssnNumber;
+		}
+
+		public String getEmploymentType() {
+			return employmentType;
+		}
+
+		public void setEmploymentType(String employmentType) {
+			this.employmentType = employmentType;
 		}
 	    
 }

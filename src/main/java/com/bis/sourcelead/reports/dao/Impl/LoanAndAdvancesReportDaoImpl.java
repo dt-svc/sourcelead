@@ -119,8 +119,9 @@ public class LoanAndAdvancesReportDaoImpl implements LoanAndAdvancesReportDao {
 	     if (loanAndAdvanceReportDTO != null && loanAndAdvanceReportDTO.getLength() > 0) {
 				queryObj.setFirstResult(loanAndAdvanceReportDTO.getStart());
 				queryObj.setMaxResults(loanAndAdvanceReportDTO.getLength());
-				queryObj.setLong("orgLocationId", orgLocations);
+				
 			}
+	     queryObj.setLong("orgLocationId", orgLocations);
 	        queryObj.setResultTransformer(Transformers.aliasToBean(LoanAndAdvanceReportDTO.class));
 	        associateLoanAndAdvancesList =  queryObj.list();
 	        response.setData(associateLoanAndAdvancesList);

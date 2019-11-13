@@ -53,8 +53,8 @@
 						<div class="form-group">
 			              <label class="col-md-4">Choose Letter Head</label>
 			              <div class="col-md-8">
-			                  <select class="form-control selectpicker" data-live-search="true" name="letterHead" field-name="Letterhead" >
-			                    <option value="">>>> Select Letterhead <<< </option>
+			                  <select class="form-control selectpicker" data-live-search="true" title="Select Letter Head" name="letterHead" field-name="Letterhead" >
+<!-- 			                    <option value="">>>> Select Letterhead <<< </option> -->
 			                    <c:forEach var="letter" items="${letterHeadList}">
 							    <c:if test = "${letter.id == offerLetterTemplate.letterHeadId.id}">
 							         <option selected value="${letter.letterHeadUUID}">${letter.letterHeadName}</option>
@@ -120,12 +120,11 @@
 						<div class="pull-right">
 						<c:if test="${!empty offerLetterTemplate.templateUUID}">
 							<input type="button" value="Update" id="save_template" onclick="saveOfferLetterTemplate(); " class="btn btn-primary"> 
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/viewOfferLetterTemplate'" class="btn btn-default ml10">
 						</c:if>	
 						<c:if test="${empty offerLetterTemplate.templateUUID}">
 							<input type="button" value="Save" id="save_template" onclick="saveOfferLetterTemplate(); " class="btn btn-primary"> 
-							<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/orgTemplates'" class="btn btn-default ml10">
 						</c:if>	
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/viewOfferLetterTemplate'" class="btn btn-default ml10">
 						</div>
 					</div>
 				</div>

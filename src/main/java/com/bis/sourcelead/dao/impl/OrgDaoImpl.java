@@ -5,12 +5,16 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
+import org.jgroups.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +32,10 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
-import com.bis.sourcelead.entity.Projects;
-import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.PaymentAccountType;
 import com.bis.sourcelead.enums.Status;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.exception.SourceLeadObjectNotFoundException;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Objects;
-import org.hibernate.Query;
-import org.jgroups.util.UUID;
 
 /**
  * 
@@ -752,7 +749,10 @@ public class OrgDaoImpl implements OrgDao {
         pay.setAccountId(p.getAccountId());
         pay.setAccountType(p.getAccountType());
         pay.setDefaultAccount(p.isDefaultAccount());
-        pay.setOrgLocationId(p.getOrgLocation().getId());
+        if(p.getOrgLocation() != null) {
+        	pay.setOrgLocationId(p.getOrgLocation().getId());
+        	pay.setOrgLocationName(p.getOrgLocation().getOrgLocationName());
+        }
         if(p.getCandidateId() != null) {
             pay.setCandidateId(p.getCandidateId().getId());
         }
@@ -765,7 +765,6 @@ public class OrgDaoImpl implements OrgDao {
         pay.setRoutingNumber(p.getRoutingNumber());
         pay.setEmail(p.getEmail());
         pay.setDisabled(p.isDisabled());
-        pay.setOrgLocationName(p.getOrgLocation().getOrgLocationName());
     }
 
 	@Override

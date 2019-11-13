@@ -7,10 +7,7 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <style type="text/css">
 .collapse-div-adduser select{
-width: 100% !important;
-    padding-right: 10px !important;
-    padding-left: 10px !important;
-    border:1px solid #ccc !important
+	width: 100% !important; padding-right: 10px !important; padding-left: 10px !important; border:1px solid #ccc !important
 }
 </style>
 <div id="loading"></div>

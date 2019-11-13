@@ -10,17 +10,6 @@
 <script src="/resources/js/offboardCheckListBuilder.js" type="text/javascript" ></script> <!-- form builder -->
 <script src="/resources/js/offboardCheckList-view-generator.js" type="text/javascript" ></script> <!-- form generator -->
 
-
-<style type="text/css">
-.onboardLabel p {
-margin-bottom: 0; margin-top: 7px;
-}
-.onboardLabel label.control-label:after{
-content:":";
-padding-left: 25px;	
-}
-</style>
-
 <script> 
 	$(document).ready(function(){
 		offboardCandidateDetails();
@@ -120,7 +109,7 @@ padding-left: 25px;
 	        	} else if (response.response === "SUCCESS") {
 	        		 var json = response.object;
 		        	 var result = "";
-					 result = result +'	 <div class="col-md-12 onboardLabel"> ';                                                                                         
+					 result = result +'	 <div class="col-md-12 onboardLabel onboard_Label"> ';                                                                                         
 					 result = result +'   <div class="form-horizontal">';
 					 result = result +'     <p><strong>Employee Details</strong></p>';
 					 result = result +'     <div class="form-group">';

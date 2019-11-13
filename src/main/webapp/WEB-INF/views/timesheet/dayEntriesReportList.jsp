@@ -48,6 +48,7 @@
             <thead>
               <tr>
                 <th>Date</th>
+                <th>Employee Id</th>
                 <th>Employee Name</th>
                 <th>Employee Email</th>
                 <th>Ticket No</th>
@@ -64,6 +65,7 @@
             <c:forEach var="entryList" items="${dayWiseTimesheetReoprtsList}">
 	            <tr>
 	                <td><div class="tblminwidth-75">${entryList.timesheetDate}</div></td>
+	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeId}">${entryList.employeeId != null && entryList.employeeId != '' ? entryList.employeeId : "----"}</div></td>
 	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeName}">${entryList.employeeName}</div></td>
 	                <td><div class="tbldata-dotdot-vsm" title="${entryList.employeeEmail}">${entryList.employeeEmail}</div></td>
 	                <td><div class="tblminwidth-75">${!empty entryList.ticketNo ? entryList.ticketNo : '--'}</div></td>

@@ -249,6 +249,7 @@ function creditNotePagination(url){
         "columnDefs": [{
     	  	"targets": colIndex++,
     	  	"data": "action",
+    	  	"sortable": false,
     	  	"render": function(data, type, report, meta) {
     	  		var result = "";
     	  		result = result +'         <td>   ';
@@ -398,6 +399,7 @@ function creditNotePagination(url){
 	    	  },{
                     "targets": colIndex++,
                     "data": "status",
+                    "sortable": false,
                     "render": function ( data, type, report, meta ) {
                     	var result = "";
                     

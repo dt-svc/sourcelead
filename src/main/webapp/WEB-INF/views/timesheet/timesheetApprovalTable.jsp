@@ -83,6 +83,10 @@ function exportTimeSheetToPdfOrExcel(exportType){
 		if(project!= null && project !='' && project !='undefined'){
 			project = $('input[id=project]:checked').val();
 		}
+	    var searchValue = $('#dataTableSearchTimesheets').val();
+	    if(searchValue == null ||  searchValue =='' || searchValue =='undefined'){
+	    	searchValue = '';
+         }
 		var weekFrequency = $('input[id=weekFrequency]:checked').val();
 		if(weekFrequency != null && weekFrequency !='undefined'){
 		var date = weekFrequency.split("To");
@@ -93,7 +97,7 @@ function exportTimeSheetToPdfOrExcel(exportType){
 				+ "/getExportTimeSheetForApprovalMechanizm?&startDate="
 				+ startDate + "&endDate=" + endDate + "&client=" + client+ "&project=" + project
 				+ "&stage=" + stage + "&timesheetFrequency="
-				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType;
+				+ timesheetFrequency +"&frequencyMonth="+frequencyMonth+"&weekFrequency="+weekFrequency+"&exportType=" + exportType+"&searchValue="+searchValue;
 	}
 </script>
 
@@ -137,9 +141,9 @@ function displayAcceptRejectButtonOnHedder() {
 <!-- ############### Pagination scripts,implemented based on simple-pagination plugin ###############-->
  <script>
       function getTableDataByPageSize(){
-    	  getTableData(1);
+    	  getTableData(1,0);
       }
-	  function getTableData(pageNo) {
+	  function getTableData(pageNo,noOfRecords) {
 		  var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           var locationCode ='${SourceLeadWeb_locationCode}';
           var userId = '${SourceLeadWeb_user.id}';
@@ -162,6 +166,11 @@ function displayAcceptRejectButtonOnHedder() {
           if(project == null || project == '' || project == 'undefined')
        	      project = '';
           
+          var searchValue = $('#dataTableSearchTimesheets').val();
+          if(searchValue == null || searchValue =='' || searchValue =='undefined'){
+          searchValue = '';
+          }
+          
 	      if(weekFrequency == null || weekFrequency == '' || weekFrequency == 'undefined')
 	    	  weekFrequency = '';
           var stage = $('input[id=stage]:checked').val();
@@ -170,9 +179,9 @@ function displayAcceptRejectButtonOnHedder() {
           var frequencyStartDate = '${timesheetApprovalDTO.frequencyStartDate}';
           var frequencyEndDate = '${timesheetApprovalDTO.frequencyEndDate}';
           $("#loadTime1").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
-		  $.ajax({
+          $.ajax({
           	          type : "POST",
-          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&project="+project+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&searchValue="+searchValue,		
+          	        url: sourceleadUrl+"/timesheetEmployeeSubmissionDetails?frequencyMonth="+frequencyMonth+"&timesheetFrequency="+timesheetFrequency+"&weekFrequency="+weekFrequency+"&client="+client+"&project="+project+"&stage="+stage+"&frequencyStartDate="+frequencyStartDate+"&frequencyEndDate="+frequencyEndDate+"&locationCode="+locationCode+"&userId="+userId+"&pageSize="+pageSize+"&pageNo="+pageNo+"&start="+start+"&totalRows="+noOfRecords+"&searchValue="+searchValue,		
         		      success :function(data) {
         		    	  $("#approvalTableData").empty();
         		    	  $("#approvalTableData").append(data);
@@ -206,11 +215,11 @@ function displayAcceptRejectButtonOnHedder() {
 			  $('#paginationDiv').show();
 			  var pageCount = $('#pageCount').val();
 			  var pageSize = $("#pageSize").val();
-			  $('#dataTableSearchExpenses').val('') ;
+			  $('#dataTableSearchTimesheets').val('') ;
 
-			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#dataTableSearchTimesheets').val(searchData);
 			  if (notifyLink != null && notifyLink != '' && notifyLink != 'undefined' && notifyLink){
-				  $('#dataTableSearchExpenses').val('') ;
+				  $('#dataTableSearchTimesheets').val('') ;
 			  }
 			  var startingRecord = parseInt((pageNo*pageSize-pageSize)+1);
 			  var endingRecord = parseInt(pageNo*pageSize);
@@ -225,7 +234,7 @@ function displayAcceptRejectButtonOnHedder() {
 			              ellipsePageSet :false,
 			              cssStyle: 'light-theme',
 			               onPageClick: function (pageNumber, event) {
-			                 getTableData(""+pageNumber+"");
+			                 getTableData(""+pageNumber+"",""+totalRows+"");
 			              }
 		      };
 		      $("#pagination-demo").pagination(options);
@@ -237,8 +246,8 @@ function displayAcceptRejectButtonOnHedder() {
 		  else{
 			  $("#tableContent").empty();
 	    	  $("#tableContent").append('<div class="dataTables_empty">  <input type="hidden" id="hideExportApproval" value="EmptyList">  </div>');
-			  $('#dataTableSearchExpenses').val('') ;
-			  $('#dataTableSearchExpenses').val(searchData);
+			  $('#dataTableSearchTimesheets').val('') ;
+			  $('#dataTableSearchTimesheets').val(searchData);
 			  $('#paginationDiv').hide();
 			  
 			  

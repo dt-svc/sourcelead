@@ -132,7 +132,6 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 							totalSubmittedAmount += expensesEntries.getSubmittedamount().doubleValue();
 						}
 					}
-					System.out.println(totalSubmittedAmount);
 					expenses.setTotalsubmittedAmount(new BigDecimal(totalSubmittedAmount));
 					session.saveOrUpdate(expenses);
 					count++;
@@ -162,7 +161,6 @@ public class ExpensesEntriesDaoImpl implements ExpensesEntriesDao {
 							File newFile = new File(staticPath + fileName.substring(0, fileName.lastIndexOf("/")), name.replaceAll(" ", "_"));
 							Files.move(file.toPath(), newFile.toPath());
 							expensesEntryDocuments.setFileURL("/slead-static" + fileName.substring(0, fileName.lastIndexOf("/")) + "/" + name.replaceAll(" ", "_"));
-							System.out.println("id : " + expensesEntryDocuments.getId() + " folder : " + folder + " oldName : " + name + " newName : " + expensesEntryDocuments.getFileURL());
 							count++;
 						}
 					}

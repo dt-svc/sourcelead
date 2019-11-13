@@ -86,6 +86,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 	@JsonProperty
 	@Transient
 	private String teamName;
+	
+	@JsonProperty
+	@Transient
+	private Long assignedUserIdTemp;
 
 	public Long getId() {
 		return id;
@@ -208,6 +212,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 	public void setApplicantCount(String applicantCount) {
 		this.applicantCount = applicantCount;
+	}
+
+	public Long getAssignedUserIdTemp() {
+		return assignedUserIdTemp;
+	}
+
+	public void setAssignedUserIdTemp(Long assignedUserIdTemp) {
+		this.assignedUserIdTemp = assignedUserIdTemp;
 	}
 	
 	

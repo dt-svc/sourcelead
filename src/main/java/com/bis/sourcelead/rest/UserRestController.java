@@ -384,6 +384,8 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 						addUserDTO.setPhoneNumber(singnatoryDTO.getPhoneNumber());
 					}
 					candidateDTO.setDateFormat(orgLocations.getDateFormat());
+					candidateDTO.setAadharNumber(singnatoryDTO.getAadharNumber());
+					candidateDTO.setPanNumber(singnatoryDTO.getPanNumber());
 					commonUtil.onboardCreationCandidateGeneratedIdUpdated(candidate, orgLocations);
 					userService.storeUser(addUserDTO, candidateDTO, user, orgLocations, "CREATEUSER", "", new Org());
 					SourceLeadSessionManager.setSessionAttribute(request, "userCreateMsg", "Success !!New associate created");

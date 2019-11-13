@@ -666,9 +666,9 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		       .append("OR (can.FIRST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR (can.LAST_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 		       .append("OR concat(can.FIRST_NAME,can.LAST_NAME) like '%" + indEmployeePayrollDTO.getSearchValue() + "%' ")
-		       .append("OR (pfEsi.UAN_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR (pfEsi.PF_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
-		       .append("OR (pfEsi.ESI_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (pfESI.UAN_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (pfESI.PF_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
+		       .append("OR (pfESI.ESI_NUMBER like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )")
 			   .append("OR department.DEPARTMENT_NAME like '%" + indEmployeePayrollDTO.getSearchValue().replace("'", "") + "%' )");
 		}
 		
@@ -693,10 +693,10 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 	     java.sql.Date freqEndDate = new java.sql.Date(eeDate.getTime());
 	     String typeQury = "";
 	     if(indEmployeePayrollDTO.getType().equalsIgnoreCase("ESI")) {
-	    	 typeQury = typeQury + " AND pfEsi.ELIGIBLE_FOR_ESI = 'Y' ";
+	    	 typeQury = typeQury + " AND pfESI.ELIGIBLE_FOR_ESI = 'Y' ";
 		  }
 		  if(indEmployeePayrollDTO.getType().equalsIgnoreCase("PF")) {
-			  typeQury = typeQury + "AND pfEsi.ELIGIBLE_FOR_PF = 'Y' ";
+			  typeQury = typeQury + "AND pfESI.ELIGIBLE_FOR_PF = 'Y' ";
 		  }
 		  
 		  String query =  " SELECT  can.ID as canId, "+ 
@@ -721,7 +721,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 
 						  "	FROM PAYROLL_PAYHEAD payHead, IND_PAY_SHEET_FREQUENCY freq, IND_EMPLOYEE_PAYROLL payroll, "+ 
 						  "	ASSOCIATE_PAYROLL_PAYHEAD_HISTORY his, CANDIDATE can, EMPLOYEE employee, DEPARTMENT department, "+
-						  "	ASSOCIATE_PF_ESI_DETAILS pfEsi,CENTRAL_TAX tax "+
+						  "	ASSOCIATE_PF_ESI_DETAILS pfESI,CENTRAL_TAX tax "+
 						  "	where payroll.IND_PAY_SHEET_FREQUENCY_ID = freq.ID "+  
 						  "	AND his.PAYROLL_PAYHEAD = payHead.ID  "+
 						  "	AND payroll.CANDIDATE_ID = can.ID  "+
@@ -744,7 +744,7 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 		 //count Query
 String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SHEET_FREQUENCY freq, IND_EMPLOYEE_PAYROLL payroll, "+ 
 					  "	ASSOCIATE_PAYROLL_PAYHEAD_HISTORY his, CANDIDATE can, EMPLOYEE employee, DEPARTMENT department, "+
-					  "	ASSOCIATE_PF_ESI_DETAILS pfEsi,CENTRAL_TAX tax "+
+					  "	ASSOCIATE_PF_ESI_DETAILS pfESI,CENTRAL_TAX tax "+
 					  "	where payroll.IND_PAY_SHEET_FREQUENCY_ID = freq.ID "+  
 					  "	AND his.PAYROLL_PAYHEAD = payHead.ID  "+
 					  "	AND payroll.CANDIDATE_ID = can.ID  "+
