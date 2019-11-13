@@ -6,7 +6,7 @@
 
 <script type="text/javascript">
 window.onload = function () {
-	getmarketPlaceList();
+	//getmarketPlaceList();
 };
 </script>
 
@@ -289,7 +289,7 @@ window.onload = function () {
         <div class="clearfix ">
           <div class="col-md-4 minHeight clearfix">
             <div style="float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ">
-	            <input id="file0" type="file" name="uploadPhotos" class="pull-left" onchange="uploadFileButton(0);">
+	            <input id="file0" type="file"  name="uploadInfo[0]" class="pull-left" onchange="uploadFileButton(0);">
 	              <a id="Button0value=" "="" onclick="addProductFileUpload()">
 	               <i class="fa fa-plus btn btn-default btn-sm btn-sm2 pull-right"></i>
 	             </a>
@@ -363,8 +363,8 @@ function saveProduct(){
 								 if (dataList.response === "AWKWARD") {
 							      	    location.href = "/errorPage";
 							      	} else if (dataList.response === "SUCCESS") {
-							      		location.reload(); 
-										getmarketPlaceList();
+							      		//location.reload(); 
+										//getmarketPlaceList();
 							      	}
 							      		if(dataList.object === "DataMissing") {
 												showError("Invalid data");
@@ -774,25 +774,23 @@ var validationSettings = {
         };
         
 var fileCounter = 1;
-var fileCounterArray = new Array();
+var fileCounterArray = [];
 function addProductFileUpload(){
-	if(fileCounterArray.length < 6){
-		fileCounter = fileCounter++;
-	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounter+'"  type="file" class="pull-left" onchange="uploadFileButton('+fileCounter+');"/>' +
-            '<a id="Button' + fileCounter + '' +
+	if(fileCounterArray.length < 5){
+		fileCounter++;
+	$('<div>').attr('style','float:left; width:325px; border:1px solid #ddd; margin:0 15px 15px 0; padding:5px;overflow: hidden; background-color:#367fa9; color:#fff; ').append('<input id="file'+fileCounterArray.length+'"  name ="uploadInfo['+fileCounterArray.length+']" type="file" class="pull-left" onchange="uploadFileButton('+fileCounterArray.length+');"/>' +
+            '<a id="Button' + fileCounterArray.length + '' +
             'value="" onclick = "RemoveFileUpload(this,\''+fileCounter+'\')"><i class="fa fa-times btn btn-danger btn-sm btn-sm2 pull-right"></i></a>').appendTo($('#FileUploadContainer'));
 	
 	fileCounterArray.push(fileCounter);
-	console.log(fileCounterArray);
 }
 }
 
 function RemoveFileUpload(div,fileCounter)
 {
 	document.getElementById("FileUploadContainer").removeChild(div.parentNode);
-	fileCounter = fileCounter--;
+	fileCounter--;
 	fileCounterArray.pop();
-	console.log(fileCounterArray);
 }
 
 function uploadFileButton(id){
