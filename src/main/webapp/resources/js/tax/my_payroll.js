@@ -86,6 +86,62 @@ function getFormSubmissionMasterList() {
 	});
 }
 
+function getAssociateFormSubmissionMasterList(candidateId) {
+	$.post(pmsUrl + "/associateItdForms", {financialYear: $("#financialYear").val(), candidateId:candidateId}, function(response) {
+		if (response && response.response === "INVALID_DATA") {
+			showError(response.responseMessage);
+		} else if (response.response === "AWKWARD") {
+			location.href = "/errorPage";
+		} else if (response.response === "SUCCESS") {
+			$("#submissionList").empty();
+			var submissionList = response.data;
+			if(submissionList.length > 0) {
+				for(var e in submissionList) {
+					var text = "<tr>";
+					text += "	<td><div class='tblminwidth-150'><span class='mr'>" + submissionList[e].financialYear + "</span></div></td>";
+					text += "	<td><div class='tblminwidth-150 clearfix'>" + submissionList[e].formType + "</div></td>";
+					text += "	<td><span class='tblminwidth-100'>" + submissionList[e].fillingDate + "</span></td>";
+					text += "	<td><div class='tblminwidth-150 clearfix'>" + submissionList[e].statusText + "</div></td>";
+					text += "	<td>";
+					text += "		<ul class='list-unstyled list-inline mb0'>";
+					text += "			<li><a href='javascript:void()' class='text-danger' title='Export' onclick='exportFormToPDF(" + submissionList[e].id + ")'><i class='fa fa-file-pdf-o'></i></a></li>";
+					text += "			<li><a href=" + pmsUrl + "/myPayroll/forms/viewForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='View' class='anchor-black'><i class='fa fa-eye'></i></a></li>";
+					if(submissionList[e].status === 0) {
+						text += "				<li><a href=" + pmsUrl + "/myPayroll/forms/editForm?uuid=" + submissionList[e].taxFormUUID + "&formUUID=" + submissionList[e].formUUID + " title='Edit' class='anchor-black'><i class='fa fa-pencil'></i></a></li>";	
+					}
+					text += "		</ul>";
+					text += "	</td>";
+					text += "</tr>";
+					$("#submissionList").append(text);
+				}
+				var paginator = response.paginator;
+				var options = {
+						currentPage : paginator.pageNo + 1,
+						items : paginator.totalRows,
+						itemsOnPage : paginator.pageSize,
+						ellipsePageSet : false,
+						cssStyle : 'light-theme',
+						onPageClick : function(pageNumber, event) {
+							getItDeclarationSubmissionList(pageNumber-1);
+						}
+				};
+                payrollFormListTablePagination();
+                $("#submissionTable").show();
+                $("#noResultsTable").hide();
+            } else {
+                $("#submissionTable").hide();
+                $("#noResultsTable").show();
+            }
+		} else if (response.indexOf('Sign In') !== -1) {
+			location.replace(pmsUrl);
+		} else {
+			showError("Operation failed, please try again");
+		}
+	});
+}
+
+
+
 function payrollFormListTablePagination(){ 
     $('#submissionTable').DataTable( { 
     	"scrollCollapse": false,
