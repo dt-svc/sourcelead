@@ -199,6 +199,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				  <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
 				
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureReport">Closure Report</a></li>
+				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
 				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>
 				</sec:authorize>
@@ -542,6 +544,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
 				  <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
+				
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureReport">Closure Report</a></li>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
 				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>
