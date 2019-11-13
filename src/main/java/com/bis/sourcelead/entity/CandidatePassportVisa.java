@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity
+//@Entity
 @Table(name = "CANDIDATE_PASSPORT_VISA")
 //@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidatePassportVisa")
 public class CandidatePassportVisa implements Serializable {

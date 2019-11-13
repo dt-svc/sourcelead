@@ -39,10 +39,11 @@ public class AddProductServiceImpl implements AddProductService {
 
 	@Override
 	public Response<String> savemarketPlaceDetails(MarketPlaceProductsDTO marketPlaceProductsDTO,
-			OrgLocations orgLocations, User user, Org org) throws Exception {
-		Date date = new Date();
+			OrgLocations orgLocations, User user, Org org) {
 		Response<String> response = new Response<>();
 		MarketPlaceProducts market = new MarketPlaceProducts();
+		try{
+		Date date = new Date();
 		
 		market.setRegionType(marketPlaceProductsDTO.getRegionType());
 		market.setPrice(marketPlaceProductsDTO.getPrice());
@@ -120,27 +121,28 @@ public class AddProductServiceImpl implements AddProductService {
 			}
 		}
 		Set<MarketPlaceProductFilesHistory> marketPlaceProductFilesHistorySet= new HashSet<MarketPlaceProductFilesHistory>();
-		
+		if(marketPlaceProductsDTO.getUploadedFileInfo() != null){
+			for(int i=0; i<marketPlaceProductsDTO.getUploadedFileInfo().size(); i++){
+				MarketPlaceProductFilesHistory filesHistory = new MarketPlaceProductFilesHistory();
+				filesHistory.setMarketPlaceProductId(market);
+				filesHistory.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				filesHistory.setUpdatedBy(user);
+				filesHistory.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+				filesHistory.setCreatedBy(user);
+				filesHistory.setStatus(Constants.RECORD_ACTIVE.toString());
+				filesHistory.setUploadedfileName(marketPlaceProductsDTO.getUploadedFileInfo().get(i).getFileName());
+				filesHistory.setUpleadedFileContentType(marketPlaceProductsDTO.getUploadedFileInfo().get(i).getContentType());
+				filesHistory.setUploadedFileUrl(marketPlaceProductsDTO.getUploadedFileInfo().get(i).getFileURL());
+				fileInfo = marketPlaceProductsDTO.getUploadedFileInfo().get(i);
+				//FileUploadUtil.moveFile(staticPath, fileInfo, "userMarketplace");
+				marketPlaceProductFilesHistorySet.add(filesHistory);
+			}
+		}
+		market.setMarketPlaceProductFilesHistorySet(marketPlaceProductFilesHistorySet);
 		addProductDao.saveMarketPlaceProducts(market);
-		if(marketPlaceProductsDTO.getFileInfo() != null) {
-			MarketPlaceProductFilesHistory filesHistory = new MarketPlaceProductFilesHistory();
-
-			filesHistory.setMarketPlaceProductId(market);
-			filesHistory.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
-			filesHistory.setUpdatedBy(user);
-			filesHistory.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
-			filesHistory.setCreatedBy(user);
-			filesHistory.setStatus(Constants.RECORD_ACTIVE.toString());
-			filesHistory.setUploadedfileName(fileInfo.getFileName());
-			filesHistory.setUpleadedFileContentType(fileInfo.getContentType());
-			filesHistory.setUploadedFileUrl(fileInfo.getFileURL());
-				try {
-					FileUploadUtil.moveFile(staticPath, fileInfo, "resumes");
-				} catch (Exception e) {
-				}
-			
-			
-			addProductDao.saveMarketPlaceProductFilesHistory(filesHistory);
+		
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 			  return response;
 	
@@ -223,7 +225,6 @@ public class AddProductServiceImpl implements AddProductService {
 		productsDTO.setCurrencySpecification(productsEntity.getCurrencySpecification());
 		productsDTO.setPriority(productsEntity.getPriority());
 		productsDTO.setProductDescription(productsEntity.getProductDescription());
-		productsDTO.setBrowseFile(productsEntity.getFileUrl());
 		productsDTO.setUuid(productsEntity.getUuid());
 		productsDTO.setIsNegotiable(productsEntity.getIsNegotiable());
 		productsDTO.setProductShareType(productsEntity.getProductShareType());
