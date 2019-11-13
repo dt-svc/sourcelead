@@ -68,5 +68,16 @@ public class BackgroundController {
 			  model.setViewName("/background/completedBgcDetails");
 		return model;
 	}
-
+	@RequestMapping(value = { "/onProgressView" })
+	public ModelAndView viewOnProgressViewDetails(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
+		sessionData.setNav(Constants.Completed_Bgc_Details);
+		
+			  model.addObject("sourceleadUrl", sourceleadUrl);
+			  model.setViewName("/background/onProgressView");
+		return model;
+	}
 }
