@@ -271,6 +271,7 @@ window.onload = function () {
 				 result = result + '<li><a onClick="associateBankingDetails('+candidateId+');">Banking</a></li>';
 				 result = result + '<li><a onClick="associateInformationDetails('+candidateId+');">PF & ESI</a></li>';
 				 result = result + '<li><a href="#tab-30" onClick="assocSalarySummary('+candidateId+');">Salary</a></li>';
+				 result = result + '<li><a href="#tab-30" onClick="associateItDecalartionForms('+candidateId+');">ITD Forms</a></li>';
 			 '</sec:authorize>';
 		 }
 		
@@ -364,7 +365,7 @@ window.onload = function () {
 	 $("#loadingSummary").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	 $.ajax({
 	    	type: "POST",
-	        url: atsUrl+"/getUserDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
+	        url: atsUrl+"/getUserProfileSummaryDetailsById?"+tokenParamName+"="+tokenValue+"&userId="+userId, 
 	        success: function(json) {
 			    //var json = JSON.parse(data);
 			    var result = "";
@@ -4376,6 +4377,25 @@ function assocSalarySummary(candidateId){
 				  		$('#associateSalary_form select').prop('disabled', true);
 			  		}
 			       }
+			});
+	}
+</script>
+
+<script>
+function associateItDecalartionForms(candidateId){
+	
+	var locationCode = '${SourceLeadWeb_locationCode}';
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	$.ajax({
+		  type: "GET",
+		    url: pmsUrl+"/associateItDecalartionForm?candidateId="+candidateId,
+		     success :function(response) {
+		    	 	$("#tab-18").empty();  
+		    	    $("#tab-19").empty();
+		    	    $("#tab-17").empty();
+		    	    $("#candidateSideDiv").empty();  
+		    	    $("#candidateSideDiv").append(response);
+				},
 			});
 	}
 </script>
