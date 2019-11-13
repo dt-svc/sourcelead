@@ -37,9 +37,8 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
     private String uploadPhotos;
 	private String status;
 	private List<FileInfo> fileInfo;
-	private List<FileInfo> uploadInfo;
+	private List<FileInfo> uploadedFileInfo;
 	private List<MarketPlaceProductFilesHistoryDTO>filesHystoryList;
-	private String browseFile;
 	private String staticPath;
 	private String createdDate;
 	private String updatedDate;
@@ -248,12 +247,7 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
 	public void setFileInfo(List<FileInfo> fileInfo) {
 		this.fileInfo = fileInfo;
 	}
-	public String getBrowseFile() {
-		return browseFile;
-	}
-	public void setBrowseFile(String browseFile) {
-		this.browseFile = browseFile;
-	}
+	
 	public String getMarketPlaceId() {
 		return marketPlaceId;
 	}
@@ -266,12 +260,6 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
 	public void setUploadPhotos(String uploadPhotos) {
 		this.uploadPhotos = uploadPhotos;
 	}
-	public List<FileInfo> getUploadInfo() {
-		return uploadInfo;
-	}
-	public void setUploadInfo(List<FileInfo> uploadInfo) {
-		this.uploadInfo = uploadInfo;
-	}
 	public List<MarketPlaceProductFilesHistoryDTO> getFilesHystoryList() {
 		return filesHystoryList;
 	}
@@ -283,6 +271,12 @@ public class MarketPlaceProductsDTO extends SearchDTO implements Serializable {
 	}
 	public void setOrgLocationId(String orgLocationId) {
 		this.orgLocationId = orgLocationId;
+	}
+	public List<FileInfo> getUploadedFileInfo() {
+		return uploadedFileInfo;
+	}
+	public void setUploadedFileInfo(List<FileInfo> uploadedFileInfo) {
+		this.uploadedFileInfo = uploadedFileInfo;
 	}
 	
 }
