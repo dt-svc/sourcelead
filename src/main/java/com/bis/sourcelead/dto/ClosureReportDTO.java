@@ -19,6 +19,16 @@ public class ClosureReportDTO implements Serializable{
 	private int contractorsCount;
 	
 	private float totalBillableHours;
+	
+	private String revenue;
+	
+	private String employeeSalary;
+	
+	private String contractorsPayment;
+	
+	private String grossAmount;
+	
+	private String billableDays;
 
 	public String getFrequencyYear() {
 		return frequencyYear;
@@ -74,6 +84,46 @@ public class ClosureReportDTO implements Serializable{
 
 	public void setContractorsCount(int contractorsCount) {
 		this.contractorsCount = contractorsCount;
+	}
+
+	public String getRevenue() {
+		return revenue;
+	}
+
+	public void setRevenue(String revenue) {
+		this.revenue = revenue;
+	}
+
+	public String getEmployeeSalary() {
+		return employeeSalary;
+	}
+
+	public void setEmployeeSalary(String employeeSalary) {
+		this.employeeSalary = employeeSalary;
+	}
+
+	public String getContractorsPayment() {
+		return contractorsPayment;
+	}
+
+	public void setContractorsPayment(String contractorsPayment) {
+		this.contractorsPayment = contractorsPayment;
+	}
+
+	public String getBillableDays() {
+		return billableDays;
+	}
+
+	public void setBillableDays(String billableDays) {
+		this.billableDays = billableDays;
+	}
+
+	public String getGrossAmount() {
+		return grossAmount;
+	}
+
+	public void setGrossAmount(String grossAmount) {
+		this.grossAmount = grossAmount;
 	}
 	
 	

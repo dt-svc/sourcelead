@@ -1,5 +1,6 @@
 package com.bis.sourcelead.indPayroll.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.Response;
@@ -53,5 +54,7 @@ public interface IndPaysheetFrequencyDao {
 	void deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(List<EmployeeSessionIndPayroll> indPayrollCahe);
 	
 	public EmployeeSessionIndPayroll updateThePayHeadHistoryJsonObjectBYExclueUUID(String excludeUUID)throws Exception;
+	
+	List<IndEmployeePayroll> getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate, Date endDate, Long orgLocationId) throws Exception;
 
 }
