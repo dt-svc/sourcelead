@@ -305,6 +305,7 @@ public class FileController {
 				}else {
 					logger.info("*******Resume Parser without Service calling..");
 					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
+					 resume.setFileInfo(fileInfo);
 				}
 				
 			      resumeContent.add(resume);
