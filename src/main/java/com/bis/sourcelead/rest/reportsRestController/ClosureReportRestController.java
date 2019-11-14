@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +20,18 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.dto.ClosureReportDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.SubmissionApproverHierarchy;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
+import com.bis.sourcelead.payroll.entity.EmployeePayroll;
+import com.bis.sourcelead.payroll.entity.PaysheetFrequency;
+import com.bis.sourcelead.payroll.service.PaysheetFrequencyService;
 import com.bis.sourcelead.service.AppliedLeaveDateService;
+import com.bis.sourcelead.service.InvoicePaymentService;
 import com.bis.sourcelead.service.ProjectMembersHistoryService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.timesheet.service.SubmissionApproverHierarchyService;
@@ -56,6 +64,15 @@ public class ClosureReportRestController {
 	
 	@Autowired
 	AppliedLeaveDateService appliedLeaveDateService;
+	
+	@Autowired
+	InvoicePaymentService invoicePaymentService;
+	
+	@Autowired
+	IndPaysheetFrequencyService indPaysheetFrequencyService;
+	
+	@Autowired
+	PaysheetFrequencyService paysheetFrequencyService;
 
 	@RequestMapping(value = "/closureReport")
 	public ModelAndView timeSheetReports(HttpServletRequest request) throws Exception {
@@ -160,7 +177,7 @@ public class ClosureReportRestController {
 					    	        monthTotalHours = CommonUtil.getCombinedHours(monthTotalHours, weekTotalHours);
 					    	        
 					    	        if(pm.getProjectMemberCandidteId() != null && pm.getProjectMemberCandidteId().getDesignationType() != null 
-					    	        		&&  pm.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("Full Time")) {
+					    	        		&&  (pm.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("Full Time") || pm.getProjectMemberCandidteId().getDesignationType().equalsIgnoreCase("Offshore C2C"))) {
 					    	        	employeesSet.add(pm.getProjectMemberCandidteId().getId());
 					    	        	employeeMonthBillableTotalHours = CommonUtil.getCombinedHours(employeeMonthBillableTotalHours, monthTotalHours);
 					    	        }else {
@@ -182,6 +199,52 @@ public class ClosureReportRestController {
 			  closureReportDTO.setEmployeeCount(employeesSet.size());
 			  closureReportDTO.setContractorsCount(contractEmployeeSet.size());
 			  
+			  Float revenueTotalAmount = 0f;
+			  List<InvoicePayment> invoicePaymentList =  invoicePaymentService.getInvoicePaymentListByOrgloactionIdAndDates(orgLocations.getId(), startDate, endDate);
+			  if(invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
+				  for(InvoicePayment invoicePayment : invoicePaymentList) {
+					  revenueTotalAmount = revenueTotalAmount + Float.parseFloat(invoicePayment.getPaymentAmount());
+				  }
+				  
+			  }
+			  closureReportDTO.setRevenue(String.format("%.2f", revenueTotalAmount)); 
+			  
+			  Float totalEmployeeSalary = 0f;
+			  Float totalContractorsSalary = 0f;
+			  
+			  if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("India")) {
+				  List<IndEmployeePayroll> indPayRollList =  indPaysheetFrequencyService.getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(startDate, endDate, orgLocations.getId());
+				  if(indPayRollList != null & !indPayRollList.isEmpty()) {
+					  for(IndEmployeePayroll indEmpPayroll : indPayRollList) {
+						  if(StringUtils.isNotBlank(indEmpPayroll.getCandidate().getDesignationType()) && 
+								  (indEmpPayroll.getCandidate().getDesignationType().equalsIgnoreCase("Full Time") || indEmpPayroll.getCandidate().getDesignationType().equalsIgnoreCase("Offshore C2C"))) {
+							  totalEmployeeSalary = totalEmployeeSalary+indEmpPayroll.getGrossPay().floatValue();
+						  }else {
+							  totalContractorsSalary = totalContractorsSalary+indEmpPayroll.getGrossPay().floatValue();
+						  }
+					  }
+				  }
+			  
+			  }else if(StringUtils.isNotBlank(orgLocations.getCountry()) && orgLocations.getCountry().equalsIgnoreCase("United States")) {
+				  List<EmployeePayroll> usPayrollList = paysheetFrequencyService.getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(startDate, endDate, orgLocations.getId());
+				  if(usPayrollList != null && !usPayrollList.isEmpty()) {
+					  for(EmployeePayroll usEmpPayroll : usPayrollList) {
+						  if(StringUtils.isNotBlank(usEmpPayroll.getCandidate().getDesignationType()) && 
+								  (usEmpPayroll.getCandidate().getDesignationType().equalsIgnoreCase("Full Time") || usEmpPayroll.getCandidate().getDesignationType().equalsIgnoreCase("Offshore C2C"))) {
+							  totalEmployeeSalary = totalEmployeeSalary+usEmpPayroll.getGrossPay().floatValue();
+						  }else {
+							  totalContractorsSalary = totalContractorsSalary+usEmpPayroll.getGrossPay().floatValue();
+						  }
+					  }
+				  }
+			  }
+			  
+			  closureReportDTO.setEmployeeSalary(String.format("%.2f", totalEmployeeSalary)); 
+			  closureReportDTO.setContractorsPayment(String.format("%.2f", totalContractorsSalary));
+			  
+			  Float totalSalary = totalEmployeeSalary+totalContractorsSalary;
+			  Float grossMarginAmount = revenueTotalAmount - totalSalary;
+			  closureReportDTO.setGrossAmount(String.format("%.2f", grossMarginAmount));
 		
 		}catch(Exception e) {
 			e.printStackTrace();

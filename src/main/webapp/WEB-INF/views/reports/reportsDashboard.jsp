@@ -153,6 +153,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</sec:authorize>
 				
 			   <li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
+			   
+			   <c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureReport">Closure Report</a></li>
+				</c:if>
 				
 				
 			    
@@ -198,8 +202,6 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
 				  <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
-				
-				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureReport">Closure Report</a></li>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
 				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>
@@ -525,6 +527,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
 				
+				<c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureReport">Closure Report</a></li>
+				</c:if>
+				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -544,8 +550,6 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
 				  <li><a href="${SourceLeadWeb_sourceleadUrl}/timeSheetReports">Timesheet Monthly Report</a></li>
 				</sec:authorize>
-				
-				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureReport">Closure Report</a></li>
 				
 				<sec:authorize access="hasRole('ROLE_EXPENSES_REPORT')">
 				<li><a href="${SourceLeadWeb_sourceleadUrl}/expensesReportsList">Expense(s)</a></li>

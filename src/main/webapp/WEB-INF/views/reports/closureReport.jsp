@@ -8,6 +8,44 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	getFrequencyYears();
+	
+	var country = '${SourceLeadWeb_country}';
+	if(country == 'India'){
+		$('#revenueCurrency').html('INR');
+		$('#empSalCurrency').html('INR');
+		$('#contractorsSalCurrency').html('INR');
+		$('#grossCurrency').html('INR');
+	}else if(country == 'Australia'){
+		$('#revenueCurrency').html('AUD');
+		$('#empSalCurrency').html('AUD');
+		$('#contractorsSalCurrency').html('AUD');
+		$('#grossCurrency').html('AUD');
+		
+	}else if(country == 'United States'){
+		$('#revenueCurrency').html('USD');
+		$('#empSalCurrency').html('USD');
+		$('#contractorsSalCurrency').html('USD');
+		$('#grossCurrency').html('USD');
+		
+	}else if(country == 'Singapore'){
+		$('#revenueCurrency').html('SGD');
+		$('#empSalCurrency').html('SGD');
+		$('#contractorsSalCurrency').html('SGD');
+		$('#grossCurrency').html('SGD');
+		
+	}else if(country == 'United Kingdom'){
+		$('#revenueCurrency').html('GBP');
+		$('#empSalCurrency').html('GBP');
+		$('#contractorsSalCurrency').html('GBP');
+		$('#grossCurrency').html('GBP');
+		
+	}else if(country == 'France'){
+		$('#revenueCurrency').html('EUR');
+		$('#empSalCurrency').html('EUR');
+		$('#contractorsSalCurrency').html('EUR');
+		$('#grossCurrency').html('EUR');
+	}
+	
 	closureReport();
 });
 </script>
@@ -105,6 +143,58 @@ $(document).ready(function() {
 			</div>
 		</div>
 		
+		<div class="col-md-4">
+			<div class="colmd4 bgWhite">
+				<div class="innerHours">
+					<h4><span id="revenueCurrency"></span> <span id="revenueAmount">0</span></h4>
+				</div>
+				<div class="footerFlex clearfix">
+					<div class="col-md-6 text-left">
+					Revenue
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-md-4">
+			<div class="colmd4 bgWhite">
+				<div class="innerHours">
+					<h4><span id="empSalCurrency"></span> <span id="empSalaryAmount">0</span></h4>
+				</div>
+				<div class="footerFlex clearfix">
+					<div class="col-md-6 text-left">
+					Employee's Salary
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-md-4">
+			<div class="colmd4 bgWhite">
+				<div class="innerHours">
+					<h4><span id="contractorsSalCurrency"></span> <span id="contractorsPaymentsAmount">0</span></h4>
+				</div>
+				<div class="footerFlex clearfix">
+					<div class="col-md-6 text-left">
+					Contractor's Payments
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="col-md-4">
+			<div class="colmd4 bgWhite">
+				<div class="innerHours">
+					<h4><span id="grossCurrency"></span> <span id="grossMarginAmount">0</span></h4>
+				</div>
+				<div class="footerFlex clearfix">
+					<div class="col-md-6 text-left">
+					Gross Margin
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		
 	</div>
 	
@@ -135,7 +225,7 @@ $(document).ready(function() {
 		       var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
                var frequencyYear = $("#frequencyYear").val();
                var frequencyMonth = $("#frequencyMonth").val();
-               $("#closureReportDiv").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+               $("#closureReportDiv").attr('style','position:absolute; width:100%; height:430px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
                  $.ajax({
 	      	          type : "POST",
         	      	  url: sourceleadUrl+"/getClosureReportDetails?frequencyYear="+frequencyYear+"&frequencyMonth="+frequencyMonth,		
@@ -148,6 +238,12 @@ $(document).ready(function() {
         		    	      $("#contractorsCountDiv").html(result.contractorsCount);
         		    	      
         		    	      $("#totalBillableHours").html(result.totalBillableHours);
+        		    	      
+        		    	      $("#revenueAmount").html(result.revenue);
+        		    	      
+        		    	      $("#empSalaryAmount").html(result.employeeSalary);
+        		    	      $("#contractorsPaymentsAmount").html(result.contractorsPayment);
+        		    	      $("#grossMarginAmount").html(result.grossAmount);
         		    	      
 	        		    	  $("#closureReportDiv").removeAttr('style');
 	        		    	  
