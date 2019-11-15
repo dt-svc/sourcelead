@@ -415,8 +415,8 @@
 
 								<ul class="collapses" style="display: none">
 								
-									<li class="${sessionData.nav == 'InProgress' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/inProgressBgcDetails" title="In Progress"><i class="fa fa-chevron-right"></i> In Progress</a></li>
-									<li class="${sessionData.nav == 'Completed' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails" title="Completed"><i class="fa fa-chevron-right"></i> Completed</a></li>
+									<li class="${sessionData.nav == 'InProgress' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/inProgressBgcDetails" title="In Progress"><i class="fa fa-chevron-right"></i> Initiation</a></li>
+									<li class="${sessionData.nav == 'Completed' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails" title="Completed"><i class="fa fa-chevron-right"></i> BGC Candidates</a></li>
 									
 								</ul>
 								
