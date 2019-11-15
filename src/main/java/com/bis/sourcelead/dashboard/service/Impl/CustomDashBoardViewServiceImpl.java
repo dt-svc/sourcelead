@@ -86,8 +86,11 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 				String jsonData = "";
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
-				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
-					
+				}else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getSubmitToClientCandidatesDashBoardData(commonDataDto);
+				}
+				else if("INTERVIEW".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getInterviewDashBoardData(commonDataDto);
 				}
 				
 				
