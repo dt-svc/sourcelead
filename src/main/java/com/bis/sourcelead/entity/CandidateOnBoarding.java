@@ -251,6 +251,8 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String userEmail;
 	
+	@Transient
+	private Long bgcOrglocationId;
 
 	public Long getId() {
 		return id;
@@ -786,6 +788,14 @@ private static final long serialVersionUID = 1L;
 	public void setPaymentMode(String paymentMode)
 	{
 		this.paymentMode = paymentMode;
+	}
+
+	public Long getBgcOrglocationId() {
+		return bgcOrglocationId;
+	}
+
+	public void setBgcOrglocationId(Long bgcOrglocationId) {
+		this.bgcOrglocationId = bgcOrglocationId;
 	}
 	
 	

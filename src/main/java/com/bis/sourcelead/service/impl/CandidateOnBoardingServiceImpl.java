@@ -328,7 +328,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}else{
 			candidateOnBoarding.setTeamId(null);
 		}
-		
+		// Added for BGC module.
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getBgc())){
+			candidateOnBoarding.setBgcOrglocationId(Long.valueOf(candidateOnBoardingDTO.getBgc()));
+		}else{
+			candidateOnBoarding.setBgcOrglocationId(null);
+		}
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentType())){
 			candidateOnBoarding.setEmploymentType(candidateOnBoardingDTO.getEmploymentType());
 			if(candidateOnBoardingDTO.getEmploymentType().equalsIgnoreCase("C2C")) {

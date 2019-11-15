@@ -672,5 +672,10 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	public int updatePaymentTermsInOrgrelations() {
 		return orgRelationsDao.updatePaymentTermsInOrgrelations();
 	}
+
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForBackgroundCheck(orgLocationId);
+	}
 	
 }

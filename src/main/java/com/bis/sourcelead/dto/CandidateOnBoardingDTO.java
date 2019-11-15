@@ -145,6 +145,8 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String vendorContact;
 	
+	private String bgc;
+	
 	public String getCandidateOnBoardStatus() {
 		return candidateOnBoardStatus;
 	}
@@ -693,4 +695,14 @@ public class CandidateOnBoardingDTO implements Serializable {
 	public void setShiftName(String shiftName) {
 		this.shiftName = shiftName;
 	}
+
+	public String getBgc() {
+		return bgc;
+	}
+
+	public void setBgc(String bgc) {
+		this.bgc = bgc;
+	}
+	
+	
 }
