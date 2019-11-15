@@ -1273,6 +1273,32 @@ function loadTeams(onboardTeamId){
 	    }
    });
 }
+// calling bgc vendors list.
+function loadBgcVendors(){
+	$.ajax({
+		type: "GET",
+        url: sourceleadUrl+"/getAllBgcRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue, 	    	   
+	    success: function(response) {
+	    	if (response != null) {
+	    	 	var json = JSON.parse(response);
+	    	 	var result = "";
+	        	result = result +'<option selected value="">--Select BGC Vendor--</option>';
+	        	for (var i=0; i<json.length; i++) {
+	        		var bgc = json[i];
+	        		result = result +'<option value='+bgc.responderLocationId.id+'>'+bgc.orgName+'</option>';
+				}
+	        	 
+	        	 $("#bgc").empty();
+	           	 $("#bgc").append(result); 
+	           	 $('#bgc').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
+	    }
+   });
+}
 </script>
 
 
@@ -1363,7 +1389,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
   
  <script>
  function saveOnboardingCandidateDetails(saveType){
-	 
+	 console.error("saveType >>>>>>>>>>"+saveType);
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
@@ -2708,7 +2734,22 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
-
+     // below is code is added for bgc check 
+	 result = result +'<div class="form-group">';
+	 result = result +'<label class="col-md-3 control-label">BGC Vendor <i class="fa fa-info-circle" title="The respective vendor of the Background check"></i></label>';
+	 result = result +'<div class="col-md-6 chooRadius">';
+	 result = result +'<div class="input-group col-md-10 pull-left">';
+	 result = result +'<select class="chosen-select" data-placeholder="Select BGC Venodr" id="bgc" name="bgc">';
+	 result = result +'</select>';
+	 result = result +'<span class="input-group-addon cursorPointer bg-blue" onclick="loadBgcVendors(); "><i class="fa fa-refresh "></i></span>';
+	 result = result +'</div>';
+	 result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_TEAM\')">';
+	 result = result +'<span class="col-md-2 noPad clearfix"><a href="<c:url value="${SourceLeadWeb_vmsUrl}/addVendor" />" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> </span>';
+	 result = result +'</sec:authorize>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 result = result +'</div>';
+	 // end of bgc check
 	 result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Special Conditions <i class="fa fa-info-circle" title="Any special conditions laid by the company"></i></label>';
 	 result = result +'<div class="col-md-6">';
@@ -2737,6 +2778,7 @@ function addCandidateDetailsForOnboarding(){
      
 	 loadCandidateRoles();
 	 loadTeams();
+	 loadBgcVendors();
 	 loadOnBoardingTemplates();
 	 getDatesScript();
    	 $("#loading").removeAttr("style");
