@@ -303,7 +303,7 @@
 															+ requirementId
 															+ ',\''
 															+ submissionType
-															+ '\')";>';
+															+ '\',\''+opt.candidateName+'\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
 													if (opt.submissionStatus == 'OFFERMADE'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
@@ -344,7 +344,7 @@
 													+ requirementId
 													+ ',\''
 													+ submissionType
-													+ '\')";>';
+													+ '\',\''+opt.candidateName+'\')";>';
 												  result = result
 													+ "<option value='Status'>"
 													+ opt.submissionDisplayStatus
