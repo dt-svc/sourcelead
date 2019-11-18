@@ -7,7 +7,11 @@
 
 <script> 
 	$(document).ready(function(){
-		getPayRollPayheadList()
+		var booleanValue = '${isPayrollList}';
+		if(booleanValue == "false"){
+		    refreshPayheads();
+		} 
+		getPayRollPayheadList();
 	});
 </script>
 
@@ -27,8 +31,8 @@
                <a href="${SourceLeadWeb_pmsUrl}/payrollPayhead" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Add</a>
          </li>
       <li>
-            <a class="addcon-pop" onclick="refreshPayheads()"><i class="fa fa-refresh paddingRight"></i>Refresh Payheads</a><small class="text-muted ml">|</small>
-      		<a href="${SourceLeadWeb_pmsUrl}/payrollSalarySetup" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small>
+<!--             <a class="addcon-pop" onclick="refreshPayheads()"><i class="fa fa-refresh paddingRight"></i>Refresh Payheads</a><small class="text-muted ml">|</small> -->
+<%--       		<a href="${SourceLeadWeb_pmsUrl}/payrollSalarySetup" class="addcon-pop"><i class="fa fa-plus paddingRight"></i>Salary Setup</a><small class="text-muted ml">|</small> --%>
       </li>
         <li></li>
         <div class="clearfix"></div>
@@ -75,6 +79,8 @@
 		result = result +"		<th>Type</th>";
 		result = result +"		<th>Tax</th>";
 		result = result +"		<th>Component</th>";
+		result = result +"		<th>Method</th>";
+		result = result +"		<th>Formula</th>";
 		result = result +"		<th>Action</th>";
 		result = result +"	</tr>";
 		result = result +"</thead>";
@@ -121,6 +127,8 @@ function payheadListPagination(url,pmsUrl){
             { "data": "type"},
             { "data": "tax"},
             { "data": "component"},
+            { "data": "method"},
+            { "data": "formula"},
             { "data": "actions"}
         ],
         "columnDefs": [ {
@@ -185,6 +193,41 @@ function payheadListPagination(url,pmsUrl){
 	              }
 		      },{
 		    	  "targets": colIndex++,
+	              "data": "method",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var method = "";
+	            	  if(opt.method != null && opt.method != '' && opt.method != 'undefined'){
+	            		  method = opt.method;
+	            	  }else{
+	            		  method = "--";
+	            	  }
+	            	  result = result +"<td><div><span>"+method+"</span></div></td>";
+	            	  return result;
+	              }
+		      },{
+		    	  "targets": colIndex++,
+	              "data": "formula",
+	              "render": function ( data, type, opt, meta ) {
+	            	  var result = "";
+	            	  var formula = "";
+	            	  if(opt.formula != null && opt.formula != '' && opt.formula != 'undefined'){
+	            		  /* if( opt.method == '% of CTC'){
+	            			  formula = opt.formula+"%";           		  
+		            	  }else{
+		            		  formula = opt.formula;
+		            	      }
+		            	  } */
+	            	  
+	            		  formula = opt.formula;
+	            	  }else{
+	            		  formula = "--";
+	            	  }
+	            	  result = result +"<td><div><span>"+formula+"</span></div></td>";
+	            	  return result;
+	              }
+		      },{
+		    	  "targets": colIndex++,
 	              "data": "actions",
 	              "sortable": false,
 	              "render": function ( data, type, opt, meta ) {
@@ -196,7 +239,7 @@ function payheadListPagination(url,pmsUrl){
 	            	    
 	            	    result = result +"<td>";
 	            	    result = result +"<div class='tblminwidth-50 mt10'>";
-	            	    result = result +"<a  class='pull-left' href='<c:url value='${SourceLeadWeb_pmsUrl}/payrollPayhead?uuid="+opt.uuid+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
+	            	    result = result +"<a  class='pull-left' href='<c:url value='${SourceLeadWeb_pmsUrl}/payrollPayhead?uuid="+opt.uuid+"&isFormulaEditable="+opt.isFormulaEditable+"'/>'><span title='Edit Payhead'><i class='glyphicon glyphicon-pencil'></i></span></a>&nbsp;&nbsp;";
 	            	    /* result = result +'<a><span title="Delete Payhead"><i class="glyphicon glyphicon-trash" onClick="deletePayhead(\''+opt.uuid+'\')";></i></span></a>'; */
 	            	    
 	            	    result = result +"<div class='toggle-button pull-left ml'>";

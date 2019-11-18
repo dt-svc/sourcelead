@@ -68,7 +68,7 @@
 						</c:if>
 					</div>
 				</div>
-				<div class="col-md-5">
+				<%-- <div class="col-md-5">
 					<label class="clearfix">Pay Type</label>
 					<div class="clearfix">
 						<div class="row">
@@ -119,49 +119,49 @@
 							<option value="Section 80CCD(Employer)" ${payrollPayhead.form16  == 'Section 80CCD(Employer)'  ? 'selected' :''}>Section 80CCD(Employer)</option>
 						</select>
 					</div>
-				</div>
-
-				<div class="col-md-5">
+				</div> --%>
+						<div class="clearfix"></div>
+				<div class="col-md-2">
 					<label class="clearfix">Tax</label>
 					<div class="clearfix">
-						<span class="radioStyles mr"> 
+						<div class="radioStyles clearfix"> 
 							<input type="radio" ${payrollPayhead.tax  == 'Taxable'  ? 'checked' : payrollPayhead  == null  ? 'checked' :''} id="taxable" name="tax" value="Taxable"> <label for="taxable">Taxable</label>
-						</span> 
-						<span class="radioStyles"> 
+						</div> 
+						<div class="radioStyles clearfix">  
 							<input type="radio" ${payrollPayhead.tax  == 'NonTaxable'  ? 'checked' :''} id="nonTaxable" name="tax" value="NonTaxable"> <label for="nonTaxable">Non Taxable</label>
-						</span>
+						</div>
 					</div>
 				</div>
 
-				<div class="col-md-5">
+				<div class="col-md-2">
 					<label class="clearfix">Component</label>
 					<div class="clearfix">
-						<span class="radioStyles mr"> 
+						<div class="radioStyles clearfix"> 
 							<input type="radio" ${payrollPayhead.component  == 'Variable'  ? 'checked' : payrollPayhead  == null  ? 'checked' :''} id="variable" name="component" value="Variable"> <label for="variable">Variable</label>
-						</span> 
-						<span class="radioStyles"> 
+						</div> 
+						<div class="radioStyles clearfix">  
 							<input type="radio" ${payrollPayhead.component  == 'Fixed'  ? 'checked' :''} id="fixed" name="component" value="Fixed"> <label for="fixed">Fixed</label>
-						</span>
+						</div>
 					</div>
 				</div>
 				
-				<div class="col-md-5">
+				<div class="col-md-2">
 					<label class="clearfix">Applicable For</label>
 					<div class="clearfix">
-						<span class="radioStyles mr"> 
+						<div class="radioStyles clearfix"> 
 							<input type="radio" ${payrollPayhead.applicableFor  == 'All'  ? 'checked' : payrollPayhead  == null  ? 'checked' :''} id="all" name="applicableFor" value="All" onchange="experienceDiv();"> <label for="all">All</label>
-						</span> 
-						<span class="radioStyles"> 
+						</div> 
+						<div class="radioStyles clearfix">  
 							<input type="radio" ${payrollPayhead.applicableFor  == 'Experienced'  ? 'checked' :''} id="experienced" name="applicableFor" value="Experienced" onchange="experienceDiv();"> <label for="experienced">Experienced</label>
-						</span>
+						</div>
 					</div>
 				</div>
 				
-				<div class="col-md-5" id="divExperience" ${payrollPayhead.applicableFor  == 'Experienced'  ? '' : 'style="display: none;"'}>
+				<div class="col-md-3" id="divExperience" ${payrollPayhead.applicableFor  == 'Experienced'  ? '' : 'style="display: none;"'}>
 		            <label class="clearfix">Experience<span class="text-danger">&nbsp;*</span></label>
 		            <div class="clearfix">
 	              		<div class="row exp-drop">
-							<div class="col-xs-6 col-md-6">
+							<div class="col-xs-4 col-md-4">
 								<select class="form-control selectpicker" id="experienceYears" name="experienceYears" field-name="Years" onchange="yearAndMonthValidation()">
 									<option value="">Years</option>
 									<c:forEach begin="0" end="50" varStatus="loop">
@@ -169,7 +169,7 @@
 									</c:forEach>
 								</select>
 							</div>
-							<div class="col-xs-6 col-md-6">
+							<div class="col-xs-4 col-md-4 padding_left">
 								<select class="form-control selectpicker experienceMonths" id="experienceMonths" name="experienceMonths" field-name="Months" onchange="yearAndMonthValidation()">
 									<option value="">Months</option>
 									<c:forEach begin="0" end="11" varStatus="loop">
@@ -180,8 +180,109 @@
 						</div>
 		            </div>
 		         </div>
-
-				<div class="col-md-10">
+		         <div class="clearfix"></div>
+		         
+		         <c:if test="${isFormulaEditable eq 'Y' || empty payrollPayhead.uuid}">
+		         <div class="clearfix mt">
+		         <div class="col-md-5">
+					<label class="clearfix">Method</label>
+					<div class="clearfix">
+						<select class="sel" id="method" name="method">
+							<!-- <option value="">--Select method--</option> -->
+							<option ${payrollPayhead.method == 'Flat' ? 'selected' : ''}>Flat</option>
+							<option ${payrollPayhead.method == '% of CTC' ? 'selected' : ''}>% of CTC</option>
+							<%-- <option ${payrollPayhead.method == '% of Gross pay' ? 'selected' : ''}>% of Gross pay</option> --%>
+							<option ${payrollPayhead.method == '% of Payheads' ? 'selected' : ''}>% of Payheads</option>
+							<%-- <option ${payrollPayhead.method == 'Formula' ? 'selected' : ''}>Formula</option> --%>
+						</select>
+					</div>
+				</div>
+				
+				<div class="col-md-5">
+				
+				<div class="clearfix" id="formulaInputDiv" ${empty payrollPayhead || empty payrollPayhead.method || payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross pay' || payrollPayhead.method == 'Flat' ? '' : 'hidden'}>
+					<label class="clearfix" id="formulaLabel">${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? 'Formula' : payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross pay' ? 'Percentage' :'Amount'}</label>
+					<div class="clearfix">
+						<input type="text" class="form-control" id="formula" ${payrollPayhead.method == '% of CTC' || payrollPayhead.method == '% of Gross pay' || payrollPayhead.method == 'Flat' || empty payrollPayhead.method ? 'name="formula"' : ''} placeholder="Enter amount" data-validation-optional="true" value="${payrollPayhead.formula}">
+					</div>
+				</div>
+				
+				<div class="row" id="payheadsFormulaGroup" ${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? '' : 'hidden'}>
+					<div id="payheadsFormulaGroupOpt" ${payrollPayhead.method == 'Formula' ? 'hidden' : ''}>
+					<div class="col-md-3">
+		              <label>Percentage (%)</label>
+		              <div class="clearfix">
+							<select class="form-control chosen-select" id="formulaPercentage" name="formulaPercentage">
+								<option value="">Select</option>
+		                			<c:forEach begin="1" end="100" varStatus="percent">
+											<option >${percent.index}%</option>
+									</c:forEach>
+							</select>
+		              </div>
+		            </div>
+		            <div class="col-md-5 padding_left">
+		              <label>Payhead</label>
+		              <div class="clearfix">
+							<select class="form-control chosen-select" id="formulaPayhead" name="formulaPayhead">
+								<option value="">Select</option>
+									<%-- <option value="(CTC)">CTC (CTC)</option>
+									<option value="(GROSS)">Gross (GROSS)</option> --%>
+		                			<c:forEach var="list" items="${payheadList}">
+			                			<c:if test="${payrollPayhead.id != list.id}">
+			                				<option value="(${list.shortCode})">${list.name} (${list.shortCode})</option>
+			                			</c:if>
+									</c:forEach>
+							</select>
+		              </div>
+		            </div>
+		            <div class="col-md-2 padding_left">
+		              <label>Operator</label>
+		              <div class="clearfix">
+		                <select class="form-control chosen-select" id="formulaOperator" name="formulaOperator">
+		                  <option value="">Select</option>
+		                  <option>&#43;</option>
+		                  <option>&#42;</option>
+		                  <option>&#47;</option>
+		                  <option>&#45;</option>
+		               <!--    <option>&#61;</option>
+ -->		              <option>&#37;</option>
+		                  <%--<option>&#40;</option>
+		                  <option>&#41;</option> --%>
+		                  <option>&#91;</option>
+		                  <option>&#93;</option>
+		                  <option>&#123;</option>
+		                  <option>&#125;</option>
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-md-2">
+		              <label>Action</label>
+		              <button type="button" class="btn btn-success btnSuccess btn-block" onclick="insertAtCursor('formulaTextareaId');return false;">Add</button>
+		            </div>
+	            </div>
+		            <div class="clearfix"></div>
+		            <div class="clearfix col-md-12" id="formulaTextareaDiv">
+		              <textarea id="formulaTextareaId" ${payrollPayhead.method == '% of Payheads' || payrollPayhead.method == 'Formula' ? 'name="formula"' : ''}  class="form-control" rows="2">${payrollPayhead.formula}</textarea>
+		              <div class="pull-right mt5" id="payheadsFormulaValidateBtn" ${payrollPayhead.method == 'Formula' ? 'hidden' : ''}>
+		                <button type="button" class="btn btn-success btnSuccess" onClick="validateFormula();">Validate</button>
+		              </div>
+		              <!-- <p class="text-success mt5">Valid expression</p>
+		              <p class="text-danger mt5">Invalid expression</p> -->
+		            </div>
+	          </div>
+				
+				
+				</div>
+				
+				
+				
+				<div class="clearfix"></div>
+				</div>
+				</c:if>
+				
+		         
+				<div class="clearfix"></div>
+				<div class="col-md-10 mt">
 					<label class="clearfix">Other</label>
 					<div class="clearfix">
 						<div class="checkbox-new pull-left">
@@ -190,7 +291,7 @@
 								class="checkbox-custom-label"><span class="ml10">Paid
 									Component</span></label>
 						</div>
-						<div class="checkbox-new ml mr pull-left">
+						<%-- <div class="checkbox-new ml mr pull-left">
 							<input id="partOfGratitutiy" class="checkbox-custom" name="partOfGratitutiy"
 								type="checkbox" ${payrollPayhead.partOfGratitutiy  == 'Y' ? "checked" : ''} value="Y"> <label for="partOfGratitutiy"
 								class="checkbox-custom-label"><span class="ml10">Part
@@ -201,8 +302,8 @@
 								type="checkbox" ${payrollPayhead.fbpComponent  == 'Y' ? "checked" : ''} value="Y"> <label for="fbpComponent"
 								class="checkbox-custom-label"><span class="ml10">FBP
 									Component</span></label>
-						</div>
-						<div class="checkbox-new pull-left">
+						</div> --%>
+						<div class="checkbox-new  pull-left ml mr">
 							<input id="leaveDependent" class="checkbox-custom" name="leaveDependent"
 								type="checkbox" ${payrollPayhead.leaveDependent  == 'Y' ? "checked" : ''} value="Y"> <label for="leaveDependent"
 								class="checkbox-custom-label"><span class="ml10">Leave Dependent</span></label>
@@ -212,12 +313,12 @@
 								type="checkbox" ${payrollPayhead.showInPayslip  == 'Y' ? "checked" : ''} value="Y"> <label for="showInPayslip"
 								class="checkbox-custom-label"><span class="ml10">Show in Payslip</span></label>
 						</div>
-						<div class="checkbox-new pull-left">
+						<div class="checkbox-new pull-left ml mr">
 							<input id="pfApplicable" class="checkbox-custom" name="pfApplicable"
 								type="checkbox" ${payrollPayhead.pfApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="pfApplicable"
 								class="checkbox-custom-label"><span class="ml10">PF Applicable</span></label>
 						</div>
-						<div class="checkbox-new pull-left">
+						<div class="checkbox-new pull-left ml mr">
 							<input id="esiApplicable" class="checkbox-custom" name="esiApplicable"
 								type="checkbox" ${payrollPayhead.esiApplicable  == 'Y' ? "checked" : ''} value="Y"> <label for="esiApplicable"
 								class="checkbox-custom-label"><span class="ml10">ESI Applicable</span></label>
@@ -673,4 +774,119 @@ function unCheck(a)
 
 </script>
 
+
+
+<!-- formula script -->
+<script>
+$('#method').on('change', function() {
+	  $("#formulaTextareaId").val("");
+	  $("#formula").val("");
+	  $('#formulaPercentage').trigger("chosen:updated");
+	  $('#formulaPayhead').trigger("chosen:updated");
+	  $('#formulaOperator').trigger("chosen:updated");
+	  $("#formulaInputDiv").show();
+	  $("#payheadsFormulaValidateBtn").hide();
+      $('#formula').removeAttr("data-validation");
+      $('#formulaTextareaId').removeAttr("data-validation");
+      
+	  if($('#method :selected').text() == 'Flat'){
+		  $("#formula").attr("placeholder", "Enter amount");
+		  $("#formulaLabel").text("Amount");
+		  $("#formula").attr("name", "formula");
+		  $("#payheadsFormulaGroup").hide();
+		  $("#formulaTextareaId").removeAttr("name");
+		  $('#formula').attr("data-validation", "validate_Space validate_length length1-10 validate_int");
+		  
+	  }else if($('#method :selected').text() == '% of CTC' || $('#method :selected').text() == '% of Gross pay'){
+		  $("#formula").attr("placeholder", "Enter percentage");
+		  $("#formulaLabel").text("Percentage");
+		  $("#formula").attr("name", "formula");
+		  $("#payheadsFormulaGroup").hide();
+		  $("#formulaTextareaId").removeAttr("name");
+		  $('#formula').attr("data-validation", "validate_Space validate_length length1-5 validate_float");
+		  
+	  }else if($('#method :selected').text() == '% of Payheads'){
+		  $("#formula").removeAttr("name");
+		  $("#formulaInputDiv").hide();
+		  $("#payheadsFormulaGroup").show();
+		  $("#formulaTextareaId").attr("name", "formula");
+		  $("#payheadsFormulaGroupOpt").show();
+		  $("#payheadsFormulaValidateBtn").show();
+	      $('#formulaTextareaId').attr("data-validation", "validate_Space validate_length length1-200");
+		  
+	  }else if($('#method :selected').text() == 'Formula'){
+		  $("#formula").removeAttr("name");
+		  $("#formulaInputDiv").hide();
+		  $("#payheadsFormulaGroup").show();
+		  $("#formulaInputDiv").hide();
+		  $("#formulaTextareaId").attr("name", "formula");
+		  $("#payheadsFormulaGroupOpt").hide();
+	      $('#formulaTextareaId').attr("data-validation", "validate_Space validate_length length1-200");
+		  
+	  }
+})
+
+
+
+	function insertAtCursor(areaId) {
+		var percentage = $("#formulaPercentage").val();
+		var payhead = $("#formulaPayhead").val();
+		var operator = $("#formulaOperator").val();
+		
+		var text = percentage+payhead+operator;
+		  var txtarea = document.getElementById(areaId);
+		  if (!txtarea) {
+		    return;
+		  }
+
+		  var scrollPos = txtarea.scrollTop;
+		  var strPos = 0;
+		  var br = ((txtarea.selectionStart || txtarea.selectionStart == '0') ?
+		    "ff" : (document.selection ? "ie" : false));
+		  if (br == "ie") {
+		    txtarea.focus();
+		    var range = document.selection.createRange();
+		    range.moveStart('character', -txtarea.value.length);
+		    strPos = range.text.length;
+		  } else if (br == "ff") {
+		    strPos = txtarea.selectionStart;
+		  }
+
+		  var front = (txtarea.value).substring(0, strPos);
+		  var back = (txtarea.value).substring(strPos, txtarea.value.length);
+		  txtarea.value = front + text + back;
+		  strPos = strPos + text.length;
+		  if (br == "ie") {
+		    txtarea.focus();
+		    var ieRange = document.selection.createRange();
+		    ieRange.moveStart('character', -txtarea.value.length);
+		    ieRange.moveStart('character', strPos);
+		    ieRange.moveEnd('character', 0);
+		    ieRange.select();
+		  } else if (br == "ff") {
+		    txtarea.selectionStart = strPos;
+		    txtarea.selectionEnd = strPos;
+		    txtarea.focus();
+		  }
+
+		  txtarea.scrollTop = scrollPos;
+		  
+		  $('#formulaPercentage').val('').trigger("chosen:updated");
+		  $('#formulaPayhead').val('').trigger("chosen:updated");
+		  $('#formulaOperator').val('').trigger("chosen:updated");
+		}
+	
+	function validateFormula1(){
+		var formula = $("#formulaTextareaId").val();
+		
+		for (var i = 0; i < formula.length; i++) {
+			  
+			//alert(formula.charAt(i));
+			  
+			  if(/^[a-zA-Z]$/.test(formula.charAt(i))){
+				//	alert(i);
+				}
+			}
+	}
+</script>
 	<jsp:include page="../masterFooter.jsp" />

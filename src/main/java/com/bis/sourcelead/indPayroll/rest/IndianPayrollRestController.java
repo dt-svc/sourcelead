@@ -576,11 +576,10 @@ public class IndianPayrollRestController {
 	public IndPaysheetFrequencyDTO generateINDPayroll(GenerateINDPayrollDTO generateINDPayrollDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-		OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocationId);
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 		try {
-			System.out.println(" inisde generateINDPayroll   >>>>>>>>>>>>>");
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
 			if(preCheckINDPayrollDTO.getIsPTConfigured() && preCheckINDPayrollDTO.getIsTDSConfigured()) {
 				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
@@ -616,6 +615,7 @@ public class IndianPayrollRestController {
 	   	 	           employeeJsonObject.put("empName", ipDTO.getEmpName());
 	   	 	           employeeJsonObject.put("regularHours", ipDTO.getRegularHours());
 	   	 	           employeeJsonObject.put("overtimeHours", ipDTO.getOvertimeHours());
+	   	 	           employeeJsonObject.put("totalCtc", ipDTO.getTotalCtc());
 	   	 	           employeeJsonObject.put("grossPay", ipDTO.getGrossPay());
 	   	 	           employeeJsonObject.put("netPay", ipDTO.getNetPay());
 	   	 	           employeeJsonObject.put("lopAmount", ipDTO.getLopAmount());
@@ -703,7 +703,10 @@ public class IndianPayrollRestController {
     @RequestMapping(value = { "/sentForApproveIndPayroll","/rest/sentForApproveIndPayroll" }, method = RequestMethod.POST)
    	public IndApprovePayrollDTO sentForApproveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO, HttpServletRequest request, HttpServletResponse response) throws Exception
    	{
-   		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	
+    	Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
+   //	OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
    		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 //   	    Object sessionObj = SourceLeadSessionManager.getSessionAttribute(request, indApprovePayrollDTO.getPaySheetFrequencyUUID());
    		List<EmployeeSessionIndPayroll> emp = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
@@ -837,7 +840,9 @@ public class IndianPayrollRestController {
 	   	   			}
 	   	   		}
 	   	   		model.addObject("orgLevelPayheads", orgLevelPayheads.getData());
-	   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		model.addObject("earningTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getTaxStatus().equals(Constants.TAXABLE) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		model.addObject("employerContribution", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_EARNINGS) && ap.getTaxStatus().equals(Constants.NON_TAXABLE) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
+	   	   		
 	   	   		model.addObject("deductionTotal", BigDecimal.valueOf(allAssociatesPayrollPayheadList.stream().filter(ap->ap.getPayrollPayheadType().equals(Constants.IND_PAYROLL_PAYHEAD_DEDUCTION) && ap.getMonthly()!=null).mapToDouble(ap->ap.getMonthly().doubleValue()).sum()));
 	   		}
 	   		
@@ -873,7 +878,8 @@ public class IndianPayrollRestController {
 	@RequestMapping(value = { "/approveIndPayroll","/rest/approveIndPayroll" }, method = RequestMethod.POST)
 	public Response<IndApprovePayrollDTO> approveIndPayroll(IndApprovePayrollDTO indApprovePayrollDTO ,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+    	OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Response<IndApprovePayrollDTO> res = null;
 		try {
@@ -1085,7 +1091,7 @@ public class IndianPayrollRestController {
 	        return response;
 	    }
 	  
-	  @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
+	    @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
 		@ResponseBody
 		public List<PayrollLoanAndAdvances> getLoanNames(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1093,5 +1099,56 @@ public class IndianPayrollRestController {
 		 return padvList;
 		
 		}
+	  
+	  
+	    @RequestMapping (value = "/validateAccoutNumebr", method = RequestMethod.GET)
+		@ResponseBody
+		public Boolean validateAccoutNumebr(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
+				@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="paymentAccountId", required=false) Long paymentAccountId) throws Exception{
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			 PaymentAccount payment = null;
+	    	   if(null != paymentAccountId){
+	    		   account.setId(paymentAccountId);
+	    		   payment = paymentAccountService.valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(account);
+	    	   }
+			  Boolean flag = false;
+	    	   if(null == payment){
+	    		   flag = paymentAccountService.validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(account, orgLocationId);
+	    	   }
+			return flag;
+		}
+	  
+	    
+	    @RequestMapping(value = "/associateItdForms", method = RequestMethod.POST)
+		@ResponseBody
+		public ResponseList<SourceleadTaxSubmissionMasterDTO> getAssociateCentralTaxes(HttpServletRequest request,
+				@RequestParam(defaultValue = "") String financialYear,@RequestParam(value="candidateId", required=false) Long candidateId, Paginator paginator) {
+			ResponseList<SourceleadTaxSubmissionMasterDTO> response = new ResponseList<>();
+			try {
+				
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId); 
+			//	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (candidate != null) {
+					if(candidate.getConsultantUser() != null) {
+						List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterList = taxService.getTaxSubmissionMaster(candidate.getConsultantUser().getId(), orgLocations.getDateFormat(), financialYear, paginator);
+						response.setData(taxSubmissionMasterList);
+						response.setPaginator(paginator);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+		}
+	  
 	  
 }

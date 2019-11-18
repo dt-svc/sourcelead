@@ -50,7 +50,7 @@ $(document).ready(function(){
       </div>
       <c:choose>
 	    <c:when test="${expenses.id !='' && expenses.id != null}">
-	        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>"View Expenses Approval</a> &raquo; Edit Expense</div> 
+	        <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=view"'/>View Expenses Approval</a> &raquo; Edit Expense</div> 
 	    </c:when>    
 	    <c:otherwise>
 	       <div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="${SourceLeadWeb_pmsUrl}/expensesApprovalList">Expenses Approval</a> &raquo; Add Expense</div> 
@@ -482,7 +482,7 @@ function reOpenMyExpense(expenseId){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Re-open Reject message here</p>";
+	result = result +"		<p>Re-open Reason message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
 	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";

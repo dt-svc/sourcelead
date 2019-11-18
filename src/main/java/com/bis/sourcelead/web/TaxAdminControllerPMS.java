@@ -44,9 +44,9 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
-public class TaxAdminController {
+public class TaxAdminControllerPMS {
 
-	private static final Logger logger = LoggerFactory.getLogger(TaxAdminController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TaxAdminControllerPMS.class);
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;

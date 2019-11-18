@@ -60,7 +60,7 @@
                   <div class="col-md-5" id="esiEligible" ${pfesiDTO.eligibleForEsi == 'Y' ? '' : 'style="display: none;"'}>
                     <label>ESI Number</label>
                     <div>
-                      <input type="text" class="form-control" name="esinumber"  id="esiNumber" value="${pfesiDTO.esinumber}" data-validation="validate_int fixed_length length10-17" data-validation-optional="true" field-name="ESI Number">
+                      <input type="text" class="form-control" name="esinumber"  id="esiNumber" value="${pfesiDTO.esinumber}" data-validation="validate_int validate_length length10-17" data-validation-optional="true" field-name="ESI Number">
                     </div>
                   </div>
                </div>
@@ -194,7 +194,7 @@
 	         $.ajax({
 		    	type: "POST",
 		    	data: formData,
-		    	 url: sourceleadUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
+		    	 url: atsUrl+"/saveOnboardingCandidatePfEsiDetails?${_csrf.parameterName}=${_csrf.token}",
 		        success: function(response) {
 		        	$("#informationDetailsLoading").removeAttr('style');
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
@@ -254,7 +254,7 @@ function associateEsiFunction() {
     if (checkBox.checked == true){
        esiEl.style.display = "block";
        $("#esi").val('Y');
-       $("#esiNumber").attr("data-validation", "validate_int fixed_length length10-17");
+       $("#esiNumber").attr("data-validation", "validate_int validate_length length10-17");
     } else {
        esiEl.style.display = "none";
        $("#esiNumber").val('');

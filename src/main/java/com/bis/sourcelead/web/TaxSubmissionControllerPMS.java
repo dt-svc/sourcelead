@@ -95,7 +95,7 @@ public class TaxSubmissionControllerPMS {
 						modelAndView.setViewName("payroll_india/org/form_list_by_formType");
 					}
 				} else {
-					TaxAdminController.setYears(modelAndView, financialYear);
+					TaxAdminControllerPMS.setYears(modelAndView, financialYear);
 					String year = "";
 					if (financialYear.isEmpty()) {
 						Calendar c = Calendar.getInstance();
@@ -157,7 +157,7 @@ public class TaxSubmissionControllerPMS {
 			if (user != null) {
 				SourceleadTaxFormDTO sourceleadTaxFormDTO = taxService.getTaxFormType(uuid, true, false);
 				if (sourceleadTaxFormDTO != null) {
-					TaxAdminController.setYears(modelAndView, null);
+					TaxAdminControllerPMS.setYears(modelAndView, null);
 					OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 							"orgLocations");
 					List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
@@ -224,7 +224,7 @@ public class TaxSubmissionControllerPMS {
 				modelAndView.addObject("form", sourceleadTaxFormDTO);
 				modelAndView.addObject("formList", taxService.getTaxFormTypeList(false));
 				modelAndView.addObject("activeFormTabUUID", uuid);
-				TaxAdminController.setYears(modelAndView, null);
+				TaxAdminControllerPMS.setYears(modelAndView, null);
 				List<UserRole> userRoleList = userRoleService.getAllUsersBasedOrgLocationId(orgLocations.getId());
 				modelAndView.addObject("userRoleList", userRoleList);
 				if (autoSelectUser) {
@@ -380,5 +380,19 @@ public class TaxSubmissionControllerPMS {
 			e.printStackTrace();
 		}
 	}
+	
+	@RequestMapping(value = { "/associateItDecalartionForm", "/rest/associateItDecalartionForm" })
+	public ModelAndView getItDecalartionForm(@RequestParam(value="candidateId", required=false) Long candidateId, HttpServletRequest request) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			modelAndView.addObject("candidateId", candidateId);
+			modelAndView.setViewName("payroll_india/org/associate_it_dec_form");
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+		}
+		return modelAndView;
+	}
+	
 	
 }
