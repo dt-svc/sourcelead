@@ -52,7 +52,7 @@ function userAssetManagement(userId){
 						selected2 = 'selected';
 					} 
 					
-					if(report.workingStatus == 'End Of Life'){
+					if(report.asset.workingStatus == 'End Of Life'){
 							selected3 = 'selected';
 					}
 				
@@ -75,7 +75,7 @@ function userAssetManagement(userId){
 				   	result = result + ' <td><div class="tbldata-dotdot-150">';
 					result = result + ' <select id="workingStatus'+report.asset.id+'" name="workingStatus" onChange="updateWorkingStatus(\''+report.asset.assetUUID+'\',\''+report.asset.id+'\');">';
 					result = result + ' <option '+selected1+'>Assigned</option>';
-					result = result + ' <option '+selected2+'>unassigned</option>';
+					result = result + ' <option '+selected2+'>Unassigned</option>';
 					result = result + ' <option '+selected3+'>End Of Life</option>';
 					result = result + ' <option '+selected4+'>Out Of Service</option>';
 				    result = result + ' <option '+selected5+'>Service</option>'; 

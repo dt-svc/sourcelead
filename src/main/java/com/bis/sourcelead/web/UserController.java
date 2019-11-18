@@ -248,11 +248,8 @@ public class UserController {
 		    
 			User user = userService.getUserByUserCodeAndOrgLocationsId(userCode, orgLocations.getId());
 			if(user != null){
-				// to get a project list by userId
-               
-				/*List<Projects> projectsList = projectsService.getProjectByOrgLocationsIdAndUserId(orgLocations.getId(),userId);
-				model.addObject("org_projectsList", projectsList);*/
 				Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), orgLocations.getId());
+				Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidate.getId());
 				if(!isNullOrEmpty(isTimeSheetEnrolled) && isTimeSheetEnrolled.equalsIgnoreCase("Y")){
 					Integer assignedProjectsCount = projectsService.getUserAssignedProjectsCount(user.getId(), orgLocations.getId());
 					if(candidate != null && candidate.getMasterCandidateId() != null) {
@@ -275,6 +272,7 @@ public class UserController {
 			    model.addObject("isMulitplieOrgAccounts", isMulitplieOrgAccounts);
 			    
 				request.setAttribute("candidateId", candidate.getId());
+				request.setAttribute("candidateGlobalId", candidateGlobalId);
 				request.setAttribute("userId", user.getId());
 				List<Countries> countryList = countriesService.getAllCountries(); // added for passport details.
 				model.addObject("countryList", countryList); // added for passport countries.
@@ -378,8 +376,9 @@ public class UserController {
 						String currentDateStr = dateFormat.format(toDayDate);
 						Date newDate = dateFormat.parse(currentDateStr);
 						Date currentDate = commonUtil.getOrgLocationCurrentDate(orgLocations.getDateFormat(), newDate);
-					
-						if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
+						if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo())) && !currentDate.equals(commonUtil.stringToDate(canVisa.getValidTo()))) {
+							canVisa.setCurrentStatus("Active");
+						}else if (currentDate.compareTo(commonUtil.stringToDate(canVisa.getValidTo())) == 0) {
 							canVisa.setCurrentStatus("Active");
 						} else {
 							canVisa.setCurrentStatus("Expired");

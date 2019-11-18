@@ -162,7 +162,7 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
 	var frm = $('#upload_banking_form').serializeFormJSON();
 	var con = JSON.stringify(frm);
 	con = con.replace(/[{}]/g, "");
-	var sourceleaAtsdUrl = '${SourceLeadWeb_atsUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	
 	//It will escape all the special characters
 	var jsonData = encodeURIComponent(con);
@@ -178,7 +178,7 @@ if ($('#upload_banking_form').validate(false, validationSettings)){
 	        processData: false,
 	        contentType:false,
     	    dataType : 'json',
-		    url : sourceleaAtsdUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
+		    url : atsUrl+"/uploadbankdetails?"+tokenParamName+"="+tokenValue+"", 	   
  		    success : function(json) {
  		    	$("#loading").removeAttr("style");
 		    	    if(json.insertedCount != null && json.insertedCount != '')
@@ -212,7 +212,8 @@ function cancelFileImport(){
 	/* $("#jobFieldsDiv").attr("style","display:none");
 	$('#jobFileImportDiv').removeAttr("style");
 	$('#jobFieldsDiv').empty(); */
-	location.replace(sourceleaAtsdUrl+"/usersList");
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
+	location.replace(atsUrl+"/usersList");
 }
 </script>
 
@@ -235,7 +236,7 @@ function cancelFileImport(){
 	         result += '    <th>Bank name</th>';
 	         result += '    <th>Account number</th>'; 
 	         result += '    <th>IFSC code</th>'; 
-	         result += '    <th>Reson</th>';
+	         result += '    <th>Reason</th>';
 	         result += '  </tr>';
 	         result += '</thead>';
 	         result += '<tbody>';

@@ -43,6 +43,7 @@ import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
 import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
+import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.Response;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
@@ -71,6 +73,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateDocumentsService;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateEmployersService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
@@ -87,6 +90,7 @@ import com.bis.sourcelead.service.TeamService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CandidateMarketplaceExportUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.PrimarySkillUtil;
@@ -170,6 +174,16 @@ public class CandidateRestController {
 	
 	@Autowired
 	ReportsUtil reportsUtil;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+
+	@Value("${isResumeparserEnabled}")
+	private String isResumeparserEnabled;
+
 
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -204,11 +218,9 @@ public class CandidateRestController {
 
 				if (Validator.validate(candidateDto)) {
 					candidateDto.setStaticPath(staticPath);
-					// FileUploadUtil.fillUploadedFileInfo(candidateDto,
-					// candidateDto.getFileInfo());
 					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
-					Candidate candidate = candidateService.storeCandidate(candidateDto, orgLocation, user);
+					CandidateGlobal candidate = candidateGlobalUtil.storeCandidateGlobal(candidateDto, orgLocation, user);
 					SourceLeadSessionManager.setSessionAttribute(request, "candidateCreateMsg",
 							"Success new candidate is created");
 					response.setResponse(Result.SUCCESS.name());
@@ -244,13 +256,32 @@ public class CandidateRestController {
 				multiFile = request.getFile(itrator.next());
 			}
 			ResumeParserJsonUtil resumeDetails = null;
-			String fileName = null;
+			FileInfo fileInfo = new FileInfo();
+			File convertedFile = new File("");
+				File file = new File(multiFile.getOriginalFilename());
+				multiFile.transferTo(file);
+				convertedFile = file;
+				 fileInfo.setFileName(multiFile.getOriginalFilename());
+					fileInfo.setFileURL(convertedFile.getAbsolutePath());
+					fileInfo.setContentType(multiFile.getContentType());
 			if (null != multiFile && orgLocation !=null && country != null ) {
 				
-				 fileName = multiFile.getOriginalFilename();
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume(multiFile.getBytes(), country, orgLocation.getDateFormat(), fileName);
+					if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+						logger.info("*******Resume Parser Service calling..");
+						resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+					}else {
+						logger.info("*******Resume Parser without Service calling..");
+						resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, orgLocation.getDateFormat(), file.getName());
+					}
 			}else {
-				resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeForPublicPages(multiFile.getBytes(), fileName);
+				//getting candidate detils from public pages
+				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+					logger.info("*******Resume Parser Service calling..");
+					resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+				}else {
+					logger.info("*******Resume Parser without Service calling..");
+					resumeDetails = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, orgLocation.getDateFormat(), file.getName());
+				}
 			}
 			response.setObject(resumeDetails);
 			response.setResponse(Result.SUCCESS.name());
@@ -281,7 +312,7 @@ public class CandidateRestController {
 		try {
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
-			Candidate candidate = candidateService.findByCandidateEmail(email, orgLocation.getId());
+			CandidateGlobal candidate = candidateGlobalService.findByCandidateGlobalEmail(email, orgLocation.getId());
 			if (null != candidate) {
 				response.setObject("true");
 			} else {
@@ -1537,7 +1568,7 @@ public class CandidateRestController {
 				HttpServletRequest request)
 				throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate can = null;
+			CandidateGlobal can = null;
 			if (null != candidateId) {
 				can = candidateService.getCandidateDetailsByPanNumberAndId(panNumber, orgLocations.getId());
 			}
@@ -1555,7 +1586,7 @@ public class CandidateRestController {
 				HttpServletRequest request)
 				throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate can = null;
+			CandidateGlobal can = null;
 			if (null != candidateId) {
 				can = candidateService.getCandidateDetailsByAadharNoAndId(aadharNumber, orgLocations.getId());
 			}
@@ -1572,7 +1603,7 @@ public class CandidateRestController {
 				HttpServletRequest request)
 				throws Exception {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			Candidate can = null;
+			CandidateGlobal can = null;
 			if (null != candidateId) {
 				can = candidateService.getCandidateDetailsBySsnNoAndId(ssnNumber, orgLocations.getId());
 			}

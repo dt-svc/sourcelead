@@ -1,36 +1,35 @@
 package com.bis.sourcelead.service;
 
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Spy;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.hamcrest.CoreMatchers.*;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import com.bis.sourcelead.SecurityConfig;
 import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
@@ -50,6 +49,7 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertifications;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
@@ -187,7 +187,7 @@ public class CandidateMarketServiceTest {
 		MarketplacePurchaseSalesDTO salesOrderDto = new MarketplacePurchaseSalesDTO();
 		MarketplaceSalesOrder salesOrder = new MarketplaceSalesOrder();
 		CandidateMarketPlace candidateMarketPlace = new CandidateMarketPlace();
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateMarketPlace.setCandidateId(candidateId);
 		candidateId.setFullName(fullName);
 		salesOrder.setId(123l);
@@ -209,7 +209,7 @@ public class CandidateMarketServiceTest {
 		MarketplacePurchaseSalesDTO purchaseOrderDto = new MarketplacePurchaseSalesDTO();
 		MarketplacePurchaseOrder mps = new MarketplacePurchaseOrder();
 		CandidateMarketPlace candidateMarketPlace = new CandidateMarketPlace();
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateMarketPlace.setCandidateId(candidateId);
 		candidateId.setFullName(fullName);
 		mps.setOrderNo("abc");
@@ -348,7 +348,7 @@ public class CandidateMarketServiceTest {
 		candidate.setId(id);
 		Candidate candidate1 = null;
 		CandidateMarketPlace marketplace = new CandidateMarketPlace();
-		Candidate candidateId = new Candidate();
+		CandidateGlobal candidateId = new CandidateGlobal();
 		candidateId.setId(id);
 		marketplace.setCandidateId(candidateId);
 		when(mockCandidateDao.getCandidateById(id)).thenReturn(candidate);
@@ -490,7 +490,7 @@ public class CandidateMarketServiceTest {
 		    String marketplaceUUID = "123A";
 			OrgLocations orgLocations = new OrgLocations();
 			CandidateMarketPlace marketPlace = new CandidateMarketPlace();
-			Candidate candidate = new Candidate();
+			CandidateGlobal candidate = new CandidateGlobal();
 			candidate.setSkillsName("j");
 			marketPlace.setCandidateId(candidate);
 			marketPlace.setOrgLocationId(orgLocations);
@@ -586,7 +586,7 @@ public class CandidateMarketServiceTest {
 	public void getGlobalMarketplaceCandListGridCard() throws Exception{
 		    OrgLocations orgLocations = new OrgLocations();
 		    CandidateMarketPlace marketPlace = new CandidateMarketPlace();
-		    Candidate candidate = new Candidate();
+		    CandidateGlobal candidate = new CandidateGlobal();
 		    candidate.setFullName("");
 		    candidate.setFileUrl("");
 		    candidate.setDesignation("");
@@ -623,7 +623,7 @@ public class CandidateMarketServiceTest {
 			Org org = new Org();
 			CandidateMarketPlace marketplace = new  CandidateMarketPlace();
 			OrgLocations orgLocations = new OrgLocations();
-			Candidate candidateId = new Candidate();
+			CandidateGlobal candidateId = new CandidateGlobal();
 			candidateId.setEmail(email);
 			orgLocations.setOrg(org);
 			marketplace.setCandidateId(candidateId);

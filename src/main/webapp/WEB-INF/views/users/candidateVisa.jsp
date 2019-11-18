@@ -85,6 +85,7 @@ function candidateVisa(candidateId){
     $("#immigrationCandidate").empty();
     $("#immigrationCandidate").append(result);
     candidateVisaList(candidateId);
+    $("#visa_save_id").removeClass("disabled");
     $("#addVisa").click(function(){
 		$(".popMask").fadeIn(200);
 		$("#popUpVisa").fadeIn(100);
@@ -209,7 +210,7 @@ function saveVisaDetails() {
 		                    	 showError("Operation failed, please try again");
 		                    }
 							
-							$("#visa_save_id").removeClass("disabled");
+							
 			}
 		});
 		return true;
@@ -252,7 +253,7 @@ function candidateVisaList(candidateId){
 			      dateFormat: finalDateFormatVisaSave,
 			      changeMonth: true,
 			  	  changeYear: true, 
-			  	  minDate:1,
+			  	  minDate:0,
 			      onSelect: function (selected) {
 			    	  var extensionDate = $(this).val();
 			    	  addvisaExtensionDate($(this).attr("visaId"),extensionDate);
@@ -388,7 +389,7 @@ function candidateVisaList(candidateId){
                     result = result +"</table>";
                     $("#candidateVisaList").append(result); 
                     popFun();
-                    if(response.data[0].expiredVisaLst != 'undefined' 
+                    if(typeof response.data[0] != 'undefined' 
         				&& response.data[0].expiredVisaLst != '' && response.data[0].expiredVisaLst != null){
         			enableVisaExtensiondDate(response.data[0].expiredVisaLst);
         		   } 

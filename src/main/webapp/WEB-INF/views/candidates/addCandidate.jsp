@@ -635,7 +635,7 @@
 								<div class="input-group col-md-12" id="uploadFileGroup"
 									style="margin: 0 auto">
 									<label class="input-group-btn"> <span
-										class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse
+										class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse
 											File <input type="file" style="display: none;" id="uploadBtn"
 											class="upload"> </span>
 									</label> <input type="text" class="form-control" readonly
@@ -1216,7 +1216,6 @@
 
 <script type="text/javascript">
 function validatePanNumber() {
-	
 	  var panNumber = document.getElementById("panNumber").value;
 	  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 	  if (panNumber != null && panNumber != "") {
@@ -1225,7 +1224,6 @@ function validatePanNumber() {
 		    	 url:atsUrl+"/validatePanNumber?"+tokenParamName+"="+tokenValue+"&panNumber="+panNumber, 
 		        success: function(data) {
 		        	if(data == true){
-		        		
 		        		  $('#errPanNoDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#panNumber").after("<p class='jquery_form_error_message'>"+panNumber+" is Already Existed</span>");
 						  $("#store_candidate").attr('disabled','disabled');

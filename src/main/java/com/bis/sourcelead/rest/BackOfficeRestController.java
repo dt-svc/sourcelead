@@ -410,20 +410,27 @@ public class BackOfficeRestController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
   		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		ResponseList<Asset> responseList = new ResponseList<>();
-		System.out.println(" inside ATS getAssetDynamicList ");
+		//System.out.println(" inside ATS getAssetDynamicList ");
 		try {
 			
 			if (user != null && orgLocations != null) {
 				
-				String[] tableColumns = {"id","slno", "assetCategory", "model", "issueDate","macAddress","workingStatus"};
-		    int sortColumnIndex = 1; //by default sorting using updated date
-			String sortColumnOrder = "asc"; //by default referContactsDTO order
+				String[] tableColumns = {"id","slno", "assetCategory", "model", "issueDate","macAddress","workingStatus" ,""};
+				
+				int sortColumnIndex = 8; //by default sorting using id
+				boolean sortColumnOrder = false; //by default descending order
+				if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
+					sortColumnIndex = Integer.parseInt(assetDTO.getOrder().get(0).get("column"));
+					sortColumnOrder = !assetDTO.getOrder().get(0).get("dir").equalsIgnoreCase("desc");					
+				}
+		   /* int sortColumnIndex = 1; //by default sorting using updated date
+			String sortColumnOrder = "desc"; //by default referContactsDTO order
 			if(assetDTO.getOrder() != null && !assetDTO.getOrder().isEmpty()) {
 				sortColumnIndex = Integer.parseInt(assetDTO.getOrder().get(0).get("column"));
 				sortColumnOrder = assetDTO.getOrder().get(0).get("dir");
-			}
-			assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
-			assetDTO.setSortOrder(sortColumnOrder);
+			}*/
+				assetDTO.setSortColumn(tableColumns[sortColumnIndex]);
+				assetDTO.setSortOrder(sortColumnOrder ? "asc" : "desc");
 			responseList = assetService.getDynamicAssetFilterListByLocationId(orgLocations.getId(), assetDTO);
 			responseList.setResponse(Result.SUCCESS.name());
 			responseList.setResponseMessage(Result.SUCCESS.getValue());
