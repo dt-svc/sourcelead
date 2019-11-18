@@ -2,10 +2,7 @@ package com.bis.sourcelead.dashboard.service.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +12,6 @@ import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
 import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
 import com.bis.sourcelead.dashboard.util.LeaveDashBoardDataUtil;
-import com.bis.sourcelead.dto.LeaveDTO;
 
 @Service
 public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewService{
@@ -79,17 +75,19 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	public List<ConfigureDashBoardViewDTO> getDashBoardData(List<ConfigureDashBoardViewDTO> configureDashBoardView,
 			CommonDataDto commonDataDto) {
 		try {
-			
-			
-			
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
 				String jsonData = "";
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
 				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					
+				}else if("PURCHASE_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = customDashBoardViewDao.getMarketplacePurchaseOrderDashBoard(commonDataDto);
+				}else if("SALES_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = customDashBoardViewDao.getMarketplaceSalesOrderDashBoard(commonDataDto);
+				}else if("RECENTLY_ADDED".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = customDashBoardViewDao.getRecentlyAddedCandidates(commonDataDto);
 				}
-				
 				
 				dtoObj.setJsonStringData(jsonData);
 			}

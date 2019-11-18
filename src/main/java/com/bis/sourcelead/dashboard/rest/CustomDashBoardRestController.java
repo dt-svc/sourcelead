@@ -49,6 +49,7 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -88,6 +89,9 @@ public class CustomDashBoardRestController {
 	
 	@Autowired
 	CustomDashBoardViewService customDashBoardViewService;
+	
+	@Autowired
+	EMailJobScheduler eMailJobScheduler;
 	
    
 	
@@ -280,8 +284,10 @@ public class CustomDashBoardRestController {
 	public @ResponseBody ResponseList<CustomDashBoardConfDTO> viewCustomDashBoardConfiguredList(HttpServletRequest req,HttpServletResponse res) throws Exception
 	{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+			eMailJobScheduler.runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel();
 			return customDashboardConfService.getCustomConfDashBoardByLocationId(orgLocation.getId());
 		
+			
 	}
 	
 	
