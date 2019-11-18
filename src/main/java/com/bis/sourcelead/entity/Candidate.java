@@ -32,7 +32,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "CANDIDATE")
-//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "candidate")
 public class Candidate implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -58,6 +57,10 @@ public class Candidate implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSULTANT_USER_ID")
 	private User consultantUser;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CANDIDATE_GLOBAL_ID")
+	private CandidateGlobal candidateGlobalId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SHIFT_ID")
@@ -1974,5 +1977,14 @@ public class Candidate implements Serializable {
 	public void setCandidateSource(String candidateSource) {
 		this.candidateSource = candidateSource;
 	}
+
+	public CandidateGlobal getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(CandidateGlobal candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
+	}
+	
 	
 }

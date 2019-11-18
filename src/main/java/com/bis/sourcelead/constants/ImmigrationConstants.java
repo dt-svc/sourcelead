@@ -101,7 +101,7 @@ public class ImmigrationConstants {
    @SuppressWarnings("serial")
    public static final Map HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
        put(1,"beneficiaryFirstName");put(2,"beneficiaryLastName");put(3,"beneficiaryEmail");put(4,"beneficiaryPhone");put(5,"experience");put(6,"ssn");put(7,"i94Number");put(8,"i20Number");
-       put(9,"eadNumber");put(10,"dateOfBirth");put(11,"maritalStatus");put(12,"petitionType");put(13,"template");
+       put(9,"eadNumber");put(10,"dateofBirth");put(11,"maritalStatus");put(12,"petitionType");put(13,"template");
        put(14,"dateOfArrival");put(15,"openOn");put(16,"status");put(17,"passportNo");put(18,"passportCountry");put(19,"passportStartDate");
        put(20,"passportEndDate");put(21,"visaNo");put(22,"visaType"); put(23,"visaCountry");put(24,"visaStartDate");put(25,"visaEndDate");put(26,"company");put(27,"companyContactEmail");put(28,"receiptNo");
        put(29,"benficiarylocation");put(30,"lcaStartDate");put(31,"lcaEndDate");put(32,"lcaNumber");put(33,"lcaRateCurrency");put(34,"lcaRate");put(35,"lcaRatePer");put(36,"lcaLocation");put(37,"lcaTitle");put(38,"immigrationJobId");put(39,"prevLcaStartDate");put(40,"prevLcaEndDate");

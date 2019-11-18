@@ -87,6 +87,8 @@ private String maritalStatus;
 
 private String isGlobalAccess;
 
+private String dateofBirth;
+
 
 public String getReason() {
 	return reason;
@@ -370,6 +372,13 @@ public void setIsGlobalAccess(String isGlobalAccess) {
 	this.isGlobalAccess = isGlobalAccess;
 }
 
+public String getDateofBirth() {
+	return dateofBirth;
+}
+
+public void setDateofBirth(String dateofBirth) {
+	this.dateofBirth = dateofBirth;
+}
 
 
 

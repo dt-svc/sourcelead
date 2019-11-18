@@ -37,6 +37,7 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -804,7 +805,70 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	if(orgLocations != null){
 		workFlow.setOrgLocationId(orgLocations);
 		}
-	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName()+"Copy"); // appending "Copy" post fix to identify cloned work flow.
+	
+	// appending "Copy1" post fix to identify cloned work flow.	
+	if(!requirementWorkFlowDTO.getWorkFlowName().contains("Copy")){
+		
+		StringBuilder clonedWorkflow = new StringBuilder("");
+		List<RequirementWorkFlow> workflow = requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+		
+		
+		Long existingCloneCount = 0l;
+		if(workflow != null){
+		Stream<RequirementWorkFlow> workflowStream = workflow.stream().filter(wf -> wf.getWorkFlowName().contains("Copy"));
+			existingCloneCount = workflowStream.count();
+		}
+		if(existingCloneCount > 0l){
+			existingCloneCount = existingCloneCount + 1;
+			workFlow.setWorkFlowName(clonedWorkflow.append(requirementWorkFlowDTO.getWorkFlowName()).append("(Copy").append(existingCloneCount).append(")").toString());	
+		}
+		else{
+			workFlow.setWorkFlowName(clonedWorkflow.append(requirementWorkFlowDTO.getWorkFlowName()).append("(Copy").append(Constants.LEVEL1).append(")").toString());
+		}
+		
+	}else{
+		List<RequirementWorkFlow> workflow = requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+		String check1 = requirementWorkFlowDTO.getWorkFlowName();
+		Long existingCloneCount = 0l;
+		if(workflow != null){
+		Stream<RequirementWorkFlow> workflowStream = workflow.stream().filter(wf -> wf.getWorkFlowName().contains("Copy"));
+			existingCloneCount = workflowStream.count();
+		}
+		
+		Integer startIndex = check1.lastIndexOf("(");
+		StringBuilder cloneCopyString = new StringBuilder("");
+		StringBuilder cloneCount  = new StringBuilder("");
+		StringBuilder finalCloneString = new StringBuilder(check1);
+		
+		for(int j=startIndex; j< check1.length(); j++){
+			cloneCopyString.append(check1.toCharArray()[j]);
+		}
+		
+		char copyString[] = cloneCopyString.toString().toCharArray();
+		
+		for(char c: copyString){
+			int asciiValue = (int)c;
+			if(asciiValue >= 48 && asciiValue <= 57){
+				char ch = (char)asciiValue;
+				cloneCount.append(ch);
+			}
+		}
+		
+		Long addedCloneCount = Long.valueOf(cloneCount.toString());
+		
+		finalCloneString.replace(startIndex, check1.length(), "");
+		if(existingCloneCount > 0l){
+			addedCloneCount = existingCloneCount + 1;
+			finalCloneString.append("(Copy").append(addedCloneCount).append(")");
+		}else{
+			addedCloneCount = addedCloneCount + 1;
+			finalCloneString.append("(Copy").append(addedCloneCount).append(")");
+		}
+		
+	
+		workFlow.setWorkFlowName(finalCloneString.toString());
+	}
+	
 	workFlow.setDescription(requirementWorkFlowDTO.getDescription());
 	
 	
@@ -1172,7 +1236,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
 		
 		try {
-		Candidate candidate = (Candidate) paramList.get("candidate");
+			CandidateGlobal candidate = (CandidateGlobal) paramList.get("candidate");
 		User loginUser = (User) paramList.get("loginUser");
 		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
 		String templateUuid = (String) paramList.get("templateUuid");
@@ -1208,7 +1272,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 	
-		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageId, submissionId);
+		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageUuid, submissionId);
 		 StringBuilder linkBuild = new StringBuilder();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1245,7 +1309,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return Constants.SUCCESS;
 	}
 
-	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, Long stageId, Long submissionId)
+	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, String stageUuid, Long submissionId)
 			throws Exception {
 		StringBuilder tempHTML = new StringBuilder();
 		tempHTML.append(
@@ -1256,8 +1320,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		int i = 0;
 		if (null != templateUuid && !"".equalsIgnoreCase(templateUuid)) {
 			tempHTML.append("<td>").append("<a href='").append(sourceleadUrl)
-					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
-					.append(stageId).append("&submissionId=").append(submissionId)
+					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageUuid=")
+					.append(stageUuid).append("&submissionId=").append(submissionId)
 					.append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Click Here</div></a>")
 					.append("</td>");
 		}
@@ -1579,7 +1643,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
+	public CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId) {
 		return requirementWorkFlowDao.getCandidateByRequirementSubmissionId(submissionId);
 	}
 	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
@@ -1608,7 +1672,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				qDto.setJsonString(requirementQuestionnaireTemplate.getJsonString());
 				qDto.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
 				qDto.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+			}else{
+				qDto.setJsonString(Constants.BOOLEAN_FALSE);
 			}
+			
 		}else {
 			qDto.setJsonString(feedbackTemplateDto.getJsonString());
 			qDto.setJsonStringValues(feedbackTemplateDto.getJsonStringValues());

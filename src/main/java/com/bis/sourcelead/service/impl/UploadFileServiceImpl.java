@@ -691,23 +691,23 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			userRole.setUserState(Status.NOT_LOGGEDIN);
 			userRole.setUser(user);
 			userRole.setIsMailSent(userImport.getIsMailChecked());
-		    userService.addUser(user);	
+		    User savedUser =  userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
 		   
-			employee.setUser(user);
+			employee.setUser(savedUser);
 			employeesService.addEmployee(employee);
 			if(isMailChecked !=null){
-				userService.sendEmail(user, loginUser, password,orgLocations.getId());
+				userService.sendEmail(savedUser, loginUser, password,orgLocations.getId());
 				registrationService.sendActivationEmail(user,orgLocations);
 			}
-			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+			userService.saveOrUpdateUserElkDocument(userRole,employee,savedUser.getUserCode());
 			
 		    MasterCandidate masterCandidate = null;
-			masterCandidate = getMasterCandidateByInteligence(user);
+			masterCandidate = getMasterCandidateByInteligence(savedUser);
 			if(null == masterCandidate){
-				masterCandidate = storeMasterCandidate(user);
+				masterCandidate = storeMasterCandidate(savedUser);
 			}
-			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
+			storeCandidate(savedUser, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 			savedRecordCount++;
 		}
 		return savedRecordCount;
@@ -785,6 +785,9 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setEmail(user.getEmail());
 				candidate.setGender(user.getGender());
 				
+				if(user.getDateOfBirth() !=null) {
+				candidate.setDateOfBirth(user.getDateOfBirth());
+				}
 				if(StringUtils.isNotBlank(userImport.getDesignationType())) {
 					candidate.setDesignationType(userImport.getDesignationType());
 				}else {
@@ -798,7 +801,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				candidate.setUpdatedDate(commonUtil.currentDate());
 				candidate.setMobilePhone(user.getMobilePhone());
 				candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
-				candidate.setProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
+				candidate.setCandidateProfilePercentage(Constants.MIN_PROFILE_PERCENETAGE);
 				candidate.setMaritalStatus(userImport.getMaritalStatus());
 				
 				
@@ -818,12 +821,13 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		    	 if(vendorCandidate == null) {
 		    		 vendorCandidate = new Candidate();
 		    		 vendorCandidate.setMasterCandidateId(masterCandidate);
+		    		 vendorCandidate.setConsultantUser(user);
 		    		 vendorCandidate.setOrgLocationId(vendorOrgLocations);
 		    		 vendorCandidate.setCandidateType(Constants.CANDIDATE);
 		    		 vendorCandidate.setFirstName(user.getFirstName());
 		    		 vendorCandidate.setLastName(user.getLastName());
 		    		 vendorCandidate.setCountry(vendorOrgLocations.getCountry());
-		    		 vendorCandidate.setIsAssociate(Constants.YES);
+		    		 vendorCandidate.setIsAssociate(Constants.NO);
 		    		 vendorCandidate.setEmail(user.getEmail());
 		    		 vendorCandidate.setWorkLocation(candidate.getWorkLocation());
 		    		 vendorCandidate.setStatus(Constants.RECORD_ACTIVE);
@@ -2074,6 +2078,14 @@ private String getCellValueAsString(Cell cell, String fileName) {
 			user.setEmail(userImport.getEmail());
 			user.setMaritalStatus(userImport.getMaritalStatus());
 			user.setGender(userImport.getGenderValue());
+			
+			if(StringUtils.isNotBlank(userImport.getDateofBirth())){
+				try {
+					user.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), userImport.getDateofBirth()));
+					} catch (Exception e) {
+					  e.printStackTrace();
+					}
+			}
 			user.setMobilePhone(userImport.getPhoneNumber());
 			user.setExtensionNumber(userImport.getExtensionNumber());
 			user.setEmploymentType(userImport.getEmploymentType());
@@ -2095,10 +2107,10 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				userRole.setIsMailSent(Status.N);
 			}
 			
-		    userService.addUser(user);	
+		    User savedUser = userService.addUser(user);	
 		    userRoleService.addUserRole(userRole);
 		   
-			employee.setUser(user);
+			employee.setUser(savedUser);
 			employeesService.addEmployee(employee);
 			
 			/*if(userImport.getIsMailChecked() !=null){
@@ -2106,19 +2118,19 @@ private String getCellValueAsString(Cell cell, String fileName) {
 				registrationService.sendActivationEmail(user,orgLocations);
 			}*/
 			
-			userService.sendEmail(user, loginUser, password,orgLocations.getId());
+			userService.sendEmail(savedUser, loginUser, password,orgLocations.getId());
 			registrationService.sendActivationEmail(user,orgLocations);
 			
-			associateBalanceLeaveService.addAssociateLeaveType(user,orgLocations.getId(),employee,userRole);
+			associateBalanceLeaveService.addAssociateLeaveType(savedUser,orgLocations.getId(),employee,userRole);
 			
-			userService.saveOrUpdateUserElkDocument(userRole,employee,user.getUserCode());
+			userService.saveOrUpdateUserElkDocument(userRole,employee,savedUser.getUserCode());
 			
 		    MasterCandidate masterCandidate = null;
 			masterCandidate = getMasterCandidateByInteligence(user);
 			if(null == masterCandidate){
 				masterCandidate = storeMasterCandidate(user);
 			}
-			storeCandidate(user, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
+			storeCandidate(savedUser, orgLocations, masterCandidate,orgRelation,orgspoc,userImport);
 		}
 		
 		userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
