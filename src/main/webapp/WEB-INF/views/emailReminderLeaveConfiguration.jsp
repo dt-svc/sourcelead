@@ -55,7 +55,11 @@ function hideandshowHoliday(){
 </script>
 
 
-
+ <script>
+		$(document).ready(function() {
+			getReminderToList();
+		});
+	</script>
 
 <!-- Content Area --> 
 <section class="content-wraper">
@@ -208,20 +212,12 @@ function hideandshowHoliday(){
 									<div class="col-xs-12 col-sm-12 col-md-12 minHeight50 mb">
 										<label class="col-md-3">Reminder To<span class="text-danger paddingLeft">*</span></label>
 										<div class="col-md-9">
-											<select  class="chosen-select form-control" multiple name="reminderTo" id="reminderTo" >
-							                        <%-- <c:forEach var="option" items="${rolesList}">
-								                         <c:if test ="${option.roleName != 'ROLE_ADMIN' && option.roleName != 'ROLE_USER' && option.roleName != 'ROLE_MANAGER'}"> 
-															<option value="${option.id}">${option.displayName}</option>
-														 </c:if>
-													</c:forEach> --%>
-													<option value="Reporting Manager">Reporting Manager</option>
-													<option value="Project Manager">Project Manager</option>
-													<option value="Team Leader">Team Leader</option>
-											</select>
-										</div>	
-										<%-- <div class="col-md-9" id="notifyToDiv_Leave_Configuration_form">
-											<input type="text" class="form-control" name="notifyTo" id="notifyTo" value="${employeeonLeave.notifyTo}" placeholder="Enter email ids separated by commas" field-name="Notify To" data-validation="required validate_Space">
-										</div> --%>
+										<select class="chosen-select form-control" multiple name="reminderTo" id="reminderTo" >
+										</select>
+										</div>
+										
+								
+										
 										<input type="hidden" class="form-control" name="scenarioName" id="scenarionName" value="EmployeeOnLeave">
 										<input type="hidden" class="form-control" name="tabsId" id="tabsId" value="31">
 										<input type="hidden" class="form-control" name="id" value="${employeeonLeave.id}">
@@ -737,6 +733,37 @@ function removeCloneDiv(remDiv, form){
 $("#arfi").click(function() {
 	$("#arfiDiv").toggle();
 });
+</script>
+
+
+<script>
+function getReminderToList(){
+	 var reminderToList = '${leavesConfigurationRolesList}';
+	 var configuredRoles = '${configuredRoles}';
+	 reminderToList = reminderToList.substr(1).slice(0, -1);
+	 var roles = reminderToList.split(",");
+	 var output = "";
+    	for (var i=0; i<roles.length; i++)
+		{
+        		var roleType = roles[i];
+        		if(configuredRoles != null && configuredRoles != '' && configuredRoles != 'undefined'){
+        			var confRole = configuredRoles.split(",");
+        			if (confRole.indexOf(roleType) > -1) {
+        				output = output + "<option value='" +roleType+ "' selected>"+roleType+"</option>";
+        			}else{
+        				output = output + "<option value='" +roleType+ "'>"+roleType+"</option>";
+        			}
+        		}else{
+        			output = output + "<option value='" +roleType+ "'>"+roleType+"</option>";
+        		}
+        		
+        		
+		}
+    	$("#reminderTo").empty();
+        $("#reminderTo").append(output);
+        $('#reminderTo').trigger("chosen:updated");
+	 
+}
 </script>
 
 

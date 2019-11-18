@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -60,6 +62,7 @@ import com.bis.sourcelead.rest.RequirementRestControllerAdmin;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
@@ -72,7 +75,8 @@ import com.google.gson.Gson;
 @Controller
 @RequestMapping("/app")
 public class FileController {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	
 	@Value("${static.path}")
 	private String staticPath;
 	
@@ -101,6 +105,9 @@ public class FileController {
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
 	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+
 	@Value("${resumeParserUrlLocal}")
 	private String resumeParserUrlLocal;
 	
@@ -109,6 +116,9 @@ public class FileController {
 	
 	@Value("${isResumeparserEnabled}")
 	private String isResumeparserEnabled;
+	
+	@Value("${resumeParserUrlProd}")
+	private String resumeParserUrlProd;
 	
 
 
@@ -257,11 +267,14 @@ public class FileController {
 		String baseServicesUrl = "";
 		if("qa".equalsIgnoreCase(environment)) {
 			baseServicesUrl = resumeParserUrlQa;
-		}else {
-			baseServicesUrl = resumeParserUrlLocal;
+		}else if(("prod".equalsIgnoreCase(environment))){
+			baseServicesUrl = resumeParserUrlProd;
+		}
+		else {
+			baseServicesUrl = resumeParserUrlLocal ;
 		}
 		String candidateIds = FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
-				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,baseServicesUrl,isResumeparserEnabled);
+				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
 
 		if (requirementId > 0 && requirementRestController != null && !candidateIds.isEmpty()) {
 			requirementRestController.submitRecommendationCandidates(requirementId, candidateIds, "Y", needApplicantPermit, notifyToApplicant, request);
@@ -276,19 +289,21 @@ public class FileController {
 	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
+		
+		long startTime = System.currentTimeMillis();
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
 			try {
 				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
-					// This is the code with service
-					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo);
+					logger.info("*******Resume Parser Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
 				}else {
-					// This is the code without service
-					String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
+					logger.info("*******Resume Parser without Service calling..");
 					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
 				}
 				
@@ -297,6 +312,9 @@ public class FileController {
 				ex.printStackTrace();
 			}
 		}
+		long endTime = System.currentTimeMillis();
+		long responseTime = endTime - startTime;
+		logger.info("Total Response Time of resume parser is "+responseTime+" MS");
 		return resumeContent;
 	}
 
@@ -341,15 +359,19 @@ public class FileController {
 							String baseServicesUrl = "";
 							if("qa".equalsIgnoreCase(environment)) {
 								baseServicesUrl = resumeParserUrlQa;
-							}else {
-								baseServicesUrl = resumeParserUrlLocal;
+							}else if(("prod".equalsIgnoreCase(environment))){
+								baseServicesUrl = resumeParserUrlProd;
+							}
+							else {
+								baseServicesUrl = resumeParserUrlLocal ;
 							}
 							FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
-									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,baseServicesUrl,isResumeparserEnabled);
+									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
+
 
 						FileUploadUtil.saveLogMessage(uploadid, "<br/>Completed!<br/><br/>", candidateService);
 
