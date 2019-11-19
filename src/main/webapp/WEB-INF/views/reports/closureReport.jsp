@@ -56,7 +56,7 @@ $(document).ready(function() {
 	
 		<section class="content-header clearfix">
 			<div class="pull-left"><h2 class="pull-left">Closure Report</h2></div>
-			<div class="pull-right brud-crum"><a href="<c:url value='${appPath}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a>&raquo; <a href="<c:url value='${appPath}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; <a href="<c:url value='${appPath}/hrReportsList'/>">HR Reports</a> &raquo; Closure Report</div>
+			<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/reportsDashboard'/>">Reports	Dashboard</a> &raquo; <a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/financialReportsList'/>">Financial Reports</a> &raquo; Closure Report</div>
 		</section>
 		
 		<div class="timesheet_container datatable_filter">
@@ -75,7 +75,7 @@ $(document).ready(function() {
 													<select id="frequencyMonth" name="frequencyMonth" class="form-control chosen-select">
 													      <option value="January" ${currentMonth == 'January' ? 'selected' : '' } >January</option>
 														  <option value="February" ${currentMonth == 'February' ? 'selected' : '' }>February</option>
-													      <option value="March" ${currentMonth == '>March' ? 'selected' : '' }>March</option>
+													      <option value="March" ${currentMonth == 'March' ? 'selected' : '' }>March</option>
 													      <option value="April" ${currentMonth == 'April' ? 'selected' : '' }>April</option>
 													      <option value="May" ${currentMonth == 'May' ? 'selected' : '' }>May</option>
 													      <option value="June" ${currentMonth == 'June' ? 'selected' : '' }>June</option>
