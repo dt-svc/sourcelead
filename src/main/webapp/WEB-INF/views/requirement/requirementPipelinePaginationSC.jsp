@@ -427,7 +427,7 @@
 															+ requirementId
 															+ ',\''
 															+ submissionType
-															+ '\')";>';
+															+ '\',\''+opt.candidateName+'\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED'){
 														result = result + "<option value='Joined'>Joined</option>";
