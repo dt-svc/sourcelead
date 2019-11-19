@@ -46,7 +46,7 @@
                                     <div class="col-md-3">
 
                                         <div class="input-group col-md-12 errorInptgroup" style="margin:0 auto">
-                                            <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs(0);"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+                                            <label class="input-group-btn"> <span class="btn btn-primary" onchange="uploadFormDocs(0);"><i class="fa fa-folder-open-o mr10"></i>Browse File
                                                     <input style="display: none;" onchange="uploadBtnFile(0);"  id="uploadBtn0"  class="upload" type="file">
                                                 </span></label>
                                             <input type="text" class="form-control" readonly id="uploadFile0" name = "immigrationFormList[0].immigrationFormFileInfo[0].docFile"  placeholder="Attachment" field-name="Attachment" data-validation="required validatepdf">

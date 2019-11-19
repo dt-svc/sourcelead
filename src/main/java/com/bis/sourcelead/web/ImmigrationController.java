@@ -821,7 +821,8 @@ public class ImmigrationController {
 	public String saveCandidateImmigrationForms(ImmigrationTemplateFormDTO immigrationTemplateFormDTO,
 			@RequestParam(value = "candidateId", required = false) String candidateId,
 			@RequestParam(value = "immigrationId", required = false) String immigrationId,
-			@RequestParam(value = "templateId", required = false) String templateId, HttpServletRequest request)
+			@RequestParam(value = "templateId", required = false) String templateId,
+			@RequestParam(value = "myImmigrationPage", required = false) String myImmigration,HttpServletRequest request)
 			throws Exception {
 		immigrationTemplateFormDTO.setImmigrationId(immigrationId);
 		immigrationTemplateFormDTO.setImmigrationcandidateId(candidateId);
@@ -830,6 +831,11 @@ public class ImmigrationController {
 		OrgLocations loginOrglocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		immigrationTemplateFormDTO.setStaticPath(staticPath);
+		
+			if("Y".equalsIgnoreCase(myImmigration)) {
+				immigrationTemplateFormDTO.setFormCategory("Document Type");
+				}
+		
 		immigrationCommonService.saveImmigrationCandidateForms(immigrationTemplateFormDTO, user, loginOrglocation);
 		logger.debug("Candidate Form  saved succesfully --> ");
 
@@ -1788,7 +1794,9 @@ public class ImmigrationController {
 
 				if (StringUtils.isNotBlank(canVisa.getValidTo()) && currentDate.before(commonUtil.stringToDate(canVisa.getValidTo()))) {
 					canVisa.setCurrentStatus("Active");
-				} else {
+				} else if (currentDate.compareTo(commonUtil.stringToDate(canVisa.getValidTo())) == 0) {
+					canVisa.setCurrentStatus("Active");
+				}else {
 					canVisa.setCurrentStatus("Expired");
 					if(canVisa.getStatus() == 1)
 					expiredVisaIdList.add(canVisa.getCandidateVisaId());
@@ -1866,7 +1874,9 @@ public class ImmigrationController {
 
 				if (currentDate.before(canPassport.getValidToDate())) {
 					canPassport.setCurrentStatus("Active");
-				} else {
+				} else if (currentDate.compareTo(canPassport.getValidToDate()) == 0) {
+					canPassport.setCurrentStatus("Active");
+				}else {
 					canPassport.setCurrentStatus("Expired");
 				}
 			}
