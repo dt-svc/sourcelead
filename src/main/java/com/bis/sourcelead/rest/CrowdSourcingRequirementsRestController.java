@@ -1859,6 +1859,68 @@ public class CrowdSourcingRequirementsRestController {
 		
 		
 		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
+		@RequestMapping(value = "/rest/getJobSummarySerialChartForMobile", method = RequestMethod.GET)
+		public Response<RequirementReferDTO> getJobSummarySerialChartForMobile(@RequestParam(value = "startDate", required = false) String startDate,
+				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
+			Response<RequirementReferDTO> response = new Response<>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+			RequirementReferDTO requirementReferDTO = new RequirementReferDTO();
+			
+			Date jobSummaryStartDate = null;
+			Date jobSummaryEndDate = null;
+			
+			if(!isNullOrEmpty(startDate) && !isNullOrEmpty(endDate)){
+				//Custom StartDate and EndDate
+				
+				jobSummaryStartDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), startDate);
+				jobSummaryEndDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), endDate);
+			
+			}else{
+	    	    
+	    	    Calendar c = Calendar.getInstance();   
+	    		c.add(Calendar.DATE, -15);
+	    		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    	    startDate = df.format(c.getTime());
+
+	    	    Date date = new Date();
+	    	    endDate = df.format(date);
+	    	    
+	    	    jobSummaryStartDate = df.parse(startDate);
+				jobSummaryEndDate =  df.parse(endDate);
+			
+			}
+    		
+			 Calendar calendar = Calendar.getInstance(Constants.TIMEZONE_CENTRAL);
+			 calendar.setLenient(false);
+			 calendar.setTime(jobSummaryStartDate);
+		     while (calendar.getTime().before(jobSummaryEndDate) || calendar.getTime().equals(jobSummaryEndDate))
+		     {
+		        Date resultDate = calendar.getTime();
+		        
+		        Integer appliedJobs = requirementSubmissionService.getProfessionalJobAppliedCountByappliedDate(candidateId, resultDate);
+		        requirementReferDTO.setAppliedJobs(appliedJobs);
+				
+				Integer referByMe = requirementReferService.getReferJobsByReferTypeByReferedDate(user.getId(), "referByMe", resultDate);
+				requirementReferDTO.setReferByMeJobs(referByMe);
+				
+				Integer referToMe = requirementReferService.getReferJobsByReferTypeByReferedDate(user.getId(), "referToMe", resultDate);
+				requirementReferDTO.setReferToMeJobs(referToMe);
+				 
+				requirementReferDTO.setDateString(Constants.SHORT_DF_MM_DD.format(resultDate));
+				
+				calendar.add(Calendar.DATE, 1);
+		       
+		     }
+			
+		    response.setObject(requirementReferDTO);
+			return response;
+
+		}
+		
+		
+		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/getRecruiterJobSummarySerialChart", method = RequestMethod.GET)
 		public String getRecruiterJobSummarySerialChart(@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
