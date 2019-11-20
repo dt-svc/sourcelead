@@ -6,11 +6,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
-import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CommonDataDto;
@@ -40,8 +36,6 @@ import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.OrglocationOnboardDocuments;
-import com.bis.sourcelead.entity.OrglocationSignatory;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
@@ -51,8 +45,6 @@ import com.bis.sourcelead.service.RolesService;
 import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.EMailJobScheduler;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 @RestController
 @RequestMapping("/app")
@@ -284,7 +276,6 @@ public class CustomDashBoardRestController {
 	public @ResponseBody ResponseList<CustomDashBoardConfDTO> viewCustomDashBoardConfiguredList(HttpServletRequest req,HttpServletResponse res) throws Exception
 	{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
-			eMailJobScheduler.runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel();
 			return customDashboardConfService.getCustomConfDashBoardByLocationId(orgLocation.getId());
 		
 			
