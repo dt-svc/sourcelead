@@ -1012,6 +1012,30 @@ public class TimesheetSubmissionsDaoImpl implements TimesheetSubmissionsDao {
 				}
 			}
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsForMonthlyClosureReport(Date startDate,
+			Date endDate, Long orgLocationId) throws Exception {
+	
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		String query = "from TimesheetSubmissions ts  left join fetch ts.projectMembers pm  left join fetch pm.projectMemberCandidteId cand where "
+				+ " cand.orgLocationId.id = :orgLocationId and ts.startDate BETWEEN '"+sqlStartDate+"' and '"+sqlEndDate+"' ";  
+		List<TimesheetSubmissions> timesheetSubmissionsList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		
+		return timesheetSubmissionsList;
+		
+	}
 	
 
 
