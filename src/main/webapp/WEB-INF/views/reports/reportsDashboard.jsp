@@ -153,6 +153,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</sec:authorize>
 				
 			   <li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
+			   
+			   <c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureSummaryReport">Closure Summary Report</a></li>
+				</c:if>
 				
 				
 			    
@@ -522,6 +526,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</sec:authorize>
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
+				
+				<c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureSummaryReport">Closure Summary Report</a></li>
+				</c:if>
 				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
