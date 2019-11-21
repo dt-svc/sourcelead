@@ -268,8 +268,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setUpdatedDate(new Date());
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
-		
-        Timezone timezone = timeZoneService.getTimezone(Long.valueOf(orgLocation.getTimeZoneId()));
+		Timezone timezone = null;
+		if(orgLocation.getTimeZoneId() != null) {
+			timezone = timeZoneService.getTimezone(Long.valueOf(orgLocation.getTimeZoneId()));
+		}else {
+			timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		}
+      
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
