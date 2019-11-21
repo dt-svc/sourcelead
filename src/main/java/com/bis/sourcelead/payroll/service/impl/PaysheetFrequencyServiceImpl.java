@@ -1068,4 +1068,10 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 		return paysheetFrequencyDao.getRecentlyRunPayrollData(orgLocationId);
 	}
 
+	@Override
+	public List<EmployeePayroll> getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(
+			Date startDate, Date endDate, Long orgLocationId) throws Exception {
+		return paysheetFrequencyDao.getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(startDate, endDate, orgLocationId);
+	}
+
 }

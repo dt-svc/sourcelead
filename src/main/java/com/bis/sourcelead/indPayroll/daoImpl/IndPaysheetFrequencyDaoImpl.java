@@ -941,4 +941,25 @@ String countQuery  =  " select count(*) FROM PAYROLL_PAYHEAD payHead, IND_PAY_SH
 		return employeeSes;
 		 
 	}
+
+
+	@Override
+	public List<IndEmployeePayroll> getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate,
+			Date endDate, Long orgLocationId) throws Exception {
+
+		logger.debug("In getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+
+		String query = "from IndEmployeePayroll empPayroll left join fetch empPayroll.candidate where "
+				+ " empPayroll.indPaysheetFrequency.id IN (select frequency.id from IndPaysheetFrequency frequency where frequency.frequencyStartDate >= :startDate and "
+				+ " frequency.frequencyEndDate <= :endDate and frequency.orgLocation.id =:orgLocationId and frequency.status = '1') and empPayroll.status = '1' ";
+		List<IndEmployeePayroll> employeePayRollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
+		return employeePayRollList;
+	
+	}
+	
+	
+	
 }

@@ -76,33 +76,6 @@ public class InvoicePaymentDaoImpl implements InvoicePaymentDao {
 		String query = "from InvoicePayment invoicePayment  left join fetch invoicePayment.invoiceId invoice  where (invoice.orgLocation.id  = :orgLocationId or invoice.responderLocationId.id  = :orgLocationId) and invoicePayment.paymentDate >= :startDate and invoicePayment.paymentDate <= :endDate ";
 		List<InvoicePayment> invoicePaymentList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
 		return invoicePaymentList;
-		
-		
-		/*Map<String, Object> params = new HashMap<String,Object>();
-		if(null != orgLocationId){
-			params.put("orgLocationId", orgLocationId);
-		}
-		if(null != startDate && null != endDate){
-			params.put("startDate", startDate);
-			params.put("startDate", startDate);
-			subQuery = "and invoice.invoiceDate >= :startDateUTC and invoice.invoiceDate <= :endDateUTC";
-		}
-		String query = "from Invoice invoice  where invoice.orgLocation.id =:orgLocationId and invoice.invoiceStatus <> 'Linked' and invoice.invoiceStatus <> 'Rejected' "+subQuery;
-		
-		Query qry = session.createQuery(query);
-		for (String str : qry.getNamedParameters())
-        {
-			if("orgLocationId".equalsIgnoreCase(str)){
-				qry.setLong(str, (long) params.get("orgLocationId"));
-			}
-			if("startDateUTC".equalsIgnoreCase(str)){
-				qry.setParameter(str, (Date) params.get("startDateUTC"));
-			}
-			if("endDateUTC".equalsIgnoreCase(str)){
-				qry.setParameter(str, (Date) params.get("endDateUTC"));
-			}
-        }
-		return qry.list();*/
 		 
 	}
 }
