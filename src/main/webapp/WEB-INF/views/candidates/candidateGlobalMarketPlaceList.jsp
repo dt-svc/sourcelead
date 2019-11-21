@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<script type="text/javascript" src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/candidateTable.js"></script>
+<script type="text/javascript" src="${SourceLeadWeb_atsUrl}/resources/js/candidateTable.js"></script>
     <!-- Content Area -->
     
     <section class="content-wraper">
