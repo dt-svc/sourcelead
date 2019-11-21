@@ -125,10 +125,18 @@ public class SourceleadELKBaseIndexer<T> {
 		return response;
 	}
 		
-	public SearchResponse searchDocumentWithGlobalSearchResult(String index, String type, BoolQueryBuilder query) {
+	//21-11-2019
+	//added function parameters & modified the function for candidate gobal marketplace advanced search. 
+	public SearchResponse searchDocumentWithGlobalSearchResult(String index, String type, int offset, int maxResults,
+			String sortColoumn, SortOrder sortOrder, BoolQueryBuilder query) {
 		SearchResponse response = null;
 		try {
+			
 			SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+			searchSourceBuilder.query(query);
+			searchSourceBuilder.from(offset);
+			searchSourceBuilder.size(maxResults);
+			searchSourceBuilder.sort(sortColoumn, sortOrder);
 
 			SearchRequest searchRequest = new SearchRequest();
 			searchRequest.indices(index);
@@ -136,8 +144,14 @@ public class SourceleadELKBaseIndexer<T> {
 			searchRequest.source(searchSourceBuilder);
 			searchSourceBuilder.query(query);
 
-			response = sourceleadELKRestClient.getClient().search(searchRequest, RequestOptions.DEFAULT);
+			RestHighLevelClient client = sourceleadELKRestClient.getClient();
+			if(client != null) {
+				response = client.search(searchRequest, RequestOptions.DEFAULT);
+			} else {
+				logger.info("Client is null");
+			}
 			sourceleadELKRestClient.shutdown();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("Exception occured at searchDocumentWithGlobalSearchResult()");
