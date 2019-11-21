@@ -79,10 +79,10 @@ public class ClosureReportRestController {
 	@Autowired
 	PaysheetFrequencyService paysheetFrequencyService;
 
-	@RequestMapping(value = "/closureReport")
-	public ModelAndView timeSheetReports(HttpServletRequest request) throws Exception {
+	@RequestMapping(value = "/closureSummaryReport")
+	public ModelAndView closureSummaryReport(HttpServletRequest request) throws Exception {
 		 ModelAndView model = new ModelAndView();
-		 model.setViewName("reports/closureReport");
+		 model.setViewName("reports/closureSummaryReport");
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		 
 		 String[] monthName = {"January", "February",
