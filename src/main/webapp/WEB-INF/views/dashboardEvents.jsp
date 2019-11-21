@@ -501,6 +501,7 @@ function dashboardAddInterview(){
 	result = result + '</div>';
 
 	result = result + '		<input value="2" style="display: none;" type="text" id="maxTsRowNum" name="maxTsRowNum">';
+	result = result + '<input style="display: none;" type="text" id="changeMaxTsRowNum" name="changeMaxTsRowNum" value="2" />';
 	
 	
 	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';
