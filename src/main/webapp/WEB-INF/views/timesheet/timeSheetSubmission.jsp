@@ -993,16 +993,21 @@ function grandTotal(){
     var bsum = 0;
     for(var i=1 ;i<8;i++){
    	     var hours = $("#rowTotal"+i+"Id").val();
+   	     if(hours && hours !== "undefined") {   	    	 
+	    	console.log("hours", hours);
 
-	   	 var split = hours.split(':');
-	   	 var first = split[0];
-	   	 var second = split[1];
-		 
-		 var minute = first * 60;
-		 var minute1 = second;
-		 var finalmin = parseInt(minute) + parseInt(minute1);
-   	 
-	     bsum = parseFloat(bsum) + parseInt(finalmin);
+		   	 var split = hours.split(':');
+		   	 var first = split[0];
+		   	 var second = split[1];
+			 
+			 var minute = first * 60;
+			 var minute1 = second;
+			 var finalmin = parseInt(minute) + parseInt(minute1);
+	   	 
+		     bsum = parseFloat(bsum) + parseInt(finalmin);
+   	     } else {
+   	    	 console.log("hours is undefined");
+   	     }
    	 
     }
     var t = bsum; 
