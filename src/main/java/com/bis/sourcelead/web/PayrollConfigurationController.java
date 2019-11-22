@@ -121,7 +121,7 @@ public class PayrollConfigurationController {
 	}
 	
 	@RequestMapping(value = "/payrollPayhead")
-	public ModelAndView payrollPayhead(@RequestParam(value="uuid", required=false) String uuid, HttpServletRequest request)
+	public ModelAndView payrollPayhead(@RequestParam(value="uuid", required=false) String uuid, @RequestParam(value="isFormulaEditable", required=false) String isFormulaEditable,HttpServletRequest request)
 	{
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
@@ -130,6 +130,7 @@ public class PayrollConfigurationController {
 			try {
 				PayrollPayhead payrollPayhead = payrollPayheadService.getPayrollPayheadByUUID(uuid);
 				payrollPayhead.setEffectiveDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),payrollPayhead.getEffectiveDate()));
+				model.addObject("isFormulaEditable", isFormulaEditable);
 				model.addObject("payrollPayhead", payrollPayhead);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -137,12 +138,18 @@ public class PayrollConfigurationController {
 		}
 		
 		ResponseList<PayrollPaytypeDTO> responsePaytypeList;
+		ResponseList<PayrollPayheadDTO> responsePayheadList;
 		try {
 			responsePaytypeList = payrollPaytypeService.getPayrollPaytypeList(orgLocations);
 			model.addObject("payTypeList",responsePaytypeList.getData());
+			
+			responsePayheadList = payrollPayheadService.getPayrollPayheadList(orgLocations);
+			model.addObject("payheadList",responsePayheadList.getData());
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		 
 		model.addObject("uuid", uuid);
 		model.setViewName("indPayroll/addPayhead");
 		model.addObject("sourceleadUrl", sourceleadUrl);
