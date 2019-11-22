@@ -129,7 +129,19 @@
 	</div>	
 </a>				    
 <%--  </c:if> --%>
-</sec:authorize>	
+</sec:authorize>
+
+<c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+<a href="${SourceLeadWeb_sourceleadUrl}/closureReport">
+	<div class="repDashCta">
+		<span><i class="fa fa-money"></i></span>
+		<div class="repDashCtaWrap">
+		<h2>Closure Report</h2><b>View</b>
+		</div>
+	</div>
+	</a>
+</c:if>
+		
 				
 	<div class="clearfix"></div>	
 </div>
