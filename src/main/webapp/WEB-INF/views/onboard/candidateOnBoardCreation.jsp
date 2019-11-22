@@ -1274,7 +1274,7 @@ function loadTeams(onboardTeamId){
    });
 }
 // calling bgc vendors list.
-function loadBgcVendors(){
+function loadBgcVendors(bgcOrglocationId){
 	$.ajax({
 		type: "GET",
         url: sourceleadUrl+"/getAllBgcRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue, 	    	   
@@ -1285,7 +1285,11 @@ function loadBgcVendors(){
 	        	result = result +'<option selected value="">--Select BGC Vendor--</option>';
 	        	for (var i=0; i<json.length; i++) {
 	        		var bgc = json[i];
-	        		result = result +'<option value='+bgc.responderLocationId.id+'>'+bgc.orgName+'</option>';
+	        		var selected = '';
+	        		if(bgcOrglocationId != null && bgcOrglocationId != "" && bgcOrglocationId !="undefined" && bgcOrglocationId == bgc.responderLocationId.id){
+	            		selected = 'selected';
+	            	}
+	        		result = result +'<option value='+bgc.responderLocationId.id+' '+selected+' >'+bgc.orgName+'</option>';
 				}
 	        	 
 	        	 $("#bgc").empty();
@@ -1569,6 +1573,9 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    	}
    		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
    		    		loadTeams(json['onBoardTeamId']);
+   		    	}
+   		    	if(json['bgc'] != null && json['bgc'] != "" && json['bgc'] !="undefined"){
+   		    		loadBgcVendors(json['bgc']);
    		    	}
    		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
    		    		 if(json['employmentType'] == 'Other'){

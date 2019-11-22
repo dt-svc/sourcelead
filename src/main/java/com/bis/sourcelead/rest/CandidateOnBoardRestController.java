@@ -998,6 +998,9 @@ public class CandidateOnBoardRestController {
 				if (candidate.getOrgRelationId() != null) {
 					candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
 				}
+				if (null != candidateOnBoarding.getBgcOrglocationId()) {
+					candidateOnBoardingDTO.setBgc(candidateOnBoarding.getBgcOrglocationId().getId().toString());
+				}
 				if (candidate.getSpocId() != null) {
 					candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
 				}
