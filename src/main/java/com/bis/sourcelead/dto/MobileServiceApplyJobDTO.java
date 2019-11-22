@@ -2,15 +2,13 @@ package com.bis.sourcelead.dto;
 
 import java.io.Serializable;
 
-import org.json.JSONObject;
+public class MobileServiceApplyJobDTO implements Serializable {
 
-public class MobileServiceApplyJobDTO implements Serializable{
-	
 	private static final long serialVersionUID = 1L;
-	
+
 	private String submissionDetails;
-	
-	JSONObject submissionJsonObject;
+
+	private String submissionValues;
 
 	public String getSubmissionDetails() {
 		return submissionDetails;
@@ -20,14 +18,12 @@ public class MobileServiceApplyJobDTO implements Serializable{
 		this.submissionDetails = submissionDetails;
 	}
 
-	public JSONObject getSubmissionJsonObject() {
-		return submissionJsonObject;
+	public String getSubmissionValues() {
+		return submissionValues;
 	}
 
-	public void setSubmissionJsonObject(JSONObject submissionJsonObject) {
-		this.submissionJsonObject = submissionJsonObject;
+	public void setSubmissionValues(String submissionValues) {
+		this.submissionValues = submissionValues;
 	}
-	
-	
-	
+
 }

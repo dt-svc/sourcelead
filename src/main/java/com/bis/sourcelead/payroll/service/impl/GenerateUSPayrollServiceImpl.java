@@ -195,10 +195,10 @@ public class GenerateUSPayrollServiceImpl implements GenerateUSPayrollService{
 			String[] groupId = generateUSPayrollDTO.getGroupId().split(",");
 			List<AssociateSalary> totalAssSallist = associateSalaryService.getAssociateSalaryListByGroupId(orgLocation,Long.parseLong(groupId[1]),generateUSPayrollDTO.getPayType());
 			List<AssociateSalary> assSallist = new ArrayList<>();
-			for(AssociateSalary ass : totalAssSallist) {
+ 			for(AssociateSalary ass : totalAssSallist) {
 				Employees emp = employeesService.getEmployeeByUserAndOrgLocationId(ass.getCandidate().getConsultantUser().getId(), orgLocation.getId());
 				List<Long> list = Arrays.stream(ass.getGroupId().getDepartmentId().split(",")).map(Long::parseLong).collect(Collectors.toList());
-				if(list.contains(emp.getDepartmentId().getId())) {
+				if(emp.getDepartmentId() != null && list.contains(emp.getDepartmentId().getId())) {
 					assSallist.add(ass);
 				}
 			}
