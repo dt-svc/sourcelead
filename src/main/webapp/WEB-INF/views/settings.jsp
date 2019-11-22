@@ -230,8 +230,16 @@
 								
 							</div>			  
 				  </sec:authorize>
-				 
-			      	   
+				  <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+				 <div class="col-md-2 reportNewCta">
+				   <a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list">
+						<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
+						<div class="clearfix text-center">
+							<h4>Taxes</h4>
+						</div>
+				  </a>
+			     </div> 	 
+			     </c:if>  
 			     <div class="col-md-2 reportNewCta">			
 				            <a href="${SourceLeadWeb_pmsUrl}/projectAttributes">
 							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
