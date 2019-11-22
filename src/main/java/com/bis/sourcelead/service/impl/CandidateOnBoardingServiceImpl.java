@@ -11,11 +11,17 @@ import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
+import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateOnBoardingDao;
@@ -69,7 +75,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingService{
-	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardingServiceImpl.class);
 	@Autowired
 	CandidateOnBoardingDao candidateOnBoardingDao;
 	
@@ -151,6 +157,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
+	BgcCommonService bgcCommonService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -330,7 +339,8 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}
 		// Added for BGC module.
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getBgc())){
-			candidateOnBoarding.setBgcOrglocationId(Long.valueOf(candidateOnBoardingDTO.getBgc()));
+			 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(Long.parseLong(candidateOnBoardingDTO.getBgc()));
+			candidateOnBoarding.setBgcOrglocationId(bgcOrgLocations);
 		}else{
 			candidateOnBoarding.setBgcOrglocationId(null);
 		}
@@ -565,17 +575,47 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			UserRole userRole = userRoleDao.getUserRoleById(onboardingUserRole.getId());
 			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			}
+		 
+		 //Saving candidate on board details to BGC_CANDIDATE_DETAILS table when user sent a request.
+		 // Here loading BGC Vendor ORG Locations to copy candidate to vendor locations.
+		 System.out.println("before candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
+		 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(candidateOnBoarding.getBgcOrglocationId().getId());
+		 System.out.println("aftre candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
+		 BgcCandidateDetailsDTO bgcCandidateDetailsDto = new BgcCandidateDetailsDTO();
+		 bgcCandidateDetailsDto.setCandidateId(candidateOnBoarding.getCandidateId().getId());
+		 bgcCandidateDetailsDto.setOrgLocationId(candidateOnBoarding.getBgcOrglocationId().getId());
+		 bgcCandidateDetailsDto.setCreatedBy(loginUser.getId());
+		 bgcCandidateDetailsDto.setUpdatedBy(loginUser.getId());
+		 bgcCandidateDetailsDto.setCurrentBgcStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setCrimeCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setEducationCheckStaus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setHealthCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setOthersInfoStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setPersonalInfoStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setPriorEmployersCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setStatus(Constants.RECORD_ACTIVE);
+		 
+		 // calling bgc savind method 
+		 BgcCandidateDetails bgcCandidateDetails = bgcCommonService.saveBgcCandidateDetails(bgcCandidateDetailsDto, loginUser, bgcOrgLocations);
+		 if(bgcCandidateDetails != null) {
+			 logger.info("BGC Candidate successfully copied to bgc vendor location.SSSSSSSSSSS");
+			System.out.println("BGC Candidate successfully copied to bgc vendor location.SSSSSSSSSSS");
+		 }else {
+			 System.out.println("Error occured while Saving on board canidate to BGC vendor location ??????????????");
+			 logger.error("Error occured while Saving on board canidate to BGC vendor location ??????????????");
+		 }
+		 
 		
 	}
 	
 	public Tasks getTaskDetails(OnboardTasks onboardTasks,User user,User loginUser,OrgLocations orgLocations){
 		 
-		 Tasks tasks = new Tasks();
-		 tasks.setOwnerOrglocationId(orgLocations);
-		 tasks.setAssignedOrglocationId(orgLocations);
-		 tasks.setTaskOwnerId(loginUser);
-		 tasks.setAssignedUserId(user);
-		 if(!isNullOrEmpty(onboardTasks.getPriority())){
+		  Tasks tasks = new Tasks();
+		  tasks.setOwnerOrglocationId(orgLocations);
+		  tasks.setAssignedOrglocationId(orgLocations);
+		  tasks.setTaskOwnerId(loginUser);
+		  tasks.setAssignedUserId(user);
+		  if(!isNullOrEmpty(onboardTasks.getPriority())){
 			 tasks.setPriority(onboardTasks.getPriority());
 		 }
 		 tasks.setSubject(onboardTasks.getTaskName());

@@ -1,0 +1,191 @@
+package com.bis.sourcelead.bgc.dto;
+
+
+/**
+ * @author Srinivas.Sabbu
+ *
+ */
+public class BgcCandidateDetailsDTO {
+
+	private Long id;
+	
+	private String uuid;
+	
+	private Long candidateId;
+	
+	private Long orgLocationId;
+	
+	private String currentBgcStatus;
+	
+	private String personalInfoStatus;
+	
+	private String educationCheckStaus;
+	
+	private String priorEmployersCheckStatus;
+	
+	private String healthCheckStatus;
+	
+	private String crimeCheckStatus;
+	
+	private String OthersInfoStatus;
+	
+	private String updatedPercetage;
+	
+	private String comments;
+	
+	private Integer status;
+	
+	private String createdDate;
+	
+	private Long createdBy;
+
+	private String updatedDate;
+	
+	private Long updatedBy;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public Long getOrgLocationId() {
+		return orgLocationId;
+	}
+
+	public void setOrgLocationId(Long orgLocationId) {
+		this.orgLocationId = orgLocationId;
+	}
+
+	public String getCurrentBgcStatus() {
+		return currentBgcStatus;
+	}
+
+	public void setCurrentBgcStatus(String currentBgcStatus) {
+		this.currentBgcStatus = currentBgcStatus;
+	}
+
+	public String getPersonalInfoStatus() {
+		return personalInfoStatus;
+	}
+
+	public void setPersonalInfoStatus(String personalInfoStatus) {
+		this.personalInfoStatus = personalInfoStatus;
+	}
+
+	public String getEducationCheckStaus() {
+		return educationCheckStaus;
+	}
+
+	public void setEducationCheckStaus(String educationCheckStaus) {
+		this.educationCheckStaus = educationCheckStaus;
+	}
+
+	public String getPriorEmployersCheckStatus() {
+		return priorEmployersCheckStatus;
+	}
+
+	public void setPriorEmployersCheckStatus(String priorEmployersCheckStatus) {
+		this.priorEmployersCheckStatus = priorEmployersCheckStatus;
+	}
+
+	public String getHealthCheckStatus() {
+		return healthCheckStatus;
+	}
+
+	public void setHealthCheckStatus(String healthCheckStatus) {
+		this.healthCheckStatus = healthCheckStatus;
+	}
+
+	public String getCrimeCheckStatus() {
+		return crimeCheckStatus;
+	}
+
+	public void setCrimeCheckStatus(String crimeCheckStatus) {
+		this.crimeCheckStatus = crimeCheckStatus;
+	}
+
+	public String getOthersInfoStatus() {
+		return OthersInfoStatus;
+	}
+
+	public void setOthersInfoStatus(String othersInfoStatus) {
+		OthersInfoStatus = othersInfoStatus;
+	}
+
+	public String getUpdatedPercetage() {
+		return updatedPercetage;
+	}
+
+	public void setUpdatedPercetage(String updatedPercetage) {
+		this.updatedPercetage = updatedPercetage;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public String getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public Long getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Long createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public Long getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(Long updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
+	
+}

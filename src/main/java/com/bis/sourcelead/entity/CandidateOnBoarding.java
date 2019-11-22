@@ -161,6 +161,11 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	
+	
+	@ManyToOne
+	@JoinColumn(name = "BGC_ORG_LOCATION_ID")
+	private OrgLocations bgcOrglocationId;
+	
 	@Column(name = "CANDIDATE_ONBOARD_UUID")
 	private String onboardCandidateUUID;
 	
@@ -251,8 +256,7 @@ private static final long serialVersionUID = 1L;
 	@Transient
 	private String userEmail;
 	
-	@Transient
-	private Long bgcOrglocationId;
+	
 
 	public Long getId() {
 		return id;
@@ -790,13 +794,12 @@ private static final long serialVersionUID = 1L;
 		this.paymentMode = paymentMode;
 	}
 
-	public Long getBgcOrglocationId() {
+	public OrgLocations getBgcOrglocationId() {
 		return bgcOrglocationId;
 	}
 
-	public void setBgcOrglocationId(Long bgcOrglocationId) {
+	public void setBgcOrglocationId(OrgLocations bgcOrglocationId) {
 		this.bgcOrglocationId = bgcOrglocationId;
 	}
-	
-	
+
 }

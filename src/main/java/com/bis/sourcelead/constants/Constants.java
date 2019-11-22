@@ -526,9 +526,11 @@ public class Constants {
 	public static final String Immigration = "Immigration";
 	public static final String Immigrations = "Immigrations";
 	public static final String My_Immigration = "MyImmigration";
-	public static final String Background_Check = "Background Check";
-	public static final String InProgress_Bgc_Details = "In Progress";
-	public static final String Completed_Bgc_Details = "Completed";
+	public static final String NOT_INITIATED= "NotInitiated";
+	public static final String INITIATED="Initiated";
+	public static final String IN_PROGRESS="inProgress";
+	public static final String COMPLETED="Completed";
+	public static final String ONHOLD="OnHold";
 	public static final String Projects = "Projects";
 	public static final String Clients = "Clients";
 	public static final String TimeSheet = "TimeSheet";
