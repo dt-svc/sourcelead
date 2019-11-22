@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.ResponseList;
@@ -42,5 +43,6 @@ public interface PaysheetFrequencyDao {
 
 	List<PaysheetFrequency> getRecentlyRunPayrollData(Long orgLocationId);
 
+	List<EmployeePayroll> getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate, Date endDate, Long orgLocationId) throws Exception;
 			
 }
