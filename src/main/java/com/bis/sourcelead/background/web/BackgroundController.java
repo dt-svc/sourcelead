@@ -50,7 +50,7 @@ public class BackgroundController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		SessionMaintainanceData sessionData = new SessionMaintainanceData();
-		sessionData.setNav(Constants.InProgress_Bgc_Details);
+		sessionData.setNav(Constants.IN_PROGRESS);
 			  model.addObject("sourceleadUrl", sourceleadUrl);
 			  model.setViewName("/background/inProgressBgcDetails");
 		return model;
@@ -62,7 +62,7 @@ public class BackgroundController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		SessionMaintainanceData sessionData = new SessionMaintainanceData();
-		sessionData.setNav(Constants.Completed_Bgc_Details);
+		sessionData.setNav(Constants.COMPLETED);
 		
 			  model.addObject("sourceleadUrl", sourceleadUrl);
 			  model.setViewName("/background/completedBgcDetails");
@@ -74,7 +74,7 @@ public class BackgroundController {
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		SessionMaintainanceData sessionData = new SessionMaintainanceData();
-		sessionData.setNav(Constants.Completed_Bgc_Details);
+		sessionData.setNav(Constants.COMPLETED);
 		
 			  model.addObject("sourceleadUrl", sourceleadUrl);
 			  model.setViewName("/background/onProgressView");
