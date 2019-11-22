@@ -21,6 +21,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.InvoicePayment;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
 import com.bis.sourcelead.payroll.dao.PaysheetFrequencyDao;
 import com.bis.sourcelead.payroll.dto.CommonPayrollDataDTO;
 import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
@@ -665,5 +666,25 @@ private static final Logger logger = LoggerFactory.getLogger(AssociateTaxDaoImpl
 			e.printStackTrace();
 		}
 		return paysheetFreqList;
+	}
+
+	@Override
+	@Transactional
+	public List<EmployeePayroll> getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(
+			Date startDate, Date endDate, Long orgLocationId) throws Exception {
+
+
+		logger.debug("In getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId method");
+		Session session = this.sessionFactory.getCurrentSession();
+		java.sql.Date sqlStartDate = new java.sql.Date(startDate.getTime());
+		java.sql.Date sqlEndDate = new java.sql.Date(endDate.getTime());
+
+		String query = "from EmployeePayroll empPayroll left join fetch empPayroll.candidate where "
+				+ " empPayroll.paysheetFrequency.id IN (select frequency.id from PaysheetFrequency frequency where frequency.frequencyStartDate >= :startDate and "
+				+ " frequency.frequencyEndDate <= :endDate and frequency.orgLocation.id =:orgLocationId and frequency.status = '1') and empPayroll.status = '1' ";
+		List<EmployeePayroll> employeePayRollList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setDate("startDate", sqlStartDate).setDate("endDate", sqlEndDate).list();
+		return employeePayRollList;
+	
+	
 	}
 }

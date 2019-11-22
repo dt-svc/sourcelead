@@ -1,5 +1,6 @@
 package com.bis.sourcelead.indPayroll.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.Response;
@@ -51,5 +52,7 @@ public interface IndPaysheetFrequencyService {
 	ResponseList<IndEmployeePayrollDTO> getPayrollESIAndPFReportList(IndEmployeePayrollDTO indEmployeePayrollDTO,OrgLocations orgLocations)throws Exception;
 
 	ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations);
+	
+	List<IndEmployeePayroll> getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate, Date endDate, Long orgLocationId) throws Exception;
 
 }
