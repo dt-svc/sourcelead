@@ -174,7 +174,10 @@ public void storeAddExpensesData(ExpensesDTO expensesDTO, User loginUser, OrgLoc
     
     if (StringUtils.isNotBlank(expensesDTO.getExpensePurpose())){
         expenses.setPurpose(expensesDTO.getExpensePurpose());    
+     }else {
+    	 expenses.setPurpose(null);    
      }
+    
     if (expensesDTO.getProjectMemberId()!= null){
         projMembers = projectMembersService.getProjectMemberById(expensesDTO.getProjectMemberId());
         expenses.setProjectMembers(projMembers);    

@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.dao.CandidateDao;
+import com.bis.sourcelead.dao.CandidateGlobalDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.OrgSpocDao;
@@ -57,6 +58,7 @@ import com.bis.sourcelead.dto.ResidenceDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateFamilyDetails;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateIdendities;
 import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.CandidatePassport;
@@ -170,6 +172,9 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 	@Value("${vmsUrl}")
 	private String vmsUrl;
 	
+	@Autowired
+	CandidateGlobalDao candidateGlobalDao;
+	
 /*	@Autowired
 	LcaActivityCommonUtil lcaActivityCommonUtil;*/
 
@@ -187,7 +192,8 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			CandidateLcaJobDetails candLcaJobDetails = new CandidateLcaJobDetails();
 			Candidate candidate = new Candidate();
 			candidate = savePetitionCandidate(immigrationDTO, orgLocations, user);
-
+			Long globalCandiateId = candidateDao.getGlobalCandidateIdByCandidateId(candidate.getId());
+			CandidateGlobal candidateGlobal = candidateGlobalDao.getCandidateGlobalByCandidateId(globalCandiateId);
 			CandidateIdendities candidateIdendities = new CandidateIdendities();
 			candidateIdendities = savePetitionCandidateIdentities(immigrationDTO, candidate, user, orgLocations);
 
@@ -201,7 +207,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 			immigration = savePetitionImmigration(immigrationDTO, orgLocations, candidate, requirement, user);
 
 			CandidateResumes candidateResume = new CandidateResumes();
-			candidateResume = savePetitionCandidateResume(immigrationDTO, candidate, user, orgLocations);
+			candidateResume = savePetitionCandidateResume(immigrationDTO, candidateGlobal, user, orgLocations);
 
 		//	old Code
 			/*List<CandidateLcaI94Summary> lcaSummaryLst = new ArrayList<CandidateLcaI94Summary>();
@@ -679,7 +685,7 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		return canLcaJobDetails;
 	}
 
-	private CandidateResumes savePetitionCandidateResume(ImmigrationDTO immigrationDTO, Candidate candidate, User user,
+	private CandidateResumes savePetitionCandidateResume(ImmigrationDTO immigrationDTO, CandidateGlobal candidate, User user,
 			OrgLocations orgLocations) {
 		try {
 			CandidateResumes candidateResume = new CandidateResumes();
@@ -1133,7 +1139,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					actionDesc.toString());
 
 		} else {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidate.getId());
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
 		}
 		return candidateVisa;
 		
@@ -1220,7 +1229,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 					actionDesc.toString());
 
 		} else {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidate.getId());
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
 		}
 		return candidatePassport;
 
@@ -1441,7 +1453,10 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		Candidate candidate = new Candidate();
 		candidate.setId(candidateId);
 		try {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidateId);
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1456,8 +1471,13 @@ public class ImmigrationCommonServiceImpl implements ImmigrationCommonService {
 		actionDesc.append("Passport Details Removed ").toString();
 		Candidate candidate = new Candidate();
 		candidate.setId(candidateId);
+		
 		try {
-			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
+			
+			Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(candidateId);
+			CandidateGlobal candidateGlobal = new CandidateGlobal();
+			candidateGlobal.setId(candidateGlobalId);
+			candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Passport Details", actionDesc.toString(), "CANDIDATE");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -3247,9 +3267,12 @@ private List<LcaDocumentHistory> saveLcaDocumentHistoryList(LcaDTO lcaDTO, Lca l
 					}
 
 				}else {
-					Candidate candidate = new Candidate();
-					candidate.setId(immigrationVisaDTO.getCandidateId());
-					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
+					
+					Long candidateGlobalId = candidateDao.getGlobalCandidateIdByCandidateId(immigrationVisaDTO.getCandidateId());
+					CandidateGlobal candidateGlobal = new CandidateGlobal();
+					candidateGlobal.setId(candidateGlobalId);
+					
+					candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidateGlobal, "", "Visa Details", actionDesc.toString(), "CANDIDATE");
 				}
 				logger.debug(count + "Records are upated in Visa History Table >>>>>>>>>>");
 			}

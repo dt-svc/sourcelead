@@ -418,7 +418,11 @@ public class EMailJobScheduler {
 	private ProjectTasksService projectTasksService;
 	
 	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
 	private ReadEmail readEmail;
+
 
 	private static boolean startEmailParsingProcess = true;
 	
@@ -538,7 +542,7 @@ public class EMailJobScheduler {
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
 							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,isResumeparserEnabled);
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,candidateGlobalUtil,isResumeparserEnabled);
 		                    }
 							}catch(Exception e) {
 								logger.error("Exception Caught while parsing resume for the EmailId >>>:  "+ email.getEmailId());
@@ -843,11 +847,10 @@ public class EMailJobScheduler {
 			 Date endDate=commonUtil.dateFromElk(expDate);		
 			 long diff = endDate.getTime()-startDate.getTime();
 			 
-			 Long expiredInDays = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 			 
 		//	 System.out.println("expiredInDays>>>>>>>>>>>>>>>>>>>>>"+expiredInDays);
 			 globalVarsMap.put("Lca_Table", sb.toString());
-			 globalVarsMap.put("Expiring_Days",String.valueOf(expiredInDays+1));// date difference returning 1 less value, then added manually added 1 day.
+			 globalVarsMap.put("Expiring_Days",String.valueOf(currLcaDaysStatus));// date difference returning 1 less value, then added manually added 1 day.
 			 
 			StringBuilder loginBuilder = new StringBuilder();
 			globalVarsMap.put("URL_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
@@ -2828,7 +2831,7 @@ public class EMailJobScheduler {
 	  * @throws Exception
 	  */
 	@Scheduled(cron = "0 0 9 1/1 * ?")
-	//@Scheduled(cron = "0 0/3 * 1/1 * ?") //testing related every 3minit  run the cron
+//	@Scheduled(cron = "0 0/3 * 1/1 * ?") //testing related every 3minit  run the cron
 	@Async
 	public void holidayNotificationToUsers() throws Exception {
 		DateTime zoned = new DateTime();	
@@ -4629,47 +4632,209 @@ public class EMailJobScheduler {
 	}
 	
 	
-	
-	@SuppressWarnings({ "deprecation", "unused" })
-	//@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
-	@Async
-	public void runApprovedAndPendingLeaveSchedulerEmailReminderAtOrgLevel() {
-		try {
-			
-				runLeaveSchedulerEmailReminderAtOrgLevel(Constants.APPROVE_PENDING_LEAVES);
-				runLeaveSchedulerEmailReminderAtOrgLevel(Constants.EMPLOYEE_ON_LEAVE);
-			
-			
-			}
-		catch(Exception e) {
-		    logger.error(
-                    "*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
-			e.printStackTrace();
-			
-		}
-	}
-	
-	
-	public void runLeaveSchedulerEmailReminderAtOrgLevel(String leaveStatus) {
-		try {
 
-			// Approved Leave remainder
-			List<EmailReminder> emailReminderList = null;
-			if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
-				emailReminderList = emailReminderService
-						.getEmailReminderListByEmailScenarioName(Constants.APPROVE_PENDING_LEAVES);
-			}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
-				emailReminderList = emailReminderService
-						.getEmailReminderListByEmailScenarioName(Constants.EMPLOYEE_ON_LEAVE);
+	
+	
+	/**
+	 * Reminder about approve pending leaes to the Mangers,Admin and reporting mangers etc.
+	 */
+	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	@Async
+    public void ReminderToSuperiorApprovePendingLeaves() {
+	try {
+          String leaveStatus = Constants.APPROVE_PENDING_LEAVES;
+		// Approved Leave remainder
+		List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.APPROVE_PENDING_LEAVES);;
+		if(emailReminderList != null && !emailReminderList.isEmpty()) {
+		for (EmailReminder emailReminder : emailReminderList) {
+			if (emailReminder.getEmailReminderHierarchyList().size() > 0) {
+				for (EmailReminderHierarchy emailReminderHierarchy : emailReminder.getEmailReminderHierarchyList()) {
+					Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(),emailReminder.getOrgLocationsId());
+					Calendar calendar = Calendar.getInstance();
+					calendar.setTime(convertedOrgDate);
+					int hrs = calendar.get(Calendar.HOUR_OF_DAY);
+					int ampm = calendar.get(Calendar.AM_PM);
+					if ((ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM")
+							&& hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0]))
+							|| (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM")
+									&& hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])
+											+ (hrs == 12 ? 0 : 12))) {
+						if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+							calendar.add(Calendar.DATE, -emailReminderHierarchy.getReminderdays().intValue()); // remainderDays days
+						}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+							calendar.add(Calendar.DATE, emailReminderHierarchy.getReminderdays().intValue()); // remainderDays days
+						}
+						
+						SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+						String updatedDateStr = dateFormat.format(calendar.getTime());
+						Date updatedDate = dateFormat.parse(updatedDateStr);
+						List<Leave> userLeaveList = null;               // for getting the userleave list 
+						List<ProjectTasks> projectTaskList = null;     //  for getting the projectTaskList
+							if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+								userLeaveList = leaveService.getAllLeavesByLocationIdAndStatusAndAppliedDate(emailReminder.getOrgLocationsId().getId(), "PENDING", updatedDate);
+							}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+								userLeaveList = leaveService.getAllLeavesByLocationIdAndStatusAndLeaveStartDate(emailReminder.getOrgLocationsId().getId(), "APPROVED", updatedDate);
+							}
+							
+							
+							if (userLeaveList != null && userLeaveList.size() > 0) {
+								for (Leave pendingLeave : userLeaveList) {
+									projectTaskList = projectTasksService.getTasksListByLeaveType(pendingLeave.getLeaveType().getId());
+									StringBuffer approvePendingInfoGrid = new StringBuffer();
+									approvePendingInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+									approvePendingInfoGrid.append("<tbody>");
+									approvePendingInfoGrid.append("<tr>");
+									approvePendingInfoGrid.append("<th> Associate Name </th>");
+									approvePendingInfoGrid.append("<th> Leave type </th>");
+									approvePendingInfoGrid.append("<th> Duration </th>");
+									approvePendingInfoGrid.append("<th> Applied On </th>");
+									
+									if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+										approvePendingInfoGrid.append("<th> No of days </th>");
+										approvePendingInfoGrid.append("<th> Status</th>");
+									}
+									
+									approvePendingInfoGrid.append("</tr>");
+
+									String AssociateName = "";
+									String LeaveType = "";
+									String LeaveDuration = "";
+									String leaveApplyDate = "";
+									
+									if (pendingLeave.getUser().getUserName() != null) {
+										AssociateName = " " + pendingLeave.getUser().getFullName();
+									}
+									if (pendingLeave.getLeaveType() != null
+											&& pendingLeave.getLeaveType().getName() != null) {
+										LeaveType = pendingLeave.getLeaveType().getName();
+									}
+									if (" " + pendingLeave.getNumberOfDays() != null) {
+										java.sql.Date sqlLeaveStartDate = new java.sql.Date(pendingLeave.getFromDate().getTime());
+										java.sql.Date sqlLeaveEndDate = new java.sql.Date(pendingLeave.getToDate().getTime());
+										LeaveDuration = " " + sqlLeaveStartDate + " to " + sqlLeaveEndDate;
+									}
+									if (" " + pendingLeave.getCreatedDate() != null) {
+										java.sql.Date sqlappliedDate = new java.sql.Date(pendingLeave.getCreatedDate().getTime());
+										leaveApplyDate = " " + sqlappliedDate;
+									}
+
+									approvePendingInfoGrid.append("<tr>");
+									approvePendingInfoGrid.append("<td>" + AssociateName + "</td>");
+									approvePendingInfoGrid.append("<td>" + LeaveType + "</td>");
+									approvePendingInfoGrid.append("<td>" + LeaveDuration + "</td>");
+									approvePendingInfoGrid.append("<td>" + leaveApplyDate + "</td>");
+									
+									if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+										String noOfDays = "";
+										String lStatus = "";
+										
+										if (" " + pendingLeave.getNumberOfDays() != null) {
+											noOfDays = " " + pendingLeave.getNumberOfDays();
+										}
+										if (" " + pendingLeave.getStatus() != null) {
+											lStatus = " " + pendingLeave.getStatus();
+										}
+										
+										
+										approvePendingInfoGrid.append("<td>" + noOfDays + "</td>");
+										approvePendingInfoGrid.append("<td>" + lStatus + "</td>");
+									}
+									approvePendingInfoGrid.append("</tr>");
+									approvePendingInfoGrid.append("</tbody>");
+									approvePendingInfoGrid.append("</table>");
+
+								
+								  // loop for notify to emails 
+									
+									if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
+										for(String email : emailReminder.getNotifyTo().split(",")) {
+											User toUser = new User();
+											toUser.setEmail(email.trim());
+											toUser.setFirstName("");
+											toUser.setLastName("");
+											sendConfiguredMailTo(toUser, emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus); 
+										}	
+											
+											//project Manager
+											 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+											for(ProjectMembers members :projectMemberList) {
+												List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
+												for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
+													sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+												}
+											}
+									}
+
+									else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
+										String[] roleIds = emailReminder.getRoles().split(",");
+										
+										for(String roleType :roleIds) {
+											if(roleType.equalsIgnoreCase("Reporting Manager")) {
+												//sending the mail to reporting manger
+												for(LeaveApproveHierarchy lah : pendingLeave.getApproverHierarchyList()) {
+												sendConfiguredMailTo(lah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+												}
+											} 
+											else if(roleType.equalsIgnoreCase("Team Leader")) {
+												//Team lead
+												 List<TeamMembers>  teamMemberList = teamMembersService.getTeamMembersListByUserIdAndLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+												for(TeamMembers team:teamMemberList) {
+													sendConfiguredMailTo(team.getTeamId().getOwnerUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+												}
+
+											}
+											else if(roleType.equalsIgnoreCase("Project Manager")){
+												//project Manager
+												 List<ProjectMembers> projectMemberList =  projectMembersService.getAllActiveProjectsByUserIdAndOrgLocationId(pendingLeave.getUser().getId(),pendingLeave.getOrgLocations().getId());
+												for(ProjectMembers members :projectMemberList) {
+													List<ProjectApproverHierarchy> projectApproverHierarchy = projectApproverHierarchyService.getProjectsHierarchyListByProjectIdAndOrgLocationId(members.getProjects().getId(),members.getProjects().getOrgLocationsId().getId());
+													for(ProjectApproverHierarchy pah:projectApproverHierarchy) {
+														sendConfiguredMailTo(pah.getApproverUserId(), emailReminder, emailReminderHierarchy, approvePendingInfoGrid, pendingLeave, leaveApplyDate, userLeaveList.size(), leaveStatus);
+													}
+												}
+											}
+										}
+									}
+							}
+					}
+				}
 			}
+		}
+		}
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+
+	}
+
+}
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Reminder to Mangers ,Admin and Reporting mangers about employee leaves
+	 * @param leaveStatus
+	 */
+	   //@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//	@Scheduled(cron = "0 0/15 * 1/1 * ?") // Scheduled for every minute
+		@Scheduled(cron = "0 0/5 * 1/1 * ?") // Scheduled for every 5 minutes
+		@Async
+	public void employeeLeaveReminderToSuperior() {
+		try {
+			String leaveStatus = Constants.EMPLOYEE_ON_LEAVE;
+			logger.info("**********Reminder to Mangers ,Admin and Reporting mangers about employee leaves*********STARTED");
+			//List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByEmailScenarioName(Constants.EMPLOYEE_ON_LEAVE);
+			List<EmailReminder> emailReminderList  = emailReminderService.getReminderConfiguredOrgLocations(Constants.EMPLOYEE_ON_LEAVE);
 			
+			if(emailReminderList != null && !emailReminderList.isEmpty()) {
 			for (EmailReminder emailReminder : emailReminderList) {
 				if (emailReminder.getEmailReminderHierarchyList().size() > 0) {
-					for (EmailReminderHierarchy emailReminderHierarchy : emailReminder
-							.getEmailReminderHierarchyList()) {
-						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(),
-								emailReminder.getOrgLocationsId());
+					for (EmailReminderHierarchy emailReminderHierarchy : emailReminder.getEmailReminderHierarchyList()) {
+						Date convertedOrgDate = commonUtil.orgLocationCommonDate(new Date(),emailReminder.getOrgLocationsId());
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(convertedOrgDate);
 						int hrs = calendar.get(Calendar.HOUR_OF_DAY);
@@ -4677,8 +4842,7 @@ public class EMailJobScheduler {
 						if ((ampm == 0 && emailReminderHierarchy.getRemindertime().contains("AM")
 								&& hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0]))
 								|| (ampm == 1 && emailReminderHierarchy.getRemindertime().contains("PM")
-										&& hrs == Integer
-												.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])
+										&& hrs == Integer.parseInt(emailReminderHierarchy.getRemindertime().split(":")[0])
 												+ (hrs == 12 ? 0 : 12))) {
 							if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
 								calendar.add(Calendar.DATE, -emailReminderHierarchy.getReminderdays().intValue()); // remainderDays days
@@ -4689,30 +4853,20 @@ public class EMailJobScheduler {
 							SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 							String updatedDateStr = dateFormat.format(calendar.getTime());
 							Date updatedDate = dateFormat.parse(updatedDateStr);
-
-
 							List<Leave> userLeaveList = null;               // for getting the userleave list 
 							List<ProjectTasks> projectTaskList = null;     //  for getting the projectTaskList
-								
 								if(leaveStatus.equalsIgnoreCase(Constants.APPROVE_PENDING_LEAVES)) {
-									userLeaveList = leaveService
-											.getAllLeavesByLocationIdAndStatusAndAppliedDate(
-													emailReminder.getOrgLocationsId().getId(), "PENDING", updatedDate);
+									userLeaveList = leaveService.getAllLeavesByLocationIdAndStatusAndAppliedDate(emailReminder.getOrgLocationsId().getId(), "PENDING", updatedDate);
 								}else if(leaveStatus.equalsIgnoreCase(Constants.EMPLOYEE_ON_LEAVE)) {
-									userLeaveList = leaveService
-											.getAllLeavesByLocationIdAndStatusAndLeaveStartDate(
-													emailReminder.getOrgLocationsId().getId(), "APPROVED", updatedDate);
+									userLeaveList = leaveService.getAllLeavesByLocationIdAndStatusAndLeaveStartDate(emailReminder.getOrgLocationsId().getId(), "APPROVED", updatedDate);
 								}
 								
 								
 								if (userLeaveList != null && userLeaveList.size() > 0) {
 									for (Leave pendingLeave : userLeaveList) {
-										
 										projectTaskList = projectTasksService.getTasksListByLeaveType(pendingLeave.getLeaveType().getId());
-
 										StringBuffer approvePendingInfoGrid = new StringBuffer();
-										approvePendingInfoGrid.append(
-												"<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
+										approvePendingInfoGrid.append("<table width='100%' bgcolor='#F9F9F9' cellpadding='0' border='2' cellspacing='0' style='background-color:#F9F9F9;'>");
 										approvePendingInfoGrid.append("<tbody>");
 										approvePendingInfoGrid.append("<tr>");
 										approvePendingInfoGrid.append("<th> Associate Name </th>");
@@ -4832,9 +4986,9 @@ public class EMailJobScheduler {
 				}
 			}
 			}
+			}
+			logger.info("**********Reminder to Mangers ,Admin and Reporting mangers about employee leaves*********ENDED");
 		} catch (Exception e) {
-			logger.error(
-					"*****************Exception caught while EmailReminder shceduler *************" + e.getMessage());
 			e.printStackTrace();
 
 		}

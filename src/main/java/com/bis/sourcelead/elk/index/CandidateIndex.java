@@ -9,6 +9,8 @@ public class CandidateIndex implements Serializable {
 
 	private Long candidateId;
 	
+	private Long candidateGlobalId;
+	
 	private Long userId;
 	
 	private Long masterCandidateId;
@@ -1078,6 +1080,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setCandidateProfilePercentage(Integer candidateProfilePercentage) {
 		this.candidateProfilePercentage = candidateProfilePercentage;
+	}
+
+	public Long getCandidateGlobalId() {
+		return candidateGlobalId;
+	}
+
+	public void setCandidateGlobalId(Long candidateGlobalId) {
+		this.candidateGlobalId = candidateGlobalId;
 	}
 
 	

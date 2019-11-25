@@ -25,6 +25,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementInterviewDao;
 import com.bis.sourcelead.dao.RequirementInterviewerDao;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -43,6 +44,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.InterviewFeedbackTemplateService;
@@ -140,6 +142,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	@Autowired
 	private InterviewFeedbackTemplateService interviewFeedbackTemplateService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	
 	@Override
 	public void saveRequirementInterview(JSONObject jsonObj, User user, OrgLocations orgLocations, Org loginOrg) throws Exception  {
@@ -312,7 +317,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 					           }
 					        		   
 					        		   
-					          Candidate candidate = candidateService.getCandidateByCandidateId(requirementSubmission.getCandidate().getId());
+					          CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(requirementSubmission.getCandidate().getId());
 					           
 					          
 					          
@@ -894,11 +899,10 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
         }
         requirementInterviewHistoryService.storeRequirementInterviewHistory(interviewHistory);
         
-        Candidate candidate = candidateService.getCandidateByCandidateId(interviewHistory.getSubmissionId().getCandidate().getId());
+        CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(interviewHistory.getSubmissionId().getCandidate().getId());
         
         RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(updateInterview.getSubmissionId().getId());
         if(jsonObj.has("notificationToApplicant") && !jsonObj.getString("notificationToApplicant").isEmpty()&& jsonObj.getString("notificationToApplicant").equalsIgnoreCase("Y")){
-     	  // sendEmailToApplicants(candidate,orgLocations,requirementSubmission, user, loginOrg, requirementInterview);
      	   sendRescheduledInterviewEmailToApplicant(candidate,orgLocations,requirementSubmission, user, loginOrg, requirementInterview);
         }
         if(jsonObj.has("notificationToSpoc") && !jsonObj.getString("notificationToSpoc").isEmpty()&& jsonObj.getString("notificationToSpoc").equalsIgnoreCase("Y") && requirementSubmission.getVendorLocationId() != null){
@@ -923,7 +927,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}
 	
 	
-	private void sendRescheduledEmailToInterviewrs(Candidate candidate, RequirementSubmission requirementSubmission, User fromUser,RequirementInterviewer requirementInterviewer,OrgLocations orgLocations)	throws Exception {
+	private void sendRescheduledEmailToInterviewrs(CandidateGlobal candidate, RequirementSubmission requirementSubmission, User fromUser,RequirementInterviewer requirementInterviewer,OrgLocations orgLocations)	throws Exception {
 		 
 		EmailMessage emailMessage = new EmailMessage();
 				
@@ -1076,7 +1080,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
         
         RequirementInterviewHistory  interviewHistory = requirementInterviewHistoryService.getRequirementInterviewHistoryByInterviewId(updateInterview.getId());
         requirementInterviewHistoryService.storeRequirementInterviewHistory(interviewHistory);
-        Candidate candidate = candidateService.getCandidateByCandidateId(interviewHistory.getSubmissionId().getCandidate().getId());
+        CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(interviewHistory.getSubmissionId().getCandidate().getId());
         RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(updateInterview.getSubmissionId().getId());
        
         //Send Email to Applicant after accept proposeTime 
@@ -1085,7 +1089,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}
 	
 	
-	private void sendRescheduledInterviewEmailToApplicant(Candidate candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
+	private void sendRescheduledInterviewEmailToApplicant(CandidateGlobal candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
@@ -1179,7 +1183,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 
 
 	@Override
-	public void sendEmailToInterviewrs(Candidate candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception {
+	public void sendEmailToInterviewrs(CandidateGlobal candidate, User interviewerUser,RequirementSubmission requirementSubmission, User loginUser,Org org,RequirementInterview requirementInterview,OrgLocations orgLocations)	throws Exception {
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
 		EmailMessage emailMessage = new EmailMessage();
@@ -1288,10 +1292,9 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	}
 	
 	@Override
-	public void sendEmailToApplicants(Candidate candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
+	public void sendEmailToApplicants(CandidateGlobal candidate,OrgLocations loginOrgLocations,RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview) throws Exception {
 		 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
-		//SimpleDateFormat simpleDateFormat = loginOrgLocations.getLocFullFormDateFormatter();
 		EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(requirementSubmissionTemplateFields.getFirstName());
 		 emailMessage.setLastName(requirementSubmissionTemplateFields.getLastName());
@@ -1598,7 +1601,7 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	
 	//vendors mail sending the private method
 	@Override
-	public void sendEmailToVendors(Candidate candidate, RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview, OrgLocations loginOrgLocations) throws Exception
+	public void sendEmailToVendors(CandidateGlobal candidate, RequirementSubmission requirementSubmission, User loginUser, Org loginOrg, RequirementInterview requirementInterview, OrgLocations loginOrgLocations) throws Exception
 	{
 		EmailMessage emailMessage = new EmailMessage();
 		User user = userService.getUserByUserCode(requirementSubmission.getCreatedBy());
