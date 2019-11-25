@@ -92,8 +92,21 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 				else if("INTERVIEW".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = leaveDashBoardDataUtil.getInterviewDashBoardData(commonDataDto);
 				}
-				
-				
+				else if("EXPENSES".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getExpensesDashBoardData(commonDataDto);
+				}
+				else if("JOB_FAIR".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getJobFairDashBoardData(commonDataDto);
+				}
+				else if("APPLICANT_PERMISSION".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getApplicantPremissionDashBoardData(commonDataDto);
+				}
+				else if("ASSIGNED_JOBS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getAssignedJobsDashBoardData(commonDataDto);
+				}
+				else if("JOBS_PIPELINE".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getJobsPipeLineDashBoardData(commonDataDto);
+				}
 				dtoObj.setJsonStringData(jsonData);
 			}
 		} catch (Exception e) {
