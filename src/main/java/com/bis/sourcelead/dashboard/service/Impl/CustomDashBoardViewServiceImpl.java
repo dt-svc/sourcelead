@@ -3,6 +3,12 @@ package com.bis.sourcelead.dashboard.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<< HEAD
+import javax.servlet.http.HttpServletRequest;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +18,9 @@ import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
 import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
 import com.bis.sourcelead.dashboard.util.LeaveDashBoardDataUtil;
+import com.bis.sourcelead.dto.LeaveDTO;
+import javax.servlet.http.HttpServletRequest;
+
 
 @Service
 public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewService{
@@ -22,6 +31,9 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	
 	@Autowired
 	LeaveDashBoardDataUtil leaveDashBoardDataUtil;
+	
+	@Autowired
+	HttpServletRequest httpServletRequest;
 	  
 	@Override
 	public List<ConfigureDashBoardViewDTO> getConfiguredDataByDashBoardId(Long dashBoardId)
@@ -76,9 +88,24 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 			CommonDataDto commonDataDto) {
 		try {
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
+				System.out.println(dtoObj.getSubTabName());
 				String jsonData = "";
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
+				}else if("PROJECT_REQUESTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getProjectRequests(commonDataDto);
+				}else if("ASSIGNED_PROJECT_TASKS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getAssignedProjectTasks(commonDataDto);
+				}else if("CURRENT_ONBOARD".equalsIgnoreCase(dtoObj.getSubTabName())) {
+				jsonData =	leaveDashBoardDataUtil.getCandidateOnBoarding(commonDataDto);
+				}else if("CURRENT_OFFBOARD".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCandidateOFFBoarding(commonDataDto);
+				}else if("CLIENTS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCliendbycontacts(commonDataDto);
+				}else if("CANDIDATES_ON_ONBOARDING".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCandidatesOnBoarding(commonDataDto);
+				}else if("CANDIDATE_READY_FOR_INVOICE".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCandidateReadyForInvoice(commonDataDto);
 				}else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = leaveDashBoardDataUtil.getSubmitToClientCandidatesDashBoardData(commonDataDto);
 				}
@@ -106,7 +133,6 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 				}else if("RECENTLY_ADDED".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = customDashBoardViewDao.getRecentlyAddedCandidates(commonDataDto);
 				}
-				
 				dtoObj.setJsonStringData(jsonData);
 			}
 		} catch (Exception e) {
