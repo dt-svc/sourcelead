@@ -202,38 +202,15 @@ public class LoginSessionController {
 			return model;
 		}
 		SourceLeadSessionManager.setSessionAttribute(request, "sessionId", request.getSession().getId());
-
-		/*if (userRoleId == null) {
-			userRoleId = (Long) request.getSession().getAttribute("userRoleId");
-			if (userRoleId == null)
-				userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
-			if (userRoleId != null) {
-				userRole = userRoleService.getUserRoleById(userRoleId);
-				user = userRole.getUser();
-				orgLocations = userRole.getOrgLocations();
-				request.getSession().removeAttribute("userRoleId");
-			} else {
-				userRole = userRoleService.getLoginUserPrimaryRole(user.getId());
-			}
-		} else {
-			userRole = userRoleService.getUserRoleById(userRoleId);
-			user = userRole.getUser();
-			orgLocations = userRole.getOrgLocations();
-		}*/
-
-		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession()
-				.getAttribute("userLoginSession");
-		if (userLoginSession != null) {
-			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated",
-					userLoginSession.getAuthenticated());
-		}
-		
+		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
+		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
 		String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		if (userLoginSession != null) {
+			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated",userLoginSession.getAuthenticated());
+		}
 
-		if (!roleName.equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL)
-				&& !roleName.equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)) {
-
-			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
+		if (!roleName.equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !roleName.equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)) {
+			
 			if (null != msg && !msg.isEmpty()) {
 				model.addObject("msg", msg);
 				SourceLeadSessionManager.removeSessionAttribute(request, "resetPwdMsg");
@@ -250,81 +227,32 @@ public class LoginSessionController {
 			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 			Long timeZoneId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
 
-			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService
-					.getOrglocationDepositTaxesByOrgLocationId(orgLocId);
+			OrglocationDepositTaxes orgLocDepTaxes = orglocationDepositTaxesService.getOrglocationDepositTaxesByOrgLocationId(orgLocId);
 			SourceLeadSessionManager.setSessionAttribute(request, "orglocationDepositTaxes", orgLocDepTaxes);
-			
 			AssociateBankData associateBankData = associateBankDataService.getAssociateBankDataByOrgLocationId(orgLocId);
 			SourceLeadSessionManager.setSessionAttribute(request, "associateBankData", associateBankData);
-
 			setLoginSession(request);
 
-			boolean isPayRollApprover = configurePayrollApproverService
-					.isLoginUserIsPayRollApprover(userId, orgLocId);
+			boolean isPayRollApprover = configurePayrollApproverService.isLoginUserIsPayRollApprover(userId, orgLocId);
 			if (isPayRollApprover == true) {
 				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.YES);
 			} else {
 				SourceLeadSessionManager.setSessionAttribute(request, "isPayRollApprover", Constants.NO);
 			}
-
-
-		/*	List<Long> accountUserList = new ArrayList<>();
-			List<Long> userIdsList = null;
-			Long productionLoginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
-					"productionLoginUserId");
-			if (productionLoginUserId != null) {
-				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
-			} else {
-				userIdsList = userService.getUserIdsListByLinkedUserId(userId);
-			}
-
-			if (userIdsList != null && !userIdsList.isEmpty()) {
-				for (Long loginUserId : userIdsList) {
-					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(loginUserId);
-					accountUserList.addAll(linkedUserIdsList);
-				}
-			}
-			userIdsList.addAll(accountUserList);
-			if (productionLoginUserId != null) {
-				userIdsList.add(productionLoginUserId);
-				userIdsList.add(userId);
-			} else {
-				userIdsList.add(userId);
-			}
-
-			if (userRole.getUser().getLinkUserId() != null) {
-				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}
-
-			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
-			if (userSpocRolesList.size() > 1) {
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount",
-						userSpocRolesList.size());
-			} else {
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
-			}*/
-
-
 			if (isCompanyOnboarded != null && isCompanyOnboarded.equalsIgnoreCase(Constants.NO)) {
-				List<LookUpData> bussinessTypesList = lookUpDataService
-						.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
+				List<LookUpData> bussinessTypesList = lookUpDataService.getLookUpDataByCategory(Constants.COMPANY_ONBOARD_BUSINESS_TYPE);
 				model.addObject("bussinessTypesList", bussinessTypesList);
 				List<Timezone> timezoneList = timeZoneService.getAllTimeZones();
 				model.addObject("timezoneList", timezoneList);
 				model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 				model.setViewName("onboard/companyOnboard");
 			} else {
-				CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService
-						.getCandidateOffBoardingByUserIdAndLocationId(userId, orgLocId);
+				CandidateOffBoarding candidateOffBoarding = candidateOffBoardingService.getCandidateOffBoardingByUserIdAndLocationId(userId, orgLocId);
 				if (null != candidateOffBoarding) {
-
 					String endDate = sdf.format(candidateOffBoarding.getEndDate());
 					Date onboardEndDte = sdf.parse(endDate);
 					if (onboardEndDte.equals(todayDate) || todayDate.after(onboardEndDte)) {
-						SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding",
-								candidateOffBoarding);
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateOffBoarding",candidateOffBoarding);
 						if (candidateOffBoarding.getOffboardSubmitted().equalsIgnoreCase("N")) {
 							model.addObject("googleMapsLocationApiKey", googleMapsLocationApiKey);
 							model.setViewName("offboard/offboardStep1");
@@ -337,18 +265,14 @@ public class LoginSessionController {
 					}
 				} else {
 
-					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService
-							.getCandidateOnBoardingByUserIdAndLocationId(userId, orgLocId);
+					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userId, orgLocId);
 					if (null != candidateOnBoarding && requirementUUID == null) {
-						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding",
-								candidateOnBoarding);
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding",candidateOnBoarding);
 						if (candidateOnBoarding.getManagerUserId() != null) {
-							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId",
-									candidateOnBoarding.getManagerUserId().getId());
+							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingManagerUserId",candidateOnBoarding.getManagerUserId().getId());
 						}
 						if (candidateOnBoarding.getOnBoardTeamId() != null) {
-							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId",
-									candidateOnBoarding.getOnBoardTeamId());
+							SourceLeadSessionManager.setSessionAttribute(request, "OnboardingTeamOwnerUserId",candidateOnBoarding.getOnBoardTeamId());
 						}
 						if (candidateOnBoarding.getOnboardSubmitted().equalsIgnoreCase("N")) {
 							getOnboardingDetails(candidateOnBoarding,orgLocId,dateFormat, request);
@@ -358,8 +282,7 @@ public class LoginSessionController {
 						}
 					} else if (requirementUUID != null && requirementUUID != "") {
 						StringBuilder redirectUrl = new StringBuilder();
-						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=")
-								.append(requirementUUID).toString());
+						response.sendRedirect(redirectUrl.append("requirementProfileDetails?requirementUUID=").append(requirementUUID).toString());
 						model.setViewName("professional/professionalRequirements");
 					} else {
 						model.setViewName("dashboard");
@@ -392,58 +315,16 @@ public class LoginSessionController {
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
 			String newlyLoginUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "newlyLoginUser");
 
-			/*List<Long> accountUserList = new ArrayList<>();
-			List<Long> userIdsList = null;
-			Long productionLoginUserId = (Long) SourceLeadSessionManager.getSessionAttribute(request,
-					"productionLoginUserId");
-			if (productionLoginUserId != null) {
-				userIdsList = userService.getUserIdsListByLinkedUserId(productionLoginUserId);
-			} else {
-				userIdsList = userService.getUserIdsListByLinkedUserId(userId);
-			}
-
-			if (userIdsList != null && !userIdsList.isEmpty()) {
-				for (Long loginUserId : userIdsList) {
-					List<Long> linkedUserIdsList = userService.getUserIdsListByLinkedUserId(loginUserId);
-					accountUserList.addAll(linkedUserIdsList);
-				}
-			}
-			userIdsList.addAll(accountUserList);
-			if (productionLoginUserId != null) {
-				userIdsList.add(productionLoginUserId);
-				userIdsList.add(userId);
-			} else {
-				userIdsList.add(userId);
-			}
-
-			if (userRole.getUser().getLinkUserId() != null) {
-				userIdsList.add(userRole.getUser().getLinkUserId().getId());
-			}
-
-			List<UserRole> userSpocRolesList = userRoleService.getUserAccountsListByUserId(userIdsList);
-			if (userSpocRolesList.size() > 1) {
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", userSpocRolesList);
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount",
-						userSpocRolesList.size());
-			} else {
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesList", null);
-				SourceLeadSessionManager.setSessionAttribute(request, "userSpocRolesListCount", 0);
-			}*/
-
-
 			if (roleName.equalsIgnoreCase("ROLE_CROWDSOURCING_PROFESSIONAL")) {
 				StringBuilder redirectUrl = new StringBuilder();
 				if (!isNullOrEmpty(requirementUUID) && isNullOrEmpty(referUUID)) {
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=")
-							.append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 					model.setViewName("professional/professionalRequirements");
 				} else if (!isNullOrEmpty(requirementUUID) && !isNullOrEmpty(referUUID)) {
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=")
-							.append(requirementUUID).append("&referUUID=").append(referUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).append("&referUUID=").append(referUUID).toString());
 					model.setViewName("professional/professionalRequirements");
 				} else {
-					if (!isNullOrEmpty(newlyLoginUser)
-							&& newlyLoginUser.equalsIgnoreCase("Y")) {
+					if (!isNullOrEmpty(newlyLoginUser) && newlyLoginUser.equalsIgnoreCase("Y")) {
 						model.setViewName("professional/professionalPraseCandidate");
 					} else {
 						model.setViewName("professional/professionalDashboard");
@@ -453,8 +334,7 @@ public class LoginSessionController {
 			} else if (roleName.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")) {
 				if (!isNullOrEmpty(requirementUUID)) {
 					StringBuilder redirectUrl = new StringBuilder();
-					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=")
-							.append(requirementUUID).toString());
+					response.sendRedirect(redirectUrl.append("/app/professionalRequirements?requirementUUID=").append(requirementUUID).toString());
 					model.setViewName("professional/professionalRequirements");
 				} else {
 					model.setViewName("recruiter/recruiterDashboard");
