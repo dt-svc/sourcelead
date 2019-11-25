@@ -42,6 +42,7 @@ import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgService;
 import com.bis.sourcelead.service.RequirementLocationsService;
@@ -49,6 +50,7 @@ import com.bis.sourcelead.service.RequirementReferService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.web.LoginSessionController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -317,6 +319,18 @@ public class OpenJobsRestController {
 						}
 					}
 					requirementIndex.setLocationsList(requirementLocationsList);
+					
+					User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+					boolean isJobApplied = false;
+					if(user != null && requirementIndex.getAppliedProfessionals() != null) {
+						for(String appliedUserId : requirementIndex.getAppliedProfessionals()){
+							if(appliedUserId.equalsIgnoreCase(user.getId()+"")) {
+								isJobApplied = true;
+								break;
+							}
+						}
+					}
+					requirementIndex.setIsJobApplied(isJobApplied ? "Y" : "N");
 					requirementList.add(requirementIndex);
 				}
 			}
