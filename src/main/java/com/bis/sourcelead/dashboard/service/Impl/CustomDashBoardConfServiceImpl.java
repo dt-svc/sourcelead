@@ -170,10 +170,11 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		List<TabsDTO> tabs = new ArrayList<>();
 		try {
 			List<Tabs> tbs =  tabsService.getTabsByRoleIdAndOrgLocationId(roleId, locationId);
-			for(Tabs tab: tbs) {
+			for(Tabs tab: tbs) {  
 				if(!"Associates".equalsIgnoreCase(tab.getTabName().trim()) && !"Settings".equalsIgnoreCase(tab.getTabName().trim()) &&
 						!"Campaigns".equalsIgnoreCase(tab.getTabName().trim()) && !"Back Office".equalsIgnoreCase(tab.getTabName().trim())
-						&& !"Immigration".equalsIgnoreCase(tab.getTabName().trim()) && !"Reports".equalsIgnoreCase(tab.getTabName().trim())) {
+						&& !"Immigration".equalsIgnoreCase(tab.getTabName().trim()) && !"Reports".equalsIgnoreCase(tab.getTabName().trim())
+						&& !"Marketplace".equalsIgnoreCase(tab.getTabName().trim()) && !"Performance Management".equalsIgnoreCase(tab.getTabName().trim())) {
 					
 					TabsDTO tabsDTO = new TabsDTO();
 					tabsDTO.setId(tab.getId());

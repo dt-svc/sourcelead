@@ -2,10 +2,13 @@ package com.bis.sourcelead.dashboard.service.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,8 @@ import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
 import com.bis.sourcelead.dashboard.util.LeaveDashBoardDataUtil;
 import com.bis.sourcelead.dto.LeaveDTO;
+import javax.servlet.http.HttpServletRequest;
+
 
 @Service
 public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewService{
@@ -26,6 +31,9 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	
 	@Autowired
 	LeaveDashBoardDataUtil leaveDashBoardDataUtil;
+	
+	@Autowired
+	HttpServletRequest httpServletRequest;
 	  
 	@Override
 	public List<ConfigureDashBoardViewDTO> getConfiguredDataByDashBoardId(Long dashBoardId)
@@ -79,10 +87,8 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	public List<ConfigureDashBoardViewDTO> getDashBoardData(List<ConfigureDashBoardViewDTO> configureDashBoardView,
 			CommonDataDto commonDataDto) {
 		try {
-			
-			
-			
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
+				System.out.println(dtoObj.getSubTabName());
 				String jsonData = "";
 				System.out.println(dtoObj.getSubTabName());
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
@@ -91,6 +97,46 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 					jsonData = leaveDashBoardDataUtil.getTimesheetsDashboardData(commonDataDto);
 				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = leaveDashBoardDataUtil.getVendorByitsContacts(commonDataDto);
+				}else if("PROJECT_REQUESTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getProjectRequests(commonDataDto);
+				}else if("ASSIGNED_PROJECT_TASKS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getAssignedProjectTasks(commonDataDto);
+				}else if("CURRENT_ONBOARD".equalsIgnoreCase(dtoObj.getSubTabName())) {
+				jsonData =	leaveDashBoardDataUtil.getCandidateOnBoarding(commonDataDto);
+				}else if("CURRENT_OFFBOARD".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCandidateOFFBoarding(commonDataDto);
+				}else if("CLIENTS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCliendbycontacts(commonDataDto);
+				}else if("CANDIDATES_ON_ONBOARDING".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCandidatesOnBoarding(commonDataDto);
+				}else if("CANDIDATE_READY_FOR_INVOICE".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData =	leaveDashBoardDataUtil.getCandidateReadyForInvoice(commonDataDto);
+				}else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getSubmitToClientCandidatesDashBoardData(commonDataDto);
+				}
+				else if("INTERVIEW".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getInterviewDashBoardData(commonDataDto);
+				}
+				else if("EXPENSES".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getExpensesDashBoardData(commonDataDto);
+				}
+				else if("JOB_FAIR".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getJobFairDashBoardData(commonDataDto);
+				}
+				else if("APPLICANT_PERMISSION".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getApplicantPremissionDashBoardData(commonDataDto);
+				}
+				else if("ASSIGNED_JOBS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getAssignedJobsDashBoardData(commonDataDto);
+				}
+				else if("JOBS_PIPELINE".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getJobsPipeLineDashBoardData(commonDataDto);
+				}else if("PURCHASE_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = customDashBoardViewDao.getMarketplacePurchaseOrderDashBoard(commonDataDto);
+				}else if("SALES_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = customDashBoardViewDao.getMarketplaceSalesOrderDashBoard(commonDataDto);
+				}else if("RECENTLY_ADDED".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = customDashBoardViewDao.getRecentlyAddedCandidates(commonDataDto);
 				}
 				dtoObj.setJsonStringData(jsonData);
 			}
