@@ -79,6 +79,29 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 				String jsonData = "";
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
+<<<<<<< HEAD
+				}else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getSubmitToClientCandidatesDashBoardData(commonDataDto);
+				}
+				else if("INTERVIEW".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getInterviewDashBoardData(commonDataDto);
+				}
+				else if("EXPENSES".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getExpensesDashBoardData(commonDataDto);
+				}
+				else if("JOB_FAIR".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getJobFairDashBoardData(commonDataDto);
+				}
+				else if("APPLICANT_PERMISSION".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getApplicantPremissionDashBoardData(commonDataDto);
+				}
+				else if("ASSIGNED_JOBS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getAssignedJobsDashBoardData(commonDataDto);
+				}
+				else if("JOBS_PIPELINE".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getJobsPipeLineDashBoardData(commonDataDto);
+				}
+=======
 				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					
 				}else if("PURCHASE_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
@@ -89,6 +112,7 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 					jsonData = customDashBoardViewDao.getRecentlyAddedCandidates(commonDataDto);
 				}
 				
+>>>>>>> f7ed38e4389e137c05a12a836f79cd713e0fcdc4
 				dtoObj.setJsonStringData(jsonData);
 			}
 		} catch (Exception e) {
