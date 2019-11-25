@@ -312,7 +312,7 @@ public class ClockInOutRestController {
 		
 	}
 	
-	@RequestMapping(value = "/getCurrentDates")
+	@RequestMapping(value = { "/getCurrentDates","/rest/getCurrentDates"})
 	public String getCurrentDates(@RequestParam(value="currentDate", required=false) String currentDate,
 			@RequestParam(value="type", required=false) String type,
 			@RequestParam(value="filterType", required=false) String dayWiseType,
@@ -354,14 +354,14 @@ public class ClockInOutRestController {
 	}
 	
 	
-	@RequestMapping(value = "/getAossociateClockInOutReportSummary",method = RequestMethod.GET)
+	@RequestMapping(value = {"/getAossociateClockInOutReportSummary","/rest/getAossociateClockInOutReportSummary"},method = RequestMethod.GET)
 	public String getAossociateClockInOutReportSummary(HttpServletRequest req,HttpServletResponse res) {
 		
 		
 		return null;
 	}
 	
-	@RequestMapping(value = "/getTimeReports",method = RequestMethod.GET)
+	@RequestMapping(value = {"/getTimeReports","/rest/getTimeReports"},method = RequestMethod.GET)
 	public ClockInOutUserTimeEntryDTO getTimeReports(HttpServletRequest req,HttpServletResponse res) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
@@ -370,7 +370,7 @@ public class ClockInOutRestController {
 		return clockInOutConfigService.getTimeReports(loginOrgLocation,user);
 	}
 	
-	@RequestMapping(value = "/getWorkingTime",method = RequestMethod.GET)
+	@RequestMapping(value = {"/getWorkingTime","/rest/getWorkingTime"},method = RequestMethod.GET)
 	public String getWorkingTime(HttpServletRequest req,HttpServletResponse res,@RequestParam(value="clockId", required=false) Long clockId) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
@@ -379,7 +379,7 @@ public class ClockInOutRestController {
 		return clockInOutConfigService.getWorkingTimeByClockId(loginOrgLocation,user);
 	}
 	
-	@RequestMapping(value = "/getPreviousClockInData",method = RequestMethod.GET)
+	@RequestMapping(value = {"/getPreviousClockInData","/rest/getPreviousClockInData"},method = RequestMethod.GET)
 	public ClockInOutDTO getPreviousClockInData(HttpServletRequest req,HttpServletResponse res) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
@@ -388,7 +388,7 @@ public class ClockInOutRestController {
 		return clockInOutConfigService.getPreviousClockInData(loginOrgLocation,user);
 	}
 	
-	@RequestMapping(value = "/getAssociateClockInOutReportSummary",method = RequestMethod.POST)
+	@RequestMapping(value = { "/getAssociateClockInOutReportSummary","/rest/getAssociateClockInOutReportSummary"},method = RequestMethod.POST)
 	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO,HttpServletRequest request,HttpServletResponse response) {
 		Date empJoiningDate = (Date) SourceLeadSessionManager.getSessionAttribute(request, "joiningDate");
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -396,7 +396,7 @@ public class ClockInOutRestController {
 		return list;
 	}
 
-	@RequestMapping(value = "/getListOfClockDataBasedOnDate",method = RequestMethod.GET)
+	@RequestMapping(value = {"/getListOfClockDataBasedOnDate","/rest/getListOfClockDataBasedOnDate"},method = RequestMethod.GET)
 	public List<ClockInOutUserTimeEntryDTO> getListOfClockDataBasedOnDate(@RequestParam(value="selectedDate", required=false) String selectedDate,@RequestParam(value="userId", required=false) Long userId,HttpServletRequest req,HttpServletResponse res) {
 		
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");

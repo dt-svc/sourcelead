@@ -3,15 +3,25 @@ package com.bis.sourcelead.clockinout.dto;
 public class ClockInOutConfigDTO {
 	
 	private String isTrackEmpLocation;
+	
 	private String isTrackTaskAssigned;
+	
 	private String isJobChecked;
+	
 	private String isProjectTasksChecked;
+	
 	private String isGeneralTaskChecked;
+	
 	private String isGoalChecked;
+	
 	private String isOtherChecked;
+	
 	private String isClockInComment;
+	
 	private String isBreak;
+	
 	private String isAutomaticCheckOut;
+	
 	private String isTimesheetFill;
 	
 	private Long clockInOutId;
