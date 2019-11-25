@@ -1,5 +1,7 @@
 package com.bis.sourcelead.dashboard.util;
 
+
+import java.util.List;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.bis.sourcelead.constants.Constants;
 import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dashboard.dto.CommonDataDto;
@@ -56,13 +60,20 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-=======
 import com.bis.sourcelead.clockinout.service.ClockInOutConfigService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dashboard.dto.CommonDataDto;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorContractsDTO;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -82,14 +93,24 @@ import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.ibm.icu.util.Calendar;
 
+
 @Component
 public class LeaveDashBoardDataUtil {
 	
 	@Autowired
 	LeaveService leaveService;
+
+	@Autowired
+	TimesheetSubmissionsService	 timesheetSubmissionsService;
 	
 	@Autowired
+	OrgRelationsService   orgRelationsService;
+	
+	@Autowired
+	ContractsTemplateService  contractsTemplateService;
 
+	
+	@Autowired
 	private SessionFactory sessionFactory;
 	
 	@Autowired
@@ -98,7 +119,8 @@ public class LeaveDashBoardDataUtil {
 	@Autowired
 	OnboardTasksService  onboardTasksService;
 
-	 private RequirementSubmissionDao requirementSubmissionDao;
+	@Autowired
+    private RequirementSubmissionDao requirementSubmissionDao;
 	
 	@Autowired
 	CommonUtil commonUtil;
@@ -111,7 +133,6 @@ public class LeaveDashBoardDataUtil {
 	RequirementService requirementService;
 	
 	@Autowired
-
 	ProjectsService  projectsService;
 	
 	@Autowired
@@ -166,6 +187,7 @@ public class LeaveDashBoardDataUtil {
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
+
 	/**
 	 * Leave DashBoard Data 
 	 * approved,rejected,pending and canceled leav count
@@ -596,6 +618,30 @@ public class LeaveDashBoardDataUtil {
 		return jsonArray.toString();
 	}
 
+
+
+
+	public String getTimesheetsDashboardData(CommonDataDto commonDataDto) {
+		Map<String, String> map = new HashedMap();
+		try {
+		String isGlobalAccess = "N";
+		String timesheetCountType = "ALL";
+		Boolean isAdmin = true;
+		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
+		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),commonDataDto.getOrgLocation().getOrgId(),timesheetCountType,isGlobalAccess,isAdmin);
+		map.put("Draft",timeSheetSubmissionCount.getSavedTimesheetSubmissionCount().toString());
+		map.put("Waiting",timeSheetSubmissionCount.getWaitingForApprovalTimesheetSubmissionCount().toString());
+		map.put("Approved",timeSheetSubmissionCount.getApprovedTimesheetSubmissionCount().toString());
+		map.put("Rejected",timeSheetSubmissionCount.getRejectedTimesheetSubmissionCount().toString());
+		
+		System.out.println(timeSheetSubmissionCount);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return getJsonString(map);
+	
+	}
+
 	@SuppressWarnings("unchecked")
 	public String getApplicantPremissionDashBoardData(CommonDataDto commonDataDto) {
 		JSONArray jsonArray = new JSONArray();
@@ -702,4 +748,28 @@ public class LeaveDashBoardDataUtil {
 
 }
 
+
+
+	public String getVendorByitsContacts(CommonDataDto commonDataDto) {
+		JSONArray jsonarray = new JSONArray();
+		String vendorIds="";
+		String invitationStatus="";
+		String status="";
+		 try {
+			 JSONObject jsonobject = null;
+			List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationId(commonDataDto.getUserId(),commonDataDto.getOrgLocation().getId(), "Client",status,vendorIds,invitationStatus);
+			for(OrgSpoc s:vandorsContactListByOrgLocationId) {
+				jsonobject = new JSONObject();
+				jsonobject.put("Name",s.getVendorUser().getFirstName());
+				jsonobject.put("mobile phone",s.getVendorUser().getMobilePhone());
+				jsonobject.put("EMail",s.getVendorUser().getEmail());
+				jsonarray.add(jsonobject);
+			}
+			System.out.println(vandorsContactListByOrgLocationId);	
+		 }  catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		return jsonarray.toJSONString();
+	}
 }

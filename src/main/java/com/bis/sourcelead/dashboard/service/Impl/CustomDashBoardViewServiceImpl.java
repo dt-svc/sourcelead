@@ -3,7 +3,7 @@ package com.bis.sourcelead.dashboard.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONArray;
@@ -90,8 +90,13 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
 				System.out.println(dtoObj.getSubTabName());
 				String jsonData = "";
+				System.out.println(dtoObj.getSubTabName());
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
+				}else if("TIMESHEETS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getTimesheetsDashboardData(commonDataDto);
+				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = leaveDashBoardDataUtil.getVendorByitsContacts(commonDataDto);
 				}else if("PROJECT_REQUESTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = leaveDashBoardDataUtil.getProjectRequests(commonDataDto);
 				}else if("ASSIGNED_PROJECT_TASKS".equalsIgnoreCase(dtoObj.getSubTabName())) {

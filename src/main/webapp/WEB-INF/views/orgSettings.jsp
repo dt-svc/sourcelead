@@ -1442,12 +1442,21 @@ function changefunction(){
 </script>
 <script>
 function savePaymentAccountTestRun(){
+<<<<<<< HEAD
+	var value = $("#paymentAccountType").val();
+	if(value == "SAVINGS"||value == "CHECKING"){
+	$('#emailErr').find('p.jquery_form_error_message').remove(); 
+	$('#paymentAccountEmail').removeAttr('data-validation');
+	}
+=======
 	 var val = $("#paymentAccountType").val();
 	 if(val == "SAVINGS"||val == "CHECKING"){
 		 $('#emailErr').find('p.jquery_form_error_message').remove(); 
 			$('#paymentAccountEmail').removeAttr('data-validation');
 	 }
+>>>>>>> 7eb2b463ef5b4c2e9526213f4aeb50d8ee65c6ce
 	 if ($('#paymentaccount_form').validate(false, validationSettings)){
+    	 $("#savePaymentButton").addClass("disabled");
 		 var data =  {};
 		 var val = $("#paymentAccountType").val();
 		 data["email"] = $("#paymentAccountEmail").val();
@@ -1465,7 +1474,7 @@ function savePaymentAccountTestRun(){
         	   showError(data.responseMessage);
              if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
             	 closePaymentAccountPopup(val);
-            	 $("#savePaymentButton").removeAttr("disabled", "disabled");
+            	 $("#savePaymentButton").removeClass("disabled");
              }
              getPaymentAccounts();
          });
