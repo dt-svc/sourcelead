@@ -667,6 +667,7 @@ public void sendMailToUserFromndIanPayrolApprover(User loginUser,  OrgLocations 
 				payHeadHistoryDTOList.add(payHeadHistoryDTO);
 			}
 		}
+		payHeadHistoryDTOList.sort((a1,a2) -> a1.getPayrollPayhead().compareTo(a2.getPayrollPayhead()));
 		return payHeadHistoryDTOList;
 	}
 	

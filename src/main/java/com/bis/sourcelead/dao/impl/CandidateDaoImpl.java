@@ -1178,7 +1178,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		Candidate candidate = null;
 		try {
 			String query = "from Candidate candidate left join fetch candidate.orgRelationId left join fetch candidate.masterCandidateId "
-					+ " where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
+					+ " left join fetch candidate.consultantUser where candidate.orgLocationId.id =:orgLocationId and candidate.consultantUser.id= :consultantUserId";
 			List<Candidate> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId)
 					.setLong("consultantUserId", consultantUserId).list();
 			if (null != candidateList && candidateList.size() > 0) {
