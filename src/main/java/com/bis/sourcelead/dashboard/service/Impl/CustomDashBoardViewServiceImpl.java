@@ -79,7 +79,6 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 				String jsonData = "";
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
-<<<<<<< HEAD
 				}else if("SUBMIT_TO_CLIENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = leaveDashBoardDataUtil.getSubmitToClientCandidatesDashBoardData(commonDataDto);
 				}
@@ -100,10 +99,6 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 				}
 				else if("JOBS_PIPELINE".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = leaveDashBoardDataUtil.getJobsPipeLineDashBoardData(commonDataDto);
-				}
-=======
-				}else if("VENDORS_BY_CONTACTS".equalsIgnoreCase(dtoObj.getSubTabName())) {
-					
 				}else if("PURCHASE_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = customDashBoardViewDao.getMarketplacePurchaseOrderDashBoard(commonDataDto);
 				}else if("SALES_ORDER_LIST".equalsIgnoreCase(dtoObj.getSubTabName())) {
@@ -112,7 +107,6 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 					jsonData = customDashBoardViewDao.getRecentlyAddedCandidates(commonDataDto);
 				}
 				
->>>>>>> f7ed38e4389e137c05a12a836f79cd713e0fcdc4
 				dtoObj.setJsonStringData(jsonData);
 			}
 		} catch (Exception e) {
