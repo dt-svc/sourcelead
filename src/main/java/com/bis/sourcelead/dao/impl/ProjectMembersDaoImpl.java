@@ -2332,6 +2332,69 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 		return pmList;
 	
 	}
+
+
+	@Override
+	@Transactional
+	public ResponseList<ProjectMembers> getProjectClosureReport(Date startDate, Date endDate, Long locationsId, Long userId) {
+		
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		
+		ResponseList<ProjectMembers> response = new ResponseList<>();
+ 		Session session = this.sessionFactory.getCurrentSession();
+		
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		
+		String dateQuery = "";
+		String userQuery = "";
+		
+		if(startDate != null && endDate != null){
+			   dateQuery =  " and pm.id IN ( "
+                + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  pmh.projectTerminationDate between :startDate and :endDate) OR "
+                + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
+                + "  )  ";
+	     }
+
+  	  userQuery =  " and pm.projectClientsId.orgLocationsId.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id = :userId  and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE') ";
+	  String globalUserQuery = " and (pm.projectMemberCandidteId.orgLocationId.id = :locationsId)";
+	    
+	    String projectForQuery = " (pm.projects.isProjectForTimeSheets = 'Y' OR pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.status != '0' and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))";
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch candidate.consultantUser left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
+				+ " where "
+				    +projectForQuery
+				    +globalUserQuery
+				    + dateQuery
+					+ userQuery;
+		Query query = session.createQuery(queryStr.toString());
+		
+		
+		if(startDate != null && endDate != null){
+			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		}
+		
+		Query queryObject =  query.setLong("locationsId", locationsId).setParameter("userId", userId);
+		 
+	    @SuppressWarnings("unchecked")
+		List<ProjectMembers> projectMemberList = queryObject.list();
+		response.setData(projectMemberList);
+		
+		
+		return response;
+	
+	
+	}
 	
 }
 
