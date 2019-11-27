@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1603,6 +1604,18 @@ public ModelAndView getRequirementSubmissionTemplateForBulkImprtApplicants(@Requ
 }
 
 
+@RequestMapping(value = "/getProfileTrackerTemplateForBulkImprtApplicants")
+public ModelAndView getProfileTrackerTemplateForBulkImprtApplicants(@RequestParam(value="requirementId", required=false) Long requirementId,
+		HttpServletRequest request) throws Exception{
+	ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementId", requirementId);
+	 model.setViewName("requirement/importProfileTracker");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	return model;
+}
+
+
 @RequestMapping(value = "/downloadRequirenetSubmissionTemplateByRequirementId/{requirementId}", method = RequestMethod.GET)
 public void downloadRequirenetSubmissionTemplateByRequirementId(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="requirementId") Long requirementId) throws IOException, URISyntaxException{
 	
@@ -1690,6 +1703,32 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	    }
 	
 	return createExcelsheet;	
+}
+
+
+@RequestMapping(value = "/downloadProfileTrackerTemplate", method = RequestMethod.GET)
+public void downloadProfileTrackerTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	
+	File file = null;
+	String fn;	
+	fn = "/templates/Profile_Tracker_import_Template.xlsx";
+	URL url = getClass().getResource(fn);
+     file = new File(url.toURI());
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	
 }
 
 }
