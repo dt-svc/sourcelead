@@ -6648,6 +6648,10 @@ max-width: 100% !important;
 .repCustomDate {
 	width: 400px; display: none; padding: 20px 15px; top: 45px; box-shadow: 2px 2px 3px rgba(0,0,0,0.3) !important; right: 60px;
 }
+
+.repCustomDate.dashboardPopup {
+	right: 4px;
+}
 .repCustomDateInn {
 	width: 160px; float: left; padding: 0px 15px 0px 0px;
 }
