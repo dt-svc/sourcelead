@@ -2,6 +2,9 @@ package com.bis.sourcelead.background.web;
 
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,7 +24,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ImmigrationListViewDTO;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -41,7 +48,8 @@ public class BackgroundController {
 	@Value("${static.path}")
 	private String staticPath;
 
-	
+	@Autowired
+	BgcCommonService bgcCommonService;
 	
 	
 	@RequestMapping(value = { "/inProgressBgcDetails" })
@@ -79,5 +87,61 @@ public class BackgroundController {
 			  model.addObject("sourceleadUrl", sourceleadUrl);
 			  model.setViewName("/background/onProgressView");
 		return model;
+	}
+	/*
+	 * below method is used to fetch background candidates details for the 
+	 * Data table is using for showing records.
+	 */
+	@RequestMapping(value = "/getBgcCandidageteList",  method = RequestMethod.POST)
+	public @ResponseBody ResponseList<BgcCandidateDetailsDTO> getAllBgcList(
+			BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			@RequestParam(value = "filterAttorneyVal", required = false) Long[] filterAttorneyVal,
+			@RequestParam(value = "filterTypeVal", required = false) Long[] filterTypeVal,
+			@RequestParam(value = "filterStatusVal", required = false) Long[] filterStatusVal,
+			@RequestParam(value = "filterDurationVal", required = false) Long[] filterDurationVal,
+			@RequestParam(value = "orgTypeVal", required = false) String orgTypeVal, HttpServletRequest request) {
+		ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList = null;
+		logger.debug("inisde controller  BgcCandidateDetailsDTO  --> ");
+		try {
+			String[] tableColumns = { "uuid", "name",  "currentBgcStatus","updatedPercetage", "personalInfoStatus", "educationCheckStaus",
+					"priorEmployersCheckStatus", "healthCheckStatus", "healthCheckStatus", "crimeCheckStatus", "OthersInfoStatus" ,"comments","updatedDate"};// should be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (bgcCandidateDetailsDTO.getOrder() != null && !bgcCandidateDetailsDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(bgcCandidateDetailsDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = bgcCandidateDetailsDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				bgcCandidateDetailsDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.
+			}
+			Map<String, Long[]> filterVal = new HashMap<String, Long[]>();
+			if (filterAttorneyVal.length != 0) {
+				filterVal.put("attorney", filterAttorneyVal);
+			}
+			if (filterTypeVal.length != 0) {
+				filterVal.put("type", filterTypeVal);
+			}
+			if (filterStatusVal.length != 0) {
+				filterVal.put("status", filterStatusVal);
+			}
+			if (filterDurationVal.length != 0) {
+				filterVal.put("duration", filterDurationVal);
+			}
+			if (sortColumnIndex != -1)
+				bgcCandidateDetailsDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			bgcCandidateDetailsDTO.setOrgLocationId(orgLocations.getId());
+			bgcCandidateDetailsDTOList = (ResponseList<BgcCandidateDetailsDTO>) bgcCommonService.getBgcCadidateList(bgcCandidateDetailsDTO, searchValue,
+					orgLocations, filterVal, orgTypeVal);
+			System.out.println("bgcCandidateDetailsDTOList size "+bgcCandidateDetailsDTOList.getRecordsTotal());
+			// commonUtil.highLightMenu(Constants.Immigration, request);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getAllImmigartionList  --> ");
+		return bgcCandidateDetailsDTOList;
 	}
 }

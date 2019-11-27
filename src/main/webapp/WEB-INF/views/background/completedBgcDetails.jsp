@@ -45,49 +45,7 @@
                   <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
               </ul>
             
-            <div class="require_wrap_table tableFirstSecond clearfix">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Candidate Id</th>
-                    <th>Name</th>
-                    <th>Education / Academic <br> credentials</th>
-                    <th>Prior Employment</th>
-                    <th>Personal Information</th>
-                    <th>Helath</th>
-                    <th>Criminal</th>
-                    <th>Credit</th>
-                    <th>Progress</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><div class="tblminwidth-75">CAN001</div></td>
-                    <td><div class="tblminwidth-75"><a href="/vms/bgc/onProgressView">Rajkumar Santhoshi</a></div></td>
-                    <td><div class="tbldata-dotdot-vsm">OK</div></td>
-                    <td><div class="tbldata-dotdot-vsm">OK</div></td>
-                    <td><div class="tblminwidth-50">OK</div></td>
-                    <td><div class="tblminwidth-50">OK</div></td>
-                    <td><div class="tblminwidth-50">Not verified</div></td>
-                    <td><div class="tblminwidth-50">Not verified</div></td>
-                    <td><div class="tblminwidth-50 text-primary">On Progress</div></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <nav>
-              <ul id="paging" class="pagination">
-                <li><a href="#">Previous</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li class="disabled"><a href="#">6</a></li>
-                <li data-page="last"><a href="#">Next</a></li>
-              </ul>
-              <div class="clearfix"></div>
-            </nav>
-          </div>
+                 <div id="dynamicBgcListViewDiv" class="project_wrap_table datatable_filter"></div>
 
           <div class="bgcTemplateInformation-inner clearfix" id="bgc-Completed" style="display:none">
             <div class="col-md-12">  
@@ -125,6 +83,7 @@ $("#bgc").click(function(){
 });
 
 $(document).ready(function() {
+	  getDynamicBgcList(null);
 $("#bgc-inProgress").show();
   $(".bgonProgressTab a").click(function() {
     $(this).parent().addClass("current").siblings().removeClass();
@@ -134,5 +93,293 @@ $("#bgc-inProgress").show();
   })
 })
 </script>
+<script>
+function getDynamicBgcList(filterVal, DashBoardFilterStatus) {
+	 var filterAttorneyVal = [];
+	 var filterTypeVal = [];
+	 var filterStatusVal = [];
+	 var filterDurationVal = [];
+	 if(filterVal !== null){
+		filterAttorneyVal = filterVal[0];
+		filterTypeVal = filterVal[1];
+		filterStatusVal = filterVal[2];
+		filterDurationVal = filterVal[3];
+	 }
+	 var orgTypeVal =  $("#orgType").val();
+    var result = "";
+    result = result + '<table id="dynamicBgcListTbl">';
+    result = result + '<thead>';
+    result = result + '<tr>';
+    result = result + '<th>ID</th>';
+    result = result + '<th>Name</th>';
+    result = result + '<th>Curr. Status</th>';
+    result = result + '<th>updated Perc.</th>';
+    result = result + '<th>Personal Info</th>';
+    result = result + '<th>Educatio/Academic</th>';
+    result = result + '<th>Prior Employement</th>';
+    result = result + '<th>Health</th>';
+    result = result + '<th>Criminal</th>';
+    result = result + '<th>Others Info</th>';
+    result = result + '<th>Comments</th>';
+    result = result + '<th>Updated Date</th>';
+    result = result + '<th>Action</th>';
+    result = result + '</tr>';
+    result = result + '</thead>';
+
+    
+    result = result + '</table>';
+    $("#dynamicBgcListViewDiv").empty();
+    $("#dynamicBgcListViewDiv").append(result);
+
+    var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+//    var statusFilter = $("#statusFilter").val();
+    var searchValue = $("#bgcListSerach").val();
+    searchValue = searchValue ? searchValue : "";
+
+     url = vmsUrl + "/bgc/getBgcCandidageteList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
+    dynamicBgcListPagination(url);
+}
+//var count = 0;
+function dynamicBgcListPagination(url) {
+	 var colIndex = 0;
+    table = $('#dynamicBgcListTbl').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "searching": false,
+       // "colReorder": true,
+    	// 'dom': 'Rlfrtip',
+        // "stateSave": true, // used to save the page state local or server side.
+        "ajax": $.fn.dataTable.pipeline({
+            url: url,
+            method: 'POST',
+            pages: 10
+        }),
+        "columns": [
+            {"data": "uuid"},
+            {"data": "fullName"},
+            {"data": "currentBgcStatus"},
+            {"data": "updatedPercentage"},
+            {"data": "personalInfoStatus"},
+            {"data": "educationCheckStaus"},
+            {"data": "priorEmployersCheckStatus"},
+            {"data": "healthCheckStatus"},
+            {"data": "crimeCheckStatus"},
+            {"data": "OthersInfoStatus"},
+            {"data": "comments"},
+            {"data": "updatedDate"}
+        ],
+        "columnDefs": [
+            {
+                "targets": colIndex++,
+                bSortable: false,
+                aTargets: [ -1 ],
+                "data": "uuid",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.uuid !== null && opt.uuid !== '' && opt.uuid !== 'undefined') {
+                   	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.uuid +"'><a href=${SourceLeadWeb_vmsUrl}/bgc/viewImmigration?bgcUUID="+opt.uuid+">"+opt.uuid+"</a></div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "fullName",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'>" + opt.fullName + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
+                    }
+                  
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "currentBgcStatus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.currentBgcStatus !== null && opt.currentBgcStatus !== '' && opt.currentBgcStatus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.currentBgcStatus+"'>" + opt.currentBgcStatus + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "updatedPercentage",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.updatedPercentage !== null && opt.updatedPercentage !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.updatedPercentage+"'>" + opt.updatedPercentage + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            
+            {
+                "targets": colIndex++,
+                "data": "personalInfoStatus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.personalInfoStatus !== null && opt.personalInfoStatus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.personalInfoStatus+"'>" + opt.personalInfoStatus + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "educationCheckStaus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.educationCheckStaus !== null && opt.educationCheckStaus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.educationCheckStaus+"'>" + opt.educationCheckStaus + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "priorEmployersCheckStatus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.priorEmployersCheckStatus !== null && opt.priorEmployersCheckStatus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.priorEmployersCheckStatus+"'>" + opt.priorEmployersCheckStatus  + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "healthCheckStatus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.healthCheckStatus !== null && opt.healthCheckStatus !== '' && opt.healthCheckStatus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.healthCheckStatus+"'>" + opt.healthCheckStatus + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "crimeCheckStatus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.crimeCheckStatus !== null && opt.crimeCheckStatus !== '' && opt.crimeCheckStatus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.crimeCheckStatus+"'>" + opt.crimeCheckStatus + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "othersInfoStatus",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.othersInfoStatus !== null && opt.othersInfoStatus !== '' && opt.othersInfoStatus !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.othersInfoStatus+"'>" + opt.othersInfoStatus + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "comments",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.comments !== null && opt.comments !== '' && opt.comments !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.comments+"'>" + opt.comments + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                "data": "updatedDate",
+                "render": function (data, type, opt, meta) {
+                    var result = "";
+                    if (opt.updatedDate !== null && opt.updatedDate !== '' && opt.updatedDate !== 'undefined') {
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.updatedDate+"'>" + opt.updatedDate + "</div></td>";
+                    } else {
+                        result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
+                    }
+                    return result;
+                }
+            },
+            {
+                "targets": colIndex++,
+                /*"data": "actions",*/
+                "render": function (data, type, opt, meta) {
+               	 if( $("#orgType").val() == ""){
+               	 	$("#orgType").val(opt.orgNameSel);
+               	 }
+                    var result = "";
+                    '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
+                    result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/immigration/editImmigrationDetails?immigrationUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
+                    '</sec:authorize>';
+                     '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
+                    result = result + '<i id="delete' + opt.uuid + '" onclick="deleteImmigrationListId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                    '</sec:authorize>';
+                    return result;
+                }
+            }
+        ],
+        "scrollCollapse": false,
+        "lengthMenu": [[10, 15, 20], [10, 15, 20]],
+        "aaSorting": [],
+        "bLengthChange": true,
+        "bDestroy": true,
+        "ordering": true,
+        "initComplete": function (settings, json) {
+        },
+        "oLanguage": {
+            "sSearch": "",
+            "sZeroRecords": "", "sEmptyTable": "",
+            "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
+        }
+    });
+   
+    $("#dynamicBgcListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+
+  /*   $("#immiListSerach").keyup(function (e) {
+        if (e.which === 13) {
+       	 getDynamicImmigrationList(null);
+       	 for (var i=0; i<hideColumns.length; i++) {
+       		 table.column(hideColumns[i]).visible(false); // hide the columns after filters also.
+       		}
+        }
+    });
+ */
+   // $("table").colResizable(); // for resizing columns in tables.
+}
+</script>
+
+
+
+
 
 
