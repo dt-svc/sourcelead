@@ -303,5 +303,11 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	public ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
 		return indPaysheetFrequencyDao.getPayrollSalaryRegisterReportReportList(indEmployeePayrollDTO, orgLocations);
 	}
+
+	@Override
+	public List<IndEmployeePayroll> getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate,
+			Date endDate, Long orgLocationId) throws Exception {
+		return indPaysheetFrequencyDao.getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(startDate, endDate, orgLocationId);
+	}
  
 }

@@ -153,6 +153,8 @@ public class PerformanceAppraisalTemplateServiceImpl implements PerformanceAppra
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescriptionDisplay())) {
 			template.setDescriptionDisplay(performanceAppraisalTemplateDTO.getDescriptionDisplay());
+		}else {
+			template.setDescriptionDisplay(null);
 		}
 		
 		if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getDescription())) {

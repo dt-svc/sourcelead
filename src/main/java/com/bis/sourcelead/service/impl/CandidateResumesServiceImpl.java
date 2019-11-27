@@ -428,7 +428,7 @@ public class CandidateResumesServiceImpl implements CandidateResumesService {
 
 		CandidateResumes candidateResume = null;
 		StringBuffer activitySummary = new StringBuffer();
-		if (resumeId != null && !resumeId.equalsIgnoreCase("null")) {
+		if (resumeId != null && !resumeId.isEmpty() && !resumeId.equalsIgnoreCase("null")) {
 			candidateResume = candidateResumesDao.getCandidateResumeByResumeId(Long.parseLong(resumeId));
 				if (candidateResume.getTitle() != null) {
 					activitySummary.append("Title").append(" : ").append(Constants.OLD_VALUE_TAG_INITIATION).append(candidateResume.getTitle()).append(Constants.OLD_VALUE_TAG_END).append(" ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateResumeDTO.getTitle()).append(Constants.NEW_VALUE_TAG_END).append(" ");
