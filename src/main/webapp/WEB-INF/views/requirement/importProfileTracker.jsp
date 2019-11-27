@@ -180,5 +180,13 @@ document.getElementById("uploadBtn").onchange = function () {
 };
 </script>
 
+<script>
+function cancelFileImport(){
+	 $(".side_mask").fadeOut(200);
+	 $("body").css('overflow-y', 'auto');
+	 $(".import_profileTracker_side_wrap").removeClass("import_profileTracker_side_wrap_active");
+}
+</script>
+
 
 
