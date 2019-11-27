@@ -47,7 +47,7 @@
 			<div class="pull-right">
 				<c:if test="${uploadType == 'submmissionTemplateUpload'}">
 				<button type="button" class="btn btn-sm btn-primary mr"
-					onclick="saveSubmissionTemplateDataFields();">Import</button>
+					onclick="saveSubmissionTemplateDataFields();disableOnClick(this);">Import</button>
 				</c:if>
 				
 				<c:if test="${uploadType != 'submmissionTemplateUpload'}">
@@ -420,4 +420,11 @@ function getUploadProgressBar(){
 
 <script>
     $(".chosen-select").chosen();
+</script>
+<script> 
+function disableOnClick(link) {
+  link.onclick = function(event) {
+     event.preventDefault();
+  }
+}   
 </script>
