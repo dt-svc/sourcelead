@@ -1709,9 +1709,15 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 @RequestMapping(value = "/downloadProfileTrackerTemplate", method = RequestMethod.GET)
 public void downloadProfileTrackerTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
 	
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 	File file = null;
 	String fn;	
-	fn = "/templates/Profile_Tracker_import_Template.xlsx";
+	if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+		fn = "/templates/Profile_Tracker_Template.xlsx";
+	}else {
+		fn = "/templates/Profile_Tracker.xlsx";
+	}
+	
 	URL url = getClass().getResource(fn);
      file = new File(url.toURI());
 
