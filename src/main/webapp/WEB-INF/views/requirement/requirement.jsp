@@ -1473,12 +1473,12 @@ $(document).ready(function () {
 																	<c:if test="${report.locationId.id == loginOrgLocId}">
 																		<option
 																			value="${report.id},${report.responderLocationId.id}"
-																			selected="selected">${report.responderLocationId.org.orgName}</option>
+																			selected="selected">${report.responderLocationId.orgLocationName}</option>
 																	</c:if>
 																	<c:if
 																		test="${report.responderLocationId.id == loginOrgLocId}">
 																		<option value="${report.id},${report.locationId.id}"
-																			selected="selected">${report.locationId.org.orgName}</option>
+																			selected="selected">${report.locationId.orgLocationName}</option>
 																	</c:if>
 																</select>
 															</c:when>
@@ -1492,12 +1492,12 @@ $(document).ready(function () {
 																		<c:if test="${report.locationId.id == loginOrgLocId}">
 																			<option
 																				value="${report.id},${report.responderLocationId.id}"
-																				${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.org.orgName}</option>
+																				${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.responderLocationId.orgLocationName}</option>
 																		</c:if>
 																		<c:if
 																			test="${report.responderLocationId.id == loginOrgLocId}">
 																			<option value="${report.id},${report.locationId.id}"
-																				${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.org.orgName}</option>
+																				${report.id  == requirement.clientId.id ? 'selected' : ''}>${report.locationId.orgLocationName}</option>
 																		</c:if>
 																	</c:forEach>
 																</select>
@@ -1854,6 +1854,17 @@ $(document).ready(function () {
 													</label>
 												</div>
 											</div>
+											
+											<div class="form-group">
+												<label class="col-md-3">Pay out Period (Days)</label>
+												<div class="col-md-9">
+													<input type="text" value="${requirement.payOutPeriod}"
+														id="payOutPeriod" name="payOutPeriod" class="form-control"
+														data-validation="validate_Space validate_length length1-3 validate_int"
+														data-validation-optional="true">
+												</div>
+											</div>
+											
 											<div class="form-group" id="nofJoiners"
 												${requirement.incentivized == 'Y' ? '' : 'style="display:none;"'}>
 												<label class="col-md-3">No. of Joiners <span
@@ -1980,15 +1991,7 @@ $(document).ready(function () {
 												</div>
 
 											</div>
-											<div class="form-group">
-												<label class="col-md-3">Pay out Period (Days)</label>
-												<div class="col-md-9">
-													<input type="text" value="${requirement.payOutPeriod}"
-														id="payOutPeriod" name="payOutPeriod" class="form-control"
-														data-validation="validate_Space validate_length length1-3 validate_int"
-														data-validation-optional="true">
-												</div>
-											</div>
+											
 											<input type="hidden" id="arrDeletedIds" name="arrDeletedIds"
 												value="">
 										</div>
@@ -3677,6 +3680,12 @@ var existingValue = document.getElementById('isClientJob').value;
 	if (document.getElementById('isClientJob').checked){
 		changeValidationType();
 		$("#isClientJob").val('Y');
+		$("#payOutPeriod").val('');
+		
+		 $("#nofJoiners").css('display','none');
+         $('#incentivized').val('N');
+         $("#nofJoinersAddRow").empty();
+         document.getElementById("incentivized").checked = false;
 		 
 		// $("#addClientId").val('');
 		 $('#addClientId').trigger("chosen:updated");

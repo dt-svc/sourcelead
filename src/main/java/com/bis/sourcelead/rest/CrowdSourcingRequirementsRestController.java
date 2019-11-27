@@ -1858,7 +1858,6 @@ public class CrowdSourcingRequirementsRestController {
 		
 		
 		
-		@PreAuthorize("hasAnyRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 		@RequestMapping(value = "/rest/getJobSummarySerialChartForMobile", method = RequestMethod.GET)
 		public Response<RequirementReferDTO> getJobSummarySerialChartForMobile(@RequestParam(value = "startDate", required = false) String startDate,
 				@RequestParam(value = "endDate", required = false) String endDate,HttpServletRequest request) throws Exception {
