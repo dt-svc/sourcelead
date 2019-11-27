@@ -37,6 +37,11 @@ $(document).ready(function() {
  else if(submissionId != null && submissionId != '' && submissionId != 'undefined' && requirementId != null && requirementId != '' && requirementId != 'undefined'){
 	 requirementPipeline(requirementId,type);
 		 }
+ 
+
+ 
+
+
 });	
 </script>
 <script>
@@ -72,6 +77,14 @@ function prepareAllCounts(requirementId){
 }
 </script>
 <script>
+function getWorkflowStageColumnAndShortCodes(){
+	var stageNamesAndSHortCodesMap = new Map();
+	$('label[shortCode]').each(function(){
+		stageNamesAndSHortCodesMap.set($(this).attr("shortCode"), $(this).text());
+		});
+	return stageNamesAndSHortCodesMap;
+}
+
 function getWorkflowStageColumnAndCountIds(){
 	var stageColumnsMap = new Map();
 	$('b[shortCode]').each(function(){
@@ -1032,208 +1045,241 @@ function viewOfferDocument(offerID,title){
 <div class="project_inn_mask"></div>
 <div id="customizePopUp"></div>
 <script>
-function rejectApplicant(submissionId,requirementId,submissionType){
-	//reject refresh
-	$("#reasonForApplicantDiv").empty();
-    $("#reasonForReject").val("");
-    $("#designationType").val('');
-    //$("#rejectedCategory").val("");
-    $("#rejectedCategory").selectpicker('refresh');
+function rejectApplicant(submissionId,requirementId,submissionType,candidateName){
+	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
+	var stageNames = getWorkflowStageColumnAndShortCodes();
+	var result ="";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	if(stageNames.get(selectBox) != null){
+		result = result +"		<p>Do you want to move <strong>"+candidateName+"</strong> to "+stageNames.get(selectBox)+"</p>";	
+	}else{
+		result = result +"		<p>Do you want to move <strong>"+candidateName+"</strong> to "+selectBox+"</p>";
+	}
+	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
+	result = result +"<b href='javascript:void(0)'><input type='button' onClick='closeRequirementPopup("+true+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");' value='Ok'>";
+	result = result +"<input class='u_can_color' type='button' value='Cancel' onClick='closeRequirementPopup("+false+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");'></b>";
+	result = result +"	</div>";
+	$("#popUp").empty().append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
     
-    //backOut refresh
-    $("#backOutForApplicantDiv").empty();
-    $("#backOutForReject").val("");
-    //$("#rejectedCategory").val("");
-    $("#backOutCategory").selectpicker('refresh');
-    var subId = submissionId;
-    var reqId = requirementId;
-    var subType = submissionType;
-    var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
-     if(selectBox == "BACKOUT"){
-        var result = "";
-        //result = result +"    <div class='project_inn_mask'></div>";
-        result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-        result = result +"<form id='backOut_form' name='backOut_form'>";
-        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
-        result = result +"    <div class='dropdown-select' id='backOutCategorytDiv'>";
-        result = result +"<select id='backOutCategory' name='backOutCategory' class='form-control' onchange='getBackOutCategory()' data-validation='required' field-name='Category' >";
-        result = result +"<option selected value=''>--Select Category--</option>";
-        result = result +"<option value='Current Company'>Current Company</option>";
-        result = result +"<option value='Compensation'>Compensation</option>";
-        result = result +"<option value='Better Offer'>Better Offer</option>";
-        result = result +"<option value='Cold Feet'>Cold Feet</option>";
-        result = result +"<option value='Personal'>Personal</option>";
-        result = result +"<option value='Other'>Other</option>";
-        result = result +"</select>";
-        result = result +"    </div>";
+   }
+function closeRequirementPopup(booleanValue,submissionId,requirementId,submissionType,selectBox){
+	if(booleanValue == true){
+		$("#popUp").empty();
+		$(".project_inn_mask").fadeOut(200);
+		changeApplicantStage(submissionId, requirementId, submissionType, selectBox);
+    }else if(booleanValue == false){
+    	$("#popUp").empty();
+    	$(".project_inn_mask").fadeOut(200);
+    	$('#rejectApplicantSelectspocState'+submissionId).prop('selectedIndex',0);
+    }
+	
+}
+    function changeApplicantStage(submissionId, requirementId, submissionType, selectBox){
+    	//reject refresh
+    	$("#reasonForApplicantDiv").empty();
+        $("#reasonForReject").val("");
+        $("#designationType").val('');
+        //$("#rejectedCategory").val("");
+        $("#rejectedCategory").selectpicker('refresh');
         
-        result = result +" <div id='backOutOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
-        result = result +" </div>";
-        
-        //result = result +"        <p>Applicant reject message here</p>";
-        result = result +"    <div class='clearfix'>";
-        result = result +"        <textarea class='form-control' id='reasonForbackOut' name='reasonForbackOut'  placeholder='Comments here' data-validation='required validate_Space validate_length length1-500' field-name='Reason'   onkeypress='reqRemoveSpacesForBackOutReason();'></textarea>";
-        result = result +"    </div>";
-        result = result +" </div>";
-        result = result + ' <div id="backOutForApplicantDiv"/>';
-        result = result +"        <input id='saveBackOut' type='button' class='btn' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
-        result = result +"</form>";
-        result = result +"    </div>";
-        $("#popUp").empty().append(result);
-        $("#backOutApplicant"+submissionId).slideDown(200);
-        $(".project_inn_mask").fadeIn(200);
-    }else if(selectBox == "REJECTED"){
-        var result = "";
-        //result = result +"    <div class='project_inn_mask'></div>";
-        result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-        result = result +"<form id='rejected_form' name='rejected_form'>";
-        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
-        result = result +"    <div class='dropdown-select' id='rejectedCategorytDiv'>";
-        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='required' field-name='Category' >";
-        result = result +"<option selected value=''>--Select Category--</option>";
-        result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
-        result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
-        result = result +"<option value='Bad Fit'>Bad Fit</option>";
-        result = result +"<option value='Salary'>Salary</option>";
-        result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
-        result = result +"<option value='Other'>Other</option>";
-        result = result +"</select>";
-        result = result +"    </div>";
-        
-        result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
-        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
-        result = result +" </div>";
-        
-        //result = result +"        <p>Applicant reject message here</p>";
-        result = result +"    <div class='clearfix'>";
-        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'   onkeypress='reqRemoveSpacesForRejectReason();'></textarea>";
-        result = result +"    </div>";
-        result = result +" </div>";
-        result = result + ' <div id="reasonForApplicantDiv"/>';
-        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
-        result = result +"</form>";
-        result = result +"    </div>";
-        $("#popUp").empty().append(result);
-        $("#rejectApplicant"+submissionId).slideDown(200);
-        $(".project_inn_mask").fadeIn(200);
-    }else if(selectBox == "JOINED"){
-    	$.ajax({
-    	      type : "POST",
-    	      url: atsUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
-    	    	success :function(data) { 
-    	    		if (data.response === "FAILED") {
-			    		showError(data.responseMessage);
-			    	} else if (data.response === "AWKWARD") {
-			    		location.href = "/errorPage";
-			    	} else if (data.response === "SUCCESS") {
-			    		var obj = data.object;
-    	            	var result = "";
-    	                result = result +"<div id='joinedApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
-    	                result = result +"<form id='joinedApplicant_form' name='joinedApplicant_form'>";
-    	                result = result +"	<div class='col-md-12 mt10 mb'>";
-    	                result = result +"    <div class='clearfix inputfiledColor'>";
-    	                if(obj != null && obj != 'undefined' && obj != ""){
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
-    	                }else{
-    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='' type='text' field-name='Join Date'>";
-    	                }
-    	                result = result +"    </div>";
-    	                result = result +"    <div id='joinDateErrorDiv'></div>";
-    	                result = result +"	</div>";
-    	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
-    	                result = result +"</form>";
-    	                result = result +"</div>";
-    	                $("#popUp").empty().append(result);
-    	                $("#joinedApplicant"+submissionId).slideDown(200);
-    	                $(".project_inn_mask").fadeIn(200);
-    	                var locationDate ='${SourceLeadWeb_dateFormat}'; 
-    	            	  var jsDateFormat= '';
-    	            	  if(locationDate.match("yyyy-MM-dd")){
-    	            		  jsDateFormat = 'yy-mm-dd';
-    	            	  }if(locationDate.match("dd-MM-yyyy")){
-    	            		  jsDateFormat = 'dd-mm-yy'; 
-    	            	  }if(locationDate.match("MM-dd-yyyy")){
-    	            		  jsDateFormat = 'mm-dd-yy'; 
-    	            	  }if(locationDate.match("yyyy-dd-MM")){
-    	            		  jsDateFormat = 'yy-dd-mm'; 
-    	            	  }
-    	            	  $('#joinDate'+submissionId).datepicker({
-    	            	      dateFormat: jsDateFormat,
-    	            	      changeMonth: true,
-    	            	  	  changeYear: true,
-    	            	  });
-			    	}else if (data.indexOf('Sign In') !== -1) {
-			    		location.replace(sourceleadUrl);
-			    	} else {
-			    		showError("Operation failed, please try again");
-			    	}
-  				},
-    		  });
-    }else if(selectBox == "SelectedOnInterview"){
-    	$("tr").find("td.sorting_1").removeClass("sorting_1");
-    	$("#job_"+submissionId).addClass("row-success");
-    	
-    	$.ajax({
-  	      type : "POST",
-  	      url: atsUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
-  	    	success :function(data) {
-  	    		if (data.response === "AWKWARD") {
-		    		location.href = "/errorPage";
-		    	} else if (data.response === "SUCCESS") {
-		    		$("tr").removeClass("row-success");
-		    	}else if (data.indexOf('Sign In') !== -1) {
-		    		location.replace(sourceleadUrl);
-		    	} else {
-		    		showError("Operation failed, please try again");
-		    	}
-  	    	},
-		  });
-    	
-    }else if(selectBox == "SHORTLIST"){
-    	$.ajax({
-    	      type : "POST",
-    	      url: atsUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
-    	    	success :function(data) {
-    	    		if (data.response === "AWKWARD") {
-  		    		location.href = "/errorPage";
-  		    	} else if (data.response === "SUCCESS") {
-  		    		$("tr").removeClass("row-success");
-  		    		 requirementPipeline(requirementId,submissionType);
-  		    	}else if (data.indexOf('Sign In') !== -1) {
-  		    		location.replace(sourceleadUrl);
-  		    	} else {
-  		    		showError("Operation failed, please try again");
-  		    	}
-    	    	},
-  		  });
+        //backOut refresh
+        $("#backOutForApplicantDiv").empty();
+        $("#backOutForReject").val("");
+        //$("#rejectedCategory").val("");
+        $("#backOutCategory").selectpicker('refresh');
+        var subId = submissionId;
+        var reqId = requirementId;
+        var subType = submissionType;
+    	if(selectBox == "BACKOUT"){
+    	        var result = "";
+    	        //result = result +"    <div class='project_inn_mask'></div>";
+    	        result = result +"       <div id='backOutApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    	        result = result +"<form id='backOut_form' name='backOut_form'>";
+    	        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
+    	        result = result +"    <div class='dropdown-select' id='backOutCategorytDiv'>";
+    	        result = result +"<select id='backOutCategory' name='backOutCategory' class='form-control' onchange='getBackOutCategory()' data-validation='required' field-name='Category' >";
+    	        result = result +"<option selected value=''>--Select Category--</option>";
+    	        result = result +"<option value='Current Company'>Current Company</option>";
+    	        result = result +"<option value='Compensation'>Compensation</option>";
+    	        result = result +"<option value='Better Offer'>Better Offer</option>";
+    	        result = result +"<option value='Cold Feet'>Cold Feet</option>";
+    	        result = result +"<option value='Personal'>Personal</option>";
+    	        result = result +"<option value='Other'>Other</option>";
+    	        result = result +"</select>";
+    	        result = result +"    </div>";
+    	        
+    	        result = result +" <div id='backOutOtherCategoryDiv' style='display: none' class='mt10'>";
+    	        result = result +" <input type='text' id='backOutCategoryOther' name='backOutCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
+    	        result = result +" </div>";
+    	        
+    	        //result = result +"        <p>Applicant reject message here</p>";
+    	        result = result +"    <div class='clearfix'>";
+    	        result = result +"        <textarea class='form-control' id='reasonForbackOut' name='reasonForbackOut'  placeholder='Comments here' data-validation='required validate_Space validate_length length1-500' field-name='Reason'   onkeypress='reqRemoveSpacesForBackOutReason();'></textarea>";
+    	        result = result +"    </div>";
+    	        result = result +" </div>";
+    	        result = result + ' <div id="backOutForApplicantDiv"/>';
+    	        result = result +"        <input id='saveBackOut' type='button' class='btn' value='Submit' onclick='backOutApplicantSave("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelBackOutApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'>";
+    	        result = result +"</form>";
+    	        result = result +"    </div>";
+    	        $("#popUp").empty().append(result);
+    	        $("#backOutApplicant"+submissionId).slideDown(200);
+    	        $(".project_inn_mask").fadeIn(200);
+    	    }else if(selectBox == "REJECTED"){
+    	        var result = "";
+    	        //result = result +"    <div class='project_inn_mask'></div>";
+    	        result = result +"       <div id='rejectApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    	        result = result +"<form id='rejected_form' name='rejected_form'>";
+    	        result = result +"    <div class='col-md-12 inputOther mt10 inputOther mb'>";
+    	        result = result +"    <div class='dropdown-select' id='rejectedCategorytDiv'>";
+    	        result = result +"<select id='rejectedCategory' name='rejectedCategory' class='form-control' onchange='getRejectedCategory()' data-validation='required' field-name='Category' >";
+    	        result = result +"<option selected value=''>--Select Category--</option>";
+    	        result = result +"<option value='Wrong Skill Sets'>Wrong Skill Sets</option>";
+    	        result = result +"<option value='Unsuitable Personality'>Unsuitable Personality</option>";
+    	        result = result +"<option value='Bad Fit'>Bad Fit</option>";
+    	        result = result +"<option value='Salary'>Salary</option>";
+    	        result = result +"<option value='Interview Rejection'>Interview Rejection</option>";
+    	        result = result +"<option value='Other'>Other</option>";
+    	        result = result +"</select>";
+    	        result = result +"    </div>";
+    	        
+    	        result = result +" <div id='rejectOtherCategoryDiv' style='display: none' class='mt10'>";
+    	        result = result +" <input type='text' id='rejectedCategoryOther' name='rejectedCategoryOther' class='form-control' data-validation-optional='true' field-name='Other Type'>";
+    	        result = result +" </div>";
+    	        
+    	        //result = result +"        <p>Applicant reject message here</p>";
+    	        result = result +"    <div class='clearfix'>";
+    	        result = result +"        <textarea class='form-control' id='reasonForReject' name='reasonForReject'  placeholder='Comments here' data-validation='required validate_Space validate_length length2-100' field-name='Reason'   onkeypress='reqRemoveSpacesForRejectReason();'></textarea>";
+    	        result = result +"    </div>";
+    	        result = result +" </div>";
+    	        result = result + ' <div id="reasonForApplicantDiv"/>';
+    	        result = result +"        <input id='save_Reason' type='button' class='btn' value='Submit' onclick='saveRejectApplicantReason("+subId+","+reqId+",\""+subType+"\");'><input class='u_can_color' type='button' id='saveReasonCancel' value='Cancel' onClick='cancelRejectApplicant("+subId+","+reqId+",\""+subType+"\");'>";
+    	        result = result +"</form>";
+    	        result = result +"    </div>";
+    	        $("#popUp").empty().append(result);
+    	        $("#rejectApplicant"+submissionId).slideDown(200);
+    	        $(".project_inn_mask").fadeIn(200);
+    	    }else if(selectBox == "JOINED"){
+    	    	$.ajax({
+    	    	      type : "POST",
+    	    	      url: atsUrl+"/getRequirementOfferSubmissionById?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	    	success :function(data) { 
+    	    	    		if (data.response === "FAILED") {
+    				    		showError(data.responseMessage);
+    				    	} else if (data.response === "AWKWARD") {
+    				    		location.href = "/errorPage";
+    				    	} else if (data.response === "SUCCESS") {
+    				    		var obj = data.object;
+    	    	            	var result = "";
+    	    	                result = result +"<div id='joinedApplicant"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    	    	                result = result +"<form id='joinedApplicant_form' name='joinedApplicant_form'>";
+    	    	                result = result +"	<div class='col-md-12 mt10 mb'>";
+    	    	                result = result +"    <div class='clearfix inputfiledColor'>";
+    	    	                if(obj != null && obj != 'undefined' && obj != ""){
+    	    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='"+obj.updatedDateStr+"' type='text' field-name='Join Date'>";
+    	    	                }else{
+    	    	                	result = result +"        <input class='width100percnt form-control input-sm Datepicker calendar' placeholder='Joined Date' name='joinDate' id='joinDate"+submissionId+"'  readonly='readonly' value='' type='text' field-name='Join Date'>";
+    	    	                }
+    	    	                result = result +"    </div>";
+    	    	                result = result +"    <div id='joinDateErrorDiv'></div>";
+    	    	                result = result +"	</div>";
+    	    	                result = result +" <input id='saveJoinedRequest' type='button' class='btn' value='Submit' onclick='saveJoinedRequestForApplicant("+submissionId+","+requirementId+",\""+submissionType+"\");'><input class='u_can_color' type='button' id='joinedRequestCancel' value='Cancel' onClick='cancelJoinedRequest("+subId+","+reqId+",\""+subType+"\");'>";
+    	    	                result = result +"</form>";
+    	    	                result = result +"</div>";
+    	    	                $("#popUp").empty().append(result);
+    	    	                $("#joinedApplicant"+submissionId).slideDown(200);
+    	    	                $(".project_inn_mask").fadeIn(200);
+    	    	                var locationDate ='${SourceLeadWeb_dateFormat}'; 
+    	    	            	  var jsDateFormat= '';
+    	    	            	  if(locationDate.match("yyyy-MM-dd")){
+    	    	            		  jsDateFormat = 'yy-mm-dd';
+    	    	            	  }if(locationDate.match("dd-MM-yyyy")){
+    	    	            		  jsDateFormat = 'dd-mm-yy'; 
+    	    	            	  }if(locationDate.match("MM-dd-yyyy")){
+    	    	            		  jsDateFormat = 'mm-dd-yy'; 
+    	    	            	  }if(locationDate.match("yyyy-dd-MM")){
+    	    	            		  jsDateFormat = 'yy-dd-mm'; 
+    	    	            	  }
+    	    	            	  $('#joinDate'+submissionId).datepicker({
+    	    	            	      dateFormat: jsDateFormat,
+    	    	            	      changeMonth: true,
+    	    	            	  	  changeYear: true,
+    	    	            	  });
+    				    	}else if (data.indexOf('Sign In') !== -1) {
+    				    		location.replace(sourceleadUrl);
+    				    	} else {
+    				    		showError("Operation failed, please try again");
+    				    	}
+    	  				},
+    	    		  });
+    	    }else if(selectBox == "SelectedOnInterview"){
+    	    	$("tr").find("td.sorting_1").removeClass("sorting_1");
+    	    	$("#job_"+submissionId).addClass("row-success");
+    	    	
+    	    	$.ajax({
+    	  	      type : "POST",
+    	  	      url: atsUrl+"/saveSelectedOnInterviewStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	  	    	success :function(data) {
+    	  	    		if (data.response === "AWKWARD") {
+    			    		location.href = "/errorPage";
+    			    	} else if (data.response === "SUCCESS") {
+    			    		$("tr").removeClass("row-success");
+    			    	}else if (data.indexOf('Sign In') !== -1) {
+    			    		location.replace(sourceleadUrl);
+    			    	} else {
+    			    		showError("Operation failed, please try again");
+    			    	}
+    	  	    	},
+    			  });
+    	    	
+    	    }else if(selectBox == "SHORTLIST"){
+    	    	$.ajax({
+    	    	      type : "POST",
+    	    	      url: atsUrl+"/saveShortlistStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId, 
+    	    	    	success :function(data) {
+    	    	    		if (data.response === "AWKWARD") {
+    	  		    		location.href = "/errorPage";
+    	  		    	} else if (data.response === "SUCCESS") {
+    	  		    		$("tr").removeClass("row-success");
+    	  		    		 requirementPipeline(requirementId,submissionType);
+    	  		    	}else if (data.indexOf('Sign In') !== -1) {
+    	  		    		location.replace(sourceleadUrl);
+    	  		    	} else {
+    	  		    		showError("Operation failed, please try again");
+    	  		    	}
+    	    	    	},
+    	  		  });
+    	    }
+    	   
+    	    // below line commented for saving any stage for dynamic workflow name. updated by SRINIVAS SABBU.
+    	   // else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
+    		 else if(selectBox){ // skip stage name check for dynamic workflow stages.
+    			 $.ajax({
+    	    	      type : "POST",
+    	    	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
+    	    	    	success :function(data) {
+    	    	    		if (data.response === "AWKWARD") {
+    	  		    		location.href = "/errorPage";
+    	  		    	} else if (data.response === "SUCCESS") {
+    	  		    		$("tr").removeClass("row-success");
+    	  		    		// below funtion is used to check whether the questinniare is assigned to stage or not.
+    	  		    		 getQuestionnaireIdAssignedToStage(selectBox, submissionId);  
+    	  		    		 requirementPipeline(requirementId,submissionType);
+    	  		    	}else if (data.indexOf('Sign In') !== -1) {
+    	  		    		location.replace(sourceleadUrl);
+    	  		    	} else {
+    	  		    		showError("Operation failed, please try again");
+    	  		    	}
+    	    	    	},
+    	  		  });
+    	    }  
+    		 // Here need to test any questionnaire is assigned to stage if the initiator confirms need to send the questionnaire to canditate.
+    	   // getQuestionnaireIdAssignedToStage(selectBox, submissionId);
+    	   	
     }
    
-    // below line commented for saving any stage for dynamic workflow name. updated by SRINIVAS SABBU.
-   // else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
-	 else if(selectBox){ // skip stage name check for dynamic workflow stages.
-		 $.ajax({
-    	      type : "POST",
-    	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
-    	    	success :function(data) {
-    	    		if (data.response === "AWKWARD") {
-  		    		location.href = "/errorPage";
-  		    	} else if (data.response === "SUCCESS") {
-  		    		$("tr").removeClass("row-success");
-  		    		// below funtion is used to check whether the questinniare is assigned to stage or not.
-  		    		 getQuestionnaireIdAssignedToStage(selectBox, submissionId);  
-  		    		 requirementPipeline(requirementId,submissionType);
-  		    	}else if (data.indexOf('Sign In') !== -1) {
-  		    		location.replace(sourceleadUrl);
-  		    	} else {
-  		    		showError("Operation failed, please try again");
-  		    	}
-    	    	},
-  		  });
-    }  
-	 // Here need to test any questionnaire is assigned to stage if the initiator confirms need to send the questionnaire to canditate.
-   // getQuestionnaireIdAssignedToStage(selectBox, submissionId);
-}
  function getQuestionnaireIdAssignedToStage(stageName, submissionId){
 	 var workflowId ='${workflowId}';
 	 $.ajax({
@@ -1396,6 +1442,7 @@ function cancelJoinedRequest(submissionId,requirementId,submissionType){
 };
 
 function pipelineBySubmissionType(requirementId,submissionType){
+	
 	if(submissionType == 'all'){
 		requirementPipeline(requirementId,submissionType);
 	}else if(submissionType == 'DUPLICATE_APPLICANTS'){
@@ -2184,15 +2231,15 @@ function requirementWorkflowStatusBar(requirementId){
 		result = result + '<ul id = "stageColumns">';
 		result = result + '<li title="Applicants" id="applicantli" onclick="requirementPipeline('+requirementId+',\''+all+'\');tabEnable(this);" class="reqAct">';
 		result = result + '	<span><i class="fa fa-users"></i></span><b id="applicantsCount" shortCode="APPLICANTS">0</b>';
-		result = result + '<div class="clearfix small mt10"><label shortCode="applicants" class="mb0 fontSmall tooltip-pipeline">Applicants</label></div>';
+		result = result + '<div class="clearfix small mt10"><label shortCode="APPLICANTS" class="mb0 fontSmall tooltip-pipeline">Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Duplicate Applicants" class="" id="duplicataplctli" onclick="requirementPipeline('+requirementId+',\''+duplicateApplicantCount+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-files-o"></i></span><b id="duplicateApplicantsCount" >0</b>';
-		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Duplicate Applicants</label></div>';
+		result = result + '<div class="clearfix fontSmall mt10"><label shortCode="DUPLICATES" class="mb0 small">Duplicate Applicants</label></div>';
 		result = result + '</li>';
 		result = result + '<li title="Request Sent" id="requestSentli" onclick="requirementPipeline('+requirementId+',\''+requestSent+'\');tabEnable(this);">';
 		result = result + '	<span><i class="fa fa-check"></i></span><b id="requestSent" shortCode="REQUEST_SENT">0</b>';
-		result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Request Sent</label></div>';
+		result = result + '<div class="clearfix fontSmall mt10"><label shortCode="REQUESTSENT" class="mb0 small">Request Sent</label></div>';
 		result = result + '</li>';
 		// Start here getting dynamically configured stages for the workflow. 
 		 <c:forEach var="stage" items="${stagesList}">
@@ -2200,63 +2247,63 @@ function requirementWorkflowStatusBar(requirementId){
 				 <c:when test = "${stage.stageShortCode =='SUBMISSION'}">
 					result = result + '<li title="${stage.stageName}" id="Submission" onclick="requirementPipeline('+requirementId+',\''+submission+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-check-square-o"></i></span><b id="submissionsCount" shortCode="${stage.stageShortCode}">0</b>';
-					result = result + '<div class="clearfix fontSmall mt10"><label  class="mb0 small">${stage.stageName}</label></div>';
+					result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">${stage.stageName}</label></div>';
 					result = result + '</li>';
 				</c:when>
 				<c:when test = "${stage.stageShortCode =='SHORTLIST'}">
 				    result = result + '<li title="Shortlisted" class="" id="shortListli" onclick="requirementPipeline('+requirementId+',\''+shortList+'\');tabEnable(this);">';
 				    result = result + '	<span><i class="fa fa-list-ul"></i></span><b id="shortlistCount" shortCode="${stage.stageShortCode}" >0</b>';
-				    result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Shortlisted</label></div>';
+				    result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Shortlisted</label></div>';
 				    result = result + '</li>';
 				 </c:when>
 				  <c:when test = "${stage.stageShortCode =='INTERVIEW'}">
 				    result = result + '<li title="Interviews" class="" id="interviewli" onclick="requirementPipeline('+requirementId+',\''+interview+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-handshake-o"></i></span><b id="interviewCount" shortCode="${stage.stageShortCode}">0</b>';
-					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Interviews</label></div>';
+					result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Interviews</label></div>';
 					result = result + '</li>';
 				 </c:when>
 			   <c:when test = "${stage.stageShortCode =='OFFERMADE'}">
 				    result = result + '<li title="Offers" id="offerMadeli" onclick="requirementPipeline('+requirementId+',\''+offerMade+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-envelope-open-o"></i></span><b id="offersCount" shortCode="${stage.stageShortCode}" >0</b>';
-					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Offers</label></div>';
+					result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Offers</label></div>';
 					result = result + '</li>';
 				</c:when>
 			   <c:when test = "${stage.stageShortCode =='JOINED'}">
 					result = result + '<li title="Joined" id="joinedli" onclick="requirementPipeline('+requirementId+',\''+joined+'\');tabEnable(this);">';
 					result = result + '	<span><i class="fa fa-id-badge"></i></span><b id="joinedCount" shortCode="${stage.stageShortCode}">0</b>';
-					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Joined</label></div>';
+					result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Joined</label></div>';
 					result = result + '</li>';
 			  </c:when>
 			  <c:when test = "${stage.stageShortCode =='REJECTED'}">
 			 	result = result + '<li title="Rejected" class="" id="rejectedli" onclick="requirementPipeline('+requirementId+',\''+rejected+'\');tabEnable(this);">';
 				result = result + '	<span class="rejColor"><i class="fa fa-ban"></i></span><b id="rejectedCount" shortCode="${stage.stageShortCode}">0</b>';
-				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Rejected</label></div>';
+				result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Rejected</label></div>';
 				result = result + '</li>';
 		     </c:when>
 		     <c:when test = "${stage.stageShortCode =='BACKOUT'}">
 		        result = result + '<li title="Back-Out" id="backoutli" onclick="requirementPipeline('+requirementId+',\''+backout+'\');tabEnable(this);">';
 				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="backoutCount" shortCode="${stage.stageShortCode}">0</b>';
-				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Back-Out</label></div>';
+				result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Back-Out</label></div>';
 				result = result + '</li>';
 		     </c:when>
 		     <c:when test = "${stage.stageShortCode =='ON_HOLD'}">
 		        result = result + '<li title="On-hold" id="fa fa-pause-circle-o" onclick="requirementPipeline('+requirementId+',\''+onhold+'\');tabEnable(this);">';
 				result = result + '	<span class="outColor"><i class="fa fa-arrow-circle-left"></i></span><b id="OnholdCount" shortCode="${stage.stageShortCode}">0</b>';
-				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">On-hold</label></div>';
+				result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">On-hold</label></div>';
 				result = result + '</li>';
 		     </c:when>
 		     <c:when test = "${stage.stageShortCode =='SUBMIT_TO_CLIENT'}"> 
 			 if(clientSubmissions == 'Y' && isSpocActive == 'Y'){
 					result = result + '<li title="Submit to Client" id="submitToClientli" onclick="requirementPipeline('+requirementId+',\''+submitToClient+'\');tabEnable(this);">';
 					result = result + '	<span class="cliColor"><i class="fa fa-send"></i></span><b id="submitToClientCount" shortCode="${stage.stageShortCode}">0</b>';
-					result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">Submit to Client</label></div>';
+					result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">Submit to Client</label></div>';
 					result = result + '</li>';
 			}
 		  </c:when>
 			  <c:otherwise>
 				result = result + '<li title="${stage.stageName}" id="${stage.stageShortCode}" onclick=requirementWorkflowPipeline('+requirementId+',\'${stage.stageShortCode}\');tabEnable(this);>';
 				result = result + '	<span><i class="fa fa-sitemap"></i></span><b id="${stage.stageShortCode}Count" shortCode="${stage.stageShortCode}">0</b>';
-				result = result + '<div class="clearfix fontSmall mt10"><label class="mb0 small">${stage.stageName}</label></div>';
+				result = result + '<div class="clearfix fontSmall mt10"><label shortCode="${stage.stageShortCode}" class="mb0 small">${stage.stageName}</label></div>';
 				result = result + '</li>';
 			  </c:otherwise>
 		 </c:choose>
