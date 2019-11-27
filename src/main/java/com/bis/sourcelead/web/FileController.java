@@ -178,7 +178,7 @@ public class FileController {
 				} else {
 					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, file);
 					fileInfo.setFileName(multiFile.getOriginalFilename());
-					fileInfo.setFileURL(fileURL);
+					fileInfo.setFileURL(type.equalsIgnoreCase("ticket") ? fileURL.replace("/ticket/", "/temp/") : fileURL);
 					fileInfo.setContentType(multiFile.getContentType());
 					fileInfoList.add(fileInfo);
 				}
@@ -305,6 +305,7 @@ public class FileController {
 				}else {
 					logger.info("*******Resume Parser without Service calling..");
 					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
+					 resume.setFileInfo(fileInfo);
 				}
 				
 			      resumeContent.add(resume);

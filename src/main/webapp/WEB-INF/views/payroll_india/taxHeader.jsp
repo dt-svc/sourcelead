@@ -19,7 +19,7 @@
 			</div>
 		</c:when>
 		<c:otherwise>
-			<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
+			<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo;<a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings</a> &raquo; ${(activeTaxTab == 'state' || activeTaxTab =='createStateTax') ? 'State Tax' : (activeTaxTab == 'central' || activeTaxTab =='createCentralTax') ? 'Central Tax' : (formTabType == 'createForm' ? 'Create Form' : formTabType == 'viewForm' ? 'View Form' : 'Forms')}</div>
 		</c:otherwise>
 	</c:choose>
 </section>
