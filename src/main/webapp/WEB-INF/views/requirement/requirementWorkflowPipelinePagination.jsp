@@ -543,7 +543,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 									+ requirementId
 									+ ',\''
 									+ submissionType
-									+ '\')";>';
+									+ '\',\''+opt.candidateName+'\')";>';
 							result = result
 									+ "<option value='Status'>"
 									+ opt.submissionDisplayStatus
@@ -776,7 +776,7 @@ function requirementWorkflowPipelineList(url, requirementId, submissionType, col
 						+ requirementId
 						+ ',\''
 						+ submissionType
-						+ '\')";>';
+						+ '\',\''+opt.candidateName+'\')";>';
 				     result = result
 						+ "<option value='Status'>"
 						+ opt.submissionDisplayStatus
