@@ -1,6 +1,7 @@
 package com.bis.sourcelead.bgc.service.Impl;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -72,6 +74,14 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	      logger.error("Exception caught  in saveBgcCandidateDetails service "+e.getMessage());
 	      return null;
 	    }
+	}
+
+
+	@Override
+	public ResponseList<BgcCandidateDetailsDTO> getBgcCadidateList(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
+			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
+		
+		return  bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
 	}
 
 }

@@ -1,11 +1,19 @@
 package com.bis.sourcelead.bgc.dto;
 
+import java.io.Serializable;
+
+import com.bis.sourcelead.dto.SearchDTO;
 
 /**
  * @author Srinivas.Sabbu
  *
  */
-public class BgcCandidateDetailsDTO {
+public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	
@@ -14,6 +22,8 @@ public class BgcCandidateDetailsDTO {
 	private Long candidateId;
 	
 	private Long orgLocationId;
+	
+	private String fullName;
 	
 	private String currentBgcStatus;
 	
@@ -27,9 +37,9 @@ public class BgcCandidateDetailsDTO {
 	
 	private String crimeCheckStatus;
 	
-	private String OthersInfoStatus;
+	private String othersInfoStatus;
 	
-	private String updatedPercetage;
+	private String updatedPercentage;
 	
 	private String comments;
 	
@@ -124,19 +134,19 @@ public class BgcCandidateDetailsDTO {
 	}
 
 	public String getOthersInfoStatus() {
-		return OthersInfoStatus;
+		return othersInfoStatus;
 	}
 
 	public void setOthersInfoStatus(String othersInfoStatus) {
-		OthersInfoStatus = othersInfoStatus;
+		this.othersInfoStatus = othersInfoStatus;
 	}
 
-	public String getUpdatedPercetage() {
-		return updatedPercetage;
+	public String getUpdatedPercentage() {
+		return updatedPercentage;
 	}
 
-	public void setUpdatedPercetage(String updatedPercetage) {
-		this.updatedPercetage = updatedPercetage;
+	public void setUpdatedPercentage(String updatedPercetage) {
+		this.updatedPercentage = updatedPercentage;
 	}
 
 	public String getComments() {
@@ -185,6 +195,14 @@ public class BgcCandidateDetailsDTO {
 
 	public void setUpdatedBy(Long updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 	
 	

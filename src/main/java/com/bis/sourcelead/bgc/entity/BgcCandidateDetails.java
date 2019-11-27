@@ -65,7 +65,7 @@ public class BgcCandidateDetails {
 	private String OthersInfoStatus;
 	
 	@Column(name = "UPDATED_PERCENTAGE ")
-	private String updatedPercetage;
+	private String updatedPercentage;
 	
 	@Column(name = "COMMENTS ", columnDefinition = "TEXT default NULL")
 	private String comments;
@@ -176,12 +176,12 @@ public class BgcCandidateDetails {
 		OthersInfoStatus = othersInfoStatus;
 	}
 
-	public String getUpdatedPercetage() {
-		return updatedPercetage;
+	public String getupdatedPercentage() {
+		return updatedPercentage;
 	}
 
-	public void setUpdatedPercetage(String updatedPercetage) {
-		this.updatedPercetage = updatedPercetage;
+	public void setUpdatedPercentage(String updatedPercentage) {
+		this.updatedPercentage = updatedPercentage;
 	}
 
 	public String getComments() {

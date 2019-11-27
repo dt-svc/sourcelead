@@ -593,6 +593,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 bgcCandidateDetailsDto.setOthersInfoStatus(Constants.NOT_INITIATED);
 		 bgcCandidateDetailsDto.setPersonalInfoStatus(Constants.NOT_INITIATED);
 		 bgcCandidateDetailsDto.setPriorEmployersCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setUpdatedPercentage(Constants.NOT_INITIATED);// default value setting.
 		 bgcCandidateDetailsDto.setStatus(Constants.RECORD_ACTIVE);
 		 
 		 // calling bgc savind method 
