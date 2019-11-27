@@ -144,6 +144,7 @@ public class DataMigrationCommonRestController {
 	    case "projectTasks": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(94l, 1);break;  
 	    case "associateUpload": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(161l, 1);break;  
 	    case "submmissionTemplateUpload": formFields = dataMigrationService.getSubmissionTemplateFormFields(dataMigrationCommonDTO.getRequirementId());break; 
+	    case "profileTracker": formFields = dataMigrationService.getfieldsByActionIdAndImportStatus(370l, 1);break;  
 	    }
 		
 		if("timesheetUpload".equalsIgnoreCase(dataMigrationCommonDTO.getUploadType())) {
@@ -390,4 +391,50 @@ public class DataMigrationCommonRestController {
 	{
 		dataMigrationService.bulkUploadEmails(couchbaseQueueKey,uploadedSize,type,request);
 	}
+	
+	
+	
+	@RequestMapping(value = "/dataMigrationProfileTracker")
+	public ModelAndView dataMigrationProfileTracker(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		ModelAndView model = new ModelAndView();
+		try {
+		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+		Map<String, String> dataWithCellId = new TreeMap<String, String>();
+		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
+		List<SourceleadFormFields> formFieldsList = new ArrayList<>();
+		List<SourceleadFormFields> sourceleadFormFieldsList = new ArrayList<>();
+		switch(dataMigrationCommonDTO.getUploadType()){  
+	    case "profileTracker": formFieldsList = dataMigrationService.getfieldsByActionIdAndImportStatus(370l, 1);break;  
+	    }
+		
+		for(SourceleadFormFields formFields : formFieldsList) {
+			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+				if(!formFields.getLabelName().equalsIgnoreCase("SSN Number")) {
+					sourceleadFormFieldsList.add(formFields);
+				}
+			}
+			
+			if(orgLocations.getCountry().equalsIgnoreCase("United States")) {
+				if(!formFields.getLabelName().equalsIgnoreCase("Pan Number") && !formFields.getLabelName().equalsIgnoreCase("Aadhar Number")) {
+					sourceleadFormFieldsList.add(formFields);
+				}
+			}
+		}
+		
+		model.setViewName("upload/dataImport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("dataWithCellId", dataWithCellId);
+		model.addObject("fields", sourceleadFormFieldsList);
+		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
+		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
+		model.addObject("headerPosition", dataMigrationCommonDTO.getHeaderPosition());
+	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
 }
