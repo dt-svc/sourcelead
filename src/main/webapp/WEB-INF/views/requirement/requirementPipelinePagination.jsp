@@ -528,7 +528,7 @@
 															+ requirementId
 															+ ',\''
 															+ submissionType
-															+ '\')";>';
+															+ '\',\''+opt.candidateName+'\')";>';
 													result = result
 															+ "<option value='Status'>"
 															+ opt.submissionDisplayStatus
@@ -750,7 +750,7 @@
 											+ requirementId
 											+ ',\''
 											+ submissionType
-											+ '\')";>';
+											+ '\',\''+opt.candidateName+'\')";>';
 									     result = result
 											+ "<option value='Status'>"
 											+ opt.submissionDisplayStatus

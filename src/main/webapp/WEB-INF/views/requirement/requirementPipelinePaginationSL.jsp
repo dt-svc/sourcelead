@@ -588,7 +588,7 @@
 															+ requirementId
 															+ ',\''
 															+ submissionType
-															+ '\')";>';
+															+ '\',\''+opt.candidateName+'\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
 													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
@@ -635,7 +635,7 @@
 													+ requirementId
 													+ ',\''
 													+ submissionType
-													+ '\')";>';
+													+ '\',\''+opt.candidateName+'\')";>';
 												 result = result
 													+ "<option value='Status'>"
 													+ opt.submissionDisplayStatus
