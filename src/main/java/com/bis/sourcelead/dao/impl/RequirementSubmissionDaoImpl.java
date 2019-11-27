@@ -187,17 +187,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 String subQuery = "";
 		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
-			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' "
+			 		+ " OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
 		 }else{
 			 //29-10-2019
 			 //checking isWorkflowConfigured to generate offer for applicant from any previous stage.
 			 if(!isWorkflowConfigured.equalsIgnoreCase(Constants.BOOLEAN_TRUE)){
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
 				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
-				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR "
+				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "
 					 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
 			}else{
-				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
+				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' "
 					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') ";
 			}
 			 }else{
@@ -3469,7 +3470,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			  Session session = this.sessionFactory.getCurrentSession();
 			
 			  /*String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";*/
-			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";
+			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' "
+			  		+ " OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) ";
 			 
 			 List<RequirementSubmission> shortListCandidatesList;
 			 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
