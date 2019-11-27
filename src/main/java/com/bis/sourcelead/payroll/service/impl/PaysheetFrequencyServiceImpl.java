@@ -428,24 +428,28 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 				empTotalTax = empTotalTax.add(federalWithholding).add(fica).add(medicare).add(advancedEarnedIC).add(stateWithholding).add(countyWithholding).add(localTax);
 				emplrTotalTax = emplrTotalTax.add(emplrFUTA).add(emplrMedicare).add(emplrFUTA).add(emplrSUTA).add(emplrRUIA)
 				        .add(emplrSUTASuracharge).add(emplrSDI).add(emplrTransitTaxes).add(emplrWyomingWC).add(emplrOregonWC); 
+				Map<String, Double> preDList = new HashMap<>();
+				Map<String, Double> postDList = new HashMap<>();
 				if(dedHisList.size() >0) {
 					List<DeductionDTO> preDedList = dedHisList.stream().filter(ded->"pretax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
 				    List<DeductionDTO> postDedList = dedHisList.stream().filter(ded->"posttax".equalsIgnoreCase(ded.getDedTaxType())).collect(Collectors.toList());
-				    Map<String, Double> preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPreDeductionAmount)));
-				    response.setPreDed(preDList);
-				    Map<String, Double> postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
-				    response.setPostDed(postDList);
+				    preDList = preDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPreDeductionAmount)));
+				    postDList = postDedList.stream().collect(Collectors.groupingBy(DeductionDTO::getDeductionType,Collectors.summingDouble(DeductionDTO::getPostDeductionAmt)));
 				}
+				response.setPreDed(preDList);
+				response.setPostDed(postDList);
 				
+				Map<String, Double> contribution = new HashMap<>();
 				if(contributionHisList.size() >0) {
-					Map<String, Double> contribution = contributionHisList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getContributionAmt)));
-					response.setContribution(contribution);
+					contribution = contributionHisList.stream().collect(Collectors.groupingBy(ContributionDTO::getContributionType,Collectors.summingDouble(ContributionDTO::getContributionAmt)));
 				}
+				response.setContribution(contribution);
 				
+				Map<String, Double> payItem = new HashMap<>();
 				if(payItemList.size() >0) {
-					Map<String, Double> payItem = payItemList.stream().collect(Collectors.groupingBy(AssociatePayItemDTO::getPayItemName,Collectors.summingDouble(AssociatePayItemDTO::getPayItemAmt)));
-					response.setPayItem(payItem);
+					payItem = payItemList.stream().collect(Collectors.groupingBy(AssociatePayItemDTO::getPayItemName,Collectors.summingDouble(AssociatePayItemDTO::getPayItemAmt)));
 				}
+				response.setPayItem(payItem);
 				
 				paySum.setFederalWithholding(federalWithholding);
 				paySum.setFicaWithholding(fica);
@@ -1066,6 +1070,12 @@ public class PaysheetFrequencyServiceImpl implements PaysheetFrequencyService{
 	public List<PaysheetFrequency> getRecentlyRunPayrollData( Long orgLocationId)
 	{
 		return paysheetFrequencyDao.getRecentlyRunPayrollData(orgLocationId);
+	}
+
+	@Override
+	public List<EmployeePayroll> getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(
+			Date startDate, Date endDate, Long orgLocationId) throws Exception {
+		return paysheetFrequencyDao.getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(startDate, endDate, orgLocationId);
 	}
 
 }
