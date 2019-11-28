@@ -87,6 +87,7 @@
 				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
 				<input type="hidden"  readonly id="timesheetMode" name="timesheetMode" value="${timesheetMode}">
 				<input type="hidden"  readonly id="importStatus" name="importStatus" value="${importStatus}">
+				<input type="hidden"  readonly id="requirementId" name="requirementId" value="${requirementId}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>

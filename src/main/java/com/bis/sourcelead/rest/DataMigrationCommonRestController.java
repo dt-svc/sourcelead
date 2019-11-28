@@ -429,6 +429,7 @@ public class DataMigrationCommonRestController {
 		model.addObject("fields", sourceleadFormFieldsList);
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
+		model.addObject("requirementId", dataMigrationCommonDTO.getRequirementId());
 		model.addObject("headerPosition", dataMigrationCommonDTO.getHeaderPosition());
 	
 		}catch (Exception e) {
