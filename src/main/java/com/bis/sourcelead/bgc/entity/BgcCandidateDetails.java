@@ -39,6 +39,10 @@ public class BgcCandidateDetails {
 	private Candidate candidate;
 	
 	@ManyToOne
+	@JoinColumn(name = "SOURCE_ORG_LOCATION_ID")
+	private OrgLocations sourceOrglocationId;
+	
+	@ManyToOne
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	
@@ -111,6 +115,15 @@ public class BgcCandidateDetails {
 	public void setCandidate(Candidate candidate) {
 		this.candidate = candidate;
 	}
+
+	public OrgLocations getSourceOrglocationId() {
+		return sourceOrglocationId;
+	}
+
+	public void setSourceOrglocationId(OrgLocations sourceOrglocationId) {
+		this.sourceOrglocationId = sourceOrglocationId;
+	}
+
 
 	public OrgLocations getOrgLocationId() {
 		return orgLocationId;

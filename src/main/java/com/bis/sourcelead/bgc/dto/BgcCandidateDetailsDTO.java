@@ -21,6 +21,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	
 	private Long candidateId;
 	
+	private Long sourceOrglocationId;
+	
 	private Long orgLocationId;
 	
 	private String fullName;
@@ -75,6 +77,14 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public Long getSourceOrglocationId() {
+		return sourceOrglocationId;
+	}
+
+	public void setSourceOrglocationId(Long sourceOrglocationId) {
+		this.sourceOrglocationId = sourceOrglocationId;
 	}
 
 	public Long getOrgLocationId() {
