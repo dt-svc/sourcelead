@@ -503,6 +503,40 @@ public class DataMigrationDTO extends CommonDTO {
 
     private String sessionId;
     
+    
+    // This for import profile tracker to job
+    private String candidateName;
+    
+    private String mobileNumber;
+    
+    private String alternateMobileNumber;
+    
+    private String currentCompany;
+    
+    private String totalExperience;
+    
+    private String releventExperience;
+    
+    private String currentLocation;
+    
+    private String position;
+    
+    private String ctc;
+    
+    private String ectc;
+    
+    private String panNumber;
+    
+    private String aadharNumber;
+    
+    private String recruiterEmail;
+    
+    private String ssnNumber;
+    
+    
+    
+    
+    
 	public String getEmployeeId() {
 		return employeeId;
 	}
@@ -2522,6 +2556,118 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setWorkflow(String workflow) {
 		this.workflow = workflow;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+	public String getAlternateMobileNumber() {
+		return alternateMobileNumber;
+	}
+
+	public void setAlternateMobileNumber(String alternateMobileNumber) {
+		this.alternateMobileNumber = alternateMobileNumber;
+	}
+
+	public String getCurrentCompany() {
+		return currentCompany;
+	}
+
+	public void setCurrentCompany(String currentCompany) {
+		this.currentCompany = currentCompany;
+	}
+
+	public String getTotalExperience() {
+		return totalExperience;
+	}
+
+	public void setTotalExperience(String totalExperience) {
+		this.totalExperience = totalExperience;
+	}
+
+	public String getReleventExperience() {
+		return releventExperience;
+	}
+
+	public void setReleventExperience(String releventExperience) {
+		this.releventExperience = releventExperience;
+	}
+
+	public String getCurrentLocation() {
+		return currentLocation;
+	}
+
+	public void setCurrentLocation(String currentLocation) {
+		this.currentLocation = currentLocation;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getCtc() {
+		return ctc;
+	}
+
+	public void setCtc(String ctc) {
+		this.ctc = ctc;
+	}
+
+	public String getEctc() {
+		return ectc;
+	}
+
+	public void setEctc(String ectc) {
+		this.ectc = ectc;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
+	public String getRecruiterEmail() {
+		return recruiterEmail;
+	}
+
+	public void setRecruiterEmail(String recruiterEmail) {
+		this.recruiterEmail = recruiterEmail;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
    
 }

@@ -73,6 +73,7 @@ import com.bis.sourcelead.immigration.service.ImmigrationCommonService;
 import com.bis.sourcelead.service.AssetCategoryService;
 import com.bis.sourcelead.service.AssetService;
 import com.bis.sourcelead.service.AssociateGradesService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.DepartmentService;
@@ -208,6 +209,10 @@ public class DataMigrationCommonUtil {
 	
 	@Autowired
 	RequirementWorkFlowService requirementWorkflowService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
 	
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobs(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation) throws Exception
@@ -3026,8 +3031,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	{
 		
 		if(dataMigrationDTOJsonCopy.get("email") != null) {
-			Long candidateId = candidateService.getCandidateIdByEmailAndOrgLocationId(dataMigrationDTOJsonCopy.get("email").toString(), orgLocation.getId());
-			if (candidateId != null) {
+			boolean candidateFlag = candidateGlobalService.isCandidateExistsInCandidateGlobal(dataMigrationDTOJsonCopy.get("email").toString(), orgLocation.getId());
+			if (candidateFlag == true) {
 				errorSet.put("email", "Candidate already existed");
 			}else {
 				
@@ -3169,5 +3174,198 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		
 		
 	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public void dataValidationForJobProfileTracker(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
+	{
+		
+		if(!dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
+			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), orgLocation.getId());
+			if (submissionFlag) {
+				errorSet.put("emailId", "Candidate already submitted to this job");
+			}else {
+				
+				Matcher matcher = null;
+				Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+						+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+				
+				matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("emailId").toString().trim());
+				if(matcher.matches() == false) {
+					errorSet.put("emailId", "Invalid Email");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("candidateName") && (dataMigrationDTOJsonCopy.get("candidateName").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("candidateName").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("candidateName").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("candidateName", "Candidate Name field is missing");
+				}
+				
+				
+				String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+				if(dataMigrationDTOJsonCopy.has("mobileNumber") && !dataMigrationDTOJsonCopy.get("mobileNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("mobileNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("mobileNumber").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String mobNum = dataMigrationDTOJsonCopy.get("mobileNumber").toString();
+					if (mobNum.length() > 9 && mobNum.length() <= 20) {
+						flag = mobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("mobileNumber", "Invalid Mobile Number");
+					}
+					
+				}else {
+					errorSet.put("mobileNumber", "Mobile Number field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("alternateMobileNumber") && !dataMigrationDTOJsonCopy.get("alternateMobileNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("alternateMobileNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("alternateMobileNumber").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String alternatemobNum = dataMigrationDTOJsonCopy.get("alternateMobileNumber").toString();
+					if (alternatemobNum.length() > 9 && alternatemobNum.length() <= 20) {
+						flag = alternatemobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("alternateMobileNumber", "Invalid Alternate Mobile Number");
+					}
+					
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("currentCompany") && (dataMigrationDTOJsonCopy.get("currentCompany").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("currentCompany").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("currentCompany").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("currentCompany", "Current Company field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("totalExperience") && (dataMigrationDTOJsonCopy.get("totalExperience").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("totalExperience").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("totalExperience").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("totalExperience", "Total Experience field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("releventExperience") && (dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("revelentExperience").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("releventExperience", "Relevent Experience field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("skills") && (dataMigrationDTOJsonCopy.get("skills").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("skills").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("skills").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("skills", "Skills field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("currentLocation") && (dataMigrationDTOJsonCopy.get("currentLocation").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("currentLocation").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("currentLocation").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("currentLocation", "Current Location field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("position") && (dataMigrationDTOJsonCopy.get("position").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("position").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("position").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("position", "Position field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("noticePeriod") && (dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("noticePeriod", "Notice Period field is missing");
+				}
+				
+				String rateRegEx = "^[0-9\b]+$";
+				
+				if(dataMigrationDTOJsonCopy.has("ctc") && !dataMigrationDTOJsonCopy.get("ctc").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("ctc").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("ctc").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String currentRate = dataMigrationDTOJsonCopy.get("ctc").toString();
+					if (currentRate.length() > 0 && currentRate.length() <= 8) {
+						flag = currentRate.matches(rateRegEx);
+					}
+					if(flag == false) {
+						errorSet.put("ctc", "CTC Allow Only Integers and length 0-8");
+					}
+					
+				}else {
+					errorSet.put("ctc", "CTC is Field Missing");
+				}
+				
+				
+				if(dataMigrationDTOJsonCopy.has("ectc") && !dataMigrationDTOJsonCopy.get("ectc").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("ectc").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("ectc").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String expectedRate = dataMigrationDTOJsonCopy.get("ectc").toString();
+					if (expectedRate.length() > 0 && expectedRate.length() <= 8) {
+						flag = expectedRate.matches(rateRegEx);
+					}
+					if(flag == false) {
+						errorSet.put("ectc", "Expected Rate Allow Only Integers and length 0-8");
+					}
+					
+				}else {
+					errorSet.put("ectc", "ECTC is Field Missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("ratePer") && (dataMigrationDTOJsonCopy.get("ratePer").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("ratePer").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("ratePer").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("ratePer", "Rate Per Field is Missing");
+				}
+				
+				
+				//pan,aadhar number validation
+				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+					String panNumberRegEx = "^([A-Z]){5}([0-9]){4}([A-Z]){1}?$";
+					if(dataMigrationDTOJsonCopy.has("panNumber") && !dataMigrationDTOJsonCopy.get("panNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("panNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("panNumber").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String panNumber = dataMigrationDTOJsonCopy.get("panNumber").toString();
+						if (panNumber.length() == 10) {
+							flag = panNumber.matches(panNumberRegEx);
+						}
+						if(flag == false) {
+							errorSet.put("panNumber", "Invalid Pan Number ");
+						}
+					}else {
+						errorSet.put("panNumber", "Pan Number Field is Missing");
+					}
+				}
+				
+				if (orgLocation.getCountry().equalsIgnoreCase("India")) {
+				String aadharNoRegEx = "^\\d{4}\\s?\\d{4}\\s?\\d{4}$";
+					if(dataMigrationDTOJsonCopy.has("aadharNumber") && !dataMigrationDTOJsonCopy.get("aadharNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("aadharNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("aadharNumber").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String aadharNo = dataMigrationDTOJsonCopy.get("aadharNumber").toString();
+						if (aadharNo.length() == 12) {
+							flag = aadharNo.matches(aadharNoRegEx);
+						}
+						if(flag == false) {
+							errorSet.put("aadharNumber", "Invalid Aadhar Number ");
+						}
+					}else {
+						errorSet.put("aadharNumber", "Aadhar Number Field is Missing");
+					}
+				}
+				
+				if (orgLocation.getCountry().equalsIgnoreCase("United States")) {
+					
+					String ssnNoRegEx = "^(\\d{3}-?\\d{2}-?\\d{4}|XXX-XX-XXXX)$";
+					if(dataMigrationDTOJsonCopy.has("ssnNumber") && !dataMigrationDTOJsonCopy.get("ssnNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("ssnNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("ssnNumber").toString().equalsIgnoreCase("undefined")) {
+						boolean flag = false;
+						String ssnNo = dataMigrationDTOJsonCopy.get("ssnNumber").toString().replaceAll("-", "");
+						if (ssnNo.length() == 9) {
+							flag = ssnNo.matches(ssnNoRegEx);
+						}
+						if(flag == false) {
+							errorSet.put("ssnNumber", "Invalid SSN Number ");
+						}
+					}else {
+						errorSet.put("ssnNumber", "SSN Number Field is Missing");
+					}
+				
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("recruiterEmail") && !dataMigrationDTOJsonCopy.get("recruiterEmail").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("recruiterEmail").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("recruiterEmail").toString().equalsIgnoreCase("undefined")) {
+					matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("recruiterEmail").toString().trim());
+					if(matcher.matches() == false) {
+						errorSet.put("recruiterEmail", "Invalid Recruiter Email");
+					}
+				}else {
+					errorSet.put("recruiterEmail", "Recruiter Email Missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("noticePeriod") && (dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("noticePeriod", "Notice Period Field is Missing");
+				}
+				
+				
+			}
+		}else {
+			errorSet.put("emailId", "Email field is missing");
+		}
+		
+		
+		
+	
+	}
+	
 		
 	}

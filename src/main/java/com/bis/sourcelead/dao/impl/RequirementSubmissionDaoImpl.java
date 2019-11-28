@@ -2453,8 +2453,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			boolean flag = false;
 			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
-			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
-			if(educationList !=null && educationList.size() >0){
+			List<RequirementSubmission> submissionList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
+			if(submissionList !=null && submissionList.size() >0){
 				flag = true;
 				return flag;
 			}else{
@@ -4992,6 +4992,24 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = 'SUBMISSION' and date(rs.joinedDate) =:joiningDate and rs.status = '1' ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setDate("joiningDate", sqlJoiningDate).list();
 	     return shortListCandidatesList;
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,
+			Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.email = :candidateEmail and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("candidateEmail", candidateEmail).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+		
 	}
 
 }

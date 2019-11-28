@@ -271,4 +271,6 @@ public interface RequirementSubmissionDao {
 	long getJoinedCountByUserIdAndDates(String userCode, Date[] searchDates);
 
 	List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate);
+	
+	boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,Long requirementId) throws Exception;
 }

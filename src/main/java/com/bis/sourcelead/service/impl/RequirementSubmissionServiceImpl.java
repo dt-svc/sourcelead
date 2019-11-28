@@ -6068,4 +6068,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		return requirementSubmissionDao.getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(orgLocationId, submissionStatus, joiningDate);
 	}
 
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,
+			Long requirementId) throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(candidateEmail, requirementId);
+	}
+
 } 

@@ -334,4 +334,6 @@ public interface RequirementSubmissionService {
 
 	List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate) throws Exception;
 	
+	boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,Long requirementId) throws Exception;
+	
 }

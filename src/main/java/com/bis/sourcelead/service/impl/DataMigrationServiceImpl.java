@@ -487,7 +487,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				case "submmissionTemplateUpload":
 					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation,jsonString);
-
+					 break;
+					 
+				case "profileTracker":
+					dataMigrationCommonUtil.dataValidationForJobProfileTracker(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,jsonString);
 					break;
 
 				}
@@ -543,19 +547,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		history.setUploadProcessingStatus("Completed");
 		history.setEndDate(new Date());
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
-		
-		
-	/*	if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
-			ExecutorService executorService  = null;
-			if(executorService == null) {
-				executorService = Executors.newSingleThreadExecutor();
-			}
-			
-			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
-			uploadedCandidatesList = null;
-			candidateIndexKey = 0;
-		}*/
-		
 		
 		workbook.close();
 		if (isEmptyExcel) {
