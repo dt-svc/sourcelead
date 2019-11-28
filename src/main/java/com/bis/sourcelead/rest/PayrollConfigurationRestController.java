@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -576,6 +577,13 @@ public class PayrollConfigurationRestController {
 					payrollPayheadDTO.setSortColumn(tableColumns[sortColumnIndex]);
 					payrollPayheadDTO.setSortOrder(sortColumnOrder);
 					ResponseList<PayrollPayheadDTO> payrollPayheadList = payrollPayheadService.getPayrollPayheadListWithPagination(payrollPayheadDTO, loginOrgLocation);
+					payrollPayheadList.getData().forEach(payHead -> {
+						if(Arrays.asList(Constants.CONSTANT_PAYHEAD_SHORTCODES).contains(payHead.getShortCode())) {
+							payHead.setIsFormulaEditable("N");
+						}else {
+							payHead.setIsFormulaEditable("Y");
+						}
+					});
 					return payrollPayheadList;
 				}
 			 
@@ -943,7 +951,8 @@ public class PayrollConfigurationRestController {
 		 model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
-			 
+	
+	 @SuppressWarnings("unchecked")
 	 @RequestMapping(value = "/getAssociateSalaryDataByOrgLocation", method = RequestMethod.GET)
 		public ModelAndView getAssociateSalaryDataByOrgLocation(PayrollPayheadDTO payrollPayheadDTO, 
 				@RequestParam(value="userCode", required=false)String userCode,
@@ -953,7 +962,8 @@ public class PayrollConfigurationRestController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			ResponseList<PayrollPayheadDTO> response = payrollPayheadService.getPayrollPayheadList(orgLocations);
-			model.addObject("payrollPayheadList", response.getData());
+			List<PayrollPayheadDTO> payHeadList =  response.getData().stream().filter(p ->p.getActive().equalsIgnoreCase("YES")).collect(Collectors.toList());
+			model.addObject("payrollPayheadList", payHeadList);
 			
 			AssociateSalaryInd associateSalaryInd = payrollPayheadService.getAssociateSalaryIndByCandidateId(payrollPayheadDTO.getCandidateId());
 			if(associateSalaryInd != null) {

@@ -580,7 +580,6 @@ public class IndianPayrollRestController {
 		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		IndPaysheetFrequencyDTO indPaysheetFrequencyDTO = new IndPaysheetFrequencyDTO();
 		try {
-			System.out.println(" inisde generateINDPayroll   >>>>>>>>>>>>>");
 			PreCheckINDPayrollDTO preCheckINDPayrollDTO = iNDPayrollCommonUtil.payrollPrerequisiteCheck(orgLocation, generateINDPayrollDTO.getPayPeriod());
 			if(preCheckINDPayrollDTO.getIsPTConfigured() && preCheckINDPayrollDTO.getIsTDSConfigured()) {
 				generateINDPayrollDTO.setPreCheckINDPayrollDTO(preCheckINDPayrollDTO);
@@ -1092,7 +1091,7 @@ public class IndianPayrollRestController {
 	        return response;
 	    }
 	  
-	  @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
+	    @RequestMapping (value = "/getLoanNames", method = RequestMethod.GET)
 		@ResponseBody
 		public List<PayrollLoanAndAdvances> getLoanNames(HttpServletRequest request,HttpServletResponse response) throws Exception{
 			OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
@@ -1100,5 +1099,56 @@ public class IndianPayrollRestController {
 		 return padvList;
 		
 		}
+	  
+	  
+	    @RequestMapping (value = "/validateAccoutNumebr", method = RequestMethod.GET)
+		@ResponseBody
+		public Boolean validateAccoutNumebr(HttpServletRequest request, IndAssociatePaymentAccountDTO account,
+				@RequestParam(value="userId", required=false) Long userId,@RequestParam(value="paymentAccountId", required=false) Long paymentAccountId) throws Exception{
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			 PaymentAccount payment = null;
+	    	   if(null != paymentAccountId){
+	    		   account.setId(paymentAccountId);
+	    		   payment = paymentAccountService.valiatePaymentAccountNumberByAccountTypeAndAccountNumberAndId(account);
+	    	   }
+			  Boolean flag = false;
+	    	   if(null == payment){
+	    		   flag = paymentAccountService.validatePaymentAccountNumberByAccountNumberAndAccountTypeAndOrgLocationId(account, orgLocationId);
+	    	   }
+			return flag;
+		}
+	  
+	    
+	    @RequestMapping(value = "/associateItdForms", method = RequestMethod.POST)
+		@ResponseBody
+		public ResponseList<SourceleadTaxSubmissionMasterDTO> getAssociateCentralTaxes(HttpServletRequest request,
+				@RequestParam(defaultValue = "") String financialYear,@RequestParam(value="candidateId", required=false) Long candidateId, Paginator paginator) {
+			ResponseList<SourceleadTaxSubmissionMasterDTO> response = new ResponseList<>();
+			try {
+				
+				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId); 
+			//	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				if (candidate != null) {
+					if(candidate.getConsultantUser() != null) {
+						List<SourceleadTaxSubmissionMasterDTO> taxSubmissionMasterList = taxService.getTaxSubmissionMaster(candidate.getConsultantUser().getId(), orgLocations.getDateFormat(), financialYear, paginator);
+						response.setData(taxSubmissionMasterList);
+						response.setPaginator(paginator);
+						response.setResponse(Result.SUCCESS.name());
+						response.setResponseMessage(Result.SUCCESS.getValue());
+					}
+				} else {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+				logger.error(ExceptionUtils.getFullStackTrace(e));
+			}
+			return response;
+		}
+	  
 	  
 }

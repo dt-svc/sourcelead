@@ -3051,9 +3051,11 @@ public class TimesheetRestController {
 				entriesMap.put(taskDate, tsDTOList);
 			}
 		}
-		for (WeekDaysDTO weekDay : tsDTO.getWeekDays()) {
-			if (entriesMap.get(weekDay.getDate()) == null || entriesMap.get(weekDay.getDate()).isEmpty()) {
-				entriesMap.put(weekDay.getDate(), new ArrayList<TimesheetEntriesDTO>());
+		if(tsDTO.getWeekDays() != null && !tsDTO.getWeekDays().isEmpty()) {			
+			for (WeekDaysDTO weekDay : tsDTO.getWeekDays()) {
+				if (entriesMap.get(weekDay.getDate()) == null || entriesMap.get(weekDay.getDate()).isEmpty()) {
+					entriesMap.put(weekDay.getDate(), new ArrayList<TimesheetEntriesDTO>());
+				}
 			}
 		}
 
@@ -3437,95 +3439,97 @@ public class TimesheetRestController {
 		LinkedHashMap<String, String> timeSubFrequencies = new LinkedHashMap<>();
 
 		String currentTimeFrequency = eedDTO.getCurrentTimeFrequency();
-		String[] frequency = currentTimeFrequency.split("To");
-		String currentFrequencyStartDate = frequency[0].trim();
-		String currentFrequencyEndDate = frequency[1].trim();
-
-		String timesheetFor = "user";
-		if (StringUtils.isNotEmpty(eedDTO.getTimeSheetsFor())) {
-			timesheetFor = eedDTO.getTimeSheetsFor();
-		}
-
-		if (!isNullOrEmpty(currentFrequencyStartDate) && !isNullOrEmpty(currentFrequencyEndDate)) {
-			Map<String, String> timeSubFrequencyMap = timesheetFrequencyGeneratorUtil
-					.getTabFrequencyListFromProjectInvoiceFrequency(currentFrequencyStartDate, currentFrequencyEndDate,
-							orgLocations.getDateFormat());
-			String currentTimeSubFrequency = eedDTO.getCurrentTimeSubFrequency();
-
-			StringBuilder currentStartDate = new StringBuilder("");
-			StringBuilder currentEndDate = new StringBuilder("");
-			int count = 1;
-			LinkedList<String> filledTimeSubFrequencies = new LinkedList<>();
-			if (timeSubFrequencyMap != null && !timeSubFrequencyMap.isEmpty()) {
-				for (Map.Entry<String, String> entry : timeSubFrequencyMap.entrySet()) {
-					String key = entry.getKey();
-					String value = entry.getValue();
-					Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
-							key.replaceAll("/", "-"));
-					Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
-							value.replaceAll("/", "-"));
-					DateFormat shortormat = Constants.SHORT_DF_STD_DM;
-					TimesheetSubmissions ts = timesheetSubmissionsService
-							.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(startDate, endDate,
-									eedDTO.getProjectsId(), eedDTO.getMasterCandidatesId());
-
-					if (ts != null && eedDTO != null && eedDTO.getUserId() != null) {
-						SubmissionApproverHierarchy sah = null;
-						if (timesheetFor.equalsIgnoreCase("user")) {
-							sah = submissionApproverHierarchyService
-									.getSubmissionLowLevelApproverHierarchyForEmployee(ts.getId());
-						} else {
-							sah = submissionApproverHierarchyService
-									.getSubmissionApproverHierarchyForApprover(ts.getId(), eedDTO.getUserId());
+		if(!isNullOrEmpty(currentTimeFrequency)) {
+			String[] frequency = currentTimeFrequency.split("To");
+			String currentFrequencyStartDate = frequency[0].trim();
+			String currentFrequencyEndDate = frequency[1].trim();
+	
+			String timesheetFor = "user";
+			if (StringUtils.isNotEmpty(eedDTO.getTimeSheetsFor())) {
+				timesheetFor = eedDTO.getTimeSheetsFor();
+			}
+	
+			if (!isNullOrEmpty(currentFrequencyStartDate) && !isNullOrEmpty(currentFrequencyEndDate)) {
+				Map<String, String> timeSubFrequencyMap = timesheetFrequencyGeneratorUtil
+						.getTabFrequencyListFromProjectInvoiceFrequency(currentFrequencyStartDate, currentFrequencyEndDate,
+								orgLocations.getDateFormat());
+				String currentTimeSubFrequency = eedDTO.getCurrentTimeSubFrequency();
+	
+				StringBuilder currentStartDate = new StringBuilder("");
+				StringBuilder currentEndDate = new StringBuilder("");
+				int count = 1;
+				LinkedList<String> filledTimeSubFrequencies = new LinkedList<>();
+				if (timeSubFrequencyMap != null && !timeSubFrequencyMap.isEmpty()) {
+					for (Map.Entry<String, String> entry : timeSubFrequencyMap.entrySet()) {
+						String key = entry.getKey();
+						String value = entry.getValue();
+						Date startDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+								key.replaceAll("/", "-"));
+						Date endDate = commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),
+								value.replaceAll("/", "-"));
+						DateFormat shortormat = Constants.SHORT_DF_STD_DM;
+						TimesheetSubmissions ts = timesheetSubmissionsService
+								.getAllCandidateTimesheetSubmissionsByProjectIdAndMasterCandidateId(startDate, endDate,
+										eedDTO.getProjectsId(), eedDTO.getMasterCandidatesId());
+	
+						if (ts != null && eedDTO != null && eedDTO.getUserId() != null) {
+							SubmissionApproverHierarchy sah = null;
+							if (timesheetFor.equalsIgnoreCase("user")) {
+								sah = submissionApproverHierarchyService
+										.getSubmissionLowLevelApproverHierarchyForEmployee(ts.getId());
+							} else {
+								sah = submissionApproverHierarchyService
+										.getSubmissionApproverHierarchyForApprover(ts.getId(), eedDTO.getUserId());
+							}
+							if (sah != null) {
+								Submission_Status submissionStatus = sah.getSubmissionStatus();
+								String submissionStatusStr = submissionStatus.getValue();
+								if (!isNullOrEmpty(submissionStatusStr) && !submissionStatusStr
+										.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())) {
+									filledTimeSubFrequencies.add(key + "To" + value);
+								}
+							}
+	
 						}
-						if (sah != null) {
-							Submission_Status submissionStatus = sah.getSubmissionStatus();
-							String submissionStatusStr = submissionStatus.getValue();
-							if (!isNullOrEmpty(submissionStatusStr) && !submissionStatusStr
-									.equalsIgnoreCase(Submission_Status.getNameByValue("new").getValue())) {
-								filledTimeSubFrequencies.add(key + "To" + value);
+	
+						if (CalendarUtil.isCurrentDateBetweenDateRange(currentFrequencyStartDate, currentFrequencyEndDate,
+								orgLocations.getDateFormat())) {
+							if (CalendarUtil.isCurrentDateBetweenDateRange(key, value, orgLocations.getDateFormat())) {
+								currentStartDate.append(key);
+								currentEndDate.append(value);
+							}
+							if (startDate.equals(endDate)) {
+								timeSubFrequencies.put(key + "To" + value, shortormat.format(startDate));
+							} else {
+								timeSubFrequencies.put(key + "To" + value,
+										shortormat.format(startDate) + " - " + shortormat.format(endDate));
+							}
+						} else {
+							if (count == 1) {
+								currentStartDate.append(key);
+								currentEndDate.append(value);
+							}
+							if (startDate.equals(endDate)) {
+								timeSubFrequencies.put(key + "To" + value, shortormat.format(startDate));
+							} else {
+								timeSubFrequencies.put(key + "To" + value,
+										shortormat.format(startDate) + " - " + shortormat.format(endDate));
 							}
 						}
-
+						count++;
 					}
-
-					if (CalendarUtil.isCurrentDateBetweenDateRange(currentFrequencyStartDate, currentFrequencyEndDate,
-							orgLocations.getDateFormat())) {
-						if (CalendarUtil.isCurrentDateBetweenDateRange(key, value, orgLocations.getDateFormat())) {
-							currentStartDate.append(key);
-							currentEndDate.append(value);
-						}
-						if (startDate.equals(endDate)) {
-							timeSubFrequencies.put(key + "To" + value, shortormat.format(startDate));
-						} else {
-							timeSubFrequencies.put(key + "To" + value,
-									shortormat.format(startDate) + " - " + shortormat.format(endDate));
-						}
-					} else {
-						if (count == 1) {
-							currentStartDate.append(key);
-							currentEndDate.append(value);
-						}
-						if (startDate.equals(endDate)) {
-							timeSubFrequencies.put(key + "To" + value, shortormat.format(startDate));
-						} else {
-							timeSubFrequencies.put(key + "To" + value,
-									shortormat.format(startDate) + " - " + shortormat.format(endDate));
-						}
+	
+					if (StringUtils.isEmpty(eedDTO.getCurrentTimeSubFrequency())) {
+						currentTimeSubFrequency = currentStartDate.toString() + "To" + currentEndDate.toString();
 					}
-					count++;
+					timesheetEntryDetailsDTO.setFilledTimeSubFrequencies(filledTimeSubFrequencies);
+					timesheetEntryDetailsDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
+					timesheetEntryDetailsDTO.setTimeSubFrequencies(timeSubFrequencies);
+					timesheetEntryDetailsDTO.setTimesheetFor(timesheetFor);
+					timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
+					timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
+					eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
 				}
-
-				if (StringUtils.isEmpty(eedDTO.getCurrentTimeSubFrequency())) {
-					currentTimeSubFrequency = currentStartDate.toString() + "To" + currentEndDate.toString();
-				}
-				timesheetEntryDetailsDTO.setFilledTimeSubFrequencies(filledTimeSubFrequencies);
-				timesheetEntryDetailsDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
-				timesheetEntryDetailsDTO.setTimeSubFrequencies(timeSubFrequencies);
-				timesheetEntryDetailsDTO.setTimesheetFor(timesheetFor);
-				timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
-				timesheetEntryDetailsDTO.setLocDateFomat(orgLocations.getDateFormat());
-				eedDTO.setCurrentTimeSubFrequency(currentTimeSubFrequency);
 			}
 		}
 		return timesheetEntryDetailsDTO;
