@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -730,49 +731,27 @@ public class CrowdSourcingRequirementsRestController {
 	
 	@PreAuthorize("hasRole('ROLE_CROWDSOURCING_REQUIREMENTS')")
 	@RequestMapping(value = "/rest/applyToJobFromMobileCrowdSourcing", method = RequestMethod.POST)
-	public String applyToJobFromMobileCrowdSourcing(MobileServiceApplyJobDTO mobileServiceApplyJobDTO, HttpServletRequest request)
-			throws Exception {
-		
+	public String applyToJobFromMobileCrowdSourcing(HttpServletRequest request, @RequestBody MobileServiceApplyJobDTO mobileServiceApplyJobDTO) throws Exception {
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
-				"orgLocations");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		
-		JSONArray jsonArray = new JSONArray(mobileServiceApplyJobDTO.getSubmissionDetails());
-		JSONObject jsonObj = null;
-		String jsonObjStringValue = null; 
-		 for (int i = 0; i < jsonArray.length(); i++) {
-			 JSONParser parser = new JSONParser();
-			 org.json.simple.JSONObject jsonObjVal = (org.json.simple.JSONObject) parser.parse(jsonArray.get(i).toString());
-			 for (Object okey : jsonObjVal.keySet()) {
-				 String keyStr = (String) okey;
-				 if(keyStr.equalsIgnoreCase("submissionHistory")) {
-					 String keyvalue = jsonObjVal.get(keyStr).toString();
-					 String jsonStringValues = keyvalue.substring(1, keyvalue.length()-1);
-					 jsonObj = new JSONObject(jsonStringValues);
-					 
-				 }
-				 
-				 if(keyStr.equalsIgnoreCase("submission")) {
-					 jsonObjStringValue = jsonObjVal.get(keyStr).toString();
-				 }
-				
-			 }
-         }
-		
-		RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObj,user, jsonObjStringValue,orgLocations);
-		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
-		requirementSubmissionHistory.setFromStage("NEW");
-		
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
-		Requirement requirement = requirementSubmission.getRequirement();
-		Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
-		requirement.setTotalApplicantsForRequirement(count);
-		
-	    RequirementDTO requirementDTO=commonUtil.getRequirementDTO(requirement);
-		requirementElkUtil.saveElkRequirement(requirement,requirementDTO);
-		return "success";
-
+		JSONObject jsonObject = new JSONObject(mobileServiceApplyJobDTO.getSubmissionDetails());
+		if(jsonObject != null) {
+			RequirementSubmission requirementSubmission = requirementSubmissionService.saveRequirementSubmissionFromCrowdSourcing(jsonObject, user, mobileServiceApplyJobDTO.getSubmissionValues(), orgLocations);
+			RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+			requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+			requirementSubmissionHistory.setFromStage("NEW");
+	
+			requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
+			Requirement requirement = requirementSubmission.getRequirement();
+			Integer count = requirementSubmissionService.getNumberOfApplicantsForRequirement(requirement.getOrgLocationId().getId(), requirement.getId());
+			requirement.setTotalApplicantsForRequirement(count);
+	
+			RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+			requirementElkUtil.saveElkRequirement(requirement, requirementDTO);
+			return "SUCCESS";
+		} else 
+			return "FAILURE";
 	}
 	
 	
