@@ -341,7 +341,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				Iterator<?> keys = null;
 				JSONObject dataMigrationDTOJsonCopy = null;
 				
-				if(dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") && dataMigrationDTO.getRequirementId() != null) {
+				if((dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") || dataMigrationDTO.getUploadType().equalsIgnoreCase("profileTracker")) && dataMigrationDTO.getRequirementId() != null) {
 					    String json1 = "{" + dataMigrationDTO.getJsonData() + "}";
 				     	dataMigrationDTOJson = new JSONObject(json1);
 						dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOJson);
@@ -821,6 +821,28 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				}
 			
 			
+			break;
+			
+		case "profileTracker":
+			
+				try {
+					
+					JSONObject labelItems = new JSONObject();
+					JSONArray array = new JSONArray();
+					Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
+					
+					while (keys.hasNext()) {
+						String k = (String) keys.next();
+						System.out.println("keys===>"+k);
+					}
+					
+				}catch (Exception e) {
+					UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
+					history.setUploadProcessingStatus("Completed");
+					history.setEndDate(new Date());
+					uploadXlsHistoryService.storeUploadXlsHistory(history);
+					e.printStackTrace();
+				}
 			break;
 
 		case "assetUpload":

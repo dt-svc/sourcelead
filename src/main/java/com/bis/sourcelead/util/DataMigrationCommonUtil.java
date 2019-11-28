@@ -3180,7 +3180,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobProfileTracker(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
 	{
-		
 		if(!dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
 			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), orgLocation.getId());
 			if (submissionFlag) {
@@ -3236,7 +3235,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					errorSet.put("totalExperience", "Total Experience field is missing");
 				}
 				
-				if(dataMigrationDTOJsonCopy.has("releventExperience") && (dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("revelentExperience").toString().equalsIgnoreCase("undefined"))) {
+				if(dataMigrationDTOJsonCopy.has("releventExperience") && (dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("releventExperience").toString().equalsIgnoreCase("undefined"))) {
 					errorSet.put("releventExperience", "Relevent Experience field is missing");
 				}
 				
@@ -3320,8 +3319,6 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 						if(flag == false) {
 							errorSet.put("aadharNumber", "Invalid Aadhar Number ");
 						}
-					}else {
-						errorSet.put("aadharNumber", "Aadhar Number Field is Missing");
 					}
 				}
 				
