@@ -369,6 +369,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 	function getJobsForSelectedFairDate() {
 		var sourceleadUrl ='${sourceleadUrl}';
 		var atsUrl = "${SourceLeadWeb_atsUrl}";
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		
 		var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
 		$("#fairJobsDiv").empty();
@@ -407,7 +408,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 							text += "		</p>";
 							if(data[e].clientId != null) {								
 								text += "		<p>";
-								text += " 			<a target='_blank' href='" + atsUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
+								text += " 			<a target='_blank' href='" + vmsUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
 								text += "		</p>";
 							}
 							text += "		<p>";
