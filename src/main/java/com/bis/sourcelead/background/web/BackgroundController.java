@@ -144,4 +144,20 @@ public class BackgroundController {
 		logger.debug("after controller  getAllImmigartionList  --> ");
 		return bgcCandidateDetailsDTOList;
 	}
+	
+	
+	//@PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
+	@RequestMapping(value = "/deleteBgcCandidateDetailsbyUuid")
+	public @ResponseBody String deleteBgcCandidateDetailsbyUuiId(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+		String status = null;		
+		try {
+			status = bgcCommonService.deleteBgcCandidateDetailsbyUuiId(uuid);
+			logger.debug("inside delete controller method calling for the uuid----->>>>>>>: " + uuid);
+		} catch (Exception e) {
+			logger.error(" Exception while deleting bgc deitails in controller -->" + uuid);
+			e.printStackTrace();
+		}
+		System.out.println("inisde controller status : "+status);
+		return status;
+	}
 }

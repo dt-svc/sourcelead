@@ -56,6 +56,7 @@
         </div>
         
         <!-- Content Area Ends--> 
+        <div id="popUp"></div>
       </div>
     </section>
   <!-- Content Area -->
@@ -342,7 +343,7 @@ function dynamicBgcListPagination(url) {
                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/immigration/editImmigrationDetails?immigrationUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
                     '</sec:authorize>';
                      '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
-                    result = result + '<i id="delete' + opt.uuid + '" onclick="deleteImmigrationListId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                    result = result + '<i id="delete' + opt.uuid + '" onclick="deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
                     '</sec:authorize>';
                     return result;
                 }
@@ -376,6 +377,42 @@ function dynamicBgcListPagination(url) {
  */
    // $("table").colResizable(); // for resizing columns in tables.
 }
+
+function deleteBgcCandidateDetailsbyUuiId(uuid){ // only stauts updated with reason. active 1 , deactive 0.
+	 $(".project_inn_mask").remove();
+		var result = "";
+		result = result +"	<div class='project_inn_mask'></div>";
+		result = result +"	   <div id='remove_bgc_pop' class='remove_user_pop remove_user_pop_a'>";
+		/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
+		result = result +" <b>Do you want to remove record permanently?</b>";
+		result = result + ' <div id="reasonForTemplateDiv"/>';
+		uuid="sffer5";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteBgcDetailsByUuid(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelBgcDelete();'></b>";
+		result = result +"	</div>";
+		$("#popUp").append(result);
+		$("#remove_bgc_pop").slideDown(200);
+		$(".project_inn_mask").fadeIn(200);
+	}
+function deleteBgcDetailsByUuid(uuidDelete){
+	$.ajax({
+        url: vmsUrl  + "/bgc/deleteBgcCandidateDetailsbyUuid?uuid="+uuidDelete,
+        type: "GET",
+        success: function (result) {
+        	$("#remove_bgc_pop").fadeOut(200);
+    		$(".project_inn_mask").fadeOut(200);
+    		if(result == "Success"){
+    		  window.location.href = vmsUrl +"/bgc/completedBgcDetails";
+    		}else{
+    			 window.location.href = vmsUrl +"/error";
+    		}
+        }
+	});
+}
+function cancelBgcDelete(){
+	$("#remove_bgc_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
+
 </script>
 
 
