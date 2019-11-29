@@ -58,6 +58,7 @@ import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.JobFair;
@@ -82,6 +83,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.CandidateHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -224,6 +226,9 @@ public class RequirementController {
 	
 	@Autowired
     EmailReminderService emailReminderService;
+	
+	@Autowired
+	 CandidateHistoryService candidateHistoryService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -971,8 +976,8 @@ public class RequirementController {
 				}
 				
 				if(!isNullOrEmpty(candidateUUID)){
-					Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
-					model.addObject("candidateId", canidate.getId());
+					CandidateHistory canidate = candidateHistoryService.getCandidatebyCandidateUUID(candidateUUID);
+					model.addObject("candidateId", canidate.getCandidateId());
 				}
 				
 				if(!isNullOrEmpty(submissionId)){
@@ -1003,8 +1008,8 @@ public class RequirementController {
 			}
 			
 			if(!isNullOrEmpty(candidateUUID)){
-				Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
-				model.addObject("candidateId", canidate.getId());
+				CandidateHistory canidate = candidateHistoryService.getCandidatebyCandidateUUID(candidateUUID);
+				model.addObject("candidateId", canidate.getCandidateId());
 			}
 			
 			if(!isNullOrEmpty(submissionId)){
