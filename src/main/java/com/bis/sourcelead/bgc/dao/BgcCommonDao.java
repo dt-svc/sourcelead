@@ -16,4 +16,6 @@ public interface BgcCommonDao {
 
 	ResponseList<BgcCandidateDetailsDTO> saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal);
+	
+	BgcCandidateDetails getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,27 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
 		
 		return  bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
+	}
+	
+	@Override
+	public BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid) throws Exception {
+		BgcCandidateDetailsDTO bgcCandidateDetailsDTO = new BgcCandidateDetailsDTO();
+		StringBuilder fullName = new StringBuilder();
+		BgcCandidateDetails bgcCandidateDetails = bgcCommonDao.getBgcCandidateDetailsByBgcUuid(bgcUuid);
+		if(bgcCandidateDetails != null && bgcCandidateDetails.getCandidate() != null){
+			BeanUtils.copyProperties(bgcCandidateDetails, bgcCandidateDetailsDTO);
+			if(bgcCandidateDetails.getCandidate().getLastName() != null){
+				fullName.append(bgcCandidateDetails.getCandidate().getFirstName()).append(" ").append(bgcCandidateDetails.getCandidate().getLastName());
+			}else{
+				fullName.append(bgcCandidateDetails.getCandidate().getFirstName());
+			}
+			bgcCandidateDetailsDTO.setFullName(fullName.toString());
+			bgcCandidateDetailsDTO.setAadharNumber(bgcCandidateDetails.getCandidate().getAadharNumber());
+			bgcCandidateDetailsDTO.setPanNumber(bgcCandidateDetails.getCandidate().getPanNumber());
+			bgcCandidateDetailsDTO.setAddress(bgcCandidateDetails.getCandidate().getAddress());
+			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
+		}
+		return bgcCandidateDetailsDTO;
 	}
 
 }

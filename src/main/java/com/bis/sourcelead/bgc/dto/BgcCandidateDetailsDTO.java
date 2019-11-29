@@ -55,6 +55,16 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	
 	private Long updatedBy;
 
+	//dto fields for candidate
+	
+	private String aadharNumber;
+		
+	private String panNumber;
+		
+	private String address;
+		
+	private String email;
+		
 	public Long getId() {
 		return id;
 	}
@@ -213,6 +223,38 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public String getAadharNumber() {
+		return aadharNumber;
+	}
+
+	public void setAadharNumber(String aadharNumber) {
+		this.aadharNumber = aadharNumber;
+	}
+
+	public String getPanNumber() {
+		return panNumber;
+	}
+
+	public void setPanNumber(String panNumber) {
+		this.panNumber = panNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	
