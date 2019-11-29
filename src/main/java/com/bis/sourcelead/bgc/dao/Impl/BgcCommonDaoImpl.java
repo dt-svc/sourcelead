@@ -59,7 +59,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	public ResponseList<BgcCandidateDetailsDTO> saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
 		ResponseList<BgcCandidateDetailsDTO> bgcResponseList = new ResponseList<>();
-		orgLocations.setId(2846L);  // used for testing purpose
+		//orgLocations.setId(2846L);  // used for testing purpose
 		try {
 		
 			Session session = this.sessionFactory.getCurrentSession();
@@ -116,6 +116,21 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			e.printStackTrace();
 		}
 		return bgcResponseList;
+	}
+
+	@Override
+	public BgcCandidateDetails getBgcCandidateDetailsByBgcUuid(String bgcUuid){
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String queryString = "from BgcCandidateDetails bgc where bgc.uuid=:bgcUuid";
+			Query query = session.createQuery(queryString).setString("bgcUuid", bgcUuid);
+			BgcCandidateDetails bgcCandidateDetails = (BgcCandidateDetails)query.uniqueResult();
+			return bgcCandidateDetails;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e+" in getBgcCandidateDetailsByBgcUuid");
+			return null;
+		}
 	}
 
 }
