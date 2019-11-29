@@ -20,4 +20,7 @@ public interface BgcCommonService {
 			OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal);
 
 	String deleteBgcCandidateDetailsbyUuiId(String uuid);
+	
+	BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
+	
 }

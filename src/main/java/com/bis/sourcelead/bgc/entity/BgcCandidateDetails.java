@@ -1,5 +1,6 @@
 package com.bis.sourcelead.bgc.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import com.bis.sourcelead.entity.User;
  */
 @Entity
 @Table(name = "BGC_CANDIDATE_DETAILS")
-public class BgcCandidateDetails {
+public class BgcCandidateDetails implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -18,4 +18,6 @@ public interface BgcCommonDao {
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal);
 
 	String deleteBgcCandidateDetailsbyUuiId(String uuid);
+	
+	BgcCandidateDetails getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 }
