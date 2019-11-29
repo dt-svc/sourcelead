@@ -58,6 +58,9 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		bgcCandidateDetails.setCurrentBgcStatus(bgcCandidateDetailsDto.getCurrentBgcStatus());
 		bgcCandidateDetails.setEducationCheckStaus(bgcCandidateDetailsDto.getEducationCheckStaus());
 		bgcCandidateDetails.setHealthCheckStatus(bgcCandidateDetailsDto.getHealthCheckStatus());
+		OrgLocations sourceOrgLocations = new OrgLocations();
+		sourceOrgLocations.setId(bgcCandidateDetailsDto.getSourceOrglocationId());
+		bgcCandidateDetails.setSourceOrglocationId(sourceOrgLocations);
 		bgcCandidateDetails.setOrgLocationId(orgLocations);
 		bgcCandidateDetails.setOthersInfoStatus(bgcCandidateDetailsDto.getOthersInfoStatus());
 		bgcCandidateDetails.setPersonalInfoStatus(bgcCandidateDetailsDto.getPersonalInfoStatus());
