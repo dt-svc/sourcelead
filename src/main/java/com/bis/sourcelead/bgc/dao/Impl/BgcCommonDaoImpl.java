@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -17,8 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateLcaJobDetails;
+import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.CommonUtil;
@@ -116,6 +120,23 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			e.printStackTrace();
 		}
 		return bgcResponseList;
+	}
+
+	@Override
+	public String deleteBgcCandidateDetailsbyUuiId(String uuid) {
+		try {
+			   Session session = this.sessionFactory.getCurrentSession();
+			   Query query = session.createQuery("delete from BgcCandidateDetails where uuid=:uuid").setString("uuid", uuid);
+		        int count = query.executeUpdate();
+		        if(count != 0) {
+		        	return Constants.SUCCESS;
+		        }
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete  by uuid-->" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			return Constants.SUCCESS;
 	}
 
 }
