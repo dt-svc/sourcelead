@@ -3067,6 +3067,10 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    				listQuery.setParameter( str, params.get( str ) );
 			    			}
 			            }
+		     			if(customDashBoard == null)
+			    		{
+		     			listCountQuery.setParameter("startDate", startUTCDate);
+			    		}
 		     			if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
 			    		{
 		     				Query q = listQuery.setMaxResults(5);
