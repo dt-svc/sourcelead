@@ -799,6 +799,7 @@ $("#associateTerminatedListDataTableSearch").keydown(function(e) {
     	        if((fromDate != '' && fromDate != 'undefined' && fromDate != null) && (toDate != '' && toDate != 'undefined' && toDate != null)){
         	        var url = sourceleadUrl+"/associateJoinedReport?searchValue="+searchValue+"&orgLocationId="+orgLocationId+"&tabType="+tab+"&submissionStatus=JOINED&frequency="+frequency+"&fromDate="+fromDate+"&toDate="+toDate+"&employmentType="+employmentType+"&clientId="+clientNameById+"&teamId="+teamNameById+"&incentivizedType="+incentivizedType+"&searchType="+searchType+"&graphFrequency="+graphFrequency+"&type=applicantReport";
         		    prepareOfferList(url);
+        		    document.getElementById("customSearch").style.display="none";
     	        }
     	    }else{
     	    	 document.getElementById("reportsStartDate").style.display="none";
