@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
@@ -76,11 +77,22 @@ public class BackgroundController {
 			  model.setViewName("/background/completedBgcDetails");
 		return model;
 	}
+	
+	/*
+	 * below method is used to fetch bgc candidate details entity record by using bgcUuid.
+	 * candidate entity is set as model and view object and details are displayed in summary.
+	 */
 	@RequestMapping(value = { "/onProgressView" })
-	public ModelAndView viewOnProgressViewDetails(HttpServletRequest request) throws Exception {
+	public ModelAndView viewOnProgressViewDetails(
+			@RequestParam(value="bgcUUID", required=true) String bgcUUID,
+			HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		BgcCandidateDetailsDTO bgcCandidateDetailsDTO = bgcCommonService.getBgcCandidateDetailsByBgcUuid(bgcUUID);
+		if(bgcCandidateDetailsDTO != null){
+			model.addObject("bgcCandidate", bgcCandidateDetailsDTO);
+		}
 		SessionMaintainanceData sessionData = new SessionMaintainanceData();
 		sessionData.setNav(Constants.COMPLETED);
 		
@@ -88,6 +100,7 @@ public class BackgroundController {
 			  model.setViewName("/background/onProgressView");
 		return model;
 	}
+	
 	/*
 	 * below method is used to fetch background candidates details for the 
 	 * Data table is using for showing records.

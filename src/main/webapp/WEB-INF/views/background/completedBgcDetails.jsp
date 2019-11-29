@@ -178,7 +178,7 @@ function dynamicBgcListPagination(url) {
                 "render": function (data, type, opt, meta) {
                     var result = "";
                     if (opt.uuid !== null && opt.uuid !== '' && opt.uuid !== 'undefined') {
-                   	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.uuid +"'><a href=${SourceLeadWeb_vmsUrl}/bgc/viewImmigration?bgcUUID="+opt.uuid+">"+opt.uuid+"</a></div></td>";
+                   	 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.uuid +"'>"+opt.uuid+"</div></td>";
                     } else {
                         result = result + "<td><div class='tbldata-dotdot-sm'>---</div></td>";
                     }
@@ -191,7 +191,7 @@ function dynamicBgcListPagination(url) {
                 "render": function (data, type, opt, meta) {
                     var result = "";
                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'>" + opt.fullName + "</div></td>";
+                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/onProgressView?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
                     } else {
                         result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                     }
