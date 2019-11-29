@@ -2753,7 +2753,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@SuppressWarnings({ "unchecked", "unused" })
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception
+		public ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations,String customDashBoard) throws Exception
 		{
 			ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
 			try {
@@ -2923,14 +2923,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					
 		    		String subQuery = "";
 		    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-		    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+		    			if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+		    			{
+				    		subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and (rsh.updatedDate >= :endDate or rsh.updatedDate <= :endDate) and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+		    			}else {
+			    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+		    			}
 		    			params.put("orgLocationsId",orgLocationsId);
 		    			params.put("startDate",startUTCDate);
 		    			params.put("endDate",endUTCDate);
 		    		}
 		    		String whereCondition = subQuery;
 		    		Query query =  session.createQuery(from+" "+whereCondition+"  "+query1+"").setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength());
-		    		
 		    		for (String str : query.getNamedParameters())
 		            {
 		    			if(str.equalsIgnoreCase("orgLocationsId")  || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
@@ -2977,14 +2981,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		}else {
 		    			response.setRecordsFiltered(totalCount);
 		    		}
-		    		
-		    		response.setData(query.list());
+		    		if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+		    		{
+		    			Query q = query.setMaxResults(5);
+		    		response.setData(q.list());
+		    		}else {
+		    			response.setData(query.list());
+		    		}
 		    		return response;
 		        }else{
 		        	if(!searchValueType.matches()){
 			        	Map<String, Object> params = new HashMap<String,Object>();
 			    		List<Long> countlist = null;
-			    		List  requirementSubmissionHistoryList = null;
+			    		List  requirementSubmissionHistoryList = new ArrayList<>();
 			        	
 			        	if(clientIdsList != null) {
 			    			clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
@@ -3000,13 +3009,33 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}
 			    		String query="";
 			        	if(requirementSubmissionHistoryDTO.getType() != null &&requirementSubmissionHistoryDTO.getType().equalsIgnoreCase("applicantReport")){
-				     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rs.joinedDate >= :startDate and rs.joinedDate <= :endDate "+query1+"";
+			        		if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+			    			{
+			        		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rs.joinedDate >= :startDate and rs.joinedDate <= :endDate "+query1+"";
+			    			}
+			        		else {
+				        		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and (rs.joinedDate >= :endDate or rs.joinedDate <= :endDate) "+query1+"";
+			        		}	
 			        	}
 			        	else{
-				     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+			        		if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+			    			{
+					     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and (rsh.updatedDate >= :endDate or rsh.updatedDate <= :endDate) "+query1+"";
 			        	}
+			        		else {
+					     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+			        		}
+			        	}
+			        	String countQuery = null;
 	//		     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
-		     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+			        	if(startUTCDate!= null && endUTCDate!= null)
+		    			{
+				        	 countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+
+		    			}else {
+				        	countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :endDate or rsh.updatedDate <= :endDate";
+
+		    			}
 		     			params.put("orgLocationsId",orgLocationsId);
 		     			if(clientIdsList != null) {
 		     				params.put("clientIdsList",clientIdsList);
@@ -3019,7 +3048,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		     			
 		     			Query listCountQuery = session.createQuery(countQuery);
 		     			Query listQuery = session.createQuery(query);
-		     			
 		     			for (String str : listQuery.getNamedParameters())
 			            {
 			    			if(str.equalsIgnoreCase("orgLocationsId")){
@@ -3039,7 +3067,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    				listQuery.setParameter( str, params.get( str ) );
 			    			}
 			            }
-	
+		     			if(customDashBoard == null)
+			    		{
+		     			listCountQuery.setParameter("startDate", startUTCDate);
+			    		}
+		     			if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+			    		{
+		     				Query q = listQuery.setMaxResults(5);
+			    		response.setData(q.list());
+			    		}
+		     			else {
 		     			 Pattern p1 = Pattern.compile("(?:\\(\\d{3}\\)|\\d{3}[-]*)\\d{3}[-]*\\d{4}");
 						 Matcher mobNumMacher=p1.matcher(requirementSubmissionHistoryDTO.getSearchValue());
 						 
@@ -3117,6 +3154,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}
 			        	}
 			    		response.setData(requirementSubmissionHistoryList);
+			    		}
 					}
 		        }
 			} catch (Exception e) {
