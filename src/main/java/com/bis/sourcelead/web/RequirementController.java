@@ -1052,7 +1052,6 @@ public class RequirementController {
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
-			model.setViewName("requirement/requirementSummary");
 			model.addObject("requirementId",requirementId);
 			
 			model.addObject("requirement",requirement);
@@ -1092,7 +1091,10 @@ public class RequirementController {
 	            model.addObject("parentRequirement","N");
 	        }
 	        
-	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+	        Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
+	       
+			if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
 				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
 				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
 					model.addObject("isSpocActive", Constants.NO);
@@ -1100,7 +1102,24 @@ public class RequirementController {
 					model.addObject("isSpocActive", Constants.YES);
 				}
 			}
-			
+			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+				 requirementId = requirement.getId();
+				/*RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+				System.out.println(" defalt workflow id is :>>>"+workflowDTO.getId());
+				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());*/
+				if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+						              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+					logger.debug("DEFAULT WORKFLOW IS FOUND WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME : "+requirement.getWorkflowId().getWorkFlowName());
+					model.addObject("workflowConfigured", false);
+					model.setViewName("requirement/requirementSummary");	 
+				}else {
+					logger.debug("OTHER THAN DEFAULT WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME :  "+requirement.getWorkflowId().getWorkFlowName());
+					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
+					model.addObject("stagesList", stagesList);
+					model.addObject("workflowId", requirement.getWorkflowId().getId());
+					model.addObject("workflowConfigured", true);
+					model.setViewName("requirement/requirementWorkflowSummary");
+				}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 			if(!isNullOrEmpty(msg)){
 				model.addObject("msg", msg);
@@ -1110,8 +1129,9 @@ public class RequirementController {
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
+		}
 		return model;
-	}
+		}
 	
 	
 	
