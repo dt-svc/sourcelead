@@ -147,7 +147,7 @@ public class BackgroundController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			bgcCandidateDetailsDTO.setOrgLocationId(orgLocations.getId());
-			bgcCandidateDetailsDTOList = (ResponseList<BgcCandidateDetailsDTO>) bgcCommonService.getBgcCadidateList(bgcCandidateDetailsDTO, searchValue,
+			bgcCandidateDetailsDTOList = (ResponseList<BgcCandidateDetailsDTO>) bgcCommonService.getBgcCadidateListByOrgLocationId(bgcCandidateDetailsDTO, searchValue,
 					orgLocations, filterVal, orgTypeVal);
 			System.out.println("bgcCandidateDetailsDTOList size "+bgcCandidateDetailsDTOList.getRecordsTotal());
 			// commonUtil.highLightMenu(Constants.Immigration, request);
@@ -156,5 +156,21 @@ public class BackgroundController {
 		}
 		logger.debug("after controller  getAllImmigartionList  --> ");
 		return bgcCandidateDetailsDTOList;
+	}
+	
+	
+	//@PreAuthorize("hasRole('ROLE_DELETE_PETITION_TEMPLATE')")
+	@RequestMapping(value = "/deleteBgcCandidateDetailsbyUuid")
+	public @ResponseBody String deleteBgcCandidateDetailsbyUuiId(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+		String status = null;		
+		try {
+			status = bgcCommonService.deleteBgcCandidateDetailsbyUuiId(uuid);
+			logger.debug("inside delete controller method calling for the uuid----->>>>>>>: " + uuid);
+		} catch (Exception e) {
+			logger.error(" Exception while deleting bgc deitails in controller -->" + uuid);
+			e.printStackTrace();
+		}
+		System.out.println("inisde controller status : "+status);
+		return status;
 	}
 }
