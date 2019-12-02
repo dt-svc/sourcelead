@@ -72,4 +72,9 @@ public class CandidateHistoryServiceImpl implements CandidateHistoryService{
 		return candidateHistoryDao.storeCandidateHistory(candidateHistory);
 	}
 
+	@Override
+	public CandidateHistory getCandidatebyCandidateUUID(String candidateUUID) {
+		return candidateHistoryDao.getCandidatebyCandidateUUID(candidateUUID);
+	}
+
 }

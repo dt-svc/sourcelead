@@ -14,4 +14,6 @@ public interface CandidateHistoryService {
 	List<CandidateHistory> getCandidateHistoryListByGlobalCandidateId(Long candidateGlobalId) throws Exception;
 	
 	public CandidateHistory storeCandidateHistory(CandidateHistory candidateHistory) throws Exception;
+
+	CandidateHistory getCandidatebyCandidateUUID(String candidateUUID);
 }
