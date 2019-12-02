@@ -14,7 +14,7 @@ import com.bis.sourcelead.entity.OrgLocations;
 public interface BgcCommonDao {
 	BgcCandidateDetails saveBgcCandidateDetails(BgcCandidateDetails BgcCandidateDetails);
 
-	ResponseList<BgcCandidateDetailsDTO> saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
+	ResponseList<BgcCandidateDetailsDTO> getBgcCadidateListByOrgLocationId(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal);
 
 	String deleteBgcCandidateDetailsbyUuiId(String uuid);

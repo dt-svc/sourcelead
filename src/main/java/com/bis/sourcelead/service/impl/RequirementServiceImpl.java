@@ -3084,7 +3084,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
 			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
-				userType, userId, userCode, isWalkIn, walkinDay);
+				userType, userId, userCode, isWalkIn, walkinDay,Constants.Dashboard);
 	}
 	
 	@Override

@@ -60,7 +60,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	}
 
 	@Override
-	public ResponseList<BgcCandidateDetailsDTO> saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
+	public ResponseList<BgcCandidateDetailsDTO> getBgcCadidateListByOrgLocationId(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
 		ResponseList<BgcCandidateDetailsDTO> bgcResponseList = new ResponseList<>();
 		//orgLocations.setId(2846L);  // used for testing purpose

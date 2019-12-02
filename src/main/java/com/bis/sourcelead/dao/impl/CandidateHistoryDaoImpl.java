@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dao.CandidateHistoryDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateCertificationsHistory;
 import com.bis.sourcelead.entity.CandidateDocumentsHistory;
 import com.bis.sourcelead.entity.CandidateEducationHistory;
@@ -298,4 +299,21 @@ public class CandidateHistoryDaoImpl implements CandidateHistoryDao {
 		return candidateHistoryList;
 	
 	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateHistory getCandidatebyCandidateUUID(String candidateUUID) {
+		Session session = this.sessionFactory.getCurrentSession();
+		List<CandidateHistory> candidate = new ArrayList<CandidateHistory>();
+		logger.debug("getCandidateById start");
+		candidate = session.createQuery("from CandidateHistory candidateHistory where candidateHistory.candidateUUID = :candidateUUID")
+				.setString("candidateUUID", candidateUUID).list();
+		logger.debug("getCandidateById end");
+		if (candidate.size() > 0) {
+			return candidate.get(0);
+		} else {
+			return null;
+		}
+	}
+	
 }
