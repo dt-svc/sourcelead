@@ -1078,7 +1078,7 @@ function Immigration() {
 	        url: vmsUrl + immiModulePath + "/deleteCandidateEduDetails?id="+id+"&candidateId="+candidateId,
 	        type: "GET",
 	        success: function (result) {
-	        	if(result=='success'){candidate_family_details
+	        	if(result=='success'){
 	        		showSuccessMsg("Successfully Record Deleted.");
 	        	  immigration.getCandidateEducationList(candidateId, curUscisMyImmi) //candidateId global variable
 	        	  deleteImmigrationPopupDiv();
