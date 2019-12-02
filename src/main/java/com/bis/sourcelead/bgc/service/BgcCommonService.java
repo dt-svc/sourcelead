@@ -18,6 +18,8 @@ public interface BgcCommonService {
 
 	ResponseList<BgcCandidateDetailsDTO>  getBgcCadidateList(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, String searchValue,
 			OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal);
+
+	String deleteBgcCandidateDetailsbyUuiId(String uuid);
 	
 	BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 	

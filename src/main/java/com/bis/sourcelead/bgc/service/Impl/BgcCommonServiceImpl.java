@@ -85,7 +85,13 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	public ResponseList<BgcCandidateDetailsDTO> getBgcCadidateList(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
 		
-		return  bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
+		return   bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
+	}
+
+
+	@Override
+	public String deleteBgcCandidateDetailsbyUuiId(String uuid) {
+		return  bgcCommonDao.deleteBgcCandidateDetailsbyUuiId(uuid);
 	}
 	
 	@Override
