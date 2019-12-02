@@ -104,13 +104,6 @@ public class LeaveDashBoardDataUtil {
 	TimesheetSubmissionsService	 timesheetSubmissionsService;
 	
 	@Autowired
-	OrgRelationsService   orgRelationsService;
-	
-	@Autowired
-	ContractsTemplateService  contractsTemplateService;
-
-	
-	@Autowired
 	private SessionFactory sessionFactory;
 	
 	@Autowired
@@ -121,13 +114,6 @@ public class LeaveDashBoardDataUtil {
 
 	@Autowired
     private RequirementSubmissionDao requirementSubmissionDao;
-	
-	@Autowired
-	CommonUtil commonUtil;
-	
-	@Autowired
-	UserService userService;
-
 	
 	@Autowired
 	RequirementService requirementService;
@@ -153,8 +139,8 @@ public class LeaveDashBoardDataUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
-
-	ExpensesApproverHierarchyService expensesApproverHierarchyService;
+	@Autowired
+	private ExpensesApproverHierarchyService expensesApproverHierarchyService;
 
 
 	@Autowired
@@ -195,6 +181,21 @@ public class LeaveDashBoardDataUtil {
 	 * @param commonDto
 	 * @return
 	 */
+	
+	public String getExpensesDashBoardData(CommonDataDto commonDataDto) {
+		Map<String, String> map = new HashedMap();
+		String isGlobalAccess = "N";
+		try {
+		ExpensesCount expensesCount = new ExpensesCount();
+		expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),isGlobalAccess);
+		map.put("Approved", expensesCount.getEmpExpensesApprovedCount().toString());
+		map.put("Rejected", expensesCount.getEmpExpensesRejectedCount().toString());
+		map.put("Waiting", expensesCount.getEmpExpensesSubmittedForApprovalCount().toString());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		 return getJsonString(map);
+	}
 	
 	public String getLeaveDashBoardData(CommonDataDto commonDto) {
 		Map<String, String> map = new HashedMap();
@@ -541,20 +542,6 @@ public class LeaveDashBoardDataUtil {
 	 * @param map
 	 * @return String
 	 */
-	public String getExpensesDashBoardData(CommonDataDto commonDataDto) {
-		Map<String, String> map = new HashedMap();
-		try {
-		ExpensesCount expensesCount = new ExpensesCount();
-		expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),"isGlobalAccess");
-		map.put("Approved", expensesCount.getEmpExpensesApprovedCount().toString());
-		map.put("Rejected", expensesCount.getEmpExpensesRejectedCount().toString());
-		map.put("Waiting", expensesCount.getEmpExpensesSubmittedForApprovalCount().toString());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		 return getJsonString(map);
-	}
-	
 	
 	@SuppressWarnings("unchecked")
 	private String getJsonString(Map<String, String> map) {
@@ -633,8 +620,6 @@ public class LeaveDashBoardDataUtil {
 		map.put("Waiting",timeSheetSubmissionCount.getWaitingForApprovalTimesheetSubmissionCount().toString());
 		map.put("Approved",timeSheetSubmissionCount.getApprovedTimesheetSubmissionCount().toString());
 		map.put("Rejected",timeSheetSubmissionCount.getRejectedTimesheetSubmissionCount().toString());
-		
-		System.out.println(timeSheetSubmissionCount);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -765,7 +750,6 @@ public class LeaveDashBoardDataUtil {
 				jsonobject.put("EMail",s.getVendorUser().getEmail());
 				jsonarray.add(jsonobject);
 			}
-			System.out.println(vandorsContactListByOrgLocationId);	
 		 }  catch (Exception e) {
 			e.printStackTrace();
 			

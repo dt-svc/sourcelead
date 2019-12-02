@@ -88,9 +88,7 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 			CommonDataDto commonDataDto) {
 		try {
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
-				System.out.println(dtoObj.getSubTabName());
 				String jsonData = "";
-				System.out.println(dtoObj.getSubTabName());
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
 				}else if("TIMESHEETS".equalsIgnoreCase(dtoObj.getSubTabName())) {
