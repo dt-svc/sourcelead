@@ -98,4 +98,6 @@ public interface TimesheetSubmissionsService {
 	public String getWeekCommentByCurrentFrequency(Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception;
 	
 	public void updateWeekCommentForAllSubmissions(String weekComment,Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception;
+	
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsForMonthlyClosureReport(Date startDate,Date endDate, Long  orgLocationId)throws Exception; 
 }

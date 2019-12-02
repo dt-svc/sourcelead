@@ -1188,6 +1188,13 @@ public class TimesheetSubmissionsServiceImpl implements TimesheetSubmissionsServ
 			Long masterCandidateId) throws Exception {
 		 timesheetSubmissionsDao.updateWeekCommentForAllSubmissions(weekComment, startDate, endDate, projectId, masterCandidateId);
 	}
+
+
+	@Override
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsForMonthlyClosureReport(Date startDate,
+			Date endDate, Long orgLocationId) throws Exception {
+		return timesheetSubmissionsDao.getAllEmployeeTimesheetSubmissionsForMonthlyClosureReport(startDate, endDate, orgLocationId);
+	}
 	
 	
 
