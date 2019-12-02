@@ -147,7 +147,7 @@ public class BackgroundController {
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 					"orgLocations");
 			bgcCandidateDetailsDTO.setOrgLocationId(orgLocations.getId());
-			bgcCandidateDetailsDTOList = (ResponseList<BgcCandidateDetailsDTO>) bgcCommonService.getBgcCadidateList(bgcCandidateDetailsDTO, searchValue,
+			bgcCandidateDetailsDTOList = (ResponseList<BgcCandidateDetailsDTO>) bgcCommonService.getBgcCadidateListByOrgLocationId(bgcCandidateDetailsDTO, searchValue,
 					orgLocations, filterVal, orgTypeVal);
 			System.out.println("bgcCandidateDetailsDTOList size "+bgcCandidateDetailsDTOList.getRecordsTotal());
 			// commonUtil.highLightMenu(Constants.Immigration, request);
