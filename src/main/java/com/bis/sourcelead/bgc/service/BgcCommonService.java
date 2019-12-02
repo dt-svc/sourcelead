@@ -16,7 +16,7 @@ public interface BgcCommonService {
 
 	BgcCandidateDetails saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDto,User user, OrgLocations orgLocations );
 
-	ResponseList<BgcCandidateDetailsDTO>  getBgcCadidateList(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, String searchValue,
+	ResponseList<BgcCandidateDetailsDTO>  getBgcCadidateListByOrgLocationId(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, String searchValue,
 			OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal);
 
 	String deleteBgcCandidateDetailsbyUuiId(String uuid);

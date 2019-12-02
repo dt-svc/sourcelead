@@ -577,12 +577,15 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			}
 		 
 		 //Saving candidate on board details to BGC_CANDIDATE_DETAILS table when user sent a request.
-		 // Here loading BGC Vendor ORG Locations to copy candidate to vendor locations.
+		 // Here loading BGC Vendor ORG Locations to copy candidate to vendor locations. copying candidate details when BGC vendor is selected.
+		 if(candidateOnBoarding.getBgcOrglocationId() != null && candidateOnBoarding.getBgcOrglocationId().getId() != null ) {
 		 System.out.println("before candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
 		 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(candidateOnBoarding.getBgcOrglocationId().getId());
 		 System.out.println("aftre candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
 		 BgcCandidateDetailsDTO bgcCandidateDetailsDto = new BgcCandidateDetailsDTO();
 		 bgcCandidateDetailsDto.setCandidateId(candidateOnBoarding.getCandidateId().getId());
+		 
+		 System.out.println("candidateOnBoarding.getCandidateId().getId() >>>>>>>>>>>>>>>>::: "+candidateOnBoarding.getCandidateId().getId());
 		 //HERE setting source org location to BGC CANDIDATE to identify parent ORG LOCATION.
 		 bgcCandidateDetailsDto.setSourceOrglocationId(orgLocations.getId());
 		 bgcCandidateDetailsDto.setOrgLocationId(candidateOnBoarding.getBgcOrglocationId().getId());
@@ -607,7 +610,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			 System.out.println("Error occured while Saving on board canidate to BGC vendor location ??????????????");
 			 logger.error("Error occured while Saving on board canidate to BGC vendor location ??????????????");
 		 }
-		 
+		 } 
 		
 	}
 	

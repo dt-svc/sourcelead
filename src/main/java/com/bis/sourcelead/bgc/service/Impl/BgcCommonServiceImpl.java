@@ -19,6 +19,8 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.CandidateService;
+import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -39,6 +41,11 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Autowired
 	CommonUtil commonUtil;
 	
+	@Autowired
+	CandidateService candidateService;
+	
+	@Autowired
+	OrgLocationService orgLocationService;
 	
 	@Override
 	public BgcCandidateDetails saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDto, User user, OrgLocations orgLocations) {
@@ -46,8 +53,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	    try {
 		BgcCandidateDetails bgcCandidateDetails = new BgcCandidateDetails();
 		
-		Candidate candidate = new Candidate();
-		candidate.setId(bgcCandidateDetailsDto.getCandidateId());
+		Candidate candidate = candidateService.getCandidateByCandidateId(bgcCandidateDetailsDto.getCandidateId());
 		bgcCandidateDetails.setCandidate(candidate);
 		bgcCandidateDetails.setComments(bgcCandidateDetailsDto.getComments());
 		bgcCandidateDetails.setCreatedBy(user);  
@@ -59,8 +65,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		bgcCandidateDetails.setCurrentBgcStatus(bgcCandidateDetailsDto.getCurrentBgcStatus());
 		bgcCandidateDetails.setEducationCheckStaus(bgcCandidateDetailsDto.getEducationCheckStaus());
 		bgcCandidateDetails.setHealthCheckStatus(bgcCandidateDetailsDto.getHealthCheckStatus());
-		OrgLocations sourceOrgLocations = new OrgLocations();
-		sourceOrgLocations.setId(bgcCandidateDetailsDto.getSourceOrglocationId());
+		OrgLocations sourceOrgLocations = orgLocationService.getOrgLocations(bgcCandidateDetailsDto.getSourceOrglocationId());
 		bgcCandidateDetails.setSourceOrglocationId(sourceOrgLocations);
 		bgcCandidateDetails.setOrgLocationId(orgLocations);
 		bgcCandidateDetails.setOthersInfoStatus(bgcCandidateDetailsDto.getOthersInfoStatus());
@@ -82,10 +87,9 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 
 
 	@Override
-	public ResponseList<BgcCandidateDetailsDTO> getBgcCadidateList(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
+	public ResponseList<BgcCandidateDetailsDTO> getBgcCadidateListByOrgLocationId(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
-		
-		return   bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
+		return   bgcCommonDao.getBgcCadidateListByOrgLocationId(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
 	}
 
 
