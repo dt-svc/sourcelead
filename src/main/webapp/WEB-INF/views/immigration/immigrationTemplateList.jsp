@@ -231,8 +231,13 @@ $(document).on('change', "#showListCountry ul li input[type=checkbox]", function
 //        var statusFilter = $("#statusFilter").val();
         var searchValue = $("#immiTemplateSerach").val();
         searchValue = searchValue ? searchValue : "";
-
-        var url = vmsUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : 1)+"&countriesList="+countriesList;
+        if(countriesList===""){
+        	var url = vmsUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : 1)+"&countriesList="+countriesList;
+        }
+        else{
+        	var url = vmsUrl + "/immigration/getImmigrationTemplateList?searchValue=" + searchValue + "&status=" + (status ? status : -1)+"&countriesList="+countriesList;	
+        }
+        
         dynamicImmigrationListPagination(url);
     }
 
