@@ -5011,6 +5011,56 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		}
 		
 	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(String panNumber,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.panNumber = :panNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("panNumber", panNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(String aadharNumber,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.aadharNumber = :aadharNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(String ssnNumber,
+			Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.aadharNumber = :ssnNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	
+	}
 
 }
 

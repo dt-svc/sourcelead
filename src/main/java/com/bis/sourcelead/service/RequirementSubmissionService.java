@@ -336,4 +336,12 @@ public interface RequirementSubmissionService {
 	
 	boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,Long requirementId) throws Exception;
 	
+	RequirementSubmission saveRequirementProfileTrackerSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String userRole) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(String panNumber,Long requirementId) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(String aadharNumber,Long requirementId) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(String ssnNumber,Long requirementId) throws Exception;
+	
 }

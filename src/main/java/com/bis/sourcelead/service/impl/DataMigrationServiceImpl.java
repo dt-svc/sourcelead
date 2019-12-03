@@ -81,7 +81,6 @@ import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -114,12 +113,9 @@ import com.bis.sourcelead.service.RequirementApproverHierarchyService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UploadXlsHistoryService;
-import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
@@ -128,7 +124,6 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonArrayDocument;
@@ -613,6 +608,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				case "submmissionTemplateUpload":
 					history.setUploadEntityType("Submissions");
 					break;
+					
+				case "profileTracker":
+					history.setUploadEntityType("ProfileTracker");
+					break;
 
 				}
 	    	}
@@ -827,14 +826,116 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 				try {
 					
-					JSONObject labelItems = new JSONObject();
+					RequirementSubmission requirementSubmission = null;
+					Countries countries = null;
+					if(StringUtils.isNotBlank(orgLocation.getCountry())) {
+						 countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+					 }
+				
 					JSONArray array = new JSONArray();
 					Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
 					
 					while (keys.hasNext()) {
 						String k = (String) keys.next();
-						System.out.println("keys===>"+k);
+						if(!k.equalsIgnoreCase("requirementId") && !k.equalsIgnoreCase("recruiterEmail")) {
+							if(!dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("undefined")) {
+								JSONObject profileTrackerItem = new JSONObject();
+							            if(k.equalsIgnoreCase("candidateName")) {
+											profileTrackerItem.put("label", "Candidate Name");
+								        }else if(k.equalsIgnoreCase("mobileNumber")) {
+											profileTrackerItem.put("label", "Mobile Number");
+								        }else if(k.equalsIgnoreCase("alternateMobileNumber")) {
+											profileTrackerItem.put("label", "Alternate Number");
+								        }else if(k.equalsIgnoreCase("emailId")) {
+											profileTrackerItem.put("label", "Email Id");
+								        }else if(k.equalsIgnoreCase("currentLocation")) {
+											profileTrackerItem.put("label", "Location");
+								        }else if(k.equalsIgnoreCase("currentCompany")) {
+											profileTrackerItem.put("label", "Current Company");
+								        }else if(k.equalsIgnoreCase("position")) {
+											profileTrackerItem.put("label", "Position");
+								        }else if(k.equalsIgnoreCase("noticePeriod")) {
+											profileTrackerItem.put("label", "Notice Period");
+								        }else if(k.equalsIgnoreCase("totalExperience")) {
+											profileTrackerItem.put("label", "Total Experience");
+								        }else if(k.equalsIgnoreCase("releventExperience")) {
+											profileTrackerItem.put("label", "Relevent Experience");
+								        }else if(k.equalsIgnoreCase("aadharNumber")) {
+											profileTrackerItem.put("label", "Aadhar Number");
+								        }else if(k.equalsIgnoreCase("panNumber")) {
+											profileTrackerItem.put("label", "Pan Number");
+								        }else if(k.equalsIgnoreCase("ssnNumber")) {
+											profileTrackerItem.put("label", "SSN Number");
+								        }else if(k.equalsIgnoreCase("skills")) {
+											profileTrackerItem.put("label", "Skills");
+								        }else if(k.equalsIgnoreCase("ctc")) {
+											profileTrackerItem.put("label", "Current Rate");
+								        }else if(k.equalsIgnoreCase("ectc")) {
+											profileTrackerItem.put("label", "Expected Rate");
+								        }else if(k.equalsIgnoreCase("ratePer")) {
+											profileTrackerItem.put("label", "Rate per");
+								        }
+							           
+							            profileTrackerItem.put("value", dataMigrationDTOJsonCopy.getString(k)); 
+									    array.put(profileTrackerItem);
+								
+							}
+						}
+						
 					}
+					String con = array.toString();
+					requirementSubmission = requirementSubmissionService.saveRequirementProfileTrackerSubmission(dataMigrationDTOJsonCopy,user, orgLocation, con, null);
+					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+					requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+					requirementSubmissionHistory.setFromStage("NEW");
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
+					Requirement req = requirementSubmission.getRequirement();
+					if(null != req){
+						Integer totalApplicatsCountForRequirement = 0;
+					   //updating total number of applicants for requrement
+						totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(req.getOrgLocationId().getId(), req.getId());
+						if(totalApplicatsCountForRequirement > 0){
+							req.setTotalApplicants(totalApplicatsCountForRequirement); 
+							requirementService.updateRequirement(req);
+						}else{
+							req.setTotalApplicants(0); 
+						}
+						
+						// pass dto as parameter
+						RequirementDTO requirementDTO = commonUtil.getRequirementDTO(req);
+						List<String> parallelApprover = new LinkedList<>();
+						List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(req.getId());
+						if(list1 != null && !list1.isEmpty()) {
+							for (RequirementApproverHierarchy rah : list1) {
+								if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+									parallelApprover.add(rah.getApproverUserId().getId() + "");
+									requirementDTO.setParallelApprover(parallelApprover);
+								}
+								if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+									if(rah.getLevel() == 1) {
+										String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = sequentialApprover1;
+										req.setLevel1ApproverUserId(levelUserIds);
+										
+										requirementDTO.setSequentialApprover1(sequentialApprover1);
+										requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+									}
+									if(rah.getLevel() == 2) {
+										String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = sequentialApprover2;
+										req.setLevel2ApproverUserId(levelUserIds);
+										
+										requirementDTO.setSequentialApprover2(sequentialApprover2);
+										requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+									}
+								}
+							}
+						}
+						requirementElkUtil.saveElkRequirement(req,requirementDTO);	
+					}
+					
 					
 				}catch (Exception e) {
 					UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);

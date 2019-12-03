@@ -273,4 +273,10 @@ public interface RequirementSubmissionDao {
 	List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(Long orgLocationId, String submissionStatus, Date joiningDate);
 	
 	boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,Long requirementId) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(String panNumber,Long requirementId) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(String aadharNumber,Long requirementId) throws Exception;
+	
+	boolean isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(String ssnNumber,Long requirementId) throws Exception;
 }

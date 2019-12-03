@@ -1047,5 +1047,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(orgLocationId, subscriptionStatus);
 	}
 
+	@Override
+	public UserRole getActiveUserDetailsByEmailAndLocationId(String email, Long locationId) throws Exception {
+		return userRoleDao.getActiveUserDetailsByEmailAndLocationId(email, locationId);
+	}
+
 
 }

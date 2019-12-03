@@ -65,6 +65,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.TimeSheetDayEntries;
 import com.bis.sourcelead.entity.TimesheetSubmissions;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.NOTICE_PERIOD;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Submission_ApprovalStatus;
@@ -3181,8 +3182,23 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	public void dataValidationForJobProfileTracker(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
 	{
 		if(!dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
-			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), orgLocation.getId());
-			if (submissionFlag) {
+			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+			boolean panNumberFlag = false;
+			boolean aadharFlag = false;
+			boolean ssnNumberFlag = false;
+			if(dataMigrationDTOJsonCopy.has("panNumber") && !dataMigrationDTOJsonCopy.get("panNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("panNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("panNumber").toString().equalsIgnoreCase("undefined")) {
+				panNumberFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(dataMigrationDTOJsonCopy.get("panNumber").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+			}
+			
+			if(dataMigrationDTOJsonCopy.has("aadharNumber") && !dataMigrationDTOJsonCopy.get("aadharNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("aadharNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("aadharNumber").toString().equalsIgnoreCase("undefined")) {
+				aadharFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(dataMigrationDTOJsonCopy.get("aadharNumber").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+			}
+			
+			if(dataMigrationDTOJsonCopy.has("ssnNumber") && !dataMigrationDTOJsonCopy.get("ssnNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("ssnNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("ssnNumber").toString().equalsIgnoreCase("undefined")) {
+				ssnNumberFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(dataMigrationDTOJsonCopy.get("ssnNumber").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+			}
+			
+			if (submissionFlag || panNumberFlag || aadharFlag || ssnNumberFlag) {
 				errorSet.put("emailId", "Candidate already submitted to this job");
 			}else {
 				
@@ -3268,7 +3284,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					
 				}else {
-					errorSet.put("ctc", "CTC is Field Missing");
+					errorSet.put("ctc", "CTC Field is missing");
 				}
 				
 				
@@ -3283,11 +3299,11 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					}
 					
 				}else {
-					errorSet.put("ectc", "ECTC is Field Missing");
+					errorSet.put("ectc", "ECTC Field is missing");
 				}
 				
 				if(dataMigrationDTOJsonCopy.has("ratePer") && (dataMigrationDTOJsonCopy.get("ratePer").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("ratePer").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("ratePer").toString().equalsIgnoreCase("undefined"))) {
-					errorSet.put("ratePer", "Rate Per Field is Missing");
+					errorSet.put("ratePer", "Rate Per Field is missing");
 				}
 				
 				
@@ -3304,7 +3320,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 							errorSet.put("panNumber", "Invalid Pan Number ");
 						}
 					}else {
-						errorSet.put("panNumber", "Pan Number Field is Missing");
+						errorSet.put("panNumber", "Pan Number Field is missing");
 					}
 				}
 				
@@ -3335,7 +3351,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 							errorSet.put("ssnNumber", "Invalid SSN Number ");
 						}
 					}else {
-						errorSet.put("ssnNumber", "SSN Number Field is Missing");
+						errorSet.put("ssnNumber", "SSN Number Field is missing");
 					}
 				
 				}
@@ -3344,13 +3360,18 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 					matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("recruiterEmail").toString().trim());
 					if(matcher.matches() == false) {
 						errorSet.put("recruiterEmail", "Invalid Recruiter Email");
+					}else {
+						UserRole userRole = userRoleService.getActiveUserDetailsByEmailAndLocationId(dataMigrationDTOJsonCopy.get("recruiterEmail").toString(), orgLocation.getId());
+						if(userRole == null) {
+							errorSet.put("recruiterEmail", "No Recruiter exists with this email");
+						}
 					}
 				}else {
-					errorSet.put("recruiterEmail", "Recruiter Email Missing");
+					errorSet.put("recruiterEmail", "Recruiter Email missing");
 				}
 				
 				if(dataMigrationDTOJsonCopy.has("noticePeriod") && (dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("noticePeriod").toString().equalsIgnoreCase("undefined"))) {
-					errorSet.put("noticePeriod", "Notice Period Field is Missing");
+					errorSet.put("noticePeriod", "Notice Period Field is missing");
 				}
 				
 				
