@@ -94,24 +94,6 @@ var uploadflag= true;
 					
 					<div id="errorDownloadDiv" style="display: none"></div>
 				</div>
-				<!-- <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-					<div class="bgInfo bg-info clearfix text-center">
-						<span><i class="fa fa-question" aria-hidden="true"></i></span> <span
-							class="info-msg clearfix mt">
-							<p class="clearfix mt">
-								According to this template, the user need to <span
-									class="text-danger"><strong>Import Required
-										Fields</strong></span>
-							</p>
-							<p>
-								<label><i class="fa fa-user"></i>&nbsp;&nbsp;Candidate Name</label> <label><i
-									class="fa fa-envelope"></i>&nbsp;&nbsp;Email</label> <label><i
-									class="fa fa-mobile"></i>&nbsp;&nbsp;Mobile Number</label>
-							</p>
-						</span>
-					</div>
-				</div> -->
-				
 			</div>
 		</div>
 		</form:form>

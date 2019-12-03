@@ -1616,6 +1616,18 @@ public ModelAndView getProfileTrackerTemplateForBulkImprtApplicants(@RequestPara
 }
 
 
+@RequestMapping(value = "/getInterviewScheduleTrackerTemplateForBulkImprtApplicants")
+public ModelAndView getInterviewScheduleTrackerTemplateForBulkImprtApplicants(@RequestParam(value="requirementId", required=false) Long requirementId,
+		HttpServletRequest request) throws Exception{
+	ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementId", requirementId);
+	 model.setViewName("requirement/importInterviewTracker");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	return model;
+}
+
+
 @RequestMapping(value = "/downloadRequirenetSubmissionTemplateByRequirementId/{requirementId}", method = RequestMethod.GET)
 public void downloadRequirenetSubmissionTemplateByRequirementId(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="requirementId") Long requirementId) throws IOException, URISyntaxException{
 	
@@ -1717,6 +1729,34 @@ public void downloadProfileTrackerTemplate(HttpServletRequest request,HttpServle
 	}else {
 		fn = "/templates/Profile_Tracker.xlsx";
 	}
+	
+	URL url = getClass().getResource(fn);
+     file = new File(url.toURI());
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	
+}
+
+
+
+@RequestMapping(value = "/downloadInterviewTrackerTemplate", method = RequestMethod.GET)
+public void downloadInterviewTrackerTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	
+	File file = null;
+	String fn;	
+	fn = "/templates/Interview_Schedule_Tracker.xlsx";
 	
 	URL url = getClass().getResource(fn);
      file = new File(url.toURI());
