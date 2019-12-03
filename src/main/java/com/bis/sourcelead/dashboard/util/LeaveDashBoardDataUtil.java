@@ -37,6 +37,7 @@ import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -53,10 +54,10 @@ import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
-=======
 import com.bis.sourcelead.clockinout.service.ClockInOutConfigService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.RequirementSubmissionDao;
@@ -127,12 +128,6 @@ public class LeaveDashBoardDataUtil {
 	CandidateService candidateService;
 	
 	@Autowired
-	UserService userService;
-	
-	@Autowired
-	CommonUtil commonUtil;
-	
-
 	ExpensesApproverHierarchyService expensesApproverHierarchyService;
 
 
@@ -161,6 +156,9 @@ public class LeaveDashBoardDataUtil {
 	@Autowired
 	UserRoleDao userRoleDao;
 	
+	@Autowired
+	UserRoleService userRoleService;
+
 	@Autowired
 	ClockInOutConfigService clockInOutConfigService;
 	
@@ -701,5 +699,6 @@ public class LeaveDashBoardDataUtil {
 		return jsonArray.toString();
 
 }
+	
 
 }
