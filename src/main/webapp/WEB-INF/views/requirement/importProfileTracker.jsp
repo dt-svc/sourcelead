@@ -4,27 +4,27 @@
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
-<!-- <script type="text/javascript">
+ <script type="text/javascript">
 var sourceleadUrl = '${sourceleadUrl}';
 var uploadflag= true;
 		function getSubmissionsUploadedHistory() {
 			var refreshId = setInterval(function(){
 				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("Submissions",dateFormat);
+					xlsupload.getUploadInprogressProgressBar("ProfileTracker",dateFormat);
 				  }else{
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("Submissions",dateFormat);
+						 xlsupload.getUploadInprogressProgressBar("ProfileTracker",dateFormat);
 				  }
 			},1000);
 		 }
-</script> -->
+</script> 
 
 	<section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Profile Tracker</h2>
+        <h2>Add Applicants</h2>
       </div>
     </section>
     	<div id="loading"></div>

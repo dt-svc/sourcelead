@@ -777,7 +777,7 @@
 								<div class="immSub">
 									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
 							    	<div class="immSubMenu immSubMenu-custome">
-										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant Form</a>
+										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant (Form)</a>
 									    <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');">Import Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a>
@@ -800,12 +800,12 @@
 							</sec:authorize>
 							
 							<div class="immSub">
-									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Trackers</a>
+									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Via Tracker</a>
 							    	<div class="immSubMenu immSubMenu-custome">
-										<a href="javascript:void(0)" title="" onclick="importProfileTracker('${requirement.id}');">Profile Tracker</a>
-									    <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
+										<a href="javascript:void(0)" title="" onclick="importProfileTracker('${requirement.id}');">Add Applicants</a>
+									   <%--  <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');">Import Bulk Applicants</a>
-									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a>
+									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a> --%>
 									</div>
 							</div>
 				  </span>
@@ -885,7 +885,7 @@ function importProfileTracker(requirementId){
 		    	    $(".import_profileTracker_side_wrap").addClass("import_profileTracker_side_wrap_active");
 		    	    $(".side_mask").fadeIn(200);
 		    	    $("body").css('overflow-y', 'hidden');
-		    	    //getSubmissionsUploadedHistory();
+		    	    getSubmissionsUploadedHistory();
 				},
 			}); 
 			
