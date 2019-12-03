@@ -110,6 +110,15 @@ public class ExperienceTrackerHelper {
 					}
 					months = months.length() > 2 ? months.substring(0, 2) : months; 
 				}
+			}else {
+				if(text.contains(".")) {
+					String[] totalExperience =  text.split("\\.");
+					years = totalExperience[0];
+					months = totalExperience[1];
+					System.out.println("hi hello");
+				}else {
+					years = text;
+				}
 			}
 
 			String r="(\\d+\\.?\\d*)";
