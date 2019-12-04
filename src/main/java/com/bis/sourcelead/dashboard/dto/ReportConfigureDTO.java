@@ -1,10 +1,7 @@
 package com.bis.sourcelead.dashboard.dto;
 
-import com.bis.sourcelead.annotations.Required;
-
 public class ReportConfigureDTO {
 	
-	@Required(desc="reportTypeArray")
 	private String reportTypeArray;
 	
 	private String customDashBoardConfUUID;

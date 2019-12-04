@@ -21,6 +21,7 @@ import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.entity.CustomModuleConfiguration;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
 import com.bis.sourcelead.dto.ResponseList;
@@ -131,10 +132,12 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 			if(dashBoardConfList != null && dashBoardConfList.size() >0) {
 				for(CustomDashBoardConfiguration dashConf : dashBoardConfList) {
 					CustomDashBoardConfDTO dashBoardConfDTO = new CustomDashBoardConfDTO();
+					Long numberOfComponents = customDashBoardConfDao.getNumberOfComponentsForCustomDashBoard(dashConf.getId());
 					dashBoardConfDTO.setCustomDashBoardConfId(String.valueOf(dashConf.getId()));
 					dashBoardConfDTO.setDashBoardName(dashConf.getDashboardName());
 					dashBoardConfDTO.setDescription(dashConf.getDescription());
 					dashBoardConfDTO.setCustomDashBoardConfUUID(dashConf.getDashboardConfUUID());
+					dashBoardConfDTO.setNumberOfComponents(String.valueOf(numberOfComponents));
 					if(dashConf.getMakeDefault() != null) {
 						dashBoardConfDTO.setActive(dashConf.getMakeDefault());
 					}
@@ -236,6 +239,42 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 	@Override
 	public void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId,String customDashBoardUUID) {
 		customDashBoardConfDao.getCustomConfDashBoardListByOrgLocationId(orgLOcatinId,customDashBoardUUID);
+	}
+
+
+	@SuppressWarnings("unused")
+	@Override
+	public boolean enableCustomDashBoard(OrgLocations orgLOcation, boolean isEnable,Long loginUserId) {
+		
+		boolean isEnabled  = false;
+		try {
+			EnableDashBoardConfiguration enableDashBoardConf = customDashBoardConfDao.getEnableDashBoardByLocationId(orgLOcation.getId());
+			if(enableDashBoardConf == null) {
+				enableDashBoardConf = new EnableDashBoardConfiguration();
+			}
+			enableDashBoardConf.setOrgLocations(orgLOcation);
+			enableDashBoardConf.setEnableDashboardConfUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			enableDashBoardConf.setIsEnabled(isEnable);
+			enableDashBoardConf.setStatus(1);
+			enableDashBoardConf.setCreatedBy(loginUserId);
+			enableDashBoardConf.setCreatedDate(new Date());
+			enableDashBoardConf.setUpdatedBy(loginUserId);
+			enableDashBoardConf.setUpdatedDate(new Date());
+			EnableDashBoardConfiguration enableEntity = customDashBoardConfDao.enableCustomDashBoard(enableDashBoardConf);
+			if(enableEntity != null) {
+				isEnabled = true;
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isEnabled;
+	}
+
+
+	@Override
+	public EnableDashBoardConfiguration getEnableDashBoardByLocationId(Long orgLocatinId) {
+		return customDashBoardConfDao.getEnableDashBoardByLocationId(orgLocatinId);
 	}
 
 	

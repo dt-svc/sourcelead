@@ -1,9 +1,9 @@
 package com.bis.sourcelead.dashboard.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -14,11 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
-import com.bis.sourcelead.dto.PaymentAccountDTO;
-import com.bis.sourcelead.entity.PaymentAccount;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
 import com.bis.sourcelead.entity.SubTabs;
-
-import org.hibernate.Query;
 
 @Repository
 @Transactional
@@ -156,7 +153,53 @@ public class CustomDashBoardConfDaoImpl implements CustomDashBoardConfDao{
 	}
 
 
-	
-	 
+	@Override
+	public EnableDashBoardConfiguration enableCustomDashBoard(EnableDashBoardConfiguration enableDashBoardConf) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (enableDashBoardConf != null) {
+				session.saveOrUpdate(enableDashBoardConf);
+			}
+		} catch (Exception e) {
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return enableDashBoardConf;
+	}
+
+
+	@Override
+	public EnableDashBoardConfiguration getEnableDashBoardByLocationId(Long orgLocatinId) {
+		EnableDashBoardConfiguration enableEntity = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "from EnableDashBoardConfiguration enableConf where enableConf.orgLocations.id = :orgLocationId";
+			List<EnableDashBoardConfiguration> list = session.createQuery(query).setLong("orgLocationId", orgLocatinId).list();
+			if(list != null && list.size() > 0) {
+				enableEntity = list.get(0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return enableEntity;   
+	}
+
+
+	@Override
+	public Long getNumberOfComponentsForCustomDashBoard(Long customConfDashBoardId) {
+		
+		Long count = 0l;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String query = "select count(*) from CustomModuleConfiguration moduleConf where moduleConf.dashBoardConfId.id=:customConfDashBoardId and moduleConf.status=1";
+			Long moduleCount = (Long)session.createQuery(query).setLong("customConfDashBoardId", customConfDashBoardId).uniqueResult();
+			String qry = "select count(*) from CustomReportConfiguration reportConf where reportConf.dashBoardConfId.id=:customConfDashBoardId and reportConf.status=1";
+			Long reportModuleCount = (Long)session.createQuery(qry).setLong("customConfDashBoardId", customConfDashBoardId).uniqueResult();
+			count = moduleCount + reportModuleCount;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
 	
 }

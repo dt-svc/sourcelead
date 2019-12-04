@@ -3,6 +3,7 @@ package com.bis.sourcelead.dashboard.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
 import com.bis.sourcelead.entity.SubTabs;
 
 public interface CustomDashBoardConfDao {
@@ -20,5 +21,11 @@ public interface CustomDashBoardConfDao {
 	List<SubTabs> getSubModules(Long tabId);
 	
 	void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId, String customDashBoardUUID);
+
+	EnableDashBoardConfiguration enableCustomDashBoard(EnableDashBoardConfiguration enableDashBoardConf);
+
+	EnableDashBoardConfiguration getEnableDashBoardByLocationId(Long orgLocatinId);
+
+	Long getNumberOfComponentsForCustomDashBoard(Long customConfDashBoardId);
 	
 }

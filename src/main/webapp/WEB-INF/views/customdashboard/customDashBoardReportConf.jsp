@@ -40,7 +40,7 @@
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li class="clearfix">
                         <input id="aplicantJoin" value="APPLICANTS_JOINED_REPORT" class="checkbox-custom" name="reportName[]" type="checkbox">
-                        <label for="" class="checkbox-custom-label paddingright">Applicants Joined Report
+                        <label for="aplicantJoin" class="checkbox-custom-label paddingright">Applicants Joined Report
                         </label>
                     </li>
 				</sec:authorize>
@@ -417,7 +417,7 @@
 			 reportTypeArray.push($(this).val());
 		});
 		 
-		if(reportTypeArray.length > 0){
+		if(reportTypeArray.length == 0){
 			$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:1000;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 			$.ajax({ 
 		    	type: "POST",
