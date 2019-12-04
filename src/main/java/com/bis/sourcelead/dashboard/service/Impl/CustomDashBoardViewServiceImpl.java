@@ -2,8 +2,6 @@ package com.bis.sourcelead.dashboard.service.Impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.simple.JSONArray;
@@ -18,6 +16,7 @@ import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
 import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
 import com.bis.sourcelead.dashboard.util.LeaveDashBoardDataUtil;
+import com.bis.sourcelead.dashboard.util.ReportsDashBoardDataUtil;
 import com.bis.sourcelead.dto.LeaveDTO;
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +30,9 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 	
 	@Autowired
 	LeaveDashBoardDataUtil leaveDashBoardDataUtil;
+	
+	@Autowired
+	ReportsDashBoardDataUtil reportsDashBoardDataUtil; 
 	
 	@Autowired
 	HttpServletRequest httpServletRequest;
@@ -88,9 +90,7 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 			CommonDataDto commonDataDto) {
 		try {
 			for (ConfigureDashBoardViewDTO dtoObj : configureDashBoardView) {
-				System.out.println(dtoObj.getSubTabName());
 				String jsonData = "";
-				System.out.println(dtoObj.getSubTabName());
 				if("LEAVE_MANAGEMENT".equalsIgnoreCase(dtoObj.getSubTabName())) {
 				  jsonData = leaveDashBoardDataUtil.getLeaveDashBoardData(commonDataDto);
 				}else if("TIMESHEETS".equalsIgnoreCase(dtoObj.getSubTabName())) {
@@ -137,6 +137,12 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 					jsonData = customDashBoardViewDao.getMarketplaceSalesOrderDashBoard(commonDataDto);
 				}else if("RECENTLY_ADDED".equalsIgnoreCase(dtoObj.getSubTabName())) {
 					jsonData = customDashBoardViewDao.getRecentlyAddedCandidates(commonDataDto);
+				}
+				else if("PROJECT_REPORT".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = reportsDashBoardDataUtil.getProjectReports(commonDataDto);
+				}
+				else if("EMPLOYEE_TASKS".equalsIgnoreCase(dtoObj.getSubTabName())) {
+					jsonData = "";
 				}
 				dtoObj.setJsonStringData(jsonData);
 			}

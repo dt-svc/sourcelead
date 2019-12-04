@@ -92,10 +92,6 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	    resolver.setMaxInMemorySize(10485760); // 1 MB
 	    return resolver;
 	}
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 	
 	/*
 	 * @Bean public MessageSource messageSource() { ResourceBundleMessageSource

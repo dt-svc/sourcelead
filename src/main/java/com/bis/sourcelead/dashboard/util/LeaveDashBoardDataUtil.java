@@ -47,6 +47,7 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -62,6 +63,40 @@ import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
+<<<<<<< HEAD
+=======
+import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserRoleService;
+import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
+import com.bis.sourcelead.util.CommonUtil;
+import com.bis.sourcelead.clockinout.service.ClockInOutConfigService;
+import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
+import com.bis.sourcelead.dashboard.dto.CommonDataDto;
+import com.bis.sourcelead.dto.JobFairDTO;
+import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.dto.VendorContractsDTO;
+import com.bis.sourcelead.entity.OrgSpoc;
+import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
+import com.bis.sourcelead.service.ContractsTemplateService;
+import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.OrgRelationsService;
+import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
+import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
+import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
+import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.ExpensesCount;
+import com.bis.sourcelead.entity.JobFair;
+import com.bis.sourcelead.entity.Requirement;
+import com.bis.sourcelead.entity.RequirementSubmission;
+import com.bis.sourcelead.entity.RequirementSubmissionHistory;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
+import com.bis.sourcelead.service.LeaveService;
+>>>>>>> fa7bf0a709aaab395b54f3d171e41d702bc4a204
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -81,8 +116,11 @@ public class LeaveDashBoardDataUtil {
 	@Autowired
 	TimesheetSubmissionsService	 timesheetSubmissionsService;
 	
+<<<<<<< HEAD
 
 	
+=======
+>>>>>>> fa7bf0a709aaab395b54f3d171e41d702bc4a204
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -94,8 +132,6 @@ public class LeaveDashBoardDataUtil {
 
 	@Autowired
     private RequirementSubmissionDao requirementSubmissionDao;
-	
-
 	
 	@Autowired
 	RequirementService requirementService;
@@ -121,9 +157,8 @@ public class LeaveDashBoardDataUtil {
 	@Autowired
 	CommonUtil commonUtil;
 	
-
-	ExpensesApproverHierarchyService expensesApproverHierarchyService;
-
+	@Autowired
+	private ExpensesApproverHierarchyService expensesApproverHierarchyService;
 
 	@Autowired
 	RequirementSubmissionService requirementSubmissionService;
@@ -149,7 +184,13 @@ public class LeaveDashBoardDataUtil {
 	
 	@Autowired
 	UserRoleDao userRoleDao;
-	
+
+	@Autowired
+	UserRoleService userRoleService;
+
+	@Autowired
+	ClockInOutConfigService clockInOutConfigService;
+
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
@@ -164,6 +205,21 @@ public class LeaveDashBoardDataUtil {
 	 * @param commonDto
 	 * @return
 	 */
+	
+	public String getExpensesDashBoardData(CommonDataDto commonDataDto) {
+		Map<String, String> map = new HashedMap();
+		String isGlobalAccess = "N";
+		try {
+		ExpensesCount expensesCount = new ExpensesCount();
+		expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),isGlobalAccess);
+		map.put("Approved", expensesCount.getEmpExpensesApprovedCount().toString());
+		map.put("Rejected", expensesCount.getEmpExpensesRejectedCount().toString());
+		map.put("Waiting", expensesCount.getEmpExpensesSubmittedForApprovalCount().toString());
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		 return getJsonString(map);
+	}
 	
 	public String getLeaveDashBoardData(CommonDataDto commonDto) {
 		Map<String, String> map = new HashedMap();
@@ -510,20 +566,6 @@ public class LeaveDashBoardDataUtil {
 	 * @param map
 	 * @return String
 	 */
-	public String getExpensesDashBoardData(CommonDataDto commonDataDto) {
-		Map<String, String> map = new HashedMap();
-		try {
-		ExpensesCount expensesCount = new ExpensesCount();
-		expensesCount = expensesApproverHierarchyService.getExpensesCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),"isGlobalAccess");
-		map.put("Approved", expensesCount.getEmpExpensesApprovedCount().toString());
-		map.put("Rejected", expensesCount.getEmpExpensesRejectedCount().toString());
-		map.put("Waiting", expensesCount.getEmpExpensesSubmittedForApprovalCount().toString());
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		 return getJsonString(map);
-	}
-	
 	
 	@SuppressWarnings("unchecked")
 	private String getJsonString(Map<String, String> map) {
@@ -602,8 +644,6 @@ public class LeaveDashBoardDataUtil {
 		map.put("Waiting",timeSheetSubmissionCount.getWaitingForApprovalTimesheetSubmissionCount().toString());
 		map.put("Approved",timeSheetSubmissionCount.getApprovedTimesheetSubmissionCount().toString());
 		map.put("Rejected",timeSheetSubmissionCount.getRejectedTimesheetSubmissionCount().toString());
-		
-		System.out.println(timeSheetSubmissionCount);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -716,6 +756,7 @@ public class LeaveDashBoardDataUtil {
 		return jsonArray.toString();
 
 }
+	
 
 
 
@@ -735,7 +776,6 @@ public class LeaveDashBoardDataUtil {
 				jsonobject.put("EMail",s.getVendorUser().getEmail());
 				jsonarray.add(jsonobject);
 			}
-			System.out.println(vandorsContactListByOrgLocationId);	
 		 }  catch (Exception e) {
 			e.printStackTrace();
 			
