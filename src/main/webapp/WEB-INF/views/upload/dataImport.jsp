@@ -50,12 +50,12 @@
 					onclick="saveSubmissionTemplateDataFields();">Import</button>
 				</c:if>
 				
-				<c:if test="${uploadType == 'profileTracker'}">
+				<c:if test="${uploadType == 'profileTracker' || uploadType == 'interviewTracker'}">
 				<button type="button" class="btn btn-sm btn-primary mr"
 					onclick="saveProfileTrackerTemplateDataFields();">Import</button>
 				</c:if>
 				
-				<c:if test="${uploadType != 'submmissionTemplateUpload' && uploadType != 'profileTracker'}">
+				<c:if test="${uploadType != 'submmissionTemplateUpload' && uploadType != 'profileTracker' && uploadType != 'interviewTracker'}">
 				<button type="button" class="btn btn-sm btn-primary mr"
 					onclick="saveDataFields();">Import</button>
 				</c:if>

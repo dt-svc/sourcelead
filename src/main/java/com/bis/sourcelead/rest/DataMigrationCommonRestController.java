@@ -403,12 +403,8 @@ public class DataMigrationCommonRestController {
 		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		Map<String, String> dataWithCellId = new TreeMap<String, String>();
 		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
-		List<SourceleadFormFields> formFieldsList = new ArrayList<>();
+		List<SourceleadFormFields> formFieldsList = dataMigrationService.getfieldsByActionIdAndImportStatus(370l, 1);
 		List<SourceleadFormFields> sourceleadFormFieldsList = new ArrayList<>();
-		switch(dataMigrationCommonDTO.getUploadType()){  
-	    case "profileTracker": formFieldsList = dataMigrationService.getfieldsByActionIdAndImportStatus(370l, 1);break;  
-	    }
-		
 		for(SourceleadFormFields formFields : formFieldsList) {
 			if(orgLocations.getCountry().equalsIgnoreCase("India")) {
 				if(!formFields.getLabelName().equalsIgnoreCase("SSN Number")) {
@@ -427,6 +423,33 @@ public class DataMigrationCommonRestController {
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		model.addObject("dataWithCellId", dataWithCellId);
 		model.addObject("fields", sourceleadFormFieldsList);
+		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
+		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
+		model.addObject("requirementId", dataMigrationCommonDTO.getRequirementId());
+		model.addObject("headerPosition", dataMigrationCommonDTO.getHeaderPosition());
+	
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return model;
+	}
+	
+	
+	
+	@RequestMapping(value = "/dataMigrationInterviewTracker")
+	public ModelAndView dataMigrationInterviewTracker(DataMigrationCommonDTO dataMigrationCommonDTO , HttpServletRequest request) throws Exception
+	{
+		ModelAndView model = new ModelAndView();
+		try {
+		String ac = StringUtils.removeEnd(staticPath, "/slead-static");
+		Map<String, String> dataWithCellId = new TreeMap<String, String>();
+		dataWithCellId = dataMigrationService.getfileData(ac+dataMigrationCommonDTO.getFilePath(), dataMigrationCommonDTO.getHeaderPosition());
+		List<SourceleadFormFields> formFieldsList = dataMigrationService.getfieldsByActionIdAndImportStatus(371l, 1);
+		
+		model.setViewName("upload/dataImport");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		model.addObject("dataWithCellId", dataWithCellId);
+		model.addObject("fields", formFieldsList);
 		model.addObject("exportFilePath", dataMigrationCommonDTO.getFilePath());
 		model.addObject("uploadType", dataMigrationCommonDTO.getUploadType());
 		model.addObject("requirementId", dataMigrationCommonDTO.getRequirementId());
