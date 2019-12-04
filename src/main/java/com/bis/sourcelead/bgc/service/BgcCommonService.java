@@ -1,10 +1,14 @@
 package com.bis.sourcelead.bgc.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 
@@ -23,4 +27,7 @@ public interface BgcCommonService {
 	
 	BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 	
+	List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)throws Exception;
+	
+	List<CandidateEmployers> getBgcCandidateEmploymentSummary(String candidateUuid)throws Exception;
 }
