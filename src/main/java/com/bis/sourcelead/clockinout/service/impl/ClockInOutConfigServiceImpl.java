@@ -258,7 +258,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	@Override
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userI)
 	{
-		return clockInOutConfigDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userType,userI);
+		return clockInOutConfigDao.getAssignedRequirementListByOrgLocationIDAndUserId(orgLocationId,userType,userI,Constants.Dashboard);
 	}
 
 	@Override

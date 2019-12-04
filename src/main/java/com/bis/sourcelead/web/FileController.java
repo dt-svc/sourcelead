@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -108,17 +107,6 @@ public class FileController {
 	@Autowired
 	CandidateGlobalUtil candidateGlobalUtil;
 
-	@Value("${resumeParserUrlLocal}")
-	private String resumeParserUrlLocal;
-	
-	@Value("${resumeParserUrlQa}")
-	private String resumeParserUrlQa;
-	
-	@Value("${isResumeparserEnabled}")
-	private String isResumeparserEnabled;
-	
-	@Value("${resumeParserUrlProd}")
-	private String resumeParserUrlProd;
 	
 
 
@@ -264,17 +252,9 @@ public class FileController {
 				requirementId = requirement.getId();
 			}
 		}
-		String baseServicesUrl = "";
-		if("qa".equalsIgnoreCase(environment)) {
-			baseServicesUrl = resumeParserUrlQa;
-		}else if(("prod".equalsIgnoreCase(environment))){
-			baseServicesUrl = resumeParserUrlProd;
-		}
-		else {
-			baseServicesUrl = resumeParserUrlLocal ;
-		}
+		
 		String candidateIds = FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
-				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
+				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,candidateGlobalUtil);
 
 		if (requirementId > 0 && requirementRestController != null && !candidateIds.isEmpty()) {
 			requirementRestController.submitRecommendationCandidates(requirementId, candidateIds, "Y", needApplicantPermit, notifyToApplicant, request);
@@ -299,14 +279,9 @@ public class FileController {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
 			ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
 			try {
-				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
 					logger.info("*******Resume Parser Service calling..");
 					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
-				}else {
-					logger.info("*******Resume Parser without Service calling..");
-					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
 					 resume.setFileInfo(fileInfo);
-				}
 				
 			      resumeContent.add(resume);
 			} catch (Exception ex) {
@@ -357,17 +332,8 @@ public class FileController {
 						Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
 
 						try {
-							String baseServicesUrl = "";
-							if("qa".equalsIgnoreCase(environment)) {
-								baseServicesUrl = resumeParserUrlQa;
-							}else if(("prod".equalsIgnoreCase(environment))){
-								baseServicesUrl = resumeParserUrlProd;
-							}
-							else {
-								baseServicesUrl = resumeParserUrlLocal ;
-							}
 							FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
-									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,baseServicesUrl,isResumeparserEnabled,candidateGlobalUtil);
+									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,candidateGlobalUtil);
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();

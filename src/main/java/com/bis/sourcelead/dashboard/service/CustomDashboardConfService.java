@@ -22,4 +22,7 @@ public interface CustomDashboardConfService {
 	List<TabsDTO> getRoleBasedModules(Long locationId, long roleId, Long dashBoardId);
 
 	List<SubTabsDTO> getSubModules(Long tabId);
+	
+	void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId, String customDashBoardUUID);
+	
 }

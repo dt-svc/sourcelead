@@ -18,4 +18,7 @@ public interface CustomDashBoardConfDao {
 	int deleteExistedDashBoardAssociates(Long customDashBoardConfId);
 
 	List<SubTabs> getSubModules(Long tabId);
+	
+	void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId, String customDashBoardUUID);
+	
 }
