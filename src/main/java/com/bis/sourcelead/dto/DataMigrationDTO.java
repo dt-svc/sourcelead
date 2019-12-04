@@ -533,6 +533,11 @@ public class DataMigrationDTO extends CommonDTO {
     
     private String ssnNumber;
     
+    private String interviewDate;
+    
+    private String interviewTime;
+    
+    private String interviewMode;
     
     
     
@@ -2668,6 +2673,30 @@ public class DataMigrationDTO extends CommonDTO {
 
 	public void setSsnNumber(String ssnNumber) {
 		this.ssnNumber = ssnNumber;
+	}
+
+	public String getInterviewDate() {
+		return interviewDate;
+	}
+
+	public void setInterviewDate(String interviewDate) {
+		this.interviewDate = interviewDate;
+	}
+
+	public String getInterviewTime() {
+		return interviewTime;
+	}
+
+	public void setInterviewTime(String interviewTime) {
+		this.interviewTime = interviewTime;
+	}
+
+	public String getInterviewMode() {
+		return interviewMode;
+	}
+
+	public void setInterviewMode(String interviewMode) {
+		this.interviewMode = interviewMode;
 	}
    
 }

@@ -336,7 +336,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				Iterator<?> keys = null;
 				JSONObject dataMigrationDTOJsonCopy = null;
 				
-				if((dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") || dataMigrationDTO.getUploadType().equalsIgnoreCase("profileTracker")) && dataMigrationDTO.getRequirementId() != null) {
+				if((dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") || dataMigrationDTO.getUploadType().equalsIgnoreCase("profileTracker") || dataMigrationDTO.getUploadType().equalsIgnoreCase("interviewTracker")) && dataMigrationDTO.getRequirementId() != null) {
 					    String json1 = "{" + dataMigrationDTO.getJsonData() + "}";
 				     	dataMigrationDTOJson = new JSONObject(json1);
 						dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOJson);
@@ -488,6 +488,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					dataMigrationCommonUtil.dataValidationForJobProfileTracker(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation,jsonString);
 					break;
+					
+				case "interviewTracker":
+					dataMigrationCommonUtil.dataValidationForInterviewTracker(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,jsonString);
+					break;
 
 				}
 
@@ -611,6 +616,10 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					
 				case "profileTracker":
 					history.setUploadEntityType("ProfileTracker");
+					break;
+					
+				case "interviewTracker":
+					history.setUploadEntityType("InterviewTracker");
 					break;
 
 				}

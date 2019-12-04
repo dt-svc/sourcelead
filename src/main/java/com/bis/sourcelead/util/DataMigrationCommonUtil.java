@@ -3379,10 +3379,106 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 		}else {
 			errorSet.put("emailId", "Email field is missing");
 		}
-		
-		
-		
+	}
 	
+	
+	
+	@SuppressWarnings("unchecked")
+	public void dataValidationForInterviewTracker(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
+	{
+		if(!dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
+			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
+			if(submissionFlag) {
+				
+				Matcher matcher = null;
+				Pattern pattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+						+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+				
+				matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("emailId").toString().trim());
+				if(matcher.matches() == false) {
+					errorSet.put("emailId", "Invalid Email");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("candidateName") && (dataMigrationDTOJsonCopy.get("candidateName").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("candidateName").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("candidateName").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("candidateName", "Candidate Name field is missing");
+				}
+				
+				
+				String mobileRegex = "([\\.\\-\\s+\\/()]*[0-9]*\\.?[\\.\\-\\s+\\/()]*){8,15}";
+				if(!dataMigrationDTOJsonCopy.get("mobileNumber").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("mobileNumber").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("mobileNumber").toString().equalsIgnoreCase("undefined")) {
+					boolean flag = false;
+					String mobNum = dataMigrationDTOJsonCopy.get("mobileNumber").toString();
+					if (mobNum.length() > 9 && mobNum.length() <= 20) {
+						flag = mobNum.matches(mobileRegex);
+					}
+					if(flag == false) {
+						errorSet.put("mobileNumber", "Invalid Mobile Number");
+					}
+					
+				}else {
+					errorSet.put("mobileNumber", "Mobile Number field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("skills") && (dataMigrationDTOJsonCopy.get("skills").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("skills").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("skills").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("skills", "Skills field is missing");
+				}
+				
+				if(!dataMigrationDTOJsonCopy.get("interviewDate").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("interviewDate").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("interviewDate").toString().equalsIgnoreCase("undefined")) {
+					try {
+						DateFormat formatter = new SimpleDateFormat("dd-mm-yyyy"); 
+						Date date = (Date)formatter.parse(dataMigrationDTOJsonCopy.getString("interviewDate"));
+						String dateofjoin = formatter.format(date);
+						dataMigrationDTOJsonCopy.put("interviewDate", dateofjoin);
+					} catch (Exception e) {
+						errorSet.put("interviewDate", dataMigrationDTOJsonCopy.getString("interviewDate")+" is invalid Date of join");
+					}
+				}else {
+					errorSet.put("interviewDate", "Interview Date field is missing");
+				}
+				
+				
+				if(!dataMigrationDTOJsonCopy.get("interviewTime").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("interviewTime").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("interviewTime").toString().equalsIgnoreCase("undefined")) {
+					 String TIME12HOURS_PATTERN = "(1[012]|[1-9]):[0-5][0-9](\\s)?(?i)(am|pm)";
+					 
+					    Matcher timeMatcher = null;
+						Pattern timePattern = Pattern.compile(TIME12HOURS_PATTERN);
+						timeMatcher = timePattern.matcher(dataMigrationDTOJsonCopy.get("interviewTime").toString().trim());
+						if(timeMatcher.matches() == false) {
+							errorSet.put("emailId", "Invalid Interview Time");
+						}
+						
+				}else {
+					errorSet.put("interviewTime", "Interview Time field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("interviewMode") && (dataMigrationDTOJsonCopy.get("interviewMode").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("interviewMode").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("interviewMode").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("skills", "Interview Mode field is missing");
+				}
+				
+				if(dataMigrationDTOJsonCopy.has("currentLocation") && (dataMigrationDTOJsonCopy.get("currentLocation").toString().equalsIgnoreCase("") || dataMigrationDTOJsonCopy.get("currentLocation").toString().equalsIgnoreCase("null") || dataMigrationDTOJsonCopy.get("currentLocation").toString().equalsIgnoreCase("undefined"))) {
+					errorSet.put("currentLocation", "Current Location field is missing");
+				}
+				
+				if(!dataMigrationDTOJsonCopy.get("recruiterEmail").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("recruiterEmail").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("recruiterEmail").toString().equalsIgnoreCase("undefined")) {
+					matcher = pattern.matcher(dataMigrationDTOJsonCopy.get("recruiterEmail").toString().trim());
+					if(matcher.matches() == false) {
+						errorSet.put("recruiterEmail", "Invalid Recruiter Email");
+					}else {
+						UserRole userRole = userRoleService.getActiveUserDetailsByEmailAndLocationId(dataMigrationDTOJsonCopy.get("recruiterEmail").toString(), orgLocation.getId());
+						if(userRole == null) {
+							errorSet.put("recruiterEmail", "No Recruiter exists with this email");
+						}
+					}
+				}else {
+					errorSet.put("recruiterEmail", "Recruiter Email missing");
+				}
+				
+			}else {
+				errorSet.put("emailId", "Candidate not submitted to this job");
+			}
+		}else {
+			errorSet.put("emailId", "Email field is missing");
+		}
 	}
 	
 		
