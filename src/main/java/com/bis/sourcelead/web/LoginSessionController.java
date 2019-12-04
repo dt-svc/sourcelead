@@ -28,6 +28,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
+import com.bis.sourcelead.dashboard.dto.CommonDataDto;
+import com.bis.sourcelead.dashboard.dto.ConfigureDashBoardViewDTO;
+import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
+import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.entity.CandidateOffBoarding;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
@@ -35,6 +42,7 @@ import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.LookUpData;
 import com.bis.sourcelead.entity.Notifications;
 import com.bis.sourcelead.entity.OnBoardingTemplateDocuments;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrglocationDepositTaxes;
 import com.bis.sourcelead.entity.SourceleadActions;
@@ -182,6 +190,15 @@ public class LoginSessionController {
 	
 	@Autowired
 	AssociateBankDataService associateBankDataService;
+	
+	@Autowired
+	CustomDashboardConfService customDashboardConfService;
+	
+	@Autowired
+	CustomDashBoardViewService customDashBoardViewService;
+	
+	@Autowired
+	CustomDashBoardConfDao customDashBoardConfDao;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -192,7 +209,7 @@ public class LoginSessionController {
 			@RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 			@RequestParam(value = "referUUID", required = false) String referUUID, HttpServletResponse response,
 			@RequestParam(value = "orgLocationId", required = false) Long orgLocationId,
-			@RequestParam(value = "userRoleId", required = false) Long userRoleId,
+			@RequestParam(value = "userRoleId", required = false) Long usrRoleId,
 			@RequestParam(value = "switchUserType", required = false) String switchUserType,
 			@RequestParam(value = "loginOrgLocatonId", required = false) Long loginOrgLocatonId) throws Exception {
 
@@ -205,8 +222,35 @@ public class LoginSessionController {
 		UserLoginLogoutSession userLoginSession = (UserLoginLogoutSession) request.getSession().getAttribute("userLoginSession");
 		String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "resetPwdMsg");
 		String roleName = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+		Long userRoleId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userRoleId");
+		UserRole userRole = userRoleService.getUserRoleById(userRoleId);
 		if (userLoginSession != null) {
 			SourceLeadSessionManager.setSessionAttribute(request, "isAuthenticated",userLoginSession.getAuthenticated());
+		}
+		
+		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		EnableDashBoardConfiguration enableDashBoard = customDashboardConfService.getEnableDashBoardByLocationId(orgLocId);
+		if(enableDashBoard != null && enableDashBoard.getIsEnabled() == true) {
+			
+			List<CustomDashBoardConfiguration> dashBoardConfList = customDashBoardConfDao.getCustomConfDashBoardByLocationId(orgLocId);
+			CustomDashBoardConfiguration dashBoard =  dashBoardConfList.stream().filter(d->userRole.getRoles().getId().longValue() == d.getRoleId().longValue()).findAny().orElse(null);
+			List<ConfigureDashBoardViewDTO> configureDashBoardView = customDashBoardViewService.getConfiguredDataByDashBoardId(dashBoard.getId());
+			String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+			Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			CommonDataDto commonDataDto = new CommonDataDto();
+			commonDataDto.setOrgLocation(orgLocation);
+			commonDataDto.setLoginUserRole(loginUserRole);
+			commonDataDto.setUserId(user.getId());
+			commonDataDto.setOrgId(org.getId());
+			List<ConfigureDashBoardViewDTO>  resultData = customDashBoardViewService.getDashBoardData(configureDashBoardView,commonDataDto);
+			model.addObject("dashBoardConfData",resultData);
+			model.addObject("sourceleadUrl", sourceleadUrl);
+			model.setViewName("customdashboard/customDashBoardView");
+			
+			//return new ModelAndView("redirect:/app/configureCustomDashBoardView?customDashBoardUUID=rhelzSk8");
+			return model;
 		}
 
 		if (!roleName.equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !roleName.equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)) {
@@ -223,7 +267,7 @@ public class LoginSessionController {
 			
 			String isCompanyOnboarded = (String) SourceLeadSessionManager.getSessionAttribute(request, "isCompanyOnboarded");
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+//			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 			Long timeZoneId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
 
@@ -264,7 +308,6 @@ public class LoginSessionController {
 						model.setViewName("dashboard");
 					}
 				} else {
-
 					CandidateOnBoarding candidateOnBoarding = candidateOnBoardingService.getCandidateOnBoardingByUserIdAndLocationId(userId, orgLocId);
 					if (null != candidateOnBoarding && requirementUUID == null) {
 						SourceLeadSessionManager.setSessionAttribute(request, "candidateOnBoarding",candidateOnBoarding);
@@ -348,7 +391,7 @@ public class LoginSessionController {
 		}
 		boolean redirectFlag = false;
 		if(request.getSession().getAttribute("redirectURL") != null) {
-			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+//			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			String redirectURL = (String) request.getSession().getAttribute("redirectURL");
 			long redirectOrgLocationId = (Long) request.getSession().getAttribute("redirectOrgLocationId");
 			if(orgLocId != null && orgLocId == redirectOrgLocationId) {
@@ -365,7 +408,7 @@ public class LoginSessionController {
 		if(!redirectFlag) {
 			boolean dashboardConfigured = false;
 			Long userId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "userId");
-			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+//			Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			DashboardItemsDTO dashboardItems = userService.getDashboardItemsByUserId(userId, orgLocId);
 			if (dashboardItems != null && dashboardItems.getItemsObjectList().size() > 0) {
 				dashboardConfigured = true;
@@ -374,16 +417,8 @@ public class LoginSessionController {
 			model.addObject("dashboardItems", dashboardItems);
 			if (model.getViewName().equalsIgnoreCase("dashboard") && dashboardConfigured)
 				model.setViewName("dashboard_configured");
-				//return new ModelAndView("redirect:/app/configureCustomDashBoardView?customDashBoardUUID=rhelzSk8");
 		}
 		return model;
-	}
-
-	private void setTimeZone(HttpServletRequest request, OrgLocations orgLocations, ModelAndView model)
-			throws Exception {
-		Timezone timezone = timeZoneService.getTimezone(orgLocations.getTimezone().getId());
-		SourceLeadSessionManager.setSessionAttribute(request, "timezone", timezone);
-		model.addObject("timezone", timezone.getTimeZoneId());
 	}
 
 	private void setLoginSession(HttpServletRequest request) throws Exception {

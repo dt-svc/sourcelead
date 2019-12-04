@@ -7,7 +7,6 @@
 
 <script>
 function prepareDynamicTableGrid(subTabName,dataSet){
-console.log(dataSet);
 		var my_columns = [];
 		dataSet = JSON.parse(dataSet);
 		$.each( dataSet[0], function( key, value ) {

@@ -26,6 +26,7 @@ import com.bis.sourcelead.dashboard.dto.ReportConfigureDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.entity.CustomReportConfiguration;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashBoardViewService;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
 import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
@@ -496,6 +497,37 @@ public class CustomDashBoardRestController {
 	}
 	
 	
+	
+	
+	/**
+	 * Make Custom DashBoard Enable 
+	 * @param customDashBoardUUID
+	 * @param isActiveStatus
+	 * @param req
+	 * @param res
+	 * @return boolean
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/enableCustomDashBoard", method = RequestMethod.POST)
+	public boolean enableCustomDashBoard(@RequestParam(value = "isEnable", required = true) boolean isEnable,HttpServletRequest req,HttpServletResponse res) throws Exception
+	{
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(req, "user");
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		return customDashboardConfService.enableCustomDashBoard(orgLocation,isEnable,user.getId());
+		
+	}
+	
+	
+	@RequestMapping(value = "/getIsDashBoardEnabled", method = RequestMethod.POST)
+	public EnableDashBoardConfiguration enableCustomDashBoard(HttpServletRequest req,HttpServletResponse res) throws Exception
+	{
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
+		return customDashboardConfService.getEnableDashBoardByLocationId(orgLocation.getId());
+		
+	}
+	
+	
+	
 	@RequestMapping(value = "/addDynamicHeadersWithData")
 	public ModelAndView addDynamicHeadersWithData(HttpServletRequest request,HttpServletResponse response) {
 		ModelAndView model = new ModelAndView();
@@ -510,5 +542,7 @@ public class CustomDashBoardRestController {
 		return model;
 
 	}
+	
+	
 
 }

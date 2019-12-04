@@ -7,6 +7,7 @@
 <script>
 	$(document).ready(function() {
 		getCustomDashBoardConfiguredList();
+		getIsDashBoardEnabled();
 	});
 </script>
 
@@ -30,9 +31,18 @@
 	<div class="vendor_wrap clearfix">
 		<div id="loading"></div>
 		<div class="positionRelative reportHead clearfix">
+		<div class="col-md-4 mt">
+			<label class='pull-left mt2'>Enable Custom Dashboard</label>
+				<div class="pull-left ml">
+					<label class="switch">
+						<input type="checkbox" id="enableCustomDashBoard" onclick="enableCustomDashBoard();">
+						<div class="slider round"></div>
+					</label>
+				</div>
+		</div>
 			<ul class="pull-right list-unstyled list-inline">
 				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addCustomDashBoardConf' title="Add">+ Add</a></li>
-				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addDynamicHeadersWithData' title="Add">+ Dayana</a></li>
+				<li><a class="newAdBtn mr5" href='${SourceLeadWeb_sourceleadUrl}/addDynamicHeadersWithData' title="Add">+ Dynamic Table</a></li>
 				
 				
 				
@@ -78,21 +88,17 @@
 <script>
 	function getCustomDashBoardConfiguredList() {
 		var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-		$("#loading")
-				.attr(
-						'style',
-						'position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+		$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(sourceleadUrl + "/viewCustomDashBoardConfiguredList?"+ tokenParamName + "=" + tokenValue,function(res) {
 							var data = res.data;
 							var result = "";
-							result = result
-									+ '<table id="dashBoardConfigure" class="display" cellspacing="0" width="100%">';
+							result = result+ '<table id="dashBoardConfigure" class="display" cellspacing="0" width="100%">';
 							result = result + '<thead>';
 							result = result + '<tr>';
 							result = result + '<th>Name</th>';
 							result = result + '<th>No of Components</th>';
 							result = result + '<th>Action</th>';
-							result = result + '<th>Make Default</th>';
+							/* result = result + '<th>Make Default</th>'; */
 							result = result + '</tr>';
 							result = result + '</thead>';
 							result = result + '<tbody>';
@@ -129,13 +135,13 @@
 									result = result + '  </td>';
 									result = result + '<td>';
 
-									result = result + '<div>';
+								/* 	result = result + '<div>';
 										if(opt.active){
 								        	 result += '<label class="switch"><input type="checkbox" checked  value = "" onclick="makeDefaultCustomDashBoard(\''+opt.customDashBoardConfUUID+'\',\''+opt.active+'\');"> <div class="slider round"></div> </label>';
 								         }else{
 								        	 result += '<label class="switch"><input type="checkbox" onclick="makeDefaultCustomDashBoard(\''+opt.customDashBoardConfUUID+'\',\''+opt.active+'\');"> <div class="slider round"></div> </label>';
 								         }									
-									result = result + '</div>';	
+									result = result + '</div>';	 */
 									result = result + '</td>';
 									result = result + ' </tr> ';
 								}
@@ -263,6 +269,32 @@ function returnCustomReportPage(){
   }
  </script>
 
+
+<script>
+function enableCustomDashBoard(){
+	var isEnable = false
+	if($("#enableCustomDashBoard").prop('checked') == true){
+		isEnable = true; 
+	}
+	$.post( sourceleadUrl+ "/enableCustomDashBoard?isEnable="+isEnable, function(data) {
+		  if(data){
+		  }
+	  });
+	
+}
+</script>
+
+<script>
+function getIsDashBoardEnabled(){
+	 $.post( sourceleadUrl+ "/getIsDashBoardEnabled", function(data) {
+		  if(data){
+			  if(data.isEnabled){
+				 $("#enableCustomDashBoard").prop('checked',true);
+			  }
+		  }
+	  });
+}
+</script>
 
 
 <jsp:include page="../masterFooter.jsp" />
