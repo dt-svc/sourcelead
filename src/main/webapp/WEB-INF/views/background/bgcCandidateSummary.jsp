@@ -2,7 +2,7 @@
     pageEncoding="ISO-8859-1"%>
     <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcCandidate.js?staticTime=${staticTime}"></script>
 <!-- Content Area -->
   <section class="content-wraper content-wraperNew">
    
@@ -65,37 +65,23 @@
 	  </div>
 
 	  <div id="tab-education" class="immigraTabs_inn">
-		<div class="immigraDetailsCta">
-			<h2>Education</h2>
-			<ul>
-				<li class="clearfix"><span>Higher Education</span><p>: --</p></li>
-				<li class="clearfix"><span>Institute Name</span><p>: --</p></li>
-				<li class="clearfix"><span>Academic Year</span><p>: --</p></li>
-				<li class="clearfix"><span>Grade</span><p>: --</p></li>
-				<li class="clearfix"><span>University / Authority</span><p>: --</p></li>
-				<li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li>
-				<li class="clearfix"><span>Comments</span><p>: --</p></li>
-			</ul>
+	  <div class="immigraDetailsCta" id ="educationList">
+		<jsp:include page="bgcCandidateEducationSummary.jsp"/>
 		</div>
-	  </div>
+	 </div>
+	 
 	  <div id="tab-previousEmployer" class="immigraTabs_inn">
-		<div class="immigraDetailsCta">
-			<h2>Previous Employer</h2>
-			<ul>
-				<li class="clearfix"><span>Previous Employer Name</span><p>: --</p></li>
-				<li class="clearfix"><span>Designation</span><p>: --</p></li>
-				<li class="clearfix"><span>Period</span><p>: --</p></li>
-				<li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
-				<li class="clearfix"><span>Conduct</span><p>: --</p></li>
-			</ul>
+	  <div class="immigraDetailsCta" id = "employmentList">
+			<jsp:include page="bgcCandidateEmploymentSummary.jsp"/>
 		</div>
 	  </div>
+	  
 	  <div id="tab-criminialCheck" class="immigraTabs_inn">
 			<div class="immigraDetailsCta">
 				<h2>Legal and Criminial Check</h2>
 				<ul>
 					<li class="clearfix"><span>Financial Check</span><p>: --</p></li>
-					<li class="clearfix"><span>Criminal Check</span><p>: --</p></li>
+					<li class="clearfix"><span>Criminal Check</span><p>: ${bgcCandidate.crimeCheckStatus eq null ? "--" : bgcCandidate.crimeCheckStatus}</p></li>
 					<li class="clearfix"><span>Bank and Property Check</span><p>: --</p></li>
 					<li class="clearfix"><span>Salary Check</span><p>: --</p></li>
 					<li class="clearfix"><span>Attach document</span><p>: --</p></li>
@@ -118,6 +104,8 @@
 <script src="js/jquery-ui.min.js"></script> 
 
 <script>
+var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+var candidateUuid = '${bgcCandidate.candidateUUID}';
 // project side bar tabs
 $(document).ready(function() {
 	$("#tab-Details").show()
@@ -128,8 +116,17 @@ $(document).ready(function() {
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
+        if(tab == "#tab-education"){
+        	bgc.getBgcCandidateEducationSummary(candidateUuid);
+        }else if(tab == "#tab-previousEmployer"){
+        	bgc.getBgcCandidateEmploymentSummary(candidateUuid);        	
+        }
     });
+	
+	
 });	
+
+
 	</script>
     <!-- Script for Linked Invoice pop -->
     <script>

@@ -191,7 +191,7 @@ function dynamicBgcListPagination(url) {
                 "render": function (data, type, opt, meta) {
                     var result = "";
                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/onProgressView?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
+                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
                     } else {
                         result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                     }

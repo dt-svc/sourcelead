@@ -3,6 +3,7 @@ package com.bis.sourcelead.background.web;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,9 +29,15 @@ import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 
@@ -82,7 +89,7 @@ public class BackgroundController {
 	 * below method is used to fetch bgc candidate details entity record by using bgcUuid.
 	 * candidate entity is set as model and view object and details are displayed in summary.
 	 */
-	@RequestMapping(value = { "/onProgressView" })
+	@RequestMapping(value = { "/bgcCandidateSummary" })
 	public ModelAndView viewOnProgressViewDetails(
 			@RequestParam(value="bgcUUID", required=true) String bgcUUID,
 			HttpServletRequest request) throws Exception {
@@ -97,9 +104,24 @@ public class BackgroundController {
 		sessionData.setNav(Constants.COMPLETED);
 		
 			  model.addObject("sourceleadUrl", sourceleadUrl);
-			  model.setViewName("/background/onProgressView");
+			  model.setViewName("/background/bgcCandidateSummary");
 		return model;
 	}
+	
+	//editBgcCandidate
+	@RequestMapping(value = { "/editBgcCandidate" })
+	public ModelAndView editBgcCandidate(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
+		sessionData.setNav(Constants.COMPLETED);
+		
+			  model.addObject("sourceleadUrl", sourceleadUrl);
+			  model.setViewName("/background/editBgcCandidate");
+		return model;
+	}
+	
 	
 	/*
 	 * below method is used to fetch background candidates details for the 
@@ -172,5 +194,31 @@ public class BackgroundController {
 		}
 		System.out.println("inisde controller status : "+status);
 		return status;
+	}
+	
+	@RequestMapping(value = "/getBgcCandidateEducationSummary")
+	public @ResponseBody List<CandidateEducation> getBgcCandidateEducationSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+		try {
+			logger.debug("inside getbgcCandidateEducationSummary");
+			List<CandidateEducation> candidateEducationList= bgcCommonService.getBgcCandidateEducationSummaryByCandidateUuid(uuid);
+			return candidateEducationList;
+		} catch (Exception e) {
+			logger.error(e+" in getbgcCandidateEducationSummary");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@RequestMapping(value = "/getBgcCandidateEmploymentSummary")
+	public @ResponseBody List<CandidateEmployers> getBgcCandidateEmploymentSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+		try {
+			logger.debug("inside getBgcCandidateEmploymentSummary");
+			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(uuid);
+			return candidateEducationList;
+		} catch (Exception e) {
+			logger.error(e+" in getBgcCandidateEmploymentSummary");
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
