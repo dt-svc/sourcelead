@@ -21,6 +21,8 @@ import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.CandidateEducation;
+import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationListView;
@@ -138,6 +140,8 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			}
 			return Constants.SUCCESS;
 	}
+	
+	@Override
 	public BgcCandidateDetails getBgcCandidateDetailsByBgcUuid(String bgcUuid){
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
@@ -148,6 +152,39 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error(e+" in getBgcCandidateDetailsByBgcUuid");
+			return null;
+		}
+	}
+
+	@Override
+	public List<CandidateEducation> getBgcCandidateEducationSummaryListByCandidateId(Long candidateId){
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<CandidateEducation> candidateEducationList = new ArrayList<CandidateEducation>();
+			String queryString = "from CandidateEducation ce where ce.candidateId=:candidateId";
+			Query query = session.createQuery(queryString).setLong("candidateId", candidateId);
+			candidateEducationList = query.list();
+			return candidateEducationList;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e+" in getBgcCandidateEducationSummaryListByCandidateId");
+			return null;
+		}
+	}
+
+	@Override
+	public List<CandidateEmployers> getBgcCandidateEmploymentSummaryListByCandidateId(Long candidateId)
+			throws Exception {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			List<CandidateEmployers> candidateEmploymentList = new ArrayList<CandidateEmployers>();
+			String queryString = "from CandidateEmployers ce where ce.candidateId=:candidateId";
+			Query query = session.createQuery(queryString).setLong("candidateId", candidateId);
+			candidateEmploymentList = query.list();
+			return candidateEmploymentList;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error(e+" in getBgcCandidateEmploymentSummaryListByCandidateId");
 			return null;
 		}
 	}
