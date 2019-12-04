@@ -89,7 +89,7 @@ public class ImmigrationReportRestController {
 		model.setViewName("/immigration/petitionReport");
 		List<LookUpData> petitionTypeList = immigrationTemplateService.getLookupDataByType(Constants.VISA);
 		model.addObject("petitionTypeList", petitionTypeList);
-		 
+		model.addObject("sourceleadUrl", sourceleadUrl);
 		List<LookUpData> petitionStatusList = immigrationTemplateService.getLookupDataByType(ImmigrationConstants.PETITION_STATUS);
 		model.addObject("petitionStatusList", petitionStatusList);
 		
