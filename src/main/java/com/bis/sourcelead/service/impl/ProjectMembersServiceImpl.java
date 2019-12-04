@@ -2379,6 +2379,11 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
 	}
 
+	@Override
+	public ResponseList<ProjectMembers> getProjectClosureReport(Date startDate, Date endDate, Long locationsId, Long userId) {
+		return projectMembersDao.getProjectClosureReport(startDate, endDate, locationsId, userId);
+	}
+
 
 
 }
