@@ -138,7 +138,7 @@ public class CustomDashBoardViewServiceImpl implements CustomDashBoardViewServic
 					jsonData = reportsDashBoardDataUtil.getProjectReports(commonDataDto);
 				}
 				else if("EMPLOYEE_TASKS".equalsIgnoreCase(dtoObj.getSubTabName())) {
-					jsonData = "";
+					jsonData = reportsDashBoardDataUtil.getEmployeeTasks(commonDataDto);
 				}
 				dtoObj.setJsonStringData(jsonData);
 			}
