@@ -80,6 +80,7 @@ public interface RequirementInterviewService {
 	
 	List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception;
 	
+	void saveRequirementInterviewTrackerDetails(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception;
 	
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	

@@ -75,6 +75,7 @@ import com.bis.sourcelead.dto.UploadEntriesDTO;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateVisa;
 import com.bis.sourcelead.entity.CandidateVisaHistory;
@@ -110,6 +111,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
@@ -223,6 +225,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	RequirementInterviewService requirementInterviewService;
 
 	
 	@Value("${env}")
@@ -954,7 +959,24 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					e.printStackTrace();
 				}
 			break;
-
+			
+		case "interviewTracker":
+			
+			try {
+				
+				CandidateGlobal canidateGlobal = candidateGlobalService.findByCandidateGlobalEmail(dataMigrationDTOJsonCopy.getString("emailId"), orgLocation.getId());
+				RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndRequirementId(canidateGlobal.getId(), Long.parseLong(dataMigrationDTOJsonCopy.getString("requirementId")));
+				requirementInterviewService.saveRequirementInterviewTrackerDetails(dataMigrationDTOJsonCopy, user, orgLocation);
+				
+			}catch (Exception e) {
+				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
+				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
+				uploadXlsHistoryService.storeUploadXlsHistory(history);
+				e.printStackTrace();
+			}
+			break;
+			
 		case "assetUpload":
 			try {
 			AssetDTO assetDTO = new AssetDTO();

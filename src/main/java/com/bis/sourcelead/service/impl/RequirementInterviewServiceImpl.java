@@ -2351,6 +2351,80 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
 	public List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception {
 		return requirementInterviewDao.getInterviewDatesForCandidateInterviewSlots(applicantSubmissionIds);
 	}
+
+
+
+	@Override
+	public void saveRequirementInterviewTrackerDetails(JSONObject jsonObj, User user, OrgLocations orgLocations)
+			throws Exception {
+		
+		CandidateGlobal canidateGlobal = candidateGlobalService.findByCandidateGlobalEmail(jsonObj.getString("emailId"), orgLocations.getId());
+		RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndRequirementId(canidateGlobal.getId(), Long.parseLong(jsonObj.getString("requirementId")));
+		
+		RequirementInterview requirementInterview  = new RequirementInterview();
+		requirementInterview.setSubmissionId(submission);
+		
+		Timezone zone = timeZoneService.getTimezone(Long.valueOf(orgLocations.getTimeZoneId()));
+		requirementInterview.setTimezone(zone);
+		
+		if(jsonObj.has("interviewDate") && !jsonObj.getString("interviewDate").isEmpty()){
+			
+			Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("interviewDate")),jsonObj.getString("interviewTime").replaceAll("\\s",""));
+			String currentTimeStr = Constants.TZ_DF.format(startTime);  
+			String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
+			Date converteDate = commonUtil.dateFromElk(startTimeUTC);
+			requirementInterview.setDateOfInterview(converteDate);
+		}
+		
+		requirementInterview.setLocation(jsonObj.getString("currentLocation"));
+		
+
+		if(jsonObj.has("interviewTime") && !jsonObj.getString("interviewTime").isEmpty()){
+			  Date startTime =  CalendarUtil.getDateFromDateAndTime(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("interviewDate")), 
+					      jsonObj.getString("interviewTime").replaceAll("\\s",""));
+				String currentTimeStr = Constants.TZ_DF.format(startTime);  
+				String startTimeUTC= CommonUtil.convertTimeZones(zone.getTimeZoneId(), "UTC", currentTimeStr);
+				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+				Date convertedDate = TZ_DF_TS.parse(startTimeUTC);
+				requirementInterview.setStartTime(convertedDate);
+		}
+		
+	    SubmissionTemplate interviewTemplate = submissionTemplateService.getDefaultInterviewTemplateByOrgLocationId(orgLocations.getId());
+		requirementInterview.setInterviewTemplateId(interviewTemplate);
+		User sourceUser = userService.findByEmailAndOrgLocationsId(jsonObj.getString("recruiterEmail"), orgLocations.getId());
+		
+		requirementInterview.setInterviewType(jsonObj.getString("interviewMode"));
+		requirementInterview.setRemainedBefore("30");
+		requirementInterview.setStatus(Constants.RECORD_ACTIVE);
+        requirementInterview.setCreatedDate(new Date());
+        requirementInterview.setCreatedBy(sourceUser.getUserCode());
+        requirementInterview.setUpdatedDate(new Date());
+        requirementInterview.setUpdatedBy(sourceUser.getUserCode());
+        requirementInterview.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID());
+        RequirementInterview updateInterview = requirementInterviewDao.storeRequirementInterview(requirementInterview);
+        RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+        requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
+        submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
+    	submission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW.toString());
+    	submission.setUpdatedDate(commonUtil.currentDate());
+        requirementSubmissionService.storeRequirementSubmission(submission);
+        requirementSubmissionHistoryService.updateRequirementHistory(submission, user, requirementSubmissionHistory, submission.getCreatedBy());
+        
+      //to save interview history
+        RequirementInterviewHistory interviewHistory = new RequirementInterviewHistory();
+        interviewHistory.setInterviewId(updateInterview);
+        interviewHistory.setSubmissionId(submission);
+        interviewHistory.setOrgLocationId(orgLocations);
+        interviewHistory.setInterviewSourceType(Constants.INTERVIEW);
+        interviewHistory.setStatus(Constants.RECORD_ACTIVE);
+        interviewHistory.setCreatedDate(new Date());
+        interviewHistory.setCreatedBy(user.getUserCode());
+        interviewHistory.setUpdatedDate(new Date());
+        interviewHistory.setUpdatedBy(user.getUserCode());
+        requirementInterviewHistoryService.storeRequirementInterviewHistory(interviewHistory);
+        
+          
+	}
 	
 	
 	/*@Override
