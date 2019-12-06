@@ -155,7 +155,7 @@ public class LeaveDashBoardDataUtil {
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
-	
+	 
 	/**
 	 * Leave DashBoard Data 
 	 * approved,rejected,pending and canceled leav count
@@ -300,6 +300,7 @@ public class LeaveDashBoardDataUtil {
 		}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public String getCandidateOFFBoarding(CommonDataDto commonDataDto) {
 		JSONArray Jsonarray = new JSONArray();
