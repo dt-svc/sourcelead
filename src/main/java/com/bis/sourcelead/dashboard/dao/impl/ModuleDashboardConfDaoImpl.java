@@ -49,7 +49,7 @@ private static final Logger logger = LoggerFactory.getLogger(CustomDashBoardConf
 	{
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from CustomModuleConfiguration customModConf where customModConf.subTabId = :subModuleId and customModConf.dashBoardConfId.id=:dashBoardConfId";
+			String query = "from CustomModuleConfiguration customModConf where customModConf.subTabId = :subModuleId and customModConf.dashBoardConfId.id=:dashBoardConfId AND customModConf.status =1";
 			List<CustomModuleConfiguration> list = session.createQuery(query).setLong("subModuleId", subModuleId).setLong("dashBoardConfId", confDashBoardId).list();
 			if(list != null && list.size() >0) {
 				return list.get(0);

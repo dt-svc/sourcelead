@@ -276,5 +276,12 @@ public class StaticWebController {
 	public ModelAndView sourceleadHelp() {
 		return setMetaProperties("help");
 	}
+	
+	@RequestMapping("/pricingDetails")
+	public ModelAndView sourceleadPricing() {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("static-web/pricingDetails");
+		return mav;
+	}
 
 }
