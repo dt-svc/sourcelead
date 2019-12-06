@@ -964,7 +964,6 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 				if (displayWeeksList != null && !displayWeeksList.isEmpty()) {
 					for (Map.Entry<Date, Date> entry : displayWeeksList.entrySet()) {
-						
 						long diff = CalendarUtil.getNumberOfDays(entry.getKey(), entry.getValue());
 		    	    	  Float weekTotal = 0f;
 		    	    	  if(diff>=2 && CalendarUtil.getDayOfTheDate(entry.getValue()) == 7){
@@ -979,7 +978,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 		    	    		  weekTotal = (float) ((diff+1)*8);
 		    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 		    	    	  }
-						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
+						if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null) {
 							totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 							timeSheetApprovalArray[count] = (sah.getWeekTotals().get(entry.getKey()).toString()) + "/"+weekTotal;
 						} else {
@@ -1216,7 +1215,7 @@ public class ExportTimesheetEntriesImpl implements ExportTimesheetEntries{
 			    	    		  weekTotal = (float) ((diff+1)*8);
 			    	    		  estimatedTotalHours = estimatedTotalHours+weekTotal;
 			    	    	  }
-							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty()) {
+							if (sah.getWeekTotals() != null && !sah.getWeekTotals().isEmpty() && sah.getWeekTotals().get(entry.getKey()) != null) {
 							   totalHours = CommonUtil.getCombinedHours(totalHours, sah.getWeekTotals().get(entry.getKey()));
 								writeRow.createCell(count).setCellValue(sah.getWeekTotals().get(entry.getKey()).toString() + "/"+weekTotal);
 							} else {

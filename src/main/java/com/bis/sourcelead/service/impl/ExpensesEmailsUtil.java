@@ -1,13 +1,10 @@
 package com.bis.sourcelead.service.impl;
 
 import java.util.ArrayList;
-import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.mail.internet.InternetAddress;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +15,6 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
-import com.bis.sourcelead.entity.ExpenseProjectApproverHierarchy;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesEntries;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -29,8 +25,6 @@ import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
-
-import antlr.StringUtils;
 
 
 @Component
@@ -120,26 +114,23 @@ public class ExpensesEmailsUtil {
              globalVarsMap.put("expenseTypes",expenses.getNoOfExpenses());
              }
              
-             if(null != expenses.getTotalsubmittedAmount()) {
-                 globalVarsMap.put("totalSubmittedAmount",expenses.getTotalsubmittedAmount().toString());
+             if (null != expenses.getExpenseId()) {
+                 globalVarsMap.put("Expense_Id", expenses.getExpenseId());
              }
              
-             Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
-             for(ExpensesEntries exp : expensesEntries) {
-                 
-                 globalVarsMap.put("totalAmount",exp.getSubmittedamount().toString());
-                 
+             
+             if (null != expenses.getTotalsubmittedAmount()) {
+                 globalVarsMap.put("totalSubmittedAmount", expenses.getTotalAmount().toString());
              }
-                 
-             
-            /* StringBuilder str = new StringBuilder();
-             BigDecimal cg = new BigDecimal(0);
-                     cg.add(expenses.getTotalAmount());
-             
-                BigDecimal cg = new BigDecimal(Double.toString(expenses.getTotalAmount()));
-                cg = cg.setScale(2,BigDecimal.ROUND_HALF_UP );        
-                
-             globalVarsMap.put("totalAmount",str.append(cg).append(" ").append(currencyCode).toString());*/
+
+         /*    Set<ExpensesEntries> expensesEntries = expenses.getExpensesEntries();
+             for (ExpensesEntries exp : expensesEntries) {
+
+                 globalVarsMap.put("totalAmount", exp.getSubmittedamount().toString());
+
+             }*/
+
+             globalVarsMap.put("totalAmount", expenses.getTotalAmount().toString());
                      String expenseLocationCode = managerUser.getLocationCode();
 
              		 Long redirectOrgLocationId = managerUser.getOrgLocationId();
@@ -202,13 +193,17 @@ public class ExpensesEmailsUtil {
             if(null != expenses.getPurpose()) {
                  globalVarsMap.put("purpose", expenses.getPurpose());
             }
+            if (null != expenses.getExpenseId()) {
+                globalVarsMap.put("Expense_Id", expenses.getExpenseId());
+            }
             
             globalVarsMap.put("loginUser", loginUser.getFirstName());
             globalVarsMap.put("loginOrg", orgLoc.getOrgLocationName());
             
-                   if(null != expenses.getTotalsubmittedAmount()) {
-                    globalVarsMap.put("totalAmount",expenses.getTotalsubmittedAmount().toString());
-             }
+            if (null != expenses.getTotalsubmittedAmount()) {
+                globalVarsMap.put("expensesSubmitted", expenses.getTotalsubmittedAmount().toString());
+            }
+            globalVarsMap.put("totalAmount", expenses.getTotalAmount().toString());
             
 
                     String redirectURL = "/expenses/";
@@ -271,6 +266,9 @@ public class ExpensesEmailsUtil {
                     globalVarsMap.put("projectName", expenseId.getProjectMembers().getProjects().getProjectName());
                  }
              }
+                  if (null != expenseId.getExpenseId()) {
+                      globalVarsMap.put("Expense_Id", expenseId.getExpenseId());
+                  }
                      globalVarsMap.put("approved_Amount", expenseId.getTotalAmount().toString());
                      String startdate = commonUtil.elkDateFormatter(expenseId.getStartDate());
                      String enddate = commonUtil.elkDateFormatter(expenseId.getEndDate());
@@ -286,7 +284,7 @@ public class ExpensesEmailsUtil {
                         Long redirectOrgLocationId = orgLoc.getId();
                      
                         StringBuilder stringBuildforLink = new StringBuilder();
-                        globalVarsMap.put("approve_Expenses",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+                        globalVarsMap.put("LoginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
              
              //getting the current EmailScenario by EmailScenario unique name and entity type
              EmailScenario  emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.MAILTOAPPROVER2WHENAPPROVER1APPROVESTHEEXPENSE,Constants.ENTITY_TYPE_EMAIL);
@@ -331,6 +329,9 @@ public class ExpensesEmailsUtil {
              globalVarsMap.put("loginUser", manager.append(loginUser.getFirstName()).append(" ").append(loginUser.getLastName()).toString());
          }else{
              globalVarsMap.put("loginUser",loginUser.getFirstName());
+         }
+         if (null != expenses.getExpenseId()) {
+             globalVarsMap.put("Expense_Id", expenses.getExpenseId());
          }
          globalVarsMap.put("employeeName",projectMembers.getProjectMemberCandidteId().getFullName());
          globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName());
@@ -411,6 +412,9 @@ public class ExpensesEmailsUtil {
          }else{ 
              globalVarsMap.put("managerUser",loginUser.getFirstName()); 
          } 
+         if (null != expenses.getExpenseId()) {
+             globalVarsMap.put("Expense_Id", expenses.getExpenseId());
+         }
           
          globalVarsMap.put("employeeUser",projectMembers.getProjectMemberCandidteId().getFullName()); 
          globalVarsMap.put("projectName",projectMembers.getProjects().getProjectName()); 
@@ -426,9 +430,16 @@ public class ExpensesEmailsUtil {
           
          Set<ExpensesEntries> expensesEntriesList = expenses.getExpensesEntries(); 
          for(ExpensesEntries expList: expensesEntriesList) { 
-              
-             globalVarsMap.put("amount", expList.getSubmittedamount().toString()); 
-             globalVarsMap.put("approvedAmount",expenses.getTotalAmount().toString()); 
+              if(expList.getSubmittedamount() != null) {
+            	  globalVarsMap.put("SubmittedAmount", expList.getSubmittedamount().toString()); 
+              }else {
+            	  globalVarsMap.put("SubmittedAmount", "--"); 
+              }
+              if(expenses.getTotalAmount() != null) {
+            	  globalVarsMap.put("amount",expenses.getTotalAmount().toString()); 
+              }else {
+            	  globalVarsMap.put("amount","--"); 
+              }
               
              
          } 
@@ -455,9 +466,12 @@ public class ExpensesEmailsUtil {
          if("REJECTED".equalsIgnoreCase(status)){ 
              globalVarsMap.put("rejectedReason",rejectedReason); 
          } 
+         String redirectURL = "/expenses/";
+         Long redirectOrgLocationId = loginOrgLocation.getId();
           
-         StringBuilder loginURLSB = new StringBuilder(); 
-         globalVarsMap.put("loginURL",loginURLSB.append("<a href='").append(sourceleadLoginUrl).append("'style='text-decoration:none;'><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString()); 
+         StringBuilder stringBuildforLink = new StringBuilder(); 
+//         globalVarsMap.put("loginURL",stringBuildforLink.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
+         globalVarsMap.put("LoginURL",stringBuildforLink.append("<a href='").append(pmsUrl+ "/expenses").append("' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>").toString());
           
          if("REJECTED".equalsIgnoreCase(status)){ 
              commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,loginOrgLocation.getOrg(),loginOrgLocation,Constants.MAIL_TEAM_MANAGER_REJECTED_EXPENSE,new ArrayList<EmailAttachment>()); 
@@ -528,6 +542,9 @@ public class ExpensesEmailsUtil {
                 globalVarsMap.put("approver", manager.append(managerUser.getFirstName()).append(" ").append(managerUser.getLastName()).toString());
             }else{
                 globalVarsMap.put("approver",managerUser.getFirstName());
+            }
+            if (null != expenses.getExpenseId()) {
+                globalVarsMap.put("Expense_Id", expenses.getExpenseId());
             }
             
             if(expenses.getProjectMembers().getMasterCandidateId() != null) {

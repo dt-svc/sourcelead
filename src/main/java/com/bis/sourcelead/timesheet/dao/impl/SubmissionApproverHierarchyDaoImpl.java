@@ -2967,5 +2967,31 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		return submissionApproverHierarchyList;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long approverId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SubmissionApproverHierarchy submissionApproverHierarchy = null;
+		try {
+			java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+			java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+			Query queryObj = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId pah left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc where sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate and pj.id = :projectId and mc.id = :masterCandidateId and pah.approverUserId = :approverId and sah.status = '1'");
+			List<SubmissionApproverHierarchy> submissionApproverHierarchyList = queryObj.setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setLong("approverId", approverId).list();
+			if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
+				submissionApproverHierarchy = submissionApproverHierarchyList.get(0);
+			}else {
+				submissionApproverHierarchy = new SubmissionApproverHierarchy();
+				submissionApproverHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+				submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return submissionApproverHierarchy;
+	}
+	
+	
 	
 }

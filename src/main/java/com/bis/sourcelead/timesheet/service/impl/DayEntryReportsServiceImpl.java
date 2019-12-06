@@ -85,7 +85,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+							 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 								    	 writeRow = createExcelsheet.createRow(rowCount+6);
 								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
@@ -93,7 +93,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 											}
 										}
 				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
-				file = File.createTempFile(orgloc.getOrg().getOrgName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				file = File.createTempFile(orgloc.getOrgLocationName() + "dayWiseTimesheetReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
 				FileOutputStream fos = new FileOutputStream(file);
 				try {
 					createExcelworkbook.write(fos);
@@ -116,7 +116,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	
 			writeRow.createCell(columnCount++).setCellValue(weekDayName != null ? weekDayName : "");
 			
-			writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeId() != null ? dayEntries.getEmployeeId() : "");
+			writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeId() != null && dayEntries.getEmployeeId() != "null" ? dayEntries.getEmployeeId() : "");
 			
 			writeRow.createCell(columnCount++).setCellValue(dayEntries.getEmployeeName() != null ? dayEntries.getEmployeeName() : "");
 			
@@ -311,7 +311,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 		        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
 				Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
 		        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getDayWiseReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
-							 if(dayEntryList != null && !dayEntryList.getData().isEmpty()) {
+							 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
 								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
 									 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
 									}
@@ -356,7 +356,7 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 
 			dayArray[columnCount++] = weekDayName != null && !"".equalsIgnoreCase(weekDayName) ? weekDayName : "";
 			
-			dayArray[columnCount++] =  dayEntries.getEmployeeId() != null ? dayEntries.getEmployeeId() : "";
+			dayArray[columnCount++] =  dayEntries.getEmployeeId() != null && dayEntries.getEmployeeId() != "null" ? dayEntries.getEmployeeId() : "";
 			
 			dayArray[columnCount++] = dayEntries.getEmployeeName()!=null ? dayEntries.getEmployeeName() : "";
 
@@ -472,4 +472,281 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 	}
 	
 
+	@Override
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getProjectTimeEntriesList(
+			DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto, OrgLocations orgLocations, User loginUser,
+			String isGlobalUser) throws Exception {
+		Date startDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+		Date endDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+		ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
+			timeEntryDataMap = dayEntryReportsDao.getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgLocations,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgLocations.getDateFormat());
+	   return timeEntryDataMap;
+	}
+	@Override
+	public File exportProjectTimeEntryReportsWithoutProjectExcel(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,
+			OrgLocations orgloc, User loginUser, String isGlobalUser) throws Exception {
+		
+
+		 File file = null;
+		 	Long[]  countTotal = new Long[2];
+		 	 countTotal[0] = 0l;
+			 countTotal[1] = 0l;
+			if(dayWiseTimesheetReoprtsDto.getStartDate() != null && dayWiseTimesheetReoprtsDto.getEndDate()!= null) {
+				Workbook createExcelworkbook = new XSSFWorkbook();
+				DateFormat DF_YMD  = new SimpleDateFormat(orgloc.getDateFormat());
+				SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
+				String weekDayName = "";
+				String status ="";
+				Row writeRow = null;
+				int rowCount = 0;
+				Sheet createExcelsheet = createExcelworkbook.createSheet("Project Time Entries Report");
+				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
+							 if(dayEntryList != null && dayEntryList.getData() != null &&  !dayEntryList.getData().isEmpty()) {
+								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
+								    	 writeRow = createExcelsheet.createRow(rowCount+6);
+								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
+								    	 		rowCount++;
+											}
+										}
+				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
+				file = File.createTempFile(orgloc.getOrgLocationName() + "_projectTimeEntriesReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				FileOutputStream fos = new FileOutputStream(file);
+				try {
+					createExcelworkbook.write(fos);
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+		   return file;
+	    
+		
+	}
+	@Override
+	public File exportProjectTimeEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,
+			OrgLocations orgloc, User loginUser, String isGlobalUser) throws IOException, Exception {
+		
+		String[] headers = Constants.DAYWISE_TIMESHEET_REPORTS;
+	    Document document = new Document(PageSize.A4.rotate());
+
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("ProjectTimeEntriesReport_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    long totalBillable = 0l;
+	    long totalNonbillable = 0l; 
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgloc.getOrgLocationName()).append(" ");
+	        Font orderedListFont = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
+            com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+            orderedList.add(new ListItem("From Date:"+dayWiseTimesheetReoprtsDto.getStartDate(), orderedListFont));
+	        orderedList.add(new ListItem("To Date:"+dayWiseTimesheetReoprtsDto.getEndDate(), orderedListFont));
+	        //document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(17);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{4,3,3,3,5,3,3,5,5,3,3,3,5,4,4,5});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 8, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> dayList = new ArrayList<>();
+	        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+			Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+	        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getProjectTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
+						 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
+							 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
+								 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
+								}
+							}
+			/*orderedList.add(new ListItem("Billable Total Hours: "+convertMinuteToHours(totalBillable,null)));
+	        orderedList.add(new ListItem("Non Billable Total Hours: "+convertMinuteToHours(totalNonbillable,null)));*/
+	        document.add(orderedList);
+	        for (String[] datTimeArray: dayList) {
+                for (int i = 0; i < datTimeArray.length; i++) {
+                    String datum = datTimeArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 8, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("DayWiseTimeSheetReport Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+
+	
+	}
+	@Override
+	public ResponseList<DayWiseTimesheetReoprtsListDTO> getResourceTimeEntriesList(
+			DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto, OrgLocations orgLocations, User loginUser,
+			String isGlobalUser) throws Exception {
+
+		Date startDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+		Date endDate =  commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+		ResponseList<DayWiseTimesheetReoprtsListDTO> timeEntryDataMap = new ResponseList<DayWiseTimesheetReoprtsListDTO>();
+			timeEntryDataMap = dayEntryReportsDao.getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgLocations,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgLocations.getDateFormat());
+	   return timeEntryDataMap;
+	
+	}
+	@Override
+	public File exportResourceTimeEntryReportsWithoutProjectExcel(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,
+			OrgLocations orgloc, User loginUser, String isGlobalUser) throws Exception {
+		
+		 File file = null;
+		 	Long[]  countTotal = new Long[2];
+		 	 countTotal[0] = 0l;
+			 countTotal[1] = 0l;
+			if(dayWiseTimesheetReoprtsDto.getStartDate() != null && dayWiseTimesheetReoprtsDto.getEndDate()!= null) {
+				Workbook createExcelworkbook = new XSSFWorkbook();
+				DateFormat DF_YMD  = new SimpleDateFormat(orgloc.getDateFormat());
+				SimpleDateFormat WEEK_DAY =  new SimpleDateFormat("EEEE"); 
+				String weekDayName = "";
+				String status ="";
+				Row writeRow = null;
+				int rowCount = 0;
+				Sheet createExcelsheet = createExcelworkbook.createSheet("Resource Time Entries Report");
+				 Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+				 Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+							 ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
+							 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
+								 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
+								    	 writeRow = createExcelsheet.createRow(rowCount+6);
+								    	 		createExcelsheet =  createXlsSheet(createExcelworkbook,createExcelsheet,DF_YMD,WEEK_DAY,weekDayName,status,writeRow,dayEntries,orgloc,countTotal[0],countTotal[1]);
+								    	 		rowCount++;
+											}
+										}
+				createExcelsheet = billableAndNonBillabeTotalHeaderCount("0","0",createExcelsheet, writeRow, createExcelworkbook,dayWiseTimesheetReoprtsDto);
+				file = File.createTempFile(orgloc.getOrgLocationName() + "_resourceTimeEntriesReport" + commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(), new Date()), ".xls");
+				FileOutputStream fos = new FileOutputStream(file);
+				try {
+					createExcelworkbook.write(fos);
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+		   return file;
+	    
+		
+	
+	}
+	@Override
+	public File exportResourceTimeEntryReportsWithProjectPdf(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto,
+			OrgLocations orgloc, User loginUser, String isGlobalUser) throws IOException, Exception {
+		
+		String[] headers = Constants.DAYWISE_TIMESHEET_REPORTS;
+	    Document document = new Document(PageSize.A4.rotate());
+
+	    StringBuilder sbUser =  new StringBuilder();
+	    sbUser.append("DayWiseTimeSheetReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date()));
+
+	    StringBuilder fileSB = new StringBuilder();
+	    File file = File.createTempFile(fileSB.append("ResourceTimeEntriesReports_").append(commonUtil.dateStrFromOrgDateFormatter(orgloc.getDateFormat(),new Date())).toString(),".pdf");
+	    file.setReadable(true);
+	    long totalBillable = 0l;
+	    long totalNonbillable = 0l; 
+	    try {
+	        // Get an instance of PdfWriter and create a Table.pdf file as an output.
+	        PdfWriter.getInstance(document, new FileOutputStream(file));
+	        document.open();
+
+	        Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
+	        BaseColor myColor = WebColors.getRGBColor("#000000");
+	        boldFont.setColor(myColor);
+	        StringBuilder userStyle = new StringBuilder();
+	        userStyle.append(orgloc.getOrgLocationName()).append(" ");
+	        Font orderedListFont = new Font(FontFamily.HELVETICA, 10, Font.NORMAL);
+            com.itextpdf.text.List orderedList = new com.itextpdf.text.List(com.itextpdf.text.List.ORDERED);
+            orderedList.add(new ListItem("From Date:"+dayWiseTimesheetReoprtsDto.getStartDate(), orderedListFont));
+	        orderedList.add(new ListItem("To Date:"+dayWiseTimesheetReoprtsDto.getEndDate(), orderedListFont));
+	        //document.add(orderedList);
+	        // Create an instance of PdfPTable. After that we transform the header and
+	        PdfPTable table = new PdfPTable(headers.length);
+	        Font font = new Font(FontFamily.HELVETICA, 12, Font.BOLD, BaseColor.WHITE);
+	        PdfPCell cell1 = new PdfPCell(new Phrase(userStyle.toString(),font));
+	        cell1.setColspan(17);
+	        headerCellStyle(cell1);
+	        table.setWidthPercentage(100);
+            table.setWidths(new int[]{4,3,3,3,5,3,3,5,5,3,3,3,5,4,4,5});
+            table.addCell(cell1);
+	        for (int i = 0; i < headers.length; i++) {
+	            String header = headers[i];
+	            PdfPCell cell = new PdfPCell();
+	            cell.setGrayFill(0.9f);
+	            cell.setPhrase(new Phrase(header.toUpperCase(), new Font(FontFamily.HELVETICA, 8, Font.BOLD)));
+	            BaseColor myBorderColor = WebColors.getRGBColor("#808080");
+	            cell.setBackgroundColor(myBorderColor);
+	            table.addCell(cell);
+	        }
+	        table.completeRow();
+	        java.util.List<String[]> dayList = new ArrayList<>();
+	        Date startDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+			Date endDate =  commonUtil.orgLocationDateFormat(orgloc.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+	        ResponseList<DayWiseTimesheetReoprtsListDTO> dayEntryList = dayEntryReportsDao.getResourceTimeEntriesReportListBasedOnProjectListIdStartDateEndDate(dayWiseTimesheetReoprtsDto.getProjectIds(), startDate, endDate,dayWiseTimesheetReoprtsDto.getSearchValue(),dayWiseTimesheetReoprtsDto.getStart(),dayWiseTimesheetReoprtsDto.getLength(),orgloc,loginUser,isGlobalUser,dayWiseTimesheetReoprtsDto.getProjectMemberListId(),orgloc.getDateFormat());
+						 if(dayEntryList != null && dayEntryList.getData() != null && !dayEntryList.getData().isEmpty()) {
+							 for(DayWiseTimesheetReoprtsListDTO dayEntries:dayEntryList.getData()) {
+								 			dayList.add(prepareDaywiseReportPdfData(headers,dayEntries,orgloc,totalBillable,totalNonbillable));
+								}
+							}
+			/*orderedList.add(new ListItem("Billable Total Hours: "+convertMinuteToHours(totalBillable,null)));
+	        orderedList.add(new ListItem("Non Billable Total Hours: "+convertMinuteToHours(totalNonbillable,null)));*/
+	        document.add(orderedList);
+	        for (String[] datTimeArray: dayList) {
+                for (int i = 0; i < datTimeArray.length; i++) {
+                    String datum = datTimeArray[i];
+                    PdfPCell cell = new PdfPCell();
+                    cell.setPhrase(new Phrase(datum, new Font(FontFamily.HELVETICA, 8, Font.NORMAL)));
+                    table.addCell(cell);
+                }
+                table.completeRow();
+            }
+	        document.addTitle("DayWiseTimeSheetReport Table");
+	        table.setSpacingBefore(15f);
+	        document.add(table);
+	        logger.info("Pdf table created !!");
+	    } catch (DocumentException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } catch (FileNotFoundException e) {
+	    	logger.error("Exception cause is : "+ExceptionUtils.getFullStackTrace(e));
+	    } finally {
+	        document.close();
+	    }
+		return file;
+
+	
+	}
+	
 }

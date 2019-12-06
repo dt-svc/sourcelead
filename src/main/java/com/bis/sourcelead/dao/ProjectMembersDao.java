@@ -162,5 +162,9 @@ public interface ProjectMembersDao {
 	public ProjectMembers getProjectMembersByMasterCandidateIdAndProjectClientId(Long masterCandidateId, Long projectClientsId) throws Exception;
 	
 	public List<ProjectMembers> getAllProjectsAssigendToCandidateIdAndStatus(Long candidateId,String status) throws Exception;
+	
+	public List<ProjectMembers> getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception;
+	
+	public ResponseList<ProjectMembers> getProjectClosureReport(Date startDate,Date endDate,Long locationsId, Long userId);
 			
 }

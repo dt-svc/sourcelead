@@ -52,6 +52,9 @@ import com.bis.sourcelead.entity.User;
 	@Column(name = "STAGE_NAME")
 	private String stageName;
 	
+	@Column(name = "STAGE_SHORT_CODE")
+	private String stageShortCode;
+	
 	@Column(name = "DESCRIPTION",  columnDefinition = "LONGTEXT default NULL")
 	private String  description;
 	
@@ -127,6 +130,14 @@ import com.bis.sourcelead.entity.User;
 
 	public void setStageName(String stageName) {
 		this.stageName = stageName;
+	}
+
+	public String getStageShortCode() {
+		return stageShortCode;
+	}
+
+	public void setStageShortCode(String stageShortCode) {
+		this.stageShortCode = stageShortCode;
 	}
 
 	public String getUuid() {

@@ -85,7 +85,7 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 			final String portNumber = confMail.getPortNumber().toString();
 
 			props.put("mail.smtp.host", serverName);
-			props.put("mail.smtp.localhost", "localhost");
+		    props.put("mail.smtp.localhost", "localhost");
 			props.put("mail.stmp.user", username);
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.starttls.enable", "true");
@@ -106,13 +106,13 @@ private static final Logger logger = LoggerFactory.getLogger(EmailScenarioConfig
 			 try {
 
 					Message message = new MimeMessage(session);
-					message.setFrom(new InternetAddress(defaultFromEmailAddress));
+				message.setFrom(new InternetAddress(defaultFromEmailAddress));
 					message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(confMail.getEmailId()));
 					message.setSubject("Test Mail");
 					message.setText("Dear Recipient," + "\n\n Your Mail is verified successfully");
 
 					//Transport.send(message);
-					Transport transport = session.getTransport("smtp");
+					  Transport transport = session.getTransport("smtp");
 				      transport.connect(serverName, username, password);
 				      transport.sendMessage(message, message.getAllRecipients());
 				      transport.close();

@@ -3,6 +3,7 @@ package com.bis.sourcelead.dao;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.AssociateJoineReportDTO;
@@ -32,9 +33,9 @@ public interface RequirementSubmissionDao {
 	
 	RequirementSubmission getClientRequierementSubmission(Long submissionId)throws Exception;
 	
-	List<Object[]> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
+	List<Object[]> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole, String isWorkflowConfigured) throws Exception;
 	
-	List<RequirementSubmission>  getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
+	List<RequirementSubmission>  getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
@@ -90,6 +91,7 @@ public interface RequirementSubmissionDao {
 	 */
 	RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String subQuery) throws Exception;
 	
+	Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages)  throws Exception;
 	/**
 	 * @author Prasad Salina
 	 * @param requirementId
@@ -218,11 +220,13 @@ public interface RequirementSubmissionDao {
 	
 	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation, CandidateVerificationConfig candidateVerificationConfig) throws Exception;
 	
+	ResponseList<RequirementSubmission> loadWorkflowSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation, CandidateVerificationConfig candidateVerificationConfig) throws Exception;
+	
 	List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception;
 	
 	RequirementSubmission getRequirementVendorOrCrowdsourcingSubmissionByRequirementIdAndCandidateId(Long requirementId,Long candidateId) throws Exception;
 
-	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception;
+	ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO, Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations,String customDashBoard) throws Exception;
 	
 	public ResponseList<RequirementSubmission> getRequirementSubmissionsListWithJobIdByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long requirementId, String submissionStatus, String dateRange, String userType, User user,OrgLocations orgLocations) throws Exception;
 

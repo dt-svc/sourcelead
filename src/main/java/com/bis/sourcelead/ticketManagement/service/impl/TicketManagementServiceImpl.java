@@ -657,6 +657,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 					ticketDTO.setCreatedById(ticketManagement.getCreatedBy().getId());
 					ticketDTO.setCreatedBy(ticketManagement.getCreatedBy().getFullName());
 					ticketDTO.setCreatedDate(sdf.format(ticketManagement.getCreatedDate()));
+					ticketDTO.setStatus(ticketManagement.getStatus());
 					if(ticketManagement.getUpdatedBy() != null) {
 						ticketDTO.setUpdatedById(ticketManagement.getUpdatedBy().getId());
 						ticketDTO.setUpdatedDate(sdf.format(ticketManagement.getUpdatedDate()));
@@ -687,6 +688,7 @@ public class TicketManagementServiceImpl implements TicketManagementService {
 				ticketDTO.setGeneratedId(ticketManagement.getGeneratedId());
 				ticketDTO.setTitle(ticketManagement.getTitle());
 				ticketDTO.setDescription(ticketManagement.getDescription());
+				ticketDTO.setStatus(ticketManagement.getStatus());
 				if(ticketManagement.getTicketType() != null) {
 					ticketDTO.setTicketTypeId(ticketManagement.getTicketType().getId());
 					ticketDTO.setTicketType(ticketManagement.getTicketType().getName());

@@ -738,6 +738,22 @@
 				     <artifactId>httpclient</artifactId> 
 				     <version>4.5.2</version> 
 				     </dependency>
+				     
+				         <!-- Docx to Pdf Conversion -->
+				     <dependency>
+    					<groupId>fr.opensagres.xdocreport</groupId>
+    					<artifactId>org.apache.poi.xwpf.converter.pdf</artifactId>
+    					<version>1.0.6</version>
+					</dependency>
+					
+					<!-- Rtf to Pdf -->
+				<!-- 	<dependency>
+    					<groupId>com.lowagie</groupId>
+    					<artifactId>itext-rtf</artifactId>
+    					<version>2.1.4</version>
+					</dependency>
+					 -->
+					
 	    </dependencies>
     <build>
         <finalName>sourcelead-commons</finalName>

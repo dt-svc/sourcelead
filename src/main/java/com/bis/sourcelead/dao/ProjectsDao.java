@@ -118,5 +118,10 @@ public interface ProjectsDao {
 	public List<Projects> getProjectsListByCanddateIdAndOrgId(String associates, Long orglocationId);
 
 	public ProjectMembers isUserAssignedToProject(User userId, Long orgLocationId, Long projectId);
+	
+	List<ProjectsDTO> getProjectListForProjectTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+	
+	List<ProjectsDTO> getProjectListForResourceTimeEntriesReports(Long orgLocationsId,Long orgId,String isGlobalManager,Long userId,String type,String userRole) throws Exception;
+
 
 }

@@ -1,8 +1,11 @@
 package com.bis.sourcelead.dto;
 
+import java.util.Map;
+
 public class RequirementSubmissionsCountDTO {
 
 	private Integer applicantsCount;
+	private Integer submissionsCount;
 	private Integer duplicateApplicantsCount;
 	private Integer requestSent;
 	private Integer shortlistCount;
@@ -14,13 +17,20 @@ public class RequirementSubmissionsCountDTO {
 	private Integer backoutCount;
 	private Integer onHoldCount;
 	private Integer noResponseCount;
-	
+	private Integer dynamicCount;
+	private Map<String, Integer> stagesCountMap;
 	
 	public Integer getApplicantsCount() {
 		return applicantsCount;
 	}
 	public void setApplicantsCount(Integer applicantsCount) {
 		this.applicantsCount = applicantsCount;
+	}
+	public Integer getSubmissionsCount() {
+		return submissionsCount;
+	}
+	public void setSubmissionsCount(Integer submissionsCount) {
+		this.submissionsCount = submissionsCount;
 	}
 	public Integer getDuplicateApplicantsCount() {
 		return duplicateApplicantsCount;
@@ -92,4 +102,17 @@ public class RequirementSubmissionsCountDTO {
 	{
 		this.noResponseCount = noResponseCount;
 	}
+	public Integer getDynamicCount() {
+		return dynamicCount;
+	}
+	public void setDynamicCount(Integer dynamicCount) {
+		this.dynamicCount = dynamicCount;
+	}
+	public Map<String, Integer> getStagesCountMap() {
+		return stagesCountMap;
+	}
+	public void setStagesCountMap(Map<String, Integer> stagesCountMap) {
+		this.stagesCountMap = stagesCountMap;
+	}
+	
 }

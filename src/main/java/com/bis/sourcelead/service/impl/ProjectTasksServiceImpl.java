@@ -967,7 +967,7 @@ public class ProjectTasksServiceImpl implements ProjectTasksService {
 
 		 //Task Due Date
 		 if(projectTassks.getDueDate() != null) {
-			 writeRow.createCell(4).setCellValue(projectTassks.getDueDate());
+			 writeRow.createCell(4).setCellValue(commonUtil.dateStrFromDate(projectTassks.getDueDate()));
 		 }else {
 			 writeRow.createCell(4).setCellValue("--");
 		 }

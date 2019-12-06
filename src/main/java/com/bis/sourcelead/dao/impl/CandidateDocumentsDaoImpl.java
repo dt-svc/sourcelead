@@ -127,7 +127,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentId(Long documentId) throws Exception {
 		logger.debug("In Candidate Document By documentId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd  where cd.id = :documentId" ;
+		String query = " from CandidateDocuments cd left join fetch cd.candidateId  where cd.id = :documentId" ;
 		List<CandidateDocuments> candidateDocumentsList =session.createQuery(query).setLong("documentId", documentId).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
@@ -141,7 +141,7 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 	public CandidateDocuments getCandidateDocumentByDocumentUUID(String documentUUID) throws Exception {
 		logger.debug("In Candidate Resume By ResumeId");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = " from CandidateDocuments cd where cd.documentUUID = :documentUUID" ;
+		String query = " from CandidateDocuments cd left join fetch cd.candidateId where cd.documentUUID = :documentUUID" ;
 		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setString("documentUUID", documentUUID).list(); 
 		CandidateDocuments candidateDocuments = null;
 		if(candidateDocumentsList != null && !candidateDocumentsList.isEmpty()){
@@ -194,5 +194,50 @@ public class CandidateDocumentsDaoImpl implements CandidateDocumentsDao{
 		documentsCount = filterCount.intValue();
 		return documentsCount;
 }
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public Integer getCandidateGlobalActiveDocumentsByCandidateId(Long candidateId) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Integer documentsCount = 0;
+		
+		String countQuery ="SELECT"
+				+ " COUNT(DOCS.ID) AS DOCS_COUNT"
+				+ " FROM"
+				    + " CANDIDATE_DOCUMENTS DOCS "
+					+ " WHERE DOCS.CANDIDATE_ID = :candidateId AND DOCS.STATUS = '1' ";
+		
+		Query countqueryString = session.createSQLQuery(countQuery);
+		countqueryString.setParameter("candidateId", candidateId);
+		BigInteger filterCount =  (BigInteger) countqueryString.uniqueResult();
+		documentsCount = filterCount.intValue();
+		return documentsCount;
+
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<CandidateDocuments> getCandidateGlobalDocumentsListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateDocuments cd left join fetch cd.requestedDocumentsId where cd.candidateId.id =:candidateId  and cd.status = 1 ORDER BY cd.id DESC";
+		List<CandidateDocuments> candidateDocumentsList = session.createQuery(query).setLong("candidateId", candidateId).list();
+		return candidateDocumentsList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public CandidateDocuments getCandidateGlobalDocumentByCandidateId(Long candidateId, String documentUUID)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateDocuments  cd left join fetch cd.candidateId where cd.candidateId.id = :candidateId and cd.documentUUID =:documentUUID";
+		List<CandidateDocuments> candidateDocumentsList =  session.createQuery(query.toString()).setLong("candidateId", candidateId).setString("documentUUID", documentUUID).list();
+		CandidateDocuments canDoc = null;
+		if (candidateDocumentsList != null && candidateDocumentsList.size() > 0) {
+			canDoc = (CandidateDocuments) candidateDocumentsList.iterator().next();
+		}
+		return canDoc;
+	}
 
 }

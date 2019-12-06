@@ -78,10 +78,12 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.UserDTO;
+import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.index.ClientVendorIndex;
 import com.bis.sourcelead.elk.index.helper.ClientVendorIndexHelper;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.ContractsTemplate;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailConfigurationFromMail;
@@ -122,6 +124,7 @@ import com.bis.sourcelead.entity.VendorOnboardingTemplateDocuments;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.Primary;
 import com.bis.sourcelead.enums.Project_Status;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioConfigurationService;
@@ -292,6 +295,9 @@ public class CommonUtil {
 	
 	@Autowired
 	OrgRelationsService orgRelationsService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	/**
 	 * This method is used to convert JSON String to HashMap<Key,Value>
 	 * @author: Naresh Bolisetty
@@ -1780,6 +1786,12 @@ public class CommonUtil {
 					&& !"".equalsIgnoreCase(requirement.getGeneratedId())) {
 				requirementDTO.setGeneratedId(requirement.getGeneratedId());
 			}
+			if(requirement.getLevel2ApproverUserId() != null) {
+				requirementDTO.setSequentialApprover1(requirement.getLevel1ApproverUserId()[0]);
+				requirementDTO.setSequentialApprover2(requirement.getLevel2ApproverUserId()[0]);
+			} else if(requirement.getLevel1ApproverUserId()!=null){
+				requirementDTO.setParallelApprover(Arrays.asList(requirement.getLevel1ApproverUserId()));
+			}
 			return requirementDTO;
 		}
 		
@@ -1877,7 +1889,7 @@ public class CommonUtil {
 		
 		
 		
-		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+		public Candidate getVendorCandidateForCandidateCreation(CandidateDTO candidateDTO,OrgRelations orgRelation,OrgLocations orgLocations,User user) throws Exception{
 			  Candidate candidate = null;
 			  OrgLocations vendorOrgLocation = null;
 			  if(orgRelation.getLocationId().getId().equals(orgLocations.getId())){
@@ -1898,7 +1910,7 @@ public class CommonUtil {
 				  MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligenceCandidateDTO(candidateDTO);
 					if(null == masterCandidate){
-						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, loginUser);
+						masterCandidate = masterCandidateService.storeMasterCandidateByCandidateDTO(candidateDTO, user);
 					}
 					candidate.setMasterCandidateId(masterCandidate);
 				  
@@ -1921,7 +1933,7 @@ public class CommonUtil {
 					if(StringUtils.isNotBlank(candidateDTO.getCountry())){
 						candidate.setCountry(candidateDTO.getCountry());
 					}
-				
+				candidate.setConsultantUser(user);
 				candidate.setIsAssociate(Constants.NO);
 				candidate.setDesignationType("W-2");
 				if(candidateDTO.getWorkLocation() != null) {
@@ -2728,10 +2740,10 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			
 			// update offer status with out offer accepting and update submission and
 			// history
-			if (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE)) {
+			if (requirementSubmission.getSubmissionStatus().equals(ApplicantSubmissionStatus.OFFERMADE.toString())) {
 				RequirementSubmissionHistory requirementSubmissionHistory1 = new RequirementSubmissionHistory();
 				requirementSubmissionHistory1.setFromStage(requirementSubmission.getSubmissionStatus().toString());
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 				requirementSubmissionHistory1.setToStage("OFFERACCEPTED");
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,
@@ -2758,7 +2770,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 				if(requirementSubmission.getSourceSubmission() != null){
 		        	   RequirementSubmission parentSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 			           if(parentSubmission != null){
-			        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+			        	   parentSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());
 			        	   parentSubmission.setUpdatedDate(currentDate());
 			        	   requirementSubmissionService.storeRequirementSubmission(parentSubmission);
 			           }
@@ -2770,7 +2782,7 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.JOINED.toString());
 			// to update Submission status
 			requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED);
+			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.JOINED.toString());
 			requirementSubmission.setUpdatedBy(user.getUserCode());
 			StringBuilder sb = new StringBuilder();
 			requirementSubmission.setUpdatedUser(sb.append(user.getFullName()).toString());
@@ -2931,8 +2943,8 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 	        Collections.reverse(str);
 	        String Rupees = String.join(" ", str).trim();
 	 
-	        String paise = (decimal) > 0 ? " and " + words.get(Integer.valueOf((int) (decimal - decimal % 10))) + " " + words.get(Integer.valueOf((int) (decimal % 10))) +"paise": "";
-	        return Rupees + " rupees"+ paise + " only";
+	        String paise = (decimal) > 0 ? " and " + words.get(Integer.valueOf((int) (decimal - decimal % 10))) + " " + words.get(Integer.valueOf((int) (decimal % 10))) + " paisa ": "";
+	        return Rupees + " rupees "+ paise + " only";
 	    }
 
 	public void saveDefaultPayslipTemplate(OrgLocations orgLocations, User user) throws Exception {
@@ -3073,6 +3085,163 @@ public String getOrglocationDateFormatHHMMSS(String dateFormat, Date date)
 		}
 		return convertedText;
 	}
+	
+	
+	
+	
+	public CandidateGlobal getVendorGlobalCandidate(JSONObject jsonObj,OrgRelations orgRelation,OrgLocations orgLocations,User loginUser) throws Exception{
+		  CandidateGlobal candidate = null;
+		  OrgLocations vendorOrgLocation = null;
+		  if(orgRelation.getInitiatorType().equalsIgnoreCase("Client") && orgRelation.getLocationId().getId().equals(orgLocations.getId())){
+			  vendorOrgLocation = orgRelation.getResponderLocationId();
+		  }else if(orgRelation.getInitiatorType().equalsIgnoreCase("Vendor") && orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())){
+			  vendorOrgLocation = orgRelation.getLocationId();
+		  }
+		  
+		  if(jsonObj.has("email") && jsonObj.getString("email") != null){
+			  candidate = candidateGlobalService.findByCandidateGlobalEmail(jsonObj.getString("email").trim(),vendorOrgLocation.getId());
+		  }else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null){
+			  candidate = candidateGlobalService.findByCandidateGlobalEmail(jsonObj.getString("EmailId").trim(),vendorOrgLocation.getId());
+		  }
+		  
+		  if(candidate == null){
+			  candidate = new CandidateGlobal();
+			  
+			  MasterCandidate masterCandidate = null;
+				masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+				if(null == masterCandidate){
+					masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, loginUser,orgLocations);
+				}
+				candidate.setMasterCandidateId(masterCandidate);
+			  
+				candidate.setOrgLocationId(vendorOrgLocation);
+				candidate.setCandidateType("Candidate");
+				candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+				
+				if(jsonObj.has("firstName") && jsonObj.getString("firstName") !=null){
+					candidate.setFirstName(jsonObj.getString("firstName"));
+				}else if(jsonObj.has("FirstName") && jsonObj.getString("FirstName") !=null){
+					candidate.setFirstName(jsonObj.getString("FirstName"));
+				}
+			
+				if(jsonObj.has("lastName") && jsonObj.getString("lastName") !=null){
+					candidate.setLastName(jsonObj.getString("lastName"));
+				}else if(jsonObj.has("LastName") && jsonObj.getString("LastName") !=null){
+					candidate.setLastName(jsonObj.getString("LastName"));
+				}
+				
+				if(jsonObj.has("email") && jsonObj.getString("email") !=null){
+					candidate.setEmail(jsonObj.getString("email"));
+				}else if(jsonObj.has("EmailId") && jsonObj.getString("EmailId") != null && !jsonObj.getString("EmailId").isEmpty()){
+					candidate.setEmail(jsonObj.getString("EmailId"));
+				}
+				
+				if(jsonObj.has("location") && jsonObj.getString("location") != null && !jsonObj.getString("location").isEmpty()){
+		        	candidate.setLocation(jsonObj.getString("location"));
+				}
+					
+		        if(jsonObj.has("country") && jsonObj.getString("country") != null && !jsonObj.getString("country").isEmpty()){
+		        	candidate.setCountry(jsonObj.getString("country"));
+				}
+				 
+				if(jsonObj.has("state") && jsonObj.getString("state") != null && !jsonObj.getString("state").isEmpty()){
+					 candidate.setState(jsonObj.getString("state"));
+				}
+				 
+				if(jsonObj.has("city") && jsonObj.getString("city") != null && !jsonObj.getString("city").isEmpty()){
+					 candidate.setCity(jsonObj.getString("city"));
+				}
+				
+				 if(jsonObj.has("zipcode") && jsonObj.getString("zipcode") != null && !jsonObj.getString("zipcode").isEmpty()){
+			        	candidate.setZipCode(jsonObj.getString("zipcode"));
+				}
+				 
+				 if(jsonObj.has("PhoneNumber") && jsonObj.getString("PhoneNumber") != null && !jsonObj.getString("PhoneNumber").isEmpty()){
+					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && jsonObj.getString("AlternateNumber") != null && !jsonObj.getString("AlternateNumber").isEmpty()){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				
+				if(jsonObj.has("currentCTCRateType") && jsonObj.getString("currentCTCRateType") != null && !jsonObj.getString("currentCTCRateType").isEmpty()){
+					candidate.setCurrentRateCurrency(jsonObj.getString("currentCTCRateType"));
+				}
+				
+				if(jsonObj.has("CurrentCTC") && jsonObj.getString("CurrentCTC") != null && !jsonObj.getString("CurrentCTC").isEmpty()){
+					candidate.setCurrentRate(jsonObj.getString("CurrentCTC"));
+				}
+				
+				if(jsonObj.has("currentCTCRatePer") && jsonObj.getString("currentCTCRatePer") != null && !jsonObj.getString("currentCTCRatePer").isEmpty()){
+					 candidate.setCurrentRateType(jsonObj.getString("currentCTCRatePer"));
+				}
+				
+				if(jsonObj.has("expectedCTCRateType") && jsonObj.getString("expectedCTCRateType") != null && !jsonObj.getString("expectedCTCRateType").isEmpty()){
+					 candidate.setExpectedRateCurrencey(jsonObj.getString("expectedCTCRateType"));
+					 
+				}
+				 
+				if(jsonObj.has("ExpectedCTC") && jsonObj.getString("ExpectedCTC") != null && !jsonObj.getString("ExpectedCTC").isEmpty()){
+					 candidate.setExpectedRate(jsonObj.getString("ExpectedCTC"));
+					 
+				}
+				
+				if(jsonObj.has("expectedCTCRatePer") && jsonObj.getString("expectedCTCRatePer") != null && !jsonObj.getString("expectedCTCRatePer").isEmpty()){
+					 candidate.setRateType(jsonObj.getString("expectedCTCRatePer"));
+				}
+				
+				if(jsonObj.has("NoticePeriod") && jsonObj.getString("NoticePeriod") != null && !jsonObj.getString("NoticePeriod").isEmpty()){
+					 candidate.setNoticePeriod(jsonObj.getString("NoticePeriod"));
+					 
+				}
+				
+				if(jsonObj.has("Designation") && jsonObj.getString("Designation") != null && !jsonObj.getString("Designation").isEmpty()){
+					candidate.setDesignation(jsonObj.getString("Designation"));
+				}
+				 if(jsonObj.has("WorkExperience") && jsonObj.getString("WorkExperience") != null && !jsonObj.getString("WorkExperience").isEmpty()){
+					 candidate.setExperienceYears(jsonObj.getString("WorkExperience"));
+				 }
+				 
+				 if(jsonObj.has("monthExp") && jsonObj.getString("monthExp") != null && !jsonObj.getString("monthExp").isEmpty()){
+					 candidate.setExperienceMonths(jsonObj.getString("monthExp"));
+				 }
+				 
+				 candidate.setDesignationType("Full Time");
+				
+				if(jsonObj.has("primarySkill") && jsonObj.getString("primarySkill") != null && !jsonObj.getString("primarySkill").isEmpty()){
+					 candidate.setPrimarySkill(jsonObj.getString("primarySkill"));
+				}
+				 
+				 if(jsonObj.has("candidateSkills") && jsonObj.getString("candidateSkills") != null && !jsonObj.getString("candidateSkills").isEmpty()){
+					  
+					 String candidateSkills = null;
+						try{
+				    		   JSONArray jsonArray = jsonObj.getJSONArray("candidateSkills");
+				    		   candidateSkills = jsonArray.toString();
+				    	  }
+				    	  catch(JSONException e){
+				    		  candidateSkills= jsonObj.getString("candidateSkills");
+				    	  }
+						candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+						
+					 
+					 candidate.setSkillsName(candidateSkills);
+					 
+				
+				 }
+			
+			candidate.setIsAssociate(Constants.NO);
+			candidate.setStatus(1);
+			
+			candidateGlobalService.storeCandidateGlobal(candidate);
+			candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
+			
+		  }
+		  
+		  return candidate;
+	  }
+	
 	
 }
 

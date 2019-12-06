@@ -1784,12 +1784,12 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
 					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
 				loginUserRoleQuery += " and ((pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"' "
-						+ "and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) OR "
+						+ " "+memberStatusQuery+")) AND "
 								+ " (pm.projects.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' and pah.projectId.id IN (:projectIds))) ) ";
 			}else {
 				
 				loginUserRoleQuery += " and ((pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' "
-						+ "and  urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' "+memberStatusQuery+")) OR "
+						+ " "+memberStatusQuery+")) AND "
 								+ " (pm.projects.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' and pah.projectId.id IN (:projectIds))) ) ";
 				
 			}
@@ -1800,6 +1800,8 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
 			}
 		}
+		
+		
 		
 		String employmentTypeQuery = "";
 		String query= "";
@@ -2202,7 +2204,197 @@ public class ProjectMembersDaoImpl implements ProjectMembersDao{
 	}
 
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<ProjectMembers> getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(
+			DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
+		
 
+		logger.debug("In ProjectsDaoImpl class getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType method");
+		List<ProjectMembers> pmList = null;
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(dayWiseTimesheetReoprtsDto.getLocationsId());
+		Date startDate = null;
+		Date endDate = null;
+		if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())){
+			  startDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getStartDate());
+			  endDate = commonUtil.orgLocationDateFormat(orgLocation.getDateFormat(), dayWiseTimesheetReoprtsDto.getEndDate());
+		}
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate!= null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		String dateQuery = "";
+		if(startDate != null && endDate!= null){
+			   dateQuery =  " and pm.id IN ( "
+                + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( :endDate >= pmh.projectAssignedDate) "
+                + "  )  ";
+	     }
+		
+		String memberStatusQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getAssociateStatus() != null && !dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ALL")) {
+			if(dayWiseTimesheetReoprtsDto.getAssociateStatus().equalsIgnoreCase("ACTIVE")) {
+				memberStatusQuery += " and urole.userState = 'ACTIVE' ";
+			} else {
+				memberStatusQuery += " and urole.userState = 'INACTIVE' ";
+			}
+		}
+		
+		String loginUserRoleQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getLoginUserRoleType() != null && !dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN")) {
+			if(StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES)) {
+				loginUserRoleQuery += " and ((pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"' "
+						+ "and  (urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' OR urole.resourceManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"') "+memberStatusQuery+"))) ";
+			}else {
+				
+				loginUserRoleQuery += " and ((pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"' "
+						+ "and  (urole.reportingManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"' OR urole.resourceManager.id = '"+dayWiseTimesheetReoprtsDto.getLoginUserId()+"') "+memberStatusQuery+"))) ";
+				
+			}
+			
+		}else{
+			if( dayWiseTimesheetReoprtsDto.getLoginUserRoleType().equalsIgnoreCase("ROLE_ADMIN") || (StringUtils.isNoneBlank(dayWiseTimesheetReoprtsDto.getIsGlobalUser()) && 
+					dayWiseTimesheetReoprtsDto.getIsGlobalUser().equalsIgnoreCase(Constants.YES))) {
+				loginUserRoleQuery += " and (pm.projectMemberCandidteId.consultantUser.id IN (select urole.user.id from UserRole urole where urole.orgLocations.org.id = '"+dayWiseTimesheetReoprtsDto.getOrgId()+"'  "+memberStatusQuery+")) ";
+			}
+		}
+		
+		
+		
+		String employmentTypeQuery = "";
+		String query= "";
+		if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()){
+			employmentTypeQuery = " and can.designationType IN (:empType) and can.orgLocationId.id = '"+dayWiseTimesheetReoprtsDto.getLocationsId()+"'";
+		}
+	
+		String projectQuery = "";
+		if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()){
+			projectQuery = "  projects.id  IN (:projectIds)";
+		}
+		
+		String groupByCandidateId = " group by pm.masterCandidateId.id";
+		
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		
+		if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("internal") ) {
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where " 
+					+projectQuery
+					  +dateQuery
+					  +employmentTypeQuery
+					  +loginUserRoleQuery
+					  +groupByCandidateId;
+		}else if(dayWiseTimesheetReoprtsDto.getTypeOfProject().equalsIgnoreCase("client")){
+			 query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where "
+					 +projectQuery
+					  +dateQuery
+					  +employmentTypeQuery
+					  +loginUserRoleQuery
+					  +groupByCandidateId;
+		}else {
+			query= " from ProjectMembers pm left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId can left join fetch pm.projectClientsId pc left join fetch pc.orgLocationsId loc left join fetch pm.projects projects "
+					+" where " 
+					+projectQuery
+					  +dateQuery
+					  +employmentTypeQuery
+					  +loginUserRoleQuery
+					  +groupByCandidateId;
+		}
+		try {
+			Query queryObj = session.createQuery(query);
+			if(StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getStartDate())&&StringUtils.isNotEmpty(dayWiseTimesheetReoprtsDto.getEndDate())) {
+				queryObj.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+			}
+			
+			if(dayWiseTimesheetReoprtsDto.getProjectIds()!= null && !dayWiseTimesheetReoprtsDto.getProjectIds().isEmpty()) {
+				queryObj.setParameterList("projectIds", dayWiseTimesheetReoprtsDto.getProjectIds());
+			}
+			
+			if(dayWiseTimesheetReoprtsDto.getEmploymentType()!= null && !dayWiseTimesheetReoprtsDto.getEmploymentType().isEmpty()) {
+				queryObj.setParameterList("empType", dayWiseTimesheetReoprtsDto.getEmploymentType());
+			}
+			pmList =queryObj.list();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return pmList;
+	
+	}
+
+
+	@Override
+	@Transactional
+	public ResponseList<ProjectMembers> getProjectClosureReport(Date startDate, Date endDate, Long locationsId, Long userId) {
+		
+		logger.debug("In ProjectsDaoImpl class getProjectByOrgLocationsId method");
+		
+		ResponseList<ProjectMembers> response = new ResponseList<>();
+ 		Session session = this.sessionFactory.getCurrentSession();
+		
+		java.sql.Date sqlStartDate = null;
+		if(startDate != null){
+			sqlStartDate = new java.sql.Date(startDate.getTime());
+		}
+		
+		java.sql.Date sqlEndDate = null;
+		if(endDate != null){
+			sqlEndDate = new java.sql.Date(endDate.getTime());
+		}
+		
+		
+		String dateQuery = "";
+		String userQuery = "";
+		
+		if(startDate != null && endDate != null){
+			   dateQuery =  " and pm.id IN ( "
+                + "    select pmh.projectMemberId.id  from ProjectMembersHistory pmh  where  "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and :startDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  :endDate between pmh.projectAssignedDate and pmh.projectTerminationDate) OR "
+                + "    ( pmh.projectTerminationDate IS NOT NULL and  pmh.projectTerminationDate between :startDate and :endDate) OR "
+                + "    ( pmh.projectTerminationDate IS NULL and :endDate >= pmh.projectAssignedDate) "
+                + "  )  ";
+	     }
+
+  	  userQuery =  " and pm.projectClientsId.orgLocationsId.id IN (select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.user.id = :userId  and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :locationsId and userRole.userState = 'ACTIVE') ";
+	  String globalUserQuery = " and (pm.projectMemberCandidteId.orgLocationId.id = :locationsId)";
+	    
+	    String projectForQuery = " (pm.projects.isProjectForTimeSheets = 'Y' OR pm.id IN(select sah.submissionId.projectMembers.id from SubmissionApproverHierarchy sah where sah.status != '0' and sah.frequencyStartDate = :startDate and  sah.frequencyEndDate = :endDate))";
+		String queryStr = " from ProjectMembers pm left join fetch pm.projects projects  left join fetch projects.orgRelationId left join fetch projects.orgLocationsId left join fetch pm.masterCandidateId mc left join fetch pm.projectMemberCandidteId candidate left join fetch candidate.consultantUser left join fetch pm.projectClientsId pclient left join fetch pclient.orgRelationId pcOrgRelation "
+				+ " where "
+				    +projectForQuery
+				    +globalUserQuery
+				    + dateQuery
+					+ userQuery;
+		Query query = session.createQuery(queryStr.toString());
+		
+		
+		if(startDate != null && endDate != null){
+			query.setParameter("startDate", sqlStartDate).setParameter("endDate", sqlEndDate);
+		}
+		
+		Query queryObject =  query.setLong("locationsId", locationsId).setParameter("userId", userId);
+		 
+	    @SuppressWarnings("unchecked")
+		List<ProjectMembers> projectMemberList = queryObject.list();
+		response.setData(projectMemberList);
+		
+		
+		return response;
+	
+	
+	}
 	
 }
 

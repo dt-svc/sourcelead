@@ -12,6 +12,7 @@ import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.JobFair;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
@@ -204,7 +205,7 @@ public interface RequirementService {
 	 * public boolean addGeneratedIdRecordsToJobsForOldRecords(Long
 	 * orglocationId) throws Exception;
      */
-    public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement, Candidate candidate) throws Exception;
+    public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement, CandidateGlobal candidate) throws Exception;
 
     public Requirement getRequirementByShortURL(String shortURL) throws Exception;
 

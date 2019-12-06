@@ -35,6 +35,7 @@ import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RequirementOffersDao;
 import com.bis.sourcelead.dto.ContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.EmailAttachment;
@@ -54,10 +55,10 @@ import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.EmailScenarioService;
-import com.bis.sourcelead.service.OfferLetterTemplateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.RequirementOfferHistoryService;
 import com.bis.sourcelead.service.RequirementOffersService;
@@ -112,6 +113,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	private CandidateService candidateService;
+	
 	@Autowired
 	private RequirementService requirementService;
 	
@@ -138,6 +140,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	
 	@Autowired
 	CandidateResumesDao candidateResumesDao;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 
 	
 	@Override
@@ -314,17 +319,17 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					           if(jsonObj.has("clientOffer") && jsonObj.getString("clientOffer").equalsIgnoreCase(Constants.YES)){
 					        	   if(requirementSubmission.getSourceSubmission() != null) {
 					        		   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE.toString());
 					        	   }else {
 					        		   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+					        		   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString());
 					        	   }
 					        	  
 					           }else {
 				        		   requirementSubmission.setPreviousSubmissionStatus(requirementSubmission.getSubmissionStatus());
-					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE);
+					        	   requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERMADE.toString());
 					           }
-					           submissionStatus = requirementSubmission.getSubmissionStatus().getValue();
+					           submissionStatus = requirementSubmission.getSubmissionStatus();
 					           requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 					           requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 					           
@@ -338,7 +343,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        	   
 					        	   if(requirementSubmission.getSourceSubmission() != null) {
 					        		   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
 				        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
 				        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 				       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
@@ -351,8 +356,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   
 				        			   
 				        			   RequirementSubmissionHistory vendorSubmissionHistory = new RequirementSubmissionHistory();
-				        			   vendorSubmissionHistory.setFromStage(sourcesubmission.getSubmissionStatus().getValue());
-				        			   vendorSubmissionHistory.setToStage(Constants.CLIENT_OFFERMADE);
+				        			   vendorSubmissionHistory.setFromStage(sourcesubmission.getSubmissionStatus());
+				        			   vendorSubmissionHistory.setToStage(Constants.CLIENT_OFFERMADE.toString());
 				        			   vendorSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 				        			   vendorSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
 				        			   vendorSubmissionHistory.setSubmissionId(sourcesubmission);
@@ -362,13 +367,13 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 				        			   vendorSubmissionHistory.setMasterUserCode(sourcesubmission.getCreatedBy());
 				        			   requirementSubmissionHistoryService.addRequirementHistory(vendorSubmissionHistory);
 				        			   
-				        			   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+				        			   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString());
 						        	   sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 							           requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 					        	   }else {
 					        		   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
-				        			   requirementSubmissionHistory.setToStage(Constants.CLIENT_OFFERMADE);
+							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
+				        			   requirementSubmissionHistory.setToStage(Constants.CLIENT_OFFERMADE.toString());
 				        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 				       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
 				        			   requirementSubmissionHistory.setSubmissionId(requirementSubmission);
@@ -382,7 +387,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	                            	
 					           }else if(requirementSubmission.getSourceSubmission() == null){
 						        	   RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+							           requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
 				        			   requirementSubmissionHistory.setToStage(Constants.OFFERMADE);
 				        			   requirementSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 				       				   requirementSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
@@ -417,7 +422,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        			   
 					        			   
 					        			   RequirementSubmissionHistory vendorSubmissionHistory = new RequirementSubmissionHistory();
-					        			   vendorSubmissionHistory.setFromStage(sourcesubmission.getSubmissionStatus().getValue());
+					        			   vendorSubmissionHistory.setFromStage(sourcesubmission.getSubmissionStatus());
 					        			   vendorSubmissionHistory.setToStage(Constants.CLIENT_OFFERMADE);
 					        			   vendorSubmissionHistory.setCreatedBy(loginUser.getUserCode());
 					        			   vendorSubmissionHistory.setUpdatedBy(loginUser.getUserCode());	
@@ -428,7 +433,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 					        			   vendorSubmissionHistory.setMasterUserCode(sourcesubmission.getCreatedBy());
 					        			   requirementSubmissionHistoryService.addRequirementHistory(vendorSubmissionHistory);
 		                                	
-					        			    sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+					        			    sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString());
 		                                	sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 		                                	requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 		                                	
@@ -907,7 +912,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 								        	   RequirementSubmission sourcesubmission = requirementSubmissionService.getRequirementSubmissionById(requirementSubmission.getSourceSubmission().getId());
 								        	   if(sourcesubmission != null){
 								        		   
-								        		   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE);
+								        		   sourcesubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERMADE.toString());
 								        		   sourcesubmission.setUpdatedDate(commonUtil.currentDate());
 									        	   requirementSubmissionService.storeRequirementSubmission(sourcesubmission);
 								        		   
@@ -957,12 +962,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    		   RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 			    		
 	    		       RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+			           requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus());
 		    		   
 		    		   if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
-			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED);
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERACCEPTED.toString());
 			    		}else{
-			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED);
+			    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERACCEPTED.toString());
 			    		}
 			    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
 						 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
@@ -973,9 +978,9 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		    	
 		    	//this condition is for candidate to Associate when offerAccepted 
 		    	if(requirementOffers.getSubmissionId().getOrgLocations().getId().longValue() == orgLocations.getId().longValue()){
-		    		Candidate candidate = candidateService.getCandidateByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),orgLocations.getId());
+		    		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateIdAndOrgLocationId(requirementOffers.getSubmissionId().getCandidate().getId(),orgLocations.getId());
 			    	if(candidate != null){
-			    		candidate.setIsAssociate(Constants.YES);
+			    		candidate.setIsAssociate(Constants.NO);
 				    	candidate.setUpdatedBy(loginUser.getUserCode());
 				    	candidate.setUpdatedDate(commonUtil.currentDate());	
 			    	}else{
@@ -983,8 +988,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			    		candidate.setCreatedBy(loginUser.getUserCode());
 			    		candidate.setUpdatedBy(loginUser.getUserCode());
 			    	}
-			    	candidateService.saveOrUpdateCandidate(candidate);
-			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+			    	candidateGlobalService.storeCandidateGlobal(candidate);
+			    	candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 			    	
 			    	if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
 			    			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
@@ -996,11 +1001,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 			    	}
 			    	
 		    	}else{
-		    		Candidate candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
+		    		CandidateGlobal candidate = addCandidateToClientAfterOfferAccepted(requirementOffers,requirementOffers.getSubmissionId().getOrgLocations());
 		    		candidate.setCreatedBy(loginUser.getUserCode());
 		    		candidate.setUpdatedBy(loginUser.getUserCode());
-		    		candidateService.saveOrUpdateCandidate(candidate);
-			    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+		    		candidateGlobalService.storeCandidateGlobal(candidate);
+			    	candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 		    	}
 		    	
 		    	
@@ -1038,12 +1043,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 	    	for (RequirementOfferHistory requirementOfferHistory : requirementOfferHistories) {
 	    		    RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(requirementOfferHistory.getSubmissionId().getId());
 	    		    RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-			        requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus().getValue());
+			        requirementSubmissionHistory.setFromStage(requirementSubmission.getSubmissionStatus());
 	    		    
 			        if(requirementOfferHistory.getOfferSourceType() != null && "OFFERMADE".equals(requirementOfferHistory.getOfferSourceType())){
-		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED);
+		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.OFFERREJECTED.toString());
 		    		}else{
-		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED);
+		    			requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.CLIENT_OFFERREJECTED.toString());
 		    		}
 			        
 		    		 requirementSubmission.setUpdatedBy(loginUser.getUserCode());
@@ -1479,23 +1484,23 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 
 
 	@Override
-	public Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception {
+	public CandidateGlobal addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmission clientSubmission = null;
-		Candidate candidate = null; 
+		CandidateGlobal candidate = null; 
 		MasterCandidate masterCandidte = null;
 		if(requirementOffers.getSubmissionId().getRequirement().getIsClientJob().equalsIgnoreCase(Constants.YES) && 
     			requirementOffers.getSubmissionId().getRequirement().getParentRequirement() == null){
 			clientSubmission = requirementSubmissionService.getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(requirementOffers.getSubmissionId().getId(), orgLocations.getId());
 			if(clientSubmission != null){
-				candidate = candidateService.findByCandidateEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
+				candidate = candidateGlobalService.findByCandidateGlobalEmail(clientSubmission.getCandidate().getEmail(), clientSubmission.getOrgLocations().getId());
 			}
 		}else{
-			candidate = candidateService.findByCandidateEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
+			candidate = candidateGlobalService.findByCandidateGlobalEmail(requirementOffers.getSubmissionId().getCandidate().getEmail(), orgLocations.getId());
 		}
 		
 		if(candidate == null){
-			candidate = new Candidate();
+			candidate = new CandidateGlobal();
 			masterCandidte = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementOffers.getSubmissionId().getCandidate().getEmail(), requirementOffers.getSubmissionId().getCandidate().getMobilePhone());
     		if(masterCandidte != null){
     			candidate.setMasterCandidateId(masterCandidte);
@@ -1580,7 +1585,7 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
         			}
         		}
         		candidate.setOrgLocationId(orgLocations);
-        		candidate.setIsAssociate(Constants.YES);
+        		candidate.setIsAssociate(Constants.NO);
     		}else{
     			if(clientSubmission != null){
     				candidate.setOrgRelationId(requirementOffers.getSubmissionId().getRequirement().getClientId());
@@ -1600,12 +1605,12 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		candidate.setUpdatedDate(new Date());
     		candidate.setStatus(1);
     		
-    		Candidate vendorCandidate = null;
+    		CandidateGlobal vendorCandidate = null;
     		
     		if(requirementSubmission.getSourceSubmission() != null){
-    		vendorCandidate = candidateService.findByCandidateEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getOrgLocations().getId());
+    		vendorCandidate = candidateGlobalService.findByCandidateGlobalEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getOrgLocations().getId());
     		if(vendorCandidate == null){
-    			vendorCandidate = new Candidate();
+    			vendorCandidate = new CandidateGlobal();
     			MasterCandidate vendorMasterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(requirementSubmission.getSourceSubmission().getCandidate().getEmail(), requirementSubmission.getSourceSubmission().getCandidate().getMobilePhone());
     			if(vendorMasterCandidate != null){
         			vendorCandidate.setMasterCandidateId(vendorMasterCandidate);
@@ -1618,8 +1623,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     			vendorCandidate.setEmail(requirementSubmission.getSourceSubmission().getCandidate().getEmail());
     			vendorCandidate.setCountry(requirementSubmission.getSourceSubmission().getCandidate().getCountry());
     			vendorCandidate.setStatus(1);
-    			vendorCandidate = candidateService.saveOrUpdateCandidate(vendorCandidate);
-    			candidateService.saveOrUpdateCandidateElkDocument(vendorCandidate);
+    			vendorCandidate = candidateGlobalService.storeCandidateGlobal(vendorCandidate);
+    			candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(vendorCandidate);
     		 }
     		}
     		
@@ -1631,8 +1636,8 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
     		}
     		
     		
-    		candidateService.saveOrUpdateCandidate(candidate);
-	    	candidateService.saveOrUpdateCandidateElkDocument(candidate);
+    		candidateGlobalService.storeCandidateGlobal(candidate);
+    		candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 	    	
 	    	if(requirementSubmission != null && requirementSubmission.getCandidateResumes() != null) {
     			CandidateResumes resume = candidateResumesDao.getCandidateResumeByResumeId(requirementSubmission.getCandidateResumes().getId());

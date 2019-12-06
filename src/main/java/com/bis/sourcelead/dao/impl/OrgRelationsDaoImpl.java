@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.OrgRelationsDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.OrgRelationDTO;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
+
 
 /**
  * 
@@ -459,7 +461,7 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 	 */
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId, List<Long> ids, Long orgLocationId, String relationType, String status, String vendorIds, String invitationStatus) {
+	public List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId, List<Long> ids, Long orgLocationId, String relationType, String status, String vendorIds, String invitationStatus,String customDashboard) {
 		logger.debug("In OrgRelations getAllVendorsContactListByOrgLocationId method");
 		Session session = this.sessionFactory.getCurrentSession();
 		
@@ -557,15 +559,27 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			
 			if (isadmin) {
 	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where "+spocStatus+" "+spocInvitationStatus+" ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            if(customDashboard!=null &&customDashboard.equalsIgnoreCase(Constants.Dashboard)) {
+		            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setMaxResults(5).list();
+		           }else {
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).list();
+		           }
 	            finalList.addAll(spocsList);
 			}else if(ids != null && !ids.isEmpty()){
 	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where "+spocStatus+" "+spocInvitationStatus+" ((spoc.vendorUser.id = :loginUserId OR spoc.vendorUser IN (:ids)) OR (spoc.clientUser.id =:loginUserId)) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            if(customDashboard!=null &&customDashboard.equalsIgnoreCase(Constants.Dashboard)) {
+		            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setMaxResults(5).list();
+		           }else {
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).setParameterList("ids", ids).list();
+		           }
 	            finalList.addAll(spocsList);
 			}else{
 	            Query query= session.createQuery("from OrgSpoc spoc left join fetch spoc.orgRelations orgrelation left join fetch orgrelation.locationId orgLocation left join fetch orgLocation.org where "+spocStatus+" "+spocInvitationStatus+" (spoc.vendorUser.id = :loginUserId OR spoc.clientUser.id =:loginUserId) and ((orgrelation.locationId = :orgLocationId and orgrelation.initiatorType = :relationType ) or (orgrelation.responderLocationId = :orgLocationId and orgrelation.responderType = :relationType )) and spoc.status <> '0' ");
+	            if(customDashboard!=null &&customDashboard.equalsIgnoreCase(Constants.Dashboard)) {
+		            spocsList = query.setLong("orgLocationId", orgLocationId).setString("relationType", relationType).setMaxResults(5).list();
+		           }else {
 	            spocsList = query.setLong("orgLocationId", orgLocationId).setLong("loginUserId", loginUserId).setString("relationType", relationType).list();
+		           }
 	            finalList.addAll(spocsList);
 			}
 		} 

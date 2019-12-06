@@ -695,7 +695,7 @@ public class RequirementDaoImpl implements RequirementDao {
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
-			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
+			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay,String customDashboard) throws Exception {
 
 		Session session = this.sessionFactory.getCurrentSession();
 		User user = userDao.getUserById(userId);
@@ -759,7 +759,11 @@ public class RequirementDaoImpl implements RequirementDao {
 		
 		String whereCondition = subQuery;
 		Query query = session.createQuery(from + " " + whereCondition + " ORDER BY requirement.id DESC");
-		query.setMaxResults(10);
+		if(customDashboard!=null&&customDashboard.equalsIgnoreCase(Constants.Dashboard)) {
+		query.setMaxResults(5);
+		}else {
+			query.setMaxResults(10);
+		}
 		for (String str : query.getNamedParameters()) {
 			if (str.equalsIgnoreCase("orgLocationId") || str.equalsIgnoreCase("userId")) {
 				query.setLong(str, (long) params.get(str));

@@ -46,6 +46,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
+import com.bis.sourcelead.dao.CandidateGlobalDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.RequirementDao;
@@ -64,12 +65,14 @@ import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateGlobalIndexHelper;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Contracts;
@@ -100,7 +103,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
-import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -123,6 +126,7 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
@@ -167,9 +171,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Value("${static.path}")
 	private String staticPath;
-	
-	@Autowired
-	private CandidateDao candidateDao;
 	
 	@Autowired
 	private CandidateEducationDao candidateEducationDao;
@@ -265,6 +266,18 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     RequirementInterviewService requirementInterviewService;
     
     @Autowired
+    CandidateGlobalDao candidateGlobalDao;
+    
+    @Autowired
+    CandidateGlobalService candidateGlobalService;
+    
+    @Autowired
+    CandidateGlobalIndexHelper candidateGlobalIndexHelper;
+    
+    @Autowired
+    CandidateGlobalUtil candidateGlobalUtil;
+    
+    @Autowired
     PdfUtil pdfUtil;
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -277,9 +290,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole, String isWorkflowConfigured) throws Exception {
 		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
-		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole, isWorkflowConfigured);
 		if(objList != null && !objList.isEmpty()) {
 			for(Object[] obj : objList) {
 				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
@@ -293,8 +306,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
-		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement);
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement,isWorkflowConfigured);
 	}
 
 	
@@ -316,7 +329,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		
 		 Requirement requirement = null;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
-		 Candidate candidate = null;
+		 CandidateGlobal candidate = null;
 		 CandidateResumes candidateResumes = null;
 		 Date date = new Date();
 		 OrgLocations guestOrglocation=null;
@@ -340,24 +353,24 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		 if(jsonObj.has("candidateId") && !isNullOrEmpty(jsonObj.getString("candidateId"))){
-			 candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
+			 candidate = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 				if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-					 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
+					 candidate = candidateGlobalDao.getCandidateGlobalByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
 				}else {
 					if(orgLocations != null){
-						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+						 candidate = candidateGlobalDao.findByCandidateGlobalEmail(jsonObj.getString("EmailId"),orgLocations.getId());
 						}
 						else{
-							 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
+							 candidate = candidateGlobalDao.findByCandidateGlobalEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
 						}
 				}
 		 }
 		 
 		 if(candidate == null){
-			       candidate = new Candidate();
+			       candidate = new CandidateGlobal();
 			       
 					if(orgLocations == null){
 						guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
@@ -390,6 +403,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 
 					if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 						 candidate.setCity(jsonObj.getString("city"));
+					}
+					
+					if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
+						 candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
 					}
 					
 					 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
@@ -476,7 +493,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 						candidate.setOrgRelationId(orgRelation);
-						Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+						CandidateGlobal vendorCandidate = commonUtil.getVendorGlobalCandidate(jsonObj, orgRelation, orgLocations, user);
 						candidate.setParentCandidateId(vendorCandidate);
 					}else{
 						candidate.setOrgRelationId(null);
@@ -558,13 +575,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					 }
 					
-					 candidate = candidateDao.storeCandidate(candidate);
-					 candidateService.getCandidatePercentage(candidate, orgLocations);
-					 CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-					
-					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
-					
-					requirementSubmission.setCandidate(candidate);
+					 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+					 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+					 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);					
+					 requirementSubmission.setCandidate(candidate);
 					
 					if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
 						
@@ -609,24 +623,37 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
 					 }
 					 
-					 candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-					 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
+					 candidateActivityCommonUtil.storeCandidateGlobalHistory(candidate, user);
+					 candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
 					
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
 			 
-			 
-			if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
-				 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+			Candidate associateCandidate = candidateService.getCandidateByCandidateGlobalId(candidate.getId());
+			if(associateCandidate != null) {
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					associateCandidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					associateCandidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				 associateCandidate = candidateService.addCandidate(associateCandidate);
+				 candidateService.saveOrUpdateCandidateElkDocument(associateCandidate);	
+			}else {
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+				 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+				 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);	
 			}
-			
-			if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
-				 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
-			}
-			
-		    candidate = candidateDao.storeCandidate(candidate);
-			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 				
 			
 		 }
@@ -740,11 +767,11 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 if(jsonObj.has("needApplicantPermit") && !isNullOrEmpty(jsonObj.getString("needApplicantPermit"))){
              if(jsonObj.getString("needApplicantPermit").equals("Y")){
                  requirementSubmission.setNeedApplicantPermit("Y");
-                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT);
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REQUEST_SENT.toString());
              }
          }
 		else{
-                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+                 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
              }	 
 		
 			 /*requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
@@ -773,7 +800,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(new Date());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
-		 String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+		 String score = recommendationsService.getCandidateGlobalScore(candidate,requirement,recommendedCustomizeScore);
 		 if(null !=score){
 			 requirementSubmission.setCandidateScore(score);			 
 		 }
@@ -986,7 +1013,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	
-	public void sendEmailToGuestUserForAppliedJob(Candidate user, Requirement requirement) throws Exception {
+	public void sendEmailToGuestUserForAppliedJob(CandidateGlobal user, Requirement requirement) throws Exception {
 		
 		 
 		 StringBuilder nameBuilder = new StringBuilder();
@@ -1023,12 +1050,13 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		 emailMessage.setToEmail(user.getEmail());
+		 emailMessage.setFirstName(user.getFullName());
 		 emailMessage.setFromName("Sourcelead Admin");
 		 emailMessage.setCreatedBy("sladmin");
 		 if (environment.equalsIgnoreCase("prod")) {
-			 emailMessage.setFromName("info@sourcelead.com");
+			 emailMessage.setFromEmail("info@sourcelead.com");
 		 }else{
-			 emailMessage.setFromName("qa@sourcelead.com");	 
+			 emailMessage.setFromEmail("qa@sourcelead.com");	 
 		 }
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1073,7 +1101,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 
-	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations, String submissionType) throws Exception {
+	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  CandidateGlobal candidate ,User loginUser,OrgLocations orgLocations, String submissionType) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1339,7 +1367,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmission.setSourceSubmission(submission);
     		 clientSubmission.setSubmissionTemplateJsonString(submission.getSubmissionTemplateJsonString());
     		 clientSubmission.setSubmissionTemplateJsonStringValue(submission.getSubmissionTemplateJsonStringValue());
-    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+    		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
     		 clientSubmission.setVendorLocationId(loginOrgLocation);
     		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
     		 clientSubmission.setCreatedDate(new Date());
@@ -1441,8 +1469,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     		 clientSubmissionFields.setUpdatedDate(commonUtil.currentDate());
     		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
     		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
-    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
+    		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
+    		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString());
     		 submission.setUpdatedBy(user.getUserCode());
     		 submission.setUpdatedDate(new Date());
     		 requirementSubmissionDao.storeRequirementSubmission(submission);
@@ -1615,6 +1643,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 	
 	@Override
+	public Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user,
+			OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages) throws Exception{
+		return requirementSubmissionDao.getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(requirementId,user,loginOrgLocation,submissionStatus, workflowStages);
+	}
+	
+	@Override
 	public Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation) throws Exception{
 		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(loginOrgLocation.getId());
 		return requirementSubmissionDao.duplicateCandidateCountsByRequirementId(requirementId,user,loginOrgLocation,candidateVerificationConfig);
@@ -1647,7 +1681,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			
 		}
 	
-	public void applicantReceiveMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
+	public void applicantReceiveMailAboutRequirement(Long submissionId ,Requirement requirement,  CandidateGlobal candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
@@ -1749,7 +1783,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public void applicantAcceptMailAboutRequirement(Requirement requirement, User initiatorUser,RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations) throws Exception {
 		
-		Candidate candidate = requirementSubmission.getCandidate(); 
+		CandidateGlobal candidate = requirementSubmission.getCandidate(); 
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
@@ -1866,7 +1900,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, 
 			OrgLocations orgLocations,String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
@@ -1934,7 +1968,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 
 		 StringBuilder linkBuild = new StringBuilder();
 		 globalVarsMap.put("loginURL", linkBuild.append("<a href='").append(sourceleadLoginUrl+ "?redirectURL=" +atsUrl+redirectURL+"&redirectOrgLocationId="+redirectOrgLocationId).append(
-					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
+					"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:50px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>View Applicant</div></a>")
 					.toString());	 
 		 //getting the current EmailScenario by EmailScenario unique name and entity type
 		 EmailScenario  notificationScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.APPLICANT_REJECT_MAILABOUT_REQUIREMENT_EMAIL_NOTIFICATION,Constants.ENTITY_TYPE_NOTIFICATION);
@@ -1957,7 +1991,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	
 	@Override
-	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser,
 			OrgLocations orgLocations,RequirementRateSubmissionNegotiation negotiation,StringBuilder tempHTML) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(negotiation.getRequirementsubmissionId().getId());
@@ -2037,7 +2071,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		if(requirementSubmission != null){
 			
 			if(StringUtils.equalsIgnoreCase(decision, "accept")){
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
 					requirementSubmission.setSubmissionRateComment(applicantAuthorizationDTO.getComment());
@@ -2062,10 +2096,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			}
 			else if(StringUtils.equalsIgnoreCase(decision, "reject")){
 				
-				ApplicantSubmissionStatus previousStatus = requirementSubmission.getSubmissionStatus();
+				String previousStatus = requirementSubmission.getSubmissionStatus();
 				 
 				requirementSubmission.setPreviousSubmissionStatus(previousStatus);
-				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
+				requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.REJECTED);
 				if(StringUtils.isNotBlank(applicantAuthorizationDTO.getComment())){
 					requirementSubmission.setRejectedReason(applicantAuthorizationDTO.getComment());
@@ -2237,7 +2271,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 
    		 StringBuilder sb = new StringBuilder();
    		 clientSubmission.setScore(submission.getScore());
-   		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+   		 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
    		 clientSubmission.setVendorLocationId(loginOrgLocation);
    		 clientSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
    		 clientSubmission.setCreatedDate(new Date());
@@ -2298,19 +2332,19 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
-					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-					 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
+					 clientSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 					 clientSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 clientSubmission.setRejectedCategoryType("Other");
 					 clientSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
 			 }else{
-				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			 }
 			 /*END Code snippet*/
 		 
 		 }else{
-			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 clientSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 		 }
 		 
    		 clientSubmission = requirementSubmissionDao.storeRequirementSubmission(clientSubmission);
@@ -2434,10 +2468,10 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
    		 clientSubmissionFields.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(clientSubmissionFields);
    		 RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
-   		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus().getValue());
+   		 requirementSubmissionHistory.setFromStage(submission.getSubmissionStatus());
    		 requirementSubmissionHistory.setToStage(submission.getSubmissionStatus().toString());
    		submission.setPreviousSubmissionStatus(submission.getSubmissionStatus());
-   		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT);
+   		 submission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMIT_TO_CLIENT.toString());
    		 submission.setUpdatedBy(user.getUserCode());
    		 submission.setUpdatedDate(commonUtil.currentDate());
    		 requirementSubmissionDao.storeRequirementSubmission(submission);
@@ -2824,7 +2858,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 
 	@Override
-	public void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
+	public void userNegotiateEmail(Requirement requirement, User user, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(neogtation.getRequirementsubmissionId().getId());
@@ -2892,7 +2926,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
+	public void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission,
 			StringBuilder tempHTML,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -2902,27 +2936,14 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 emailMessage.setToEmail(pastUser.getEmail());
 		 emailMessage.setFromEmail(users.getEmail());
 		 emailMessage.setCreatedBy(users.getUserCode());
-		 StringBuilder msgBuild = new StringBuilder();
-		 emailMessage.setFromName(msgBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
+		 emailMessage.setFromName(users.getFullName());
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 		 
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
-		 
-		 if(pastUser.getFirstName()!= null && !"".equalsIgnoreCase(pastUser.getFirstName()) && pastUser.getLastName()!= null && !"".equalsIgnoreCase(pastUser.getLastName())){
-			 StringBuilder pastUserBuild = new StringBuilder();
-			 globalVarsMap.put("vendorContact", pastUserBuild.append(pastUser.getFirstName()).append(" ").append(pastUser.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("vendorContact",pastUser.getFirstName());
-			 }
-		 
-		 if(users.getFirstName()!= null && !"".equalsIgnoreCase(users.getFirstName()) && users.getLastName()!= null && !"".equalsIgnoreCase(users.getLastName())){
-			 StringBuilder userBuild = new StringBuilder();
-			 globalVarsMap.put("loginUser", userBuild.append(users.getFirstName()).append(" ").append(users.getLastName()).toString());
-			 }else{
-				 globalVarsMap.put("loginUser",users.getFirstName());
-			 }
+		 globalVarsMap.put("vendorContact",pastUser.getFullName());
+		 globalVarsMap.put("loginUser",users.getFullName());
 		 
 		 if(requirementSubmission.getRequirement().getJobId()!= null && !"".equalsIgnoreCase(requirementSubmission.getRequirement().getJobId())){
 			 
@@ -2962,7 +2983,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 		
 		 //covert subject,body and signature
-		 String subject = emailScenerioUtil.bulidSubject(emailScenario.getSubject(),globalVarsMap);
+		 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
 		 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
 		 String signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario);
 		 String url = sourceleadUrl;
@@ -2998,7 +3019,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate,
+	public void userAcceptRateNegotiation(Requirement requirement, User user, 
 			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception {
 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getId());
@@ -3507,7 +3528,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
+	public void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, 
 			StringBuilder tempHTML,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -3580,7 +3601,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void userRejectRateNegotiation(Requirement requirement, User user, Candidate candidate,
+	public void userRejectRateNegotiation(Requirement requirement, User user,
 			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, String rejectreason, StringBuilder tempHTML)
 			throws Exception {
 		
@@ -3645,7 +3666,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
-			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
+			RequirementSubmission requirementSubmission, StringBuilder tempHTML,
 			OrgLocations loginOrgLocation,String type, String status) throws Exception {
 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -3810,7 +3831,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
-		 Candidate candidate = null;
+		 CandidateGlobal candidate = null;
 		 CandidateResumes candidateResumes = null;
 	//	 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
@@ -3820,7 +3841,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 if(jsonObj.has("candidateId") && !isNullOrEmpty(jsonObj.getString("candidateId"))){
-			 candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
+			 candidate = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
 		 }
@@ -3938,9 +3959,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    
-			    candidateDao.storeCandidate(candidate);
-				CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+			    candidateGlobalDao.storeCandidateGlobal(candidate);
+			    candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 		 }
 		 
 		 
@@ -4046,18 +4066,18 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				 default:
 					 reqCoolingOffPeriodDays = "0";
 			 }
-			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+			 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			 requirementSubmissionHistoryForCoolingOff = requirementSubmissionHistoryService.isInCoolingOffPeriodByEmailAndLocationsId(requirementSubmission.getCandidate().getEmail(), requirement.getOrgLocationId(), reqCoolingOffPeriodDays, requirement.getId());
 			 if(requirementSubmissionHistoryForCoolingOff != null){
 				 if(requirementSubmissionHistoryForCoolingOff.getIsInCoolingOffPeriod()){
-					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED);
-					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+					 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.REJECTED.toString());
+					 requirementSubmission.setPreviousSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 					 requirementSubmission.setRejectedReason("Under cooling off period, completed by "+requirementSubmissionHistoryForCoolingOff.getCoolingOffPeriodEndDateStr()+".");
 					 requirementSubmission.setRejectedCategoryType("Other");
 					 requirementSubmission.setRejectedCategoryOther("Under cooling off period");
 				 }
 			 }else{
-				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION);
+				 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
 			 }
 			 /*END Code snippet*/
 			 
@@ -4066,7 +4086,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementSubmission.getRequirement().getId());
-		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
+		 String score = recommendationsService.getCandidateGlobalScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
 		 if(null != score){
 			 requirementSubmission.setCandidateScore(score);
 		 }
@@ -5044,7 +5064,12 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
 		return requirementSubmissionDao.loadSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
 	}
-	
+	@Override
+	public ResponseList<RequirementSubmission> loadWorkflowSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation) throws Exception
+	{
+		CandidateVerificationConfig candidateVerificationConfig = candidateService.getCandidateVerificationConfig(orgLocation.getId());
+		return requirementSubmissionDao.loadWorkflowSubmissionsListByRequirementId(requirementSubmissionsDTO, orgLocation,candidateVerificationConfig);
+	}
 	@Override
 	public RequirementSubmission editRequirementSubmission(JSONObject jsonObj, User user, OrgLocations orgLocations,
 			String jsonStringvalues) throws Exception {

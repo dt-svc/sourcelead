@@ -36,6 +36,10 @@ public class CandidateBulkUploadDTO implements Serializable{
 	    
 	    private String expectedRate;
 	    
+	    private String expectedRatePer;
+		
+		private String currentRatePer;
+	    
 	    private String candidateEmployers;
 	    
 	    private String candidateEducation;
@@ -67,6 +71,8 @@ public class CandidateBulkUploadDTO implements Serializable{
 		private String state;
 
 		private String city;
+		
+		private String noticePeriod;
 		
 	    
 		public String getFirstName() {
@@ -316,6 +322,29 @@ public class CandidateBulkUploadDTO implements Serializable{
 		public void setCity(String city) {
 			this.city = city;
 		}
+
+		public String getExpectedRatePer() {
+			return expectedRatePer;
+		}
+
+		public void setExpectedRatePer(String expectedRatePer) {
+			this.expectedRatePer = expectedRatePer;
+		}
+
+		public String getCurrentRatePer() {
+			return currentRatePer;
+		}
+
+		public void setCurrentRatePer(String currentRatePer) {
+			this.currentRatePer = currentRatePer;
+		}
+
+		public String getNoticePeriod() {
+			return noticePeriod;
+		}
+
+		public void setNoticePeriod(String noticePeriod) {
+			this.noticePeriod = noticePeriod;
+		}
 		
-	    
 }

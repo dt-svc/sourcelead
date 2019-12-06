@@ -1042,5 +1042,10 @@ public class UserRoleServiceImpl implements UserRoleService{
 		return userRoleDao.getAllUserRolesByOrgLocationId(orgLocationId);
 	}
 
+	@Override
+	public List<UserRole> getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(Long orgLocationId,String subscriptionStatus) throws Exception {
+		return userRoleDao.getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(orgLocationId, subscriptionStatus);
+	}
+
 
 }

@@ -44,6 +44,38 @@ public class ImmigrationConstants {
 	
 	public static final String IS_CURRENT_NO = "N";
 	
+	public static final String PASSPORT_EXPIRES_IN_DAYS_MAIL = "PassportExpiresInDaysMail";
+	
+	public static final String PASSPORT_EXPIRED_MAIL = "PassportExpiredMail";
+	
+	public static final String VISA_EXPIRES_IN_DAYS_MAIL = "VisaExpiresInDaysMail";
+	
+	public static final String VISA_EXPIRED_MAIL = "VisaExpiredMail";
+	
+	public static final String PASSPORT_EXPIRES_IN_DAYS_MAIL_TO_REPORTINGMANAGER = "PassportExpiresInDaysMailToReportingManager";
+	
+	public static final String PASSPORT_EXPIRED_MAIL_TO_REPORTINGMANAGER = "PassportExpiredMailToReportingManager";
+	
+	public static final String VISA_EXPIRES_IN_DAYS_MAIL_TO_REPORTINGMANAGER = "VisaExpiresInDaysMailToReportingManager";
+	
+	public static final String VISA_EXPIRED_MAIL_TO_REPORTINGMANAGER = "VisaExpiredMailToReportingManager";
+	
+	public static final String PASSPORT_EXPIRED_NOTIFICATION = "PassportExpiredNotification";
+	
+	public static final String PASSPORT_EXPIRES_IN_DAYS_NOTIFICATION = "PassportExpiresInDaysNotification";
+	
+	public static final String VISA_EXPIRED_NOTIFICATION = "VisaExpiredNotification";
+	
+	public static final String VISA_EXPIRES_IN_DAYS_NOTIFICATION = "VisaExpiresInDaysNotification";
+	
+	public static final String PASSPORT_EXPIRED_NOTIFICATION_TO_REPORTINGMANAGER = "PassportExpiredNotificationToReportingManager";
+	
+	public static final String PASSPORT_EXPIRES_IN_DAYS_NOTIFICATION_TO_REPORTINGMANAGER = "PassportExpiresInDaysNotificationToReportingManager";
+	
+	public static final String VISA_EXPIRED_NOTIFICATION_TO_REPORTINGMANAGER = "VisaExpiredNotificationToReportingManager";
+	
+	public static final String VISA_EXPIRES_IN_DAYS_NOTIFICATION_TO_REPORTINGMANAGER = "VisaExpiresInDaysNotificationToReportingManager";
+	
 	public static final String[] IMPORT_IMMIGRATION_EXCEL_HEADERS = {"Beneficiary First Name","Beneficiary Last Name",
             "Beneficiary Email", "Phone Number", "Experience", "SSN", "I-94 Number",    "I-20 SEVIS Number If Student", "EAD Number If Student", "DOB",    
             "Marital status", "Petition Type", "Template", "Date of arrival", "Open on", "Status","Passport No","Passport Country","Passport Start Date","Passport End Date","Visa No.","Visa Type", "Visa Country","Visa Start Date", "Visa End Date","Company",
@@ -69,7 +101,7 @@ public class ImmigrationConstants {
    @SuppressWarnings("serial")
    public static final Map HEADERS_NAMES_MAP = new HashMap<Integer, String>(){{
        put(1,"beneficiaryFirstName");put(2,"beneficiaryLastName");put(3,"beneficiaryEmail");put(4,"beneficiaryPhone");put(5,"experience");put(6,"ssn");put(7,"i94Number");put(8,"i20Number");
-       put(9,"eadNumber");put(10,"dateOfBirth");put(11,"maritalStatus");put(12,"petitionType");put(13,"template");
+       put(9,"eadNumber");put(10,"dateofBirth");put(11,"maritalStatus");put(12,"petitionType");put(13,"template");
        put(14,"dateOfArrival");put(15,"openOn");put(16,"status");put(17,"passportNo");put(18,"passportCountry");put(19,"passportStartDate");
        put(20,"passportEndDate");put(21,"visaNo");put(22,"visaType"); put(23,"visaCountry");put(24,"visaStartDate");put(25,"visaEndDate");put(26,"company");put(27,"companyContactEmail");put(28,"receiptNo");
        put(29,"benficiarylocation");put(30,"lcaStartDate");put(31,"lcaEndDate");put(32,"lcaNumber");put(33,"lcaRateCurrency");put(34,"lcaRate");put(35,"lcaRatePer");put(36,"lcaLocation");put(37,"lcaTitle");put(38,"immigrationJobId");put(39,"prevLcaStartDate");put(40,"prevLcaEndDate");

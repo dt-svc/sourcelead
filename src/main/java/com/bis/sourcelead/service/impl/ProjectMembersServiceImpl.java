@@ -2373,6 +2373,17 @@ private ProjectMembers saveSharedProjectMembers(ProjectMembersDTO projectMembers
 		return projectMembersDao.getAllProjectsAssigendToCandidateIdAndStatus(candidateId,status);
 	}
 
+	@Override
+	public List<ProjectMembers> getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(
+			DayWiseTimesheetReoprtsDTO dayWiseTimesheetReoprtsDto) throws Exception {
+		return projectMembersDao.getAllResourceTimeEntryProjectMembersBasedOnProjectIdStartDateEndDateAndEmploymentType(dayWiseTimesheetReoprtsDto);
+	}
+
+	@Override
+	public ResponseList<ProjectMembers> getProjectClosureReport(Date startDate, Date endDate, Long locationsId, Long userId) {
+		return projectMembersDao.getProjectClosureReport(startDate, endDate, locationsId, userId);
+	}
+
 
 
 }

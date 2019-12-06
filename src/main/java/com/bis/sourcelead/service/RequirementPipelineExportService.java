@@ -21,4 +21,8 @@ public interface RequirementPipelineExportService {
 
 	File getExportRequirementFile(List<RequirementSubmission> requirementStatusList, OrgLocations loginOrgLocation, String exportType,String requirementId, String submissionType, RequirementSubmissionCounts requirementSubmissionCounts)throws FileNotFoundException, NumberFormatException, Exception;
 
+	File getWorkflowExportRequirementFile(List<RequirementSubmission> requirementStatusList,
+			OrgLocations loginOrgLocation, String exportType, String requirementId, Long workflowId,
+			String submissionType, RequirementSubmissionCounts requirementSubmissionCounts)	throws NumberFormatException, Exception;
+
 }

@@ -42,9 +42,9 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getClientRequierementSubmission(Long submissionId)throws Exception;
 	
-	List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception;
+	List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole, String isWorkflowConfigured) throws Exception;
 	
-	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception;
+	List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception;
 	
 	RequirementSubmission storeRequirementSubmission(RequirementSubmission requirementSubmission)throws Exception;
 
@@ -110,6 +110,8 @@ public interface RequirementSubmissionService {
 	 */
 	RequirementSubmissionsCountDTO getAllPipeLineCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus)  throws Exception;
 	
+	Map<String, Integer> getAllPipeLineWorlflowCountsByRequirementIdAndSubmissionStage(Long requirementId, User user, OrgLocations loginOrgLocation, String submissionStatus, String[] workflowStages)  throws Exception;
+	
 	Integer duplicateCandidateCountsByRequirementId(Long requirementId, User user,OrgLocations loginOrgLocation)throws Exception;
 	
 	Integer getRequirementSubmissionsCountByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId,User user,String loginUserRole) throws Exception;
@@ -124,14 +126,14 @@ public interface RequirementSubmissionService {
 	public void applicantAcceptMailAboutRequirement(Requirement requirement, User loginUser,RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations) throws Exception;
 	
-	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, Candidate candidate,
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User loginUser, 
 			OrgLocations orgLocations, String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception;
 	
 
 	RequirementSubmission acceptRejectCandidate(ApplicantAuthorizationDTO applicantAuthorizationDTO, User user, RequirementSubmission requirementSubmission, String decision,Org loginOrg,OrgLocations loginOrgLocation) throws Exception;
 
 
-	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, 
 			OrgLocations orgLocations, RequirementRateSubmissionNegotiation negotiation, StringBuilder tempHTML) throws Exception;
 
 	RequirementRateSubmissionNegotiation getRequirementRateBySubmissionById(Long submissionId);
@@ -141,11 +143,11 @@ public interface RequirementSubmissionService {
 	
 	RequirementSubmission getClientSubmissionsBySubmissionIdAndOrgLocationId(Long submissionId, Long orgLocationId);
 
-	void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
+	void userNegotiateEmail(Requirement requirement, User user, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception;
 
 
-	void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
+	void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, 
 			StringBuilder tempHTML, OrgLocations loginOrgLocation)throws Exception;
 
 
@@ -167,16 +169,16 @@ public interface RequirementSubmissionService {
 			 OrgLocations loginOrgLocation) throws Exception;
 		
 
-	void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception;
+	void userAcceptRateNegotiation(Requirement requirement, User user,  OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception;
 
-	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
+	void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, 
 			StringBuilder tempHTML, OrgLocations orgLocations) throws Exception;
 
-	void userRejectRateNegotiation(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
+	void userRejectRateNegotiation(Requirement requirement, User user, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, String rejectreason, StringBuilder tempHTML) throws Exception;
 
 	void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
-			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
+			RequirementSubmission requirementSubmission,  StringBuilder tempHTML,
 			OrgLocations loginOrgLocation,String type, String status) throws Exception;
 	
 	List<Long> getSubmittedCandidateIdsByRequirementId(Long requirementId) throws Exception;
@@ -288,6 +290,8 @@ public interface RequirementSubmissionService {
 	RequirementSubmission getClientSubmissionsBySourceSubmissionIdAndVendorLocationId(Long sourceSubmissionId, Long vendorLocationId) throws Exception;
 	
 	ResponseList<RequirementSubmission> loadSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation)throws Exception;
+	
+	ResponseList<RequirementSubmission> loadWorkflowSubmissionsListByRequirementId(RequirementSubmissionsDTO requirementSubmissionsDTO, OrgLocations orgLocation)throws Exception;
 	
 	List<RequirementSubmission> getSubmmisionsForIsClientJob(List<Long> submissionIds) throws Exception;
 	
