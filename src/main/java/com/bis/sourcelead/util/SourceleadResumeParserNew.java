@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +32,33 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
-
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FileInfo;
+import com.bis.sourcelead.resumeParser.AddressDHelper;
+import com.bis.sourcelead.resumeParser.AddressHelper;
+import com.bis.sourcelead.resumeParser.EducationIntermediate;
+import com.bis.sourcelead.resumeParser.EducationPG;
+import com.bis.sourcelead.resumeParser.EducationSSC;
+import com.bis.sourcelead.resumeParser.EducationUG;
+import com.bis.sourcelead.resumeParser.EmployerHelper;
+import com.bis.sourcelead.resumeParser.EmployerWordHelper;
+import com.bis.sourcelead.resumeParser.ExperienceHelper;
+import com.bis.sourcelead.resumeParser.FirstNameHelper;
+import com.bis.sourcelead.resumeParser.GenderHelper;
+import com.bis.sourcelead.resumeParser.MaritalStatusHelper;
+import com.bis.sourcelead.resumeParser.MobileHelper;
+import com.bis.sourcelead.resumeParser.ParsedCityHelper;
+import com.bis.sourcelead.resumeParser.ParsedDesignationHelper;
+import com.bis.sourcelead.resumeParser.ParsedSkillsHelper;
+import com.bis.sourcelead.resumeParser.StateHelper;
+import com.bis.sourcelead.resumeParser.SummaryHelper;
+import com.bis.sourcelead.si.util.RegEx;
 import com.google.gson.Gson;
 
 
@@ -61,8 +80,58 @@ public class SourceleadResumeParserNew {
 	@Value("${resumeParserUrlProd}")
 	private String resumeParserUrlProd;
 	
-	@Autowired
-	private RestTemplate  restTemplate;
+	  @Autowired
+	    private ParsedSkillsHelper parsedSkillsHelper;
+	    
+	    @Autowired
+	    private ParsedDesignationHelper parsedDesignationHelper;
+	    
+	    @Autowired
+	    private EducationIntermediate educationIntermediateHelper;
+	    
+	    @Autowired
+	    private EducationPG educationPGHelper;
+	    
+	    @Autowired
+	    private EducationUG educationUGHelper;
+	    
+	    @Autowired
+	    private EducationSSC educationSSCHelper;
+	    
+	    @Autowired
+	    private EmployerHelper employerHelper;
+	    
+	    @Autowired
+	    private ExperienceHelper experienceHelper;
+	    
+	    @Autowired
+	    private FirstNameHelper firstNameHelper;
+	    
+	    @Autowired
+	    private GenderHelper genderHelper;
+	    
+	    @Autowired
+	    private MaritalStatusHelper maritalStatusHelper;
+	    
+	    @Autowired
+	    private MobileHelper mobileHelper;
+	    
+	    @Autowired
+	    private ParsedCityHelper parsedCityHelper;
+	    
+	    @Autowired
+	    private StateHelper stateHelper;
+	    
+	    @Autowired
+	    private SummaryHelper summaryHelper;
+	    @Autowired
+	    private AddressHelper addresshelper;
+	    
+	    @Autowired
+	    private AddressDHelper addresswordhelper;
+	    
+	    @Autowired
+	    private EmployerWordHelper empwordhelper;
 	
 	public ResumeParserJsonUtil getCandidateDetailsFromResume(byte[] source, String country, String orgLocationDateFormat, String fileName) throws Exception {
 		ResumeParserJsonUtil jsonUtil = new ResumeParserJsonUtil();
@@ -921,40 +990,296 @@ public ResumeParserJsonUtil getResumeParserJsonUtilForPublicPage(String resumeDa
 	 * @param fileInfo 
 	 * @return ResumeParserJsonUtil
 	 */
-	public ResumeParserJsonUtil getCandidateDetailsFromResumeParser(File file, FileInfo fileInfo,String country) {
-		ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
-		try {
-			String baseServicesUrl = "";
-			if("qa".equalsIgnoreCase(environment)) {
-				baseServicesUrl = resumeParserUrlQa;
-			}else if(("prod".equalsIgnoreCase(environment))){
-				baseServicesUrl = resumeParserUrlProd;
+
+	
+public ResumeParserJsonUtil getCandidateDetailsFromResumeParser(File file, FileInfo fileInfo,String country) {
+		ResumeParserJsonUtil parsedData = new ResumeParserJsonUtil();
+    try {
+  	  //detecting the file type
+  	 // JSONObject jsonObject = new JSONObject();
+        BodyContentHandler handler = new BodyContentHandler();
+        Metadata metadata = new Metadata();
+        FileInputStream inputstream = new FileInputStream(file);
+        ParseContext pcontext = new ParseContext();
+      
+        
+        AutoDetectParser parser = new AutoDetectParser();
+        
+        parser.parse(inputstream, handler, metadata,pcontext);
+        //OOXml parser
+        //OOXMLParser  msofficeparser = new OOXMLParser (); 
+        //Skills  //gets existing skills and all from here ......
+        String existedSkills = parsedSkillsHelper.getExistedSkills();
+        //Designation
+        String existedDesignation = parsedDesignationHelper.getExistedDesignation();
+        String existedEducationalDetaisl = educationPGHelper.getExistedEducationalDetails();
+        String existedEducationalDetais2 = educationUGHelper.getExistedEducationalDetails2();
+        String existedEducationalDetais3 = educationSSCHelper.getExistedEducationalDetails3();
+        String existedEducationalDetais4 = educationIntermediateHelper.getExistedEducationalDetails4();
+        
+        List<String> skillTokens = Arrays.asList(existedSkills.split("\\s*,\\s*"));
+        List<String> educationpg =Arrays.asList(existedEducationalDetaisl.split("\\s*,\\s*"));
+        List<String> educationug =Arrays.asList(existedEducationalDetais2.split("\\s*,\\s*"));
+        List<String> educationssc =Arrays.asList(existedEducationalDetais3.split("\\s*,\\s*"));
+        List<String> educationintermediate =Arrays.asList(existedEducationalDetais4.split("\\s*,\\s*"));
+      //Designation
+        List<String> designationTokens = Arrays.asList(existedDesignation.split("\\s*,\\s*"));
+        
+        //SKill
+        Set<String> parsedSkill = new HashSet<>();
+       //PG
+        Set<String> educationPG = new HashSet<>();
+       //UG
+        Set<String> educationUG = new HashSet<>();
+        //SSC
+        Set<String> educationSSC = new HashSet<>();
+        //Intermediate
+        Set<String> educationIntermediate = new HashSet<>();
+
+        //Designation
+        Set<String> parsedDesignation = new HashSet<>();
+        
+        String parsedString = handler.toString();
+        //System.out.println("Contents of the document:" + handler.toString());
+        List<Integer> globalIndex = new ArrayList<>();
+        List<Integer> objectiveIndex = summaryHelper.getSectionIndex(" ", RegEx.OBJECTIVE,handler.toString());
+        globalIndex.addAll(objectiveIndex);
+        globalIndex = globalIndex.stream().distinct().collect(Collectors.toList());
+      //parsing email 
+        String email = experienceHelper.getEmailFromTextFile(handler.toString());
+        
+        // Dob
+        
+        String Dob = experienceHelper.getDobfromfile(handler.toString());
+        
+        parsedData.setDob(Dob);
+        //first name and last name starts
+        String firstName = firstNameHelper.getNameFromTextFile(handler.toString(),email);
+      //first name and last name ends
+        // Parsing Experience
+        Map<String, Integer> expMap = experienceHelper.getExperienceFromTextFile(handler.toString());
+        //parsing mobile
+        HashSet<String> mobile = mobileHelper.getMobileNumber(handler.toString());
+        
+        //Address
+        String address = addresshelper.getAddress(handler.toString());
+        
+      
+        String Zipcode = "";
+        if(!"".equals(address)) {
+        Zipcode = addresshelper.getZipcode(address);
+        }else {
+        Zipcode = addresshelper.getZipcode(handler.toString());
+        }
+        parsedData.setZipcode(Zipcode);
+
+        //parsing gender
+        String gender = genderHelper.getGenderFromTextFile(handler.toString());
+        
+        //parsing marital status
+        String marital = maritalStatusHelper.getMartialStatusFromTextFile(handler.toString());
+         
+        //exp wit employer :
+        List<Integer> experienceIndex = employerHelper.getSectionIndex("",RegEx.EXPERIENCE, parsedString);
+        globalIndex.addAll(experienceIndex);
+        Collections.sort(globalIndex);
+			globalIndex = globalIndex.stream().distinct().collect(Collectors.toList());
+			
+			String experienceString = employerHelper.getSectionDetails(parsedString, experienceIndex, globalIndex, RegEx.EXPERIENCE,0);
+			
+			HashSet<String> employerName1 = empwordhelper.getEmployer(handler.toString());
+			
+			if(employerName1.isEmpty()) {
+				HashSet<String> employerName = EmployerHelper.getEmployer(experienceString);
+				//set employer
+        	  parsedData.setEmployeers(employerName); 
 			}
 			else {
-				baseServicesUrl = resumeParserUrlLocal ;
+				//set employer
+        	  parsedData.setEmployeers(employerName1); 
 			}
-			final String url = baseServicesUrl+Constants.RESUME_PARSE_FILE_URL;
-			 MultiValueMap<String, Object> bodyMap = new LinkedMultiValueMap<>();
-		      bodyMap.add("fileName",getUserFileResource(file));
-		      HttpHeaders headers = new HttpHeaders();
-		      headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		      HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(bodyMap, headers);
-		      ResponseEntity<JSONObject> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
-		      Gson gson = new Gson();
-		       resume = gson.fromJson(response.getBody().toString(), ResumeParserJsonUtil.class);
-		       if(resume.getCountry() == null || resume.getCountry().isEmpty() || resume.getCountry() == "") {
-		    	   resume.setCountry(country);
+		
+			
+			
+
+			
+        //Designation
+        parsedDesignation.addAll(parsedDesignationHelper.getMatchedDesignation(handler.toString(),designationTokens));
+        //City
+        
+        if("".equals(address)){
+//      	  String city = parsedCityHelper.getCities(handler.toString());
+//            if(!city.isEmpty()) {
+//                parsedData.setAddressLine1(city);
+//                parsedData.setCity(city);
+      	  
+      	  //AddressFrm CIty name
+            String addresscity = addresswordhelper.getAddress(handler.toString());
+            parsedData.setAddressLine1(addresscity);
+            String city = parsedCityHelper.getCities(addresscity);
+            if(!"".equals(city)) {
+          	  parsedData.setCity(city);
+          	  if ("".equals(addresscity)) {
+              	  parsedData.setAddressLine1(city);
+                }
+            }
+             else {
+          	  String city2 = parsedCityHelper.getCity(handler.toString());
+          	  parsedData.setCity(city2.split("\\s*,\\s*")[0]);
+          	  if ("".equals(addresscity)) {
+              	  parsedData.setAddressLine1(city2);
+                }
+            } 
+        }
+//        }
+//        else {
+//      	  String city2 = parsedCityHelper.getCity(address);
+//      	  parsedData.setCity(city2.split("\\s*,\\s*")[0]);
+//        }
+        //String city2 = parsedCityHelper.getCity(address);
+//        if(city2 == "") {
+//        HashSet<String> city = parsedCityHelper.getCities(handler.toString());
+//        jsonObject.put("", city);
+//        String  city1 = jsonObject.toJSONString();
+//        }
+        //Parsing skills
+        parsedSkill.addAll(parsedSkillsHelper.getMatchedSkills(handler.toString(),skillTokens));
+      //Parsing PG
+        educationPG.addAll(educationPGHelper.getMatchedEducationalDetails(handler.toString(),educationpg));
+        //Parsing UG
+        educationUG.addAll(educationUGHelper.getMatchedEducationalDetails2(handler.toString(),educationug));
+        //Parsing SSC
+        educationSSC.addAll(educationSSCHelper.getMatchedEducationalDetails3(handler.toString(),educationssc));
+         //Parsing Intermediate
+        educationIntermediate.addAll(educationIntermediateHelper.getMatchedEducationalDetails4(handler.toString(),educationintermediate));
+       String state =stateHelper.getState(handler.toString());
+        
+
+        String[] metadataNames = metadata.names();
+ 
+        for(String name : metadataNames) {
+
+        parsedSkill.addAll(parsedSkillsHelper.getMatchedSkills(metadata.get(name),skillTokens));
+        parsedDesignation.addAll(parsedDesignationHelper.getMatchedDesignation(metadata.get(name),designationTokens));;
+      	  //PG
+      	  educationPG.addAll(educationPGHelper.getMatchedEducationalDetails(metadata.get(name),educationpg));
+      	 //UG
+      	  educationUG.addAll(educationUGHelper.getMatchedEducationalDetails2(metadata.get(name),educationug));
+      	  //SSC
+      	  educationSSC.addAll(educationSSCHelper.getMatchedEducationalDetails3(metadata.get(name),educationssc));
+      	  //Intermediate
+      	  educationIntermediate.addAll(educationIntermediateHelper.getMatchedEducationalDetails4(metadata.get(name),educationintermediate));
+			  
+        }
+      //summary starts here;
+        String summary = summaryHelper.getSummaryDetails(handler.toString(), objectiveIndex, globalIndex,RegEx.OBJECTIVE,0);
+        String summaries = summary.replaceAll("\n", "");
+        String summaries1 = summaries.replaceAll( "[^a-zA-Z0-9 ]" , "");
+         String kk = null;
+        if(summaries1.contains("\t")){
+      	 String[] d = summaries1.split("\t");
+      	 List<String> o = Arrays.asList(d);
+      	  kk = o.get(0);
+        }
+        //summary ends here
+    
+        parsedData.setEmail(email);
+			  parsedData.setSkills(parsedSkill);
+			  firstName = firstName.replaceAll("\\s+", " ");
+			  if (firstName.split(" ").length > 2) {
+				  parsedData.setFirstName(firstName.split(" ")[0]);
+				  parsedData.setMiddleName(firstName.split(" ")[1]);
+				  parsedData.setLastName(firstName.split(" ")[2]);
+				  if(firstName.split(" ")[2]!=null) {
+					  parsedData.setLastName(firstName.split(" ")[2]);
+				  }else {
+					  parsedData.setLastName(" ");
+				  }
+				} else if (firstName.split(" ").length == 2) {
+					parsedData.setFirstName(firstName.split(" ")[0]);
+					if(firstName.split(" ")[1]!=null) {
+						  parsedData.setLastName(firstName.split(" ")[1]);
+					  }else {
+						  parsedData.setLastName(" ");
+					  }
+				} else {
+					parsedData.setFirstName(firstName);
+					parsedData.setLastName(" ");
 				}
-		      resume.setFileInfo(fileInfo);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		return resume;
-	}
-	
-	public static Resource getUserFileResource(File file) throws IOException {
-	      //to upload in-memory bytes use ByteArrayResource instead
-	      return new FileSystemResource(file);
-	  }
+			  
+			  //set experience      
+        parsedData.setTotalYearsExp(expMap.get("years"));
+        parsedData.setTotalMonthsExp(expMap.get("months"));
+//        //set mobileno.
+//        Set<String> mobileSet = new HashSet<>();
+//        mobileSet.add(mobiles);
+        parsedData.setPhoneNumbers(mobile);
+        
+          	  //set address
+          	  if(!"".equals(address)) {
+          	  parsedData.setAddressLine1(address.replaceAll(firstName, ""));
+          	  String city = parsedCityHelper.getCities(address);
+             if(!city.isEmpty()) {
+                  parsedData.setCity(city);
+          	  }
+          	  else { 
+          		  String city2 = parsedCityHelper.getCity(handler.toString());
+          	  parsedData.setCity(city2.split("\\s*,\\s*")[0]);
+          	  }
+          	  }
+      //  parsedData.setAlterNateMobileNumber(mobile.substring(mobile));
+        parsedData.setGender(gender);
+        parsedData.setMaritalStatus(marital);
+        educationPG.remove("been");
+        educationPG.remove("BEEN");
+        educationPG.remove("BPEL");
+        educationPG.remove("bpel");
+        educationUG.remove("bea");
+        educationUG.remove("ble");
+        educationUG.remove("BLE");
+        educationUG.remove("BEA");
+        educationUG.remove("bye");
+        educationUG.remove("BYE");
+        educationPG.remove("MDA");
+        educationPG.remove("mda");
+        educationPG.remove("mocha");
+        educationPG.remove("MOCHA");
+        
+        
+        educationPG.remove("\\,");	
+        Set<String> eduSet = new HashSet<>();
+        eduSet.addAll(educationPG);
+        eduSet.addAll(educationUG); 
+        eduSet.addAll(educationSSC);	
+        eduSet.addAll(educationIntermediate);
+        parsedData.setEducations(eduSet);
+        /*parsedData.setEducationPG(educationPG);
+        parsedData.setEducationUG(educationUG); 
+        parsedData.setEducationSSC(educationSSC);	
+        parsedData.setEducationIntermediate(educationIntermediate);*/
+		  
+        //Designation
+        String desig =  StringUtils.join(parsedDesignation, ',');
+        parsedData.setDesignation(desig);
+       
+        //Cityss
+        //parsedData.setCity(city2.split("\\s*,\\s*")[0]);
+        //parsedData.setCity(city1);
+       //set state
+        parsedData.setState(state);
+        if(summaries1.contains("\t")) {
+        parsedData.setSummary(kk);
+        }else {
+      	  parsedData.setSummary(summaries1); 
+        }
+        if(parsedData.getCountry() == null || parsedData.getCountry().isEmpty() || parsedData.getCountry() == "") {
+        	parsedData.setCountry(country);
+			}
+        parsedData.setFileInfo(fileInfo);
+     }catch (Exception e) {
+	e.printStackTrace();
+    }
+return parsedData;
+}
 
 }
