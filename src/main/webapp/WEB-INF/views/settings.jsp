@@ -230,8 +230,16 @@
 								
 							</div>			  
 				  </sec:authorize>
-				 
-			      	   
+				  <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y'}">
+				 <div class="col-md-2 reportNewCta">
+				   <a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list">
+						<div class="clearfix text-center mb10"><i class="payrollSVG"></i></div>
+						<div class="clearfix text-center">
+							<h4>Taxes</h4>
+						</div>
+				  </a>
+			     </div> 	 
+			     </c:if>  
 			     <div class="col-md-2 reportNewCta">			
 				            <a href="${SourceLeadWeb_pmsUrl}/projectAttributes">
 							<div class="clearfix text-center mb10"><i class="projectAttributesSVG"></i></div>
@@ -273,9 +281,9 @@
 				</sec:authorize>
 				
 				
-				
-
-				<%-- <div class="col-md-2 reportNewCta">
+				<!--  workflow settings configuration -->
+			<sec:authorize access="hasAnyRole('ROLE_ADD_WORKFLOW','ROLE_EDIT_VIEW_WORKFLOW','ROLE_DELETE_WORKFLOW','ROLE_VIEW_MY_WORKFLOW')">
+				<div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/workflowDashboard">
 						<div class="clearfix text-center mb10">
 							<i class="workflowSVG" title="Work Flow"></i>
@@ -284,9 +292,9 @@
 							<h4>Workflow</h4>
 						</div>
 					</a>
-				</div> --%>
-				
-				<!-- Candidate Configuration -->
+				</div>
+				</sec:authorize> 
+				 <!-- Candidate Configuration -->
 				 <div class="col-md-2 reportNewCta"> 
 	            <!-- DropDown -->
 	            <div class="dropdown pull-right report-dropdown"> <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu14" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
@@ -310,13 +318,15 @@
 					</div>
 				</div>
 				
-				<%-- <div class="col-md-2 reportNewCta">
+				 <div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
 					<div class="clearfix text-center">
 						<h4>Custom DashBoard</h4>
 					</div>
-				</div> --%>
+				</div>  
+				 
+				
 				
 				 <sec:authorize access="hasRole('ROLE_ENROLL_ORG')"> 
 					<div class="col-md-2 reportNewCta">

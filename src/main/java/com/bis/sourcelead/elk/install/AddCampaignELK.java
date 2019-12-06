@@ -21,13 +21,13 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.CampaignIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class AddCampaignELK {
 	private static final Logger logger = LoggerFactory.getLogger(AddCampaignELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC<CampaignIndex> client;
+	 private SourceleadELKBaseIndexer<CampaignIndex> client;
 	ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 	DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
@@ -157,9 +157,9 @@ public class AddCampaignELK {
 			
 		try {
 			   AddCampaignELK addCampaignELK = new AddCampaignELK();
-			   addCampaignELK.client = new SourceleadELKTC();
+			   addCampaignELK.client = new SourceleadELKBaseIndexer<>();
 			   addCampaignELK.addCampaignELK();
-			   addCampaignELK.client.shutdown();
+//			   addCampaignELK.client.shutdown();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

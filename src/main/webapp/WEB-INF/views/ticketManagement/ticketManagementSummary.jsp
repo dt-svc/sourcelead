@@ -156,6 +156,7 @@
 					<!-- <div id="ticketCommentListDivId"></div> -->
 					<div>
 						<ul id="ticketCommentListDivId" class="list-unstyled goalscomments-list"></ul>
+						<div id="emptyCommentLis"></div>
 					</div>
 					<!-- Comments Section Ends -->
                 </div>
@@ -178,7 +179,7 @@
 			<p id="ticketCommentvalidation" class="mt10 mb0 colorRed" style="display:none">Please Enter Comment</p>
 		</div>
 		<div class="popupFoot text-right">
-			<button type="button" class="slBtn md colorBtn" onclick="saveTicketComment('${ticketSummary.id}');">Save</button>
+			<button type="button" class="slBtn md colorBtn"  id="save_ticket_comment" onclick="saveTicketComment('${ticketSummary.id}');">Save</button>
 			<button type="button" class="slBtn md popClose" onclick="closeTicketComment();">Cancel</button>
 		</div>
 	 </form> 

@@ -9,12 +9,15 @@ import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +25,24 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,28 +50,38 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.rest.RequirementRestController;
+import com.bis.sourcelead.rest.RequirementRestControllerAdmin;
 import com.bis.sourcelead.service.CandidateResumesService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.RequirementService;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfConversionUtil;
 import com.bis.sourcelead.util.ResumeParserJsonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.util.SourceleadResumeParserNew;
+import com.google.gson.Gson;
+
+
 
 @Controller
 @RequestMapping("/app")
 public class FileController {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+	
 	@Value("${static.path}")
 	private String staticPath;
+	
+	@Value("${env}")
+	private String environment;
+
 
 	@Autowired
 	private PdfConversionUtil pdfConversionUtil;
@@ -70,13 +96,19 @@ public class FileController {
 	private CandidateResumesService candidateResumeService;
 	
 	@Autowired
-	private RequirementRestController requirementRestController;
+	private RequirementRestControllerAdmin requirementRestController;
 	
 	@Autowired
 	private RequirementService requirementService;
 
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
+	
+	@Autowired
+	CandidateGlobalUtil candidateGlobalUtil;
+
+	
+
 
 	@RequestMapping(value = { "/ws/upload/{type}", "/rest/upload/{type}" }, method = RequestMethod.POST)
 	@ResponseBody
@@ -134,7 +166,7 @@ public class FileController {
 				} else {
 					String fileURL = fileUploadUtil.uploadFile(staticPath, orgId, orgLocationId, type, file);
 					fileInfo.setFileName(multiFile.getOriginalFilename());
-					fileInfo.setFileURL(fileURL);
+					fileInfo.setFileURL(type.equalsIgnoreCase("ticket") ? fileURL.replace("/ticket/", "/temp/") : fileURL);
 					fileInfo.setContentType(multiFile.getContentType());
 					fileInfoList.add(fileInfo);
 				}
@@ -220,8 +252,9 @@ public class FileController {
 				requirementId = requirement.getId();
 			}
 		}
+		
 		String candidateIds = FileUploadUtil.processResumeFiles(parsedList, fileInfoList, session, uploadid, staticPath, sourceleadResumeParser, candidateService,
-				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant);
+				candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, requirementId, needApplicantPermit, notifyToApplicant,candidateGlobalUtil);
 
 		if (requirementId > 0 && requirementRestController != null && !candidateIds.isEmpty()) {
 			requirementRestController.submitRecommendationCandidates(requirementId, candidateIds, "Y", needApplicantPermit, notifyToApplicant, request);
@@ -232,25 +265,35 @@ public class FileController {
 		return parsedList;
 	}
 
+	
 	@RequestMapping(value = "/parse-resumes", method = RequestMethod.POST)
 	@ResponseBody
 	public List<ResumeParserJsonUtil> uploadResume(MultipartHttpServletRequest request) {
+		
+		long startTime = System.currentTimeMillis();
 		List<ResumeParserJsonUtil> resumeContent = new ArrayList<>();
 		List<FileInfo> fileInfoList = uploadFile(request, "resumes", 0, 0, 0, 0, 0, 0, 0, 0, null, null);
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
 		for (FileInfo fileInfo : fileInfoList) {
 			File file = new File(staticPath.substring(0, staticPath.lastIndexOf("/")), fileInfo.getFileURL().replace("resumes", "temp"));
+			ResumeParserJsonUtil resume = new ResumeParserJsonUtil();
 			try {
-				String country = (String) SourceLeadSessionManager.getSessionAttribute(request, "country");
-				ResumeParserJsonUtil resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
-				resume.setFileInfo(fileInfo);
-				resumeContent.add(resume);
+					logger.info("*******Resume Parser Service calling..");
+					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
+					 resume.setFileInfo(fileInfo);
+				
+			      resumeContent.add(resume);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}
+		long endTime = System.currentTimeMillis();
+		long responseTime = endTime - startTime;
+		logger.info("Total Response Time of resume parser is "+responseTime+" MS");
 		return resumeContent;
 	}
+
 
 	@RequestMapping(value = "/process-uploaded-files", method = RequestMethod.POST)
 	@ResponseBody
@@ -288,8 +331,14 @@ public class FileController {
 					if (!fileInfoList.isEmpty()) {
 						Map<String, List<ResumeParserJsonUtil>> parsedList = new HashMap<>();
 
-						FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
-								candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null);
+						try {
+							FileUploadUtil.processResumeFiles(parsedList, fileInfoList, null, uploadid, staticPath, sourceleadResumeParser,
+									candidateService, candidateResumeService, country, loginOrgLocation, sourceleadUrl, user, 0L, null, null,candidateGlobalUtil);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
 
 						FileUploadUtil.saveLogMessage(uploadid, "<br/>Completed!<br/><br/>", candidateService);
 
@@ -359,11 +408,20 @@ public class FileController {
 		String ac = StringUtils.removeEnd(staticPath, staticPath.substring(staticPath.lastIndexOf("/")));
 		File file = new File(ac, documentPath);
 		try (FileInputStream fis = new FileInputStream(file);) {
-
+			String fileExt = file.getName().substring(file.getName().lastIndexOf("."));
 			byte[] pdfBytes = new byte[fis.available()];
 			fis.read(pdfBytes);
 			if (!"application/pdf".equalsIgnoreCase(contentType)) {
-				pdfBytes = pdfConversionUtil.convertDocToPdf(pdfBytes);
+				if(".doc".equalsIgnoreCase(fileExt)) {
+					pdfBytes = pdfConversionUtil.convertDocFileToPdf(file);	
+				}else if(".docx".equalsIgnoreCase(fileExt)) {
+					pdfBytes = pdfConversionUtil.convertDocxFileToPdf(file);
+				}else {
+					// code for .rtf
+				}
+				 /*below line commented for open office code if something goes wrong you
+				 enabel below line for open office*/ 
+				//pdfBytes = pdfConversionUtil.convertDocToPdf(pdfBytes);
 			}
 			response.setHeader("Content-disposition", "inline; filename=document-" + (new Date().getTime()) + ".pdf");
 			response.setContentType("application/pdf");

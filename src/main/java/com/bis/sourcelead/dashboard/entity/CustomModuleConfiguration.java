@@ -25,8 +25,6 @@ public class CustomModuleConfiguration {
 	@JoinColumn(name = "DASHBOARD_CONFI_ID", nullable = false)
 	private CustomDashBoardConfiguration dashBoardConfId;
 	
-	@Column(name = "TAB_ID")
-	private Long tabId;
 	
 	@Column(name="SUBTAB_ID")
 	private Long subTabId;
@@ -56,10 +54,6 @@ public class CustomModuleConfiguration {
 		return dashBoardConfId;
 	}
 
-	public Long getTabId()
-	{
-		return tabId;
-	}
 
 	public Long getSubTabId()
 	{
@@ -101,10 +95,6 @@ public class CustomModuleConfiguration {
 		this.dashBoardConfId = dashBoardConfId;
 	}
 
-	public void setTabId(Long tabId)
-	{
-		this.tabId = tabId;
-	}
 
 	public void setSubTabId(Long subTabId)
 	{

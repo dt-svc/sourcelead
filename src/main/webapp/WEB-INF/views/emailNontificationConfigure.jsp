@@ -85,7 +85,7 @@
             
             <!--  Email parsing -->
             
-            <div class="clearfix mt">
+             <div class="clearfix mt">
                   <div class="reportHead clearfix">
                   <h5 class='pull-left ml mt'>Parsing Email Configuraiton</h5>
                      <ul class="pull-right list-unstyled list-inline">
@@ -427,7 +427,7 @@ function changeDefaultemailConfig(ele, id) {
    <jsp:include page="addMailPopUp.jsp"></jsp:include>
 </div>
 
-<div id="emailparsingPopUp" class="popupWrap popupWrapFixed">
+ <div id="emailparsingPopUp" class="popupWrap">
 	 <jsp:include page="addParserMailPopUp.jsp"></jsp:include>
 </div>
 
@@ -442,12 +442,13 @@ function changeDefaultemailConfig(ele, id) {
  function addEmailparsingPopUp(){
 	 $(".mask").show();
 	 $("#emailparsingPopUp").show();
+	 acceptAgreement();
 	 $('#emailNotify').find('p.jquery_form_error_message').remove();
 	 $('#passwordsnotify').find('p.jquery_form_error_message').remove();	
 	 $(".colorBtn").removeClass("disableBtn");	  
 	
 	 var domainName = $('#emailId').val().split("@")[1];
-	 if(typeof domainName != 'undefiend' && domainName != ""){
+	 if(typeof domainName != 'undefined' && domainName != ""){
 		 $('#parserEmailId').val("@"+domainName);
 		 $('#parserPasswordId').val("");
 	 }

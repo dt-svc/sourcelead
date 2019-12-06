@@ -209,7 +209,7 @@ function getRequirementSubmissionTemaplate(sourceleadUrl,jobTitle,requirementId)
 		result = result + '<div class="col-md-5">';
 		result = result + '<div class="col-md-12" id="browseDiv">';
 		result = result + '<div class="input-group" id="uploadFileGroup">';
-		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File';
+		result = result + '<label class="input-group-btn" onchange="importAddApplicantDoc();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File';
 		result = result + '<input type="file" style="display: none;" name = "uploadBtn" id="uploadBtn"  class="upload">';
 		result = result + '</span> </label>';
 		result = result + '<input type="text" class="form-control" data-validation="required validatedoc "  field-name="Resume" readonly id="uploadFile" placeholder="Upload Resume">';
@@ -528,10 +528,11 @@ $(document.body).on('change', '#uploadBtn' ,function(){
 					        			 $("input[name='AlternateNumber']").val(json.phoneNumbers[e]);
 					     		 }
 					        	 
-					        	 $("input[name='country']").val(json.country === null && json.country !== "" ? json.country : "");
-					        	 $("input[name='state']").val(json.state === null && json.state !== "" ? json.state : "");
-					        	 $("input[name='city']").val(json.city === null && json.city !== "" ? json.city : "");
-					        	 $("input[name='zipcode']").val(json.zipcode === null && json.zipcode !== "" ? json.zipcode : "");
+					        	 $("input[name='country']").val(json.country !== null && json.country !== "" ? json.country : "");
+					        	 $("input[name='state']").val(json.state !== null && json.state !== "" ? json.state : "");
+					        	 $("input[name='city']").val(json.city !== null && json.city !== "" ? json.city : "");
+					        	 $("input[name='zipcode']").val(json.zipcode !== null && json.zipcode !== "" ? json.zipcode : "");
+					        	 $("input[name=location]").val(json.addressLine1 !== null && json.addressLine1 !== "" ? json.addressLine1 : "");
 					        	 
 					        	 $("#DOB").val(json.dob !== null && json.dob !== "" ? json.dob : "");
 					        	 $("input[name='Current/LastCompany']").val(json.employeers);
@@ -808,12 +809,6 @@ function addApplicantSubmission(){
    
     
      $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
-    
-    
-
-     
-     
-     
 	     $.ajax({
 	    	 type: "POST",
 	    	 data: formData,
@@ -824,7 +819,8 @@ function addApplicantSubmission(){
 		     dataType : 'json',
 		     url :atsUrl+"/saveGuestAddApplicant?&jsonData="+jsonData+"&con="+con,
 	        success: function(result) {
-	        	 window.location = sourceleadUrl+"/jobs"
+	        	sourceleadUrl = sourceleadUrl.split("/app")[0];
+	        	window.location.href = sourceleadUrl+"/jobs";
 	        },
 	    });  
     return true; 

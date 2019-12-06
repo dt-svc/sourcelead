@@ -10,18 +10,9 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.engine.DocumentMissingException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,7 +23,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.db.DatabaseConnectionConfig;
 import com.bis.sourcelead.db.PropertyPathConfiguration;
 import com.bis.sourcelead.elk.index.ClientVendorContactsIndex;
-import com.bis.sourcelead.elk.setup.SourceleadELKTC;
+import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -47,7 +38,7 @@ public class AddClientVendorContactsELK {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AddClientVendorContactsELK.class);
 	private ComboPooledDataSource comboPooledDataSource;
-	 private SourceleadELKTC<ClientVendorContactsIndex> client;
+	 private SourceleadELKBaseIndexer<ClientVendorContactsIndex> client;
 	 ApplicationContext ctx = new AnnotationConfigApplicationContext(PropertyPathConfiguration.class);
 		DatabaseConnectionConfig dbconfig = ctx.getBean(DatabaseConnectionConfig.class);
 	 
@@ -227,30 +218,6 @@ public class AddClientVendorContactsELK {
 		return contactsList;
 	}
 	
-	
-	public void saveOrUpdateElkDocument(ClientVendorContactsIndex contactsIndex,String index,String type,String id) {
-		String entityInJson = null;
-		 Map<String, Object> d = new HashMap<>();
-		try {
-		    entityInJson = toJSON(contactsIndex);
-		    JSONObject json = new JSONObject(entityInJson);
-		   
-		    Iterator<String> it = json.keys();
-		    while(it.hasNext()) {
-		    	String key = it.next();
-		    		d.put(key, json.isNull(key) ? null : json.get(key));
-		    }
-//		    client.getClient().prepareUpdate(index, type,id).setDoc(d).get();
-		    
-		    IndexRequest indexRequest = new IndexRequest(index).type(type).id(id).source(d, XContentType.JSON);
-			IndexResponse indexResponse = client.getClient().index(indexRequest, RequestOptions.DEFAULT);
-		    
-		    logger.info(type+" has been updated.");
-		} catch (Exception e) {
-			logger.error(type+" could not be serialized. "+e.getLocalizedMessage());
-		}
-     }
-	
 	 public String toJSON(Object obj){
 	        XStream xstream = new XStream(new JsonHierarchicalStreamDriver() {
 	            public HierarchicalStreamWriter createWriter(Writer writer) {
@@ -279,9 +246,9 @@ public class AddClientVendorContactsELK {
 			
 		try {
 			   AddClientVendorContactsELK addCampaignELK = new AddClientVendorContactsELK();
-			   addCampaignELK.client = new SourceleadELKTC();
+			   addCampaignELK.client = new SourceleadELKBaseIndexer<>();
 			   addCampaignELK.addCampaignELK();
-			   addCampaignELK.client.shutdown();
+//			   addCampaignELK.client.shutdown();
 		} catch (Exception e) 
 		{
 			e.printStackTrace();

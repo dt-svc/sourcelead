@@ -60,9 +60,7 @@ import com.bis.sourcelead.dto.ApplicantsJoinedReportDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.DashboardItemsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
-import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
-import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserDTO;
@@ -79,7 +77,6 @@ import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.RequirementOfferHistory;
 import com.bis.sourcelead.entity.RequirementOffers;
-import com.bis.sourcelead.entity.RequirementRateSubmissionNegotiation;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.Roles;
@@ -838,8 +835,8 @@ public class PerformanceReportRestController {
 		public void exportAllApplicantJoinedList(ApplicantsJoinedReportDTO userRoleDto,@RequestParam(value="timePeriod", required=false) String timePeriod,@RequestParam(value="customStartDate", required=false) String customStartDate,@RequestParam(value="customEndDate", required=false) String customEndDate,
 				@RequestParam(value="exportType", required=false) String exportType,
 				ApplicantsJoinedReportDTO userDTO,HttpServletRequest request, HttpServletResponse response) throws Exception {
-			
-		      OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		      Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			  OrgLocations orgLocations = orgLocationService.getOrgLocations(orgLocId);
 		      Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		      User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		      String isGlobalUser = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
@@ -2476,8 +2473,7 @@ public class PerformanceReportRestController {
 					userType = Constants.ADMIN;
 				} 
 				
-			   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations);
-				
+			   ResponseList<RequirementSubmissionHistory> toDayReqApplicantscount =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations,null);
 			   List<RequirementSubmissionHistoryDTO> rshDTOList = new ArrayList<>();
 			   if(toDayReqApplicantscount.getData() != null)
 				for(RequirementSubmissionHistory rsh: toDayReqApplicantscount.getData()){
@@ -2677,7 +2673,8 @@ public class PerformanceReportRestController {
 		try{
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null){
-				OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+				Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+				OrgLocations orgLocation = orgLocationService.getOrgLocationById(orgLocId);
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				List<Long> jobIdList = new ArrayList<>();
 				Date[] searchDates = null;

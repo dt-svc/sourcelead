@@ -597,6 +597,7 @@ $('body').on('submit', '#sjfb', function(e){
         
         var frontEndFormHTML = '';
        var templateId = document.getElementById("templateId").value;
+       var templateName = $("#templateName").val();
         if(templateId == 'undefined' || templateId == null || templateId == ''){
         	templateId = '';
         }
@@ -612,13 +613,13 @@ $('body').on('submit', '#sjfb', function(e){
        
       	  $.ajax({
       	    	type: "POST",
-      	        url: sourceleadUrl+"/saveQuestionnaireTemplate?templateId="+templateId+"&timeLimitMinutes="+timeLimitMinutes+"&timeLimitSeconds="+timeLimitSeconds+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData, 
+      	        url: sourceleadUrl+"/saveQuestionnaireTemplate?templateId="+templateId+"&timeLimitMinutes="+timeLimitMinutes+"&timeLimitSeconds="+timeLimitSeconds+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData+"&templateName="+templateName, 
       	       success: function(result) {
     	           if (result === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (result === "SUCCESS") {
 		        		//performanceManagement.getFeedbackList();
-		        	    location.href = sourceleadUrl+"/questionnaireList"
+		        	    location.href = sourceleadUrl+"/questionnaireList?templateName="+templateName,
 		        		$(".mask, #modalTasktype").fadeOut();
 		        	} else {
 		        	    showError("Operation failed, please try again");

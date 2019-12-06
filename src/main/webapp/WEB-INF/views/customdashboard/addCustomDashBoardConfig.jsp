@@ -30,7 +30,7 @@
         <div id ="rolesErrorDIV">
         <label class="col-md-4">Roles</label>
          <div class="col-md-8">
-        <select class="chosen-select form-control" id="roles" name="roles" field-name="Roles" onchange="getAssociateListBasedOnRole();">
+        <select class="chosen-select form-control" id="roles" name="roles" field-name="Roles" data-validation="required" field-name="Role" onchange="getAssociateListBasedOnRole();">
         <option value="">Select Roles</option>
         <c:if test="${not empty customDashBoardConf.roleId}">
                      <c:forEach var="role" items="${roles}">
@@ -47,11 +47,11 @@
 		 </div>
       </div> 
 
-        <div class="clearfix mb" id="applicableForErrorDIV">
+      <%--   <div class="clearfix mb" id="applicableForErrorDIV">
           <label class="col-md-4">Applicable for <span class="text-danger paddingLeft">&nbsp;*</span></label>
           <div class="col-md-2"><input type="radio" id="applicableForAll" name="applicableFor" oncick="fireFunction();" value="All" ${customDashBoardConf.applicableFor=='All'?'checked':''}><label for="a" class="paddingLeft" data-validation="required"> All</label> </div>
           <div class="col-md-3"><input type="radio" id="applicableForAssociates" name="applicableFor" value="Associates" ${customDashBoardConf.applicableFor=='Associates'?'checked':''}><label for="c" class="paddingLeft" data-validation="required"> Associates</label></div> 
-        </div>   
+        </div>   --%> 
 
       
       <div class="clearfix mb" id="AssociatesShow" style="display: none;">

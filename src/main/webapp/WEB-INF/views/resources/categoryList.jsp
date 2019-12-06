@@ -250,6 +250,7 @@ function blogCategoryListPagination(url){
 		      }, {
 		          "targets": colIndex++,
 		          "data": "blogCount",
+		          "sortable": false,
 		          "render": function ( data, type, opt, meta ) {
 		        	  var result = "";
 		        	  result = result + ' <td><div class="tbldata-dotdot-100" title = "'+opt.blogCount+'">'+opt.blogCount+'</div></td>';

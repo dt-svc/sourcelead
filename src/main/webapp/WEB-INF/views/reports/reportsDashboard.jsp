@@ -34,7 +34,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu1" data-toggle="dropdown"><span class="caret cursorPointer"></span></span>
 				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
-				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
 				</sec:authorize>
 				<sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/applicantsjoinedlist'>Applicants Joined Report</a></li>
@@ -153,6 +153,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</sec:authorize>
 				
 			   <li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
+			   
+			   <c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureSummaryReport">Closure Summary Report</a></li>
+				</c:if>
 				
 				
 			    
@@ -191,7 +195,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <li><a href="${SourceLeadWeb_sourceleadUrl}/assetsReport">Assigned Assets History</a></li>
 
 				<sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-				<li><a href="${SourceLeadWeb_sourceleadUrl}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
+					<li><a href="${SourceLeadWeb_sourceleadUrl}/projectTimeEntriesReport">Project Time Entries Report</a></li>
+			    	<li><a href="${SourceLeadWeb_sourceleadUrl}/resourceTimeEntriesReport">Resource Time Entries Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
@@ -267,7 +272,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
 				
-				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li> 
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/availableAssociatesReport'>Available Associate Report</a></li> 
 
 					<!--<li><a href="#">Bank Report</a></li>
 					 <li><a href="#">Performance</a></li>
@@ -428,7 +433,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <ul class="repSearchList">
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
-				<li><a href='${appPath}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/offerAcceptanceRate'>Offer Acceptance Rate</a></li>
 				</sec:authorize>
                 
                 <sec:authorize access="hasRole('ROLE_APPLICANTS_JOINED_REPORT')">
@@ -522,6 +527,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
 				
+				<c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureSummaryReport">Closure Summary Report</a></li>
+				</c:if>
+				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -534,7 +543,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <li><a href="${SourceLeadWeb_sourceleadUrl}/projectReport">Project Report</a></li>
                 
                 <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
-					<li><a href="${SourceLeadWeb_sourceleadUrl}/daywiseTimeSheetReports">Daywise Timesheet Report</a></li>
+						<li><a href="${SourceLeadWeb_sourceleadUrl}/projectTimeEntriesReport">Project Time Entries Report</a></li>
+						<li><a href="${SourceLeadWeb_sourceleadUrl}/resourceTimeEntriesReport">Resource Time Entries Report</a></li>
 				</sec:authorize>
 				
 				<sec:authorize access="hasRole('ROLE_TIMESHEET_REPORT')">
@@ -587,7 +597,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/associateClockInSummaryReport'>Associate Clock-In Summary Report</a></li>
 
-				<li><a href='${appPath}/availableAssociatesReport'>Available Associate Report</a></li>           
+				<li><a href='${SourceLeadWeb_sourceleadUrl}/availableAssociatesReport'>Available Associate Report</a></li>           
                 <li><a href='${SourceLeadWeb_sourceleadUrl}/loansAndAdvancesReport'>Loans And Advances Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>

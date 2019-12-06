@@ -6,9 +6,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.aspectj.apache.bcel.classfile.Constant;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +20,15 @@ import com.bis.sourcelead.dashboard.dao.CustomDashBoardConfDao;
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardAssociatesConf;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.CustomModuleConfiguration;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
 import com.bis.sourcelead.dashboard.service.CustomDashboardConfService;
+import com.bis.sourcelead.dashboard.service.ModuleDashboardConfService;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.PaymentAccount;
 import com.bis.sourcelead.entity.SubTabs;
 import com.bis.sourcelead.entity.Tabs;
 import com.bis.sourcelead.service.TabsService;
@@ -35,6 +43,9 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 	@Autowired
 	private TabsService tabsService;
 	
+	@Autowired
+	private ModuleDashboardConfService moduleDashboardConfService;
+	
 	@Override
 	public CustomDashBoardConfiguration saveCustomDashBoardConf(CustomDashBoardConfDTO customDashBoardConfDTO, OrgLocations orgLocation,Long loginUsrId)
 	{
@@ -45,6 +56,7 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 				customDashBoardConf = getCustomDashboardConfById(Long.parseLong(customDashBoardConfDTO.getCustomDashBoardConfId()),orgLocation.getId());
 			}else {
 				customDashBoardConf = new CustomDashBoardConfiguration();
+				customDashBoardConf.setMakeDefault(false);
 			}
 			if(StringUtils.isNotBlank(customDashBoardConfDTO.getRoles())) {
 				customDashBoardConf.setRoleId(Long.parseLong(customDashBoardConfDTO.getRoles()));
@@ -117,13 +129,18 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		try {
 			List<CustomDashBoardConfiguration> dashBoardConfList = customDashBoardConfDao.getCustomConfDashBoardByLocationId(locationId);	
 			List<CustomDashBoardConfDTO> resList = new ArrayList<>();
-			if(dashBoardConfList != null) {
+			if(dashBoardConfList != null && dashBoardConfList.size() >0) {
 				for(CustomDashBoardConfiguration dashConf : dashBoardConfList) {
 					CustomDashBoardConfDTO dashBoardConfDTO = new CustomDashBoardConfDTO();
+					Long numberOfComponents = customDashBoardConfDao.getNumberOfComponentsForCustomDashBoard(dashConf.getId());
 					dashBoardConfDTO.setCustomDashBoardConfId(String.valueOf(dashConf.getId()));
 					dashBoardConfDTO.setDashBoardName(dashConf.getDashboardName());
 					dashBoardConfDTO.setDescription(dashConf.getDescription());
 					dashBoardConfDTO.setCustomDashBoardConfUUID(dashConf.getDashboardConfUUID());
+					dashBoardConfDTO.setNumberOfComponents(String.valueOf(numberOfComponents));
+					if(dashConf.getMakeDefault() != null) {
+						dashBoardConfDTO.setActive(dashConf.getMakeDefault());
+					}
 					resList.add(dashBoardConfDTO);
 					response.setData(resList);
 				}
@@ -151,15 +168,16 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId)
+	public List<TabsDTO> getRoleBasedModules(Long locationId, long roleId, Long confDashBoardId)
 	{
 		List<TabsDTO> tabs = new ArrayList<>();
 		try {
 			List<Tabs> tbs =  tabsService.getTabsByRoleIdAndOrgLocationId(roleId, locationId);
-			for(Tabs tab: tbs) {
+			for(Tabs tab: tbs) {  
 				if(!"Associates".equalsIgnoreCase(tab.getTabName().trim()) && !"Settings".equalsIgnoreCase(tab.getTabName().trim()) &&
 						!"Campaigns".equalsIgnoreCase(tab.getTabName().trim()) && !"Back Office".equalsIgnoreCase(tab.getTabName().trim())
-						&& !"Immigration".equalsIgnoreCase(tab.getTabName().trim()) && !"Reports".equalsIgnoreCase(tab.getTabName().trim())) {
+						&& !"Immigration".equalsIgnoreCase(tab.getTabName().trim()) && !"Reports".equalsIgnoreCase(tab.getTabName().trim())
+						&& !"Marketplace".equalsIgnoreCase(tab.getTabName().trim()) && !"Performance Management".equalsIgnoreCase(tab.getTabName().trim())) {
 					
 					TabsDTO tabsDTO = new TabsDTO();
 					tabsDTO.setId(tab.getId());
@@ -172,6 +190,12 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 							subTabsDTO.setSubTabId(sTab.getId());
 							subTabsDTO.setSubTabDisplayName(sTab.getSubtabDisplayName());
 							subTabsDTO.setSubTabName(sTab.getSubTabName());
+							CustomModuleConfiguration modConf =  moduleDashboardConfService.getSubModuleByIdAndConfDashBoardId(sTab.getId(),confDashBoardId);
+							if(modConf != null) {
+								subTabsDTO.setIsSubTabConfigured("YES");
+							}else {
+								subTabsDTO.setIsSubTabConfigured("NO");
+							}
 							stabList.add(subTabsDTO);
 						}
 						
@@ -210,6 +234,49 @@ public class CustomDashBoardConfServiceImpl implements CustomDashboardConfServic
 		}
 		return stablist;
 	}
+
+
+	@Override
+	public void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId,String customDashBoardUUID) {
+		customDashBoardConfDao.getCustomConfDashBoardListByOrgLocationId(orgLOcatinId,customDashBoardUUID);
+	}
+
+
+	@SuppressWarnings("unused")
+	@Override
+	public boolean enableCustomDashBoard(OrgLocations orgLOcation, boolean isEnable,Long loginUserId) {
+		
+		boolean isEnabled  = false;
+		try {
+			EnableDashBoardConfiguration enableDashBoardConf = customDashBoardConfDao.getEnableDashBoardByLocationId(orgLOcation.getId());
+			if(enableDashBoardConf == null) {
+				enableDashBoardConf = new EnableDashBoardConfiguration();
+			}
+			enableDashBoardConf.setOrgLocations(orgLOcation);
+			enableDashBoardConf.setEnableDashboardConfUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+			enableDashBoardConf.setIsEnabled(isEnable);
+			enableDashBoardConf.setStatus(1);
+			enableDashBoardConf.setCreatedBy(loginUserId);
+			enableDashBoardConf.setCreatedDate(new Date());
+			enableDashBoardConf.setUpdatedBy(loginUserId);
+			enableDashBoardConf.setUpdatedDate(new Date());
+			EnableDashBoardConfiguration enableEntity = customDashBoardConfDao.enableCustomDashBoard(enableDashBoardConf);
+			if(enableEntity != null) {
+				isEnabled = true;
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return isEnabled;
+	}
+
+
+	@Override
+	public EnableDashBoardConfiguration getEnableDashBoardByLocationId(Long orgLocatinId) {
+		return customDashBoardConfDao.getEnableDashBoardByLocationId(orgLocatinId);
+	}
+
 	
 }
 

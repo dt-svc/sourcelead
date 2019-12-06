@@ -1,15 +1,24 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
-
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <script>
 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 $(document).ready(function() {
 	requirementWorkflow.getWorkflowList();
+	
+	var dynamicWorkflowName = '${workflowName}';
+	if(dynamicWorkflowName != ""){
+		requirementWorkflow.showSuccessMsg("Successfully saved "+dynamicWorkflowName);
+	}
 });
+
 </script>
 <script src="/resources/js/requirementWorkflow.js?staticTime=${staticTime}"></script>
 <div class="wraper"> 
   <section class="content-wraper">
+  <div class="success_pop" id="selector" >
+	       <i class="fa fa-check-circle"></i><span id="msgDiv"></span>
+			</div>
     <section class="content-header clearfix">
       <div class="pull-left">
         <h2>Application Workflow</h2>
@@ -19,6 +28,8 @@ $(document).ready(function() {
       Application Workflow
       </div>
     </section>
+    <div id="popUp"></div> 
+    <sec:authorize access="hasRole('ROLE_ADD_WORKFLOW')"> 
     <div class="project_wrap clearfix">
       <div class="timesheet_out" id="payrollRegister" style="display: block;">
         <div class="clearfix">
@@ -46,6 +57,7 @@ $(document).ready(function() {
         </div>
       </div>
     </div>
+    </sec:authorize>
   </section>
 </div>
 <div id="popUp"></div>

@@ -1019,7 +1019,8 @@ public class DashboardRestController {
 			User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			if(loginUser != null) {
 				try {
-					OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+					Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 					Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
 					RequirementApproverHierarchy requirementApproverHierarchy = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementId(requirementId, loginUser.getId());
 					if(status.equalsIgnoreCase("REJECTED")  &&  !reason.equalsIgnoreCase("") && !reason.isEmpty()){
@@ -1054,6 +1055,8 @@ public class DashboardRestController {
 									requirement.setUpdatedDate(commonUtil.currentDate());
 									requirementService.addRequirement(requirement);
 									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+									String approverArray[] = new String[list1.size()];
+									int i = 0;
 									for (RequirementApproverHierarchy rah : list1) {
 										if (status.equalsIgnoreCase("APPROVED")) {
 											rah.setRequirementApproverStatus(REQUIREMENT_APPROVER_HIERARCHY_STATUS.APPROVED);
@@ -1065,8 +1068,10 @@ public class DashboardRestController {
 										}
 										rah.setUpdatedBy(loginUser.getUserCode());
 										rah.setUpdatedDate(commonUtil.currentDate());
+										approverArray[i++] = rah.getApproverUserId().getId() + "";
 										requirementApproverHierarchyService.addRequirementApproverHierarchy(rah);
 									}
+									requirement.setLevel1ApproverUserId(approverArray);
 								// this is for sending email to requirement initiator
 								if (status.equalsIgnoreCase("APPROVED")) {
 									requirementService.acceptEmailScenario(loginUser, requirement.getCreatedBy(), requirement,location, orgLocation);
@@ -1088,7 +1093,21 @@ public class DashboardRestController {
 					    		}
 								
 						}else{
-		
+							List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirementId);
+							if(list1 != null && !list1.isEmpty()) {
+								for (RequirementApproverHierarchy rah : list1) {
+									if(rah.getLevel() == 1) {
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = rah.getApproverUserId().getId() + "";
+										requirement.setLevel1ApproverUserId(levelUserIds);
+									}
+									if(rah.getLevel() == 2) {
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = rah.getApproverUserId().getId() + "";
+										requirement.setLevel2ApproverUserId(levelUserIds);
+									}
+								}
+							}
 							    RequirementApproverHierarchy level1approver = requirementApproverHierarchyService.getRequirementApproverHierarchyByRequirementIdAndMaximumLevel(requirementId);
 								User approverUser = userService.getUserById(level1approver.getApproverUserId().getId());
 								if (status.equalsIgnoreCase("APPROVED")) {
@@ -1757,10 +1776,8 @@ public class DashboardRestController {
 		if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole)){
 			userType = Constants.ADMIN;
 		} 
-		
-		
-	   ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations);
 
+	   ResponseList<RequirementSubmissionHistory> dashboardJobsCountlist =requirementSubmissionDao.getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(requirementSubmissionHistoryDTO, loginOrgLocations.getId(),requirementSubmissionHistoryDTO.getSubmissionStatus(),requirementSubmissionHistoryDTO.getTabType(),userType,user,startUTCDate,endUTCDate,loginOrgLocations, null);
 	   
 		 Workbook createExcelworkbook =  new XSSFWorkbook();
 		 StringBuilder excelSB = new StringBuilder();

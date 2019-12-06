@@ -178,6 +178,7 @@ public class CampaignController {
 	 ModelAndView model = new ModelAndView();
 	 model.setViewName("jobCampaignSummary");
 	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("atsUrl", atsUrl);
 	 model.addObject("requirementUUID", requirementUUID);
 	 return model;
 		

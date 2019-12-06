@@ -179,11 +179,11 @@ public class RequirementInterviewController {
 				     RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 					 requirementSubmissionHistory.setFromStage(ApplicantSubmissionStatus.INTERVIEW.toString());
 					 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
-						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT);
+						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_ACCEPT.toString());
 						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 					 }
 					 if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.NOT_ATTENDING.toString()) && ((dateDateFormatTimeEnd != null && dateDateFormatTimeEnd.after(dateDateFormatCurTime))||(dateDateFormatTimeStart != null && dateDateFormatTimeStart.after(dateDateFormatCurTime)))){
-						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT);
+						 requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.INTERVIEW_REJECT.toString());
 						 requirementInterviewService.applicantInterviewAcceptmailToInterviewInitiator(requirementInterviewId);
 					 }
 					 /*if(interviewStatus.equalsIgnoreCase(ApplicantSubmissionStatus.MAYBE.toString())){

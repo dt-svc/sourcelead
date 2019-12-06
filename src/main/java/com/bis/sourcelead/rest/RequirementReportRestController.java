@@ -678,7 +678,7 @@ public class RequirementReportRestController {
 					rshDTO.setExperienceMonths(rsh.getCandidate().getExperienceMonths());
 					rshDTO.setFinalizedRate(rsh.getFinalizedRate());
 					rshDTO.setSubmittedBy(rsh.getSubmittedBy());
-					rshDTO.setFinalsSubmissionStatus(rsh.getSubmissionStatus());
+					rshDTO.setFinalsSubmissionStatus(rsh.getSubmissionStatus().toString());
 					rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getCreatedDate()));
 					
 					//rshDTO.setAppliedOn(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocations.getDateFormat(),rsh.getSubmissionId().getCreatedDate()));

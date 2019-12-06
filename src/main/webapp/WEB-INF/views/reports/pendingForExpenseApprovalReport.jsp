@@ -265,6 +265,12 @@ function getPendingApprovalExpenseReports(){
 		        $("#loadingId").removeAttr('style');
 				$("#pendingForApprovalExpenseDivDiv").append(result);
 				dynamicMissingTimesheetReportPagination();
+				if(data.length == 0){
+					$("#customSearch").show();
+				}else{
+					$("#customSearch").hide();
+				}
+				
 		    }
 		 });
 	  }	  
@@ -274,8 +280,7 @@ function getPendingApprovalExpenseReports(){
 
 <script>
 function resetDatepickers() {
-	var $dates = $('#fromDate, #toDate').datepicker();
-	$dates.datepicker('setDate', null);
+location.reload(true);
 }
 $('.content-wraper, .content-header, .reportHead, .vendor_wrap').click(function(){
 	$("#customSearch").hide();
