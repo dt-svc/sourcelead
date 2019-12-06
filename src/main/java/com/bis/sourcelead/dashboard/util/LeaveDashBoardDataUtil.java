@@ -301,6 +301,7 @@ public class LeaveDashBoardDataUtil {
 		}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Transactional
 	public String getCandidateOFFBoarding(CommonDataDto commonDataDto) {
 		JSONArray Jsonarray = new JSONArray();
