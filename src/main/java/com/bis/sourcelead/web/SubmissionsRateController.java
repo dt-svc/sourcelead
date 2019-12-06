@@ -104,7 +104,7 @@ public class SubmissionsRateController {
 		String type = "Candidate";
 		ModelAndView model = new ModelAndView();
 		String permission = "YES";
-		if((requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.SUBMISSION.toString() || requirementSubmission.getSubmissionStatus() == ApplicantSubmissionStatus.REJECTED.toString()) && (pastRequirementRateSubmissionNegotiation != null && pastRequirementRateSubmissionNegotiation.getRateInitiatorType() == SubmissionRateStatus.CANDIDATE)){
+		if((requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.SUBMISSION.toString())||requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.REJECTED.toString()))&&(pastRequirementRateSubmissionNegotiation != null &&pastRequirementRateSubmissionNegotiation.getRateInitiatorType().toString().equalsIgnoreCase(SubmissionRateStatus.CANDIDATE.toString()))) {
 			permission = "NO";
 			/*if(pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser() != null && pastRequirementRateSubmissionNegotiation.getRequirementsubmissionId().getCandidate().getConsultantUser().getUserCode().equals(pastRequirementRateSubmissionNegotiation.getCreatedBy())){
 				permission = "YES";
