@@ -47,7 +47,6 @@ import com.bis.sourcelead.entity.RequirementSubmissionHistory;
 import com.bis.sourcelead.entity.RequirementSubmissionsView;
 import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.reportsDTO.ProjectReportDTO;
 import com.bis.sourcelead.service.CandidateOffBoardingService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
@@ -63,43 +62,10 @@ import com.bis.sourcelead.service.ProjectPlanningRequestService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
-<<<<<<< HEAD
-=======
-import com.bis.sourcelead.service.RequirementService;
-import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
-import com.bis.sourcelead.util.CalendarUtil;
-import com.bis.sourcelead.util.CommonUtil;
-import com.bis.sourcelead.clockinout.service.ClockInOutConfigService;
-import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dao.RequirementSubmissionDao;
-import com.bis.sourcelead.dashboard.dto.CommonDataDto;
-import com.bis.sourcelead.dto.JobFairDTO;
-import com.bis.sourcelead.dto.LeaveDTO;
-import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.VendorContractsDTO;
-import com.bis.sourcelead.entity.OrgSpoc;
-import com.bis.sourcelead.entity.TimeSheetSubmissionCount;
-import com.bis.sourcelead.service.ContractsTemplateService;
-import com.bis.sourcelead.service.LeaveService;
-import com.bis.sourcelead.service.OrgRelationsService;
-import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
-import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
-import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
-import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.ExpensesCount;
-import com.bis.sourcelead.entity.JobFair;
-import com.bis.sourcelead.entity.Requirement;
-import com.bis.sourcelead.entity.RequirementSubmission;
-import com.bis.sourcelead.entity.RequirementSubmissionHistory;
-import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
-import com.bis.sourcelead.service.LeaveService;
->>>>>>> fa7bf0a709aaab395b54f3d171e41d702bc4a204
 import com.bis.sourcelead.service.RequirementAssignToService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
+import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.timesheet.service.TimesheetSubmissionsService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -115,12 +81,7 @@ public class LeaveDashBoardDataUtil {
 
 	@Autowired
 	TimesheetSubmissionsService	 timesheetSubmissionsService;
-	
-<<<<<<< HEAD
-
-	
-=======
->>>>>>> fa7bf0a709aaab395b54f3d171e41d702bc4a204
+ 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -195,9 +156,6 @@ public class LeaveDashBoardDataUtil {
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
 	
-	@Autowired
-	ClockInOutConfigService clockInOutConfigService;
-
 	/**
 	 * Leave DashBoard Data 
 	 * approved,rejected,pending and canceled leav count
