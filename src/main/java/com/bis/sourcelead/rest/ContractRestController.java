@@ -56,6 +56,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.dto.VendorContractsDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.ContractOwnerHierarchy;
 import com.bis.sourcelead.entity.ContractRequestDocuments;
 import com.bis.sourcelead.entity.Contracts;
@@ -349,7 +350,8 @@ public class ContractRestController {
 		boolean isContractSaved = false;
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		OrgLocations orgLocation = orgLocationService.getOrgLocations(orgLocationId);
 		Contracts contracts = contractsTemplateService.saveNewContract(contractsDTO, orgLocation, "", user, org, "");
 		if (null != contracts) {
 			isContractSaved = true;
@@ -615,7 +617,7 @@ public class ContractRestController {
 				requirementSubmission.setVendorLocationCode(requirementSubmission.getVendorLocationId().getLocationCode());
 			}
 			else {
-				Candidate candi = requirementSubmission.getCandidate();
+				CandidateGlobal candi = requirementSubmission.getCandidate();
 				if (candi != null) {
 					if (candi.getParentCandidateId() != null) {
 						OrgLocations location = candi.getParentCandidateId().getOrgLocationId();

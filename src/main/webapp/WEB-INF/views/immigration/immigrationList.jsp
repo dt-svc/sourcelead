@@ -984,6 +984,12 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 	function resetImmigrationFilter(){
 		$('ul#typeFilter input:checkbox, ul#attorneyFilter input:checkbox, ul#statusFilter input:checkbox, ul#durationFilter input:checkbox ').attr('checked',false);
 		$("#filterToYear, #filterFromYear").val("");
+		$("#attorneyFilterInput").val("");
+		$("#typeFilterInput").val("");
+		$("#statusFilterInput").val("");
+		myClientsFunction('attorneyFilterInput','attorneyFilter');		
+		myClientsFunction('typeFilterInput','typeFilter');
+		myClientsFunction('statusFilterInput','statusFilter');
 		$("#durationCustomsearch").hide();
 	}
 	

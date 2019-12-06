@@ -198,20 +198,20 @@ $('#paymentDate').datepicker({
 	                    for (var i = 0; i < json.data.length; i++) { 
 	                    	 var opt = json.data[i]; 
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><input id= "'+opt.id+'" value="'+opt.dueAmount+'" onclick="checkSingleInvoice(\''+opt.id+'\',\''+opt.dueAmount+'\');"  type="checkbox" name="invoices" class="myCheckbox" >';
-	                    	 result = result +'<td>'+opt.invoiceId+'</td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80"><input id= "'+opt.id+'" value="'+opt.dueAmount+'" onclick="checkSingleInvoice(\''+opt.id+'\',\''+opt.dueAmount+'\');"  type="checkbox" name="invoices" class="myCheckbox" ></div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100">'+opt.invoiceId+'</div></td>';
 	                    	 var projectName = '';
 	                    	 if(opt.projectName != null && opt.projectName !='' && opt.projectName !="undefined"){
 	                    		  projectName = opt.projectName;
 	                    	 }else{
 	                    		 projectName = '--';
 	                    	 }
-	                    	 result = result +'<td>'+projectName+'</td>';
-	                    	 result = result +'<td>'+opt.invoiceDateStr+'</td>';
-	                    	 result = result +'<td>'+opt.dueDateStr+'</td>';
-	                    	 result = result +'<td>'+opt.total+'</td>';
-	                    	 result = result +'<td>'+opt.dueAmount+'</td>';
-	                    	 result = result +'<td>'+opt.invoiceStatus+'</td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100">'+projectName+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100">'+opt.invoiceDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100">'+opt.dueDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot-100">'+opt.total+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80">'+opt.dueAmount+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80">'+opt.invoiceStatus+'</div></td>';
 	                    	 result = result +'<td><div><input type="text" value="" placeholder="Total Due" onkeyup="amountInputVal1(this);validateNumber(this);validateDueAmount(this,'+opt.dueAmount+');" onfocusout ="validateDueAmount(this,'+opt.dueAmount+');"  class="form-control mt5 mb5" id="totalAmountRow'+opt.id+'" field-name ="Total Due"></div></td>';
 	                    	 result = result +'</tr>';
 	                    }
@@ -459,7 +459,7 @@ function showCheckBoxDivPopup(){
 	</script>
 <script>
  function ListPagination(){ 
-	
+	  document.getElementById("invoiceListTable_info").style.display = "none";
 	 $("#invoiceListTable").DataTable( {
 		    "scrollY":"350px",
 	        "scrollCollapse": true,

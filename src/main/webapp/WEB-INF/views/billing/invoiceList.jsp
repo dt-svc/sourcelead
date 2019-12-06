@@ -1666,7 +1666,10 @@ function resetInvoiceFilter(){
 	$("ul#myInvoiceUL > li input:checkbox").prop("checked",false);
 	document.getElementById("invoiceDateRadio").checked = true;
 	$(".custom_search").empty().hide();
+	$("#invoiceDataTableSearch").val('');
 	getInvoiceList();
+	$(".action-pop").slideUp(200);
+	$(".newActPop").slideUp(200);
 	
 }
 function resetingInvoiceFilter(){

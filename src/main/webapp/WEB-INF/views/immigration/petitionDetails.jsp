@@ -268,7 +268,7 @@
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
 								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
-								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								<a href="${SourceLeadWeb_vmsUrl}/addVendorContact" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 							 </span>			
 										
 								</div>
@@ -283,7 +283,7 @@
                   <span class="input-group-addon cursorPointer bg-blue" onclick="getAllRelationssByOrgLocation();addCandiadateEmptyAttorneyContact();"><i class="fa fa-refresh "></i></span>
 			</div>		
 								<span class="col-md-2 noPad clearfix" onclick="selectedAttorney();">
-								<a href="javascript:void(0)"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
+								<a href="${SourceLeadWeb_vmsUrl}/addVendorContact" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a>
 							 </span>			
 										
 								</div>
@@ -621,7 +621,7 @@
              </div>
                <div class="col-md-8"  id="resumeEmpty">
 				<div class="input-group col-md-12 clearUploads" id="clearUploads" style="margin:0 auto">
-					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o"></i>&nbsp;Browse File
+					<label class="input-group-btn"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File
 					  <input type="file" style="display: none;" id="uploadBtn" class="upload">
 					  </span></label>
 					<input type="text" class="form-control" name="docFile" readonly id="uploadFile" placeholder="Attachment">

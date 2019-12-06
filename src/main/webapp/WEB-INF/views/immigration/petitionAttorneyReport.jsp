@@ -42,7 +42,7 @@ $(document).ready(function(){
         
            <div class="clearfix mb">
             <div class="form-group">
-              <label class="clearfix">Company</label>
+              <label class="clearfix">Company<span class="text-danger">&nbsp;*</span></label>
 				<div class="clearfix mySkillsUl">
                <select multiple data-placeholder="Select Company" class="chosen-select form-control" name="attorneyId" id="attorneyId"  field-name="Company" data-validation="required"> 
 				</select>

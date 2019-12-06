@@ -325,7 +325,7 @@ public class ImmigrationRestController {
 				if (Validator.validate(immigrationPassportDTO)) {
 					
 					immigrationCommonService.savePassportDetails(immigrationPassportDTO, user, orgLocations,
-							Long.parseLong(immigrationId));
+							immigrationId);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
 				} else {
@@ -441,7 +441,7 @@ public class ImmigrationRestController {
 		@RequestMapping(value = { "/saveVisaDetailsPage" }, method = RequestMethod.POST)
 		public Response<String> saveVisaDetailsPage(ImmigrationVisaDTO immigrationVisaDTO,
 				HttpServletRequest request, @RequestParam(value = "candidateId", required = false) String candidateId,
-				@RequestParam(value = "immigrationId", required = false) Long immigrationId,
+				@RequestParam(value = "immigrationId", required = false) String immigrationId,
 				@RequestParam(value = "visaHistoryId", required = false) Long visaHistoryId) {
 			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -498,11 +498,15 @@ public class ImmigrationRestController {
 		}
 		
 		@RequestMapping(value = { "/deleteCandidateVisaDetails" })
-		public Response<String> deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId, HttpServletRequest request
+		public Response<String> deleteCandidateVisaDetails(@RequestParam(value = "visaHistoryId", required = true) Long visaHistoryId, 
+				@RequestParam(value = "candidateId", required = true) Long candidateId,HttpServletRequest request
 				) throws Exception {
 			Response<String> response = new Response<String>();
+			User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
 			try {
-			immigrationCommonService.removeCandidateVisaDetails(visaHistoryId);
+			immigrationCommonService.removeCandidateVisaDetails(visaHistoryId,candidateId,user, orgLocations);
 			response.setObject("success");
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -1214,6 +1218,40 @@ public class ImmigrationRestController {
 
 		return response;
 	}
+	
+	
+	@RequestMapping(value = { "/deleteImmigrationEmployerDocumentById" })
+	public Response<String> deleteImmigrationEmployerDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		Response<String> response = new Response<String>();
+		String status = "";
+		try {
+		 status = candidateEmployersService.removeCandidateEmployerDocById(id);
+		response.setObject(status);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+	
+	
+	@RequestMapping(value = { "/deleteImmigrationEducationDocumentById" })
+	public Response<String> deleteImmigrationEducationDocumentById(@RequestParam(value = "id", required = false) Long id,
+			HttpServletRequest request) throws Exception {
+		
+		Response<String> response = new Response<String>();
+		String status = "";
+		try {
+			 status = candidateEducationService.removeCandidateEucationrDocById(id);
+			response.setObject(status);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		return response;
+	}
+	
 	
 	//Task List for mobile
 	@RequestMapping(value = { "/getImmigrationTasksList" })
