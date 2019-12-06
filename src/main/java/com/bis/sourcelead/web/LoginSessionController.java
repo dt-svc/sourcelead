@@ -230,7 +230,7 @@ public class LoginSessionController {
 		
 		Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		EnableDashBoardConfiguration enableDashBoard = customDashboardConfService.getEnableDashBoardByLocationId(orgLocId);
+		/*EnableDashBoardConfiguration enableDashBoard = customDashboardConfService.getEnableDashBoardByLocationId(orgLocId);
 		if(enableDashBoard != null && enableDashBoard.getIsEnabled() == true) {
 			
 			List<CustomDashBoardConfiguration> dashBoardConfList = customDashBoardConfDao.getCustomConfDashBoardByLocationId(orgLocId);
@@ -249,9 +249,8 @@ public class LoginSessionController {
 			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("customdashboard/customDashBoardView");
 			
-			//return new ModelAndView("redirect:/app/configureCustomDashBoardView?customDashBoardUUID=rhelzSk8");
 			return model;
-		}
+		}*/
 
 		if (!roleName.equalsIgnoreCase(Constants.ROLE_NAME_PROFESSIONAL) && !roleName.equalsIgnoreCase(Constants.ROLE_NAME_INDEPENDENT_RECRUITER)) {
 			
