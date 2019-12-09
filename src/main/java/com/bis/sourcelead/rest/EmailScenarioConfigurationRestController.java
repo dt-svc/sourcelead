@@ -1,6 +1,5 @@
 package com.bis.sourcelead.rest;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
