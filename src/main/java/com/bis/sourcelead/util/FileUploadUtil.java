@@ -727,7 +727,7 @@ public class FileUploadUtil {
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
 			String country, OrgLocations loginOrgLocation, String sourceleadUrl, User user,
-			Long requirementId, String needApplicantPermit, String notifyToApplicant, String baseServicesUrl, String isResumeparserEnabled,CandidateGlobalUtil candidateGlobalUtil) throws IOException {
+			Long requirementId, String needApplicantPermit, String notifyToApplicant, CandidateGlobalUtil candidateGlobalUtil) throws IOException {
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
 		List<ResumeParserJsonUtil> existedList = new ArrayList<>();
@@ -747,15 +747,8 @@ public class FileUploadUtil {
 					StringUtils.isNotBlank(fileInfo.getTempFolderName()) ? fileInfo.getTempFolderName() : "temp"));
 			ResumeParserJsonUtil resume = null;
 			  try {
-				   if("true".equalsIgnoreCase(isResumeparserEnabled)) {
 					   resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file, fileInfo,country);
-				   }else {
-					   resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
-				   }
-			      resume.setFileInfo(fileInfo);
-				
-				
-				
+			           resume.setFileInfo(fileInfo);
 				
 				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
 					throw new Exception("Email ID missing");
@@ -815,6 +808,7 @@ public class FileUploadUtil {
 			    	List<FileInfo> fileInfoList1 = new ArrayList<>();
 						fileInfoList1.add(fileInfo);
 						candidateDto.setFileInfo(fileInfoList1);
+						candidateDto.setDateofBirth(resume.getDob());
 						candidateDto.setExperienceYears(Integer.toString(resume.getTotalYearsExp()));
 						candidateDto.setExperienceMonths(Integer.toString(resume.getTotalMonthsExp()));
 					candidateDto.setCandidateCreationType(Constants.IMPORT_CANDIDATE);
@@ -851,15 +845,10 @@ public class FileUploadUtil {
 		return candidateIds;
 	}
 	
-	public static Resource getUserFileResource(File file) throws IOException {
-	      //to upload in-memory bytes use ByteArrayResource instead
-	      return new FileSystemResource(file);
-	  }
-	
 	public static void processConfiguredEmailShedulerForResumesParsing(List<FileInfo> fileInfoList, String staticPath, 
 			SourceleadResumeParserNew sourceleadResumeParser,
 			CandidateService candidateService, CandidateResumesService candidateResumeService,
-			String country, OrgLocations loginOrgLocation, User user,CandidateGlobalUtil candidateGlobalUtil,String isResumeparserEnabled) {
+			String country, OrgLocations loginOrgLocation, User user,CandidateGlobalUtil candidateGlobalUtil) {
 
 		List<ResumeParserJsonUtil> successList = new ArrayList<>();
 		List<ResumeParserJsonUtil> failedList = new ArrayList<>();
@@ -874,14 +863,11 @@ public class FileUploadUtil {
 			ResumeParserJsonUtil resume = null;
 			try {
 				//resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), fileInfo.getFileName());
-				if("true".equalsIgnoreCase(isResumeparserEnabled)) {
+				
 					logger.info("*******Resume Parser Service calling..");
 					 resume = sourceleadResumeParser.getCandidateDetailsFromResumeParser(file,fileInfo,country);
-				}else {
-					logger.info("*******Resume Parser without Service calling..");
-					 resume = sourceleadResumeParser.getCandidateDetailsFromResume1(file, country, loginOrgLocation.getDateFormat(), file.getName());
-				}
-				resume.setFileInfo(fileInfo);
+					 resume.setCountry(country);
+				     resume.setFileInfo(fileInfo);
 				if (resume.getEmail() == null || resume.getEmail().isEmpty() || resume.getEmail().equals("null")) {
 					throw new Exception("Email ID missing");
 				}
