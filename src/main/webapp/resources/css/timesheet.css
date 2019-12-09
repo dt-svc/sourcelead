@@ -6909,7 +6909,7 @@ max-width: 100% !important;
 }
 .editIcon {
 	width: 34px; height: 32px; display: block; background: url("../images/edit.svg"); background-repeat: no-repeat;
-	background-position: center; background-size: 34px; cursor: pointer;
+	background-position: center !important; background-size: 34px; cursor: pointer;
 }
 .refeIcon {
 	width: 40px; float:left; height: 32px; display: block; background: url(../images/refresh.svg); background-repeat: no-repeat;
