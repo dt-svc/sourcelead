@@ -437,11 +437,16 @@ public class CandidateListRestController {
 			} catch (NumberFormatException e) {
 			}
 		}
+		
+		//21-11-2019
+		//added if block for 'expectedRateCurrencey' as it is not required in candidate gobal marketplace advanced search. 
 		// Currency
+		if (!Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
 		if (StringUtils.isNotEmpty(search.getCurrency())) {
 			boolQueryBuilder.must(QueryBuilders.matchQuery("expectedRateCurrencey", search.getCurrency()));
 		}
-
+		}
+		
 		String minRate = search.getMinRate();
 		minRate = StringUtils.isNotEmpty(minRate) ? minRate.replaceAll("[^0-9\\.]+", "") : "";
 		String maxRate = search.getMaxRate();
@@ -735,8 +740,11 @@ public class CandidateListRestController {
 			//search.setLength(100);
 			SearchResponse searchResponse = null;
 			if (Constants.YES.equalsIgnoreCase(search.getIsSharedInMarketplace())) {
+				//21-11-2019
+				//added & modified function parameters for candidate gobal marketplace advanced search. 
 				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithGlobalSearchResult(Constants.ELK_CANDIDATE_INDEX,
-						Constants.ELK_CANDIDATE_TYPE, boolQueryBuilder);
+						Constants.ELK_CANDIDATE_TYPE, search.getStart(), 100, tableColumns[sortColumnIndex],
+						sortColumnOrder ? SortOrder.ASC : SortOrder.DESC, boolQueryBuilder);
 			}else{
 				searchResponse = sourceleadELKBaseIndexer.searchDocumentWithMaxResults(Constants.ELK_CANDIDATE_INDEX,
 						Constants.ELK_CANDIDATE_TYPE, search.getStart(), search.getLength(), tableColumns[sortColumnIndex],
