@@ -6441,6 +6441,13 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			 templateFields.setNoticePeriod(jsonObj.getString("noticePeriod"));
 		 }
 		 
+		 if(jsonObj.has("totalExperience") && !isNullOrEmpty(jsonObj.getString("totalExperience"))){
+				Map<String, Integer> experienceMap = experienceTrackerHelper.getExperienceFromTextFile(jsonObj.getString("totalExperience"));
+				StringBuilder experienceBulider = new StringBuilder();
+				String experience = experienceBulider.append(String.valueOf(experienceMap.get("years"))).append(".").append(String.valueOf(experienceMap.get("months"))).toString();
+				templateFields.setWorkExperience(experience);
+			 }
+		 
 		 templateFields.setStatus(Constants.CANDIDATE_ACTIVE);
 		 if(user != null){
 		 templateFields.setCreatedBy(user.getUserCode());
