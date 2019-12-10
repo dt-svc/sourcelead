@@ -30,4 +30,6 @@ public interface BgcCommonService {
 	List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)throws Exception;
 	
 	List<CandidateEmployers> getBgcCandidateEmploymentSummary(String candidateUuid)throws Exception;
+	
+	BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO)throws Exception;
 }
