@@ -138,6 +138,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 						Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), userRole.getOrgLocations().getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
