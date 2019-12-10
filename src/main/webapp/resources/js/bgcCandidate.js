@@ -55,5 +55,16 @@ function bgcCandidate(){
 		});
 	}
 	
+	this.editBgcCandidate = function(){
+		$("#bgcId").val(uuid);
+		$("#bgcName").val(name);
+		$("#educationId option:contains(" + educationCheckStaus + ")").attr('selected', 'selected');
+		$("#employmentId option:contains(" + priorEmployersCheckStatus + ")").attr('selected', 'selected');
+		$("#personalInfoId option:contains(" + personalInfoStatus + ")").attr('selected', 'selected');
+		$("#healthId option:contains(" + healthCheckStatus + ")").attr('selected', 'selected');
+		$("#criminalRecordId option:contains(" + crimeCheckStatus + ")").attr('selected', 'selected');
+		$("#commentsId").html(comments);
+	}
+	
 	
 }

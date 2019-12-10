@@ -5,6 +5,21 @@
 
  <!-- Content Area -->
 <section class="content-wraper">
+<script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcCandidate.js?staticTime=${staticTime}"></script>
+<script type="text/javascript">
+var uuid = '${bgcCandidate.uuid eq null ? "--" : bgcCandidate.uuid}';
+var name = '${bgcCandidate.fullName eq null ? "--" : bgcCandidate.fullName}';
+var educationCheckStaus = '${bgcCandidate.educationCheckStaus eq null ? "--" : bgcCandidate.educationCheckStaus}';
+var priorEmployersCheckStatus = '${bgcCandidate.priorEmployersCheckStatus eq null ? "--" : bgcCandidate.priorEmployersCheckStatus}';
+var personalInfoStatus = '${bgcCandidate.personalInfoStatus eq null ? "--" : bgcCandidate.personalInfoStatus}';
+var healthCheckStatus = '${bgcCandidate.healthCheckStatus eq null ? "--" : bgcCandidate.healthCheckStatus}';
+var crimeCheckStatus = '${bgcCandidate.crimeCheckStatus eq null ? "--" : bgcCandidate.crimeCheckStatus}';	
+var comments = '${bgcCandidate.comments eq null ? "--" : bgcCandidate.comments}';
+$(document).ready(function() {
+	bgc.editBgcCandidate();
+	
+});
+	</script>
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Edit Background Verification By Category</h2></div>
       <div class="pull-right brud-crum">Home &raquo; Edit Background Verification</div>
@@ -14,16 +29,16 @@
       <div class="clearfix mt minHeightcol5"> 
         <div class="col-md-5">
           <label class="clearfix">Id</label>
-          <div class="clearfix mt5"><input type="text" class="form-control" value="4002" readonly></div>
+          <div class="clearfix mt5"><input type="text" id = "bgcId" class="form-control" value="--" readonly></div>
         </div>
         <div class="col-md-5">
           <label class="clearfix">Name</label>
-          <div class="clearfix mt5"><input type="text" class="form-control" value="Rajkumar Santhoshi" readonly></div>
+          <div class="clearfix mt5"><input type="text" id = "bgcName" class="form-control" value="--" readonly></div>
         </div>
         <div class="col-md-5">
           <label class="clearfix">Education / Academic credentials Status</label>
           <div class="clearfix mt5">
-              <select class="sel">
+              <select class="sel" id = "educationId">
                 <option>-- Select --</option>
                   <option>Not Initiated</option>
                   <option>Initiated</option>
@@ -38,7 +53,7 @@
         <div class="col-md-5">
             <label class="clearfix">Prior Employment Status</label>
             <div class="clearfix mt5">
-                  <select class="sel">
+                  <select class="sel" id = "employmentId">
                     <option>-- Select --</option>
                       <option>Not Initiated</option>
                       <option>Initiated</option>
@@ -53,7 +68,7 @@
           <div class="col-md-5">
               <label class="clearfix">Personal Information Status</label>
               <div class="clearfix mt5">
-                    <select class="sel">
+                    <select class="sel" id = "personalInfoId">
                       <option>-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
@@ -67,7 +82,7 @@
             <div class="col-md-5">
               <label class="clearfix">Health Status</label>
               <div class="clearfix mt5">
-                  <select class="sel">
+                  <select class="sel" id = "healthId">
                       <option>-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
@@ -81,7 +96,7 @@
             <div class="col-md-5">
               <label class="clearfix">Criminal Record Status</label>
               <div class="clearfix mt5">
-                  <select class="sel">
+                  <select class="sel" id = "criminalRecordId">
                       <option>-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
@@ -110,7 +125,7 @@
             <div class="col-md-5">
                 <label class="clearfix">Comments</label>
                 <div class="clearfix mt5">
-                    <textarea placeholder="Description" class="form-control" cols="2"></textarea>   
+                    <textarea placeholder="Description" id = "commentsId" class="form-control" cols="2"></textarea>   
                 </div>
               </div>
 
@@ -127,5 +142,4 @@
        	 	
 	</div>
   </section>
-
 <jsp:include page="../masterFooter.jsp" /> 	
