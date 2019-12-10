@@ -115,7 +115,6 @@ public class ExperienceTrackerHelper {
 					String[] totalExperience =  text.split("\\.");
 					years = totalExperience[0];
 					months = totalExperience[1];
-					System.out.println("hi hello");
 				}else {
 					years = text;
 				}
