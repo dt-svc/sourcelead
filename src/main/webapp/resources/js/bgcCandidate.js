@@ -66,5 +66,42 @@ function bgcCandidate(){
 		$("#commentsId").html(comments);
 	}
 	
+
+		this.saveEditBgcCandidate = function() {
+		var validationSettings = {
+			errorMessagePosition : 'element',
+			borderColorOnError : '',
+			scrollToTopOnError : true,
+			dateFormat : 'yyyy/mm/dd'
+		};
+		if ($('#editBgcCandidateForm').validate(false, validationSettings)) {
+			var formData = getFormData("editBgcCandidateForm");
+			 $("#saveBgcCandidate").attr("disabled", "disabled");
+	          $("#saveBgcCandidate").addClass('button').val('Processing..'); 
+			$.ajax({
+				type : "POST",
+				data : formData,
+				url : vmsUrl + "/bgc/saveEditBgcCandidate",
+				success : function(result) {
+					if (result.response === "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response === "SUCCESS") {
+						if (result.object === "DataMissing") {
+							$("#saveBgcCandidate").removeAttr("disabled");
+							$("#saveBgcCandidate").removeAttr('button').val('Save');
+							showError("Invalid data");
+						} else {
+							location.replace(vmsUrl+"/bgc/completedBgcDetails");	
+						}
+					} else if (result.indexOf('Sign In') !== -1) {
+						location.replace(sourceleadUrl);
+					} else {
+						showError("Operation failed, please try again");
+					}
+
+				}
+			});
+		}
+	}
 	
 }
