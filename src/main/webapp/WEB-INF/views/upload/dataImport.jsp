@@ -389,6 +389,10 @@ function getUploadProgressBar(){
 		uploadType = 'Immigration';
 	}else if(uploadType == 'lcaUpload'){
 		uploadType = 'LCA';
+	}else if(uploadType == 'profileTracker'){
+		uploadType = 'ProfileTracker';
+	}else if(uploadType == 'interviewTracker'){
+		uploadType = 'InterviewTracker';
 	}
 	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
 	
