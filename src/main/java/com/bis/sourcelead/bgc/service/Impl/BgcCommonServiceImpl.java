@@ -174,4 +174,20 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		return candidateEmploymentList;
 	}
 
+
+	@Override
+	public BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO) throws Exception {
+		BgcCandidateDetails bgcCandidateDetails = bgcCommonDao.getBgcCandidateDetailsByBgcUuid(bgcCandidateDetailsDTO.getUuid());
+		if(bgcCandidateDetailsDTO != null && bgcCandidateDetails != null){
+			bgcCandidateDetails.setEducationCheckStaus(bgcCandidateDetailsDTO.getEducationCheckStaus());
+			bgcCandidateDetails.setPriorEmployersCheckStatus(bgcCandidateDetailsDTO.getPriorEmployersCheckStatus());
+			bgcCandidateDetails.setPersonalInfoStatus(bgcCandidateDetailsDTO.getPersonalInfoStatus());
+			bgcCandidateDetails.setHealthCheckStatus(bgcCandidateDetailsDTO.getHealthCheckStatus());
+			bgcCandidateDetails.setCrimeCheckStatus(bgcCandidateDetailsDTO.getCrimeCheckStatus());
+			bgcCandidateDetails.setComments(bgcCandidateDetailsDTO.getComments());
+		}
+				bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetails);
+		return null;
+	}
+
 }
