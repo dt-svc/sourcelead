@@ -110,10 +110,16 @@ public class BackgroundController {
 	
 	//editBgcCandidate
 	@RequestMapping(value = { "/editBgcCandidate" })
-	public ModelAndView editBgcCandidate(HttpServletRequest request) throws Exception {
+	public ModelAndView editBgcCandidate(
+			@RequestParam(value="bgcUUID", required=true) String bgcUUID,
+			HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
+		BgcCandidateDetailsDTO bgcCandidateDetailsDTO = bgcCommonService.getBgcCandidateDetailsByBgcUuid(bgcUUID);
+		if(bgcCandidateDetailsDTO != null){
+			model.addObject("bgcCandidate", bgcCandidateDetailsDTO);
+		}
 		SessionMaintainanceData sessionData = new SessionMaintainanceData();
 		sessionData.setNav(Constants.COMPLETED);
 		
