@@ -24,21 +24,21 @@ $(document).ready(function() {
       <div class="pull-left"><h2>Edit Background Verification By Category</h2></div>
       <div class="pull-right brud-crum">Home &raquo; Edit Background Verification</div>
     </section>
-    
+    <form id="editBgcCandidateForm" name="editBgcCandidateForm">
     <div class="project_wrap clearfix">
       <div class="clearfix mt minHeightcol5"> 
         <div class="col-md-5">
           <label class="clearfix">Id</label>
-          <div class="clearfix mt5"><input type="text" id = "bgcId" class="form-control" value="--" readonly></div>
+          <div class="clearfix mt5"><input type="text" id = "bgcId" name="uuid" class="form-control" value="--" readonly></div>
         </div>
         <div class="col-md-5">
           <label class="clearfix">Name</label>
-          <div class="clearfix mt5"><input type="text" id = "bgcName" class="form-control" value="--" readonly></div>
+          <div class="clearfix mt5"><input type="text" id = "bgcName" name="name" class="form-control" value="--" readonly></div>
         </div>
         <div class="col-md-5">
           <label class="clearfix">Education / Academic credentials Status</label>
           <div class="clearfix mt5">
-              <select class="sel" id = "educationId">
+              <select class="sel" id = "educationId" name="educationCheckStaus">
                 <option>-- Select --</option>
                   <option>Not Initiated</option>
                   <option>Initiated</option>
@@ -53,7 +53,7 @@ $(document).ready(function() {
         <div class="col-md-5">
             <label class="clearfix">Prior Employment Status</label>
             <div class="clearfix mt5">
-                  <select class="sel" id = "employmentId">
+                  <select class="sel" id = "employmentId" name="priorEmployersCheckStatus">
                     <option>-- Select --</option>
                       <option>Not Initiated</option>
                       <option>Initiated</option>
@@ -68,7 +68,7 @@ $(document).ready(function() {
           <div class="col-md-5">
               <label class="clearfix">Personal Information Status</label>
               <div class="clearfix mt5">
-                    <select class="sel" id = "personalInfoId">
+                    <select class="sel" id = "personalInfoId" name="personalInfoStatus">
                       <option>-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
@@ -82,7 +82,7 @@ $(document).ready(function() {
             <div class="col-md-5">
               <label class="clearfix">Health Status</label>
               <div class="clearfix mt5">
-                  <select class="sel" id = "healthId">
+                  <select class="sel" id = "healthId" name="healthCheckStatus">
                       <option>-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
@@ -96,7 +96,7 @@ $(document).ready(function() {
             <div class="col-md-5">
               <label class="clearfix">Criminal Record Status</label>
               <div class="clearfix mt5">
-                  <select class="sel" id = "criminalRecordId">
+                  <select class="sel" id = "criminalRecordId" name="crimeCheckStatus">
                       <option>-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
@@ -125,7 +125,7 @@ $(document).ready(function() {
             <div class="col-md-5">
                 <label class="clearfix">Comments</label>
                 <div class="clearfix mt5">
-                    <textarea placeholder="Description" id = "commentsId" class="form-control" cols="2"></textarea>   
+                    <textarea placeholder="Description" id = "commentsId" name="comments" class="form-control" cols="2"></textarea>   
                 </div>
               </div>
 
@@ -134,12 +134,14 @@ $(document).ready(function() {
 	<div class="footerstyelsNew">
 	<div class="newAddWidth clearfix">
 		<div class="pull-right mr">
-		  <input value="Save" class="btn btn-primary" type="button">
+		  <input id="saveBgcCandidate" value="Save" class="btn btn-primary" type="button" onclick="bgc.saveEditBgcCandidate();">
 			<a href="my-performance-goals.html"><input value="Cancel" class="btn btn-default ml" type="button"></a>
 		</div>
 	</div>
 	</div>
        	 	
 	</div>
+	</form>
+	
   </section>
 <jsp:include page="../masterFooter.jsp" /> 	
