@@ -187,7 +187,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetails.setComments(bgcCandidateDetailsDTO.getComments());
 		}
 				bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetails);
-		return null;
+		return bgcCandidateDetails;
 	}
 
 }
