@@ -286,7 +286,7 @@ public class TimesheetSubmissionsServiceTest {
 	
 	//@Test
 	public void getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover() throws Exception{
-		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l,3l,"",null,false);
+		TimeSheetSubmissionCount getTimeSheetSubmissionsCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(3l, 3l,3l,"",null,false,null);
 		assertNotNull(getTimeSheetSubmissionsCount);
 	}
 	
