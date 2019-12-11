@@ -135,7 +135,6 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetailsDTO.setAddress(bgcCandidateDetails.getCandidate().getAddress());
 			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
 			bgcCandidateDetailsDTO.setCandidateUUID(bgcCandidateDetails.getCandidate().getCandidateUUID());
-			//bgcCandidateDetailsDTO.setCrimeCheckStatus(bgcCandidateDetails.getCrimeCheckStatus());
 		}
 		return bgcCandidateDetailsDTO;
 	}
