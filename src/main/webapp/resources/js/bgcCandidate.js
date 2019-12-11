@@ -25,6 +25,7 @@ function bgcCandidate(){
 					}else{
 						return false;
 					}
+					$("#educationLoading").removeAttr("style");
 				},
 			});
 	}
@@ -53,6 +54,7 @@ function bgcCandidate(){
 				}else{
 					return false;
 				}
+				$("#employmentLoading").removeAttr("style");
 			},
 		});
 	}
@@ -105,5 +107,10 @@ function bgcCandidate(){
 			});
 		}
 	}
+		
+		this.getBgcCandidateLegalAndCriminalSummary = function(uuid){
+			
+			
+		}
 	
 }

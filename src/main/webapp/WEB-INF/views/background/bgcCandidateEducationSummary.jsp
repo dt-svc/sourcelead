@@ -1,3 +1,4 @@
+	<div class="immigraDetailsCta" id ="educationList">
 	<h2>Education</h2>
 	<ul>
 		<li class="clearfix"><span>Higher Education</span><p>: --</p></li>
@@ -8,3 +9,4 @@
 		<li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li>
 		<li class="clearfix"><span>Comments</span><p>: --</p></li>
 	</ul>
+	</div>

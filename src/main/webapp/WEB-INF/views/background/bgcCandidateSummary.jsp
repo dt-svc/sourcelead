@@ -65,29 +65,18 @@
 	  </div>
 
 	  <div id="tab-education" class="immigraTabs_inn">
-	  <div class="immigraDetailsCta" id ="educationList">
+	  <div id ="educationLoading"></div>
 		<jsp:include page="bgcCandidateEducationSummary.jsp"/>
-		</div>
 	 </div>
 	 
 	  <div id="tab-previousEmployer" class="immigraTabs_inn">
-	  <div class="immigraDetailsCta" id = "employmentList">
+	  <div id = "employmentLoading"></div>
 			<jsp:include page="bgcCandidateEmploymentSummary.jsp"/>
-		</div>
 	  </div>
 	  
 	  <div id="tab-criminialCheck" class="immigraTabs_inn">
-			<div class="immigraDetailsCta">
-				<h2>Legal and Criminial Check</h2>
-				<ul>
-					<li class="clearfix"><span>Financial Check</span><p>: --</p></li>
-					<li class="clearfix"><span>Criminal Check</span><p>: ${bgcCandidate.crimeCheckStatus eq null ? "--" : bgcCandidate.crimeCheckStatus}</p></li>
-					<li class="clearfix"><span>Bank and Property Check</span><p>: --</p></li>
-					<li class="clearfix"><span>Salary Check</span><p>: --</p></li>
-					<li class="clearfix"><span>Attach document</span><p>: --</p></li>
-				</ul>
-			</div>	
-			</div>
+	  <div id = "legalAndCriminalLoading"></div>
+			<jsp:include page="bgcCandidateEmploymentSummary.jsp"/>
 	  </div>
 	</section>
     
@@ -117,15 +106,23 @@ $(document).ready(function() {
         $(".immigraTabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
         if(tab == "#tab-education"){
+        	showLoading("educationLoading");
         	bgc.getBgcCandidateEducationSummary(candidateUuid);
         }else if(tab == "#tab-previousEmployer"){
+        	showLoading("employmentLoading");
         	bgc.getBgcCandidateEmploymentSummary(candidateUuid);        	
+        }else if(tab == "#tab-criminialCheck"){
+        	showLoading("legalAndCriminalLoading");
+        	bgc.getBgcCandidateLegalAndCriminalSummary(candidateUuid);
         }
     });
 	
 	
 });	
 
+function showLoading(loadingId){
+	$("#"+loadingId).attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+}
 
 	</script>
     <!-- Script for Linked Invoice pop -->
