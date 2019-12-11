@@ -135,7 +135,7 @@ $(document).ready(function() {
 	<div class="newAddWidth clearfix">
 		<div class="pull-right mr">
 		  <input id="saveBgcCandidate" value="Save" class="btn btn-primary" type="button" onclick="bgc.saveEditBgcCandidate();">
-			<a href="my-performance-goals.html"><input value="Cancel" class="btn btn-default ml" type="button"></a>
+			<a href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails"><input value="Cancel" class="btn btn-default ml" type="button"></a>
 		</div>
 	</div>
 	</div>
