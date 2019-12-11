@@ -57,6 +57,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	//dto fields for candidate
 	
+	private String candidateUUID;
+	
 	private String aadharNumber;
 		
 	private String panNumber;
@@ -225,6 +227,14 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+	
+	public String getCandidateUUID() {
+		return candidateUUID;
+	}
+
+	public void setCandidateUUID(String candidateUUID) {
+		this.candidateUUID = candidateUUID;
 	}
 
 	public String getAadharNumber() {
