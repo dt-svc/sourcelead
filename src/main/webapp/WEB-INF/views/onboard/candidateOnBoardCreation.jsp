@@ -1312,7 +1312,8 @@ function loadBgcVendors(bgcOrglocationId){
     if($("#bgc").val()!=''){
 	     $("#bgcVendorContact").attr("data-validation", "required");  
 	     $("#bgcVendorContact").removeAttr("data-validation-optional"); 
-	    
+	     var bgcOrgRelId= $("#bgc option:selected").attr("bgcOrgRelationId");
+	     $("#bgcOrgRelationId").val(bgcOrgRelId);
 	 }else{
 	   $("#bgcVendorContact").removeAttr("data-validation");  
 	    $("#bgcVendorContact").attr("data-validation-optional","true");
@@ -1320,10 +1321,11 @@ function loadBgcVendors(bgcOrglocationId){
   
 	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 var orgRelationID = '';
+	
 	 if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
 		 orgRelationID = orgRelationId;
 	 }else{
-		 orgRelationID = $("#bgc option:selected").attr("orgRelationId");
+		 orgRelationID = $("#bgcOrgRelationId").val();
 	 }
 		 $.ajax({
 			    type: "POST",

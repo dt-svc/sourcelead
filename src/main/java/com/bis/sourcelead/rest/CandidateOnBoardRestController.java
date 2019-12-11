@@ -998,6 +998,7 @@ public class CandidateOnBoardRestController {
 				if (candidate.getOrgRelationId() != null) {
 					candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
 				}
+				// below changes are added for BGC functionality.
 				if (null != candidateOnBoarding.getBgcOrglocationId()) {
 					candidateOnBoardingDTO.setBgc(candidateOnBoarding.getBgcOrglocationId().getId().toString());
 				}
@@ -1010,6 +1011,7 @@ public class CandidateOnBoardRestController {
 				if (candidate.getSpocId() != null) {
 					candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
 				}
+				// Above changes are added for BGC functionality.
 			}
 			response.setObject(candidateOnBoardingDTO);
 			response.setResponse(Result.SUCCESS.name());
