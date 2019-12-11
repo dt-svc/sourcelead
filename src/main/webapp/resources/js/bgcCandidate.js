@@ -7,6 +7,7 @@ function bgcCandidate(){
 				url : vmsUrl + "/bgc/getBgcCandidateEducationSummary?uuid="+uuid,
 				success : function(dataList) {
 					if(dataList != null && dataList.length > 0){
+						$("#educationLoading").removeAttr("style");
 						var result = "";
 						for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Education "+(i+1)+"</h2>";
@@ -23,9 +24,9 @@ function bgcCandidate(){
 						}
 						$("#educationList").empty().append(result);
 					}else{
+						$("#educationLoading").removeAttr("style");
 						return false;
 					}
-					$("#educationLoading").removeAttr("style");
 				},
 			});
 	}
@@ -36,6 +37,7 @@ function bgcCandidate(){
 			url : vmsUrl + "/bgc/getBgcCandidateEmploymentSummary?uuid="+uuid,
 			success : function(dataList) {
 				if(dataList != null && dataList.length > 0){
+					$("#employmentLoading").removeAttr("style");	
 					var result = "";
 					for(var i=0; i < dataList.length; i++){
 						var periodInMonths = dataList[i].period == null ? "--":dataList[i].period.split("-")[0];
@@ -49,12 +51,13 @@ function bgcCandidate(){
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
 						result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";
 						result = result + "</ul>";
+						$("#employmentList").empty().append(result);
 					}
-					$("#employmentList").empty().append(result);
 				}else{
+					$("#employmentLoading").removeAttr("style");
 					return false;
 				}
-				$("#employmentLoading").removeAttr("style");
+				
 			},
 		});
 	}
@@ -109,8 +112,52 @@ function bgcCandidate(){
 	}
 		
 		this.getBgcCandidateLegalAndCriminalSummary = function(uuid){
-			
+			$.ajax({
+				type : "GET",
+				url : vmsUrl + "/bgc/getBgcCandidateLegalAndCriminalSummary?uuid="+uuid,
+				success : function(data) {
+					if(data != null){
+						$("#legalAndCriminalLoading").removeAttr("style");
+						var result = "";
+						result = result + "<h2>Legal and Criminial Check</h2>";
+						result = result + "<ul>";
+						result = result + "<li class='clearfix'><span>Financial Check</span><p>: --</p></li>";
+						result = result + "<li class='clearfix'><span>Criminal Check</span><p>: "+(data.crimeCheckStatus==null? "--":data.crimeCheckStatus)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Bank and Property Check</span><p>: --</p></li>";
+						result = result + "<li class='clearfix'><span>Salary Check</span><p>: --</p></li>";
+						result = result + "	<li class='clearfix'><span>Attach document</span><p>: --</p></li>";
+						result = result + "</ul>";
+						$("#legalAndCriminalList").empty().append(result);
+					}else{
+						return false;
+					}
+				},
+			});
 			
 		}
 	
+		this.getBgcCandidateSummary = function(uuid){
+			$.ajax({
+				type : "GET",
+				url : vmsUrl + "/bgc/getBgcCandidateSummary?uuid="+uuid,
+				success : function(data) {
+					if(data != null){
+						$("#detailsLoading").removeAttr("style");
+						var result = "";
+						result = result + "<h2>Personal / Identification</h2>";
+						result = result + "<ul>";
+						result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
+						result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Address</span><p>: "+(data.address == null ? "--" : data.address)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Family</span><p>: --</p></li>";
+						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";
+						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";
+						result = result + "</ul>";
+						$("#details").empty().append(result);
+					}else{
+						return false;
+					}
+				},
+			});
+		}
 }

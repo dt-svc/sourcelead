@@ -47,20 +47,11 @@
 
   
 	  <div id="tab-Details" class="immigraTabs_inn">
-		  <div class="immigraDetailsOut">
-			  <div class="immigraDetailsCta" id="details">
-				  <h2>Personal / Identification</h2>
-				  <ul>
-					  <li class="clearfix"><span>Aadhar Card</span><p>: ${bgcCandidate.aadharNumber eq null ? "--" : bgcCandidate.aadharNumber}</p></li>
-					  <li class="clearfix"><span>PAN Card</span><p>: ${bgcCandidate.panNumber eq null ? "--" : bgcCandidate.panNumber}</p></li>
-					  <li class="clearfix"><span>Address</span><p>: ${bgcCandidate.address eq null ? "--" : bgcCandidate.address}</p></li>
-					  <li class="clearfix"><span>Family</span><p>: --</p></li>
-					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
-					  <li class="clearfix"><span>Comments</span><p>: ${bgcCandidate.comments eq null ? "--" : bgcCandidate.comments}</p></li>
-				  </ul>
-			  </div>		  
+	  <div id ="detailsLoading"></div>
+		  <!-- <div class="immigraDetailsOut"> -->
+			  	  <jsp:include page="bgcCandidateDetailsSummary.jsp"/>
 			  <div class="clearfix"></div>
-		  </div>		  		  		  
+		  <!-- </div> -->		  		  		  
 		
 	  </div>
 
@@ -76,7 +67,7 @@
 	  
 	  <div id="tab-criminialCheck" class="immigraTabs_inn">
 	  <div id = "legalAndCriminalLoading"></div>
-			<jsp:include page="bgcCandidateEmploymentSummary.jsp"/>
+			<jsp:include page="bgcCandidateLegalAndCriminalSummary.jsp"/>
 	  </div>
 	</section>
     
@@ -95,8 +86,11 @@
 <script>
 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 var candidateUuid = '${bgcCandidate.candidateUUID}';
+var bgcUuid = '${bgcCandidate.uuid}'
 // project side bar tabs
 $(document).ready(function() {
+	showLoading("detailsLoading");
+	bgc.getBgcCandidateSummary(bgcUuid);
 	$("#tab-Details").show()
     $(".immigraTabs a").click(function(event) {
         event.preventDefault();
@@ -105,7 +99,10 @@ $(document).ready(function() {
         var tab = $(this).attr("href");
         $(".immigraTabs_inn").not(tab).css("display", "none");
         $(tab).fadeIn();
-        if(tab == "#tab-education"){
+        if(tab == "#tab-Details"){
+        	showLoading("detailsLoading");
+        	bgc.getBgcCandidateSummary(bgcUuid);
+        }else if(tab == "#tab-education"){
         	showLoading("educationLoading");
         	bgc.getBgcCandidateEducationSummary(candidateUuid);
         }else if(tab == "#tab-previousEmployer"){
@@ -113,7 +110,7 @@ $(document).ready(function() {
         	bgc.getBgcCandidateEmploymentSummary(candidateUuid);        	
         }else if(tab == "#tab-criminialCheck"){
         	showLoading("legalAndCriminalLoading");
-        	bgc.getBgcCandidateLegalAndCriminalSummary(candidateUuid);
+        	bgc.getBgcCandidateLegalAndCriminalSummary(bgcUuid);
         }
     });
 	
