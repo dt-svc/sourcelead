@@ -1309,8 +1309,6 @@ function loadBgcVendors(bgcOrglocationId){
 
 <script>
  function getAddApplicantBgcVendorContactList(orgRelationId,spocId ){
-console.log("orgRelationId"+orgRelationId);
-console.log("spocId"+spocId);
     if($("#bgc").val()!=''){
 	     $("#bgcVendorContact").attr("data-validation", "required");  
 	     $("#bgcVendorContact").removeAttr("data-validation-optional"); 
