@@ -24,10 +24,12 @@ import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
@@ -54,6 +56,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Autowired
 	OrgLocationService orgLocationService;
 	
+	@Autowired
+	OrgSpocService orgSpocService;
 	
 	
 	@Override
@@ -71,11 +75,17 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		
 		bgcCandidateDetails.setCreatedDate(currentDate);
 		bgcCandidateDetails.setCrimeCheckStatus(bgcCandidateDetailsDto.getCrimeCheckStatus());
+		
+		OrgSpoc orgSpoc = orgSpocService.getSpocByClientOrVendorUserId(bgcCandidateDetailsDto.getBgcVendorContact());
+		bgcCandidateDetails.setBgcOrgContactId(orgSpoc);
+	
 		bgcCandidateDetails.setCurrentBgcStatus(bgcCandidateDetailsDto.getCurrentBgcStatus());
 		bgcCandidateDetails.setEducationCheckStaus(bgcCandidateDetailsDto.getEducationCheckStaus());
 		bgcCandidateDetails.setHealthCheckStatus(bgcCandidateDetailsDto.getHealthCheckStatus());
+		
 		OrgLocations sourceOrgLocations = orgLocationService.getOrgLocations(bgcCandidateDetailsDto.getSourceOrglocationId());
 		bgcCandidateDetails.setSourceOrglocationId(sourceOrgLocations);
+		
 		bgcCandidateDetails.setOrgLocationId(orgLocations);
 		bgcCandidateDetails.setOthersInfoStatus(bgcCandidateDetailsDto.getOthersInfoStatus());
 		bgcCandidateDetails.setPersonalInfoStatus(bgcCandidateDetailsDto.getPersonalInfoStatus());

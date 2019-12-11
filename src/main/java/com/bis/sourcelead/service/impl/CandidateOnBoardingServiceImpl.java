@@ -344,6 +344,19 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}else{
 			candidateOnBoarding.setBgcOrglocationId(null);
 		}
+		System.out.println(" candidateOnBoardingDTO.getBgcVendorContact() >>>>>>>>>"+candidateOnBoardingDTO.getBgcVendorContact());
+		if( StringUtils.isNotBlank(candidateOnBoardingDTO.getBgcVendorContact())){
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateOnBoardingDTO.getBgcVendorContact()));
+			candidateOnBoarding.setBgcOrgContactId(orgSpoc);
+		}else{
+			candidateOnBoarding.setBgcOrgContactId(null);
+		}
+		if( StringUtils.isNotBlank(candidateOnBoardingDTO.getBgcOrgRelationId())){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(candidateOnBoardingDTO.getBgcOrgRelationId()));
+			candidateOnBoarding.setBgcOrgRelationId(orgRelations);
+		}else{
+			candidateOnBoarding.setBgcOrgRelationId(null);
+		}
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentType())){
 			candidateOnBoarding.setEmploymentType(candidateOnBoardingDTO.getEmploymentType());
 			if(candidateOnBoardingDTO.getEmploymentType().equalsIgnoreCase("C2C")) {
@@ -569,7 +582,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			 candidateOnBoarding.setTeamId(onboardingTeamMember.getTeamId());
 		 }
 		 
-		 candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
+	     candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
 		 
 		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
 			UserRole userRole = userRoleDao.getUserRoleById(onboardingUserRole.getId());
@@ -581,7 +594,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 if(candidateOnBoarding.getBgcOrglocationId() != null && candidateOnBoarding.getBgcOrglocationId().getId() != null ) {
 		 System.out.println("before candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
 		 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(candidateOnBoarding.getBgcOrglocationId().getId());
-		 System.out.println("aftre candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
+		 System.out.println("after candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
 		 BgcCandidateDetailsDTO bgcCandidateDetailsDto = new BgcCandidateDetailsDTO();
 		 bgcCandidateDetailsDto.setCandidateId(candidateOnBoarding.getCandidateId().getId());
 		 
@@ -589,6 +602,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 //HERE setting source org location to BGC CANDIDATE to identify parent ORG LOCATION.
 		 bgcCandidateDetailsDto.setSourceOrglocationId(orgLocations.getId());
 		 bgcCandidateDetailsDto.setOrgLocationId(candidateOnBoarding.getBgcOrglocationId().getId());
+		 bgcCandidateDetailsDto.setBgcVendorContact(candidateOnBoarding.getBgcOrgContactId().getId());
 		 bgcCandidateDetailsDto.setCreatedBy(loginUser.getId());
 		 bgcCandidateDetailsDto.setUpdatedBy(loginUser.getId());
 		 bgcCandidateDetailsDto.setCurrentBgcStatus(Constants.NOT_INITIATED);

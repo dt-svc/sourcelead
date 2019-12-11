@@ -147,6 +147,10 @@ public class CandidateOnBoardingDTO implements Serializable {
 	
 	private String bgc;
 	
+	private String bgcOrgRelationId;
+	
+	private String bgcVendorContact;
+	
 	public String getCandidateOnBoardStatus() {
 		return candidateOnBoardStatus;
 	}
@@ -703,6 +707,23 @@ public class CandidateOnBoardingDTO implements Serializable {
 	public void setBgc(String bgc) {
 		this.bgc = bgc;
 	}
+
+	public String getBgcVendorContact() {
+		return bgcVendorContact;
+	}
+
+	public void setBgcVendorContact(String bgcVendorContact) {
+		this.bgcVendorContact = bgcVendorContact;
+	}
+
+	public String getBgcOrgRelationId() {
+		return bgcOrgRelationId;
+	}
+
+	public void setBgcOrgRelationId(String bgcOrgRelationId) {
+		this.bgcOrgRelationId = bgcOrgRelationId;
+	}
+
 	
 	
 }
