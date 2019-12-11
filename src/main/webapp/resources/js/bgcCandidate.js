@@ -37,11 +37,13 @@ function bgcCandidate(){
 				if(dataList != null && dataList.length > 0){
 					var result = "";
 					for(var i=0; i < dataList.length; i++){
+						var periodInMonths = dataList[i].period == null ? "--":dataList[i].period.split("-")[0];
+						var periodInYears = dataList[i].period == null ? "--":dataList[i].period.split("-")[1];
 						result = result + "<h2>Previous Employer "+(i+1)+"</h2>";
 						result = result + "<ul>";
 						result = result + "<li class='clearfix'><span>Previous Employer Name</span><p>: "+(dataList[i].name == null ? "--":dataList[i].name)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Designation</span><p>: "+(dataList[i].designation == null ? "--":dataList[i].designation)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "--":dataList[i].period)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Period</span><p>: "+periodInMonths+" Month(s) & "+periodInYears+" Year(s)</p></li>";
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
 						result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";

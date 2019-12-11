@@ -225,7 +225,8 @@ public class BackgroundController {
 	public @ResponseBody List<CandidateEmployers> getBgcCandidateEmploymentSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
 		try {
 			logger.debug("inside getBgcCandidateEmploymentSummary");
-			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(uuid);
+			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
+			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(dateFormat, uuid);
 			return candidateEducationList;
 		} catch (Exception e) {
 			logger.error(e+" in getBgcCandidateEmploymentSummary");
