@@ -340,7 +340,7 @@ function dynamicBgcListPagination(url) {
                	 }
                     var result = "";
                     '<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_PETITION\')">';
-                    result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/immigration/editImmigrationDetails?immigrationUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
+                    result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
                     '</sec:authorize>';
                      '<sec:authorize access="hasAnyRole(\'ROLE_DELETE_PETITION\')">';
                     result = result + '<i id="delete' + opt.uuid + '" onclick="deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
