@@ -6177,7 +6177,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 					}
 					
 					if(jsonObj.has("aadharNumber") && !isNullOrEmpty(jsonObj.getString("aadharNumber"))){
-						candidate.setAadharNumber(jsonObj.getString("panNumber"));
+						candidate.setAadharNumber(jsonObj.getString("aadharNumber"));
 					}
 					
 					if(jsonObj.has("ssnNumber") && !isNullOrEmpty(jsonObj.getString("ssnNumber"))){
