@@ -64,6 +64,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	private String address;
 		
 	private String email;
+	
+	private Long bgcVendorContact;
 		
 	public Long getId() {
 		return id;
@@ -255,6 +257,14 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Long getBgcVendorContact() {
+		return bgcVendorContact;
+	}
+
+	public void setBgcVendorContact(Long bgcVendorContact) {
+		this.bgcVendorContact = bgcVendorContact;
 	}
 	
 	

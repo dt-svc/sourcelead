@@ -16,6 +16,7 @@ import javax.persistence.Table;
 
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 
 /**
@@ -47,6 +48,10 @@ public class BgcCandidateDetails implements Serializable{
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	
+	
+	@ManyToOne
+	@JoinColumn(name = "BGC_ORG_CONTACT_ID")
+	private OrgSpoc bgcOrgContactId;
 	
 	@Column(name = "CURRENT_BGC_STATUS ")
 	private String currentBgcStatus;
@@ -244,6 +249,14 @@ public class BgcCandidateDetails implements Serializable{
 
 	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
+	}
+
+	public OrgSpoc getBgcOrgContactId() {
+		return bgcOrgContactId;
+	}
+
+	public void setBgcOrgContactId(OrgSpoc bgcOrgContactId) {
+		this.bgcOrgContactId = bgcOrgContactId;
 	}
 
 
