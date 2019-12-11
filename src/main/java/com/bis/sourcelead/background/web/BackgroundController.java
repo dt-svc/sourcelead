@@ -263,4 +263,17 @@ public class BackgroundController {
 		 logger.debug("after saveEditBgcCandidate");
 		return response;
 	}
+	
+	@RequestMapping(value = { "/getBgcCandidateSummary", "/getBgcCandidateLegalAndCriminalSummary" })
+	public @ResponseBody BgcCandidateDetailsDTO getBgcCandidateLegalAndCriminalSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+		try {
+			logger.debug("inside getBgcCandidateLegalAndCriminalSummary");
+			BgcCandidateDetailsDTO bgcCandidateDetailsDTO= bgcCommonService.getBgcCandidateDetailsByBgcUuid(uuid);
+			return bgcCandidateDetailsDTO;
+		} catch (Exception e) {
+			logger.error(e+" in getBgcCandidateLegalAndCriminalSummary");
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
