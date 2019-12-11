@@ -1001,6 +1001,12 @@ public class CandidateOnBoardRestController {
 				if (null != candidateOnBoarding.getBgcOrglocationId()) {
 					candidateOnBoardingDTO.setBgc(candidateOnBoarding.getBgcOrglocationId().getId().toString());
 				}
+				if (null != candidateOnBoarding.getBgcOrgRelationId()) {
+					candidateOnBoardingDTO.setBgcOrgRelationId(candidateOnBoarding.getBgcOrgRelationId().getId().toString());
+				}
+				if (null != candidateOnBoarding.getBgcOrgContactId()) {
+					candidateOnBoardingDTO.setBgcVendorContact(candidateOnBoarding.getBgcOrgContactId().getId().toString());
+				}
 				if (candidate.getSpocId() != null) {
 					candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
 				}
