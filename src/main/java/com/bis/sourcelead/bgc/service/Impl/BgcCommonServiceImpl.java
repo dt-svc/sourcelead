@@ -160,18 +160,31 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 
 
 	@Override
-	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String candidateUuid) throws Exception {
+	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid) throws Exception {
 		Candidate candidate = candidateService.getCandidateByUUID(candidateUuid);
 		List<CandidateEmployers> candidateEmploymentList = new ArrayList<CandidateEmployers>();
 		if(candidate != null){
 			candidateEmploymentList = bgcCommonDao.getBgcCandidateEmploymentSummaryListByCandidateId(candidate.getCandidateGlobalId().getId());
 			for(int i=0; i<candidateEmploymentList.size(); i++){
 				if(candidateEmploymentList.get(i).getStartDate() == null && candidateEmploymentList.get(i).getEndDate() == null){
-					String startMonth = candidateEmploymentList.get(i).getStartMonth();
-					String startYear = candidateEmploymentList.get(i).getStartYear();	
-					String endMonth = candidateEmploymentList.get(i).getEndMonth();
-					String endYear = candidateEmploymentList.get(i).getEndYear();
-					
+					Integer startMonth = Integer.parseInt(candidateEmploymentList.get(i).getStartMonth().split("&")[0]);
+					Integer startYear = Integer.parseInt(candidateEmploymentList.get(i).getStartYear());	
+					Integer endMonth = Integer.parseInt(candidateEmploymentList.get(i).getEndMonth().split("&")[0]);
+					Integer endYear = Integer.parseInt(candidateEmploymentList.get(i).getEndYear());
+					StringBuilder startMonthBuilder = new StringBuilder("");
+					StringBuilder endMonthBuilder = new StringBuilder("");
+					Integer monthCount = 0;
+					if(startMonth < 10){
+						startMonthBuilder.append(Constants.RECORD_INACTIVE).append(startMonth);
+					}if(endMonth < 10){
+						endMonthBuilder.append(Constants.RECORD_INACTIVE).append(endMonth);
+					}
+					Date startDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", startYear+"-"+startMonthBuilder.toString()+"-"+"01");
+					Date endDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", endYear+"-"+endMonthBuilder.toString()+"-"+"01");
+					Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
+					Integer period = difference / 365;
+					monthCount = endMonth - startMonth;
+					candidateEmploymentList.get(i).setPeriod(monthCount.toString()+"-"+period.toString());
 				}else{
 					Date startDate = candidateEmploymentList.get(i).getStartDate();
 					Date endDate = candidateEmploymentList.get(i).getEndDate();
@@ -183,6 +196,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		}
 		return candidateEmploymentList;
 	}
+
 
 
 	@Override
