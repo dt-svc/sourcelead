@@ -164,6 +164,10 @@ function cancelFileImport(){
 	 $("body").css('overflow-y', 'auto');
 	 $(".import_interviewTracker_side_wrap").removeClass("import_interviewTracker_side_wrap_active");
 }
+
+$(".side_mask").click(function(){
+	$(".import_interviewTracker_side_wrap").removeClass("import_interviewTracker_side_wrap_active");
+})
 </script>
 
 
