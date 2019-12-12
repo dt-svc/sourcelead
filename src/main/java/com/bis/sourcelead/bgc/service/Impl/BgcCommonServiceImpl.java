@@ -1,5 +1,6 @@
 package com.bis.sourcelead.bgc.service.Impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -145,13 +146,15 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		Candidate candidate = candidateService.getCandidateByUUID(candidateUuid);
 		List<CandidateEducation> candidateEducationList = new ArrayList<CandidateEducation>();
 		if(candidate != null){
+			StringBuilder academicYearBuilder = new StringBuilder("");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
 			candidateEducationList = bgcCommonDao.getBgcCandidateEducationSummaryListByCandidateId(candidate.getCandidateGlobalId().getId());
 			for(int i=0; i<candidateEducationList.size(); i++){
 				Date startDate = candidateEducationList.get(i).getStartDate();
 				Date endDate = candidateEducationList.get(i).getEndDate();
-				Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
-				Integer academicYear = difference / 365;
-				candidateEducationList.get(i).setAcademicYear(academicYear.toString());
+				academicYearBuilder.append(formatter.format(startDate)).append(" to ").append(formatter.format(endDate));
+				candidateEducationList.get(i).setAcademicYear(academicYearBuilder.toString());
+				academicYearBuilder.delete(0, academicYearBuilder.length());
 			}
 		}
 		return candidateEducationList;
