@@ -50,7 +50,17 @@
 	  <div id="tab-Details" class="immigraTabs_inn">
 	  <div id ="detailsLoading"></div>
 		  <!-- <div class="immigraDetailsOut"> -->
-			  	  <jsp:include page="bgcCandidateDetailsSummary.jsp"/>
+			  	  <div class="immigraDetailsCta" id="details">
+				  <h2>Personal / Identification</h2>
+				  <ul>
+					  <li class="clearfix"><span>Aadhar Card</span><p>: --</p></li>
+					  <li class="clearfix"><span>PAN Card</span><p>: --</p></li>
+					  <li class="clearfix"><span>Address</span><p>: --</p></li>
+					  <li class="clearfix"><span>Family</span><p>: --</p></li>
+					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
+					  <li class="clearfix"><span>Comments</span><p>: --</p></li>
+				  </ul>
+			  </div>	
 			  <div class="clearfix"></div>
 		  <!-- </div> -->		  		  		  
 		
@@ -58,17 +68,47 @@
 
 	  <div id="tab-education" class="immigraTabs_inn">
 	  <div id ="educationLoading"></div>
-		<jsp:include page="bgcCandidateEducationSummary.jsp"/>
+	  	<div class="immigraDetailsCta" id ="educationList">
+	<h2>Education</h2>
+	<ul>
+		<li class="clearfix"><span>Higher Education</span><p>: --</p></li>
+		<li class="clearfix"><span>Institute Name</span><p>: --</p></li>
+		<li class="clearfix"><span>Academic Year</span><p>: --</p></li>
+		<li class="clearfix"><span>Grade</span><p>: --</p></li>
+		<li class="clearfix"><span>University / Authority</span><p>: --</p></li>
+		<li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li>
+		<li class="clearfix"><span>Comments</span><p>: --</p></li>
+	</ul>
+	</div>
 	 </div>
 	 
 	  <div id="tab-previousEmployer" class="immigraTabs_inn">
 	  <div id = "employmentLoading"></div>
-			<jsp:include page="bgcCandidateEmploymentSummary.jsp"/>
+			<div class="immigraDetailsCta" id = "employmentList">
+			<h2>Previous Employer</h2>
+			<ul>
+				<li class="clearfix"><span>Previous Employer Name</span><p>: --</p></li>
+				<li class="clearfix"><span>Designation</span><p>: --</p></li>
+				<li class="clearfix"><span>Period</span><p>: --</p></li>
+				<li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
+				<li class="clearfix"><span>Conduct</span><p>: --</p></li>
+			</ul>
+</div>
+			
 	  </div>
 	  
 	  <div id="tab-criminialCheck" class="immigraTabs_inn">
 	  <div id = "legalAndCriminalLoading"></div>
-			<jsp:include page="bgcCandidateLegalAndCriminalSummary.jsp"/>
+			<div class="immigraDetailsCta" id = "legalAndCriminalList">
+				<h2>Legal and Criminial Check</h2>
+				<ul>
+					<li class="clearfix"><span>Financial Check</span><p>: --</p></li>
+					<li class="clearfix"><span>Criminal Check</span><p>: ${bgcCandidate.crimeCheckStatus eq null ? "--" : bgcCandidate.crimeCheckStatus}</p></li>
+					<li class="clearfix"><span>Bank and Property Check</span><p>: --</p></li>
+					<li class="clearfix"><span>Salary Check</span><p>: --</p></li>
+					<li class="clearfix"><span>Attach document</span><p>: --</p></li>
+				</ul>
+			</div>	
 	  </div>
 	</section>
     
