@@ -188,7 +188,6 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 					Integer endYear = Integer.parseInt(candidateEmploymentList.get(i).getEndYear());
 					StringBuilder startMonthBuilder = new StringBuilder("");
 					StringBuilder endMonthBuilder = new StringBuilder("");
-					Integer monthCount = 0;
 					if(startMonth < 10){
 						startMonthBuilder.append(Constants.RECORD_INACTIVE).append(startMonth);
 					}if(endMonth < 10){
@@ -198,8 +197,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 					Date endDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", endYear+"-"+endMonthBuilder.toString()+"-"+"01");
 					Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
 					Integer period = difference / 365;
-					monthCount = endMonth - startMonth;
-					candidateEmploymentList.get(i).setPeriod(monthCount.toString()+"-"+period.toString());
+					candidateEmploymentList.get(i).setPeriod(period.toString());
 				}else{
 					Date startDate = candidateEmploymentList.get(i).getStartDate();
 					Date endDate = candidateEmploymentList.get(i).getEndDate();
