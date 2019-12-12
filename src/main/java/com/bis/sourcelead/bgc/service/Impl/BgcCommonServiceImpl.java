@@ -119,7 +119,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	}
 	
 	@Override
-	public BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid) throws Exception {
+	public BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid) {
+		try{
 		BgcCandidateDetailsDTO bgcCandidateDetailsDTO = new BgcCandidateDetailsDTO();
 		StringBuilder fullName = new StringBuilder();
 		BgcCandidateDetails bgcCandidateDetails = bgcCommonDao.getBgcCandidateDetailsByBgcUuid(bgcUuid);
@@ -138,11 +139,17 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetailsDTO.setCandidateUUID(bgcCandidateDetails.getCandidate().getCandidateUUID());
 		}
 		return bgcCandidateDetailsDTO;
-	}
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e+" in getBgcCandidateDetailsByBgcUuid Service");
+			return null;
+		}
+		}
 
 
 	@Override
-	public List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid) throws Exception {
+	public List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)  {
+		try{
 		Candidate candidate = candidateService.getCandidateByUUID(candidateUuid);
 		List<CandidateEducation> candidateEducationList = new ArrayList<CandidateEducation>();
 		if(candidate != null){
@@ -158,11 +165,17 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			}
 		}
 		return candidateEducationList;
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e+" in getBgcCandidateEducationSummaryByCandidateUuid Service");
+			return null;
+		}
 	}
 
 
 	@Override
-	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid) throws Exception {
+	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid) {
+		try{
 		Candidate candidate = candidateService.getCandidateByUUID(candidateUuid);
 		List<CandidateEmployers> candidateEmploymentList = new ArrayList<CandidateEmployers>();
 		if(candidate != null){
@@ -197,12 +210,18 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			}
 		}
 		return candidateEmploymentList;
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e+" in getBgcCandidateEmploymentSummary Service");
+			return null;
+		}
 	}
 
 
 
 	@Override
-	public BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO) throws Exception {
+	public BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO)  {
+		try{
 		BgcCandidateDetails bgcCandidateDetails = bgcCommonDao.getBgcCandidateDetailsByBgcUuid(bgcCandidateDetailsDTO.getUuid());
 		if(bgcCandidateDetailsDTO != null && bgcCandidateDetails != null){
 			bgcCandidateDetails.setEducationCheckStaus(bgcCandidateDetailsDTO.getEducationCheckStaus());
@@ -214,6 +233,11 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		}
 				bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetails);
 		return bgcCandidateDetails;
+		}catch(Exception e){
+			e.printStackTrace();
+			logger.error(e+" in saveEditBgcCandidate Service");
+			return null;
+		}
 	}
 
 }
