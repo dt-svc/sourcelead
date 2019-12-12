@@ -14,7 +14,7 @@ function bgcCandidate(){
 						result = result + "<ul>";
 						result = result + "<li class='clearfix'><span>Higher Education</span><p>: "+(dataList[i].name == null ? "--":dataList[i].name)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Institute Name</span><p>: "+(dataList[i].institute == null ? "--":dataList[i].institute)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "--":dataList[i].academicYear)+" Years</p></li>";
+						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "--":dataList[i].academicYear)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Grade</span><p>: "+(dataList[i].grade == null ? "--":dataList[i].grade)+"</p></li>";
 						result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].educationFileName == null ? "--":dataList[i].educationFileName)+"" +
