@@ -6,9 +6,10 @@ function bgcCandidate(){
 				type : "GET",
 				url : vmsUrl + "/bgc/getBgcCandidateEducationSummary?uuid="+uuid,
 				success : function(dataList) {
+					var result = "";	
 					if(dataList != null && dataList.length > 0){
 						$("#educationLoading").removeAttr("style");
-						var result = "";
+						
 						for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Education "+(i+1)+"</h2>";
 						result = result + "<ul>";
@@ -22,11 +23,11 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Comments</span><p>: --</p></li>";
 						result = result + "</ul>";
 						}
-						$("#educationList").empty().append(result);
 					}else{
 						$("#educationLoading").removeAttr("style");
-						return false;
+						result = result + "<div class='dataTables_empty'></div>";
 					}
+					$("#educationList").empty().append(result);
 				},
 			});
 	}
@@ -36,9 +37,9 @@ function bgcCandidate(){
 			type : "GET",
 			url : vmsUrl + "/bgc/getBgcCandidateEmploymentSummary?uuid="+uuid,
 			success : function(dataList) {
+				var result = "";
 				if(dataList != null && dataList.length > 0){
 					$("#employmentLoading").removeAttr("style");	
-					var result = "";
 					for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Previous Employer "+(i+1)+"</h2>";
 						result = result + "<ul>";
@@ -49,13 +50,12 @@ function bgcCandidate(){
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
 						result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";
 						result = result + "</ul>";
-						$("#employmentList").empty().append(result);
 					}
 				}else{
 					$("#employmentLoading").removeAttr("style");
-					return false;
+					result = result + "<div class='dataTables_empty'></div>";
 				}
-				
+				$("#employmentList").empty().append(result);
 			},
 		});
 	}
@@ -114,9 +114,9 @@ function bgcCandidate(){
 				type : "GET",
 				url : vmsUrl + "/bgc/getBgcCandidateLegalAndCriminalSummary?uuid="+uuid,
 				success : function(data) {
+					var result = "";	
 					if(data != null){
 						$("#legalAndCriminalLoading").removeAttr("style");
-						var result = "";
 						result = result + "<h2>Legal and Criminial Check</h2>";
 						result = result + "<ul>";
 						result = result + "<li class='clearfix'><span>Financial Check</span><p>: --</p></li>";
@@ -125,10 +125,11 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Salary Check</span><p>: --</p></li>";
 						result = result + "	<li class='clearfix'><span>Attach document</span><p>: --</p></li>";
 						result = result + "</ul>";
-						$("#legalAndCriminalList").empty().append(result);
 					}else{
-						return false;
+						$("#legalAndCriminalLoading").removeAttr("style");
+						result = result + "<div class='dataTables_empty'></div>";
 					}
+					$("#legalAndCriminalList").empty().append(result);
 				},
 			});
 			
@@ -139,9 +140,9 @@ function bgcCandidate(){
 				type : "GET",
 				url : vmsUrl + "/bgc/getBgcCandidateSummary?uuid="+uuid,
 				success : function(data) {
+					var result = "";	
 					if(data != null){
 						$("#detailsLoading").removeAttr("style");
-						var result = "";
 						result = result + "<h2>Personal / Identification</h2>";
 						result = result + "<ul>";
 						result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
@@ -151,10 +152,11 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";
 						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";
 						result = result + "</ul>";
-						$("#details").empty().append(result);
 					}else{
-						return false;
+						$("#detailsLoading").removeAttr("style");
+						result = result + "<div class='dataTables_empty'></div>";
 					}
+					$("#details").empty().append(result);
 				},
 			});
 		}
