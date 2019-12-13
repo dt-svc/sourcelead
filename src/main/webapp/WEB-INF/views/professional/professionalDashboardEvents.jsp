@@ -6,15 +6,6 @@
 #eventCalendar .ui-widget.ui-widget-content { width:100% !important; background: #ededed !important; }
 </style>
 
-<script>
-$(document).on('click', '.ui-datepicker-next', function () {
-	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
-});
-$(document).on('click', '.ui-datepicker-prev', function () {
-	  $(".ui-datepicker-year, .ui-datepicker-month").addClass("sel");
-});
-</script>
-
  <!-- Applicant Authorization -->
       <div class="dashboard-widget clearfix mb eventAlert">
         <div class="row">
@@ -156,7 +147,7 @@ function getInterviewsDates() {
 					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Job Title   :</label> <a href="'+atsUrl+'/requirementProfile/'+report.requirementUUID+'"><span title ="'+report.requirementTitle+'">'+report.requirementTitle+'</span></a></p>';
 					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Company Name:</label>'+report.companyName+' </p>    ';
 					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Interview Type:</label> '+interviewType+'</p>    ';
-					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Location:</label>'+location+'</p>    ';
+					 result = result + '                          <p><label class="text-muted small col-md-2 col-md2-customized">Interview Details:</label>'+location+'</p>    ';
 					 result = result + ' 								</div>                                                                         ';
 					 result = result + '                      </div>                                                                                   ';
 					 result = result + '              </div>                                                                                           ';
