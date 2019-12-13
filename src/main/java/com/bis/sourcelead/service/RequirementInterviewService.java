@@ -82,6 +82,8 @@ public interface RequirementInterviewService {
 	
 	void saveRequirementInterviewTrackerDetails(JSONObject jsonObj, User user, OrgLocations orgLocations) throws Exception;
 	
+	List<Date> getProfessionalInterviewDatesForCalendarEvent(Long candidateId) throws Exception;
+	
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 	
 
