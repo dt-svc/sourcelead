@@ -96,6 +96,7 @@ import com.bis.sourcelead.service.RequirementSubmissionService;
 import com.bis.sourcelead.service.SavedJobsService;
 import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
+import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
@@ -1321,6 +1322,49 @@ public class CrowdSourcingRequirementsRestController {
 				reqInterviewHistory.setSelectedDate(selectedDate);
 			return reqInterviewHistory;
 		}
+	    
+	    
+	    
+	    
+	    
+	    @RequestMapping(value = "/getProfessionalInterviewDates")
+		public ResponseList<String> getProfessionalInterviewDates(String dateRange, HttpServletRequest request) throws Exception {
+			ResponseList<String> response = new ResponseList<>();
+			Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+			Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
+			if(candidateGlobalId != null) {
+				try {
+					Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+					OrgLocations loginOrgLocations = orgLocationService.getOrgLocationById(orgLocId);
+					List<Date> datesList = new ArrayList<>();
+					List<String> interviewDatesList = new ArrayList<>();
+					datesList = requirementInterviewService.getProfessionalInterviewDatesForCalendarEvent(candidateGlobalId);
+					Timezone timezone = null;
+					if(loginOrgLocations.getTimezone() != null){
+						timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+					}
+					if(datesList != null) {
+						for(Date date : datesList) {
+							    String converted_dateStr =  CalendarUtil.getDateStrForGivenTimeZone(timezone.getTimeZoneId(), date, "yyyy/MM/dd");
+							    if(StringUtils.isNotEmpty(converted_dateStr)) {
+							    	 interviewDatesList.add(converted_dateStr);
+							    }
+						}
+					}
+					response.setData(interviewDatesList);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				}catch (Exception e) {
+					response.setResponse(Result.AWKWARD.name());
+					response.setResponseMessage(Result.AWKWARD.getValue());
+				}
+			}else {
+				response.setResponse(Result.SESSION_TIMEDOUT.name());
+				response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+			}
+			return response;
+		}
+		
 	    
 	    
 	    
