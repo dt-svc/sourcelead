@@ -1673,7 +1673,7 @@ function getResumesList(){
 <script>
 function getCandidateDetails(){
 	
-     var candidateId = '${SourceLeadWeb_candidateId}'; 
+     var candidateId = '${candidateId}'; 
      var requirementId = $("#requirementId").val();
  	 var orgLocationId ='${SourceLeadWeb_orgLocationId}';
  	 
