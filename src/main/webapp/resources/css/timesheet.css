@@ -446,11 +446,11 @@ a { cursor:pointer;}
 .client_show { cursor: pointer;}                   
 .client_show i { font-size:12px; color:#375d81; float:right; padding:2px 0px 0px 0px; visibility:hidden; opacity:0;}  
 .clients_wrap_table table tr:hover .client_show i { visibility:visible; opacity:1;}
-.clients_side_wrap, .submission_side_wrap, .import_submission_side_wrap {
+.clients_side_wrap, .submission_side_wrap, .import_submission_side_wrap, .import_profileTracker_side_wrap, .import_interviewTracker_side_wrap {
 width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
 transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
 z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;}
-.clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active, .import_submission_side_wrap.import_submission_side_wrap_active {right:0px;}
+.clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active, .import_submission_side_wrap.import_submission_side_wrap_active, .import_profileTracker_side_wrap.import_profileTracker_side_wrap_active, .import_interviewTracker_side_wrap.import_interviewTracker_side_wrap_active {right:0px;}
 .clients_side_wrap_inn { position:relative; padding:10px;}
 .clients_side_wrap_inn h1 { margin:0px 0px; font-size:18px; font-weight:500; padding:15px;}  
 .clients_side_wrap .project_detfield {padding:4px 5px; width:100%;}
@@ -6648,6 +6648,10 @@ max-width: 100% !important;
 .repCustomDate {
 	width: 400px; display: none; padding: 20px 15px; top: 45px; box-shadow: 2px 2px 3px rgba(0,0,0,0.3) !important; right: 60px;
 }
+
+.repCustomDate.dashboardPopup {
+	right: 4px;
+}
 .repCustomDateInn {
 	width: 160px; float: left; padding: 0px 15px 0px 0px;
 }
@@ -6905,7 +6909,7 @@ max-width: 100% !important;
 }
 .editIcon {
 	width: 34px; height: 32px; display: block; background: url("../images/edit.svg"); background-repeat: no-repeat;
-	background-position: center; background-size: 34px; cursor: pointer;
+	background-position: center !important; background-size: 34px; cursor: pointer;
 }
 .refeIcon {
 	width: 40px; float:left; height: 32px; display: block; background: url(../images/refresh.svg); background-repeat: no-repeat;
@@ -8174,4 +8178,14 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .exp_rejct_pop a {
     display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
     font-size:14px; font-weight:500;}
+<<<<<<< HEAD
 .exp_rejct_pop a.close_color { background-color:#ff4b4b;}
+
+
+
+
+
+
+=======
+.exp_rejct_pop a.close_color { background-color:#ff4b4b;}
+>>>>>>> 933c142df5d6eb16e4b87f7dc915480aabe5c9f5

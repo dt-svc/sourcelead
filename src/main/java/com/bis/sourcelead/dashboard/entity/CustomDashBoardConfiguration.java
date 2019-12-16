@@ -65,7 +65,10 @@ public class CustomDashBoardConfiguration {
 	@Column(name = "UPDATED_BY")
 	private Long updatedBy;
 	
+	@Column(name = "MAKE_DEFAULT")
+	private Boolean makeDefault;
 	
+
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dashBoardConfId")
 	@Fetch(FetchMode.SELECT)
     @JsonBackReference
@@ -230,5 +233,14 @@ public class CustomDashBoardConfiguration {
 	}
 	
 	
+
+	public Boolean getMakeDefault() {
+		return makeDefault;
+	}
+
+
+	public void setMakeDefault(Boolean makeDefault) {
+		this.makeDefault = makeDefault;
+	}
 	
 }

@@ -29,7 +29,7 @@ public interface ClockInOutConfigDao {
 
 	public ClockInOut saveClockInOutTime(ClockInOut clockInOut);
 	
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId);
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId, String dashboard);
 
 	public ResponseList<Projects> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, String clients, String values, Long orgLocationId, String userRole, Long candidateId);
 
