@@ -210,7 +210,12 @@ function portletListFilter(requirementStatus){
 		        		   referredOn= "--";
 		        	   } */
 		        	   result = result +'         <tr>';
-		        	   result = result +'         <td><a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+report.requirementUUID+'/'+report.referUUID+'"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   if(report.referUUID != '' && report.referUUID != null && report.referUUID != 'undefined'){
+		        		   result = result +'         <td><a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+report.requirementUUID+'/'+report.referUUID+'"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   }else{
+		        		   result = result +'         <td><a href="${SourceLeadWeb_atsUrl}/requirementProfile/'+report.requirementUUID+'"><div class="tbldata-dotdot-sm" title="'+requirementJobId+' '+report.requirementName+'">'+requirementJobId+' '+report.requirementName+'</div></a></td>';
+		        	   }
+		        	 
 		        	   result = result +'         <td><div class="tbldata-dotdot" title="'+report.orgName+'">'+report.orgName+'</div></td>';
 		        	   result = result +'         <td><div class="tblminwidth-50">'+employeeType+'</div></td>';
 		        	   
