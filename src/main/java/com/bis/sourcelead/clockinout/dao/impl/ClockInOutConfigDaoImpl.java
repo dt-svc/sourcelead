@@ -141,7 +141,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Override
 	@Transactional
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId)
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId,String customDashboard)
 	{
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -217,7 +217,11 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 				}
 
 			}
-			jobsList = query.list();	
+			if(customDashboard!=null && customDashboard.equalsIgnoreCase(Constants.Dashboard)) {
+				jobsList = query.setMaxResults(5).list();
+			}else {
+				jobsList = query.list();	
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

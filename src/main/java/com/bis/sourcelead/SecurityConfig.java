@@ -116,6 +116,7 @@ public class SecurityConfig  {
     			.antMatchers("/job/**").permitAll()
     			.antMatchers("/blog/**").permitAll()
     			.antMatchers("/openJobs").permitAll() 
+    			.antMatchers("/pricingDetails").permitAll() 
     			.antMatchers("/saveProposeTime").permitAll() 
     			.antMatchers("/getInterviewrsViewFeedbackList").permitAll() 
     			.antMatchers("/ws/displayOrgImageInMail/**").permitAll() 
