@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -107,6 +108,9 @@ public class ProfessionalRequirementsController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	CandidateService candidateService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
@@ -136,7 +140,6 @@ public class ProfessionalRequirementsController {
 		    
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		        Countries countries = null;
 		        
 		        ModelAndView model = new ModelAndView();
@@ -170,9 +173,10 @@ public class ProfessionalRequirementsController {
 			       
 				
 				if(null != candidateId){
+					Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
 					Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
 					model.addObject("resumesCount", resumesCount);
-					model.addObject("candidateId", candidateId);
+					model.addObject("candidateId", candidateGlobalId);
 				}
 				
 				
