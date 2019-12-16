@@ -728,7 +728,8 @@ function RequirementWorkflow(){
 									$("#saveStageButton").removeAttr('button').val('Save');	
 									showError("Invalid data");
 								}else{
-									window.location.replace(sourceleadUrl+"/workflowList?workflowName="+workFlowName);	
+									//window.location.replace(sourceleadUrl+"/workflowList?workflowName="+workFlowName);
+									window.location.replace(sourceleadUrl+ "/viewWorkflow?uuid="+workflowUuid);
 								}
 				      	} else if (dataList.indexOf('Sign In') !== -1) {
 				      		location.replace(sourceleadUrl);
