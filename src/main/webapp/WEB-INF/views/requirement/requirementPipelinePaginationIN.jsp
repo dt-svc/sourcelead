@@ -13,7 +13,6 @@
 
 <script>
 	function requirementPipelinePaginationIN(url, requirementId, submissionType) {
-		alert("pipeline call");	
 		var atsUrl ='${SourceLeadWeb_atsUrl}';
 		var orgLocationId = '${SourceLeadWeb_orgLocationId}';
 		var colIndex = 0;

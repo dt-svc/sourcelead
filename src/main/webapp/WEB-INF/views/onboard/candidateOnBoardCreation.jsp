@@ -555,13 +555,12 @@ function getEmploymentType(){
 		            		 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            	 }
 		            	
+		            	 
 		            } 
 		            $('#vendorContact').trigger("chosen:updated");
 		        }
 		 }); 
  }
-
- 
 
 <!-- getEmployementTye -->
 
@@ -1288,12 +1287,15 @@ function loadBgcVendors(bgcOrglocationId){
 	        		var selected = '';
 	        		if(bgcOrglocationId != null && bgcOrglocationId != "" && bgcOrglocationId !="undefined" && bgcOrglocationId == bgc.responderLocationId.id){
 	            		selected = 'selected';
+	            		  
 	            	}
 	        		result = result +'<option value='+bgc.responderLocationId.id+' '+selected+' bgcOrgRelationId ='+bgc.id + ' >'+bgc.orgName+'</option>';
 				}
 	        	 
 	        	 $("#bgc").empty();
 	           	 $("#bgc").append(result); 
+	           	 var bgcOrgRelId= $("#bgc option:selected").attr("bgcOrgRelationId");
+        		 $("#bgcOrgRelationId").val(bgcOrgRelId);
 	           	 $('#bgc').trigger("chosen:updated");
 	    	} else if (response.indexOf('Sign In') !== -1) {
 	    		location.replace(sourceleadUrl);
@@ -1307,8 +1309,6 @@ function loadBgcVendors(bgcOrglocationId){
 
 <script>
  function getAddApplicantBgcVendorContactList(orgRelationId,spocId ){
-console.log("orgRelationId"+orgRelationId);
-console.log("spocId"+spocId);
     if($("#bgc").val()!=''){
 	     $("#bgcVendorContact").attr("data-validation", "required");  
 	     $("#bgcVendorContact").removeAttr("data-validation-optional"); 
@@ -1321,10 +1321,11 @@ console.log("spocId"+spocId);
   
 	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 	 var orgRelationID = '';
+	
 	 if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
 		 orgRelationID = orgRelationId;
 	 }else{
-		 orgRelationID = $("#bgc option:selected").attr("orgRelationId");
+		 orgRelationID = $("#bgcOrgRelationId").val();
 	 }
 		 $.ajax({
 			    type: "POST",
@@ -1334,6 +1335,7 @@ console.log("spocId"+spocId);
 		        	$('#bgcVendorContact').append('<option value="">--Select Vendor contact--</option>');
 		             for(var i=0;i<json.data.length;i++){
 		            	 var opt = json.data[i];
+		            		var selected = '';
 		            	 if(spocId != null && spocId != 'undefined' && spocId != ''){
 		            		 if(opt.id == spocId){
 			        				selected = "selected";
@@ -1437,14 +1439,12 @@ function loadOnBoardingTemplates(onboardTemplateId){
   
  <script>
  function saveOnboardingCandidateDetails(saveType){
-	 console.error("saveType >>>>>>>>>>"+saveType);
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
-	         }; 
-	 
+              };
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
 	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        $("#save_onboardUser").attr("disabled", "disabled");
@@ -1474,6 +1474,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 			        	}
 		     	        $("#candidateOnBoardId").val(json.id);
 		     	        $("#savedonboardId").val(json.id);
+		     	        $("#bgcOrgRelationId").val(json.bgcOrgRelationId);
 		     	        $("#save_onboardUser").removeAttr("disabled");
 		   	            $("#saveAndContinue_onboardUser").removeAttr("disabled");
 		     	        $("#loading").removeAttr("style");
@@ -1622,7 +1623,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    		loadBgcVendors(json['bgc']);
    		    	}
    		    	if(json['bgcVendorContact'] != null && json['bgcVendorContact'] != "" && json['bgcVendorContact'] !="undefined"){
-   		    		getAddApplicantBgcVendorContactList(json['bgc'],json['bgcVendorContact']);
+   		    		getAddApplicantBgcVendorContactList(json['bgcOrgRelationId'],json['bgcVendorContact']);
    		    	}
    		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
    		    		 if(json['employmentType'] == 'Other'){
