@@ -217,4 +217,21 @@ public class SubmissionTemplateDaoImpl implements SubmissionTemplateDao{
    	
 	}
 
+
+	@Override
+	@Transactional
+	public SubmissionTemplate getDefaultInterviewTemplateByOrgLocationId(Long orgLocationId) throws Exception {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		List<SubmissionTemplate> submissionTemplate = new ArrayList<SubmissionTemplate>();
+		logger.debug("getSubmissionTemplateById start");
+		submissionTemplate = session.createQuery("from SubmissionTemplate st where st.orgLocationId.id=:orgLocationId and st.isDefault='Y' and st.templateType='Feedback' and st.clientLocationId IS NULL " ).setLong( "orgLocationId", orgLocationId ).list();
+		logger.debug("getSubmissionTemplateById end");
+		if (submissionTemplate.size() > 0) {
+			return submissionTemplate.get(0);
+		} else {
+			return null;
+		}
+   	}
+
 }
