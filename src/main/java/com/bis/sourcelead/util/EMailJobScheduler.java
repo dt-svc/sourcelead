@@ -222,15 +222,6 @@ public class EMailJobScheduler {
 	@Value("${env}")
 	private String environment;
 	
-	@Value("${resumeParserUrlLocal}")
-	private String resumeParserUrlLocal;
-	
-	@Value("${resumeParserUrlQa}")
-	private String resumeParserUrlQa;
-	
-	@Value("${isResumeparserEnabled}")
-	private String isResumeparserEnabled;
-	 
 	@Autowired
 	JobSchedulerTestService jobSchedulerTestService;
 	
@@ -542,7 +533,7 @@ public class EMailJobScheduler {
 		                    if(fileList.size() > 0) { // if no email attachment found skip the parsing.
 							List<FileInfo> fileInfoList = commonUtil.getListOfFileInfo(fileList, "resumes",	loginOrgLocation.getOrg().getId(), orgLocationId);
 							FileUploadUtil.processConfiguredEmailShedulerForResumesParsing(fileInfoList, staticPath, sourceleadResumeParser, candidateService,
-									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,candidateGlobalUtil,isResumeparserEnabled);
+									                    						candidateResumesService, loginOrgLocation.getCountry(), loginOrgLocation,user,candidateGlobalUtil);
 		                    }
 							}catch(Exception e) {
 								logger.error("Exception Caught while parsing resume for the EmailId >>>:  "+ email.getEmailId());
