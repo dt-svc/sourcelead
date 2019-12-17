@@ -1704,4 +1704,44 @@ public class UserRoleDaoImpl implements UserRoleDao {
 		return userRoleList;
 
 	}
+
+	@Override
+	@Transactional
+	public List<UserRole> getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(Long orgLocationId,String subscriptionStatus) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "";
+		List<UserRole> userRoleList = null;
+		if("Y".equalsIgnoreCase(subscriptionStatus)) {
+			 query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'ACTIVE' and userRole.isSubscription is null ";
+			 userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).list();
+		}else {
+			if("N".equalsIgnoreCase(subscriptionStatus)) {
+				subscriptionStatus = "Y";
+			}
+			 query = "from UserRole userRole where userRole.orgLocations.id = :orgLocationId and userRole.userState = 'INACTIVE' and userRole.isSubscription =:isSubscription";
+			 userRoleList = session.createQuery(query.toString()).setLong("orgLocationId", orgLocationId).setString("isSubscription", subscriptionStatus).list();
+		}
+		
+		return userRoleList;
+	}
+
+	@Override
+	@Transactional
+	public UserRole getActiveUserDetailsByEmailAndLocationId(String email, Long locationId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		List<UserRole> userRole = new ArrayList<UserRole>();
+		logger.debug("getUserDetailsByEmailAndLocationId method  start");
+		userRole = session.createQuery(
+				"from UserRole userRole left join fetch userRole.orgLocations left join fetch userRole.roles  "
+						+ "left join fetch userRole.user where userRole.user.email = :email and userRole.orgLocations.id = :locationId and userRole.userState = 'ACTIVE' ")
+				.setString("email", email).setLong("locationId", locationId).list();
+		logger.debug("getUserDetailsByEmailAndLocationId method ends");
+		if (userRole.size() > 0) {
+			return userRole.get(0);
+		} else {
+			return null;
+		}
+	
+	}
 }

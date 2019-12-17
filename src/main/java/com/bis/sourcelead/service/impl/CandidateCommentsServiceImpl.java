@@ -16,6 +16,7 @@ import com.bis.sourcelead.dao.CandidateCommentsDao;
 import com.bis.sourcelead.dto.CandidateCommentsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateComments;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
@@ -63,16 +64,25 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 	 * @throws NullPointer
 	 */
 	@Override
-	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Candidate candidate, OrgLocations orgLocations, RequirementSubmission submission) throws Exception {
+	public CandidateComments storeCandidateComments(CandidateCommentsDTO candidateCommentsDTO, User user, Long candidateId, OrgLocations orgLocations, Long submissionId) throws Exception {
 		CandidateComments candidateComments = new CandidateComments();
 		StringBuffer activitySummary = new StringBuffer();
+		CandidateGlobal candidate = null;
 			if(candidateCommentsDTO.getComment() != null){
 				activitySummary.append("Comment").append(" : ").append(Constants.NEW_VALUE_TAG_INITIATION).append(candidateCommentsDTO.getComment()).append(Constants.NEW_VALUE_TAG_END).append(" ");
 				candidateComments.setComment(candidateCommentsDTO.getComment());
 			}
-			if(candidate != null){
-				candidateComments.setCandidateId(candidate);
+			
+			candidate = new CandidateGlobal();
+			candidate.setId(candidateId);
+			candidateComments.setCandidateId(candidate);
+			
+			RequirementSubmission submission = null;
+			if (submissionId != null) {
+				submission = new RequirementSubmission();
+				submission.setId(submissionId);
 			}
+		
 			if(submission != null){
 				candidateComments.setSubmissionId(submission);
 			}
@@ -84,9 +94,11 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 			candidateComments.setUpdatedBy(user.getUserCode());
 			candidateComments.setCreatedBy(user.getUserCode());
 			candidateComments.setUpdatedDate(commonUtil.currentDate());
-		candidateCommentsDao.storeCandidateComments(candidateComments);
+		    candidateCommentsDao.storeCandidateComments(candidateComments);
 		
-		candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
+		    candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, "", Constants.CANDIDATE_COMMENTS_NEW, activitySummary.toString(), "CANDIDATE");
+			  
+		
 		return candidateComments;
 	}
 	
@@ -192,6 +204,50 @@ public class CandidateCommentsServiceImpl implements CandidateCommentsService {
 		}
 		return candidateCommentsList;
 	}
+
+
+	@Override
+	public List<CandidateComments> getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(Long candidateId,
+			Long orgLocationId) throws Exception {
+		
+		List<CandidateComments> candidateCommentsList = candidateCommentsDao.getAllCommentsOnCandidateGlobalByCandidateIdAndOrgLocation(candidateId, orgLocationId);
+
+		for(CandidateComments candidateComments: candidateCommentsList){
+			
+			User user = userService.getUserByUserCode(candidateComments.getUpdatedBy());
+			if(null != user){
+				String authorLastName = "";
+				if(StringUtils.isNotEmpty(user.getFirstName())){
+					authorLastName = user.getLastName();
+				}
+				StringBuilder nameBuilder = new StringBuilder();
+				 candidateComments.setCommentAuthor(nameBuilder.append(user.getFirstName()).append(" ").append(authorLastName).toString());
+				candidateComments.setCommentAuthorUserId(user.getId());
+				candidateComments.setCommentAuthorUserImage(user.getFileUrl());
+			}
+			
+			long diff = commonUtil.currentDate().getTime() - candidateComments.getUpdatedDate().getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			StringBuilder timeBuilder = new StringBuilder();
+			if(diffDays == 0 && diffHours == 0 && diffMinutes == 0){
+				candidateComments.setCommentTime(timeBuilder.append(diffSeconds).append("seconds ago").toString());
+			}else if(diffDays == 0 && diffHours == 0){
+				candidateComments.setCommentTime(timeBuilder.append(diffMinutes).append(" minutes ago").toString());
+			}else if(diffDays == 0){
+				candidateComments.setCommentTime(timeBuilder.append(diffHours).append(" hours ").append(diffMinutes).append(" minutes ago").toString());
+			}else if(diffDays < 7){
+				candidateComments.setCommentTime(timeBuilder.append(diffDays).append( " days ").append(diffHours).append(" hours ago").toString());
+			}else{
+				DateFormat standardFormat = new SimpleDateFormat( "MMM dd, yyyy hh:mm:ss aa");
+				String commonDateFormat = standardFormat.format(candidateComments.getUpdatedDate());
+				candidateComments.setCommentTime(commonDateFormat.toString());
+			}
+		}
+		
+		return candidateCommentsList;
 	
-	
+	}
 }

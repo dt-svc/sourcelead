@@ -363,6 +363,12 @@ public class SubmissionApproverHierarchyServiceImpl implements SubmissionApprove
 		return  submissionApproverHierarchyDao.getSubmissionApproverHierarchyForPendinApproveTimesheetsByProjectMemberId(frequencyStartDate, frequencyEndDate, projectMemberId);
 	}
 
+	@Override
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(
+			Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long approverId) {
+		return submissionApproverHierarchyDao.getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(frequencyStartDate, frequencyEndDate, projectId, masterCandidateId, approverId);
+	}
+
 	
 	
 

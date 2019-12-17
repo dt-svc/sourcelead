@@ -1316,7 +1316,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 	@SuppressWarnings("unchecked")   
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long approverUserId,Boolean isAdmin,Long locationsId,Long orgId,String submissionStatus,String isGlobalUser)
+	public Integer getSubmissionApproverHierarchyListByuserIdAndOrgLocationIdForApproverLoginCount(Long approverUserId,Boolean isAdmin,Long locationsId,Long orgId,String submissionStatus,String isGlobalUser,Date[] searchDates)
 	{
 		
 		Session session = this.sessionFactory.getCurrentSession();
@@ -1325,6 +1325,12 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 			 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.org.id IN(select ol.org.id from OrgLocations ol where ol.id = :orgLocationId) ";
 		 }else {
 			 globalUserQuery = " sah.hierarchyId.projectClientsId.orgLocationsId.id = :orgLocationId ";
+		 }
+		
+		 String searchDatesQuery = " ";
+		 
+		 if(searchDates != null) {
+			 searchDatesQuery = " and sah.createdDate BETWEEN '"+searchDates[0]+"' and '"+searchDates[1]+"' ";
 		 }
 		 
 		String fillingOptionQuery = " and (sah.submissionApprovalStatus <> '"
@@ -1347,7 +1353,7 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 				 + " OR (:userId IN (select userRole.user.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = :orgLocationId ) and (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.PARALLEL+"' OR (sah.hierarchyId.projectId.projectApprovalType = '"+Constants.SEQUENTIAL+"' and ((1 IN(select Max(pah.level) from ProjectApproverHierarchy pah where  pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id)) OR (1 NOT IN(select Max(pah.level) from ProjectApproverHierarchy pah where  pah.projectClientsId.id = sah.hierarchyId.projectClientsId.id) and  '1' IN (select subsah.hierarchyId.level from SubmissionApproverHierarchy subsah where subsah.submissionApprovalStatus = '"+Submission_ApprovalStatus.APPROVED+"' and subsah.hierarchyId.projectClientsId.id = sah.hierarchyId.projectClientsId.id and subsah.frequencyStartDate = sah.frequencyStartDate and  subsah.frequencyEndDate = sah.frequencyEndDate))))))"
 				 +" OR  ((sah.hierarchyId.level = '1' and  sah.hierarchyId.status = '1' and sah.submissionId.projectMembers.projects.isReportingManagerAsApprover = 'Y'  and sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser IS NOT NULL and :userId IN (Select userRole.reportingManager.id from UserRole userRole where userRole.user.id = sah.submissionId.projectMembers.projectMemberCandidteId.consultantUser.id)))"
 				 + "   ) "
-				 + " and sah.status != '0' and sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1'  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)";
+				 + " and sah.status != '0' and sah.submissionStatus = :submissionStatus and sah.submissionId.status = '1' "+searchDatesQuery+"  GROUP BY CONCAT(sah.submissionId.projectMembers.id,sah.frequencyStartDate,sah.frequencyEndDate)order by sah.submissionId.projectMembers.projects.id ASC)";
 		List<SubmissionApproverHierarchy> tslist = session.createQuery(query.toString()).setLong("userId", approverUserId).setLong("orgLocationId", locationsId).setString("submissionStatus", submissionStatus).list();
 		Integer count = 0;
 		if (tslist != null && !tslist.isEmpty()) {
@@ -2967,5 +2973,31 @@ public class SubmissionApproverHierarchyDaoImpl implements SubmissionApproverHie
 		}
 		return submissionApproverHierarchyList;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional
+	public SubmissionApproverHierarchy getSubmissionApproverHierarchyByProjectFrequencyAndProjectIdAndMasterCandidateIdAndApproverId(Date frequencyStartDate, Date frequencyEndDate, Long projectId, Long masterCandidateId, Long approverId) {
+		Session session = this.sessionFactory.getCurrentSession();
+		SubmissionApproverHierarchy submissionApproverHierarchy = null;
+		try {
+			java.sql.Date sqlStartDate = new java.sql.Date(frequencyStartDate.getTime());
+			java.sql.Date sqlEndDate = new java.sql.Date(frequencyEndDate.getTime());
+			Query queryObj = session.createQuery("from SubmissionApproverHierarchy sah left join fetch sah.hierarchyId pah left join fetch sah.submissionId submission  left join fetch submission.projectMembers pm left join fetch submission.projects pj left join fetch submission.masterCandidateId mc where sah.frequencyStartDate = :sqlStartDate and sah.frequencyEndDate = :sqlEndDate and pj.id = :projectId and mc.id = :masterCandidateId and pah.approverUserId = :approverId and sah.status = '1'");
+			List<SubmissionApproverHierarchy> submissionApproverHierarchyList = queryObj.setParameter("sqlStartDate", sqlStartDate).setParameter("sqlEndDate", sqlEndDate).setLong("projectId", projectId).setLong("masterCandidateId", masterCandidateId).setLong("approverId", approverId).list();
+			if (submissionApproverHierarchyList != null && !submissionApproverHierarchyList.isEmpty()) {
+				submissionApproverHierarchy = submissionApproverHierarchyList.get(0);
+			}else {
+				submissionApproverHierarchy = new SubmissionApproverHierarchy();
+				submissionApproverHierarchy.setSubmissionStatus(Submission_Status.getNameByValue("new"));
+				submissionApproverHierarchy.setSubmissionApprovalStatus(Submission_ApprovalStatus.getNameByValue("new"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return submissionApproverHierarchy;
+	}
+	
+	
 	
 }

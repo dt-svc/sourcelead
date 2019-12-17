@@ -28,5 +28,7 @@ public interface SubmissionTemplateDao {
 	
 	SubmissionTemplate getSubmissionTemplateByUUID(String uuid) throws Exception;
 	
+	SubmissionTemplate getDefaultInterviewTemplateByOrgLocationId(Long orgLocationId) throws Exception;
+	
 	
 }

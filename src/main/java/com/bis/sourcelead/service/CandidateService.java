@@ -10,20 +10,21 @@ import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
 import com.bis.sourcelead.dto.CandidateMarketPlaceDTO;
-import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.CandidateSourceDTO;
+import com.bis.sourcelead.dto.CandidateVerificationConfigDTO;
 import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.MarketplaceWalletDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateImportLog;
 import com.bis.sourcelead.entity.CandidateMarketCart;
 import com.bis.sourcelead.entity.CandidateMarketPlace;
 import com.bis.sourcelead.entity.CandidateMarketPlaceCartView;
 import com.bis.sourcelead.entity.CandidateMarketPlacePaymentTransactionHistory;
 import com.bis.sourcelead.entity.CandidateMarketWallet;
-import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.CandidateSource;
+import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.MarketplacePurchaseOrder;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
@@ -104,9 +105,9 @@ public interface CandidateService {
 	
 	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId)throws Exception;
 
-	public File getCandidateExcelFile(List<Candidate> candidatesList, String orgName,String isAssociate)throws Exception;
+	public File getCandidateExcelFile(List<CandidateGlobal> candidatesList, String orgName,String isAssociate)throws Exception;
 
-	public File getCandidatePdf(List<Candidate> candidatesList, String orgName,String isAssociate) throws Exception;
+	public File getCandidatePdf(List<CandidateGlobal> candidatesList, String orgName,String isAssociate) throws Exception;
 	
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId,String candidateType) throws Exception;
 	
@@ -233,7 +234,7 @@ public interface CandidateService {
 	 
 	 public List<CandidateDTO> getCandidateListForAddApplicant(OrgLocations orgLcoations,Long requirementId,String skills,String candidateDetails,Integer profilePercentage) throws Exception;
 	 
-	 public Candidate saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user,List<OrgRelations> vendorsList) throws Exception;
+	 public CandidateGlobal saveCandidateBulkImports(CandidateDTO candidateDTO, OrgLocations orgLocations,User user,List<OrgRelations> vendorsList) throws Exception;
 
 	public List<Map<String, BigInteger>> getAllActiveCandidatesByLocationName(Long locationId, String name);
 	
@@ -344,15 +345,15 @@ public interface CandidateService {
 	
 	public String getCandidatePanNumberByUserId(long userId, Long id);
 	
-    public Candidate getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
+    public CandidateGlobal getCandidateDetailsByPanNumberAndId(String panNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validatePanNumber(String panNumber, Long orgLocationId) throws Exception;
 	
-    public Candidate getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception;
+    public CandidateGlobal getCandidateDetailsByAadharNoAndId(String aadharNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateAadharNumber(String aadharNumber, Long orgLocationId) throws Exception;
 	
-    public Candidate getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
+    public CandidateGlobal getCandidateDetailsBySsnNoAndId(String ssnNumber, Long orgLocationId) throws Exception;
 	
 	public Boolean validateSsnNumber(String ssnNumber, Long orgLocationId) throws Exception;
 	
@@ -386,5 +387,11 @@ public interface CandidateService {
 	public List<Candidate> getOffshoreCandidatesByParentCandidateId(Long candidateId)throws Exception;
 	
 	Candidate getCandiateByConsultantUserIdAndOrgLocationId(Long userId,Long orgLocationId) throws Exception;
+	
+	Long getGlobalCandidateIdByCandidateId(Long candidateId) throws Exception;
+	
+	public Candidate getCandidateByCandidateGlobalId(Long candidateGlobalId) throws Exception;
+	
+	Long getCandidateIdByGlobalCandidateId(Long globalCandidateId) throws Exception;
 
 }

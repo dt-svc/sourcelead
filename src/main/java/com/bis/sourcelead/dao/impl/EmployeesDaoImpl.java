@@ -377,7 +377,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 		Employees employee = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			Query employeesListQuery= session.createQuery("from Employees emp where emp.user.id = :userId and  emp.orgLocations.id= :orgLocationId");
+			Query employeesListQuery= session.createQuery("from Employees emp left join fetch emp.departmentId dept where emp.user.id = :userId and  emp.orgLocations.id= :orgLocationId");
 			employee = (Employees) employeesListQuery.setLong("userId", userId).setLong("orgLocationId", orgLocationId).uniqueResult();
 		}catch (Exception e) {
 			e.printStackTrace();

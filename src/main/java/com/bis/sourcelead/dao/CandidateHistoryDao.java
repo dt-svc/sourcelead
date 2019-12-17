@@ -30,4 +30,8 @@ public interface CandidateHistoryDao {
 	public CandidateDocumentsHistory storeCandidateDocumentsHistory(CandidateDocumentsHistory candidateDocumentsHistory) throws Exception;
 	
 	public CandidateReferencesHistory storeCandidateReferencesHistory(CandidateReferencesHistory candidateReferencesHistory) throws Exception;
+	
+	List<CandidateHistory> getCandidateHistoryListByGlobalCandidateId(Long candidateGlobalId) throws Exception;
+
+	public CandidateHistory getCandidatebyCandidateUUID(String candidateUUID);
 }

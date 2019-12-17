@@ -3424,8 +3424,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
 		}
 
-		if (StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())) {
-			invoice.setDiscountAmount(invoiceDTO.getDiscountTotal());
+		if (StringUtils.isNotBlank(invoiceDTO.getDiscountValue())) {
+			invoice.setDiscountAmount(invoiceDTO.getDiscountValue());
 		}
 		if (StringUtils.isNotBlank(invoiceDTO.getDiscountTotal())) {
 			invoice.setDiscountValue(invoiceDTO.getDiscountTotal());

@@ -196,5 +196,9 @@ public interface UserRoleService {
     List<UserDTO> getAllActiveUsersList(Long orgLocationId) throws Exception;
     
     List<UserRole> getAllUserRolesByOrgLocationId(Long orgLocationId) throws Exception;
+    
+    List<UserRole> getAllUserRolesByOrgLocationIdAndIsSubscriptionStatus(Long orgLocationId,String subscriptionStatus) throws Exception;
+    
+    public UserRole getActiveUserDetailsByEmailAndLocationId(String email,Long locationId) throws Exception;
 
 }

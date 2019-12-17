@@ -16,9 +16,11 @@ import javax.mail.Store;
 import javax.mail.internet.MimeBodyPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import com.bis.sourcelead.entity.EmailScenarioConfiguration;
 
-
+@Component
 public class ReadEmail {
 	//public static Reader rd = new Reader();
 	// readMail(host, mailStoreType, username, password);

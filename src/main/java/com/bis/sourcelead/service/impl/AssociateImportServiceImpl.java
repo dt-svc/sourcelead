@@ -32,12 +32,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PaymentAccountDao;
+import com.bis.sourcelead.dao.PayrollPayheadDao;
 import com.bis.sourcelead.dto.AssociateSalaryIndDTO;
 import com.bis.sourcelead.dto.AssociateSalaryPayheadIndDTO;
 import com.bis.sourcelead.dto.IndAssociatePaymentAccountDTO;
 import com.bis.sourcelead.dto.PayrollPayheadDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.AssociateSalaryInd;
+import com.bis.sourcelead.entity.AssociateSalaryPayheadInd;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PaymentAccount;
@@ -75,6 +77,9 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 	
 	@Autowired
 	PayrollPayheadService payrollPayheadService;
+	
+	@Autowired
+	PayrollPayheadDao payrollPayheadDao;
 	
 	@Override
 	public AssociateBankErrorData saveAssociateInformation(MultipartFile multipartFile, OrgLocations orgLocation) throws Exception{
@@ -119,7 +124,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 							if(row.getCell(2) != null  && !"".equalsIgnoreCase(row.getCell(2).toString()))
 								InfoDataDTO.setUanNumber(getCellValueAsString(row.getCell(2), fileName));																	
 							if(row.getCell(3) != null  && !"".equalsIgnoreCase(row.getCell(3).toString()))
-								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""));
+								
+								
+								InfoDataDTO.setPfNumber(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]{10,25}" ,""));
+							
 							    InfoDataDTO.setEligibleForPf("Y");
 							if(row.getCell(4) != null  && !"".equalsIgnoreCase(row.getCell(4).toString()))
 								InfoDataDTO.setEsinumber(getCellValueAsString(row.getCell(4), fileName));
@@ -189,7 +197,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else if (row.getCell(3) == null || "".equalsIgnoreCase(row.getCell(3).toString())) {
 						InfoDataDTO.setReason("Pf Number is required");
 						return false;
-					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]" ,""))){
+					}else if(row.getCell(3) != null && !"".equalsIgnoreCase(row.getCell(3).toString()) && !validatePf(getCellValueAsString(row.getCell(3), fileName).replaceAll("[^A-Za-z0-9_]{10,25}" ,""))){
 						InfoDataDTO.setReason("Pf number should be between 10-25 characters");
 						return false;
 					}else if(row.getCell(4) != null && !"".equalsIgnoreCase(row.getCell(4).toString()) && !validateEsi(getCellValueAsString(row.getCell(4), fileName))){
@@ -390,7 +398,7 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 					}else {
 							Boolean flag = false;        
 					    for (PaymentAccount  pList:  paymentDetailsList){ 			
-					    	if(pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
+					    	if(pList.getEmail() != null && !pList.getEmail().isEmpty() && pList.getEmail().toLowerCase().equalsIgnoreCase(getCellValueAsString(row.getCell(1), fileName).toLowerCase()) && pList.getAccountType() != null && !pList.getAccountType().isEmpty() && pList.getAccountType().equalsIgnoreCase(getCellValueAsString(row.getCell(2), fileName)))
 					    	{			                        				
 					 			flag = true;
 					 		}	
@@ -498,15 +506,21 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 									associateSalaryIndDTOList.add(associateSalaryIndDTO);
 									continue;
 								}
-								if(row.getCell(5) != null && getCellValueAsString(row.getCell(5), fileName).trim() != null) {
+								if(row.getCell(5) != null && getCellValueAsString(row.getCell(5), fileName).trim() != null&&getCellValueAsString(row.getCell(5), fileName).trim()!= "") {
 									try{
 										  Integer.parseInt(getCellValueAsString(row.getCell(5), fileName).trim());
 										  associateSalaryIndDTO.setStandardHours(getCellValueAsString(row.getCell(5), fileName));
 										} catch (NumberFormatException e) {
-											associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
+											associateSalaryIndDTO.setErrorMessage("Invalid Standard Hours");
+											associateSalaryIndDTOList.add(associateSalaryIndDTO);
+											continue;
+											//associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
 										}
 								}else {
-									associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
+									associateSalaryIndDTO.setErrorMessage("Enter Standard Working Hrs");
+									associateSalaryIndDTOList.add(associateSalaryIndDTO);
+									continue;
+									//associateSalaryIndDTO.setStandardHours(orgLocation.getAverageWorkingHours().toString());
 								}
 								
 								if(row.getCell(6) != null && StringUtils.isNumeric(getCellValueAsString(row.getCell(6), fileName).trim())) {
@@ -552,6 +566,10 @@ public class AssociateImportServiceImpl implements  AssociateImportService{
 										        assoSalPayheadIndDTO.setPayrollPayheadId(id);
 										    }
 								        }
+										AssociateSalaryPayheadInd payrollPayhedId = payrollPayheadDao.getAssociateSalaryPayheadIndByPayrollPayhedId(assoSalPayheadIndDTO.getPayrollPayheadId());
+										if(payrollPayhedId != null) {
+											assoSalPayheadIndDTO.setId(payrollPayhedId.getId());
+										}
 										
 										for (String sc : mapPayheadShortCodeAndName.keySet())  
 								        { 
