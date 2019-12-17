@@ -230,5 +230,32 @@ public class CandidateEmployersDaoImpl  implements CandidateEmployersDao{
 		return employersCount;
 }
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public List<CandidateEmployers> getCandidatesGlobalEmployersListByCandidateIdAndOrgLocationID(Long candidateId,
+			Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers candidateEmployers  left join fetch candidateEmployers.candidateId  where candidateEmployers.orgLocationId =:orgLocationId and candidateEmployers.candidateId.id =:candidateId and  candidateEmployers.status = '1' ORDER BY (candidateEmployers.endYear) DESC,candidateEmployers.id DESC";  
+		List<CandidateEmployers> candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("candidateId", candidateId).list();
+		return candidateList;
+	}
+
+	@Override
+	@Transactional(rollbackFor = { Exception.class })	
+	public CandidateEmployers getCandidateGlobalEmployerBycandidateIdandCandidateEmployerID(Long candidateId,
+			Long candidateEmployerId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateEmployers  cEmp left join fetch cEmp.candidateId left join fetch cEmp.orgLocationId where cEmp.id = :candidateEmployersId and cEmp.candidateId.id = :candidateGlobalId ";
+		List<CandidateEmployers> employersList =  session.createQuery(query.toString()).setLong("candidateEmployersId", candidateEmployerId).setLong("candidateGlobalId", candidateId)
+				.list();
+		
+
+		CandidateEmployers canEMp = null;
+		if (employersList != null && employersList.size() > 0) {
+			canEMp = (CandidateEmployers) employersList.iterator().next();
+		}
+		return canEMp;
+	}
+
 
 }

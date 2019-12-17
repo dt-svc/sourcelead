@@ -1,5 +1,6 @@
 package com.bis.sourcelead.payroll.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bis.sourcelead.dto.Response;
@@ -50,6 +51,8 @@ public interface PaysheetFrequencyService {
 	List<PaysheetFrequency> getRecentlyRunPayrollListByFrequency(IntiateUSPayrollDTO intiateUSPayrollDTO, Long orgLocationId, String dateFormat);
 
 	List<PaysheetFrequency> getRecentlyRunPayrollData(Long orgLocationId);
+	
+	List<EmployeePayroll> getUSEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate, Date endDate, Long orgLocationId) throws Exception;
 
 	
 }

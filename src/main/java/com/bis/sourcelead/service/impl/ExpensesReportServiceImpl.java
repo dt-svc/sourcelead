@@ -23,6 +23,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.ExpensesReportDao;
+import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Expenses;
 import com.bis.sourcelead.entity.ExpensesApproverHierarchy;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -39,6 +41,7 @@ import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesReportService;
 import com.bis.sourcelead.service.ProjectMembersService;
 import com.bis.sourcelead.util.CalendarUtil;
@@ -69,6 +72,8 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	@Autowired
 	private CommonUtil commonUtil;
 	
+	@Autowired
+	private CandidateService candidateService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ExpensesReportServiceImpl.class);
 	
@@ -163,7 +168,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	}
 
 	@Override
-	public File expensesReportExportListPdf(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws ParseException, IOException {
+	public File expensesReportExportListPdf(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws Exception {
 		List<ProjectMembers> projectMembers = null;
 		//SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		String[] dates = frequencyMonth.split("TO");
@@ -265,7 +270,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 				return file;
 	}
 
-	private String[] prepareUserStringArray(ProjectMembers projectMember, String[] headers, String frequencyMonth,OrgLocations locations) throws ParseException {
+	private String[] prepareUserStringArray(ProjectMembers projectMember, String[] headers, String frequencyMonth,OrgLocations locations) throws Exception {
 		//SimpleDateFormat simpleDateFormat = locations.getLocFullFormDateFormatter();
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
@@ -367,10 +372,10 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 BigDecimal decUnApprovedTotal = new BigDecimal(0);
 				 for(Expenses exp:expenses){
 					 if(projectMember!=  null && null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployeeIdForExpenses() != null){
+							if(projectMember.getEmployee() != null){
 								expensesArray[0] = (projectMember.getEmployee().getEmployeeId());
 							}else {
-								expensesArray[0] = ("--");
+								expensesArray[0] = "--";
 							}
 							if(null != projectMember.getProjectMemberCandidteId()){
 								if(null != projectMember.getProjectMemberCandidteId().getLastName()){
@@ -385,12 +390,23 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								}else{
 									expensesArray[2] = "--";
 								}
+							}
+							
+								
 								if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
 									expensesArray[3] = projectMember.getProjectMemberCandidteId().getMobilePhone();
 								}else{
-									expensesArray[3] = "--";
+									if(projectMember.getProjectMemberCandidteId().getParentCandidateId() != null) {
+										Candidate parentCandidate = candidateService.getCandidateByCandidateId(projectMember.getProjectMemberCandidteId().getParentCandidateId().getId());
+										if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+											expensesArray[3] = parentCandidate.getMobilePhone();	
+			    						}
+									}
+									
 								}
-							}
+							
+							
+							
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType()){
 								expensesArray[4] = projectMember.getProjectMemberCandidteId().getDesignationType();
 							}else{
@@ -867,7 +883,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 	}
 
 	@Override
-	public File expensesReportExportListExcel(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws IOException, ParseException {
+	public File expensesReportExportListExcel(String frequencyMonth, OrgLocations orgLoc, User loginUser) throws Exception {
 		//SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		File file = null;
 		String[] dates = frequencyMonth.split("TO");
@@ -912,7 +928,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 		return file;
 	}
 
-	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ProjectMembers projectMember, String frequencyMonth, String[] headers,OrgLocations orgLoc) throws ParseException {
+	private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow, ProjectMembers projectMember, String frequencyMonth, String[] headers,OrgLocations orgLoc) throws Exception {
 		//SimpleDateFormat simpleDateFormat = orgLoc.getLocFullFormDateFormatter();
 		String[] dates = frequencyMonth.split("TO");
 		String startDate = dates[0];
@@ -1016,7 +1032,7 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 					 
 				 for(Expenses exp:expenses){
 					 if(null != projectMember.getProjectMemberCandidteId()){
-							if(projectMember.getEmployeeIdForExpenses()!= null ){
+							if(projectMember.getEmployee()!= null && exp.getProjectMembers().getEmployee() != null){
 								writeRow.createCell(0).setCellValue(exp.getProjectMembers().getEmployee().getEmployeeId());
 								 createExcelsheet.autoSizeColumn(0);
 							}else{
@@ -1037,13 +1053,22 @@ public class ExpensesReportServiceImpl implements ExpensesReportService {
 								}else{
 									writeRow.createCell(2).setCellValue("--");
 								}
-								if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
-									writeRow.createCell(3).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
-									 createExcelsheet.autoSizeColumn(3);
-								}else{
-									writeRow.createCell(3).setCellValue("--");
+								
+							}
+							
+							if(null != projectMember.getProjectMemberCandidteId().getMobilePhone()){
+								writeRow.createCell(3).setCellValue(projectMember.getProjectMemberCandidteId().getMobilePhone());
+								 createExcelsheet.autoSizeColumn(3);
+							}else{
+								if(projectMember.getProjectMemberCandidteId().getParentCandidateId() != null) {
+									Candidate parentCandidate = candidateService.getCandidateByCandidateId(projectMember.getProjectMemberCandidteId().getParentCandidateId().getId());
+									if(StringUtils.isNotEmpty(parentCandidate.getMobilePhone())) {
+										writeRow.createCell(3).setCellValue(parentCandidate.getMobilePhone());
+		    						}
 								}
 							}
+							
+							
 							if(null != projectMember.getProjectMemberCandidteId().getDesignationType()){
 								writeRow.createCell(4).setCellValue(projectMember.getProjectMemberCandidteId().getDesignationType());
 								 createExcelsheet.autoSizeColumn(4);

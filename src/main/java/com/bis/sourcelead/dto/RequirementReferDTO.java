@@ -13,6 +13,14 @@ public class RequirementReferDTO {
 	 private Long referRequirementId;
 	 
 	 private Long referId;
+	 
+	 private Integer appliedJobs;
+	 
+	 private Integer referByMeJobs;
+	 
+	 private Integer referToMeJobs;
+	 
+	 private String dateString;
 
 	public String getFirstName()
 	{
@@ -73,6 +81,40 @@ public class RequirementReferDTO {
 	{
 		this.referId = referId;
 	}
+
+	public Integer getAppliedJobs() {
+		return appliedJobs;
+	}
+
+	public void setAppliedJobs(Integer appliedJobs) {
+		this.appliedJobs = appliedJobs;
+	}
+
+	public Integer getReferByMeJobs() {
+		return referByMeJobs;
+	}
+
+	public void setReferByMeJobs(Integer referByMeJobs) {
+		this.referByMeJobs = referByMeJobs;
+	}
+
+	public Integer getReferToMeJobs() {
+		return referToMeJobs;
+	}
+
+	public void setReferToMeJobs(Integer referToMeJobs) {
+		this.referToMeJobs = referToMeJobs;
+	}
+
+	public String getDateString() {
+		return dateString;
+	}
+
+	public void setDateString(String dateString) {
+		this.dateString = dateString;
+	}
+
+	
 
 	
 }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -32,9 +33,7 @@ public interface RequirementWorkFlowService {
 	
 	List<RequirementWorkFlow> getRequirementWorkFlowByOrgLocationId(OrgLocations orgLocations)throws Exception;
 	
-	RequirementWorkFlow saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(OrgLocations orgLocations, User user)throws Exception;
-	
-	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages(OrgLocations orgLocations)throws Exception;
+	List<RequirementWorkFlowStagesDTO> getRequirementDefaultWorkFlowStages()throws Exception;
 	
 	ResponseList<RequirementWorkFlowDTO> getRequirementWorkFlowList(RequirementWorkFlowDTO requirementWorkFlowDTO, OrgLocations orgLocations , User user)throws Exception;
 
@@ -48,7 +47,7 @@ public interface RequirementWorkFlowService {
 
 	RequirementQuestionnaireTemplate getQuestionnaireTemplateByLabelName(Long orgLocationId,  String questinnaireName);
 
-	RequirementWorkFlowDTO getRequirementDefaultWorkflow(OrgLocations orgLocations)throws Exception;
+	RequirementWorkFlowDTO getRequirementDefaultWorkflow()throws Exception;
 
 	String deleteQuestionnaireTemplateById(String templateUuid, Long id)throws Exception;
 
@@ -130,7 +129,7 @@ public interface RequirementWorkFlowService {
 	
 	String saveDefaultRequirementWorkflowAndStages()throws Exception;
 
-	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId);
 	
 	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
 	
@@ -140,8 +139,9 @@ public interface RequirementWorkFlowService {
 
 	String deleteAssignedTask(String currentStageUuid, Long id);
 
-	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
+	String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageId, Long submissionId, Integer minutes,
 			Integer seconds);
 	
-	RequirementWorkFlow getRequirementWorkflowByNameAndOrgLocationId(String workflowId, long id)throws Exception;
+	String getWorkflowStageNameByShortCode(String shortCode)throws Exception;	
+	
 }

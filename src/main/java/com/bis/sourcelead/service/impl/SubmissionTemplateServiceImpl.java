@@ -77,5 +77,10 @@ public class SubmissionTemplateServiceImpl implements SubmissionTemplateService 
 	public SubmissionTemplate getSubmissionTemplateByUUID(String uuid) throws Exception {
 		return submissionTemplateDao.getSubmissionTemplateByUUID(uuid);
 	}
+
+	@Override
+	public SubmissionTemplate getDefaultInterviewTemplateByOrgLocationId(Long orgLocationId) throws Exception {
+		return submissionTemplateDao.getDefaultInterviewTemplateByOrgLocationId(orgLocationId);
+	}
 	
 }

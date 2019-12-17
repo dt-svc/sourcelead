@@ -40,9 +40,10 @@ public class CandidateIndexHelper {
 	public CandidateIndex getCandidateIndexFromCandidate(Candidate candidate) throws Exception{
 		CandidateIndex candidateIndex = null;
 		if(null != candidate && null != candidate.getId()){
-			//candidate = candidateService.getCandidateByCandidateId(candidate.getId());
 			candidateIndex = new CandidateIndex();
-			candidateIndex.setCandidateId(candidate.getId());
+			Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidate.getId());
+			candidateIndex.setCandidateId(candidateGlobalId);
+			candidateIndex.setCandidateGlobalId(null);
 			if(null != candidate.getOrgLocationId()){
 				candidateIndex.setOrgLocationId(candidate.getOrgLocationId().getId());
 			}else {
@@ -54,13 +55,8 @@ public class CandidateIndexHelper {
 			candidateIndex.setMiddleName(candidate.getMiddelName());
 			candidateIndex.setGender(candidate.getGender());
 			candidateIndex.setMaritalStatus(candidate.getMaritalStatus());
-			if(StringUtils.isNoneBlank(candidate.getLastName())) {
-				StringBuilder fullName = new StringBuilder();
-				fullName = fullName.append(commonUtil.firstLetterCapitalizedString(candidate.getFirstName())).append(" ").append(commonUtil.firstLetterCapitalizedString(candidate.getLastName()));
-				candidateIndex.setFullName(fullName.toString());
-			}else {
-				candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(candidate.getFirstName()));
-			}
+			 			
+			candidateIndex.setFullName(commonUtil.firstLetterCapitalizedString(candidate.getFullName()));
 			
 			candidateIndex.setEmail(candidate.getEmail().toLowerCase());
 			candidateIndex.setAlternateEmail(candidate.getAlternateEmail());

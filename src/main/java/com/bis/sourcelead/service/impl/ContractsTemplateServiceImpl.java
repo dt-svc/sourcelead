@@ -268,8 +268,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 			contracts.setUpdatedDate(new Date());
 			contracts.setContractUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
 		}
-		
-        Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		Timezone timezone = null;
+		if(orgLocation.getTimeZoneId() != null) {
+			timezone = timeZoneService.getTimezone(Long.valueOf(orgLocation.getTimeZoneId()));
+		}else {
+			timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+		}
+      
 		if(Constants.NDA.equalsIgnoreCase(contractsDTO.getContractType()) || Constants.NSA.equalsIgnoreCase(contractsDTO.getContractType())){
 			contracts.setContractType("Vendor "+contractsDTO.getContractType());
 		}
@@ -305,7 +310,13 @@ public class ContractsTemplateServiceImpl implements ContractsTemplateService{
 		if(StringUtils.isNotBlank(contractsDTO.getSubmissionOffersList())){
 			RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 			contracts.setRequirementSubmission(rs);
-			contracts.setCandidate(rs.getCandidate());			
+			Long candidateId = candidateService.getCandidateIdByGlobalCandidateId(rs.getCandidate().getId());
+			if(candidateId != null) {
+				Candidate candidate = new Candidate();
+				candidate.setId(candidateId);
+				contracts.setCandidate(candidate);		
+			}
+				
 		}
 		
 		if(Constants.Client_SOW.equals(contractsDTO.getContractType()) || Constants.Vendor_SOW.equals(contractsDTO.getContractType())){
@@ -2260,7 +2271,7 @@ public ResponseList<FullTimeContractsDTO> getAllApplicantContractsByLocationIdAn
 			}else{
 				RequirementSubmission rs = requirementSubmissionService.getRequirementSubmissionById(Long.parseLong(contractsDTO.getSubmissionOffersList()));
 				contracts.setRequirementSubmission(rs);
-				contracts.setCandidate(rs.getCandidate());	
+				//contracts.setCandidate(rs.getCandidate());	
 			}
 		}
 		

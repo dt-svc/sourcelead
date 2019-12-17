@@ -107,15 +107,23 @@ public class IndPaySlipPdf {
 				
 				
 				//Earning table related columns
-				TextColumnBuilder<String> earnings = col.column("Earnings", "earnings", type.stringType()).setFixedWidth(150);
+				TextColumnBuilder<String> earnings = col.column("Earnings", "earnings", type.stringType());
 				TextColumnBuilder<BigDecimal> amount = col.column("Amount", "amount", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.RIGHT);
 				TextColumnBuilder<BigDecimal> grossSalary = col.column("Gross Salary", "grossSalary", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.RIGHT);
-				TextColumnBuilder<String> earningsTotal = col.column("Total", "total", type.stringType()).setFixedWidth(150);
+				TextColumnBuilder<String> earningsTotal = col.column("Total Earnings", "total", type.stringType());
 
+				
+				//Employer Contribution
+				TextColumnBuilder<String> contribution = col.column("Employer Contribution", "earnings", type.stringType());
+				TextColumnBuilder<BigDecimal> emplouerAmount = col.column("Amount", "amount", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.RIGHT);
+				TextColumnBuilder<BigDecimal> employerGrossSalary = col.column("Gross Salary", "grossSalary", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.RIGHT);
+				TextColumnBuilder<String> employerContributionTotal = col.column("Total", "total", type.stringType());
+
+				
 				//Dudaction table related columns
-				TextColumnBuilder<String> deduction = col.column("Deduction", "deduction", type.stringType()).setFixedWidth(215);
+				TextColumnBuilder<String> deduction = col.column("Deduction", "deduction", type.stringType());
 				TextColumnBuilder<BigDecimal> deductionAmount = col.column("Amount", "deductionAmount", type.bigDecimalType()).setHorizontalAlignment(HorizontalAlignment.RIGHT);
-				TextColumnBuilder<String> deductionTotal = col.column("Total", "deductionTotal", type.stringType()).setFixedWidth(215);
+				TextColumnBuilder<String> deductionTotal = col.column("Total Deductions", "deductionTotal", type.stringType());
 
 				//Tabele border style related code
 				PenBuilder pen = stl.pen();
@@ -183,14 +191,25 @@ public class IndPaySlipPdf {
 				//Earning table
 				List<IndPayrollPaySlipEarning> tableItems1 = new LinkedList();
 				
+				//Employer Contribution table
+				List<IndPayrollPaySlipEarning> tableItems3 = new LinkedList();
+				
 				//Earning total table 
 				List<IndPayrollPaySlipEarningTotal> tableItemsTotal = new LinkedList();
+				
+				//Employer Contribution table 
+				List<IndPayrollPaySlipEarningTotal> employerTableItemsTotal = new LinkedList();
+				
+				//Employer Contribution table 
+				List<IndPayrollPaySlipEarningTotal> employerCTCTableItemsTotal = new LinkedList();
 				
 				//Deducation total table
 				List<IndPayrollPaySlipDeductionTotal> tableItemsDeductionTotal = new LinkedList();
 				
-				//Earning & Deducation total tabel
-				List<IndPayrollPaySlipEarningAndDeducationTotal> tableItemsEarningDeductionTotal = new LinkedList();
+				
+				//Net Salary total table
+				List<IndPayrollPaySlipDeductionTotal> tableItemsNetSalaryTotal = new LinkedList();
+				
 				
 				//Deducation table
 				List<IndPayrollPaySlipDeduction> tableItems2 = new LinkedList();
@@ -198,6 +217,7 @@ public class IndPaySlipPdf {
 				
 				BigDecimal  deducationTotal = new BigDecimal(0.00);
 				BigDecimal earningTotal = new BigDecimal(0.00);
+				BigDecimal employerContibutionTotal = new BigDecimal(0.00);
 				HashSet<IndEmployeePayroll> payrollList = new HashSet<>();
 		   		payrollList.add(indEmployeePayroll);
 		   		INDPayrollDTO indPayrollDTO = iNDPayrollCommonUtil.getINDPayrollDTOFromIndEmployeePayroll(payrollList, indEmployeePayroll.getIndPaysheetFrequency().getOrgLocation()).iterator().next();
@@ -206,7 +226,7 @@ public class IndPaySlipPdf {
 					//Earning list
 		   			List<AssociatePayrollPayheadHistoryDTO> earningList = associatePayrollPayheadDTOList
 		   					    .stream()
-		   				    	.filter(app -> (app.getPayrollPayheadType().equals("Earnings") && app.getPaySlip().equals("Y") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)))
+		   				    	.filter(app -> (app.getPayrollPayheadType().equals("Earnings") && app.getTaxStatus().equals("Taxable")  && app.getPaySlip().equals("Y") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)))
 		   					    .collect(Collectors.toList());
 		   			
 		   			IndPayrollPaySlipEarning ippe = null;
@@ -223,6 +243,27 @@ public class IndPaySlipPdf {
 						tableItems1.add(ippe);
 					}
 					
+		   			//Employer Contribution
+		   			List<AssociatePayrollPayheadHistoryDTO> employerContributionList = associatePayrollPayheadDTOList
+	   					    .stream()
+	   				    	.filter(app -> (app.getPayrollPayheadType().equals("Earnings")  && app.getTaxStatus().equals("NonTaxable") && app.getPaySlip().equals("Y") && (app.getMonthly()!=null && app.getMonthly().compareTo(BigDecimal.ZERO) > 0)))
+	   					    .collect(Collectors.toList());
+	   			
+		   			IndPayrollPaySlipEarning eippe = null;
+		   			if(!employerContributionList.isEmpty() && employerContributionList.size() > 0) {
+						for(AssociatePayrollPayheadHistoryDTO apph:employerContributionList) {
+							eippe = new IndPayrollPaySlipEarning();
+							eippe.setEarnings(apph.getPayrollPayheadName());
+							eippe.setAmount(apph.getMonthly());
+							eippe.setGrossSalary(apph.getMonthly());
+							employerContibutionTotal = employerContibutionTotal.add(apph.getMonthly());
+							tableItems3.add(eippe);
+						}
+					}else {
+						tableItems3.add(ippe);
+					}
+		   			
+		   			
 					//Deducation list
 					List<AssociatePayrollPayheadHistoryDTO> decuctionList =  associatePayrollPayheadDTOList
 						    	.stream()
@@ -251,6 +292,14 @@ public class IndPaySlipPdf {
 				.columnGrid(earnings,amount,grossSalary)
 				.setDataSource(tableItems1);
 				
+				//Employer Contribution Tabel content
+				JasperReportBuilder employerContributionTable = report();
+				employerContributionTable.setColumnTitleStyle(columnStyle).setColumnStyle(subtotalStyle)
+				.columns(contribution,emplouerAmount,employerGrossSalary)
+				.columnGrid(contribution,emplouerAmount,employerGrossSalary)
+				.setDataSource(tableItems3);
+				
+				
 				//Deducation Table content
 				JasperReportBuilder deductionTable = report();
 				deductionTable.setColumnTitleStyle(columnStyle).setColumnStyle(subtotalStyle)
@@ -259,10 +308,10 @@ public class IndPaySlipPdf {
 				.setDataSource(tableItems2);
 				
 				//earning total content
-				StyleBuilder subtotalEarningStyle = stl.style(Templates.columnStyle).setBackgroundColor(Color.decode("#ededed")).bold();
+				StyleBuilder subtotalEarningStyle = stl.style(Templates.columnStyle).setFontSize(11).setBackgroundColor(Color.decode("#ededed")).bold();
 				subtotalEarningStyle.setBorder(pen);
 				IndPayrollPaySlipEarningTotal ipet = new IndPayrollPaySlipEarningTotal();
-				ipet.setTotal("Total");
+				ipet.setTotal("Gross Salary");
 				ipet.setAmount(earningTotal);
 				ipet.setGrossSalary(earningTotal);
 				tableItemsTotal.add(ipet);
@@ -273,6 +322,39 @@ public class IndPaySlipPdf {
 				.columns(earningsTotal, amount, grossSalary)
 				.columnGrid(earningsTotal, amount, grossSalary)
 				.setDataSource(tableItemsTotal);
+				
+				//employer contribution  content
+				StyleBuilder subtotalEmployerStyle = stl.style(Templates.columnStyle).setBackgroundColor(Color.decode("#ededed")).bold();
+				subtotalEmployerStyle.setBorder(pen);
+				IndPayrollPaySlipEarningTotal eipet = new IndPayrollPaySlipEarningTotal();
+				eipet.setTotal("Total Contribution");
+				eipet.setAmount(employerContibutionTotal);
+				eipet.setGrossSalary(employerContibutionTotal);
+				employerTableItemsTotal.add(eipet);
+			 
+				StyleBuilder employerColumnStyleSize = stl.style(Templates.columnStyle).setFontSize(0).setTopPadding(0);
+				JasperReportBuilder employerTotalTable = report();
+				employerTotalTable.setColumnTitleStyle(employerColumnStyleSize).setColumnStyle(subtotalEmployerStyle)
+				.columns(employerContributionTotal,emplouerAmount,employerGrossSalary)
+				.columnGrid(employerContributionTotal,emplouerAmount,employerGrossSalary)
+				.setDataSource(employerTableItemsTotal);
+				
+				
+				//Cost to Company (CTC)   content
+				StyleBuilder subtotalEmployerCTCStyle = stl.style(Templates.columnStyle).setBackgroundColor(Color.decode("#ededed")).bold();
+				subtotalEmployerCTCStyle.setBorder(pen);
+				IndPayrollPaySlipEarningTotal ctcIpet = new IndPayrollPaySlipEarningTotal();
+				ctcIpet.setTotal("Cost to Company (CTC)");
+				ctcIpet.setAmount(earningTotal.add(employerContibutionTotal));
+				ctcIpet.setGrossSalary(earningTotal.add(employerContibutionTotal));
+				employerCTCTableItemsTotal.add(ctcIpet);
+			 
+				StyleBuilder employerCTCColumnStyleSize = stl.style(Templates.columnStyle).setFontSize(0).setTopPadding(0);
+				JasperReportBuilder employerCTCTotalTable = report();
+				employerCTCTotalTable.setColumnTitleStyle(employerCTCColumnStyleSize).setColumnStyle(subtotalEmployerCTCStyle)
+				.columns(employerContributionTotal,emplouerAmount,employerGrossSalary)
+				.columnGrid(employerContributionTotal,emplouerAmount,employerGrossSalary)
+				.setDataSource(employerCTCTableItemsTotal);
 				
 				
 				//deducation total content
@@ -291,22 +373,24 @@ public class IndPaySlipPdf {
 				.columnGrid(deductionTotal, deductionAmount)
 				.setDataSource(tableItemsDeductionTotal);
 				
-				//earning and deducation table contenet
-				IndPayrollPaySlipEarningAndDeducationTotal ipedt = new IndPayrollPaySlipEarningAndDeducationTotal();
-				ipedt.setEarnings("Gross Salary");
-				ipedt.setAmount(earningTotal);
-				ipedt.setGrossSalary(earningTotal);
-				ipedt.setDeduction("Net Salary");
-				ipedt.setDeductionAmount(indPayrollDTO.getNetPay());
-				tableItemsEarningDeductionTotal.add(ipedt);
 				
-
-				JasperReportBuilder earningsDeductionTotalTable = report();
-				earningsDeductionTotalTable.setColumnTitleStyle(columnStyleSize)
-				.setColumnStyle(subtotalStyle)
-				.columns(earnings, amount, grossSalary,deduction,deductionAmount)
-				.columnGrid(earnings, amount, grossSalary,deduction,deductionAmount)
-				.setDataSource(tableItemsEarningDeductionTotal);
+				
+				//Net Salary total content
+				StyleBuilder subtotalNetSalaryStyle = stl.style(Templates.columnStyle).setFontSize(11).setBackgroundColor(Color.decode("#ededed")).bold();
+				subtotalNetSalaryStyle.setBorder(pen);
+				
+				IndPayrollPaySlipDeductionTotal netSalaryIpsdt = new IndPayrollPaySlipDeductionTotal();
+				netSalaryIpsdt.setDeductionTotal("Net Salary");
+				netSalaryIpsdt.setDeductionAmount(indPayrollDTO.getNetPay());
+				tableItemsNetSalaryTotal.add(netSalaryIpsdt);
+				
+				JasperReportBuilder netSalaryTable = report();
+				netSalaryTable.setColumnTitleStyle(columnStyleSize)
+				.setColumnStyle(subtotalNetSalaryStyle)
+				.columns(deductionTotal, deductionAmount)
+				.columnGrid(deductionTotal, deductionAmount)
+				.setDataSource(tableItemsNetSalaryTotal);
+				
 				
 				String companyName;
 				String candidateName;
@@ -341,12 +425,16 @@ public class IndPaySlipPdf {
 								cmp.horizontalList().add(
 								cmp.verticalList().add(
 										cmp.subreport(earningsTable),
-										cmp.subreport(earningsTotalTable)),
+										cmp.subreport(earningsTotalTable),
+										cmp.verticalGap(10),
+										cmp.subreport(employerContributionTable),
+										cmp.subreport(employerTotalTable),
+										cmp.verticalGap(2),
+										cmp.subreport(employerCTCTotalTable)),
 								cmp.verticalList().add(
 										cmp.subreport(deductionTable),
-										cmp.subreport(earningsDeductionTable))),
-								cmp.verticalGap(10),
-								cmp.subreport(earningsDeductionTotalTable),
+										cmp.subreport(earningsDeductionTable),
+										cmp.subreport(netSalaryTable))).setGap(5),
 								cmp.verticalGap(10))
 						       .summary(
 								cmp.text("Amount (in words) : "+commonUtil.convertToIndianCurrency(indPayrollDTO.getNetPay())).setStyle(Templates.rootStyle).setHorizontalAlignment(HorizontalAlignment.LEFT),

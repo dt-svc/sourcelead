@@ -208,6 +208,7 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 				
 				//ind payroll cache removing unnecessary value after aprove and submitForAproval
 				List<EmployeeSessionIndPayroll> IndPayrollCahe = indPayrollService.getEmployeeSessionList(indApprovePayrollDTO.getPaySheetFrequencyUUID());
+				if(IndPayrollCahe != null && IndPayrollCahe.size() > 0)
 				indPayrollService.deleteIndPayrollCaheRecoedByPaySheetFrequencyUUID(IndPayrollCahe);
 				
 				if (savedPF != null) {
@@ -301,6 +302,12 @@ public class IndPaysheetFrequencyServiceImpl implements IndPaysheetFrequencyServ
 	@Override
 	public ResponseList<IndEmployeePayrollDTO> getPayrollSalaryRegisterReportReportList(IndEmployeePayrollDTO indEmployeePayrollDTO, OrgLocations orgLocations) {
 		return indPaysheetFrequencyDao.getPayrollSalaryRegisterReportReportList(indEmployeePayrollDTO, orgLocations);
+	}
+
+	@Override
+	public List<IndEmployeePayroll> getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(Date startDate,
+			Date endDate, Long orgLocationId) throws Exception {
+		return indPaysheetFrequencyDao.getEmployeePayRollListByFrequencyStartDateAndEndDateAndOrgLocationId(startDate, endDate, orgLocationId);
 	}
  
 }

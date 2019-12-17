@@ -17,4 +17,6 @@ public interface EmailReminderService {
 	
 	List<EmailReminder> getEmailReminderListByTabsIdAndOrgLocationId(Long tabsId, Long orgLocationsId);
 
+	List<EmailReminder> getReminderConfiguredOrgLocations(String scenarioName);
+
 }

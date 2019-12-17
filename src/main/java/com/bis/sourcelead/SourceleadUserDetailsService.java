@@ -119,6 +119,64 @@ public class SourceleadUserDetailsService implements UserDetailsService {
 		return buildUserForAuthentication(user, authorities);
 		
 	}
+	
+	
+	@Transactional(readOnly = true)
+	public UserDetails loadUserByUsernameForMobile(UserRole userRole) throws UsernameNotFoundException {
+
+		OrgLocations orgLocations = null;
+		List<Long> modulesId = null;
+		List<SourceleadActions> actionsList = null;
+		if (null == userRole.getUser().getUserType()
+				|| (!userRole.getUser().getUserType().equalsIgnoreCase(Constants.PROFESSIONAL)
+						&& !userRole.getUser().getUserType().equalsIgnoreCase(Constants.INDIVIDUAL_RECRUITER))) {
+			orgLocations = userRole.getOrgLocations();
+			try {
+				modulesId = modulesService.getOrgRegisteredModulesByOrgLocationId(orgLocations);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			try {
+				actionsList = sourceleadActionsService.getLoginUserRoleActionsByOrgLocationId(modulesId,
+						userRole.getRoles().getId(), orgLocations.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			orgLocations = userRole.getOrgLocations();
+			try {
+				actionsList = sourceleadActionsService
+						.getLoginCrowdSourcingUserRoleActionsByOrgLocationId(userRole.getRoles().getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		List<GrantedAuthority> authorities = buildUserAuthority(actionsList);
+		try {
+			if (userRole != null && userRole.getUserState() != null
+					&& userRole.getUserState().equals(Status.NOT_LOGGEDIN)) {
+				userRole.setUserState(Status.ACTIVE);
+				userRole.setNewlyLoginUser(Constants.YES);
+				userRoleService.addUserRole(userRole);
+				/*
+				 * Update USER DB data as ElasticSearch Documents
+				 */
+				Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userRole.getUser().getId(),
+						orgLocations.getId());
+				if (null != employee) {
+					userService.saveOrUpdateUserElkDocument(userRole, employee, userRole.getCreatedBy());
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return buildUserForAuthentication(userRole.getUser(), authorities);
+
+	}
+
+	
 
 	// Converts com.mkyong.users.model.User user to
 	// org.springframework.security.core.userdetails.User
