@@ -1021,7 +1021,10 @@ public class HrReportRestController {
 						}else{
 							projectMember.setProjectName("--");
 						}
+						projectMember.setProfileImage(projectMember.getProjectMemberCandidteId().getConsultantUser().getFileUrl());
 					}
+				 
+				 
 				 
 				 if(projectMember.getProjectClientsId() != null && projectMember.getProjectClientsId().getOrgRelationId() !=null && projectMember.getProjectClientsId().getOrgRelationId().getClientName() != null){
 					 projectMember.setClientNameExpenses(projectMember.getProjectClientsId().getOrgRelationId().getClientName());

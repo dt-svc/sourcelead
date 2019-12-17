@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bis.sourcelead.dashboard.dto.CustomDashBoardConfDTO;
 import com.bis.sourcelead.dashboard.entity.CustomDashBoardConfiguration;
+import com.bis.sourcelead.dashboard.entity.EnableDashBoardConfiguration;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.SubTabsDTO;
 import com.bis.sourcelead.dto.TabsDTO;
@@ -19,7 +20,14 @@ public interface CustomDashboardConfService {
 	
 	CustomDashBoardConfiguration getCustomDashboardConfById(Long customDashBoardConfID, Long orgLocationId);
 
-	List<TabsDTO> getRoleBasedModules(Long locationId, long roleId);
+	List<TabsDTO> getRoleBasedModules(Long locationId, long roleId, Long dashBoardId);
 
 	List<SubTabsDTO> getSubModules(Long tabId);
+	
+	void getCustomConfDashBoardListByOrgLocationId(Long orgLOcatinId, String customDashBoardUUID);
+
+	boolean enableCustomDashBoard(OrgLocations orgLOcatinId, boolean isEnable,Long loginUserId);
+
+	EnableDashBoardConfiguration getEnableDashBoardByLocationId(Long orgLOcatinId);
+	
 }

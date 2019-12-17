@@ -36,7 +36,7 @@
               <thead>
                 <tr>
                   <th>Cycle Name</th>
-                  <th>Performance Period<br>(<small class="custom-small">${SourceLeadWeb_dateFormat == 'dd-MM-yyyy' ? 'DD-MM-YYYY' : 'SourceLeadWeb_dateFormat' == 'yyyy-MM-dd' ? 'YYYY-MM-DD' : 'SourceLeadWeb_dateFormat' == 'MM-dd-yyyy' ? 'MM-DD-YYYY' : 'SourceLeadWeb_dateFormat' == 'yyyy-dd-MM' ? 'YYYY-DD-MM' : '' }</small>)</th>
+                  <th>Performance Period<br>(<small class="custom-small">${SourceLeadWeb_dateFormat == 'dd-MM-yyyy' ? 'DD-MM-YYYY' : SourceLeadWeb_dateFormat == 'yyyy-MM-dd' ? 'YYYY-MM-DD' : SourceLeadWeb_dateFormat == 'MM-dd-yyyy' ? 'MM-DD-YYYY' : SourceLeadWeb_dateFormat == 'yyyy-dd-MM' ? 'YYYY-DD-MM' : '' }</small>)</th>
                   <th>Action</th>
                 </tr>
               </thead>

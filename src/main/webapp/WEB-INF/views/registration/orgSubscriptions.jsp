@@ -15,11 +15,9 @@
 <div id="subscribeOrg" class="clearfix"></div>
 </form:form>
 
-
+<div id="popUp"></div>
 </div>
-
-
-
+ 
 <script>
 function addSubscription(licenseUUID){
 	  $("#subscriptionList").empty();
@@ -361,6 +359,9 @@ function getSubscribeCountries(country){
 </script>
 
 
+
+
+
 <script>
 function orgSubscriptionList(){
 	  var sourceleadUrl ='${sourceleadUrl}';
@@ -385,6 +386,7 @@ function orgSubscriptionList(){
 	               		 result = result +'<th>To Date<br>(<small class="custom-small">DD-MM-YYYY</small>)</th>';
 	               		 result = result +'<th>Storage</th>';
 	               		 result = result +'<th>Modules</th>';
+	               		 result = result +'<th>Action</th>';
 		                 result = result +"</tr>"; 
 	                     result = result +"</thead>";
 	                     result = result +"<tbody>"; 
@@ -415,16 +417,16 @@ function orgSubscriptionList(){
 	                    	 }
 	               
 	                    	 result = result +'<tr>';
-	                    	 result = result +'<td><a href="#"><div class="tbldata-dotdot-100" title='+opt.country+' onclick="addSubscription(\''+opt.licenseUUID+'\');">'+opt.country+'</div></a></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.subscriptionType+'>'+opt.subscriptionType+'</div></td>';
+	                    	 result = result +'<td><a><div class="tbldata-dotdot-100" title='+opt.country+' onclick="addSubscription(\''+opt.licenseUUID+'\');">'+opt.country+'</div></a></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+opt.subscriptionType+'>'+opt.subscriptionType+'</div></td>';
 	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+userSubscription+'>'+userSubscription+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+invoiceAmount+'>'+invoiceAmount+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.fromDateStr+'>'+opt.fromDateStr+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+toDateStr+'>'+toDateStr+'</div></td>';
-	                    	 result = result +'<td><div class="tbldata-dotdot-80" title='+opt.storageType+'>'+opt.storageType+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+invoiceAmount+'>'+invoiceAmount+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+opt.fromDateStr+'>'+opt.fromDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+toDateStr+'>'+toDateStr+'</div></td>';
+	                    	 result = result +'<td><div class="tbldata-dotdot_80" title='+opt.storageType+'>'+opt.storageType+'</div></td>';
 	                    	 
 	                 	    result = result +'<td>';
-		   		        	result = result +'<div class="positionRelative">';
+		   		        	result = result +'<div class="tbldata-dotdot">';
 			   		         for(var k=0; k<2; k++){
 			   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.modulesList[k]+'</p>';
 			   		         }
@@ -443,6 +445,24 @@ function orgSubscriptionList(){
 
 		   		        	result = result +'</div>';
 		   		        	result = result +'</td>';
+		   		        	
+		   		        	result = result +'<td>';
+		   		        	result = result +'<div class="">   '; 
+		   		        	if(opt.status == 1){
+		   		        		result = result +'  <label class="switch">    '; 
+			                    result = result +'  	<input type="checkbox" checked id="isSubscription'+opt.orgId+'" value="Y" onclick="orgUnSubscriptionPopUp('+opt.orgId+',\''+opt.country+'\',\''+opt.licenseUUID+'\');">   '; 
+			                    result = result +'  <div class="slider round"></div>    '; 
+			                    result = result +'  </label>                           '; 
+	                 			result = result +'</div>                             '; 
+		   		        	}else{
+		   		        		result = result +'  <label class="switch">    '; 
+			                    result = result +'  	<input type="checkbox"  id="isSubscription'+opt.orgId+'" value="N" onclick="orgUnSubscriptionPopUp('+opt.orgId+',\''+opt.country+'\',\''+opt.licenseUUID+'\');">   '; 
+			                    result = result +'  <div class="slider round"></div>    '; 
+			                    result = result +'  </label>                           '; 
+	                 			result = result +'</div>                             '; 
+		   		        	}
+		                    
+                 		    result = result +' </td>';
 	                    	 
 	                    	result = result +'</tr>';
 	                    	
@@ -452,14 +472,56 @@ function orgSubscriptionList(){
 	                     $("#subscriptionList").empty();
 	                     $("#subscriptionList").append(result); 
 	                     $("#subscriptionListLoading").removeAttr("style");
+	                     
          },
            
       }); 
 	 
 }
+
+
+function orgUnSubscription(orgId,country,subscriptionUUID){
+	var status = $("#isSubscription"+orgId).val();
+	   var sourceleadUrl ='${sourceleadUrl}';
+		  $.ajax({
+			  type : "POST",
+			  url: sourceleadUrl+"/orgSubscriptionAndUnsubscription?${_csrf.parameterName}=${_csrf.token}&orgId="+orgId+"&status="+status+"&country="+country+"&subscriptionUUID="+subscriptionUUID,
+	           success :function(json) {
+	        	   orgSubscriptionList();
+	        	   $("#popUp").empty();
+	        		 $(".project_inn_mask").fadeOut(200);
+	           }
+		  });
+}
 </script>
 
 <script>
+function orgUnSubscriptionPopUp(orgId,country,subscriptionUUID){ 
+	var status = $("#isSubscription"+orgId).val();
+	var result = "";
+	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+	if(status === 'Y'){
+		result = result +"		<p>Do you want to UnSubscribe "+country+" ?</p>";
+		result = result + ' <div id="reasonForProjectDiv"/>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="UnScubscribe" onclick="orgUnSubscription('+orgId+',\''+country+'\',\''+subscriptionUUID+'\')"><input class="u_can_color" type="button"  value="Cancel" onClick="orgUnSubscriptionCancel();"></b>';
+	}else{
+		result = result +"		<p>Do you want to Subscribe "+country+"  ?</p>";
+		result = result + ' <div id="reasonForProjectDiv"/>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Subscribe" onclick="orgUnSubscription('+orgId+',\''+country+'\',\''+subscriptionUUID+'\')"><input class="u_can_color" type="button"  value="Cancel" onClick="orgUnSubscriptionCancel();"></b>';
+	}
+	result = result +"	</div>";
+	$("#popUp").append(result);
+	$("#remove_user_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function orgUnSubscriptionCancel(){
+	$("#popUp").empty();
+	 $(".project_inn_mask").fadeOut(200);
+	 orgSubscriptionList();
+}
+
 function licenseSubscriptionDetails(licenseUUID){
 	   var sourceleadUrl ='${sourceleadUrl}';
 	  $.ajax({
@@ -842,4 +904,5 @@ var validationSettings = {
      	});
      
 	</script>
+	
 

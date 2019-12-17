@@ -1507,14 +1507,14 @@ function PerformanceManagement(){
 		  if(totalPercentage > percentage){
 			    $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('class','error signin_fild');
-			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'>Total percentage should not more than given category Percentage</p>");
+			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'><i class='fa fa-exclamation-triangle text-danger'></i> Total percentage should not more than given category Percentage</p>");
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist','yes');
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist-errorMsg','Total percentage should not more than given category Percentage'); 
 			    $("#savePerformanceBudget").attr("disabled", "disabled");
 		  }else if(totalPercentage < percentage){
 			    $('#categoryPercentageDiv'+$(this).data("template_id")).find('p.jquery_form_error_message').remove(); 
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('class','error signin_fild');
-			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'>Total percentage should not less than given category Percentage</p>");
+			    $('#percentageCatgValidation'+$(this).data("template_id")).after("<p class='jquery_form_error_message'><i class='fa fa-exclamation-triangle text-danger'></i> Total percentage should not less than given category Percentage</p>");
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist','yes');
 			    $('#percentageCatgValidation'+$(this).data("template_id")).attr('record-exist-errorMsg','Total percentage should not less than given category Percentage'); 
 			    $("#savePerformanceBudget").attr("disabled", "disabled");
@@ -1819,14 +1819,14 @@ this.appraisalCompetenciesList = function(categoriesIds,percentageMap){
 	  if(percentage > 100){
 		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
 		    $('#percentTotalSum').attr('class','error signin_fild');
-		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should not more than 100</p>");
+		    $('#percentTotalSum').after("<p class='jquery_form_error_message'><i class='fa fa-exclamation-triangle text-danger'></i> Total percentage should not more than 100</p>");
 		    $('#percentTotalSum').attr('record-exist','yes');
 		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should not more than 100'); 
 		    $("#savePerformanceBudget").attr("disabled", "disabled");
 	  }else if(percentage < 100){
 		    $('#percentSumDiv').find('p.jquery_form_error_message').remove(); 
 		    $('#percentTotalSum').attr('class','error signin_fild');
-		    $('#percentTotalSum').after("<p class='jquery_form_error_message'>Total percentage should equal 100</p>");
+		    $('#percentTotalSum').after("<p class='jquery_form_error_message'><i class='fa fa-exclamation-triangle text-danger'></i> Total percentage should equal 100</p>");
 		    $('#percentTotalSum').attr('record-exist','yes');
 		    $('#percentTotalSum').attr('record-exist-errorMsg','Total percentage should equal 100'); 
 		    $("#savePerformanceBudget").attr("disabled", "disabled");

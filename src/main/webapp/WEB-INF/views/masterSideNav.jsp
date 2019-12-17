@@ -357,14 +357,14 @@
 		          	
           </c:forEach>
 	         
-          	  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
+          	  <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_SOURCELEAD_ADMIN'}">
           			 <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>
-       	 	  </c:if>
+       	 	  </c:if> --%>
        	 	  
    	 	  <sec:authorize access="hasAnyRole('ROLE_ADD_MY_GOALS','ROLE_ADD_TEAM_GOALS','ROLE_ADD_MY_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL', 'ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')"> 
 			<li>
 				  <a href="#" class="performanceli" title="Performance">
-					<span class="navIcons finIcon"></span><b>Performance</b> <i class="fa fa-fw fa-caret-down"></i>
+					<span class="navIcons perorIcon"></span><b>Performance</b> <i class="fa fa-fw fa-caret-down"></i>
 				  </a>
 					  
 			        <ul class="collapses" style="display: none">

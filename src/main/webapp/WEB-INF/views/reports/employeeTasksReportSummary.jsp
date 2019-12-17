@@ -34,19 +34,6 @@
 });
 </script>
   <script type="text/javascript">
-	function columPop(){
-		$(".colPop").show();
-	}
-	function columClose(){
-		$(".colPop").hide();
-	}
-	/* $("html").click(function(){
-		$(".colPop").hide();
-	}); */
-	 $(".colPop").click(function(e){
-	 	e.stopPropagation();
-	});	 
-	 	
 	function columHide(){
 		hideColumns=[]; // reset the array object.
 		$(".toggle-vis").each(function() {
@@ -88,7 +75,7 @@
 	     
 	} ); 
 	</script>
-	
+
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
@@ -97,18 +84,18 @@
             <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}"> Home </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"> Report Dashboard </a> &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/employeeTasksReport"> Employee Tasks </a> &raquo; Employee Tasks List
      </div>
     </section>
-    <div class="invoiceGridview tdVmiddle clearfix project_wrap">
+    <div class="tdVmiddle clearfix project_wrap">
       <div class="" id="payrollRegister" style="display: block;">
         <div class="clearfix">
           <div class="positionRelative reportHead clearfix">
 			  <span class="pull-left refreIcon mb5">
 				  <a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetTaskRpoertFilter();"></a>
-				  <a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>
+				 <a href="javascript:void(0)" onclick="columPop();" title="Column Chooser" class="columIcon"></a>
 				  
 				  
 				  
 				  
-<div class="colPop">
+<div class="colPop" >
 	<div class="colPopMid coldropdown-parent">
 	<div class="clearfix">
 		<div class="row">
@@ -199,7 +186,7 @@
              <li class="" id="assetSearch" style="display: block;"><input type="text" class="repSearchBar" placeholder='Search' id='assetDataTableSearch'/><span class="repSearchIcon" onClick="getDynamicEmployeeTaskSummaryRepotList();"></span></li>
             </ul>
           </div>
-          <div class="datatable_filter dataSeaTop" id="employeeReportListDivId"/>
+          <div class="datatable_filter dataSeaTop invoiceGridview" id="employeeReportListDivId"/>
            
         </div>
       </div>
@@ -322,8 +309,9 @@
 	        </div>
 	        <div>
 	</div></form>
-	  </div>
+	  
   </section>
+ 
   
 <script>
 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -808,7 +796,20 @@ $("#assetDataTableSearch").keyup(function(e) {
 		 window.location.href = sourceleadUrl+"/getEmployeeTaskExport?searchValue="+searchValue+"&candidateid="+candidateId+"&exportType="+exportType+"&projectFilter="+projectFilter+"&taskTypeFilter="+taskTypeFilter+"&taskStatusFilter="+taskStatusFilter+"&priorityFilter="+priorityFilter+"&fromDate="+fromDate+"&toDate="+toDate+"&severityFilter="+severityFilter;
    }
 </script>
-   
+  <script>
+  $("html").click(function(){
+		$(".colPop").hide();
+	});
+	$(".colPop, .columIcon").click(function(e){
+	 	e.stopPropagation();
+	});
+	function columPop(){
+		$(".colPop").show();
+	}
+	function columClose(){
+		$(".colPop").hide();
+	}
+  </script> 
 
 <jsp:include page="userUsageReportsGraph.jsp" />
 <jsp:include page="../masterFooter.jsp" />
