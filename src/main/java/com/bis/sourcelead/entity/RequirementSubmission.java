@@ -634,7 +634,9 @@ public class RequirementSubmission implements Serializable{
 	@JsonProperty
 	private String invoiceGenerateDate;
 
-    
+    @Transient
+	@JsonProperty
+    private String stageComment;
     
 	public int getProfilePercentage()
 	{
@@ -1862,4 +1864,13 @@ public class RequirementSubmission implements Serializable{
 		this.submittedQuestionrUuid = submittedQuestionrUuid;
 	}
 
+	public String getStageComment() {
+		return stageComment;
+	}
+
+	public void setStageComment(String stageComment) {
+		this.stageComment = stageComment;
+	}
+
+	
 }
