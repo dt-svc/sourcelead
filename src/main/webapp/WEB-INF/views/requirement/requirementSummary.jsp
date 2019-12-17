@@ -601,6 +601,8 @@ function activeTabs(){
 	$("#pipelineQuickviewTabsqv").addClass("active");
 	$("#quickview").addClass("active in");
 	$("#detailview").removeClass("active in");
+    $(".import_profileTracker_side_wrap").removeClass("import_profileTracker_side_wrap_active");
+    $(".import_interviewTracker_side_wrap").removeClass("import_interviewTracker_side_wrap_active");
 }
 </script>
 

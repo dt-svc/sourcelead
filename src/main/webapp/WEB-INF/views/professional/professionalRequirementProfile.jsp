@@ -43,7 +43,7 @@ $(document).ready(function() {
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 function requirementProfile(requirementUUID){
-	var candidateId = '${SourceLeadWeb_candidateId}'
+	var candidateId = '${candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var referUUID = '${referUUID}';
     $.ajax({
@@ -169,9 +169,7 @@ function requirementProfile(requirementUUID){
 				 result = result +'            <div class="row">';
 				 result = result +'              <div class="col-md-3">';
 				 result = result +'                <div class="company-logo">';
-				 if(json.orgImageUrl != null && json.orgImageUrl != '' && json.orgImageUrl != 'undefined'){
 				 result = result +'                  <div class="orgImage"> <img onerror="predefineOrgProfileImage(this);" data-id="orgLogoImage" src="'+json.orgImageUrl+'" alt="Company" title="Company Logo" class="img-responsive"> </div>';
-				 }
 				 result = result +'                 </div>';
 				 
 				 result = result +'              </div>';

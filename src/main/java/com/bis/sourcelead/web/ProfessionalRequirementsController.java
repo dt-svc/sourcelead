@@ -38,6 +38,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.States;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateResumesService;
+import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContactsGroupService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.CrowdSourcingUserBankAccountsService;
@@ -107,6 +108,9 @@ public class ProfessionalRequirementsController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	CandidateService candidateService;
+	
 	protected boolean isNullOrEmpty(String str) {
 		return str == null || "".equals(str.trim());
 	}
@@ -136,7 +140,6 @@ public class ProfessionalRequirementsController {
 		    
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
-		        OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		        Countries countries = null;
 		        
 		        ModelAndView model = new ModelAndView();
@@ -170,9 +173,10 @@ public class ProfessionalRequirementsController {
 			       
 				
 				if(null != candidateId){
+					Long candidateGlobalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
 					Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
 					model.addObject("resumesCount", resumesCount);
-					model.addObject("candidateId", candidateId);
+					model.addObject("candidateId", candidateGlobalId);
 				}
 				
 				
@@ -245,7 +249,8 @@ public class ProfessionalRequirementsController {
 	 @RequestMapping(value = "/requirementProfileDetails")
 		public ModelAndView userSummaryDetails(HttpServletRequest request, @RequestParam(value = "requirementUUID", required = false) String requirementUUID,
 				@RequestParam(value = "referUUID", required = false) String referUUID) throws Exception {
-		 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");	 
+		 Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");	
+		 Long candidatGloabalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
 		 ModelAndView model = new ModelAndView();
 			  SessionMaintainanceData sessionData = (SessionMaintainanceData)request.getSession().getAttribute("sessionData");
 			 if(sessionData == null)
@@ -253,8 +258,8 @@ public class ProfessionalRequirementsController {
 			 	sessionData = new SessionMaintainanceData();
 			 }
 			 
-			 if(null != candidateId){
-				 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidateId);
+			 if(null != candidatGloabalId){
+				 Integer resumesCount = candidateResumesService.getCandidateResumeCountByCandidateId(candidatGloabalId);
 				 model.addObject("resumesCount", resumesCount);
 			 }
 			 
@@ -266,7 +271,7 @@ public class ProfessionalRequirementsController {
 			model.addObject("requirementUUID", requirementUUID);
 			model.addObject("referUUID", referUUID);
 			
-			model.addObject("candidateId", candidateId);
+			model.addObject("candidateId", candidatGloabalId);
 			return model;
 
 		}
@@ -277,6 +282,7 @@ public class ProfessionalRequirementsController {
 		        String resultJson;
 		        User  user = (User)SourceLeadSessionManager.getSessionAttribute(request, "user");
 		        Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+		        Long candidatGloabalId = candidateService.getGlobalCandidateIdByCandidateId(candidateId);
 		        Requirement requirement = requirementService.getRequirementByRequirementUUID(requirementUUID);
 		        if(null != requirement.getOrgLocationId()){
 		        	if(null != requirement.getOrgLocationId().getOrg()){
@@ -287,7 +293,7 @@ public class ProfessionalRequirementsController {
 		        	}
 		        }
 		        
-		        if(null !=  requirement.getAppliedProfessionals() && null != user && null != candidateId){
+		        if(null !=  requirement.getAppliedProfessionals() && null != user && null != candidatGloabalId){
 	    			  List<Long> userId = new ArrayList<Long>();
 	    			  String[] appliedProfessionals = requirement.getAppliedProfessionals().split(",");
 	 					for (int i=0; i < appliedProfessionals.length; i++){
@@ -296,7 +302,7 @@ public class ProfessionalRequirementsController {
 	 					boolean flag = userId.contains(user.getId());
 	 					if(flag == true){
 	 						requirement.setIsJobApplied(Constants.YES);
-	 						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirement.getId(), candidateId);
+	 						RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByRequirementIdAndCandidateId(requirement.getId(), candidatGloabalId);
 	 		 	    		   if(null != submission){
 	 		 	    			 requirement.setSubmissionId(submission.getId());
 	 		 	    		   }

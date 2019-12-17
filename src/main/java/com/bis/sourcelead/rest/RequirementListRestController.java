@@ -134,6 +134,7 @@ import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowStagesDTO;
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTemplate;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 
@@ -814,6 +815,7 @@ public class RequirementListRestController {
 									}
 									String candidateName = "";
 									HashMap<String , String> stagesMap = null;
+									LinkedHashMap<String , String> previousStageMap = new LinkedHashMap<String , String>(); 
 									if (requirementSubmissionTemplateFields != null) {
 										if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 											StringBuilder candidateNameSB = new StringBuilder();
@@ -830,8 +832,19 @@ public class RequirementListRestController {
 									}
 									if(requirementSubmissionsDTO.getWorkFlowId() != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkFlowId().toString())){
 									 stagesMap = requirementWorkFlowService.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmission.getSubmissionStatus());
-									   if(stagesMap!= null && stagesMap.size() >0) {
-									 	requirementSubmission.setWorkflowStagesMap(stagesMap);
+									 if(stagesMap!= null && stagesMap.size() >0) {
+										 if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase("ONHOLD")) {
+												if(Constants.ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP.get(requirementSubmission.getPreviousSubmissionStatus()) != null){
+													previousStageMap.put(requirementSubmission.getPreviousSubmissionStatus(), Constants.ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP.get(requirementSubmission.getPreviousSubmissionStatus()));	
+												}else{
+													String previousStageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementSubmission.getPreviousSubmissionStatus());
+													previousStageMap.put(requirementSubmission.getPreviousSubmissionStatus(), previousStageName);
+												}
+												
+											}
+										  // previousStageMap used for on hold status for showing previous status and adding all the stages to previousStageMap.
+											previousStageMap.putAll(stagesMap);
+									 	requirementSubmission.setWorkflowStagesMap(previousStageMap);
 									   }
 									}
 									
@@ -871,12 +884,18 @@ public class RequirementListRestController {
 										}
 									}
 									
-									if(requirementSubmission.getSubmissionStatus() != null) {
-										//ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-										String status =	requirementSubmission.getSubmissionStatus();
-										if(status != null && stagesMap != null) {
-						  				requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(status));
-										}else {
+									if (requirementSubmission.getSubmissionStatus() != null) {
+										// ApplicantSubmissionDisplayStatus status =
+										// ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										String status = requirementSubmission.getSubmissionStatus();
+										if (status != null && stagesMap != null && stagesMap.size()>0) {
+											String displayStatus = previousStageMap.get(status);
+											if (StringUtils.isNotBlank(displayStatus)) {
+												requirementSubmission.setSubmissionDisplayStatus(previousStageMap.get(status)); // for custom stage name .
+											} else {
+												requirementSubmission.setSubmissionDisplayStatus( Constants.ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP.get(status));
+											}
+										} else {
 											requirementSubmission.setSubmissionDisplayStatus(status);
 										}
 									}
@@ -1030,6 +1049,7 @@ public class RequirementListRestController {
 									
 									String candidateName = "";
 									HashMap<String , String> stagesMap = null;
+									LinkedHashMap<String , String> previousStageMap = new LinkedHashMap<String , String>(); 
 									if (requirementSubmissionTemplateFields != null) {
 										if (!isNullOrEmpty(requirementSubmissionTemplateFields.getLastName())) {
 											StringBuilder candidateNameSB = new StringBuilder();
@@ -1055,7 +1075,18 @@ public class RequirementListRestController {
 										if(requirementSubmissionsDTO.getWorkFlowId() != null && StringUtils.isNotBlank(requirementSubmissionsDTO.getWorkFlowId().toString())){
 										stagesMap = requirementWorkFlowService.getRequirementWorkflowStagesBySeqOrderWorkflowIdAndStageName(requirementSubmissionsDTO.getWorkFlowId(), orgLocation, requirementSubmissionsDTO.getSubmissionType());
 										if(stagesMap!= null && stagesMap.size() >0) {
-											requirementSubmission.setWorkflowStagesMap(stagesMap);
+											if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase("ONHOLD")) {
+												if(Constants.ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP.get(requirementSubmission.getPreviousSubmissionStatus()) != null){
+													previousStageMap.put(requirementSubmission.getPreviousSubmissionStatus(), Constants.ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP.get(requirementSubmission.getPreviousSubmissionStatus()));	
+												}else{
+													String previousStageName = requirementWorkFlowService.getWorkflowStageNameByShortCode(requirementSubmission.getPreviousSubmissionStatus());
+													previousStageMap.put(requirementSubmission.getPreviousSubmissionStatus(), previousStageName);
+												}
+												
+											}
+											// previousStageMap used for on hold status for showing previous status and adding all the stages to previousStageMap.
+											previousStageMap.putAll(stagesMap);
+											requirementSubmission.setWorkflowStagesMap(previousStageMap);
 										}
 										// here setting questionnaire to stage if candidate submitted questionnaire for particular stage otherwise setting empty value.
 										// below service call used to get requirement work flow stage Id.
@@ -1077,17 +1108,20 @@ public class RequirementListRestController {
 									requirementSubmission.setCandidateId(requirementSubmission.getCandidate().getId().toString());
 									
 									
-									if(requirementSubmission.getSubmissionStatus() != null) {
-										/*ApplicantSubmissionDisplayStatus status =	ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
-										if(status != null)*/
-										if(stagesMap != null) {
-											System.out.println("stagesMap stage name is "+stagesMap.get(requirementSubmission.getSubmissionStatus()));
-						  				requirementSubmission.setSubmissionDisplayStatus(stagesMap.get(requirementSubmission.getSubmissionStatus()));
-										}else {
-											System.out.println("stagesMap else stage name is "+requirementSubmission.getSubmissionStatus());
-											requirementSubmission.setSubmissionDisplayStatus(requirementSubmission.getSubmissionStatus());
+									if (requirementSubmission.getSubmissionStatus() != null) {
+										// ApplicantSubmissionDisplayStatus status =
+										// ApplicantSubmissionDisplayStatus.valueOf(requirementSubmission.getSubmissionStatus().toString());
+										String status = requirementSubmission.getSubmissionStatus();
+										if (status != null && stagesMap != null && stagesMap.size()>0) {
+											String displayStatus = previousStageMap.get(status);
+											if (StringUtils.isNotBlank(displayStatus)) {
+												requirementSubmission.setSubmissionDisplayStatus(previousStageMap.get(status)); // this is for custom stage name.
+											} else {
+												requirementSubmission.setSubmissionDisplayStatus( Constants.ALL_WORKFLOW_STAGES_AND_SHORTCODES_MAP.get(status));
+											}
+										} else {
+											requirementSubmission.setSubmissionDisplayStatus(status);
 										}
-										
 									}
 									if (requirementSubmission.getVendorLocationId() != null) {
 										requirementSubmission.setOrgName(requirementSubmission.getVendorLocationId().getOrgLocationName());
@@ -2177,7 +2211,7 @@ public class RequirementListRestController {
 						requirementSubmission.setLocation(requirementSubmissionTemplateFields.getLocation());
 						requirementSubmission.setDateOfBirthStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(),requirementSubmissionTemplateFields.getDateOfBirth()));
 						requirementSubmission.setCurrentCtc(requirementSubmissionTemplateFields.getCurrentCTC());
-						//requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
+						requirementSubmission.setEducation(requirementSubmissionTemplateFields.getEducation());
 						requirementSubmission.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(loginOrgLocation.getDateFormat(), requirementSubmission.getCreatedDate()));
 						requirementSubmission.setNoticePeriod(requirementSubmissionTemplateFields.getNoticePeriod());
 						if(requirementSubmission.getCandidateResumes() != null) {
@@ -2220,6 +2254,18 @@ public class RequirementListRestController {
 						List<Candidate> candidateList = new ArrayList<>();
 						candidateList.add(candidate);
 						requirementSubmission.setScore(requirementSubmission.getCandidateScore());
+						
+						RequirementWorkFlowStages workflowSatge = requirementWorkFlowService.getRequirementWorkFlowStagesDetails(submissionType,workflowId, loginOrgLocation.getId());
+						if(workflowSatge != null){
+							RequirementQuestionnaireFeedbackTemplate feedbacTemplate= requirementWorkFlowService.getSubmittedQuestionnaireUuidByWorkflowStage(workflowSatge.getUuid(), requirementSubmission.getId(), loginOrgLocation.getId());	
+						if(feedbacTemplate != null){
+							requirementSubmission.setSubmittedQuestionrUuid("Submitted");
+						}else{
+							if(workflowSatge.getRequirementQuestionnaireTemplateId() != null)
+							requirementSubmission.setSubmittedQuestionrUuid("Not Submitted");
+						}
+						}
+						
 				}
 			}
 			file = requirementPipelineExportService.getWorkflowExportRequirementFile(requirementStatusList, loginOrgLocation, exportType, requirementId, workflowId, submissionType, requirementSubmissionCounts);

@@ -273,7 +273,7 @@
 															+ requirementId
 															+ ',\''
 															+ submissionType
-															+ '\')";>';
+															+ '\',\''+opt.candidateName+'\')";>';
 													result = result + "<option value='Status'>" + opt.submissionDisplayStatus + "</option>";
 													/* if (opt.submissionStatus == 'INTERVIEW'){
 														result = result + "<option value='SelectedOnInterview'>Selected on Interview</option>";
@@ -314,7 +314,7 @@
 													+ requirementId
 													+ ',\''
 													+ submissionType
-													+ '\')";>';
+													+ '\',\''+opt.candidateName+'\')";>';
 												 result = result
 													+ "<option value='Status'>"
 													+ opt.submissionDisplayStatus

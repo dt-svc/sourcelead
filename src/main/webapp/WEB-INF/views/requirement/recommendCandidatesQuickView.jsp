@@ -15,7 +15,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getCandidateById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
          success :function(result) {
         	 var json = result.object;
         	 if(result.response === "SESSION_TIMEDOUT") {
@@ -207,7 +207,6 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 		  				  recQvemployeeSubmission(candidateId);
 		  				  recQveducationSubmission(candidateId);
 						  recQwikCertificates(candidateId);
-// 						  candidateSideBar(candidateId);
 		              }else{
 		       	    	         var result ="";
 		      		    	     result = result+"   <div class='row'>"; 
