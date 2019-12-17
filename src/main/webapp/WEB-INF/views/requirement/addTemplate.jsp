@@ -79,7 +79,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 							</div>
 						</div>  --%>
 						
-						 <div class="form-group mt25">
+						 <div class="form-group mt5">
 			              <label class="col-md-3">Skills</label>
 			              <div class="col-md-9">
 			                <select multiple class="chosen-select form-control" name="skills" data-placeholder="Select Skills" id="skills" data-validation-optional="true">

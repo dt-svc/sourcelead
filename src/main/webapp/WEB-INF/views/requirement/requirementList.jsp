@@ -322,9 +322,9 @@ function statusvalidating(id){
 					<option
 						${requirement.noticeperiodList  == '1-Month' ? 'selected' : ''}>1-Month</option>
 					<option
-						${requirement.noticeperiodList  == '2-Month' ? 'selected' : ''}>2-Month</option>
+						${requirement.noticeperiodList  == '2-Months' ? 'selected' : ''}>2-Months</option>
 					<option
-						${requirement.noticeperiodList  == '3-Month' ? 'selected' : ''}>3-Month</option>
+						${requirement.noticeperiodList  == '3-Months' ? 'selected' : ''}>3-Months</option>
 				</select>
 			</div>
 		</div>
@@ -376,7 +376,7 @@ function statusvalidating(id){
 				<label>Selected Cities</label>
 				<div class="clearfix">
 				   <select class="chosen-select form-control input-sm" multiple
-						data-placeholder="sletected cites" id="city" name="city">
+						data-placeholder="selected cites" id="city" name="city">
 					</select>
 				</div>
 			</div>

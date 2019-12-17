@@ -138,6 +138,7 @@ public class RequirementInterviewRestController {
 	public @ResponseBody ResponseList<RequirementSubmissionsDTO> getAllShortListCandidates(@RequestParam(value="requirementId", required=false) Long requirementId,
 			                                              @RequestParam(value="existingApplicantsIds", required=false) List<Long> existingApplicantsIds,
 			                                              @RequestParam(value="isClientInterview", required=false) String isClientInterview,
+			                                              @RequestParam(value="isWorkflowConfigured", required=false) String isWorkflowConfigured,
 			                                              HttpServletRequest request) throws Exception {
 		ResponseList<RequirementSubmissionsDTO> response = new ResponseList<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
@@ -145,11 +146,19 @@ public class RequirementInterviewRestController {
 		if (requirement != null && requirement.getPrimaryRecruiterUserId() != null && user.getId() == requirement.getPrimaryRecruiterUserId().getId()) {
 			user = requirement.getManagerUserId();
 		}
+		if(isWorkflowConfigured == null){
+		if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+	              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+			isWorkflowConfigured = Constants.BOOLEAN_FALSE;
+		}else{
+			isWorkflowConfigured = Constants.BOOLEAN_TRUE;
+		}
+		}
 		if(user != null) {
 			try {
 				OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 				String loginUserRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
-				List<RequirementSubmissionsDTO> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+				List<RequirementSubmissionsDTO> shortListCandidatesList = requirementSubmissionService.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations, requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole, isWorkflowConfigured);
 				for (RequirementSubmissionsDTO sub : shortListCandidatesList) {
 					 StringBuilder nameBuilder = new StringBuilder();
 					RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(sub.getId());

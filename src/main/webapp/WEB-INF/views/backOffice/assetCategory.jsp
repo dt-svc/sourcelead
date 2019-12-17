@@ -304,9 +304,8 @@ function addCategoryDoc(categoryId){
 </script>
 <script type="text/javascript">
 function validateCategoryName(){
-	var categoryName = document.getElementById("categoryName").value;
+	var categoryName = document.getElementById("categoryName").value.trim();
 	$("#save_button").removeAttr("disabled");
-	
 	var categoryId = document.getElementById("catId").value;
 	if(categoryId == 'undefined' || categoryId == null){
 		categoryId = '';

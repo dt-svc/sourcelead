@@ -36,9 +36,9 @@
 						<select class="chosen-select" id="workingStatus" name="workingStatus" data-validation="required" field-name="Working Status">
 							<option selected value="">-Select Working Status-</option>
 							<option value="Assigned" ${assetAssignData.workingStatus eq "Assigned" ? 'selected' : ''}>Assigned</option>
-							<option value="unassigned" ${assetAssignData.workingStatus eq "unassigned" ? 'selected' : ''}>unassigned</option>
-							<option value="end of life" ${assetAssignData.workingStatus eq "end of life" ? 'selected' : ''}>end of life</option>
-							<option value="Out of service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
+							<option value="Unassigned" ${assetAssignData.workingStatus eq "Unassigned" ? 'selected' : ''}>unassigned</option>
+							<option value="End Of Life" ${assetAssignData.workingStatus eq "End Of Life" ? 'selected' : ''}>end of life</option>
+							<option value="Out Of Service" ${assetAssignData.workingStatus eq "Out Of Service" ? 'selected' : ''}>Out of service</option>
 						</select>	
 		            </div>
 		            </div>
@@ -160,7 +160,7 @@
 						<div class="col-md-5">
 			              	<label class="clearfix">Cost</label>
 							<div class="clearfix">
-			                	<input type="text" class="form-control input-sm" id="cost" name="cost" placeholder="Cost" field-name="Cost"  value="${assetAssignData.cost}" data-validation="validate_float validate_length length1-50" data-validation-optional="true">
+			                	<input type="text" class="form-control input-sm" id="cost" name="cost" placeholder="Cost" field-name="Cost"  value="${assetAssignData.cost}" data-validation="validate_float validate_length length2-10" data-validation-optional="true">
 			              	</div>
 				          </div>
 				          
@@ -420,7 +420,7 @@ function getCustomDependentField(sectionId){
 
 <script type="text/javascript">
  function validateAssetSno(assetId) {
-	 var assetSno = $("#sno").val(); 
+	 var assetSno = $("#sno").val().trim(); 
 	 var atsUrl = '${SourceLeadWeb_atsUrl}';
 	 if(assetSno != null && assetSno != ""){
 		 $("#add_asset").attr("disabled", "disabled");

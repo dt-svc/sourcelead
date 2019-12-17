@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -58,6 +59,7 @@ import com.bis.sourcelead.dto.JobFairRequirementsDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.SourceleadSectionDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailReminder;
 import com.bis.sourcelead.entity.JobFair;
@@ -82,6 +84,7 @@ import com.bis.sourcelead.entity.SubmissionTemplate;
 import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
+import com.bis.sourcelead.service.CandidateHistoryService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ContractsTemplateService;
 import com.bis.sourcelead.service.CountriesService;
@@ -224,6 +227,9 @@ public class RequirementController {
 	
 	@Autowired
     EmailReminderService emailReminderService;
+	
+	@Autowired
+	 CandidateHistoryService candidateHistoryService;
 	
 	
 	protected boolean isNullOrEmpty(String str) {
@@ -597,12 +603,6 @@ public class RequirementController {
 		// workflow List commented by SRINIVAS SABBU.
 		List<RequirementWorkFlow> workflowList = new ArrayList<RequirementWorkFlow>();
 		workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		if (workflowList == null || workflowList.size() == 0) {
-			User user = new User();
-			user.setId(userId);
-			requirementWorkFlowService.saveRequirementDefaultWorkFlowAndStagesByOrgLocationId(orgLocations, user);
-			workflowList = requirementWorkFlowService.getRequirementWorkFlowByOrgLocationId(orgLocations);
-		}
 		if (workflowList != null && workflowList.size() > 0) {
 			model.addObject("workflowList", workflowList);
 		}
@@ -888,20 +888,21 @@ public class RequirementController {
 			
 			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 				Long requirementId = requirement.getId();
-				RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+				/*RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
 				System.out.println(" defalt workflow id is :>>>"+workflowDTO.getId());
-				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());
-				if(requirement.getWorkflowId() != null  && workflowDTO.getId() != requirement.getWorkflowId().getId()) {
-					System.out.println("OTHER THAN DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
+				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());*/
+				if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+						              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+					logger.debug("DEFAULT WORKFLOW IS FOUND WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME : "+requirement.getWorkflowId().getWorkFlowName());
+					model.addObject("workflowConfigured", false);
+					model.setViewName("requirement/requirementSummary");	 
+				}else {
+					logger.debug("OTHER THAN DEFAULT WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME :  "+requirement.getWorkflowId().getWorkFlowName());
 					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
 					model.addObject("stagesList", stagesList);
 					model.addObject("workflowId", requirement.getWorkflowId().getId());
 					model.addObject("workflowConfigured", true);
 					model.setViewName("requirement/requirementWorkflowSummary");
-				}else {
-					System.out.println("DEFAULT WORKFLOW IS FOUND >>>>>>>>>>>>>");
-					model.addObject("workflowConfigured", false);
-					model.setViewName("requirement/requirementSummary");
 				}
 				
 				model.addObject("requirementId",requirementId);
@@ -976,8 +977,8 @@ public class RequirementController {
 				}
 				
 				if(!isNullOrEmpty(candidateUUID)){
-					Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
-					model.addObject("candidateId", canidate.getId());
+					CandidateHistory canidate = candidateHistoryService.getCandidatebyCandidateUUID(candidateUUID);
+					model.addObject("candidateId", canidate.getCandidateId());
 				}
 				
 				if(!isNullOrEmpty(submissionId)){
@@ -1008,8 +1009,8 @@ public class RequirementController {
 			}
 			
 			if(!isNullOrEmpty(candidateUUID)){
-				Candidate canidate = candidateService.getCandidateByUUID(candidateUUID);
-				model.addObject("candidateId", canidate.getId());
+				CandidateHistory canidate = candidateHistoryService.getCandidatebyCandidateUUID(candidateUUID);
+				model.addObject("candidateId", canidate.getCandidateId());
 			}
 			
 			if(!isNullOrEmpty(submissionId)){
@@ -1057,7 +1058,6 @@ public class RequirementController {
 		if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
 			Long requirementId = requirement.getId();
 			
-			model.setViewName("requirement/requirementSummary");
 			model.addObject("requirementId",requirementId);
 			
 			model.addObject("requirement",requirement);
@@ -1097,7 +1097,10 @@ public class RequirementController {
 	            model.addObject("parentRequirement","N");
 	        }
 	        
-	        if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
+	        Integer requirementAssignToListCount = requirementAssignToService.getRequirementAssignToListCountByRequirementId(requirement.getId());
+			model.addObject("requirementAssignToListCount",requirementAssignToListCount);
+	       
+			if(null != requirement.getSpocId() && null != requirement.getSpocId().getId()){
 				OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(requirement.getSpocId().getId());
 				if(null != orgSpoc && null != orgSpoc.getSpocStatus() && "In-Active".equalsIgnoreCase(orgSpoc.getSpocStatus())){
 					model.addObject("isSpocActive", Constants.NO);
@@ -1105,7 +1108,24 @@ public class RequirementController {
 					model.addObject("isSpocActive", Constants.YES);
 				}
 			}
-			
+			if(null != requirement && requirement.getOrgLocationId().getId().equals(orgLocations.getId())){
+				 requirementId = requirement.getId();
+				/*RequirementWorkFlowDTO workflowDTO = requirementWorkFlowService.getRequirementDefaultWorkflow(orgLocations);
+				System.out.println(" defalt workflow id is :>>>"+workflowDTO.getId());
+				System.out.println("Workflow configure Type is >>>>> "+workflowDTO.getConfigureType());*/
+				if(requirement.getWorkflowId().getWorkFlowName().equalsIgnoreCase(Constants.DEFAULT_JOB_WORKFLOW) 
+						              && requirement.getWorkflowId().getConfigureType().equalsIgnoreCase(Constants.DEFAULT)) {
+					logger.debug("DEFAULT WORKFLOW IS FOUND WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME : "+requirement.getWorkflowId().getWorkFlowName());
+					model.addObject("workflowConfigured", false);
+					model.setViewName("requirement/requirementSummary");	 
+				}else {
+					logger.debug("OTHER THAN DEFAULT WORKFLOW ID : "+requirement.getWorkflowId() +" ,  WORKFLOW NAME :  "+requirement.getWorkflowId().getWorkFlowName());
+					List<RequirementWorkFlowStages> stagesList = requirementWorkFlowService.getRequirementWorkflowStagesByWorkflowIdAndOrglocations(requirement.getWorkflowId().getId(), orgLocations);
+					model.addObject("stagesList", stagesList);
+					model.addObject("workflowId", requirement.getWorkflowId().getId());
+					model.addObject("workflowConfigured", true);
+					model.setViewName("requirement/requirementWorkflowSummary");
+				}
 			String msg = (String) SourceLeadSessionManager.getSessionAttribute(request, "reqsummaryMsg");
 			if(!isNullOrEmpty(msg)){
 				model.addObject("msg", msg);
@@ -1115,8 +1135,9 @@ public class RequirementController {
 		}else{
 			model.setViewName("registration/persmissionDenied");
 		}
+		}
 		return model;
-	}
+		}
 	
 	
 	
@@ -1608,6 +1629,30 @@ public ModelAndView getRequirementSubmissionTemplateForBulkImprtApplicants(@Requ
 }
 
 
+@RequestMapping(value = "/getProfileTrackerTemplateForBulkImprtApplicants")
+public ModelAndView getProfileTrackerTemplateForBulkImprtApplicants(@RequestParam(value="requirementId", required=false) Long requirementId,
+		HttpServletRequest request) throws Exception{
+	ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementId", requirementId);
+	 model.setViewName("requirement/importProfileTracker");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	return model;
+}
+
+
+@RequestMapping(value = "/getInterviewScheduleTrackerTemplateForBulkImprtApplicants")
+public ModelAndView getInterviewScheduleTrackerTemplateForBulkImprtApplicants(@RequestParam(value="requirementId", required=false) Long requirementId,
+		HttpServletRequest request) throws Exception{
+	ModelAndView model = new ModelAndView();
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	 model.addObject("requirementId", requirementId);
+	 model.setViewName("requirement/importInterviewTracker");
+	 model.addObject("sourceleadUrl", sourceleadUrl);
+	return model;
+}
+
+
 @RequestMapping(value = "/downloadRequirenetSubmissionTemplateByRequirementId/{requirementId}", method = RequestMethod.GET)
 public void downloadRequirenetSubmissionTemplateByRequirementId(HttpServletRequest request,HttpServletResponse response,@PathVariable(value="requirementId") Long requirementId) throws IOException, URISyntaxException{
 	
@@ -1695,6 +1740,66 @@ private Sheet createXlsSheet(HSSFWorkbook createExcelworkbook,HSSFSheet createEx
 	    }
 	
 	return createExcelsheet;	
+}
+
+
+@RequestMapping(value = "/downloadProfileTrackerTemplate", method = RequestMethod.GET)
+public void downloadProfileTrackerTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	
+	OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	File file = null;
+	String fn;	
+	if(orgLocations.getCountry().equalsIgnoreCase("India")) {
+		fn = "/templates/Profile_Tracker_Template.xlsx";
+	}else {
+		fn = "/templates/Profile_Tracker.xlsx";
+	}
+	
+	URL url = getClass().getResource(fn);
+     file = new File(url.toURI());
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	
+}
+
+
+
+@RequestMapping(value = "/downloadInterviewTrackerTemplate", method = RequestMethod.GET)
+public void downloadInterviewTrackerTemplate(HttpServletRequest request,HttpServletResponse response) throws IOException, URISyntaxException{
+	
+	File file = null;
+	String fn;	
+	fn = "/templates/Interview_Schedule_Tracker.xlsx";
+	
+	URL url = getClass().getResource(fn);
+     file = new File(url.toURI());
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();
+	
 }
 
 }
