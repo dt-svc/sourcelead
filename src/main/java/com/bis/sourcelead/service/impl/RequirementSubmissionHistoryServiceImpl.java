@@ -76,7 +76,7 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 	}
 	
 	@Override
-	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory, String masterUserCode, String comment)
+	public RequirementSubmissionHistory updateRequirementHistory(RequirementSubmission requirementSubmission,User user,RequirementSubmissionHistory requirementSubmissionHistory, String masterUserCode)
 			throws Exception {
 		StringBuilder userName = new StringBuilder();
 		requirementSubmissionHistory.setSubmissionId(requirementSubmission);
@@ -90,8 +90,8 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 				userName = userName.append(user.getFirstName());
 			}
 		}
-		if(comment != null){
-			requirementSubmissionHistory.setStageComment(comment);
+		if(requirementSubmission.getStageComment() != null){
+			requirementSubmissionHistory.setStageComment(requirementSubmission.getStageComment());
 		}
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
