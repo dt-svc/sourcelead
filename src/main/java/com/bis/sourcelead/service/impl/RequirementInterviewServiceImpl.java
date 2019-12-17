@@ -2425,6 +2425,14 @@ public class RequirementInterviewServiceImpl implements RequirementInterviewServ
         
           
 	}
+
+
+
+	@Override
+	public List<Date> getProfessionalInterviewDatesForCalendarEvent(Long candidateId)
+			throws Exception {
+		return requirementInterviewDao.getProfessionalInterviewDatesForCalendarEvent(candidateId);
+	}
 	
 	
 	/*@Override
