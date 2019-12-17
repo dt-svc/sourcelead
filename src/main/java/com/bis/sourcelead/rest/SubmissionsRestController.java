@@ -395,7 +395,7 @@ public class SubmissionsRestController {
 				RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 				requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 				requirementSubmissionHistory.setFromStage("NEW");
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				Requirement requirement = requirementSubmission.getRequirement();
 				
 				if(null != requirement){
@@ -481,7 +481,7 @@ public class SubmissionsRestController {
 		RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
 		requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
 		requirementSubmissionHistory.setFromStage("NEW");
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		Requirement requirement = requirementSubmission.getRequirement();
 		
 		if(null != requirement){
@@ -779,7 +779,7 @@ public class SubmissionsRestController {
 					}
 					submission.setUpdatedDate(new Date());
 					RequirementSubmission requirementSubmission = requirementSubmissionService.storeRequirementSubmission(submission);
-					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				}
 				int shotListCount = submissionId.length;
 				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
@@ -923,7 +923,7 @@ public class SubmissionsRestController {
 				if(!orgLocations.getId().equals(requirementSubmission.getCandidate().getOrgLocationId().getId()) && requirementSubmission.getSourceSubmission() != null &&  !requirementSubmission.getCandidate().getCandidateType().equalsIgnoreCase("Professional")) {
 					requirementSubmissionService.sendRejectionMailToVendorContact(user, requirementSubmission.getRejectedReason(), submissionId, orgLocations);
 				}
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				response.setObject("success");
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1260,7 +1260,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedBy(user.getUserCode());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user, requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 		
 		return "success";
 	}
@@ -1307,7 +1307,7 @@ public class SubmissionsRestController {
 		requirementSubmission.setUpdatedUser(sb.append(user.getFirstName()).append(" ").append(user.getLastName()).toString());
 		requirementSubmission.setUpdatedDate(new Date());
 		requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+		requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 
 		return "success";
 	}
@@ -1361,7 +1361,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1400,7 +1400,7 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy(), null);
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
@@ -1611,7 +1611,11 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
-				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy(), comment);
+				
+				if(comment != null){
+					requirementSubmission.setStageComment(comment);
+				}
+				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
 				response.setResponseMessage(Result.SUCCESS.getValue());
