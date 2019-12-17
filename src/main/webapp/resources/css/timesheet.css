@@ -446,11 +446,11 @@ a { cursor:pointer;}
 .client_show { cursor: pointer;}                   
 .client_show i { font-size:12px; color:#375d81; float:right; padding:2px 0px 0px 0px; visibility:hidden; opacity:0;}  
 .clients_wrap_table table tr:hover .client_show i { visibility:visible; opacity:1;}
-.clients_side_wrap, .submission_side_wrap, .import_submission_side_wrap {
+.clients_side_wrap, .submission_side_wrap, .import_submission_side_wrap, .import_profileTracker_side_wrap, .import_interviewTracker_side_wrap {
 width:81%; position:fixed; right:-100%; top:0px; background-color:#eef1fc; box-shadow:0px 0px 5px rgba(0,0,0,0.4);
 transition:all 0.3s ease-in-out; -webkit-transition:all 0.3s ease-in-out; -moz-transition:all 0.3s ease-in-out;
 z-index:10000; max-height:100%; min-height:100%; overflow-y:auto;}
-.clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active, .import_submission_side_wrap.import_submission_side_wrap_active {right:0px;}
+.clients_side_wrap.clients_side_wrap_active, .submission_side_wrap.submission_side_wrap_active, .import_submission_side_wrap.import_submission_side_wrap_active, .import_profileTracker_side_wrap.import_profileTracker_side_wrap_active, .import_interviewTracker_side_wrap.import_interviewTracker_side_wrap_active {right:0px;}
 .clients_side_wrap_inn { position:relative; padding:10px;}
 .clients_side_wrap_inn h1 { margin:0px 0px; font-size:18px; font-weight:500; padding:15px;}  
 .clients_side_wrap .project_detfield {padding:4px 5px; width:100%;}
@@ -1292,6 +1292,7 @@ background:url("../images/arrow-d-g.png") no-repeat right center; background-siz
 .loadTime {
     position:absolute; width: 100%; height: 100%; background-color: rgba(255,255,255,0.7); left: 0px; top: 0px;
     text-align: center; background-image: url(../images/loading.gif); background-repeat: no-repeat; background-position: center;
+    background-size:100px; 
 }
 .totalText {
     position: absolute; top: 15px;
@@ -6548,7 +6549,7 @@ max-width: 100% !important;
 }
 .reportNewCta {
 	border-radius: 0px !important; margin-bottom: -1px; margin-left: -1px; transition: all 0.1s ease-in-out !important;
-	cursor: pointer;
+	cursor: pointer; min-height: 108px;
 }
 .reportNewCta h4 {
 	padding: 0px 0px 10px 0px; margin: 0px 0px; font-size: 15px; font-weight: 500; color: #545454;
@@ -6646,6 +6647,10 @@ max-width: 100% !important;
 }
 .repCustomDate {
 	width: 400px; display: none; padding: 20px 15px; top: 45px; box-shadow: 2px 2px 3px rgba(0,0,0,0.3) !important; right: 60px;
+}
+
+.repCustomDate.dashboardPopup {
+	right: 4px;
 }
 .repCustomDateInn {
 	width: 160px; float: left; padding: 0px 15px 0px 0px;
@@ -6904,7 +6909,7 @@ max-width: 100% !important;
 }
 .editIcon {
 	width: 34px; height: 32px; display: block; background: url("../images/edit.svg"); background-repeat: no-repeat;
-	background-position: center; background-size: 34px; cursor: pointer;
+	background-position: center !important; background-size: 34px; cursor: pointer;
 }
 .refeIcon {
 	width: 40px; float:left; height: 32px; display: block; background: url(../images/refresh.svg); background-repeat: no-repeat;
@@ -7171,6 +7176,9 @@ aside.asideAct {width: 200px; box-shadow: 0px 0px 0px rgba(0,0,0,0);}
 .navIcons.billIcon { background: url("../images/bill.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.blogIcon { background: url("../images/blog.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.usermanuIcon { background: url("../images/usermanu.svg"); background-size: 38px; background-position: -2px -2px;}
+.navIcons.perorIcon { background: url("../images/preformance.svg"); background-size: 38px; background-position: -2px -2px;}
+
+
 .newMenu ul li {
 	border-bottom: 1px solid #f1f1f1; position: relative; font-size: 14px; font-weight: 500;
 	border-left: 4px solid #f1f1f1;}
@@ -8150,10 +8158,34 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
     border:1px solid #ccc; width:26%; float:left; padding:0px 15px; height:34px;
 }
 .priceNego p { padding: 0px 0px; margin: 10px 0px 15px; font-weight: 500; font-size: 16px; color:#0bb42b; display: none;}
+.appStatusWrap {float:left;}
+.appStatusNewcolor, .appStatusReopencolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #3887d2;}
+.appStatusDracolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #8d8d8d;}
+.appStatusSubcolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #e38f22;}
+.appStatusAppcolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #35ae28;}
+.appStatusRejcolor { font-size: 18px; font-weight: 600; padding: 5px 0px 15px 10px; display: block; color: #ff1515;}
+.expNewAppBtn { float:right;}
+.expNewAppBtn i {
+	font-size: 24px; display: inline-block; padding: 2px 8px; color: #35ae28; cursor: pointer; margin: 0px 5px;
+}
+.expNewAppBtn i.fa-times {color: #ff1515;}
+.UiPado .overIcon {position: relative; top: -7px;}
+.appEditBtn { float: right; background-position: 7px -29px;}
+
+.exp_rejct_pop {
+    position:fixed; width:400px; left:0px; right:0px; margin:0px auto; display:none;
+    background-color:#FFF; box-shadow:0px 0px 5px rgba(0,0,0,0.3); z-index:20000; top:30%;}
+.exp_rejct_pop a {
+    display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
+    font-size:14px; font-weight:500;}
+<<<<<<< HEAD
+.exp_rejct_pop a.close_color { background-color:#ff4b4b;}
 
 
 
 
 
 
-
+=======
+.exp_rejct_pop a.close_color { background-color:#ff4b4b;}
+>>>>>>> 933c142df5d6eb16e4b87f7dc915480aabe5c9f5

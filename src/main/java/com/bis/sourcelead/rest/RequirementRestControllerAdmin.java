@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -50,6 +51,7 @@ import com.bis.sourcelead.elk.index.CandidateIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CombinedList;
 import com.bis.sourcelead.entity.JobShareCandidate;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -65,9 +67,11 @@ import com.bis.sourcelead.entity.Roles;
 import com.bis.sourcelead.entity.Team;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.entity.UserRole;
+import com.bis.sourcelead.enums.HIERARCHY_TYPE;
 import com.bis.sourcelead.enums.REQUIREMENT_APPROVER_HIERARCHY_STATUS;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.JobShareService;
 import com.bis.sourcelead.service.LookUpDataService;
@@ -195,6 +199,9 @@ public class RequirementRestControllerAdmin {
 	 
 	@Autowired
 	private PdfUtil pdfUtil;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 	 
 	@RequestMapping(value = "/storeFairJob", method = RequestMethod.POST)
 	public @ResponseBody Response<String> storeFairJob(JobFairDTO jobFairDTO, HttpServletRequest request)
@@ -1364,66 +1371,6 @@ public class RequirementRestControllerAdmin {
 		return response;
 	}
 	
-
-	
-	@RequestMapping(value = "/shareRecomendedApplicant", method = RequestMethod.POST)
-	public @ResponseBody Response<String>  shareRecomendedApplicant(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateId", required = false) Long candidateId,HttpServletRequest request)throws Exception {
-		Response<String> response = new Response<>();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if(loginUser != null) {
-			try {
-				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
-				requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidate);
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-				}catch(Exception e) {
-					response.setResponse(Result.AWKWARD.name());
-					response.setResponseMessage(Result.AWKWARD.getValue());
-			}
-		}else {
-			response.setResponse(Result.SESSION_TIMEDOUT.name());
-			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-		}
-		return response;
-	}
-	
-	@RequestMapping(value = "/shareAllRecommendations", method = RequestMethod.POST)
-	public @ResponseBody Response<String> shareAllRecommendations(@RequestParam(value = "requirementId", required = false) Long requirementId, @RequestParam(value = "candidateIds", required = false) String candidateIds,HttpServletRequest request)throws Exception {
-		Response<String> response = new Response<>();
-		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		if(loginUser != null) {
-			try {
-				Requirement requirement = requirementService.getRequirementByRequirementId(requirementId);
-				
-				String[] candidateId = candidateIds.split(",");
-				if(candidateId != null &&  candidateId.length>0 && candidateId[0] != null && candidateId[0] != ""){
-					for(String candidateid   : candidateId){
-						Candidate candidates = candidateService.getCandidateByCandidateId(Long.valueOf(candidateid));
-								JobShareCandidate jobShareCandidate = new JobShareCandidate();
-								jobShareCandidate.setCandidateId(candidates);
-								jobShareCandidate.setJobId(requirement);
-								jobShareCandidate.setCreatedDate(new Date());
-								jobShareService.saveJobShareCandidate(jobShareCandidate);
-								requirementService.shareRecomendedApplicant(loginUser, orgLocation,requirement,candidates);
-						}
-				}
-				response.setResponse(Result.SUCCESS.name());
-				response.setResponseMessage(Result.SUCCESS.getValue());
-				}catch(Exception e) {
-					response.setResponse(Result.AWKWARD.name());
-					response.setResponseMessage(Result.AWKWARD.getValue());
-			}
-		}else {
-			response.setResponse(Result.SESSION_TIMEDOUT.name());
-			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
-		}
-		return response;
-	}
-	
-	
 	
 	@RequestMapping(value = "/submitRecommendationCandidates", method = RequestMethod.POST)
 	public @ResponseBody Response<String> submitRecommendationCandidates(@RequestParam(value = "requirementId", required = false) Long requirementId, 
@@ -1450,7 +1397,7 @@ public class RequirementRestControllerAdmin {
 						boolean flag = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndJobId(Long.valueOf(candidateid),requirement.getId());
 						if(flag == false) {
 						
-							CandidateDTO candidate = candidateService.getCandidateDTOByCandidateId(Long.valueOf(candidateid));
+							CandidateDTO candidate = candidateGlobalService.getCandidateGlobalDTOByCandidateGlobalId(Long.valueOf(candidateid));
 							if(candidate.getProfilePercentage() >= requirement.getProfilePercentage()) {
 								
 								JSONObject labelItems = new JSONObject();
@@ -1602,6 +1549,36 @@ public class RequirementRestControllerAdmin {
 									
 									// pass dto as parameter
 									RequirementDTO requirementDTO = commonUtil.getRequirementDTO(requirement);
+									List<String> parallelApprover = new LinkedList<>();
+									List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(requirement.getId());
+									if(list1 != null && !list1.isEmpty()) {
+										for (RequirementApproverHierarchy rah : list1) {
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+												parallelApprover.add(rah.getApproverUserId().getId() + "");
+												requirementDTO.setParallelApprover(parallelApprover);
+											}
+											if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+												if(rah.getLevel() == 1) {
+													String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover1;
+													requirement.setLevel1ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover1(sequentialApprover1);
+													requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+												if(rah.getLevel() == 2) {
+													String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+													String[] levelUserIds = new String[1];
+													levelUserIds[0] = sequentialApprover2;
+													requirement.setLevel2ApproverUserId(levelUserIds);
+													
+													requirementDTO.setSequentialApprover2(sequentialApprover2);
+													requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+												}
+											}
+										}
+									}
 									requirementElkUtil.saveElkRequirement(requirement,requirementDTO);	
 								}
 							}else {

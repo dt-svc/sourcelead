@@ -81,9 +81,26 @@ function Xlsupload(){
 				           result = result + '</div>';
 				           result = result + '</div>';
 			    			
-			    			$("#uploadXlsHistoryDiv").empty();
-			    			$("#uploadXlsHistoryDiv").append(result);
-			    			$("#uploadXlsHistoryDivTitle").removeAttr('hidden');
+				           $("#uploadProfileXlsHistoryDiv").empty();
+				           $("#uploadInterviewXlsHistoryDiv").empty();
+				           $("#uploadXlsHistoryDiv").empty();
+				           
+			    			if(entityType == 'ProfileTracker'){
+				    			$("#uploadProfileXlsHistoryDiv").append(result);
+				    			$("#uploadProfileXlsHistoryDivTitle").removeAttr('hidden');
+			    			}
+			    			else if(entityType == 'InterviewTracker'){
+				    			$("#uploadInterviewXlsHistoryDiv").append(result);
+				    			$("#uploadInterviewXlsHistoryDivTitle").removeAttr('hidden');
+			    				
+			    			}else{
+				    			$("#uploadXlsHistoryDiv").append(result);
+				    			$("#uploadXlsHistoryDivTitle").removeAttr('hidden');
+			    			}
+			    			
+			    			
+			    			
+			    			
 			    			
 			    			if(progressRow != ''){
 			    				  $(".browseProgress").show();

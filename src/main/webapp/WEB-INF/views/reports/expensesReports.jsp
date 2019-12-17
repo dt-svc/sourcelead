@@ -219,7 +219,7 @@ $.ajax({
  			result = result +'<td>';
  			result = result +'<div class="lg clearfix">';
  			result = result +'<div class="time_appr_user">';
- 			result = result +'<img id="userImage" onerror="predefineProfileImage(this);" src="/resources/images/userprofile-img.png" alt="Profile Image" class="img-circle img-responsive">'; 
+ 			result = result +'<img id="userImage" onerror="predefineProfileImage(this);" src="'+opt.profileImage+'" alt="Profile Image" class="img-circle img-responsive">'; 
  			result = result +'<span>';
  			if(opt.employeeIdForExpenses != null && opt.employeeIdForExpenses !='' && opt.employeeIdForExpenses!='Undefined'){
  			result = result +'<i title="'+opt.employeeIdForExpenses+'">'+opt.employeeIdForExpenses+'</i>';	

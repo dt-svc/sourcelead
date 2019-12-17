@@ -6,29 +6,45 @@
 <div class="container">
 
 <div class="row">
-<div class="col-sm-12 col-md-9">
+<div class="col-sm-12 col-md-10 col-md-offset-2">
    
 <div class="row mt">
-	<div class="contact-styles col-md-4">
+	<div class="contact-styles col-md-6">
     	<h2>USA</h2>
         <p class="mt address">
         <i class="fa fa-map-marker"></i>
-        	3535 Victory Group Way,<br>
-        	Building 4 Frisco,<br>
-            TX 75034, USA
+        4100 Spring Valley Drive,<br>
+        Ste. 512,<br>
+        Dallas, TX - 74244
         </p>
         <a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a><br>
         <a href="mailto:support@sourcelead.com"><i class="fa fa-envelope"></i>support@sourcelead.com</a><br>
-        <a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>Phone :  +1 972 999 2656</a><br>
-        <a href="tel:(972) 559-3641"><i class="fa fa-fax"></i>FAX &nbsp; &nbsp; : (972) 559-3641</a>
+        <a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>Phone :  +1 408 858 4775</a>
+        <!-- <a href="tel:(972) 559-3641"><i class="fa fa-fax"></i>FAX &nbsp; &nbsp; : (972) 559-3641</a> -->
     </div>
+    
+    
+    <div class="contact-styles col-md-6">
+    	<h2>USA</h2>
+        <p class="mt address">
+        <i class="fa fa-map-marker"></i>
+        	2410 Camino Ramon,<br>
+        	Ste. 304,<br>
+        	San Ramon, CA - 94583
+        	</p>
+        <a href="mailto:info@sourcelead.com"><i class="fa fa-envelope"></i>info@sourcelead.com</a><br>
+        <a href="mailto:support@sourcelead.com"><i class="fa fa-envelope"></i>support@sourcelead.com</a><br>
+        <a href="tel:(214) 295-5535"><i class="fa fa-phone"></i>Phone :  +1 408 858 4775</a>
+    </div>
+    
 
-<section class="map col-md-8">
+<!-- <section class="map col-md-8">
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3342.041245515414!2d-96.84639618519354!3d33.10799948087341!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864c3b7a5c6c0ae5%3A0x1edca5f3a908f80e!2sSourcelead!5e0!3m2!1sen!2sin!4v1517813698412" width="100%" height="350" frameborder="0" style="border:0" allowfullscreen></iframe>
-</section> 
+</section> --> 
 </div>
  <div class="clearfix"></div>
-<div class="row mt">
+ <br/> <br/>
+<div class="row">
 	<div class=" col-md-4 contact-styles">
     	<h2 class="mt mb">India</h2>
         <p class="address">
@@ -48,16 +64,13 @@
     </div>
   </div>
   
-  <div class="col-sm- 12 col-md-3">
-  <h5>Reach Us</h5>
-  	<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
+<script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/shell.js"></script>
 <script>
 hbspt.forms.create({
 portalId: "4585276",
 formId: "d08eb60a-51e4-4718-9b3b-5b1f68864d68"
 });
 </script>
-  </div>
 </div>    
     
     

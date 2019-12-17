@@ -658,7 +658,7 @@ function loadJobSummaryDoNutChart(appliedJobs,referToMeJobs,referByMeJobs){
  <script type="text/javascript">
   $( function() {
 	  
-	  var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+	  var locationDate ='${SourceLeadWeb_dateFormat}'; 
 	  var finalDateFormatProDashboard = '';
 	  if(locationDate.match("yyyy-MM-dd")){
 		  finalDateFormatProDashboard = 'yy-mm-dd';

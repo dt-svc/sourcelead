@@ -278,7 +278,8 @@ $("#loading").attr('style','position:absolute; width:100%; height:100%; backgrou
 											
 										}
 									}
-									result += "<td> "+lo+" </td>";
+									
+									result += "<td> "+lo.toFixed(2)+" </td>";
 									result += "</tr>"
 								}
 								
