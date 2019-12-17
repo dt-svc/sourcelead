@@ -8,6 +8,7 @@
 
 <link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/requirement-summary.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 <script>
+var commentsMap;
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 var sourceleadUrl ='${sourceleadUrl}';
 $(document).ready(function() {
@@ -39,7 +40,7 @@ $(document).ready(function() {
 		 }
  
 
- 
+ commentsMap = prepareStageCommentsMap();
 
 
 });	
@@ -117,6 +118,14 @@ function prepareAllWorkflowCounts(requirementId){
 	$('#duplicataplctli').load(duplicateCount(requirementId));
     
 	
+}
+
+function prepareStageCommentsMap(){
+	var stageCommentsMap = new Map();	
+	<c:forEach var="stage" items="${stagesList}">
+	stageCommentsMap.set('${stage.stageShortCode}', '${stage.commentRequired}');
+	</c:forEach>
+	return stageCommentsMap;
 }
 </script>
 
@@ -839,7 +848,6 @@ function updateReuqirementStatusReject(status){
 			type : "POST",
 			url : sourceleadUrl + "/getColumnsMapbyWorkflowStage?shortCode="+submissionType+"&workflowId="+ workflowId,
 			 success : function(columnsMap) {
-				//alert(columnsMap)
 				var columnsArr=[];
 				$.map( columnsMap, function( colProp, colName ) {
 				//	console.log(colProp);
@@ -1255,31 +1263,44 @@ function closeRequirementPopup(booleanValue,submissionId,requirementId,submissio
     	   
     	    // below line commented for saving any stage for dynamic workflow name. updated by SRINIVAS SABBU.
     	   // else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
-    		 else if(selectBox){ // skip stage name check for dynamic workflow stages.
-    			 $.ajax({
-    	    	      type : "POST",
-    	    	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
-    	    	    	success :function(data) {
-    	    	    		if (data.response === "AWKWARD") {
-    	  		    		location.href = "/errorPage";
-    	  		    	} else if (data.response === "SUCCESS") {
-    	  		    		$("tr").removeClass("row-success");
-    	  		    		// below funtion is used to check whether the questinniare is assigned to stage or not.
-    	  		    		 getQuestionnaireIdAssignedToStage(selectBox, submissionId);  
-    	  		    		 requirementPipeline(requirementId,submissionType);
-    	  		    	}else if (data.indexOf('Sign In') !== -1) {
-    	  		    		location.replace(sourceleadUrl);
-    	  		    	} else {
-    	  		    		showError("Operation failed, please try again");
-    	  		    	}
-    	    	    	},
-    	  		  });
+    		 else if(selectBox){
+    			
+    			 // skip stage name check for dynamic workflow stages.
+    			 if(commentsMap.get(selectBox) != null && commentsMap.get(selectBox) == "Y"){
+    				 var result = "";
+    					result = result +"	<div id='stageComment"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
+    					result = result +"	<textarea  id='commentForStage' name='reasonForSpoc' data-validation='required validate_Description validate_length length2-250' placeholder='Comment Is Mandatory For This Stage.' onkeypress=';' ></textarea>";
+    					result = result + ' <div id="commentForStageDiv"/>';
+    					result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='commentForStage("+reqId+", "+subId+", \""+selectBox+"\", \""+submissionType+"\");'></b>";
+    					result = result +"	</div>";
+    					$("#popUp").empty().append(result);
+    	    	        $("#stageComment"+submissionId).slideDown(200);
+    	    	        $(".project_inn_mask").fadeIn(200);
+    			 }else{
+    				 saveOnHoldStatusForApplicant(reqId, subId, selectBox,"",submissionType);
+    			 }
+    			 
     	    }  
     		 // Here need to test any questionnaire is assigned to stage if the initiator confirms need to send the questionnaire to canditate.
     	   // getQuestionnaireIdAssignedToStage(selectBox, submissionId);
     	   	
     }
    
+  function  commentForStage(requirementId, submissionId, selectBox, submissionType){
+	  var comment = $("#commentForStage").val().trim();
+	    if(comment.match(/^[^\s-](.*)*$/) != null && comment !="" && comment.length <= 250){
+	    $("#commentForStageDiv").empty();
+	    saveOnHoldStatusForApplicant(requirementId, submissionId, selectBox, comment, submissionType);
+	    }else if (comment.length >= 251){
+	    	$("#commentForStageDiv").find('p.jquery_form_error_message').remove();
+			$("#commentForStageDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Comment Length 1-250 characters</font>") ; 
+	    }else{
+	    	$("#commentForStageDiv").find('p.jquery_form_error_message').remove();
+			$("#commentForStageDiv").empty().append("<font color='red' style='padding: 5px 10px; '>Comment is required</font>") ; 
+	    }
+  }
+  
+    	
  function getQuestionnaireIdAssignedToStage(stageName, submissionId){
 	 var workflowId ='${workflowId}';
 	 $.ajax({
@@ -1575,6 +1596,28 @@ $('body').on('blur', '#joinedApplicant_form', function() {
 	$("#joinedApplicant_form").showHelpOnFocus();
 	$("#joinedApplicant_form").validateOnBlur(false, validationSettings);
 });
+
+function saveOnHoldStatusForApplicant(requirementId, submissionId, selectBox, comment, submissionType){
+	$.ajax({
+	      type : "POST",
+	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox+"&comment="+comment, 
+	    	success :function(data) {
+	    		if (data.response === "AWKWARD") {
+	    		location.href = "/errorPage";
+	    	} else if (data.response === "SUCCESS") {
+	    		$("tr").removeClass("row-success");
+	    		// below funtion is used to check whether the questinniare is assigned to stage or not.
+	    		 getQuestionnaireIdAssignedToStage(selectBox, submissionId);  
+	    		 requirementPipeline(requirementId,submissionType);
+	    	}else if (data.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    		showError("Operation failed, please try again");
+	    	}
+	    	},
+	  });
+	
+}
 </script>
 
 
