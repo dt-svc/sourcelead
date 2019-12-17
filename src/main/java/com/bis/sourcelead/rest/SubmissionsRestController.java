@@ -1613,7 +1613,7 @@ public class SubmissionsRestController {
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
 				
 				if(comment != null){
-					requirementSubmission.setStageComment(comment);
+					requirementSubmissionHistory.setStageComment(comment);
 				}
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
