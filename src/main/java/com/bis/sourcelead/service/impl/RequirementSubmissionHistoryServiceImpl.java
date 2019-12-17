@@ -90,9 +90,6 @@ public class RequirementSubmissionHistoryServiceImpl implements RequirementSubmi
 				userName = userName.append(user.getFirstName());
 			}
 		}
-		if(requirementSubmission.getStageComment() != null){
-			requirementSubmissionHistory.setStageComment(requirementSubmission.getStageComment());
-		}
 		requirementSubmissionHistory.setCreatedDate(new Date());
 		requirementSubmissionHistory.setUpdatedDate(new Date());
 		requirementSubmissionHistory.setCreatedUser(userName.toString());
