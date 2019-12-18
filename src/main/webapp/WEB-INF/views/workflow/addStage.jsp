@@ -437,7 +437,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="pull-right mr">
           
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save & Finish" class="btn btn-primary" type="button" id="saveStageButton"
+            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
