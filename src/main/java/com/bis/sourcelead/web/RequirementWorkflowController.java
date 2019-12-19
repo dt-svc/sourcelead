@@ -692,7 +692,7 @@ public class RequirementWorkflowController {
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
 					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
-					requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
+					//requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
 					
 					response.setResponse(Uuid);
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -847,7 +847,7 @@ public class RequirementWorkflowController {
 			logger.debug("nside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
 			// Write the code for copying tasks to user which are assigned to Stage level start here.
 			 try {
-		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(stageId,orgLocations,loginUser);
+		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(submissionId,stageId,orgLocations,loginUser);
 		     	logger.debug("Workflow email tasks and notifications status :::"+taskStatus);
 			 }catch(Exception e) {
 				 e.printStackTrace();

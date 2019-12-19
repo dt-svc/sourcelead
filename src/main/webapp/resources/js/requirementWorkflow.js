@@ -801,7 +801,7 @@ function RequirementWorkflow(){
 
 					 
 					 this.createNewtask = function() {
-						 requirementWorkflow.getAllActiveUsersList();
+						// requirementWorkflow.getAllActiveUsersList();
 						   $("#workFlowTaskName").val("");
 							$("#priority").val("");
 							$("#workFlowTaskDescription").val("");
