@@ -1,10 +1,7 @@
 package com.bis.sourcelead.web;
 
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -28,18 +25,11 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserRoleDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateGlobal;
-import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
@@ -52,12 +42,7 @@ import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTempla
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -66,9 +51,6 @@ public class RequirementWorkflowController {
 	
 	@Autowired
 	private RequirementWorkFlowService requirementWorkFlowService;
-	
-	@Autowired
-	private UserRoleService userRoleService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -652,33 +634,6 @@ public class RequirementWorkflowController {
 			
 		}
 		
-		@RequestMapping(value = "/getAllActiveUsersList")
-		public @ResponseBody List<UserRoleDTO> getAllActiveUsersList(HttpServletRequest request){
-			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
-			List<UserRoleDTO> userRoleListDTO = new ArrayList<>();
-			logger.debug("inside  getAllActiveUsersList>>> orgLocationid "+orgLocations.getId());
-			try {
-				List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
-				
-				for (UserRole ur : userRoleList) {
-					UserRoleDTO userRoleDTO = new UserRoleDTO();
-					StringBuilder userName = new StringBuilder();
-					userRoleDTO.setUserId(ur.getUser().getId());
-					if (null != ur.getUser().getLastName()) {
-						userRoleDTO.setUserName(
-								userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
-					} else {
-						userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).toString());
-					}
-					userRoleListDTO.add(userRoleDTO);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			logger.debug("after  getAllActiveUsersList>>> orgLocationid "+orgLocations.getId());
-			return userRoleListDTO;
-		}
-		
 		@RequestMapping(value = "/saveWorkflowTask")
 		public @ResponseBody  Response<String> saveWorkflowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO,
 				HttpServletRequest request)throws Exception{
@@ -692,7 +647,7 @@ public class RequirementWorkflowController {
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
 					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
-					requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
+					//requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
 					
 					response.setResponse(Uuid);
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -847,7 +802,7 @@ public class RequirementWorkflowController {
 			logger.debug("nside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
 			// Write the code for copying tasks to user which are assigned to Stage level start here.
 			 try {
-		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(stageId,orgLocations,loginUser);
+		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(submissionId,stageId,orgLocations,loginUser);
 		     	logger.debug("Workflow email tasks and notifications status :::"+taskStatus);
 			 }catch(Exception e) {
 				 e.printStackTrace();

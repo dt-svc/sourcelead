@@ -136,9 +136,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<div class="col-md-9" id = "assignToUserId">
 				  <select class="sel form-control" name = 'assignToUserId' id = 'assignToUserId' field-name='Assign To' data-validation='required'>
 					<option selected="" value="">Select</option>
-					<!-- <option>Applicant Owner</option>
+					<option>Applicant Owner</option>
 					<option>Job Owner</option>
-					<option>Primary Recruiter</option> -->
+					<option>Primary Recruiter</option>
 				  </select>
 				</div>
 			  </div>
@@ -437,7 +437,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           <div class="pull-right mr">
           
           <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save & Finish" class="btn btn-primary" type="button" id="saveStageButton"
+            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
