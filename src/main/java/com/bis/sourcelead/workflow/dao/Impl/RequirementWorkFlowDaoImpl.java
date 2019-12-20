@@ -598,11 +598,9 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			  List<RequirementWorkFlowTasks> requirementWorkFlow = query1.list();
 			  if(requirementWorkFlow != null){
 				  for(RequirementWorkFlowTasks workFlow : requirementWorkFlow){
-					  StringBuilder userName = new StringBuilder("");
-					  userName.append(workFlow.getAssignTo().getFirstName()+" "+workFlow.getAssignTo().getLastName());
 					  workFlowTasksDTO = new RequirementWorkFlowTasksDTO();
 					  workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
-					  workFlowTasksDTO.setAssignToUserId(userName.toString());
+					  workFlowTasksDTO.setAssignToUserId(workFlow.getAssignTo());
 					  workFlowTasksDTO.setUuid(workFlow.getUuid());
 					  workFlowTasksDTO.setPriority(workFlow.getPriority());
 					  workFlowTasksDTO.setWorkFlowTaskDescription(workFlow.getDescription());

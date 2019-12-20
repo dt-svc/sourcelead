@@ -38,9 +38,8 @@ public class RequirementWorkFlowTasks implements Serializable{
 	@Column(name = "TASK_NAME")
 	private String workFlowTaskName;
 	
-	@ManyToOne
-	@JoinColumn(name = "ASSIGN_TO_USER_ID")
-	private User assignTo;
+	@Column(name = "ASSIGN_TO_USER_ID")
+	private String assignTo;
 	
 	@Column(name = "PRIORITY")
 	private String priority;
@@ -100,11 +99,11 @@ public class RequirementWorkFlowTasks implements Serializable{
 		this.workFlowTaskName = workFlowTaskName;
 	}
 
-	public User getAssignTo() {
+	public String getAssignTo() {
 		return assignTo;
 	}
 
-	public void setAssignTo(User assignTo) {
+	public void setAssignTo(String assignTo) {
 		this.assignTo = assignTo;
 	}
 
