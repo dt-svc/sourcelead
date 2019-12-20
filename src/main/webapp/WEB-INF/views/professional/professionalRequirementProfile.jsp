@@ -43,7 +43,7 @@ $(document).ready(function() {
 <script>
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 function requirementProfile(requirementUUID){
-	var candidateId = '${SourceLeadWeb_candidateId}'
+	var candidateId = '${candidateId}'
     var loginUserRole = '${SourceLeadWeb_loginUserRole}';
     var referUUID = '${referUUID}';
     $.ajax({
