@@ -1489,10 +1489,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				UserRole loginUserId = userRoleDao.getUserRoleByUserId(loginUser.getId());
 				if(loginUserId != null){
 					tasks.setOwnerOrglocationId(loginUserId.getOrgLocations());	
-				}
-				UserRole assignedUserId = userRoleDao.getUserRoleByUserId(assignedUser.getId());
-				if(assignedUserId != null){
-					tasks.setAssignedOrglocationId(assignedUserId.getOrgLocations());	
+					tasks.setAssignedOrglocationId(loginUserId.getOrgLocations());
 				}
 				tasks.setTaskOwnerId(loginUser);
 				tasks.setAssignedUserId(assignedUser);
@@ -1541,17 +1538,17 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 					 }
 				 }else if(task.getAssignTo().equalsIgnoreCase(Constants.JOB_OWNER)){
 					 if(requirementSubmission != null){
+						 assignedUser = requirementSubmission.getRequirement().getManagerUserId();
 						 String response = copyWorkflowStagesAndTask(orgLocations, task, fromUser, assignedUser);
 						 if(response.equalsIgnoreCase(Constants.SUCCESS)){
-							 assignedUser = requirementSubmission.getRequirement().getManagerUserId();
 							 emailResponse = sendMailToAssignedUsers(orgLocations, fromUser, assignedUser, task);
 					 }
 					 }
 				 }else if(task.getAssignTo().equalsIgnoreCase(Constants.PRIMARY_RECRUITER)){
 					 if(requirementSubmission != null){
+						 assignedUser = requirementSubmission.getRequirement().getPrimaryRecruiterUserId();	
 						 String response = copyWorkflowStagesAndTask(orgLocations, task, fromUser, assignedUser);
 						 if(response.equalsIgnoreCase(Constants.SUCCESS)){
-							 assignedUser = requirementSubmission.getRequirement().getPrimaryRecruiterUserId();
 							 emailResponse =  sendMailToAssignedUsers(orgLocations, fromUser, assignedUser, task);
 					 }
 					 }
