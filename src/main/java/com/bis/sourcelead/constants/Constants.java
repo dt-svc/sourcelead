@@ -654,6 +654,9 @@ public class Constants {
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
 	//workflow
+	public static final String APPLICANT_OWNER = "Applicant Owner";
+	public static final String JOB_OWNER = "Job Owner";
+	public static final String PRIMARY_RECRUITER = "Primary Recruiter";
 	public static final String QUESTIONNAIRE_AUTO_SUBMISSION = "Auto";
 	public static final String QUESTIONNAIRE_MANUAL_SUBMISSION = "Manual";
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
