@@ -227,6 +227,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetails.setPersonalInfoStatus(bgcCandidateDetailsDTO.getPersonalInfoStatus());
 			bgcCandidateDetails.setHealthCheckStatus(bgcCandidateDetailsDTO.getHealthCheckStatus());
 			bgcCandidateDetails.setCrimeCheckStatus(bgcCandidateDetailsDTO.getCrimeCheckStatus());
+			bgcCandidateDetails.setCurrentBgcStatus(bgcCandidateDetailsDTO.getCurrentBgcStatus());
 			bgcCandidateDetails.setComments(bgcCandidateDetailsDTO.getComments());
 		}
 				bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetails);
