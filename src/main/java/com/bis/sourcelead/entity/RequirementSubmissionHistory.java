@@ -47,6 +47,9 @@ public class RequirementSubmissionHistory implements Serializable{
 	@Column(name = "FROM_STAGE")
 	private String fromStage;
 	
+	@Column(name = "STAGE_COMMENT")
+	private String stageComment;
+	
 	@Column(name = "TO_STAGE")
 	private String toStage;
 	
@@ -250,6 +253,14 @@ public class RequirementSubmissionHistory implements Serializable{
 
 	public void setFromStage(String fromStage) {
 		this.fromStage = fromStage;
+	}
+
+	public String getStageComment() {
+		return stageComment;
+	}
+
+	public void setStageComment(String stageComment) {
+		this.stageComment = stageComment;
 	}
 
 	public String getToStage() {
