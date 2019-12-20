@@ -9,6 +9,7 @@
 <script type="text/javascript">
 var uuid = '${bgcCandidate.uuid eq null ? "--" : bgcCandidate.uuid}';
 var name = '${bgcCandidate.fullName eq null ? "--" : bgcCandidate.fullName}';
+var currentBgcStatus = '${bgcCandidate.currentBgcStatus eq null ? "--" : bgcCandidate.currentBgcStatus}';
 var educationCheckStaus = '${bgcCandidate.educationCheckStaus eq null ? "--" : bgcCandidate.educationCheckStaus}';
 var priorEmployersCheckStatus = '${bgcCandidate.priorEmployersCheckStatus eq null ? "--" : bgcCandidate.priorEmployersCheckStatus}';
 var personalInfoStatus = '${bgcCandidate.personalInfoStatus eq null ? "--" : bgcCandidate.personalInfoStatus}';
@@ -29,6 +30,22 @@ $(document).ready(function() {
     <form id="editBgcCandidateForm" name="editBgcCandidateForm">
     <div class="project_wrap clearfix">
       <div class="clearfix mt minHeightcol5"> 
+      <div class="col-md-5">
+              <label class="clearfix">Current Bgc Status</label>
+              <div class="clearfix mt5">
+                  <select class="sel" id = "currentBgcId" name="currentBgcStatus">
+                      <option>-- Select --</option>
+                        <option>Not Initiated</option>
+                        <option>Initiated</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                        <option>Not Approved</option>
+                        <option>Onhold</option>
+                      </select>    
+              </div>
+            </div>
+            <div class="col-md-5">
+            </div>
         <div class="col-md-5">
           <label class="clearfix">Id</label>
           <div class="clearfix mt5"><input type="text" id = "bgcId" name="uuid" class="form-control" value="--" readonly></div>
