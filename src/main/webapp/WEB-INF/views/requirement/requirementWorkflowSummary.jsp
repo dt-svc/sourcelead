@@ -1057,7 +1057,7 @@ function rejectApplicant(submissionId,requirementId,submissionType,candidateName
 	var selectBox = $('#rejectApplicantSelectspocState'+submissionId).val();
 	var stageNames = getWorkflowStageColumnAndShortCodes();
 	var result ="";
-	result = result +"	<div class='project_inn_mask'></div>"; 
+	result = result +"	<div class='project_inn_mask'></div>";  
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	if(stageNames.get(selectBox) != null){
 		result = result +"		<p>Do you want to move <strong>"+candidateName+"</strong> to "+stageNames.get(selectBox)+"</p>";	
@@ -1069,6 +1069,7 @@ function rejectApplicant(submissionId,requirementId,submissionType,candidateName
 	result = result +"<input class='u_can_color' type='button' value='Cancel' onClick='closeRequirementPopup("+false+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
+	$("#popUp").show();
 	$("#remove_user_pop").slideDown(200);
 	$(".project_inn_mask").fadeIn(200);
     
@@ -1357,7 +1358,7 @@ function showSuccessMsg(msg){
 }
 
    function sendEmailQuestionaireAndCopyTasksToCandidate(questionnaireId, submissionId, stageName, stageId, questionnaireUuid, stageUuid) {
-	   $("#popUp").hide(); $(".project_inn_mask").fadeOut(200);
+	   $("#popUp").hide();$("#popUp").empty(); $(".project_inn_mask").fadeOut(200);
 	  var jobTitle =  $('#id1').text().trim(); // for the rquirement name .
 	   $.ajax({
 		      type : "GET",
