@@ -49,6 +49,9 @@ public class BgcCandidateDetails implements Serializable{
 	private OrgLocations orgLocationId;
 	
 	
+	@Column(name = "GENERATED_ID")
+	private String generatedId;
+	
 	@ManyToOne
 	@JoinColumn(name = "BGC_ORG_CONTACT_ID")
 	private OrgSpoc bgcOrgContactId;
@@ -257,6 +260,14 @@ public class BgcCandidateDetails implements Serializable{
 
 	public void setBgcOrgContactId(OrgSpoc bgcOrgContactId) {
 		this.bgcOrgContactId = bgcOrgContactId;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
 	}
 
 

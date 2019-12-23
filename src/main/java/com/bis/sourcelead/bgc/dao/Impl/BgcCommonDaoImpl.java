@@ -1,5 +1,6 @@
 package com.bis.sourcelead.bgc.dao.Impl;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,8 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 	
+	@Value("${jdbc.schema}")
+	private String schema;
 	
 
 	@Override
@@ -69,8 +73,16 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		try {
 		
 			Session session = this.sessionFactory.getCurrentSession();
-			List<BgcCandidateDetails> bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1").
+			List<BgcCandidateDetails> bgcReturnList=null;
+			System.out.println("orgLocations.getId( ) in dao >>>>>>>>>. "+orgLocations.getId());
+			 System.out.println("orgLocations.getIsBackgroundCheck() :>>>>>> "+orgLocations.getIsBackgroundCheck());
+			if(orgLocations.getIsBackgroundCheck() != null && orgLocations.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+			 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1").
 					                                   setLong("orgLocationId",orgLocations.getId()).list();
+			}else {
+				 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.sourceOrglocationId =:orgLocationId and bgc.status=1").
+                         setLong("orgLocationId",orgLocations.getId()).list();
+			}
 			List<BgcCandidateDetailsDTO> bgcResponseDtoList = new ArrayList<BgcCandidateDetailsDTO>();	
 			
 			if(bgcReturnList != null && bgcReturnList.size()>0) {
@@ -80,6 +92,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			//	BeanUtils.copyProperties(source, target);
 				  dto.setId(bgcCandidate.getId());
 				  dto.setUuid(bgcCandidate.getUuid());
+				  dto.setGeneratedId(bgcCandidate.getGeneratedId());
 				  dto.setFullName(bgcCandidate.getCandidate().getFirstName() +(bgcCandidate.getCandidate().getLastName() ==null?"":" "+bgcCandidate.getCandidate().getLastName()));
 				  dto.setCurrentBgcStatus(bgcCandidate.getCurrentBgcStatus());
 				  dto.setUpdatedPercentage(bgcCandidate.getupdatedPercentage());
@@ -89,6 +102,12 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 				  dto.setHealthCheckStatus(bgcCandidate.getHealthCheckStatus());
 				  dto.setCrimeCheckStatus(bgcCandidate.getCrimeCheckStatus());
 				  dto.setOthersInfoStatus(bgcCandidate.getOthersInfoStatus());
+				  if(orgLocations.getIsBackgroundCheck() != null && orgLocations.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+				    dto.setClinetOrVendorName(bgcCandidate.getSourceOrglocationId().getOrg().getOrgName());
+				  }else {
+					  dto.setClinetOrVendorName(bgcCandidate.getOrgLocationId().getOrg().getOrgName());
+				  }
+				  System.out.println("ORG Name :>>>>>> "+bgcCandidate.getSourceOrglocationId().getOrg().getOrgName());
 				  dto.setComments(bgcCandidate.getComments());
 				  dto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), bgcCandidate.getUpdatedDate()));
 				bgcResponseDtoList.add(dto);
@@ -140,7 +159,20 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			}
 			return Constants.SUCCESS;
 	}
-	
+	@Override
+	public Long getBgcIdByOrgLocationId(OrgLocations orgLocations, Integer generatedIdCount) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+			query = "SELECT MAX(CAST(SUBSTR(TRIM(GENERATED_ID),'" + generatedIdCount
+					+ "') AS UNSIGNED)) FROM "+schema+".BGC_CANDIDATE_DETAILS WHERE ORG_LOCATION_ID = '" + orgLocations.getId()
+					+ "'";
+		List<BigInteger> maxCountList = session.createSQLQuery(query).list();
+		Long count = 0L;
+		if (maxCountList != null && !maxCountList.isEmpty() && !maxCountList.contains(null)) {
+			count = (Long) maxCountList.iterator().next().longValue();
+		}
+		return count;
+	}
 	@Override
 	public BgcCandidateDetails getBgcCandidateDetailsByBgcUuid(String bgcUuid){
 		try {
