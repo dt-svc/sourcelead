@@ -499,7 +499,7 @@ function getEmploymentType(){
  function getVendorsByOrgLocationForAddApplicant(orgRelationId){
 	 $.ajax({
 	    	type: "GET",
-	        url: atsUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        url: atsUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"&isExcludeBgcVendors=true", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
