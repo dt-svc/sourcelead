@@ -164,7 +164,7 @@ public class BackgroundController {
 		ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList = null;
 		logger.debug("inisde controller  BgcCandidateDetailsDTO  --> ");
 		try {
-			String[] tableColumns = { "uuid", "name",  "currentBgcStatus","updatedPercetage", "personalInfoStatus", "educationCheckStaus",
+			String[] tableColumns = { "currentBgcStatus", "generatedId", "name", "updatedPercetage", "personalInfoStatus", "educationCheckStaus",
 					"priorEmployersCheckStatus", "healthCheckStatus", "healthCheckStatus", "crimeCheckStatus", "OthersInfoStatus" ,"comments","updatedDate"};// should be
 			// entity names
 			int sortColumnIndex = -1; // by default sorting using updated date
