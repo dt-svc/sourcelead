@@ -97,7 +97,7 @@ function bgcCandidate(){
 							$("#saveBgcCandidate").removeAttr('button').val('Save');
 							showError("Invalid data");
 						} else {
-							location.replace(vmsUrl+"/bgc/completedBgcDetails");	
+							location.replace(vmsUrl+"/bgc/bgcCandidates");	
 						}
 					} else if (result.indexOf('Sign In') !== -1) {
 						location.replace(sourceleadUrl);

@@ -24,7 +24,7 @@ $(document).ready(function() {
     <section class="content-header clearfix">
       <div class="pull-left"><h2>Edit Background Verification By Category</h2></div>
       <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a>&raquo; 
-      <a href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails">Background Verification </a>&raquo;
+      <a href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates">Background Verification </a>&raquo;
       Edit Background Verification</div>
     </section>
     <form id="editBgcCandidateForm" name="editBgcCandidateForm">
@@ -154,7 +154,7 @@ $(document).ready(function() {
 	<div class="newAddWidth clearfix">
 		<div class="pull-right mr">
 		  <input id="saveBgcCandidate" value="Save" class="btn btn-primary" type="button" onclick="bgc.saveEditBgcCandidate();">
-			<a href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails"><input value="Cancel" class="btn btn-default ml" type="button"></a>
+			<a href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates"><input value="Cancel" class="btn btn-default ml" type="button"></a>
 		</div>
 	</div>
 	</div>
