@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -23,10 +25,12 @@ import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateOnBoardingDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.OnboardTasksDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
@@ -68,6 +72,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -102,6 +107,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	TeamMemberDao teamMemberDao;
+	
+	@Autowired
+	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	UserService userService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -618,6 +629,10 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 // calling bgc savind method 
 		 BgcCandidateDetails bgcCandidateDetails = bgcCommonService.saveBgcCandidateDetails(bgcCandidateDetailsDto, loginUser, bgcOrgLocations);
 		 if(bgcCandidateDetails != null) {
+			 
+			 //bgc email code
+			 sendBackgroundCheckMailToVendorContact(candidateOnBoarding, orgLocations);
+			 
 			 logger.info("BGC Candidate successfully copied to bgc vendor location.SSSSSSSSSSS");
 			System.out.println("BGC Candidate successfully copied to bgc vendor location.SSSSSSSSSSS");
 		 }else {
@@ -626,6 +641,62 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 }
 		 } 
 		
+	}
+	
+	public void sendBackgroundCheckMailToVendorContact(CandidateOnBoarding candidateOnBoarding, OrgLocations ol){
+		try{
+			 EmailMessage emailMessage = new EmailMessage();
+			OrgSpoc orgSpoc = orgSpocDao.getOrgSpocById(candidateOnBoarding.getBgcOrgContactId().getId());
+			if(orgSpoc != null){
+		emailMessage.setFirstName(orgSpoc.getVendorUser().getFirstName());
+		  emailMessage.setLastName(orgSpoc.getVendorUser().getLastName());
+		  emailMessage.setToEmail(orgSpoc.getVendorUser().getEmail());
+		  User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
+		  emailMessage.setFromEmail(sourceLeadAdmin.getEmail());
+	      Map<String, String> globalVarsMap = new HashMap<String, String>();
+	      
+	      if(candidateOnBoarding.getCandidateId().getLastName() != null) {
+				 globalVarsMap.put("Candidate_Name",candidateOnBoarding.getCandidateId().getFirstName() +" "+ candidateOnBoarding.getCandidateId().getLastName());
+			 }else {
+				 globalVarsMap.put("Candidate_Name",candidateOnBoarding.getCandidateId().getFirstName());
+			 }
+	      if(candidateOnBoarding.getCandidateId().getLastName() != null) {
+				 globalVarsMap.put("Vendor_Contact_User",orgSpoc.getVendorUser().getFirstName() +" "+ orgSpoc.getVendorUser().getLastName());
+			 }else {
+				 globalVarsMap.put("Vendor_Contact_User",orgSpoc.getVendorUser().getFirstName());
+			 }
+	      globalVarsMap.put("Org_Name", ol.getOrgLocationName());
+	      StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+			
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 EmailScenario emailScenario = null;
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BACKGROUND_CHECK_MAIL_TO_VENDOR_CONTACT, Constants.ENTITY_TYPE_EMAIL);
+
+			//convert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			 logger.error(e+" in sendBackgroundCheckMailToVendorContact");
+		}
 	}
 	
 	public Tasks getTaskDetails(OnboardTasks onboardTasks,User user,User loginUser,OrgLocations orgLocations){
