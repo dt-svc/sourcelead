@@ -78,7 +78,7 @@ public class BackgroundController {
 		return model;
 	}
 
-	@RequestMapping(value = { "/completedBgcDetails" })
+/*	@RequestMapping(value = { "/completedBgcDetails" })
 	public ModelAndView viewCompletedBgcDetails(HttpServletRequest request) throws Exception {
 		ModelAndView model = new ModelAndView();
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
@@ -88,6 +88,19 @@ public class BackgroundController {
 		
 			  model.addObject("sourceleadUrl", sourceleadUrl);
 			  model.setViewName("/background/completedBgcDetails");
+		return model;
+	}*/
+	
+	@RequestMapping(value = { "/bgcCandidates" })
+	public ModelAndView getBgcCandidates(HttpServletRequest request) throws Exception {
+		ModelAndView model = new ModelAndView();
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		SessionMaintainanceData sessionData = new SessionMaintainanceData();
+		sessionData.setNav("BGC Candidates");
+		
+			  model.addObject("sourceleadUrl", sourceleadUrl);
+			  model.setViewName("/background/bgcCandidates");
 		return model;
 	}
 	

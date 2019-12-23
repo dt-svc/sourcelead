@@ -10,7 +10,7 @@
 					  <h2>Background Verification</h2>
 					</div>
 					<div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a>&raquo; 
-					<a href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails">Background Verification </a>&raquo;
+					<a href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates">Background Verification </a>&raquo;
 					Background Summary</div>
 	</section>
 
