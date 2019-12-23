@@ -207,6 +207,8 @@ public class Constants {
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
 	public static final String MAILTO_MANAGER1ANDEMPLOYEE_WHEN_MANAGER2REOPENS = "MailToManager1andEmployeeWhenManager2ReopensExpense";
 	
+	public static final String BACKGROUND_CHECK_MAIL_TO_VENDOR_CONTACT = "backgroundcheckmailtovendorcontact";
+	
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
