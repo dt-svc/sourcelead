@@ -22,6 +22,8 @@ public interface BgcCommonDao {
 
 	String deleteBgcCandidateDetailsbyUuiId(String uuid);
 	
+	Long getBgcIdByOrgLocationId(OrgLocations orgLocations, Integer generatedIdCount);
+	
 	BgcCandidateDetails getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 	
 	List<CandidateEducation> getBgcCandidateEducationSummaryListByCandidateId(Long candidateId)throws Exception;

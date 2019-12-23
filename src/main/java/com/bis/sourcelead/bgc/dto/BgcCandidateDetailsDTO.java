@@ -19,6 +19,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	
 	private String uuid;
 	
+	private String generatedId;
+	
 	private Long candidateId;
 	
 	private Long sourceOrglocationId;
@@ -54,6 +56,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	private String updatedDate;
 	
 	private Long updatedBy;
+	
+	private String clinetOrVendorName;
 
 	//dto fields for candidate
 	
@@ -275,6 +279,22 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setBgcVendorContact(Long bgcVendorContact) {
 		this.bgcVendorContact = bgcVendorContact;
+	}
+
+	public String getGeneratedId() {
+		return generatedId;
+	}
+
+	public void setGeneratedId(String generatedId) {
+		this.generatedId = generatedId;
+	}
+
+	public String getClinetOrVendorName() {
+		return clinetOrVendorName;
+	}
+
+	public void setClinetOrVendorName(String clinetOrVendorName) {
+		this.clinetOrVendorName = clinetOrVendorName;
 	}
 	
 	

@@ -1,5 +1,6 @@
 package com.bis.sourcelead.bgc.service.Impl;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,6 +96,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		bgcCandidateDetails.setUpdatedBy(user);
 		bgcCandidateDetails.setUpdatedDate(currentDate); 
 		bgcCandidateDetails.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID()); // need to add random UUID for the BGC Candidate.
+		bgcCandidateDetails.setGeneratedId(getBgcGeneratedId(orgLocations)); // setting generated id for the BGC candidate for ORG specific.
 		
 		return bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetails);
 		
@@ -104,12 +106,50 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	      return null;
 	    }
 	}
-
+	@Override
+	public String getBgcGeneratedId(OrgLocations orgLocations) {
+		String companyShortCode = null;
+		Long number = 1L;
+		String immigrationId = null;
+		Integer generatedIdcount = 0;
+		StringBuilder sbuilder = new StringBuilder();
+		sbuilder.append(orgLocations.getGeneratedUserId()).append(Constants.BGC_ENTITY);
+		String generatedUsreId = sbuilder.toString();
+		for (int i = 0; i < generatedUsreId.length(); i++) {
+			char ch = generatedUsreId.charAt(i);
+			if (Character.isAlphabetic(ch)) {
+				generatedIdcount++;
+			}
+		}
+		generatedIdcount = generatedIdcount + 1;
+		Long checkNumber = bgcCommonDao.getBgcIdByOrgLocationId(orgLocations,
+				generatedIdcount);
+		if (checkNumber == null) {
+			immigrationId = number.toString();
+		} else {
+			Long reqId = checkNumber + 1;
+			immigrationId = reqId.toString();
+		}
+		final DecimalFormat decimalFormat = new DecimalFormat("0");
+		String convetredRequirementsId = decimalFormat.format(Long.parseLong(immigrationId));
+		StringBuffer sb = new StringBuffer();
+		if (orgLocations.getGeneratedUserId() != null && !"".equalsIgnoreCase(orgLocations.getGeneratedUserId())) {
+			companyShortCode = orgLocations.getGeneratedUserId();
+		}
+		return sb.append(companyShortCode).append(Constants.BGC_ENTITY).append(convetredRequirementsId)
+				.toString();
+	}
 
 	@Override
 	public ResponseList<BgcCandidateDetailsDTO> getBgcCadidateListByOrgLocationId(BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			String searchValue, OrgLocations orgLocations, Map<String, Long[]> filterVal, String orgTypeVal) {
-		return   bgcCommonDao.getBgcCadidateListByOrgLocationId(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
+		try {
+			orgLocations = orgLocationService.getOrgLocations(orgLocations.getId()); // loading orgLocations for the isBackGroundCheck property.
+			return   bgcCommonDao.getBgcCadidateListByOrgLocationId(bgcCandidateDetailsDTO,searchValue,orgLocations,  filterVal,orgTypeVal);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

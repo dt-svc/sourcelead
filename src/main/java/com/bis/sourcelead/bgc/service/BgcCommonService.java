@@ -25,6 +25,8 @@ public interface BgcCommonService {
 
 	String deleteBgcCandidateDetailsbyUuiId(String uuid);
 	
+	public String getBgcGeneratedId(OrgLocations orgLocations);
+	
 	BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 	
 	List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)throws Exception;

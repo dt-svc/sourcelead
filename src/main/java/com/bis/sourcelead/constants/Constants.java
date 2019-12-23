@@ -1179,6 +1179,7 @@ public class Constants {
 	public static final String JOB_ENTITY = "JB";
 	public static final String JOB_FAIR = "JF";
 	public static final String IMMIGRATION_ENTITY = "IM";
+	public static final String BGC_ENTITY = "BC";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
 	public static final String TICKET_ENTITY = "ST-";
