@@ -634,8 +634,6 @@ public class RequirementSubmission implements Serializable{
 	@JsonProperty
 	private String invoiceGenerateDate;
 
-    
-    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -1862,4 +1860,5 @@ public class RequirementSubmission implements Serializable{
 		this.submittedQuestionrUuid = submittedQuestionrUuid;
 	}
 
+		
 }
