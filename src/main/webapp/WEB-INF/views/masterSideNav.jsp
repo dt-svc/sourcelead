@@ -412,12 +412,8 @@
 							<a href="#" class="expencesLi" title="Backround Check">
 									<span class="navIcons immIcon"></span><b>BGC</b><i class="fa fa-fw fa-caret-down"></i>
 							</a>
-
 								<ul class="collapses" style="display: none">
-								
-									<li class="${sessionData.nav == 'InProgress' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/inProgressBgcDetails" title="In Progress"><i class="fa fa-chevron-right"></i> Initiation</a></li>
-									<li class="${sessionData.nav == 'Completed' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails" title="Completed"><i class="fa fa-chevron-right"></i> BGC Candidates</a></li>
-									
+									<li class="${sessionData.nav == ' BGC Candidates' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates" title=" BGC Candidates"><i class="fa fa-chevron-right"></i> BGC Candidates</a></li>
 								</ul>
 								
 					</li>
