@@ -655,7 +655,8 @@ public class Constants {
 	public static final String YEARLY = "Yearly";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
-	//background check
+	//26-dec-2019
+	//background check status map is used to calculate bgc updated percentage.
 	public static final LinkedHashMap<String, Double> BACKGROUND_CHECK_STATUS_MAP = new LinkedHashMap<String, Double> (){
 		{
 			put("Not Initiated", 2.0); 	put("Initiated", 4.0); 

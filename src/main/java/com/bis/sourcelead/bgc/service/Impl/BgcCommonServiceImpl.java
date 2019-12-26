@@ -181,6 +181,9 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
 			bgcCandidateDetailsDTO.setCandidateUUID(bgcCandidateDetails.getCandidate().getCandidateUUID());
 			
+			//26-dec-2019
+			//percentage values are predefined in a map for each of 6 status in bgc.
+			//values for each status is added into a list and percentage is calculated. 
 			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getCurrentBgcStatus()) != null){
 				statusList.add(0, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getCurrentBgcStatus()));
 			}
