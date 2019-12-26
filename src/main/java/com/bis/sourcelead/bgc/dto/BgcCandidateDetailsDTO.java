@@ -173,7 +173,7 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 		return updatedPercentage;
 	}
 
-	public void setUpdatedPercentage(String updatedPercetage) {
+	public void setUpdatedPercentage(String updatedPercentage) {
 		this.updatedPercentage = updatedPercentage;
 	}
 
