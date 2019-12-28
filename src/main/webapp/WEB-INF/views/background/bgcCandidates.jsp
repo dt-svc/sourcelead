@@ -64,7 +64,7 @@ $this.next().css({'width': '100%'});
 });
 </script>
 <script>
-
+var orgType ="";
 $(document).ready(function() {
 	  getDynamicBgcList(null);
 })
@@ -329,6 +329,9 @@ function dynamicBgcListPagination(url) {
                 /*"data": "actions",*/
                 "render": function (data, type, opt, meta) {
                     var result = "";
+                    if(orgType == ''){
+                       orgType= opt.orgType;
+                    }
                  if(opt.orgType == "Vendor"){
                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
                     result = result + '<i id="delete' + opt.uuid + '" onclick="deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
@@ -350,7 +353,12 @@ function dynamicBgcListPagination(url) {
             "sSearch": "",
             "sZeroRecords": "", "sEmptyTable": "",
             "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
-        }
+        },
+        "initComplete": function( settings ) { // this call back function is added to remove last column "action" if org type is client.
+        	 if(orgType == "Client"){
+                 $('#dynamicBgcListTbl tr').find('th:last, td:last').remove();
+            }
+ 		}
     });
    
     $("#dynamicBgcListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
