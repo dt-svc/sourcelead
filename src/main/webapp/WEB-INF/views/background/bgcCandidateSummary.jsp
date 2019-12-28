@@ -24,8 +24,8 @@
 										<div class="col-md-8">
 												<div class="progress mt mb0">
 														<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
-														aria-valuemin="0" aria-valuemax="100" style="width:${bgcCandidate.updatedPercentage eq null ? '50%' : bgcCandidate.updatedPercentage}">
-														Profile Updated ${bgcCandidate.updatedPercentage eq null ? "50%" : bgcCandidate.updatedPercentage}
+														aria-valuemin="0" aria-valuemax="100" style="width:${bgcCandidate.updatedPercentage eq null ? '0%' : bgcCandidate.updatedPercentage}%">
+														Profile Updated ${bgcCandidate.updatedPercentage eq null ? "0%" : bgcCandidate.updatedPercentage}%
 														</div>
 													  </div>
 										</div>						  
@@ -127,7 +127,7 @@
 <script>
 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 var candidateUuid = '${bgcCandidate.candidateUUID}';
-var bgcUuid = '${bgcCandidate.uuid}'
+var bgcUuid = '${bgcCandidate.uuid}';
 // project side bar tabs
 $(document).ready(function() {
 	showLoading("detailsLoading");

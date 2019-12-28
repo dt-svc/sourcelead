@@ -198,7 +198,7 @@ function dynamicBgcListPagination(url) {
                 "render": function (data, type, opt, meta) {
                     var result = "";
                     if (opt.updatedPercentage !== null && opt.updatedPercentage !== 'undefined') {
-                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.updatedPercentage+"'>" + opt.updatedPercentage + "</div></td>";
+                        result = result + "<td><div class='tbldata-dotdot-vsm' title='"+opt.updatedPercentage+"'>" + opt.updatedPercentage + "%</div></td>";
                     } else {
                         result = result + "<td><div class='tbldata-dotdot-vsm'>---</div></td>";
                     }
