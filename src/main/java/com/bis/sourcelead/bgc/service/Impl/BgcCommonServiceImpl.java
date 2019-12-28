@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -171,12 +172,14 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			}else{
 				fullName.append(bgcCandidateDetails.getCandidate().getFirstName());
 			}
+			
 			bgcCandidateDetailsDTO.setFullName(fullName.toString());
 			bgcCandidateDetailsDTO.setAadharNumber(bgcCandidateDetails.getCandidate().getAadharNumber());
 			bgcCandidateDetailsDTO.setPanNumber(bgcCandidateDetails.getCandidate().getPanNumber());
 			bgcCandidateDetailsDTO.setAddress(bgcCandidateDetails.getCandidate().getAddress());
 			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
 			bgcCandidateDetailsDTO.setCandidateUUID(bgcCandidateDetails.getCandidate().getCandidateUUID());
+			bgcCandidateDetailsDTO.setUpdatedPercentage(bgcCandidateDetails.getupdatedPercentage());
 		}
 		return bgcCandidateDetailsDTO;
 		}catch(Exception e){
@@ -260,6 +263,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO)  {
 		try{
+		LinkedList<Double> statusList = new LinkedList<Double>();	
 		BgcCandidateDetails bgcCandidateDetails = bgcCommonDao.getBgcCandidateDetailsByBgcUuid(bgcCandidateDetailsDTO.getUuid());
 		if(bgcCandidateDetailsDTO != null && bgcCandidateDetails != null){
 			bgcCandidateDetails.setEducationCheckStaus(bgcCandidateDetailsDTO.getEducationCheckStaus());
@@ -269,6 +273,41 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetails.setCrimeCheckStatus(bgcCandidateDetailsDTO.getCrimeCheckStatus());
 			bgcCandidateDetails.setCurrentBgcStatus(bgcCandidateDetailsDTO.getCurrentBgcStatus());
 			bgcCandidateDetails.setComments(bgcCandidateDetailsDTO.getComments());
+			
+			//26-dec-2019
+			//percentage values are predefined in a map for each of 6 status in bgc.
+			//values for each status is added into a list and percentage is calculated. 
+			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getCurrentBgcStatus()) != null){
+				statusList.add(0, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getCurrentBgcStatus()));
+			}
+			
+			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getPersonalInfoStatus()) != null){
+				statusList.add(1, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getPersonalInfoStatus()));
+			}
+			
+			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getEducationCheckStaus()) != null){
+				statusList.add(2, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getEducationCheckStaus()));
+			}
+			
+			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getPriorEmployersCheckStatus()) != null){
+				statusList.add(3, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getPriorEmployersCheckStatus()));
+			}
+			
+			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getHealthCheckStatus()) != null){
+				statusList.add(4, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getHealthCheckStatus()));
+			}
+			
+			if(Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getCrimeCheckStatus()) != null){
+				statusList.add(5, Constants.BACKGROUND_CHECK_STATUS_MAP.get(bgcCandidateDetails.getCrimeCheckStatus()));
+			}
+			
+			if(statusList != null && statusList.size() == 6){
+				Double reducedPercentage = statusList.stream().reduce(0.00, Double::sum);
+				Integer percentage = (reducedPercentage.intValue() * 100) / 100;
+				if(percentage <= 100){
+					bgcCandidateDetails.setUpdatedPercentage(String.valueOf(percentage));
+				}
+			}
 		}
 				bgcCommonDao.saveBgcCandidateDetails(bgcCandidateDetails);
 		return bgcCandidateDetails;

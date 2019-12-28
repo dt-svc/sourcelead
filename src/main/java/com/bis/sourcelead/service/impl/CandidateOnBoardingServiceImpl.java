@@ -660,7 +660,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			 }else {
 				 globalVarsMap.put("Candidate_Name",candidateOnBoarding.getCandidateId().getFirstName());
 			 }
-	      if(candidateOnBoarding.getCandidateId().getLastName() != null) {
+	      if(orgSpoc.getVendorUser().getLastName() != null) {
 				 globalVarsMap.put("Vendor_Contact_User",orgSpoc.getVendorUser().getFirstName() +" "+ orgSpoc.getVendorUser().getLastName());
 			 }else {
 				 globalVarsMap.put("Vendor_Contact_User",orgSpoc.getVendorUser().getFirstName());
