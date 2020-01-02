@@ -41,6 +41,7 @@ $(document).ready(function() {
                         <option>Completed</option>
                         <option>Not Approved</option>
                         <option>Onhold</option>
+                        <option>N/A</option>
                       </select>    
               </div>
             </div>
@@ -65,6 +66,7 @@ $(document).ready(function() {
                   <option>Completed</option>
                   <option>Not Approved</option>
                   <option>Onhold</option>
+                  <option>N/A</option>
                 </select>          	
         </div>
         </div>
@@ -80,6 +82,7 @@ $(document).ready(function() {
                       <option>Completed</option>
                       <option>Not Approved</option>
                       <option>Onhold</option>
+                      <option>N/A</option>
                     </select>          	
             </div>
           </div>
@@ -95,6 +98,7 @@ $(document).ready(function() {
                         <option>Completed</option>
                         <option>Not Approved</option>
                         <option>Onhold</option>
+                        <option>N/A</option>
                       </select>          	
               </div>
             </div> 
@@ -109,6 +113,7 @@ $(document).ready(function() {
                         <option>Completed</option>
                         <option>Not Approved</option>
                         <option>Onhold</option>
+                        <option>N/A</option>
                       </select>    
               </div>
             </div>
@@ -123,6 +128,7 @@ $(document).ready(function() {
                         <option>Completed</option>
                         <option>Not Approved</option>
                         <option>Onhold</option>
+                        <option>N/A</option>
                       </select>    
               </div>
             </div>
