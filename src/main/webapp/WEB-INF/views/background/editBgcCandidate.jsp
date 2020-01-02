@@ -33,8 +33,8 @@ $(document).ready(function() {
       <div class="col-md-5">
               <label class="clearfix">Current Bgc Status</label>
               <div class="clearfix mt5">
-                  <select class="sel" id = "currentBgcId" name="currentBgcStatus">
-                      <option>-- Select --</option>
+                  <select class="sel" id = "currentBgcId" name="currentBgcStatus" data-validation="required" field-name="Current Bgc Status">
+                      <option value="">-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
                         <option>In Progress</option>
@@ -58,8 +58,8 @@ $(document).ready(function() {
         <div class="col-md-5">
           <label class="clearfix">Education / Academic credentials Status</label>
           <div class="clearfix mt5">
-              <select class="sel" id = "educationId" name="educationCheckStaus">
-                <option>-- Select --</option>
+              <select class="sel" id = "educationId" name="educationCheckStaus" data-validation="required" field-name="Education / Academic credentials Status">
+                <option value="">-- Select --</option>
                   <option>Not Initiated</option>
                   <option>Initiated</option>
                   <option>In Progress</option>
@@ -74,8 +74,8 @@ $(document).ready(function() {
         <div class="col-md-5">
             <label class="clearfix">Prior Employment Status</label>
             <div class="clearfix mt5">
-                  <select class="sel" id = "employmentId" name="priorEmployersCheckStatus">
-                    <option>-- Select --</option>
+                  <select class="sel" id = "employmentId" name="priorEmployersCheckStatus" data-validation="required" field-name="Prior Employment Status">
+                    <option value="">-- Select --</option>
                       <option>Not Initiated</option>
                       <option>Initiated</option>
                       <option>In Progress</option>
@@ -90,8 +90,8 @@ $(document).ready(function() {
           <div class="col-md-5">
               <label class="clearfix">Personal Information Status</label>
               <div class="clearfix mt5">
-                    <select class="sel" id = "personalInfoId" name="personalInfoStatus">
-                      <option>-- Select --</option>
+                    <select class="sel" id = "personalInfoId" name="personalInfoStatus" data-validation="required" field-name="Personal Information Status">
+                      <option value="">-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
                         <option>In Progress</option>
@@ -105,8 +105,8 @@ $(document).ready(function() {
             <div class="col-md-5">
               <label class="clearfix">Health Status</label>
               <div class="clearfix mt5">
-                  <select class="sel" id = "healthId" name="healthCheckStatus">
-                      <option>-- Select --</option>
+                  <select class="sel" id = "healthId" name="healthCheckStatus" data-validation="required" field-name="Health Status">
+                      <option value="">-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
                         <option>In Progress</option>
@@ -120,8 +120,8 @@ $(document).ready(function() {
             <div class="col-md-5">
               <label class="clearfix">Criminal Record Status</label>
               <div class="clearfix mt5">
-                  <select class="sel" id = "criminalRecordId" name="crimeCheckStatus">
-                      <option>-- Select --</option>
+                  <select class="sel" id = "criminalRecordId" name="crimeCheckStatus" data-validation="required" field-name="Criminal Record Status">
+                      <option value="">-- Select --</option>
                         <option>Not Initiated</option>
                         <option>Initiated</option>
                         <option>In Progress</option>
@@ -150,7 +150,8 @@ $(document).ready(function() {
             <div class="col-md-5">
                 <label class="clearfix">Comments</label>
                 <div class="clearfix mt5">
-                    <textarea placeholder="Description" id = "commentsId" name="comments" class="form-control" cols="2"></textarea>   
+                    <textarea placeholder="Description" id = "commentsId" name="comments" class="form-control" cols="2"
+                    value="" data-validation="required" field-name="Comments"></textarea>   
                 </div>
               </div>
 
