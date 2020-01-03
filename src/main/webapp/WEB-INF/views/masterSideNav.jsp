@@ -351,26 +351,10 @@
 								</li>
 								</sec:authorize>
 						</c:if>
+						 <c:if test="${tabName == 'BackgroundCheck'}">
+	                   <li class="${sessionData.nav == 'bgc' ? 'navActive' : ''}"><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates" title=" BGC Candidates"><span class="navIcons bgIcon"></span><b>BGC Candidates</b></a></li>
+	                </c:if> 
 						
-						<%--<c:if test="${tabName == 'BackgroundCheck'}">
-					       <sec:authorize access="hasAnyRole('ROLE_ADD_BACKGROUND_CHECK_DETAILS','ROLE_VIEW_EDIT_BACKGROUND_CHECK_DETAILS','ROLE_DELETE_BACKGROUND_CHECK_DETAILS')">
-					
-
-							<li class="${sessionData.nav == 'BackgroundCheck' || sessionData.nav == 'InProgress' ? 'navActive' : ''}">
-							<a href="#" class="expencesLi" title="Immigration">
-									<span class="navIcons immIcon"></span><b>Background Check</b><i class="fa fa-fw fa-caret-down"></i>
-							</a>
-
-								<ul class="collapses" style="display: none">
-								
-									<li class="${sessionData.nav == 'InProgress' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/inProgressBgcDetails" title="In Progress"><i class="fa fa-chevron-right"></i> In Progress</a></li>
-									<li class="${sessionData.nav == 'Completed' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/completedBgcDetails" title="Completed"><i class="fa fa-chevron-right"></i> Completed</a></li>
-									
-								</ul>
-								
-								</li>
-							 	</sec:authorize> 
-						</c:if> --%>
 				    <c:if test="${tabName == 'Leave Management'}">
 		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
 		          	</c:if>	
@@ -402,21 +386,14 @@
                                <sec:authorize access="hasRole('ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')">
                                		<li class="${sessionData.nav == 'Org Chart' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" title="Org Chart"><i class="fa fa-chevron-right"></i> Org Chart</a></li>
                               </sec:authorize>
+                              
                                
                     </ul>
                               
 			  </li>
 			</sec:authorize>
 			
-          		<li class="${sessionData.nav == 'BGC' || sessionData.nav == 'InProgress' ? 'navActive' : ''}">
-							<a href="#" class="expencesLi" title="Backround Check">
-									<span class="navIcons immIcon"></span><b>BGC</b><i class="fa fa-fw fa-caret-down"></i>
-							</a>
-								<ul class="collapses" style="display: none">
-									<li class="${sessionData.nav == ' BGC Candidates' ? 'treview-active' : ''}"><a	href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates" title=" BGC Candidates"><i class="fa fa-chevron-right"></i> BGC Candidates</a></li>
-								</ul>
-								
-					</li>
+          		
         </ul>
         </nav>
   </aside>
