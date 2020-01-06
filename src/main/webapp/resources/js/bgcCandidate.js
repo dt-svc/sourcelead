@@ -17,10 +17,10 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Institute Name</span><p>: "+(dataList[i].institute == null ? "--":dataList[i].institute)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "--":dataList[i].academicYear)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Grade</span><p>: "+(dataList[i].grade == null ? "--":dataList[i].grade)+"</p></li>";
-						result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";
+						/*result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";*/
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].educationFileName == null ? "--":dataList[i].educationFileName)+"" +
 								"<a download href = "+(dataList[i].educationFileUrl == null ? "--":dataList[i].educationFileUrl)+">  <i class='fa fa-download ml'></i></a></p></li>";
-						result = result + "<li class='clearfix'><span>Comments</span><p>: --</p></li>";
+						/*result = result + "<li class='clearfix'><span>Comments</span><p>: --</p></li>";*/
 						result = result + "</ul>";
 						}
 					}else{
@@ -48,7 +48,7 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "--" : dataList[i].period)+" Year(s)</p></li>";
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
-						result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";
+						/*result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";*/
 						result = result + "</ul>";
 					}
 				}else{
@@ -149,8 +149,8 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
 						result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Address</span><p>: "+(data.address == null ? "--" : data.address)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Family</span><p>: --</p></li>";
-						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";
+						/*result = result + "<li class='clearfix'><span>Family</span><p>: --</p></li>";
+						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";*/
 						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";
 						result = result + "</ul>";
 					}else{
