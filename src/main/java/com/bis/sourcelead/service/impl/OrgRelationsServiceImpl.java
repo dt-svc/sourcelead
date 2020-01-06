@@ -153,11 +153,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				} else {
 					orgRelations.setIsLawFirm(Constants.NO);
 				}
-//				if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
-//					orgRelations.setIsBackgroundCheck(Constants.YES);
-//				} else {
-//					orgRelations.setIsBackgroundCheck(Constants.NO);
-//				}
+				if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+					orgRelations.setIsBackgroundCheck(Constants.YES);
+				} else {
+					orgRelations.setIsBackgroundCheck(Constants.NO);
+				}
 					if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 						orgRelations.setIsAccountingFirm(Constants.YES);
 				} else {
@@ -671,6 +671,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public int updatePaymentTermsInOrgrelations() {
 		return orgRelationsDao.updatePaymentTermsInOrgrelations();
+	}
+
+	@Override
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForBackgroundCheck(orgLocationId);
 	}
 	
 }
