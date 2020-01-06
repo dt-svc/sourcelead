@@ -33,7 +33,7 @@ window.onload = function () {
 	<div id="loading"></div> 
 	<form:form id="client_form" name="client_form" method="post">
 	<input type = "hidden" id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N">
-	
+	<input type = "hidden" id="isBackgroundCheck" title="Is Background Check firm" name="isBackgroundCheck"  type="checkbox" value = "N">
 	<input type = "hidden" id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N">
 	
 	<input type="hidden" id="actionId" value="${actionId}">
