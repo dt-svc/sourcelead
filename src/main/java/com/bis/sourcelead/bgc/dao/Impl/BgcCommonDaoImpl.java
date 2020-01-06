@@ -76,11 +76,19 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			List<BgcCandidateDetails> bgcReturnList=null;
 			System.out.println("orgLocations.getId( ) in dao >>>>>>>>>. "+orgLocations.getId());
 			 System.out.println("orgLocations.getIsBackgroundCheck() :>>>>>> "+orgLocations.getIsBackgroundCheck());
+			 
+			 StringBuilder searchBuilder = new StringBuilder("");
+			 if(searchValue != null && !searchValue.equalsIgnoreCase("")){
+				 searchBuilder.append(" AND (bgc.candidate.firstName like '%"+searchValue+"%' OR bgc.candidate.lastName like '%"+searchValue+"%' OR bgc.candidate.middelName like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bgc.generatedId like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bgc.currentBgcStatus like '%"+searchValue+"%')");
+			 } 
+			 
 			if(orgLocations.getIsBackgroundCheck() != null && orgLocations.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
-			 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1").
+			 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1"+searchBuilder.toString()).
 					                                   setLong("orgLocationId",orgLocations.getId()).list();
 			}else {
-				 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.sourceOrglocationId =:orgLocationId and bgc.status=1").
+				 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.sourceOrglocationId =:orgLocationId and bgc.status=1"+searchBuilder.toString()).
                          setLong("orgLocationId",orgLocations.getId()).list();
 			}
 			List<BgcCandidateDetailsDTO> bgcResponseDtoList = new ArrayList<BgcCandidateDetailsDTO>();	

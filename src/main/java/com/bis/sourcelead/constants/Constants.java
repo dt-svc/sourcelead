@@ -661,7 +661,8 @@ public class Constants {
 		{
 			put("Not Initiated", 2.0); 	put("Initiated", 4.0); 
 			put("Onhold", 8.0); put("In Progress", 8.0); 
-			put("Not Approved", 8.0); 	put("Completed", 16.67777); 
+			put("Not Approved", 8.0); 	put("Completed", 16.67777);
+			put("N/A", 16.67777);
 		}
 	};
 	
