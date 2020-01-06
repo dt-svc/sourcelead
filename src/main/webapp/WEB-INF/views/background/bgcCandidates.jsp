@@ -183,7 +183,10 @@ function dynamicBgcListPagination(url) {
                 "render": function (data, type, opt, meta) {
                     var result = "";
                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-                        result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
+                    	console.log("view "+roleActionsArray.indexOf("ROLE_VIEW_BACKGROUND_DETAILS"));
+                        '<sec:authorize access="hasRole(\'ROLE_VIEW_BACKGROUND_DETAILS\')">' 
+                    	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
+                        '</sec:authorize>'
                     } else {
                         result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                     }
@@ -333,8 +336,14 @@ function dynamicBgcListPagination(url) {
                        orgType= opt.orgType;
                     }
                  if(opt.orgType == "Vendor"){
+                	 console.log("edit "+roleActionsArray.indexOf("ROLE_EDIT_BACKGROUND_DETAILS"));
+                	 console.log("delete "+roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS"));
+                	'<sec:authorize access="hasRole(\'ROLE_EDIT_BACKGROUND_DETAILS\')">'
                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
+                    '</sec:authorize>'
+                    '<sec:authorize access="hasRole(\'ROLE_DELETE_BACKGROUND_DETAILS\')">'
                     result = result + '<i id="delete' + opt.uuid + '" onclick="deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                    '</sec:authorize>'
                  }
                     return result;
                    
