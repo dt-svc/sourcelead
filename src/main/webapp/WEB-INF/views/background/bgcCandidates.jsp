@@ -31,8 +31,8 @@
                   <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
                 
                 <li class="positionRelative">
-                  <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
-                  <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                  <input class="repSearchBar" placeholder="Search" id="bgcListSearch" type="text">
+                  <span class="repSearchIcon" onclick="getDynamicBgcList(null);"></span></li>
               </ul>
             
                  <div id="dynamicBgcListViewDiv" class="project_wrap_table datatable_filter"></div>
@@ -110,7 +110,7 @@ function getDynamicBgcList(filterVal, DashBoardFilterStatus) {
 
     var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 //    var statusFilter = $("#statusFilter").val();
-    var searchValue = $("#bgcListSerach").val();
+    var searchValue = $("#bgcListSearch").val();
     searchValue = searchValue ? searchValue : "";
 
      url = vmsUrl + "/bgc/getBgcCandidageteList?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal;
@@ -362,6 +362,13 @@ function dynamicBgcListPagination(url) {
     });
    
     $("#dynamicBgcListTbl").wrap("<div style='overflow-x: auto; overflow-y: hidden;'></div>");
+    
+    $("#bgcListSearch").keyup(function (e) {
+        if (e.which == 13) {
+        	getDynamicBgcList(null);
+       
+        }
+    });
 
   /*   $("#immiListSerach").keyup(function (e) {
         if (e.which === 13) {
