@@ -120,11 +120,11 @@ function bgcCandidate(){
 						$("#legalAndCriminalLoading").removeAttr("style");
 						result = result + "<h2>Legal and Criminial Check</h2>";
 						result = result + "<ul>";
-						result = result + "<li class='clearfix'><span>Financial Check</span><p>: --</p></li>";
+						/*result = result + "<li class='clearfix'><span>Financial Check</span><p>: --</p></li>";*/
 						result = result + "<li class='clearfix'><span>Criminal Check</span><p>: "+(data.crimeCheckStatus==null? "--":data.crimeCheckStatus)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Bank and Property Check</span><p>: --</p></li>";
+						/*result = result + "<li class='clearfix'><span>Bank and Property Check</span><p>: --</p></li>";
 						result = result + "<li class='clearfix'><span>Salary Check</span><p>: --</p></li>";
-						result = result + "	<li class='clearfix'><span>Attach document</span><p>: --</p></li>";
+						result = result + "	<li class='clearfix'><span>Attach document</span><p>: --</p></li>";*/
 						result = result + "</ul>";
 					}else{
 						$("#legalAndCriminalLoading").removeAttr("style");
