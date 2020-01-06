@@ -119,7 +119,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 					 // below code is for identifying Client.
 					  dto.setOrgType(Constants.CLIENT);
 				  }
-				  System.out.println("ORG Name :>>>>>> "+bgcCandidate.getSourceOrglocationId().getOrg().getOrgName());
+				 // System.out.println("ORG Name :>>>>>> "+bgcCandidate.getSourceOrglocationId().getOrg().getOrgName());
 				  dto.setComments(bgcCandidate.getComments());
 				  dto.setUpdatedDate(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), bgcCandidate.getUpdatedDate()));
 				bgcResponseDtoList.add(dto);
