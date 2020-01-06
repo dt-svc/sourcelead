@@ -31,7 +31,7 @@
                   <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
                 
                 <li class="positionRelative">
-                  <input class="repSearchBar" placeholder="Search" id="bgcListSearch" type="text">
+                  <input class="repSearchBar" placeholder="Status/ID/Name" id="bgcListSearch" type="text">
                   <span class="repSearchIcon" onclick="getDynamicBgcList(null);"></span></li>
               </ul>
             
