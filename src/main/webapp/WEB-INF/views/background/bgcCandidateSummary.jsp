@@ -56,8 +56,10 @@
 					  <li class="clearfix"><span>Aadhar Card</span><p>: --</p></li>
 					  <li class="clearfix"><span>PAN Card</span><p>: --</p></li>
 					  <li class="clearfix"><span>Address</span><p>: --</p></li>
-					  <li class="clearfix"><span>Family</span><p>: --</p></li>
-					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
+					  <!--06-jan-2020 
+					  commented some fields in the below list to be used later. -->
+					  <!-- <li class="clearfix"><span>Family</span><p>: --</p></li>
+					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li> -->
 					  <li class="clearfix"><span>Comments</span><p>: --</p></li>
 				  </ul>
 			  </div>	
@@ -71,13 +73,15 @@
 	  	<div class="immigraDetailsCta" id ="educationList">
 		<h2>Education</h2>
 		<ul>
+		<!--06-jan-2020 
+		commented some fields in the below list to be used later. -->
 		<li class="clearfix"><span>Higher Education</span><p>: --</p></li>
 		<li class="clearfix"><span>Institute Name</span><p>: --</p></li>
 		<li class="clearfix"><span>Academic Year</span><p>: --</p></li>
 		<li class="clearfix"><span>Grade</span><p>: --</p></li>
-		<li class="clearfix"><span>University / Authority</span><p>: --</p></li>
+		<!-- <li class="clearfix"><span>University / Authority</span><p>: --</p></li> -->
 		<li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li>
-		<li class="clearfix"><span>Comments</span><p>: --</p></li>
+		<!-- <li class="clearfix"><span>Comments</span><p>: --</p></li> -->
 		</ul>
 		</div>
 	 </div>
@@ -87,11 +91,13 @@
 			<div class="immigraDetailsCta" id = "employmentList">
 			<h2>Previous Employer</h2>
 			<ul>
+			<!--06-jan-2020 
+				commented some fields in the below list to be used later. -->
 				<li class="clearfix"><span>Previous Employer Name</span><p>: --</p></li>
 				<li class="clearfix"><span>Designation</span><p>: --</p></li>
 				<li class="clearfix"><span>Period</span><p>: --</p></li>
 				<li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
-				<li class="clearfix"><span>Conduct</span><p>: --</p></li>
+				<!-- <li class="clearfix"><span>Conduct</span><p>: --</p></li> -->
 			</ul>
 </div>
 			
