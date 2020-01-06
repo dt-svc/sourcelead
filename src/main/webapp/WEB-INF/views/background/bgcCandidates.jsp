@@ -183,7 +183,6 @@ function dynamicBgcListPagination(url) {
                 "render": function (data, type, opt, meta) {
                     var result = "";
                     if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-                    	console.log("view "+roleActionsArray.indexOf("ROLE_VIEW_BACKGROUND_DETAILS"));
                         '<sec:authorize access="hasRole(\'ROLE_VIEW_BACKGROUND_DETAILS\')">' 
                     	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
                         '</sec:authorize>'
@@ -336,8 +335,6 @@ function dynamicBgcListPagination(url) {
                        orgType= opt.orgType;
                     }
                  if(opt.orgType == "Vendor"){
-                	 console.log("edit "+roleActionsArray.indexOf("ROLE_EDIT_BACKGROUND_DETAILS"));
-                	 console.log("delete "+roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS"));
                 	'<sec:authorize access="hasRole(\'ROLE_EDIT_BACKGROUND_DETAILS\')">'
                     result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
                     '</sec:authorize>'
@@ -364,8 +361,8 @@ function dynamicBgcListPagination(url) {
             "sProcessing": "<img src='/resources/images/loading.gif' style='width: 75px; height: 75px;'/>"
         },
         "initComplete": function( settings ) { // this call back function is added to remove last column "action" if org type is client.
-        	 if(orgType == "Client"){
-                 $('#dynamicBgcListTbl tr').find('th:last, td:last').remove();
+        	 if(orgType == "Client" && $('#dynamicBgcListTbl th:last').text() == "Action"){
+                 $('#dynamicBgcListTbl tr').find('th:last, td:last').hide();
             }
  		}
     });
