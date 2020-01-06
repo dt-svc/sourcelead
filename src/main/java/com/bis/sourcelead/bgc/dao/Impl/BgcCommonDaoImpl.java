@@ -111,9 +111,13 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 				  dto.setCrimeCheckStatus(bgcCandidate.getCrimeCheckStatus());
 				  dto.setOthersInfoStatus(bgcCandidate.getOthersInfoStatus());
 				  if(orgLocations.getIsBackgroundCheck() != null && orgLocations.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+					// below code is identifying  vendor if background check =Y.
 				    dto.setClinetOrVendorName(bgcCandidate.getSourceOrglocationId().getOrg().getOrgName());
+				    dto.setOrgType(Constants.VENDOR);
 				  }else {
 					  dto.setClinetOrVendorName(bgcCandidate.getOrgLocationId().getOrg().getOrgName());
+					 // below code is for identifying Client.
+					  dto.setOrgType(Constants.CLIENT);
 				  }
 				  System.out.println("ORG Name :>>>>>> "+bgcCandidate.getSourceOrglocationId().getOrg().getOrgName());
 				  dto.setComments(bgcCandidate.getComments());

@@ -72,6 +72,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	private String email;
 	
 	private Long bgcVendorContact;
+	
+	private String OrgType;
 		
 	public Long getId() {
 		return id;
@@ -295,6 +297,14 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setClinetOrVendorName(String clinetOrVendorName) {
 		this.clinetOrVendorName = clinetOrVendorName;
+	}
+
+	public String getOrgType() {
+		return OrgType;
+	}
+
+	public void setOrgType(String orgType) {
+		OrgType = orgType;
 	}
 	
 	
