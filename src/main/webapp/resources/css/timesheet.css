@@ -6648,10 +6648,6 @@ max-width: 100% !important;
 .repCustomDate {
 	width: 400px; display: none; padding: 20px 15px; top: 45px; box-shadow: 2px 2px 3px rgba(0,0,0,0.3) !important; right: 60px;
 }
-
-.repCustomDate.dashboardPopup {
-	right: 4px;
-}
 .repCustomDateInn {
 	width: 160px; float: left; padding: 0px 15px 0px 0px;
 }
@@ -6909,11 +6905,11 @@ max-width: 100% !important;
 }
 .editIcon {
 	width: 34px; height: 32px; display: block; background: url("../images/edit.svg"); background-repeat: no-repeat;
-	background-position: center !important; background-size: 34px; cursor: pointer;
+	background-position: center; background-size: 34px; cursor: pointer;
 }
 .refeIcon {
 	width: 40px; float:left; height: 32px; display: block; background: url(../images/refresh.svg); background-repeat: no-repeat;
-    background-position: center; background-size: 24px; cursor: pointer; background-color: #e6f3f0;
+    background-position: center !important; background-size: 24px; cursor: pointer; background-color: #e6f3f0;
 	border-radius: 3px; margin: 0px 12px 0px 0px;
 }
 .columIcon {
@@ -7177,8 +7173,7 @@ aside.asideAct {width: 200px; box-shadow: 0px 0px 0px rgba(0,0,0,0);}
 .navIcons.blogIcon { background: url("../images/blog.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.usermanuIcon { background: url("../images/usermanu.svg"); background-size: 38px; background-position: -2px -2px;}
 .navIcons.perorIcon { background: url("../images/preformance.svg"); background-size: 38px; background-position: -2px -2px;}
-
-
+.navIcons.bgIcon { background: url("../images/bgc.svg"); background-size: 38px; background-position: -2px -2px;}
 .newMenu ul li {
 	border-bottom: 1px solid #f1f1f1; position: relative; font-size: 14px; font-weight: 500;
 	border-left: 4px solid #f1f1f1;}
@@ -8178,14 +8173,16 @@ color:#333; padding:0px 12px; border-left:1px solid #eae6e6 !important; -moz-bor
 .exp_rejct_pop a {
     display:inline-block; width:50%; background-color:#375d81; padding:7px 0px; text-align:center; color:#FFF;
     font-size:14px; font-weight:500;}
-<<<<<<< HEAD
 .exp_rejct_pop a.close_color { background-color:#ff4b4b;}
 
 
+.emailTerms { width:auto; margin: 10px 0px 0px 0px; padding: 10px 15px; font-size: 13px; color:#454545;}
+.emailTerms b { display:inline-block; font-weight: 600; color: #333;}
+.emailTerms p { padding: 0px; margin: 0px;}
+.emailTerms span { display: block; padding: 2px 0px 0px 0px;}
 
 
 
 
-=======
-.exp_rejct_pop a.close_color { background-color:#ff4b4b;}
->>>>>>> 933c142df5d6eb16e4b87f7dc915480aabe5c9f5
+
+
