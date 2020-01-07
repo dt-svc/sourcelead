@@ -82,5 +82,7 @@ public interface OrgRelationsDao {
 	
 	int updatePaymentTermsInOrgrelations();
 
+	List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId);
+
 
 }

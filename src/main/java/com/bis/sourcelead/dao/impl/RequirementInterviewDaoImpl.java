@@ -300,6 +300,17 @@ public class RequirementInterviewDaoImpl implements RequirementInterviewDao{
 		return interviewDates;
 	}
 
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public List<Date> getProfessionalInterviewDatesForCalendarEvent(Long candidateId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = " select interview.startTime from RequirementInterview interview where "
+				+ " interview.submissionId.candidate = :candidateId " ;
+		List<Date> interviewDates =session.createQuery(query).setLong("candidateId", candidateId).list(); 
+		return interviewDates;
+	}
+
 	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime) {

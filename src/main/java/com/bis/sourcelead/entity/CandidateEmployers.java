@@ -21,6 +21,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Ajith Matta
  * @create date 25 Aug 2016
@@ -130,6 +132,10 @@ public class CandidateEmployers implements Serializable{
 	
 	@Transient
 	private String msg;
+	
+	@Transient
+	@JsonProperty
+	private String period;
 	
 	public Long getId() {
 		return id;
@@ -350,5 +356,14 @@ public class CandidateEmployers implements Serializable{
 	public void setCandidateEmployersHistoryList(Set<CandidateEmployersHistory> candidateEmployersHistoryList) {
 		this.candidateEmployersHistoryList = candidateEmployersHistoryList;
 	}
+
+	public String getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(String period) {
+		this.period = period;
+	}
+
 
 }

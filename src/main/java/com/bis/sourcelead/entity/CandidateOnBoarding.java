@@ -161,6 +161,20 @@ private static final long serialVersionUID = 1L;
 	@JoinColumn(name = "ORG_LOCATION_ID")
 	private OrgLocations orgLocationId;
 	
+	
+	@ManyToOne
+	@JoinColumn(name = "BGC_ORG_LOCATION_ID")
+	private OrgLocations bgcOrglocationId;
+	
+	
+	@ManyToOne
+	@JoinColumn(name = "BGC_ORG_RELATION_ID")
+	private OrgRelations bgcOrgRelationId;
+	
+	@ManyToOne
+	@JoinColumn(name = "BGC_ORG_CONTACT_ID")
+	private OrgSpoc bgcOrgContactId;
+	
 	@Column(name = "CANDIDATE_ONBOARD_UUID")
 	private String onboardCandidateUUID;
 	
@@ -250,6 +264,7 @@ private static final long serialVersionUID = 1L;
 	
 	@Transient
 	private String userEmail;
+	
 	
 
 	public Long getId() {
@@ -787,6 +802,30 @@ private static final long serialVersionUID = 1L;
 	{
 		this.paymentMode = paymentMode;
 	}
-	
+
+	public OrgLocations getBgcOrglocationId() {
+		return bgcOrglocationId;
+	}
+
+	public void setBgcOrglocationId(OrgLocations bgcOrglocationId) {
+		this.bgcOrglocationId = bgcOrglocationId;
+	}
+
+	public OrgSpoc getBgcOrgContactId() {
+		return bgcOrgContactId;
+	}
+
+	public void setBgcOrgContactId(OrgSpoc bgcOrgContactId) {
+		this.bgcOrgContactId = bgcOrgContactId;
+	}
+
+	public OrgRelations getBgcOrgRelationId() {
+		return bgcOrgRelationId;
+	}
+
+	public void setBgcOrgRelationId(OrgRelations orgRelations) {
+		this.bgcOrgRelationId = orgRelations;
+	}
+
 	
 }
