@@ -234,7 +234,30 @@ public class AssociatesRestController {
 			return resultJson;
 
 		}
-	   
+
+	@RequestMapping(value = "/getAllBgcRelationsByOrgLocationAndType", method = RequestMethod.GET)
+	public String getAllBgcRelationsByOrgLocationAndType(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		String resultJson = null;
+		List<OrgRelations> orgRelationsList = orgRelationsService.getClientOrVendorListByOrgLocationIdForBackgroundCheck(orgLocations.getId());
+		System.out.println("orgLocations.getId() >>>>> ::  "+orgLocations.getId());
+		if (orgRelationsList != null) {
+			for (OrgRelations orgRelation : orgRelationsList) {
+				if (orgRelation.getLocationId().getId().equals(orgLocations.getId())) {
+				     System.out.println("orgRelation.getLocationId().getId() >>>>> ::  "+orgRelation.getLocationId().getId());
+					orgRelation.setOrgName(orgRelation.getResponderLocationId().getOrgLocationName());
+				}
+				if (orgRelation.getResponderLocationId().getId().equals(orgLocations.getId())) {
+					System.out.println("orgRelation.getResponderLocationId().getId() >>>>> ::  "+orgRelation.getLocationId().getId());
+					orgRelation.setOrgName(orgRelation.getLocationId().getOrgLocationName());
+				}
+
+			}
+			resultJson = toJSON(orgRelationsList);
+		}
+		return resultJson;
+
+	}
 	   @RequestMapping(value = "/getCandidateDetailsInAssociate")
 		public String getCandidateDetailsInAssociate(@RequestParam(value = "candidateId", required = false) Long candidateId,
 				HttpServletRequest request) throws Exception {
