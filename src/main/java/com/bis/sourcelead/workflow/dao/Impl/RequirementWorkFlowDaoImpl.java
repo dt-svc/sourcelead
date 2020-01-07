@@ -1046,9 +1046,15 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			  if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
 					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
 				} 
-			  	if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
+			  	else if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
-				} else {
+				}
+			  	
+			  	//27-dec-2019
+			  	//when applicant is in no respone stage, only reject & other user defined stages should be visible in status dropdown. 
+			  	else if(stageShortCode.equalsIgnoreCase("NORESPONSE")){
+			  		query = query + " and workflowstages.stageShortCode not in ('ONHOLD', 'JOINED', 'REJECTED', 'BACKOUT') ";
+				}else {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
 				}
 			     query =query	+ " order by workflowstages.seqOrder";

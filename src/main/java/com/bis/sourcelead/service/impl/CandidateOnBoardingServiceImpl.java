@@ -9,18 +9,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.SourceleadPasswordEncoder;
+import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
+import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.constants.ImmigrationConstants;
 import com.bis.sourcelead.couchbase.util.UserStatsCacheHelper;
 import com.bis.sourcelead.dao.CandidateOnBoardingDao;
 import com.bis.sourcelead.dao.EmployeesDao;
 import com.bis.sourcelead.dao.OnboardTasksDao;
+import com.bis.sourcelead.dao.OrgSpocDao;
 import com.bis.sourcelead.dao.RolesDao;
 import com.bis.sourcelead.dao.TaskDao;
 import com.bis.sourcelead.dao.TeamMemberDao;
@@ -62,6 +72,7 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RegistrationService;
 import com.bis.sourcelead.service.TimeZoneService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
@@ -69,7 +80,7 @@ import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 
 @Service
 public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingService{
-	
+	private static final Logger logger = LoggerFactory.getLogger(CandidateOnBoardingServiceImpl.class);
 	@Autowired
 	CandidateOnBoardingDao candidateOnBoardingDao;
 	
@@ -96,6 +107,12 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	TeamMemberDao teamMemberDao;
+	
+	@Autowired
+	OrgSpocDao orgSpocDao;
+	
+	@Autowired
+	UserService userService;
 	
 	@Value("${sourceleadUrl}")
     private String sourceleadUrl;
@@ -151,6 +168,9 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 	
 	@Autowired
 	CandidateGlobalUtil candidateGlobalUtil;
+	
+	@Autowired
+	BgcCommonService bgcCommonService;
 	
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -328,7 +348,26 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		}else{
 			candidateOnBoarding.setTeamId(null);
 		}
-		
+		// Added for BGC module.
+		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getBgc())){
+			 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(Long.parseLong(candidateOnBoardingDTO.getBgc()));
+			candidateOnBoarding.setBgcOrglocationId(bgcOrgLocations);
+		}else{
+			candidateOnBoarding.setBgcOrglocationId(null);
+		}
+		System.out.println(" candidateOnBoardingDTO.getBgcVendorContact() >>>>>>>>>"+candidateOnBoardingDTO.getBgcVendorContact());
+		if( StringUtils.isNotBlank(candidateOnBoardingDTO.getBgcVendorContact())){
+			OrgSpoc orgSpoc = orgSpocService.getOrgSpocById(Long.parseLong(candidateOnBoardingDTO.getBgcVendorContact()));
+			candidateOnBoarding.setBgcOrgContactId(orgSpoc);
+		}else{
+			candidateOnBoarding.setBgcOrgContactId(null);
+		}
+		if( StringUtils.isNotBlank(candidateOnBoardingDTO.getBgcOrgRelationId())){
+			OrgRelations orgRelations = orgRelationsService.getOrgRelationById(Long.parseLong(candidateOnBoardingDTO.getBgcOrgRelationId()));
+			candidateOnBoarding.setBgcOrgRelationId(orgRelations);
+		}else{
+			candidateOnBoarding.setBgcOrgRelationId(null);
+		}
 		if(StringUtils.isNotBlank(candidateOnBoardingDTO.getEmploymentType())){
 			candidateOnBoarding.setEmploymentType(candidateOnBoardingDTO.getEmploymentType());
 			if(candidateOnBoardingDTO.getEmploymentType().equalsIgnoreCase("C2C")) {
@@ -554,23 +593,120 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 			 candidateOnBoarding.setTeamId(onboardingTeamMember.getTeamId());
 		 }
 		 
-		 candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
+	     candidateOnBoardingDao.saveCandidateOnBoarding(candidateOnBoarding);
 		 
 		 if(isCouchbaseEnabled.equalsIgnoreCase("true")) {
 			UserRole userRole = userRoleDao.getUserRoleById(onboardingUserRole.getId());
 			userStatsCacheHelper.saveUserProfileDetailsToCouchbase(userRole);
 			}
+		 
+		 //Saving candidate on board details to BGC_CANDIDATE_DETAILS table when user sent a request.
+		 // Here loading BGC Vendor ORG Locations to copy candidate to vendor locations. copying candidate details when BGC vendor is selected.
+		 if(candidateOnBoarding.getBgcOrglocationId() != null && candidateOnBoarding.getBgcOrglocationId().getId() != null ) {
+		 System.out.println("before candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
+		 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(candidateOnBoarding.getBgcOrglocationId().getId());
+		 System.out.println("after candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
+		 BgcCandidateDetailsDTO bgcCandidateDetailsDto = new BgcCandidateDetailsDTO();
+		 bgcCandidateDetailsDto.setCandidateId(candidateOnBoarding.getCandidateId().getId());
+		 
+		 System.out.println("candidateOnBoarding.getCandidateId().getId() >>>>>>>>>>>>>>>>::: "+candidateOnBoarding.getCandidateId().getId());
+		 //HERE setting source org location to BGC CANDIDATE to identify parent ORG LOCATION.
+		 bgcCandidateDetailsDto.setSourceOrglocationId(orgLocations.getId());
+		 bgcCandidateDetailsDto.setOrgLocationId(candidateOnBoarding.getBgcOrglocationId().getId());
+		 bgcCandidateDetailsDto.setBgcVendorContact(candidateOnBoarding.getBgcOrgContactId().getId());
+		 bgcCandidateDetailsDto.setCreatedBy(loginUser.getId());
+		 bgcCandidateDetailsDto.setUpdatedBy(loginUser.getId());
+		 bgcCandidateDetailsDto.setCurrentBgcStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setCrimeCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setEducationCheckStaus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setHealthCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setOthersInfoStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setPersonalInfoStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setPriorEmployersCheckStatus(Constants.NOT_INITIATED);
+		 bgcCandidateDetailsDto.setUpdatedPercentage(Constants.NOT_INITIATED);// default value setting.
+		 bgcCandidateDetailsDto.setStatus(Constants.RECORD_ACTIVE);
+		 
+		 // calling bgc savind method 
+		 BgcCandidateDetails bgcCandidateDetails = bgcCommonService.saveBgcCandidateDetails(bgcCandidateDetailsDto, loginUser, bgcOrgLocations);
+		 if(bgcCandidateDetails != null) {
+			 
+			 //bgc email code
+			 sendBackgroundCheckMailToVendorContact(candidateOnBoarding, orgLocations);
+			 
+			 logger.info("BGC Candidate successfully copied to bgc vendor location.SSSSSSSSSSS");
+			System.out.println("BGC Candidate successfully copied to bgc vendor location.SSSSSSSSSSS");
+		 }else {
+			 System.out.println("Error occured while Saving on board canidate to BGC vendor location ??????????????");
+			 logger.error("Error occured while Saving on board canidate to BGC vendor location ??????????????");
+		 }
+		 } 
 		
+	}
+	
+	public void sendBackgroundCheckMailToVendorContact(CandidateOnBoarding candidateOnBoarding, OrgLocations ol){
+		try{
+			 EmailMessage emailMessage = new EmailMessage();
+			OrgSpoc orgSpoc = orgSpocDao.getOrgSpocById(candidateOnBoarding.getBgcOrgContactId().getId());
+			if(orgSpoc != null){
+		emailMessage.setFirstName(orgSpoc.getVendorUser().getFirstName());
+		  emailMessage.setLastName(orgSpoc.getVendorUser().getLastName());
+		  emailMessage.setToEmail(orgSpoc.getVendorUser().getEmail());
+		  User sourceLeadAdmin = userService.getUserById(Constants.SOURCELEAD_ADMIN_USERID);
+		  emailMessage.setFromEmail(sourceLeadAdmin.getEmail());
+	      Map<String, String> globalVarsMap = new HashMap<String, String>();
+	      
+	      if(candidateOnBoarding.getCandidateId().getLastName() != null) {
+				 globalVarsMap.put("Candidate_Name",candidateOnBoarding.getCandidateId().getFirstName() +" "+ candidateOnBoarding.getCandidateId().getLastName());
+			 }else {
+				 globalVarsMap.put("Candidate_Name",candidateOnBoarding.getCandidateId().getFirstName());
+			 }
+	      if(orgSpoc.getVendorUser().getLastName() != null) {
+				 globalVarsMap.put("Vendor_Contact_User",orgSpoc.getVendorUser().getFirstName() +" "+ orgSpoc.getVendorUser().getLastName());
+			 }else {
+				 globalVarsMap.put("Vendor_Contact_User",orgSpoc.getVendorUser().getFirstName());
+			 }
+	      globalVarsMap.put("Org_Name", ol.getOrgLocationName());
+	      StringBuilder loginBuilder = new StringBuilder();
+			globalVarsMap.put("Login_Link", loginBuilder.append("<a href='").append(sourceleadLoginUrl).append(
+			"' style='text-decoration:none; '><div style=' width:220px; border-radius:30px; background-color:#214b90; color:#FFF; font-size:18px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Login</div></a>")
+			.toString());
+			
+		 InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
+		 EmailScenario emailScenario = null;
+		 //getting the current EmailScenario by EmailScenario unique name and entity type
+			 emailScenario = emailScenarioService.getEmailScenarioByUniqueName(Constants.BACKGROUND_CHECK_MAIL_TO_VENDOR_CONTACT, Constants.ENTITY_TYPE_EMAIL);
+
+			//convert subject,body and signature
+			 String subject = emailScenerioUtil.bulidTemplateSubject(emailScenario.getSubject(),globalVarsMap,emailScenario);
+			 String body = emailScenerioUtil.buildTemplateBody(emailScenario.getBody(),globalVarsMap,emailScenario);
+			 String signature = null;
+			 if(StringUtils.isNotBlank(emailScenario.getSignature())){
+				 signature = emailScenerioUtil.buildTemplateSignature(emailScenario.getSignature(),globalVarsMap,emailScenario); 
+			 }
+			 String url = sourceleadUrl;
+		 
+		 //construct HTML template using required data
+		 String emailTemplate = emailScenerioUtil.AssembleEmailMessage(emailScenario,emailMessage, subject, body, signature, url, ol.getOrg(), ol);
+		 emailMessage.setSubject(subject);
+		 emailMessage.setMessageBody(emailTemplate);
+		 
+		 //calling the sendEmail method of emailScenerioUtil
+		 emailScenerioUtil.sendEmail(emailMessage,ol.getId(),iAdressArray,new ArrayList<EmailAttachment>());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			 logger.error(e+" in sendBackgroundCheckMailToVendorContact");
+		}
 	}
 	
 	public Tasks getTaskDetails(OnboardTasks onboardTasks,User user,User loginUser,OrgLocations orgLocations){
 		 
-		 Tasks tasks = new Tasks();
-		 tasks.setOwnerOrglocationId(orgLocations);
-		 tasks.setAssignedOrglocationId(orgLocations);
-		 tasks.setTaskOwnerId(loginUser);
-		 tasks.setAssignedUserId(user);
-		 if(!isNullOrEmpty(onboardTasks.getPriority())){
+		  Tasks tasks = new Tasks();
+		  tasks.setOwnerOrglocationId(orgLocations);
+		  tasks.setAssignedOrglocationId(orgLocations);
+		  tasks.setTaskOwnerId(loginUser);
+		  tasks.setAssignedUserId(user);
+		  if(!isNullOrEmpty(onboardTasks.getPriority())){
 			 tasks.setPriority(onboardTasks.getPriority());
 		 }
 		 tasks.setSubject(onboardTasks.getTaskName());
