@@ -1546,7 +1546,9 @@ public class SubmissionsRestController {
 	
 	
 	@RequestMapping(value = "/saveOnHoldStatusForApplicant")
-	public @ResponseBody Response<String> saveOnHoldStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, @RequestParam(value = "status", required = false) String status,HttpServletRequest request)
+	public @ResponseBody Response<String> saveOnHoldStatusForApplicant(@RequestParam(value = "submissionId", required = false) Long submissionId, @RequestParam(value = "status", required = false) String status,
+			@RequestParam(value = "comment", required = false) String comment,
+			HttpServletRequest request)
 			throws Exception {
 		Response<String> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
@@ -1609,6 +1611,10 @@ public class SubmissionsRestController {
 				requirementSubmission.setUpdatedDate(new Date());
 				
 				requirementSubmissionService.storeRequirementSubmission(requirementSubmission);
+				
+				if(comment != null){
+					requirementSubmissionHistory.setStageComment(comment);
+				}
 				requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
 				
 				response.setResponse(Result.SUCCESS.name());
