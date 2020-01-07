@@ -464,6 +464,9 @@ public class VendorRestController {
 		if(StringUtils.isNotBlank(orgRelations.getIsLawFirm()) && orgRelations.getIsLawFirm().equalsIgnoreCase("Y")){
 		orgRelationDTO.setIsLawFirm(orgRelations.getIsLawFirm());
 		}
+		if(StringUtils.isNotBlank(orgRelations.getIsBackgroundCheck()) && orgRelations.getIsBackgroundCheck().equalsIgnoreCase("Y")){
+			orgRelationDTO.setIsBackgroundCheck(orgRelations.getIsBackgroundCheck()); 
+			}
 		if(StringUtils.isNotBlank(orgRelations.getVendorOnboardTemplateId())) {
 			orgRelationDTO.setVendorOnboardTemplateId(orgRelations.getVendorOnboardTemplateId());
 		}

@@ -97,17 +97,21 @@ function getVendorDetails(){
 		    	type: "GET",
 		    	 url: vmsUrl+"/getOrgRelationDetailsByOrgRelationId?${_csrf.parameterName}=${_csrf.token}&orgRelationId="+orgRelationId, 
 		        success: function(json) {
-		        	
+		        	console.log("isBackgroundCheck>>>>>>>>>>>>");
 		        	   $("input[name=orgName]").val(json.orgName);
 		        	   $("input[name=orgName]").attr("readonly","readonly");
 	        		   $('#orgName').removeAttr('onblur');
 		        	   var isLawFirm = json.isLawFirm;
 		        	   var isAccountingFirm = json.isAccountingFirm;
-	        		   $("#isLawFirm").attr('checked', isLawFirm);
+		        	   var isBackgroundCheck = json.isBackgroundCheck;
+	        		    $("#isLawFirm").attr('checked', isLawFirm);
 				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
 				        $("#isLawFirm").val(isLawFirm?'Y':'N');
 				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
-	        		   
+				        
+				        $("#isBackgroundCheck").attr('checked', isBackgroundCheck);
+				        $("#isBackgroundCheck").val(isBackgroundCheck?'Y':'N');
+				        
 	        		   if(json.webSite != null && json.webSite != 'undefined' && json.webSite != ''){
 	        			   $("input[name=webSite]").val(json.webSite);
 	        		   }
@@ -603,7 +607,12 @@ function getVendorDetails(){
                  <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email </label>
               </div>
             </div>
-               		
+              <div class="form-group">
+              <label class="col-md-3"></label>
+              <div class="col-md-9 checkBox">
+                 <label> <input type="checkbox" value="N" name="isBackgroundCheck" id="isBackgroundCheck" onclick = "allowBackgroundCheck();"> Background Check </label>
+              </div>
+            </div>  		
 						<div class="clearfix"></div>	
 					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		               <c:if test="${sectionOrder.index == 1}">
@@ -693,6 +702,15 @@ function allowIsAccountFirm(){
 	}
 }
 
+function allowBackgroundCheck(){
+	var checked = document.getElementById("isBackgroundCheck").checked
+	if(checked == true){
+		$("#isBackgroundCheck").val("Y");
+	}else{
+		$("#isBackgroundCheck").val("N");
+	}
+	console.log($("#isBackgroundCheck").val());
+}
 function getCustomDependentField(sectionId){
 	 $.ajax({
 			type : "POST" , 
