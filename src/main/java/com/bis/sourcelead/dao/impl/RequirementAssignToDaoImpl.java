@@ -142,7 +142,14 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 		Session session = this.sessionFactory.getCurrentSession();
 		
 		if("open".equalsIgnoreCase(JobType)){
-			String query ="select count(*)from RequirementAssignTo rato where rato.assignUserId = :assignUserId and rato.requirementId IN(select req.id from Requirement req where req.requirementSubmissionStatus = 'open') ";
+
+			/*07-jan-2020
+			 * added the condition status=1 in the query as it displays wrong active jobs count for a team member in edit team settings.
+			 * when we remove the team member for a job in jobs, record status is changed to zero.
+			 * when we reassign the same member to that job, a new record is created and the old record is also counted if we dont check the status. 
+			 * */
+			
+			String query ="select count(*)from RequirementAssignTo rato where rato.assignUserId = :assignUserId and rato.status = 1 and rato.requirementId IN(select req.id from Requirement req where req.requirementSubmissionStatus = 'open') ";
 			List<Long> requirementAssignToCount = session.createQuery(query.toString())
 					                                     .setLong("assignUserId", assignUserId)
 					                                     
@@ -154,7 +161,7 @@ public class RequirementAssignToDaoImpl implements RequirementAssignToDao{
 				return count;
 		}
 		else{
-			String query ="select count(*)from RequirementAssignTo rato where rato.assignUserId = :assignUserId";
+			String query ="select count(*)from RequirementAssignTo rato where rato.assignUserId = :assignUserId and rato.status = 1";
 			List<Long> requirementAssignToCount = session.createQuery(query.toString())
 														.setLong("assignUserId", assignUserId)
 														

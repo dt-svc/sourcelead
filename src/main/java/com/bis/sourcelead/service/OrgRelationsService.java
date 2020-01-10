@@ -67,6 +67,8 @@ public interface OrgRelationsService {
 	
 	List<OrgRelations> getClientOrVendorListByOrgLocationIdForImmigration(Long orgLocationId,String type);
 	
+	List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId);
+	
 	public Integer getAllClientsCountByOrgLocationId(Long orgLocationId) throws Exception;
 	
 	public Integer getAllVendorsCountByOrgLocationId(Long orgLocationId,String type) throws Exception;
