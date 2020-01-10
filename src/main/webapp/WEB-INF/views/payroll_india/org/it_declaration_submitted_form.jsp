@@ -60,7 +60,7 @@
 							<select class="selectpicker width100percnt" name="financialYear" ${viewForm ? "disabled='disabled'" : ""}
 							 data-live-search="true" title="Select Year" field-name="Year" data-validation="required">
 								<c:forEach items="${yearList}" var="year">
-									<option ${year.value==true || form.financialYear == year.key ? "selected=selected" : ""} value="${year.key}">${year.key}</option>
+									<option ${form.financialYear == year.key ? "selected=selected" : ""} value="${year.key}">${year.key}</option>
 								</c:forEach>
 							</select>
 						</div>
