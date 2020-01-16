@@ -299,7 +299,7 @@ function RequirementQuestionnaireTemplate(){
 	                              					 selected = v1['sel'] ? ' checked' : '';
 	                              				   }
 	                                             
-	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                             }
@@ -418,7 +418,7 @@ function RequirementQuestionnaireTemplate(){
 	                                    }
 
 	                                 else if (fieldType == 'radio') {
-	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                     }
@@ -845,7 +845,7 @@ function RequirementQuestionnaireTemplate(){
 	                              					 selected = v1['sel'] ? ' checked' : '';
 	                              				   }
 	                                             
-	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                             }
@@ -964,7 +964,7 @@ function RequirementQuestionnaireTemplate(){
 	                                    }
 
 	                                 else if (fieldType == 'radio') {
-	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                     }
