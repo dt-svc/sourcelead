@@ -127,6 +127,10 @@ public class CandidateEducation implements Serializable{
 	@Transient
 	 private LinkedHashSet<String> allAndCandidateEducations;
 	
+	@Transient
+	@JsonProperty
+	private String academicYear;
+	
 	public long getCandidateEduId() {
 		return candidateEduId;
 	}
@@ -333,6 +337,14 @@ public class CandidateEducation implements Serializable{
 
 	public void setCandidateEducationHistoryList(Set<CandidateEducationHistory> candidateEducationHistoryList) {
 		this.candidateEducationHistoryList = candidateEducationHistoryList;
+	}
+
+	public String getAcademicYear() {
+		return academicYear;
+	}
+
+	public void setAcademicYear(String academicYear) {
+		this.academicYear = academicYear;
 	}
 	
 	
