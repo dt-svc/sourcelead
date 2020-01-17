@@ -199,6 +199,8 @@ function RequirementQuestionnaireTemplate(){
 			  finalDateFormatScript = 'mm-dd-yy'; 
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatScript = 'yy-dd-mm'; 
+		  }else{
+			  finalDateFormatScript = 'dd-mm-yy';
 		  }
 	    $.ajax({
 	    	type: "GET",
@@ -297,7 +299,7 @@ function RequirementQuestionnaireTemplate(){
 	                              					 selected = v1['sel'] ? ' checked' : '';
 	                              				   }
 	                                             
-	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                             }
@@ -318,7 +320,7 @@ function RequirementQuestionnaireTemplate(){
 	                              				     }
 	                                			 }
 	                                             
-	                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
 	                                             }
@@ -384,10 +386,10 @@ function RequirementQuestionnaireTemplate(){
 		                					      fileCount = fileCount+1;
 		                					      
 		                					      if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-		                					    	  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
-			                					      $("#download-"+label.replace(/\s+/g, '')).attr("href",v3['value']);
-			                					      $("#attachmentTitle-"+label.replace(/\s+/g, '')).html(v3['name']);
-			                					      document.getElementById("download-"+label.replace(/\s+/g, '')).style.display="";
+		                					    	  $('#newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')).val(v3['name']);
+			                					      $("#download-"+label.replace(/[^A-Z0-9]+/ig, '')).attr("href",v3['value']);
+			                					      $("#attachmentTitle-"+label.replace(/[^A-Z0-9]+/ig, '')).html(v3['name']);
+			                					      document.getElementById("download-"+label.replace(/[^A-Z0-9]+/ig, '')).style.display="";
 		                					      }
 	    	                			 }
 	    	                			
@@ -416,7 +418,7 @@ function RequirementQuestionnaireTemplate(){
 	                                    }
 
 	                                 else if (fieldType == 'radio') {
-	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                     }
@@ -425,7 +427,7 @@ function RequirementQuestionnaireTemplate(){
 
 	                                 else if (fieldType == 'checkbox') {
 	                                     var selected = v['sel'] ? ' checked' : 'checked';
-	                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
 	                                     }
@@ -441,7 +443,7 @@ function RequirementQuestionnaireTemplate(){
 	                     //Is it required?
 	                     if (v['req']) {
 	                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
-	                         else if (fieldType == 'calendar') { $currentField.find("calandar").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'calendar') { $currentField.find("calendar").prop('required',true).addClass('required-choice') }
 	                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
 	                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
 	                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
@@ -605,7 +607,7 @@ function RequirementQuestionnaireTemplate(){
 	                         return '' +
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
-	                             '<label for="calandar-' + uniqueID + '"></label>' +
+	                             '<label for="calendar-' + uniqueID + '"></label>' +
 	                             input +
 	                             '</div>'+
 	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
@@ -661,7 +663,7 @@ function RequirementQuestionnaireTemplate(){
 	                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="qt.uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
 	                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
 	                            }else{
-	                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="qt.uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+	                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="qt.uploadFeedbackAttachments(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\',\''+attachmentCount+'\');" class="upload">' +
 	                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
 	                            }
 	                    	 if(labelAndAttemptsMap.get(label) != null){
@@ -729,6 +731,8 @@ function RequirementQuestionnaireTemplate(){
 			  finalDateFormatScript = 'mm-dd-yy'; 
 		  }if(locationDate.match("yyyy-dd-MM")){
 			  finalDateFormatScript = 'yy-dd-mm'; 
+		  }else{
+			  finalDateFormatScript = 'dd-mm-yy';
 		  }
 		
 		 
@@ -841,7 +845,7 @@ function RequirementQuestionnaireTemplate(){
 	                              					 selected = v1['sel'] ? ' checked' : '';
 	                              				   }
 	                                             
-	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                             }
@@ -862,7 +866,7 @@ function RequirementQuestionnaireTemplate(){
 	                              				     }
 	                                			 }
 	                                             
-	                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
 	                                             }
@@ -928,10 +932,10 @@ function RequirementQuestionnaireTemplate(){
 		                					      fileCount = fileCount+1;
 		                					      
 		                					      if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
-		                					    	  $('#newUploadFile'+label.replace(/\s+/g, '')).val(v3['name']);
-			                					      $("#download-"+label.replace(/\s+/g, '')).attr("href",v3['value']);
-			                					      $("#attachmentTitle-"+label.replace(/\s+/g, '')).html(v3['name']);
-			                					      document.getElementById("download-"+label.replace(/\s+/g, '')).style.display="";
+		                					    	  $('#newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')).val(v3['name']);
+			                					      $("#download-"+label.replace(/[^A-Z0-9]+/ig, '')).attr("href",v3['value']);
+			                					      $("#attachmentTitle-"+label.replace(/[^A-Z0-9]+/ig, '')).html(v3['name']);
+			                					      document.getElementById("download-"+label.replace(/[^A-Z0-9]+/ig, '')).style.display="";
 		                					      }
 	    	                			 }
 	    	                			
@@ -960,7 +964,7 @@ function RequirementQuestionnaireTemplate(){
 	                                    }
 
 	                                 else if (fieldType == 'radio') {
-	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/\s+/g, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="qt.getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                     }
@@ -969,7 +973,7 @@ function RequirementQuestionnaireTemplate(){
 
 	                                 else if (fieldType == 'checkbox') {
 	                                     var selected = v['sel'] ? ' checked' : 'checked';
-	                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/\s+/g, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="qt.getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
 	                                     }
@@ -985,7 +989,7 @@ function RequirementQuestionnaireTemplate(){
 	                     //Is it required?
 	                     if (v['req']) {
 	                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
-	                         else if (fieldType == 'calendar') { $currentField.find("calandar").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'calendar') { $currentField.find("calendar").prop('required',true).addClass('required-choice') }
 	                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
 	                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
 	                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
@@ -1133,7 +1137,7 @@ function RequirementQuestionnaireTemplate(){
 	                         return '' +
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
-	                             '<label for="calandar-' + uniqueID + '"></label>' +
+	                             '<label for="calendar-' + uniqueID + '"></label>' +
 	                             input +
 	                             '</div>'+
 	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
@@ -1183,7 +1187,7 @@ function RequirementQuestionnaireTemplate(){
 	                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="qt.uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
 	                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
 	                            }else{
-	                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="qt.uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+	                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="qt.uploadFeedbackAttachments(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\',\''+attachmentCount+'\');" class="upload">' +
 	                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
 	                            }
 	                    	 return '' +
@@ -1298,7 +1302,7 @@ function RequirementQuestionnaireTemplate(){
 		if(orgLocationId == null || orgLocationId == "undefined" || orgLocationId == "")
 			orgLocationId = 0;
 		var data = new FormData();
-		var files = document.getElementById(id).files;
+		var files = document.getElementById(""+id).files;
 		var invalidFiles = false;
 		var count = 0;
 		expr = /.zip/;
@@ -1360,7 +1364,6 @@ function RequirementQuestionnaireTemplate(){
 		
 	}
 	
-
 	
 	
 
