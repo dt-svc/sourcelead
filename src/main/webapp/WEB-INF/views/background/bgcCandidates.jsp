@@ -17,6 +17,7 @@
         <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home </a>&raquo;  
          Background Verification</div>
       </section>
+      <div id="emptyPopup"></div>
       <div class="contentareaInner-styles clearfix">
         <div class="timesheet_out" id="payrollRegister" style="display: block;">
           <div class="clearfix">
@@ -28,7 +29,21 @@
               <ul class="pull-right list-unstyled list-inline">
                 <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
                 <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a> -->
-                  <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div>
+                
+                <!-- 17-jan-2020 
+                bgc export pdf/excel
+                -->
+                <li class="positionRelative">
+                <a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a>
+                <div class="newActPop" style=""> 
+                <span>
+                <a href="javascript:void(0)" onclick="exportBgcToPdf(null);" title="PDF">Export PDF</a> 
+                <a href="javascript:void(0)" onclick="exportBgcToExcel(null);" title="Excel">Export Excel</a>
+                 </span> 
+                 </div>
+              	</li>
+                <!-- xx -->
+                  <!-- <div class="newActPop" style=""> <span><a href="javascript:void(0)" onclick="exportToPdf();" title="PDF">Export PDF</a> <a href="javascript:void(0)" onclick="exportUserData();" title="Excel">Export Excel</a> </span> </div> -->
                 
                 <li class="positionRelative">
                   <input class="repSearchBar" placeholder="Status/ID/Name" id="bgcListSearch" type="text">
@@ -64,17 +79,19 @@ $this.next().css({'width': '100%'});
 });
 </script>
 <script>
+var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+var table = "";
 var orgType ="";
+var filterAttorneyVal = [];
+var filterTypeVal = [];
+var filterStatusVal = [];
+var filterDurationVal = [];
 $(document).ready(function() {
 	  getDynamicBgcList(null);
 })
 </script>
 <script>
 function getDynamicBgcList(filterVal, DashBoardFilterStatus) {
-	 var filterAttorneyVal = [];
-	 var filterTypeVal = [];
-	 var filterStatusVal = [];
-	 var filterDurationVal = [];
 	 if(filterVal !== null){
 		filterAttorneyVal = filterVal[0];
 		filterTypeVal = filterVal[1];
@@ -108,7 +125,6 @@ function getDynamicBgcList(filterVal, DashBoardFilterStatus) {
     $("#dynamicBgcListViewDiv").empty();
     $("#dynamicBgcListViewDiv").append(result);
 
-    var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 //    var statusFilter = $("#statusFilter").val();
     var searchValue = $("#bgcListSearch").val();
     searchValue = searchValue ? searchValue : "";
@@ -423,6 +439,74 @@ function cancelBgcDelete(){
 	$(".project_inn_mask").fadeOut(200);
 }
 
+
+function newActions(){
+	$(".newActPop").slideToggle(200);
+	$(".action-pop").slideUp(200);
+}
+$("html").click(function(){
+	$(".newActPop").slideUp(200);
+});
+$(".overIcon, .newActPop").click(function(e){
+ 	e.stopPropagation();
+});	
+
+
+
+function exportBgcToPdf(filterVal){
+	 if(filterVal !== null){
+		filterAttorneyVal = filterVal[0];
+		filterTypeVal = filterVal[1];
+		filterStatusVal = filterVal[2];
+		filterDurationVal = filterVal[3];
+	 }
+	 var orgTypeVal =  $("#orgType").val();
+	 var searchValue = $("#bgcListSearch").val();
+	    searchValue = searchValue ? searchValue : "";
+	
+	  if (!table.data().count()) {
+		  popupDisplay();
+	  }else{
+		  window.location.href = vmsUrl + "/bgc/exportBgcToPdfOrExcel?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal+"&exportType=pdf";
+	  }
+}
+
+function exportBgcToExcel(filterVal){
+	 if(filterVal !== null){
+		filterAttorneyVal = filterVal[0];
+		filterTypeVal = filterVal[1];
+		filterStatusVal = filterVal[2];
+		filterDurationVal = filterVal[3];
+	 }
+	 var orgTypeVal =  $("#orgType").val();
+	 var searchValue = $("#bgcListSearch").val();
+	    searchValue = searchValue ? searchValue : "";
+	
+	 if (!table.data().count()) {
+		 popupDisplay();
+	 }else{
+		 window.location.href = vmsUrl + "/bgc/exportBgcToPdfOrExcel?searchValue=" + searchValue+"&filterAttorneyVal="+filterAttorneyVal+"&filterTypeVal="+filterTypeVal+"&filterStatusVal="+filterStatusVal+"&filterDurationVal="+filterDurationVal+"&orgTypeVal="+orgTypeVal+"&exportType=excel";
+	 }
+}
+
+function popupDisplay(){
+	$(".project_inn_mask").remove();
+	var result = "";
+	result = result +" <div class='project_inn_mask'></div>";
+	result = result +" <div id='remove_Bgc_pop' class='remove_user_pop remove_user_pop_a'>";
+	result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
+	result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelBgcPopup();'></div>";
+	result = result +" </div>";
+	$("#emptyPopup").empty().append(result);
+	$("#popupMsg").empty().append("No Records To Export in Background Verification.");
+	$("#remove_Bgc_pop").slideDown(200);
+	$(".project_inn_mask").fadeIn(200);
+}
+
+function cancelBgcPopup(){
+	$("#remove_Bgc_pop").fadeOut(200);
+	$(".project_inn_mask").fadeOut(200);
+}
 </script>
 
 
