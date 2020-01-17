@@ -3,6 +3,8 @@ package com.bis.sourcelead.bgc.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -34,4 +36,7 @@ public interface BgcCommonService {
 	List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid)throws Exception;
 	
 	BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO)throws Exception;
+
+	void exportBgcToPdfOrExcel(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList,
+			OrgLocations orgLocations, HttpServletResponse response);
 }
