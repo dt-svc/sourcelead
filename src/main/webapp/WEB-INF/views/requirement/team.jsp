@@ -47,10 +47,10 @@ function teamList(){
 	                    	 var opt = json[i]; 
 	                    	 result = result +"<tr id='deleteTeam"+opt.id+"'>";
 				             
-				             result = result +' <td><div>'+opt.name+'</div></td>';
+				             result = result +" <td><div><span title='"+opt.name+"'>"+opt.name+"</span></div></td>";
 				             
 				             if(opt.teamOwnerName != null && opt.teamOwnerName != '' && opt.teamOwnerName != 'undefined'){
-				             result = result +"<td><div><span>"+opt.teamOwnerName+"</span></div></td>";
+				             result = result +"<td><div><span title='"+opt.teamOwnerName+"'>"+opt.teamOwnerName+"</span></div></td>";
 				             }else{
 				            	 result = result +"<td>-----</td>";
 				             }
@@ -165,7 +165,11 @@ function teamEditDetails(teamId){
 	        	outPut = outPut +'<input type="hidden" class="form-control input-sm" name="teamId"  value="'+teamId+'">';
 	        	outPut = outPut+ '<input type = "hidden" name="tabType" value="editTeamForm"/>';
 	        	outPut = outPut+ '<label>Team Name <b class="valStar">*</b> </label>';
-	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onblur="validateTeamName();">';
+	        	/* 
+	        	07-jan-2020
+	        	changed event from onblur to onkeyup for validateTeamName function as it giving unexpected results. 
+	        	*/
+	        	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_Name validate_length length2-100" field-name="Team Name" value="'+json.name+'"  onkeyup="validateTeamName();">';
 	        	outPut = outPut+ '                </div>';
 	        	
 	        	
@@ -220,7 +224,7 @@ function getEditTeamOwners(teamOwnerUserId,teamOwnerName,teamId){
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
-	        	output = output + "<option disabled >-Select Team Members-</option>"; 
+	        	output = output + "<option>-Select Team Members-</option>"; 
 	        	output = output + "<option selected value="+teamOwnerUserId+" >"+teamOwnerName+"</option>"; 
 	        	for (var i=0; i<json.length; i++)
 				{
@@ -304,7 +308,11 @@ function addTeam(){
 	outPut = outPut+ '<input type = "hidden" name="tabType" value="teamForm"/>';
 	outPut = outPut+ '<div class="">';
 	outPut = outPut+ '<label>Team Name <b class="valStar">*</b></label>';
-	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onblur="validateTeamName();">';
+	/* 
+	07-jan-2020
+	changed event from onblur to onkeyup for validateTeamName function as it giving unexpected results. 
+	*/
+	outPut = outPut+ '<input type="text" class="form-control"  placeholder="Team Name" id="candidateName" name="name" data-validation="required validate_Space validate_AlphaNumaric validate_length length2-100" field-name="Team Name" value="" onkeyup="validateTeamName();">';
 	outPut = outPut+ '</div>';
 	outPut = outPut+ '</div>';
 	
@@ -395,7 +403,7 @@ function addMember(teamId){
 	outPut = outPut+ '              <div class="clearfix mb10">';
 	outPut = outPut+ '                <div class="col-md-12">';
 	outPut = outPut + '<select multiple class="chosen-select form-control" name="teamMemberUserId" id="teamMemberUserId" data-validation="required validate_Space" field-name="Team Member">';
-     outPut = outPut + '</select>';
+    outPut = outPut + '</select>';
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mr">';
@@ -470,13 +478,13 @@ function projectMemberList(teamId){
 		                    	 existedMemId.push(opt.teamMemberUserId);
 		                    	 result = result+ '<tr>';
 		                    	 if(opt.memberName != null && opt.memberName != '' && opt.memberName !="undefined"){
-		                    	 result = result+ '<td><div><span>'+opt.memberName+'</span></div></td>';
+		                    	 result = result+ "<td><div><span title = '"+opt.memberName+"'>"+opt.memberName+"</span></div></td>";
 		                    	 }else{
 		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
 		                    	 }
 		                    	 result = result+ '<input class="existedTeamMember" type="hidden" name="existedTeamMember" id="existedTeamMember" value="'+existedMemId+'"/>'; 
 		                    	 if(opt.email != null && opt.email != '' && opt.email !="undefined"){
-		                    	 result = result+ '<td><div><span>'+opt.email+'</span></div></td>';
+		                    	 result = result+ "<td><div><span title = '"+opt.email+"'>"+opt.email+"</span></div></td>";
 		                    	 }else{
 		                    		 result = result+ '<td><div><span>-----</span></div></td>'; 
 		                    	 }
@@ -601,7 +609,7 @@ function TeamMemberpagination(){
     $('#teamMemberPagination').DataTable( { 
     	"scrollCollapse": false,
     	"lengthMenu": [[5, 10, 15, -1], [5, 10, 15, "All"]],
-    	"bLengthChange": false,
+    	"bLengthChange": true,
     	"bDestroy": true,
     	"ordering": true,
     	"oLanguage": {
@@ -763,7 +771,7 @@ function getTeamMembers(){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option disabled >-Select Team Members-</option>"; 
+		        	output = output + "<option>-Select Team Members-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -1018,7 +1026,7 @@ function getTeamMembersListExceptExistedTeamMembersList(teamId){
 		        success: function(data) {
 		        	var json = JSON.parse(data);
 		        	var output = "";
-		        	output = output + "<option disabled >-Select Team Members-</option>"; 
+		        	output = output + "<option>-Select Team Members-</option>"; 
 		        	for (var i=0; i<json.length; i++)
 					{
 			        		var opt = json[i];
@@ -1187,13 +1195,14 @@ function removeFromTeam(id){
 <script type="text/javascript">
  function validateTeamName() {
 	 var name = $('#candidateName').val(); 
-	 $('#teamNameDiv').find('p.jquery_form_error_message').remove();
+	 //$('#teamNameDiv').find('p.jquery_form_error_message').remove();
 	 if(name != null && name != ""){
 		 $.ajax({
 		    	type: "POST",
 		        url: sourceleadUrl+"/validateTeamName?"+tokenParamName+"="+tokenValue+"&name="+name, 
 		        success: function(data) {
 		        	if(data == 'true'){
+		        		  $('#teamNameDiv').find('p.jquery_form_error_message').remove();
 		        		  $("input#candidateName").after("<p class='jquery_form_error_message'>"+name+" is Already Existed</span>");
 						  $("#add_team").attr("disabled", "disabled");
 						  $("#add_team").addClass('button').val('Processing..');
