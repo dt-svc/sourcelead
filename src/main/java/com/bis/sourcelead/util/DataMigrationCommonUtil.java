@@ -3181,7 +3181,8 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	@SuppressWarnings("unchecked")
 	public void dataValidationForJobProfileTracker(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
 	{
-		if(!dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
+		
+		if(dataMigrationDTOJsonCopy.has("emailId") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
 			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
 			boolean panNumberFlag = false;
 			boolean aadharFlag = false;
@@ -3386,7 +3387,7 @@ private void saveImportedTimeSheetRecords(Projects project,String projectTaskUUI
 	@SuppressWarnings("unchecked")
 	public void dataValidationForInterviewTracker(HashMap< String, String> errorSet, JSONObject dataMigrationDTOJsonCopy, User user, OrgLocations orgLocation,String jsonString) throws Exception
 	{
-		if(!dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
+		if(dataMigrationDTOJsonCopy.has("emailId") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get("emailId").toString().equalsIgnoreCase("undefined")) {
 			boolean submissionFlag = requirementSubmissionService.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(dataMigrationDTOJsonCopy.get("emailId").toString(), Long.valueOf(dataMigrationDTOJsonCopy.getString("requirementId")));
 			if(submissionFlag) {
 				
