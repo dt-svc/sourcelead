@@ -2033,6 +2033,7 @@ public class ClientRestController {
 					  clientVendor.setCreatedBy(clientVendor.getCreatedBy());
 				  }
 			  }
+			  clientVendor.setIsMSPVendor(clientVendor.getIsMSPVendor());
 		     clientVendorList.add(clientVendor);
 				
 			}
