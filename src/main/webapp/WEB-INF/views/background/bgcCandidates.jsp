@@ -21,12 +21,11 @@
       <div class="contentareaInner-styles clearfix">
         <div class="timesheet_out" id="payrollRegister" style="display: block;">
           <div class="clearfix">
-          <div class="pull-left">
+          <div class="positionRelative reportHead clearfix">
+          <div class="pull-left ml mt5">
              <h4>Candidates List</h4>
           </div>
-              <div id="bgc-inProgress" class="clearfix bgcTemplateInformation-inner" style="display: block;">
-              <!-- <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
-              <ul class="pull-right list-unstyled list-inline">
+          <ul class="pull-right list-unstyled list-inline">
                 <!-- <li><a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="openPop();"></a></li>
                 <li><a href="javascript:void(0)" class="overIcon" title="Actions" onclick="newActions();"></a> -->
                 
@@ -49,6 +48,10 @@
                   <input class="repSearchBar" placeholder="Status/ID/Name" id="bgcListSearch" type="text">
                   <span class="repSearchIcon" onclick="getDynamicBgcList(null);"></span></li>
               </ul>
+          </div>
+              <div id="bgc-inProgress" class="clearfix bgcTemplateInformation-inner" style="display: block;">
+              <!-- <span class="pull-left refreIcon"><a href="javascript:void(0)" class="refeIcon" title="Refresh" onclick="resetFilter();"></a></span> -->
+              
             
                  <div id="dynamicBgcListViewDiv" class="project_wrap_table datatable_filter"></div>
 
