@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -185,10 +186,25 @@ public class AssociatesRestController {
 		}
 	   
 	   @RequestMapping(value = "/getVendorsByOrgLocation", method = RequestMethod.GET)
-		public String getVendorsByOrgLocation(HttpServletRequest request) throws Exception {
+		public String getVendorsByOrgLocation(HttpServletRequest request , @RequestParam(value = "isExcludeBgcVendors", required = false)  String isExcludeBgcVendors) throws Exception {
 		   OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
 			String resultJson = null;
 			List<OrgRelations> vendorList = orgRelationsService.getAllVendorsListByOrgLocationId(orgLocations.getId());
+			
+			logger.debug("vendorList before BGC filter size is "+vendorList.size());
+			/***
+			 * Below code is added to filter BGC vendors from vendors list when on boarding candidate as C2C employee. 
+			 * functionality--> occurs when when on boarding candidate as C2C employee.
+			 */
+			if(StringUtils.isNotBlank(isExcludeBgcVendors) && isExcludeBgcVendors.equalsIgnoreCase("true")) {
+			      vendorList = vendorList.stream()
+			    		  .filter(v -> v.getIsBackgroundCheck() == null || !v.getIsBackgroundCheck().equalsIgnoreCase("Y") )
+			    		  .collect(Collectors.toList());
+			}
+			logger.debug("vendorList after BGC filter size is "+vendorList.size());
+			/***
+			 * Above code is added to filter BGC vendors from vendors list when on boarding candidate as C2C employee.
+			 */
 			for(OrgRelations vendors:vendorList){
 				if(vendors.getLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getResponderLocationId().getOrgLocationName());
@@ -196,7 +212,6 @@ public class AssociatesRestController {
 				if(vendors.getResponderLocationId().getId().equals(orgLocations.getId())){
 					vendors.setOrgName(vendors.getLocationId().getOrgLocationName());
 				}
-				
 			}
 			
 			resultJson = toJSON(vendorList);
