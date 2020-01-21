@@ -583,7 +583,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	    		history.setUploadId(dataMigrationDTO.getUploadid());
 	    		history.setSessionId(dataMigrationDTO.getSessionId());
 	    		history.setUploadProcessingStatus("Inprogress");
-	    		
+	    		Requirement requirement = null;
 	    		switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					history.setUploadEntityType("Jobs");
@@ -621,10 +621,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					
 				case "profileTracker":
 					history.setUploadEntityType("ProfileTracker");
+					requirement = new Requirement();
+					requirement.setId(Long.valueOf(dataMigrationDTO.getRequirementId()));
+					history.setRequirementId(requirement);
 					break;
 					
 				case "interviewTracker":
+					requirement = new Requirement();
+					requirement.setId(Long.valueOf(dataMigrationDTO.getRequirementId()));
 					history.setUploadEntityType("InterviewTracker");
+					history.setRequirementId(requirement);
 					break;
 
 				}
