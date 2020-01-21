@@ -1,5 +1,10 @@
 package com.bis.sourcelead.bgc.service.Impl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,11 +14,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
@@ -35,6 +43,7 @@ import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.BackgroundCheckExportUtil;
 
 
 /**
@@ -61,6 +70,9 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	BackgroundCheckExportUtil backgroundCheckExportUtil;
 	
 	
 	@Override
@@ -317,5 +329,38 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			return null;
 		}
 	}
-
+	
+	@Override
+	public void exportBgcToPdfOrExcel(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList,
+			OrgLocations orgLocations, HttpServletResponse response) {
+		try{
+		File file = null;
+  		
+	    if(bgcCandidateDetailsDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file = backgroundCheckExportUtil.exportBgcToPdf(bgcCandidateDetailsDTOList, orgLocations);
+	    }else {
+	    	 file = backgroundCheckExportUtil.exportBgcToExcel(bgcCandidateDetailsDTOList, orgLocations);
+	    }
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+	}
 }

@@ -128,7 +128,14 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			bgcResponseList.setData(bgcResponseDtoList);
 			
 			// Below is for pagination in DATATABLE.
-			String resultCountQuery = "select count(*) from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1";
+			String resultCountQuery = "";
+			if(orgLocations.getIsBackgroundCheck() != null && orgLocations.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+				resultCountQuery= "select count(*) from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1"+searchBuilder.toString();
+				}else {
+					resultCountQuery= "select count(*) from BgcCandidateDetails bgc where bgc.sourceOrglocationId =:orgLocationId and bgc.status=1"+searchBuilder.toString();
+				}
+			
+			
 			Query hqlQuery = session.createQuery(resultCountQuery);
 			hqlQuery.setFirstResult(bgcCandidateDetailsDTO.getStart()).setMaxResults(bgcCandidateDetailsDTO.getLength())
 			          .setLong("orgLocationId",orgLocations.getId()).list();
