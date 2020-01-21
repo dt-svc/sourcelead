@@ -36,6 +36,11 @@ public class UploadXlsHistory implements Serializable{
 	@JoinColumn(name = "ORG_LOCATION_ID", nullable = false)
 	private OrgLocations orgLocationId;
 	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUIREMENT_ID", nullable = false)
+	private Requirement requirementId;
+	
 	@Column(name = "TOTAL_COUNT")
 	private int totalCount;
 	
@@ -225,7 +230,13 @@ public class UploadXlsHistory implements Serializable{
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-    
-    
 
+	public Requirement getRequirementId() {
+		return requirementId;
+	}
+
+	public void setRequirementId(Requirement requirementId) {
+		this.requirementId = requirementId;
+	}
+    
 	}

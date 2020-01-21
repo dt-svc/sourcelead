@@ -17,4 +17,6 @@ public interface UploadXlsHistoryService {
 	
 	List<UploadXlsHistoryDTO> getUploadXlsHistoryListByUserId(Long userId,Long orgLocationId,String entityType,String dateFormat) throws Exception;
 	
+	List<UploadXlsHistoryDTO> getUploadXlsHistoryListByInterviewId(Long orgLocationId,String entityType,String dateFormat,Long requirementId) throws Exception;
+	
 }
