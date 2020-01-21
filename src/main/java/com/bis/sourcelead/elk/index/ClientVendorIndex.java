@@ -87,6 +87,8 @@ public class ClientVendorIndex implements Serializable {
 	private String vendorRelationStatus;
 	
 	private String orgRelationUUID;
+
+	private String isMSPVendor;
 	
 	public String getSearchType() {
 		return searchType;
@@ -421,5 +423,12 @@ public class ClientVendorIndex implements Serializable {
 	public void setOrgRelationUUID(String orgRelationUUID) {
 		this.orgRelationUUID = orgRelationUUID;
 	}
- 
+
+	public String getIsMSPVendor() {
+		return isMSPVendor;
+	}
+
+	public void setIsMSPVendor(String isMSPVendor) {
+		this.isMSPVendor = isMSPVendor;
+	}
 }

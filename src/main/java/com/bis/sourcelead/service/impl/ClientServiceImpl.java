@@ -278,6 +278,7 @@ public class ClientServiceImpl implements ClientService {
 		OrgLocations clientOrgLocations = null;
 		Set<OrgRelations> orgRelationsList = null;
 		Org org = null;
+		Org savedClient = null;
 		User spocUser = null;
 		OrgSpoc orgSpoc = null;
 		SubmissionTemplate submissionTemplate = null;
@@ -398,7 +399,7 @@ public class ClientServiceImpl implements ClientService {
 			clientOrgLocations.setProfilePercentage(Constants.PROFILE_PERCENTAGE);
 			orgLocationsList.add(clientOrgLocations);
 			org.setOrgLocationsList(orgLocationsList);
-			Org savedClient = orgService.addOrganization(org);
+			savedClient = orgService.addOrganization(org);
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
@@ -472,7 +473,7 @@ public class ClientServiceImpl implements ClientService {
 			}
 			org.setId(org.getId());
 			org.setOrgLocationsList(orgLocationsList);
-			Org savedClient =  orgService.addOrganization(org);
+			savedClient =  orgService.addOrganization(org);
 			
 			if(clientDTO.getCustomFormData() !=null) {
 				for( CustomFormFieldDTO customFields:clientDTO.getCustomFormData()) {
@@ -501,7 +502,11 @@ public class ClientServiceImpl implements ClientService {
 		
 		if (StringUtils.isNotBlank(clientDTO.getEmail())) {
 			spocUser = userService.storeUser(addUserDTO,candidateDTO, user, clientOrgLocations, "CREATEUSER", responderType, loginOrg);
-
+			clientOrgLocations.setUser(spocUser);
+			savedClient.setUser(spocUser);
+			
+			orgLocationService.updateOrgLocations(clientOrgLocations);
+			orgService.addOrganization(savedClient);
 		}
 		
 		
@@ -1399,12 +1404,17 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgRelation.setIsAccountingFirm(Constants.NO);
 			}
+
+			orgRelation.setIsMSPVendor(clientDTO.getIsMSPVendor());
+			
+
 			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())
 					&& clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
 				orgRelation.setIsBackgroundCheck(Constants.YES);
 			} else {
 				orgRelation.setIsBackgroundCheck(Constants.NO);
 			}
+
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
