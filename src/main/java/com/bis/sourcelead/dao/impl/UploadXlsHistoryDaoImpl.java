@@ -188,4 +188,55 @@ public class UploadXlsHistoryDaoImpl implements UploadXlsHistoryDao{
 		return uploadXlsHistoryDTOList;
 	}
 
+
+	@Override
+	@Transactional
+	public List<UploadXlsHistoryDTO> getUploadXlsHistoryListByInterviewId(Long orgLocationId, String entityType,
+			String dateFormat,Long requirementId) throws Exception {
+		
+
+		List<UploadXlsHistoryDTO> uploadXlsHistoryDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		
+		 String locationDateFormat = null;
+		 if(dateFormat.equalsIgnoreCase("yyyy-MM-dd")){
+			 locationDateFormat = "%Y-%m-%d";
+		  }if(dateFormat.equalsIgnoreCase("dd-MM-yyyy")){
+			  locationDateFormat = "%d-%m-%Y";
+		  }if(dateFormat.equalsIgnoreCase("MM-dd-yyyy")){
+			  locationDateFormat = "%m-%d-%Y";
+		  }if(dateFormat.equalsIgnoreCase("yyyy-dd-MM")){
+			  locationDateFormat = "%Y-%d-%m";
+		  }
+		
+		query =  "SELECT "
+				+" HISTORY.ID AS uploadHistoryId, "
+				+" HISTORY.TOTAL_COUNT AS totalCount, "
+				+" HISTORY.SUCCESS_COUNT AS successCount, "
+				+" HISTORY.FAILURE_COUNT AS failureCount, "
+				+" HISTORY.FILE_NAME AS fileName, "
+				+" HISTORY.FILE_URL AS fileUrl, "
+				+" HISTORY.FILE_CONTENT_TYPE AS fileContentType, "
+				+" HISTORY.UUID AS uuid, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '"+locationDateFormat+"') AS date, "
+				+" DATE_FORMAT(HISTORY.CREATED_DATE, '%h:%i:%s %p') AS time, "
+				+" HISTORY.UPLOAD_PROCESSING_STATUS AS uploadProcessingStatus "
+				+" FROM UPLOAD_XLS_HISTORY HISTORY "
+				+" WHERE "
+				+" HISTORY.REQUIREMENT_ID = :requirementId AND "
+				+" HISTORY.ORG_LOCATION_ID = :orgLocationId AND "
+				+" HISTORY.UPLOAD_ENTITY_TYPE = :entityType ORDER BY HISTORY.ID DESC";
+		
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("requirementId", requirementId);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setString("entityType", entityType);
+		queryObj.setMaxResults(5);
+		queryObj.setResultTransformer(Transformers.aliasToBean(UploadXlsHistoryDTO.class));
+		uploadXlsHistoryDTOList = queryObj.list();
+		return uploadXlsHistoryDTOList;
+	
+	}
+
 }
