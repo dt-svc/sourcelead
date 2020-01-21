@@ -351,6 +351,10 @@
 								</li>
 								</sec:authorize>
 						</c:if>
+						 <c:if test="${tabName == 'BackgroundCheck'}">
+	                   <li class="${sessionData.nav == 'bgc' ? 'navActive' : ''}"><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates" title=" BGC Candidates"><span class="navIcons bgIcon"></span><b>BGC Candidates</b></a></li>
+	                </c:if> 
+						
 				    <c:if test="${tabName == 'Leave Management'}">
 		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
 		          	</c:if>	
@@ -382,13 +386,14 @@
                                <sec:authorize access="hasRole('ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')">
                                		<li class="${sessionData.nav == 'Org Chart' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" title="Org Chart"><i class="fa fa-chevron-right"></i> Org Chart</a></li>
                               </sec:authorize>
+                              
                                
                     </ul>
                               
 			  </li>
 			</sec:authorize>
 			
-          	
+          		
         </ul>
         </nav>
   </aside>
