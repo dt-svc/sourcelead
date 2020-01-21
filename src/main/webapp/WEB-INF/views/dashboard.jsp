@@ -180,7 +180,7 @@ function logoutForConfigure() {
                     <div class="clearfix mb">
                         <h4>Posted on</h4>
                         <div class="clearfix mt5 positionRelative">
-                                <select data-style="btn-info" id="dateSelection" name="dateSelection" class="selectpicker width100percnt" data-live-search="true" data-live-search-placeholder="Search Posted on" data-title="Posted on" onchange="mspVendorDatesSearch();">
+                                <select data-style="btn-info" id="mspDateSelection" name="dateSelection" class="selectpicker width100percnt" data-live-search="true" data-live-search-placeholder="Search Posted on" data-title="Posted on" onchange="mspVendorDatesSearch();">
                                     <option value="today">Today</option>
                                     <option value="Last_7_days">Last 7 days</option>
 						            <option value="Last_15_days">Last 15 days</option>
@@ -192,16 +192,16 @@ function logoutForConfigure() {
                                 </select>
                           
                           
-                          <div class="clearfix customLeaves-shadow mt10" id="customSearch" style="right:0px; display:none">
+                          <div class="clearfix customLeaves-shadow mt10" id="mspcustomSearch" style="right:0px; display:none">
 				              <div class="clearfix">
 				              <div class="col-md-5 padding_right padding_left" id="errMsgFrm">
-				                <input type="text" class="form-control calendar" value="" id="fromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
-				                <p id="fromDateDiv" class="colorRed small mt5 mb0">From Date Required</p>
+				                <input type="text" class="form-control calendar" value="" id="mspfromDate" name="fromDate"  placeholder="From Date"  readonly="readonly" >
+				                <p id="mspfromDateDiv" class="colorRed small mt5 mb0">From Date Required</p>
 				              </div>
 				              
 				              <div class="col-md-5 padding_left padding_right ml5" id="errMsgTo">
-				                <input type="text" class="form-control calendar" value="" id="toDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
-				                <p id="toDateDiv" class="colorRed small mt5 mb0">To Date Required</p>
+				                <input type="text" class="form-control calendar" value="" id="msptoDate" name="toDate"  placeholder="To Date" field-name="From Date" readonly="readonly" >
+				                <p id="msptoDateDiv" class="colorRed small mt5 mb0">To Date Required</p>
 				              </div>
 				              <div class="col-md-1 padding_left padding_right ml5 mt2">
 				              <button type="button" class="btn btn-primary btn-sm" onclick=" customeDateSearchResult();"><i class="fa fa-search"></i></button>
@@ -338,13 +338,13 @@ function logoutForConfigure() {
 
 <script>
 function mspVendorDatesSearch(){
-	var dateSelection = $("#dateSelection").val();
+	var dateSelection = $("#mspDateSelection").val();
 	$("#serachMspJob").val('');
 	if(dateSelection == 'custom'){
 		/* $(".customLeaves").show(); */
 		 removeErrsgFrom();
 		 removeErrTo();
-		 document.getElementById("customSearch").style.display="block";
+		 document.getElementById("mspcustomSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 
 			 var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -359,27 +359,27 @@ function mspVendorDatesSearch(){
 				  finalDateFormatProjectSave = 'yy-dd-mm'; 
 			  }
 	    
-		  $('#fromDate').datepicker({
+		  $('#mspfromDate').datepicker({
 				dateFormat : finalDateFormatProjectSave,
 				changeMonth: true,
 				changeYear: true, 
 				onSelect : function(selected) {
 					var dt = $(this).datepicker('getDate', '+1d');
 					dt.setDate(dt.getDate());
-					$("#toDate").datepicker("option", "minDate", dt);
+					$("#msptoDate").datepicker("option", "minDate", dt);
 					removeErrsgFrom();
 					
 				}
 			});
 		  
-		  $('#toDate').datepicker({
+		  $('#msptoDate').datepicker({
 				dateFormat : finalDateFormatProjectSave,
 				changeMonth: true,
 				changeYear: true, 
 				onSelect : function(selected) {
 					var dt = $(this).datepicker('getDate', '-1d');
 					dt.setDate(dt.getDate());
-					$("#fromDate").datepicker("option", "maxDate", dt);
+					$("#mspfromDate").datepicker("option", "maxDate", dt);
 					removeErrTo();
 				}
 			});
@@ -387,23 +387,23 @@ function mspVendorDatesSearch(){
 		 
 	 }else{
 		 /* $(".customLeaves").hide(); */
-		 document.getElementById("customSearch").style.display="none";
+		 document.getElementById("mspcustomSearch").style.display="none";
 		 $("#jobReportList_custome").removeAttr("disabled");
-		 $("#fromDate").datepicker("destroy");
-		 $("#toDate").datepicker("destroy");
-		 $("#fromDate").val('');
-		 $("#toDate").val('');
-		 document.getElementById("fromDateDiv").style.display="none";
-		 document.getElementById("toDateDiv").style.display="none";
+		 $("#mspfromDate").datepicker("destroy");
+		 $("#msptoDate").datepicker("destroy");
+		 $("#mspfromDate").val('');
+		 $("#msptoDate").val('');
+		 document.getElementById("mspfromDateDiv").style.display="none";
+		 document.getElementById("msptoDateDiv").style.display="none";
 		 customeDateSearchResult();
 	 }
 }
 function removeErrsgFrom (){
-	  document.getElementById("fromDateDiv").style.display="none";
+	  document.getElementById("mspfromDateDiv").style.display="none";
 	  
 }
 function removeErrTo(){
-	  document.getElementById("toDateDiv").style.display="none";
+	  document.getElementById("msptoDateDiv").style.display="none";
 }
 function  customeDateSearchResult(){
 	mspJobsList('empty');getJobsList('');
@@ -519,7 +519,7 @@ function mspJobsList(alphabetType){
 	var jobLength = $("#top10").hasClass("btn-primary") ? $("#top10").data("value") : $("#top100").data("value");
 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var orgRelationId = $("#clientList").val();
-	var dateSelection = $("#dateSelection").val(); 
+	var dateSelection = $("#mspDateSelection").val(); 
 	var searchData = $("#serachMspJob").val();
 	var mspOrgRelationId = $("#vendorList").val();
 	 
@@ -529,28 +529,28 @@ function mspJobsList(alphabetType){
 		jobIds.push($(this).val());
     });
 	
-	 var dateSelection = $("#dateSelection").val(); 
+	 var dateSelection = $("#mspDateSelection").val(); 
 	  var fromDate = '';
 	  var toDate = '';
 	  if(dateSelection == 'custom'){
-		   fromDate = $("#fromDate").val();
-		   toDate = $("#toDate").val();
+		   fromDate = $("#mspfromDate").val();
+		   toDate = $("#msptoDate").val();
 		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
-				  document.getElementById("fromDateDiv").style.display="block";
+				  document.getElementById("mspfromDateDiv").style.display="block";
 			  }else{
-				  document.getElementById("fromDateDiv").style.display="none";
+				  document.getElementById("mspfromDateDiv").style.display="none";
 			  }
 			  if(toDate == ''){
-				  document.getElementById("toDateDiv").style.display="block";
+				  document.getElementById("msptoDateDiv").style.display="block";
 			  }else{
-				  document.getElementById("toDateDiv").style.display="none";
+				  document.getElementById("msptoDateDiv").style.display="none";
 			  }
 		  }else{
-			  document.getElementById("fromDateDiv").style.display="none";
-			  document.getElementById("toDateDiv").style.display="none";
+			  document.getElementById("mspfromDateDiv").style.display="none";
+			  document.getElementById("msptoDateDiv").style.display="none";
 		  }
 	  }
 	  formData["orgRelationId"] = orgRelationId;
@@ -634,7 +634,7 @@ function getJobsList(alphabetType){
 	var jobLength = $("#top10").hasClass("btn-primary") ? $("#top10").data("value") : $("#top100").data("value");
 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var orgRelationId = $("#clientList").val();
-	var dateSelection = $("#dateSelection").val(); 
+	var dateSelection = $("#mspDateSelection").val(); 
 	var mspOrgRelationId = $("#vendorList").val();
 	
 	  var formData = {};
@@ -642,24 +642,24 @@ function getJobsList(alphabetType){
 	  var fromDate = '';
 	  var toDate = '';
 	  if(dateSelection == 'custom'){
-		   fromDate = $("#fromDate").val();
-		   toDate = $("#toDate").val();
+		   fromDate = $("#mspfromDate").val();
+		   toDate = $("#msptoDate").val();
 		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
-				  document.getElementById("fromDateDiv").style.display="block";
+				  document.getElementById("mspfromDateDiv").style.display="block";
 			  }else{
-				  document.getElementById("fromDateDiv").style.display="none";
+				  document.getElementById("mspfromDateDiv").style.display="none";
 			  }
 			  if(toDate == ''){
-				  document.getElementById("toDateDiv").style.display="block";
+				  document.getElementById("msptoDateDiv").style.display="block";
 			  }else{
-				  document.getElementById("toDateDiv").style.display="none";
+				  document.getElementById("msptoDateDiv").style.display="none";
 			  }
 		  }else{
-			  document.getElementById("fromDateDiv").style.display="none";
-			  document.getElementById("toDateDiv").style.display="none";
+			  document.getElementById("mspfromDateDiv").style.display="none";
+			  document.getElementById("msptoDateDiv").style.display="none";
 		  }
 	  }
 	  
@@ -716,7 +716,7 @@ function getMoreJobsList(alphabetType){
 	var jobLength = $("#top10").hasClass("btn-primary") ? $("#top10").data("value") : $("#top100").data("value");
 	var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 	var orgRelationId = $("#clientList").val();
-	var dateSelection = $("#dateSelection").val(); 
+	var dateSelection = $("#mspDateSelection").val(); 
 	var mspOrgRelationId = $("#vendorList").val();
 	
 	
@@ -725,24 +725,24 @@ function getMoreJobsList(alphabetType){
 	  var fromDate = '';
 	  var toDate = '';
 	  if(dateSelection == 'custom'){
-		   fromDate = $("#fromDate").val();
-		   toDate = $("#toDate").val();
+		   fromDate = $("#mspfromDate").val();
+		   toDate = $("#msptoDate").val();
 		  
 		  if(fromDate == '' || toDate == ''){
 			  flag = false;
 			  if(fromDate == ''){
-				  document.getElementById("fromDateDiv").style.display="block";
+				  document.getElementById("mspfromDateDiv").style.display="block";
 			  }else{
-				  document.getElementById("fromDateDiv").style.display="none";
+				  document.getElementById("mspfromDateDiv").style.display="none";
 			  }
 			  if(toDate == ''){
-				  document.getElementById("toDateDiv").style.display="block";
+				  document.getElementById("msptoDateDiv").style.display="block";
 			  }else{
-				  document.getElementById("toDateDiv").style.display="none";
+				  document.getElementById("msptoDateDiv").style.display="none";
 			  }
 		  }else{
-			  document.getElementById("fromDateDiv").style.display="none";
-			  document.getElementById("toDateDiv").style.display="none";
+			  document.getElementById("mspfromDateDiv").style.display="none";
+			  document.getElementById("msptoDateDiv").style.display="none";
 		  }
 	  }
 	  
