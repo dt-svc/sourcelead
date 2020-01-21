@@ -675,7 +675,6 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	}
 
 	@Override
-<<<<<<< HEAD
 	public List<OrgRelations> getMSPVendorListByOrgLocationId(Long orgLocationId,Long orgRelationId) throws Exception {
 		return orgRelationsDao.getMSPVendorListByOrgLocationId(orgLocationId,orgRelationId);
 	}
@@ -690,10 +689,8 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 		return orgRelationsDao.selectedMSPVendorListByOrgRelationIds(orgRelationIds);
 	}
 	
-=======
 	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId) {
 		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForBackgroundCheck(orgLocationId);
 	}
->>>>>>> ca728b949cfe469598fbac09b38ca6760c9613d4
 	
 }
