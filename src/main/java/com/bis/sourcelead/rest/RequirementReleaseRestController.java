@@ -87,11 +87,10 @@ public class RequirementReleaseRestController {
 	RequirementLocationsService requirementLocationsService;
 	
 	@Autowired
-<<<<<<< HEAD
 	MspVendorService mspVendorService;
-=======
+
+	@Autowired
 	RequirementWorkFlowDao requirementWorkFlowDao;
->>>>>>> 28d2c15106c8f42deab952a07bc04296f4f204b9
 	
 	protected boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
