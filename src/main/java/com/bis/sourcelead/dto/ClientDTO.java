@@ -120,7 +120,7 @@ public class ClientDTO {
 
 	private String isMSPVendor;
 	
-//	private String isBackgroundCheck;
+	private String isBackgroundCheck;
 	
 	public String getClientSaveFromType()
 	{
@@ -481,5 +481,12 @@ public class ClientDTO {
 //	public void setIsBackgroundCheck(String isBackgroundCheck) {
 //		this.isBackgroundCheck = isBackgroundCheck;
 //	}
+
+	public String getIsBackgroundCheck() {
+		return isBackgroundCheck;
+	}
+	public void setIsBackgroundCheck(String isBackgroundCheck) {
+		this.isBackgroundCheck = isBackgroundCheck;
+	}
 	
 }

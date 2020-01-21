@@ -187,17 +187,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 
 		 String subQuery = "";
 		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
-			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' "
+			 		+ " OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
 		 }else{
 			 //29-10-2019
 			 //checking isWorkflowConfigured to generate offer for applicant from any previous stage.
 			 if(!isWorkflowConfigured.equalsIgnoreCase(Constants.BOOLEAN_TRUE)){
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
 				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
-				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR "
+				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "
 					 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
 			}else{
-				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
+				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' "
 					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') ";
 			}
 			 }else{
@@ -2452,8 +2453,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			boolean flag = false;
 			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
-			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
-			if(educationList !=null && educationList.size() >0){
+			List<RequirementSubmission> submissionList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
+			if(submissionList !=null && submissionList.size() >0){
 				flag = true;
 				return flag;
 			}else{
@@ -2706,7 +2707,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		{
 			Session session = this.sessionFactory.getCurrentSession();
 			
-		     String query = "from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId ";
+		     String query = "from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.requirement left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId ";
 		     List<RequirementSubmission> requirementSubmissionList = session.createQuery(query).setLong( "candidateId", candidateId).setLong( "requirementId", requirementId).list();
 		   
 		     if(requirementSubmissionList != null && requirementSubmissionList.size() >0){
@@ -3507,7 +3508,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			  Session session = this.sessionFactory.getCurrentSession();
 			
 			  /*String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";*/
-			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";
+			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' "
+			  		+ " OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) ";
 			 
 			 List<RequirementSubmission> shortListCandidatesList;
 			 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
@@ -5028,6 +5030,74 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = 'SUBMISSION' and date(rs.joinedDate) =:joiningDate and rs.status = '1' ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setDate("joiningDate", sqlJoiningDate).list();
 	     return shortListCandidatesList;
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,
+			Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.email = :candidateEmail and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("candidateEmail", candidateEmail).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+		
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(String panNumber,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.panNumber = :panNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("panNumber", panNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(String aadharNumber,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.aadharNumber = :aadharNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(String ssnNumber,
+			Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.aadharNumber = :ssnNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	
 	}
 
 }

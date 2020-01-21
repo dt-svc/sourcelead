@@ -381,11 +381,11 @@ public class ClientServiceImpl implements ClientService {
 			}else{
 				clientOrgLocations.setIsLawFirm(Constants.NO);	
 			}
-//			if(StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")){
-//				clientOrgLocations.setIsBackgroundCheck(Constants.YES);	
-//			}else{
-//				clientOrgLocations.setIsBackgroundCheck(Constants.NO);	
-//			}
+			if(StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")){
+				clientOrgLocations.setIsBackgroundCheck(Constants.YES);	
+			}else{
+				clientOrgLocations.setIsBackgroundCheck(Constants.NO);	
+			}
 			if(StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 					clientOrgLocations.setIsAccountingFirm(Constants.YES);	
 				}else{
@@ -1394,13 +1394,27 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgRelation.setIsLawFirm(Constants.NO);
 			}
+			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+				orgRelation.setIsBackgroundCheck(Constants.YES);
+			} else {
+				orgRelation.setIsBackgroundCheck(Constants.NO);
+			}
 			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 					orgRelation.setIsAccountingFirm(Constants.YES);
 			} else {
 				orgRelation.setIsAccountingFirm(Constants.NO);
 			}
+
 			orgRelation.setIsMSPVendor(clientDTO.getIsMSPVendor());
 			
+
+			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())
+					&& clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+				orgRelation.setIsBackgroundCheck(Constants.YES);
+			} else {
+				orgRelation.setIsBackgroundCheck(Constants.NO);
+			}
+
 			if (StringUtils.isNotBlank(clientDTO.getPaymentTerms())) {
 				orgRelation.setPaymentTerm(clientDTO.getPaymentTerms());
 			}else{
@@ -1478,13 +1492,13 @@ public class ClientServiceImpl implements ClientService {
 			} else {
 				orgLocations.setIsLawFirm(Constants.NO);
 			}
-//			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())) {
-//				if (clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
-//					orgLocations.setIsBackgroundCheck(Constants.YES);
-//				}
-//			} else {
-//				orgLocations.setIsBackgroundCheck(Constants.NO);
-//			}
+			if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck())) {
+				if (clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+					orgLocations.setIsBackgroundCheck(Constants.YES);
+				}
+			} else {
+				orgLocations.setIsBackgroundCheck(Constants.NO);
+			}
 			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm())) {
 				if (clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 					orgLocations.setIsAccountingFirm(Constants.YES);
@@ -1534,7 +1548,7 @@ public class ClientServiceImpl implements ClientService {
 				
 				if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_IMMIGRATION))){
 					List<Long> tabsIds = new ArrayList<>();
-					List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_IMMIGRATION));
+					List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_IMMIGRATION)); 
 					if(childTabsList.size() > 0) {
 						for(Tabs childTabs : childTabsList) {
 							tabsIds.add(childTabs.getId());
@@ -1566,8 +1580,9 @@ public class ClientServiceImpl implements ClientService {
 					orgLicenseSubscriptionService.saveOrgLicenseSubscription(subscription);
 				}
 			}
-			// Below coded added for Background check vendor tags to be enabled
-			/*if(StringUtils.isNotBlank(orgRelation.getIsBackgroundCheck()) && orgRelation.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
+			// Below coded added for Background check vendor tags to be enabled SRINIVAS SABBU. Need to be complete in future 
+			//// for below condition need to add TABIDS for Background check vendor 
+/*			if(StringUtils.isNotBlank(orgRelation.getIsBackgroundCheck()) && orgRelation.getIsBackgroundCheck().equalsIgnoreCase(Constants.YES)){
 				OrgLicenseSubscription subscription = orgLicenseSubscriptionService.getOrgLicenseSubscriptionByOrgIdAndCountry(orgLocations.getOrg().getId(), orgLocations.getCountry());
 				String[] subscriptionTabs = subscription.getSubscriptionTabs().split(",");
 				List<Long> subscriptionTabIdsList = new ArrayList<>();
@@ -1577,6 +1592,7 @@ public class ClientServiceImpl implements ClientService {
 				
 				if(!subscriptionTabIdsList.contains(Long.valueOf(Constants.TAB_BACKGROUND_CHECK))){
 					List<Long> tabsIds = new ArrayList<>();
+					// here getting null pointer exception because we have not configured and sub tabs for background check, 
 					List<Tabs> childTabsList = tabService.getClildTabsListByTabId(Long.valueOf(Constants.TAB_BACKGROUND_CHECK));
 					if(childTabsList.size() > 0) {
 						for(Tabs childTabs : childTabsList) {
@@ -1585,12 +1601,12 @@ public class ClientServiceImpl implements ClientService {
 					}
 					
 					List<Long> sourceLeadActionsIdsList =  sourceleadActionsService.getAllSourceleadActionsIdsByTabsList(tabsIds);
-					StringBuilder immigrationTabIds  = new StringBuilder();
+					StringBuilder backgroundCheckTabIds  = new StringBuilder();
 					for(Long tabId : sourceLeadActionsIdsList){
-						immigrationTabIds.append(tabId).append(",");
+						backgroundCheckTabIds.append(tabId).append(",");
 					}
 					
-					String tabIds = immigrationTabIds.toString();
+					String tabIds = backgroundCheckTabIds.toString();
 					tabIds = tabIds.substring(0, tabIds.length()-1);
 					
 					Roles adminrole = rolesService.getRolesByRoleNameAndOrgLocationId(Constants.ROLE_ADMIN, orgLocations.getId());

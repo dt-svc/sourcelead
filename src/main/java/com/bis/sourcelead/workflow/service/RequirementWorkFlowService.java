@@ -118,10 +118,9 @@ public interface RequirementWorkFlowService {
 
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
 
-	void copyWorkflowStagesAndTask(String uuid, User user, OrgLocations orgLocations,
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO);
+	String copyWorkflowStagesAndTask(OrgLocations orgLocations, RequirementWorkFlowTasks task, User loginUser, User assignUser)throws Exception;
 
-	String getRequirementworkflowTaskListById(Long stageId, OrgLocations orgLocations, User user) throws Exception;
+	String getRequirementworkflowTaskListById(Long submissionId,Long stageId, OrgLocations orgLocations, User user) throws Exception;
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId);
 	
@@ -142,6 +141,8 @@ public interface RequirementWorkFlowService {
 	String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageId, Long submissionId, Integer minutes,
 			Integer seconds);
 	
-	String getWorkflowStageNameByShortCode(String shortCode)throws Exception;	
+	String getWorkflowStageNameByShortCode(String shortCode)throws Exception;
+	
+	String sendMailToAssignedUsers(OrgLocations orgLocations, User fromUser, User toUser, RequirementWorkFlowTasks task)throws Exception;
 	
 }

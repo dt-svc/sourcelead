@@ -109,6 +109,11 @@ public class VendorServiceImpl implements VendorService{
 			} else {
 				orgRelations.setIsLawFirm(Constants.NO);
 			}
+			 if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+					orgRelations.setIsBackgroundCheck(Constants.YES);
+			} else {
+				orgRelations.setIsBackgroundCheck(Constants.NO);
+			}
 			if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 					orgRelations.setIsAccountingFirm(Constants.YES);
 			} else {
@@ -131,14 +136,17 @@ public class VendorServiceImpl implements VendorService{
 		 vendorOrgLocations.setState(clientDTO.getState());
 		 vendorOrgLocations.setCity(clientDTO.getCity());
 		 
-		 if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))){
+		 if((StringUtils.isNotBlank(clientDTO.getIsLawFirm())) && (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()))
+				 && (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()))){
 		 if(clientDTO.getIsLawFirm().equalsIgnoreCase("Y") && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")){
 			vendorOrgLocations.setIsLawFirm(Constants.YES);
 			vendorOrgLocations.setIsAccountingFirm(Constants.YES);
+			vendorOrgLocations.setIsBackgroundCheck(Constants.YES);
 		}
 		}else{
 			vendorOrgLocations.setIsLawFirm(Constants.NO);
 			vendorOrgLocations.setIsAccountingFirm(Constants.NO);	
+			vendorOrgLocations.setIsBackgroundCheck(Constants.NO);	
 		}
 		
 		 if(StringUtils.isNotBlank(clientDTO.getWebSite())){

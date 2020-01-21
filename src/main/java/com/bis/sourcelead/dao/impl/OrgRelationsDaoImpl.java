@@ -815,6 +815,19 @@ public class OrgRelationsDaoImpl implements OrgRelationsDao {
 			List<OrgRelations> relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).setString("type", type).list();
 			return relationsList;
 	}
+	@Override
+	@Transactional
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId) {
+		List<OrgRelations> relationsList= null;
+		try {
+			 Session session = this.sessionFactory.getCurrentSession();
+			 Query vendorsListQuery= session.createQuery("from OrgRelations orgrelation left join fetch orgrelation.responderLocationId orgLocation left join fetch orgLocation.org where (orgrelation.locationId = :orgLocationId and orgrelation.isBackgroundCheck ='Y') or (orgrelation.responderLocationId = :orgLocationId and orgrelation.isBackgroundCheck ='Y')");
+			 relationsList = vendorsListQuery.setLong("orgLocationId", orgLocationId).list();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+			return relationsList;
+	}
 
 	@Override
 	@Transactional
