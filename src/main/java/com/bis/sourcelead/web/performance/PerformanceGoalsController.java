@@ -23,6 +23,9 @@ public class PerformanceGoalsController {
 	@Value("${static.path}")
 	private String staticPath;
 	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
+	
 	@Autowired
 	PerformanceGoalsService performanceGoalsService;
 	
@@ -41,6 +44,7 @@ public class PerformanceGoalsController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
+					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("performance/performanceGoalsList");
 					return model;
 	}
