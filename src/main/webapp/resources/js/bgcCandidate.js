@@ -278,7 +278,7 @@ function bgcCandidate(){
 		                    var result = "";
 		                    if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
 		                        '<sec:authorize access="hasRole(\'ROLE_VIEW_BACKGROUND_DETAILS\')">' 
-		                    	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
+		                    	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href="+vmsUrl+"/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
 		                        '</sec:authorize>'
 		                    } else {
 		                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
@@ -430,7 +430,7 @@ function bgcCandidate(){
 		                    }
 		                 if(opt.orgType == "Vendor"){
 		                	'<sec:authorize access="hasRole(\'ROLE_EDIT_BACKGROUND_DETAILS\')">'
-		                    result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
+		                    result = result + '<td><div><a href='+vmsUrl+'/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
 		                    '</sec:authorize>'
 		                    '<sec:authorize access="hasRole(\'ROLE_DELETE_BACKGROUND_DETAILS\')">'
 		                    result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
@@ -495,7 +495,7 @@ function bgcCandidate(){
 				uuid="sffer5";
 				result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='bgc.deleteBgcDetailsByUuid(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='bgc.cancelBgcDelete();'></b>";
 				result = result +"	</div>";
-				$("#popUp").appen/pppd(result);
+				$("#popUp").append(result);
 				$("#remove_bgc_pop").slideDown(200);
 				$(".project_inn_mask").fadeIn(200);
 			}
