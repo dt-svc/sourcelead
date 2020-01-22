@@ -395,6 +395,7 @@ private static final Logger logger = LoggerFactory.getLogger(BackOfficeControlle
 	public ModelAndView addAndEditAssetAssign(@RequestParam(value="assetUUID", required=false) String assetUUID,HttpServletRequest request) throws Exception {
 		Long orgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 		OrgLocations orgLocations  = orgLocationService.getOrgLocations(orgLocationId);
+
 		ModelAndView model = new ModelAndView();
 		SourceleadActions action = sourceleadActionsService.getSourceleadActionsByActionRole(Constants.ROLE_ADD_ASSET);
 	     model.addObject("actionId",action.getId());

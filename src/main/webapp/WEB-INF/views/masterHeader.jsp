@@ -783,7 +783,18 @@ function preventTabkey(e){
 			            <div class="row popupContent">
 			              <div class="col-md-6 reports-head" >
 			                <label>Assign to<span class="text-danger">*</span></label>
-			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
+			                
+			                <!-- 21/jan/2020 - vishnu
+			                changed the name of html element select from 'assignTo' to 'assignToUserString' as assignTo datatype in the AddTaskDTO is Long
+			                and this value has to be sent as a String to save tasks for multiple users.
+			                 -->
+			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignToUserString" field-name="AssignTo"  data-validation="required">
+			              
+			                <!-- 21/jan/2020 - vishnu
+			                added assignTo input field as it is required for 'storeTasks' ajax call but the user ids will be sent as a String by 'assignToUserString' field. 
+			                 -->
+			                <input name  = "assignTo" value = "0" style="display: none;">
+			                
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>
 				                </c:forEach> --%>
