@@ -277,9 +277,9 @@ function bgcCandidate(){
 		                "render": function (data, type, opt, meta) {
 		                    var result = "";
 		                    if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-		                        '<sec:authorize access="hasRole(\'ROLE_VIEW_BACKGROUND_DETAILS\')">' 
+		                    	 if(roleActionsArray.indexOf("ROLE_VIEW_BACKGROUND_DETAILS") > -1){ 
 		                    	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href="+vmsUrl+"/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
-		                        '</sec:authorize>'
+		                    	 }
 		                    } else {
 		                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
 		                    }
@@ -429,12 +429,12 @@ function bgcCandidate(){
 		                       orgType= opt.orgType;
 		                    }
 		                 if(opt.orgType == "Vendor"){
-		                	'<sec:authorize access="hasRole(\'ROLE_EDIT_BACKGROUND_DETAILS\')">'
-		                    result = result + '<td><div><a href='+vmsUrl+'/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
-		                    '</sec:authorize>'
-		                    '<sec:authorize access="hasRole(\'ROLE_DELETE_BACKGROUND_DETAILS\')">'
-		                    result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
-		                    '</sec:authorize>'
+		                	 if(roleActionsArray.indexOf("ROLE_EDIT_BACKGROUND_DETAILS") > -1){ 
+		                       result = result + '<td><div><a href='+vmsUrl+'/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
+		                	 }
+		                	 if(roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS") > -1){ 
+		                        result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+		                	 }
 		                 }
 		                    return result;
 		                   
