@@ -81,7 +81,7 @@ public class LeaveDashBoardDataUtil {
 
 	@Autowired
 	TimesheetSubmissionsService	 timesheetSubmissionsService;
-	
+ 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -155,8 +155,7 @@ public class LeaveDashBoardDataUtil {
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
-	
-
+	 
 	/**
 	 * Leave DashBoard Data 
 	 * approved,rejected,pending and canceled leav count
