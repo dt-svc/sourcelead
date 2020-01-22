@@ -96,6 +96,50 @@ function getAppraisalFinalScoreDetails(performanceAssignedUUID){
 		 result = result + '</div>';
 		 result = result + '</div>';
 		 result = result + '</div>';
+		 
+		 
+		 result = result + '<div class="clearfix mt mb">';
+		 result = result + '<h4 class="text-muted">Tasks</h4>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="row">';
+		 result = result + '<div class="col2Custom10">';
+		 result = result + '<label class="clearfix col-md-2">Avg Score</label>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix col-md-2">';
+		 result = result + '<input type="text" id="tasksScore" disabled class="form-control">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 
+		 
+		 result = result + '<div class="clearfix mt mb">';
+		 result = result + '<h4 class="text-muted">Goals</h4>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="row">';
+		 result = result + '<div class="col2Custom10">';
+		 result = result + '<label class="clearfix col-md-2">Avg Score</label>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix col-md-2">';
+		 result = result + '<input type="text" id="goalsScore" disabled class="form-control">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 
+		 
+		 result = result + '<div class="clearfix mt mb">';
+		 result = result + '<h4 class="text-muted">Final Score</h4>';
+		 result = result + '<div class="clearfix"></div>';
+		 result = result + '<div class="row">';
+		 result = result + '<div class="col2Custom10">';
+		 result = result + '<label class="clearfix col-md-2">Score</label>';
+		 result = result + '</div>';
+		 result = result + '<div class="clearfix col-md-2">';
+		 result = result + '<input type="text" id="appraisalFinalScore" disabled class="form-control">';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 result = result + '</div>';
+		 
+		 
 
 		 result = result + '</div>';
 		 result = result + '</div>';
@@ -148,35 +192,80 @@ function getFinalScore(assignedUUID){
 		    	 
 		    	 if(response.data != null && response.data.length > 0){
 		    		 
+		    		 var tasksFlagCount = 0;
+		    		 var tasksCount = 0;
+		    		 
+		    		 var goalsFlagCount = 0;
+		    		 var goalsCount = 0;
+		    		 
+		    		 var appraisalFinalScore = 0;
+		    		 
 		    		 for (var i=0; i<response.data.length; i++)
 	        	    	{
 		    			 var opt = response.data[i];
 		    			 if(opt.scoreType == 'Reporting Manager'){
 		    				 var finalScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 finalScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 finalScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#reportingMgrFinalScore").val(finalScore);
 		    				
 		    				 if(opt.comments != null){
 		    		    		 $("textarea[name=reportingMgrComments]").val(opt.comments);
 		    		    	 } 
+		    				 
+		    				 if(opt.tasksAvgScore > 0){
+		    					 tasksFlagCount = tasksFlagCount+1;
+		    					 tasksCount = tasksCount+opt.tasksAvgScore;
+		    				 }
+		    				 
+		    				 if(opt.goalsAvgScore > 0){
+		    					 goalsFlagCount = goalsFlagCount+1;
+		    					 goalsCount = goalsCount+opt.goalsAvgScore;
+		    				 }
+		    				 appraisalFinalScore = appraisalFinalScore+opt.finalAvgScore;
+		    				
+		    				 
 		    			 }else if(opt.scoreType == 'Resource Manager'){
 		    				 var finalScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 finalScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 finalScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#resourceMgrFinalScore").val(finalScore);
 		    				
 		    				 if(opt.comments != null){
 		    		    		 $("textarea[name=resourceMgrComments]").val(opt.comments);
 		    		    	 } 
+		    				 
+		    				 if(opt.tasksAvgScore > 0){
+		    					 tasksFlagCount = tasksFlagCount+1;
+		    					 tasksCount = tasksCount+opt.tasksAvgScore;
+		    				 }
+		    				 
+		    				 if(opt.goalsAvgScore > 0){
+		    					 goalsFlagCount = goalsFlagCount+1;
+		    					 goalsCount = goalsCount+opt.goalsAvgScore;
+		    				 }
+		    				 appraisalFinalScore = appraisalFinalScore+opt.finalAvgScore;
+		    				 
 		    			 }else if(opt.scoreType == 'Self'){
 		    				 var selfScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 selfScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 selfScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#selfScore").val(selfScore);
+		    				 
+		    				 if(opt.tasksAvgScore > 0){
+		    					 tasksFlagCount = tasksFlagCount+1;
+		    					 tasksCount = tasksCount+opt.tasksAvgScore;
+		    				 }
+		    				 
+		    				 if(opt.goalsAvgScore > 0){
+		    					 goalsFlagCount = goalsFlagCount+1;
+		    					 goalsCount = goalsCount+opt.goalsAvgScore;
+		    				 }
+		    				 appraisalFinalScore = appraisalFinalScore+opt.finalAvgScore;
+		    				 
 		    			 }else if(opt.scoreType == 'Peers'){
 		    				 var peerScore = 0;
 		    				 if(opt.peersScore != null && typeof opt.peersScore != 'undefined'){
@@ -184,8 +273,29 @@ function getFinalScore(assignedUUID){
 		    				 }
 		    				 $("#peerScore").val(peerScore);
 		    			 }
+		    			 appraisalFinalScore = appraisalFinalScore+opt.peersScore;
 		    			 
 	        	    	}
+		    		 
+		    		 
+		    		 if(tasksCount > 0){
+		    			 var taksAvgCount = tasksCount/tasksFlagCount;
+			    		 $("#tasksScore").val(taksAvgCount.toFixed(2));
+			    		appraisalFinalScore = appraisalFinalScore+Number(taksAvgCount.toFixed(2));
+		    		 }else{
+			    		 $("#tasksScore").val(0);
+		    		 }
+		    		 
+		    		 if(goalsCount > 0){
+		    			 var goalsAvgCount = goalsCount/goalsFlagCount;
+			    		 $("#goalsScore").val(goalsAvgCount.toFixed(2));
+			    		 appraisalFinalScore = appraisalFinalScore+Number(goalsAvgCount.toFixed(2));
+		    		 }else{
+			    		 $("#goalsScore").val(0);
+		    		 }
+		    		 
+		    		 $("#appraisalFinalScore").val(appraisalFinalScore);
+		    		 
 		    		 
 		    	 }
 		    	 

@@ -33,6 +33,7 @@ function getAppraisalTaskDetails(){
     result = result + '<select class="form-control pull-left" id="tasksScore" name="tasksScore" onchange="saveTasksScore(\''+assignedUUID+'\');"  field-name="Tasks Score">';
     result = result + '<option value="">-Tasks Score-</option>';
     result = result + '</select>';
+    result = result + '<input type="hidden" name="tasksWeightage" id="tasksWeightage">';
     }else{
     	 result = result + '<input type="text" id="totalTasksScore" disabled class="form-control pull-left"></div>';
     }
@@ -408,7 +409,7 @@ function getTasksScore(assignedUUID){
 	           				  if(v['type'] == "projectTasksWeightage"){
 	               				   	  var taskWeightage = v['weightage'];
 	               				   	  var options = '<option value="">-Select Score-</option>';
-	               				   	  for(var i=0; i<=taskWeightage; i++){
+	               				   	  for(var i=0; i<=100; i++){
 	               				   		var selected = '';
 	               				   		 if(response.object.tasksScore != null){
 	               				   			if(i == response.object.tasksScore){
@@ -420,6 +421,8 @@ function getTasksScore(assignedUUID){
 	               				   	  
 	               				   $("#tasksScore").empty(); 
        						       $("#tasksScore").append(options);   
+       						       $("#tasksWeightage").val(taskWeightage);   
+       						    
        						       
        						    if(submissionStage == 'Submitted_For_Review'){
        						    	if(response.object.tasksScore != null){
@@ -441,11 +444,12 @@ function getTasksScore(assignedUUID){
 
 function saveTasksScore(assignedUUID){
 	var tasksScore = $("#tasksScore").val();
+	var tasksWeightage = $("#tasksWeightage").val();
 	if(tasksScore){
 		$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			  type: "POST",
-			    url: pmsUrl+"/saveAssignedPerformanceFeedback?assignedUUID="+assignedUUID+"&tasksScore="+tasksScore,
+			    url: pmsUrl+"/saveAssignedPerformanceFeedback?assignedUUID="+assignedUUID+"&tasksScore="+tasksScore+"&tasksWeightage="+tasksWeightage,
 			     success :function(response) {
 			    	 if (response.response === "SUCCESS") {
 			    		 $("#appraisalLoading").removeAttr("style");

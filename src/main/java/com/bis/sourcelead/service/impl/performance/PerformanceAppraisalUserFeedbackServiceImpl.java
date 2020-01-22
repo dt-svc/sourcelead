@@ -100,12 +100,29 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 			performanceFeedback.setStatus(Constants.RECORD_ACTIVE);
 			performanceFeedback.setFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getCategoryScore());
 			performanceFeedback.setFinalScore(performanceFeedbackCategoryDTO.getCategoryScore());
+			double feedbackAvgScore = (performanceFeedbackCategoryDTO.getCategoryScore() * performanceFeedbackCategoryDTO.getFeedbackWeightage())/100;
+			performanceFeedback.setFeedbackAvgScore(feedbackAvgScore);
+			performanceFeedback.setFinalAvgScore(feedbackAvgScore);
 			performanceFeedback.setSubmissionStage("Draft");
 		}else {
 			performanceFeedback.setUpdatedBy(user);
 			performanceFeedback.setUpdatedDate(new Date());
-			Integer categoryScore = performanceAppraisalUserFeedbackDao.getFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId());
-			performanceFeedback.setFeedbackCategoriesScore(categoryScore);
+			Integer categoryScore = 0;
+			double feedbackAvgScore = 0d;
+			if(performanceFeedbackCategoryDTO.getCategoryScore() != null) {
+				categoryScore = performanceFeedbackCategoryDTO.getCategoryScore();
+				performanceFeedback.setFeedbackCategoriesScore(categoryScore);
+				feedbackAvgScore = (performanceFeedbackCategoryDTO.getCategoryScore() * performanceFeedbackCategoryDTO.getFeedbackWeightage())/100;
+				performanceFeedback.setFeedbackAvgScore(feedbackAvgScore);
+			}else {
+			    categoryScore = performanceAppraisalUserFeedbackDao.getFeedbackCategoriesScore(performanceFeedbackCategoryDTO.getUserId(), assignedAssociates.getId());
+				performanceFeedback.setFeedbackCategoriesScore(categoryScore);
+				if(performanceFeedback.getFeedbackAvgScore() != null) {
+					feedbackAvgScore = performanceFeedback.getFeedbackAvgScore();
+				}
+				performanceFeedback.setFeedbackAvgScore(feedbackAvgScore);
+			}
+			
 			Integer goalsScore = 0;
 			Integer tasksScore = 0;
 			Integer competenciesScore = 0;
@@ -121,6 +138,24 @@ public class PerformanceAppraisalUserFeedbackServiceImpl implements PerformanceA
 			
 			Integer finalScore = categoryScore+goalsScore+tasksScore+competenciesScore;
 			performanceFeedback.setFinalScore(finalScore);
+			
+			
+			double goalsAvgScore = 0d;
+			double tasksAvgScore = 0d;
+			double competenciesAvgScore = 0d;
+			
+			if(performanceFeedback.getGoalsAvgScore() != null) {
+				goalsAvgScore = performanceFeedback.getGoalsAvgScore();
+			}
+			if(performanceFeedback.getTasksAvgScore() != null) {
+				tasksAvgScore = performanceFeedback.getTasksAvgScore();
+			}
+			if(performanceFeedback.getCompetenciesAvgScore() != null) {
+				competenciesAvgScore = performanceFeedback.getCompetenciesAvgScore();
+			}
+			
+			double finalAvgScore = feedbackAvgScore+goalsAvgScore+tasksAvgScore+competenciesAvgScore;
+			performanceFeedback.setFinalAvgScore(finalAvgScore);
 			
 		}
 		

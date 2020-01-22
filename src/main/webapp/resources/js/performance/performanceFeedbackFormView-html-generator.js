@@ -378,8 +378,9 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript,app
         					if(v['templateId'] == result.feedbackTemplateId){
         						if(v['self'] != 'undefined' && appraisalType == 'self'){
             				   	  var selfPercentage = v['self'];
+            				      $("#feedbackWeightage").val(selfPercentage);
             				   	  var options = '<option value="">-Select Score-</option>';
-            				   	  for(var i=0; i<=selfPercentage; i++){
+            				   	  for(var i=0; i<=100; i++){
             				   		var selected = '';
             				   		if(result.categoryScore != null){
             				   			if(i == result.categoryScore){
@@ -391,9 +392,10 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript,app
         				   	    }
         						
         						if(v['peer'] != 'undefined' && appraisalType == 'peer'){
-              				   	  var selfPercentage = v['peer'];
+              				   	  var peerPercentage = v['peer'];
+              				   	 $("#feedbackWeightage").val(peerPercentage);
               				   	  var options = '<option value="">-Select Score-</option>';
-              				   	  for(var i=0; i<=selfPercentage; i++){
+              				   	  for(var i=0; i<=100; i++){
               				   		var selected = '';
               				   		if(result.categoryScore != null){
               				   			if(i == result.categoryScore){
@@ -405,9 +407,10 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript,app
           				   	    }
         						
         						if(v['resourceManager'] != 'undefined' && appraisalType == 'resourceManager'){
-                				   	  var selfPercentage = v['resourceManager'];
+                				   	  var resourceManagerPercentage = v['resourceManager'];
+                				   	 $("#feedbackWeightage").val(resourceManagerPercentage);
                 				   	  var options = '<option value="">-Select Score-</option>';
-                				   	  for(var i=0; i<=selfPercentage; i++){
+                				   	  for(var i=0; i<=100; i++){
                 				   		var selected = '';
                 				   		if(result.categoryScore != null){
                 				   			if(i == result.categoryScore){
@@ -419,9 +422,10 @@ function generateForm(pmsUrl,templateUUID,assignedUUID,finalDateFormatScript,app
             				   	    }
         						
         						if(v['reportingManager'] != 'undefined' && appraisalType == 'reportingManager'){
-              				   	  var selfPercentage = v['reportingManager'];
+              				   	  var reportingManagerPercentage = v['reportingManager'];
+              				   	$("#feedbackWeightage").val(reportingManagerPercentage);
               				   	  var options = '<option value="">-Select Score-</option>';
-              				   	  for(var i=0; i<=selfPercentage; i++){
+              				   	  for(var i=0; i<=100; i++){
               				   		var selected = '';
               				   		if(result.categoryScore != null){
               				   			if(i == result.categoryScore){

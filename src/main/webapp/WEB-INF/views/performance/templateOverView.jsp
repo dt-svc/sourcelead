@@ -3,6 +3,7 @@
 
 <script>
 function getTemplateOverViewDetails(appraisalType){
+	
 	  document.getElementById("feedbackWidget").removeAttribute("class");
 	  
 	  if(appraisalType == 'self'){

@@ -43,6 +43,12 @@ public class PerformanceFeedbackServiceImpl implements PerformanceFeedbackServic
 		Integer tasksScore = 0;
 		Integer competenciesScore = 0;
 		Integer categoryScore = 0;
+		
+		double goalsAvgScore = 0d;
+		double tasksAvgScore = 0d;
+		double competenciesAvgScore = 0d;
+		double categoryAvgScore = 0d;
+		
 		performanceFeedback = performanceFeedbackDao.getPerformanceFeedbackByAssignedUserId(performanceFeedbackDTO.getUserId(), assignedAssociates.getId());
 		if(performanceFeedback == null) {
 			performanceFeedback = new PerformanceFeedback();
@@ -61,6 +67,7 @@ public class PerformanceFeedbackServiceImpl implements PerformanceFeedbackServic
 			if(performanceFeedback.getFeedbackCategoriesScore() != null) {
 				categoryScore = performanceFeedback.getFeedbackCategoriesScore();
 			}
+			
 			if(performanceFeedback.getCompetenciesScore() != null) {
 				competenciesScore = performanceFeedback.getCompetenciesScore();
 			}
@@ -73,20 +80,46 @@ public class PerformanceFeedbackServiceImpl implements PerformanceFeedbackServic
 				tasksScore = performanceFeedback.getTasksScore();
 			}
 			
+			
+			if(performanceFeedback.getFeedbackAvgScore() != null) {
+				categoryAvgScore = performanceFeedback.getFeedbackAvgScore();
+			}
+			
+			if(performanceFeedback.getCompetenciesAvgScore() != null) {
+				competenciesAvgScore = performanceFeedback.getCompetenciesAvgScore();
+			}
+			
+			if(performanceFeedback.getGoalsAvgScore() != null) {
+				goalsAvgScore = performanceFeedback.getGoalsAvgScore();
+			}
+			
+			if(performanceFeedback.getTasksAvgScore() != null) {
+				tasksAvgScore = performanceFeedback.getTasksAvgScore();
+			}
+			
 		}
 		
 		if(performanceFeedbackDTO.getGoalsScore() != null) {
 			performanceFeedback.setGoalsScore(performanceFeedbackDTO.getGoalsScore());
 			goalsScore = performanceFeedbackDTO.getGoalsScore();
+			
+			goalsAvgScore = (performanceFeedbackDTO.getGoalsScore() * performanceFeedbackDTO.getGoalsWeightage()) / 100;
+			performanceFeedback.setGoalsAvgScore(goalsAvgScore);
 		}
 		
 		if(performanceFeedbackDTO.getTasksScore() != null) {
 			performanceFeedback.setTasksScore(performanceFeedbackDTO.getTasksScore());
 			tasksScore = performanceFeedbackDTO.getTasksScore();
+			
+			tasksAvgScore = (performanceFeedbackDTO.getTasksScore() * performanceFeedbackDTO.getTasksWeightage()) / 100;
+			performanceFeedback.setTasksAvgScore(tasksAvgScore);
 		}
 		
 		Integer finalScore = categoryScore+goalsScore+tasksScore+competenciesScore;
 		performanceFeedback.setFinalScore(finalScore);
+		
+		double finalAvgScore = categoryAvgScore+goalsAvgScore+tasksAvgScore+competenciesAvgScore;
+		performanceFeedback.setFinalAvgScore(finalAvgScore);
 		
 		if(StringUtils.isNotBlank(performanceFeedbackDTO.getSubmissionStage())) {
 			performanceFeedback.setSubmissionStage(performanceFeedbackDTO.getSubmissionStage());
