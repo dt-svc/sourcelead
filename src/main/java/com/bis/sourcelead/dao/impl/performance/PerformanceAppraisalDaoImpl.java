@@ -878,7 +878,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		
 		String performanceFeedbackQuery =  "SELECT "
-				+" FEEDBAK.FINAL_SCORE AS finalScore, " 
+				+" IFNULL(FEEDBAK.FINAL_AVG_SCORE,0) AS finalAvgScore, " 
 				+" FEEDBAK.TASKS_SCORE AS tasksScore, "
 				+" FEEDBAK.SUBMISSION_STAGE AS submissionStage, "
 				+" FEEDBAK.COMMENTS AS comments " 
@@ -1365,10 +1365,10 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 	public List<PerformanceFeedbackDTO> getEmployeePerformanceFeedbackDetails(String assignedUUID, Long userId)
 			throws Exception {
 
-		List<PerformanceFeedbackDTO> employeeScoreList = new ArrayList<>();
 		Session session = this.sessionFactory.getCurrentSession();
-		Integer peersScore = 0;
+		double peersScore = 0d;
 		PerformanceAppraisalTemplateDetailsDTO selfUserDetails = new PerformanceAppraisalTemplateDetailsDTO();
+		List<PerformanceFeedbackDTO>  employeeScoreList = new ArrayList<>();
 		
 		String assignedQuery =  "SELECT "
 				+" ASSIGNED.ID AS appraisalAssignedId, "  
@@ -1389,18 +1389,23 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		
 		String selfQuery =  "SELECT "
-				+" FEEDBACK.FINAL_SCORE  "
+				+" IFNULL(FEEDBACK.FEEDBACK_AVG_SCORE,0) AS finalAvgScore, "
+				+" IFNULL(FEEDBACK.TASKS_AVG_SCORE,0) AS tasksAvgScore, "
+				+" IFNULL(FEEDBACK.GOALS_AVG_SCORE,0) AS goalsAvgScore "
 				+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
 				+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
 		
 		Query selfScoreQueryObj = session.createSQLQuery(selfQuery);
 		selfScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
 		selfScoreQueryObj.setBigInteger("userId", selfUserDetails.getAppraisalAssignedUserId());
-		Integer selfScore = (Integer) selfScoreQueryObj.uniqueResult();
-		PerformanceFeedbackDTO selfFeedbackDTO = new PerformanceFeedbackDTO();
-		selfFeedbackDTO.setScoreType("Self");
-		selfFeedbackDTO.setFinalScore(selfScore);
-		employeeScoreList.add(selfFeedbackDTO);
+		selfScoreQueryObj.setResultTransformer(Transformers.aliasToBean(PerformanceFeedbackDTO.class));
+		List<PerformanceFeedbackDTO>  selfScoreList = selfScoreQueryObj.list();
+		
+		if(selfScoreList != null && !selfScoreList.isEmpty()) {
+			PerformanceFeedbackDTO selffeedbackDetailsDTO = selfScoreList.get(0);
+			selffeedbackDetailsDTO.setScoreType("Self");
+			employeeScoreList.add(selffeedbackDetailsDTO);
+		}
 		
 		if(selfUserDetails.getPeerIds() != null) {
 			
@@ -1409,31 +1414,35 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 			
 			
 			String peersQuery =  "SELECT "
-					+" FEEDBACK.FINAL_SCORE  "
+					+" IFNULL(FEEDBACK.FINAL_AVG_SCORE,0)  "
 					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
 					+" WHERE FEEDBACK.USER_ID IN ("+peerUserIdStr+") AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
 			
 			Query peerScoreQueryObj = session.createSQLQuery(peersQuery);
 			peerScoreQueryObj.setBigInteger("assignedId", selfUserDetails.getAppraisalAssignedId());
-			List<Integer> scoresList = (List<Integer>) peerScoreQueryObj.list();
+			List<Double> scoresList = (List<Double>) peerScoreQueryObj.list();
 			
 			
 			if(scoresList != null && !scoresList.isEmpty()) {
-				for(Integer score : scoresList) {
+				double peerScore = 0d;
+				for(double score : scoresList) {
 					peersScore = peersScore+score;
-					double peerScore = (double) peersScore / scoresList.size();
-					PerformanceFeedbackDTO peersFeedbackDTO = new PerformanceFeedbackDTO();
-					peersFeedbackDTO.setScoreType("Peers");
-					peersFeedbackDTO.setPeersScore(peerScore);
-					employeeScoreList.add(peersFeedbackDTO);
+					peerScore = (double) peersScore / scoresList.size();
 				}
+				
+				PerformanceFeedbackDTO peersFeedbackDTO = new PerformanceFeedbackDTO();
+				peersFeedbackDTO.setScoreType("Peers");
+				peersFeedbackDTO.setPeersScore(peerScore);
+				employeeScoreList.add(peersFeedbackDTO);
 			}
 						
 		}
 		
 		if(selfUserDetails.getReportingManagerUserId() != null) {
 			String managerQuery =  "SELECT "
-					+" FEEDBACK.FINAL_SCORE AS finalScore, "
+					+" IFNULL(FEEDBACK.FEEDBACK_AVG_SCORE,0) AS finalAvgScore, "
+					+" IFNULL(FEEDBACK.TASKS_AVG_SCORE,0) AS tasksAvgScore, "
+					+" IFNULL(FEEDBACK.GOALS_AVG_SCORE,0) AS goalsAvgScore, "
 					+" FEEDBACK.COMMENTS AS comments "
 					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
 					+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
@@ -1453,7 +1462,9 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		if(selfUserDetails.getResourceManagerUserId() != null) {
 			String managerQuery =  "SELECT "
-					+" FEEDBACK.FINAL_SCORE AS finalScore, "
+					+" IFNULL(FEEDBACK.FEEDBACK_AVG_SCORE,0) AS finalAvgScore, "
+					+" IFNULL(FEEDBACK.TASKS_AVG_SCORE,0) AS tasksAvgScore, "
+					+" IFNULL(FEEDBACK.GOALS_AVG_SCORE,0) AS goalsAvgScore, "
 					+" FEEDBACK.COMMENTS AS comments "
 					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
 					+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";
@@ -1473,7 +1484,7 @@ public class PerformanceAppraisalDaoImpl implements PerformanceAppraisalDao{
 		
 		
 			String managerQuery =  "SELECT "
-					+" FEEDBACK.FINAL_SCORE AS finalScore, "
+					+" IFNULL(FEEDBACK.FEEDBACK_AVG_SCORE,0) AS finalAvgScore, "
 					+" FEEDBACK.COMMENTS AS comments "
 					+" FROM PERFORMANCE_FEEDBACK FEEDBACK "
 					+" WHERE FEEDBACK.USER_ID = :userId AND FEEDBACK.APPRAISAL_ASSIGNED_ID = :assignedId  ";

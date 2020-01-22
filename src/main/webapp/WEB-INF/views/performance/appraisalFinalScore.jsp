@@ -95,8 +95,8 @@ function getFinalScore(assignedUUID){
 		     success :function(response) {
 		    	 
 		    	 var finalScore = 0;
-		    	 if(response.object.finalScore != null){
-		    		 finalScore = response.object.finalScore;
+		    	 if(response.object.finalAvgScore != null){
+		    		 finalScore = response.object.finalAvgScore;
 		    	 }
 		    	 $("#finalScore").val(finalScore);
 		    	 
@@ -124,7 +124,7 @@ function getFinalScore(assignedUUID){
 					
 					if (response.response === "SUCCESS") {
 						$("#appraisalLoading").removeAttr("style");
-						location.replace(pmsUrl+"/peerAppraisalDetails?assignedUUID="+assignedUUID);	
+						location.replace(pmsUrl+"/performanceAppraisalList");	
 			    	 }
 			    	 else if (response.response === "AWKWARD") {
 			        	location.href = "/errorPage";
