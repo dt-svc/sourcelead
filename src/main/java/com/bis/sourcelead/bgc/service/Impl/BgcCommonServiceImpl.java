@@ -34,10 +34,12 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
@@ -66,6 +68,9 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	CandidateService candidateService;
 	
 	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
 	OrgLocationService orgLocationService;
 	
 	@Autowired
@@ -81,7 +86,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	    try {
 		BgcCandidateDetails bgcCandidateDetails = new BgcCandidateDetails();
 		
-		Candidate candidate = candidateService.getCandidateByCandidateId(bgcCandidateDetailsDto.getCandidateId());
+		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(bgcCandidateDetailsDto.getGlobalCandidateId());
 		bgcCandidateDetails.setCandidate(candidate);
 		bgcCandidateDetails.setComments(bgcCandidateDetailsDto.getComments());
 		bgcCandidateDetails.setCreatedBy(user);  
