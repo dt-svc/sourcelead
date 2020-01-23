@@ -36,8 +36,8 @@
 										<ul class="immigraTabs">
 										  <li class="current"><a href="#tab-Details">Personal / Identification</a></li>
 										  <li><a href="#tab-education">Education</a></li>
-										  <li><a href="#tab-previousEmployer">Previous Employer</a></li>
-										  <li><a href="#tab-criminialCheck">Legal and Criminial Check</a></li>
+										  <li><a href="#tab-previousEmployer">Employer</a></li>
+										  <!-- <li><a href="#tab-criminialCheck">Legal and Criminial Check</a></li> -->
 										  <div class="clearfix"></div>
 										</ul>
 									</div>
@@ -60,7 +60,7 @@
 					  commented some fields in the below list to be used later. -->
 					  <!-- <li class="clearfix"><span>Family</span><p>: --</p></li>
 					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li> -->
-					  <li class="clearfix"><span>Comments</span><p>: --</p></li>
+					<!--   <li class="clearfix"><span>Comments</span><p>: --</p></li> -->
 				  </ul>
 			  </div>	
 			  <div class="clearfix"></div>
@@ -78,9 +78,9 @@
 		<li class="clearfix"><span>Higher Education</span><p>: --</p></li>
 		<li class="clearfix"><span>Institute Name</span><p>: --</p></li>
 		<li class="clearfix"><span>Academic Year</span><p>: --</p></li>
-		<li class="clearfix"><span>Grade</span><p>: --</p></li>
+		<li class="clearfix"><span>Grade/Percentage/Score</span><p>: --</p></li>
 		<!-- <li class="clearfix"><span>University / Authority</span><p>: --</p></li> -->
-		<li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li>
+		<!-- <li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li> -->
 		<!-- <li class="clearfix"><span>Comments</span><p>: --</p></li> -->
 		</ul>
 		</div>
@@ -95,8 +95,10 @@
 				commented some fields in the below list to be used later. -->
 				<li class="clearfix"><span>Previous Employer Name</span><p>: --</p></li>
 				<li class="clearfix"><span>Designation</span><p>: --</p></li>
+				<li class="clearfix"><span>Start Year</span><p>: --</p></li>
+				<li class="clearfix"><span>End Year</span><p>: --</p></li>
 				<li class="clearfix"><span>Period</span><p>: --</p></li>
-				<li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
+				<!-- <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li> -->
 				<!-- <li class="clearfix"><span>Conduct</span><p>: --</p></li> -->
 			</ul>
 </div>
