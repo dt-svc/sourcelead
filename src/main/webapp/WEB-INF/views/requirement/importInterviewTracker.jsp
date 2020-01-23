@@ -6,17 +6,18 @@
 
  <script type="text/javascript">
 var sourceleadUrl = '${sourceleadUrl}';
+var requirementId = '${requirementId}';
 var uploadflag= true;
 		function getSubmissionsUploadedHistory() {
 			var refreshId = setInterval(function(){
 				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 				if(uploadflag == true){
-					xlsupload.getUploadInprogressProgressBar("InterviewTracker",dateFormat);
+					xlsupload.getInterviewUploadInprogressProgressBar("InterviewTracker",dateFormat,requirementId);
 				  }else{
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
-						 xlsupload.getUploadInprogressProgressBar("InterviewTracker",dateFormat);
+						 xlsupload.getInterviewUploadInprogressProgressBar("InterviewTracker",dateFormat,requirementId);
 				  }
 			},1000);
 		 }
