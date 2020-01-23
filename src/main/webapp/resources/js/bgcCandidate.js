@@ -69,6 +69,7 @@ function bgcCandidate(){
 	
 	this.editBgcCandidate = function(){
 		$("#bgcId").val(uuid);
+		$("#bgcGeneratedId").val(bgcGeneratedId);
 		$("#bgcName").val(name);
 		$("#currentBgcId option:contains(" + currentBgcStatus + ")").attr('selected', 'selected');
 		$("#educationId option:contains(" + educationCheckStaus + ")").attr('selected', 'selected');
