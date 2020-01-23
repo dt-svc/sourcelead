@@ -8,6 +8,7 @@
 <script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcCandidate.js?staticTime=${staticTime}"></script>
 <script type="text/javascript">
 var uuid = '${bgcCandidate.uuid eq null ? "--" : bgcCandidate.uuid}';
+var bgcGeneratedId= '${bgcCandidate.generatedId eq null ? "--" : bgcCandidate.generatedId}';
 var name = '${bgcCandidate.fullName eq null ? "--" : bgcCandidate.fullName}';
 var currentBgcStatus = '${bgcCandidate.currentBgcStatus eq null ? "--" : bgcCandidate.currentBgcStatus}';
 var educationCheckStaus = '${bgcCandidate.educationCheckStaus eq null ? "--" : bgcCandidate.educationCheckStaus}';
@@ -49,7 +50,7 @@ $(document).ready(function() {
             </div>
         <div class="col-md-5">
           <label class="clearfix">Id</label>
-          <div class="clearfix mt5"><input type="text" id = "bgcId" name="uuid" class="form-control" value="--" readonly></div>
+          <div class="clearfix mt5"><input type="text" id = "bgcGeneratedId" name="bgcGeneratedId" class="form-control" value="--" readonly><input type="hidden" id = "bgcId" name="uuid" class="form-control" value="--" readonly></div>
         </div>
         <div class="col-md-5">
           <label class="clearfix">Name</label>
