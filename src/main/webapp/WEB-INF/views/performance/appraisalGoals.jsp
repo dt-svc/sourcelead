@@ -67,7 +67,7 @@ function getAppraisalGoalsDetails(){
 		           				  if(v['type'] == "goalsWeightage"){
 		               				   	  var goalsWeightage = v['weightage'];
 		               				   	  var options = '<option value="">-Select Score-</option>';
-		               				   	  for(var i=0; i<=goalsWeightage; i++){
+		               				   	  for(var i=0; i<=100; i++){
 		               				   		var selected = '';
 		               				   		 if(response.object.goalsScore != null){
 		               				   			if(i == response.object.goalsScore){
@@ -84,6 +84,7 @@ function getAppraisalGoalsDetails(){
 		   		        		    result = result + '<select class="form-control pull-left" id="goalsScore" onchange="saveGoalsScore(\''+assignedUUID+'\');" name="goalsScore"  field-name="Goals Score">';
 		   		        		    result = result + options;
 		   		        		    result = result + '</select>';
+		   		        		    result = result + '<input type="hidden" name="goalsWeightage" id="goalsWeightage" value="'+goalsWeightage+'">';
 		   		        		 }else{
 		   		        			 if(response.object.goalsScore != null){
 		   		        				 result = result + '<input type="text" id="totalTasksScore" disabled value="'+response.object.goalsScore+'" class="form-control pull-left"></div>';
@@ -149,11 +150,12 @@ function getAppraisalGoalsDetails(){
 
 function saveGoalsScore(assignedUUID){
 	var goalsScore = $("#goalsScore").val();
+	var goalsWeightage = $("#goalsWeightage").val();
 	if(goalsScore){
 		$("#appraisalLoading").attr('style','position:absolute; width:100%; height:350px; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
 			  type: "POST",
-			    url: pmsUrl+"/saveAssignedPerformanceFeedback?assignedUUID="+assignedUUID+"&goalsScore="+goalsScore,
+			    url: pmsUrl+"/saveAssignedPerformanceFeedback?assignedUUID="+assignedUUID+"&goalsScore="+goalsScore+"&goalsWeightage="+goalsWeightage,
 			     success :function(response) {
 			    	 if (response.response === "SUCCESS") {
 			    		 $("#appraisalLoading").removeAttr("style");

@@ -3,6 +3,7 @@ package com.bis.sourcelead.web.performance;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,9 @@ import com.bis.sourcelead.util.SourceLeadSessionManager;
 
 @Controller
 public class PerformanceAppraisalController {
+	
+	@Value("${sourceleadUrl}")
+	private String sourceleadUrl;
 	
 	@Autowired
 	PerformanceAppraisalAssignedAssociatesService performanceAppraisalAssignedAssociatesService;
@@ -40,6 +44,7 @@ public class PerformanceAppraisalController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
+					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("performance/performanceAppraisalList");
 					return model;
 	}
@@ -89,6 +94,7 @@ public class PerformanceAppraisalController {
 	 @RequestMapping(value = "/performanceOrgChartList")
 		public ModelAndView performanceOrgChartList(HttpServletRequest request) throws Exception{
 			ModelAndView model = new ModelAndView();
+			model.addObject("sourceleadUrl", sourceleadUrl);
 			model.setViewName("performance/performanceOrgChart");
 			return model;
 		}
@@ -132,6 +138,7 @@ public class PerformanceAppraisalController {
 					
 					request.getSession().setAttribute("sessionData",sessionData);
 					
+					model.addObject("sourceleadUrl", sourceleadUrl);
 					model.setViewName("performance/employeePerformanceAppraisalList");
 					return model;
 	}

@@ -273,8 +273,8 @@ function getFinalScore(assignedUUID){
 		    			 var opt = response.data[i];
 		     			 if(opt.scoreType == 'Manager' && submissionStage != 'Submitted_For_Review'){
 		    				 var finalScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 finalScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 finalScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#finalScore").val(finalScore);
 		    				
@@ -283,8 +283,8 @@ function getFinalScore(assignedUUID){
 		    		    	 } 
 		    			 }else if(opt.scoreType == 'Reporting Manager' && submissionStage == 'Submitted_For_Review'){
 		    				 var finalScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 finalScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 finalScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#reportingMgrFinalScore").val(finalScore);
 		    				
@@ -293,8 +293,8 @@ function getFinalScore(assignedUUID){
 		    		    	 } 
 		    			 }else if(opt.scoreType == 'Resource Manager' && submissionStage == 'Submitted_For_Review'){
 		    				 var finalScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 finalScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 finalScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#resourceMgrFinalScore").val(finalScore);
 		    				
@@ -303,8 +303,8 @@ function getFinalScore(assignedUUID){
 		    		    	 } 
 		    			 }else if(opt.scoreType == 'Self'){
 		    				 var selfScore = 0;
-		    				 if(opt.finalScore != null && typeof opt.finalScore != 'undefined'){
-		    					 selfScore = opt.finalScore;
+		    				 if(opt.finalAvgScore != null && typeof opt.finalAvgScore != 'undefined'){
+		    					 selfScore = opt.finalAvgScore;
 		    				 }
 		    				 $("#selfScore").val(selfScore);
 		    			 }else if(opt.scoreType == 'Peers'){
