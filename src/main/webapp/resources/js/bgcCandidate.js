@@ -20,11 +20,11 @@ function bgcCandidate(){
 						for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Education "+(i+1)+"</h2>";
 						result = result + "<ul>";
-						result = result + "<li class='clearfix'><span>Higher Education</span><p>: "+(dataList[i].name == null ? "--":dataList[i].name)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Institute Name</span><p>: "+(dataList[i].institute == null ? "--":dataList[i].institute)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "--":dataList[i].academicYear)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Grade</span><p>: "+(dataList[i].grade == null ? "--":dataList[i].grade)+"</p></li>";
-						/*result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";*/
+						result = result + "<li class='clearfix'><span>Higher Education</span><p>: "+(dataList[i].name == null ? "":dataList[i].name)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Institute Name</span><p>: "+(dataList[i].institute == null ? "":dataList[i].institute)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "":dataList[i].academicYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Grade/Percentage/Score</span><p>: "+(dataList[i].grade == null ? "":dataList[i].grade)+"</p></li>";
+						/*result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].educationFileName == null ? "--":dataList[i].educationFileName)+"" +
 								"<a download href = "+(dataList[i].educationFileUrl == null ? "--":dataList[i].educationFileUrl)+">  <i class='fa fa-download ml'></i></a></p></li>";
 						/*result = result + "<li class='clearfix'><span>Comments</span><p>: --</p></li>";*/
@@ -50,12 +50,14 @@ function bgcCandidate(){
 					for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Previous Employer "+(i+1)+"</h2>";
 						result = result + "<ul>";
-						result = result + "<li class='clearfix'><span>Previous Employer Name</span><p>: "+(dataList[i].name == null ? "--":dataList[i].name)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Designation</span><p>: "+(dataList[i].designation == null ? "--":dataList[i].designation)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "--" : dataList[i].period)+" Year(s)</p></li>";
-						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
+						result = result + "<li class='clearfix'><span>Previous Employer Name</span><p>: "+(dataList[i].name == null ? "":dataList[i].name)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Designation</span><p>: "+(dataList[i].designation == null ? "":dataList[i].designation)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Start Year</span><p>: "+(dataList[i].startYear == null ? "":dataList[i].startYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>End Year</span><p>: "+(dataList[i].EndYear == null ? "":dataList[i].EndYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "" : dataList[i].period)+" Year(s)</p></li>";
+						/*result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
-						/*result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";*/
+*/						/*result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";*/
 						result = result + "</ul>";
 					}
 				}else{
@@ -69,6 +71,7 @@ function bgcCandidate(){
 	
 	this.editBgcCandidate = function(){
 		$("#bgcId").val(uuid);
+		$("#bgcGeneratedId").val(bgcGeneratedId);
 		$("#bgcName").val(name);
 		$("#currentBgcId option:contains(" + currentBgcStatus + ")").attr('selected', 'selected');
 		$("#educationId option:contains(" + educationCheckStaus + ")").attr('selected', 'selected');
@@ -157,8 +160,8 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Address</span><p>: "+(data.address == null ? "--" : data.address)+"</p></li>";
 						/*result = result + "<li class='clearfix'><span>Family</span><p>: --</p></li>";
-						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";*/
-						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";
+						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";*/
 						result = result + "</ul>";
 					}else{
 						$("#detailsLoading").removeAttr("style");
@@ -277,9 +280,9 @@ function bgcCandidate(){
 		                "render": function (data, type, opt, meta) {
 		                    var result = "";
 		                    if (opt.fullName !== null && opt.fullName !== '' && opt.fullName !== 'undefined') {
-		                        '<sec:authorize access="hasRole(\'ROLE_VIEW_BACKGROUND_DETAILS\')">' 
-		                    	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href=${SourceLeadWeb_vmsUrl}/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
-		                        '</sec:authorize>'
+		                    	 if(roleActionsArray.indexOf("ROLE_VIEW_BACKGROUND_DETAILS") > -1){ 
+		                    	result = result + "<td><div class='tbldata-dotdot-100' title='"+opt.fullName+"'><a href="+vmsUrl+"/bgc/bgcCandidateSummary?bgcUUID="+opt.uuid+">" + opt.fullName + "</a></div></td>";
+		                    	 }
 		                    } else {
 		                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
 		                    }
@@ -429,12 +432,12 @@ function bgcCandidate(){
 		                       orgType= opt.orgType;
 		                    }
 		                 if(opt.orgType == "Vendor"){
-		                	'<sec:authorize access="hasRole(\'ROLE_EDIT_BACKGROUND_DETAILS\')">'
-		                    result = result + '<td><div><a href=${SourceLeadWeb_vmsUrl}/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
-		                    '</sec:authorize>'
-		                    '<sec:authorize access="hasRole(\'ROLE_DELETE_BACKGROUND_DETAILS\')">'
-		                    result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
-		                    '</sec:authorize>'
+		                	 if(roleActionsArray.indexOf("ROLE_EDIT_BACKGROUND_DETAILS") > -1){ 
+		                       result = result + '<td><div><a href='+vmsUrl+'/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
+		                	 }
+		                	 if(roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS") > -1){ 
+		                        result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+		                	 }
 		                 }
 		                    return result;
 		                   
@@ -495,7 +498,7 @@ function bgcCandidate(){
 				uuid="sffer5";
 				result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='bgc.deleteBgcDetailsByUuid(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='bgc.cancelBgcDelete();'></b>";
 				result = result +"	</div>";
-				$("#popUp").appen/pppd(result);
+				$("#popUp").append(result);
 				$("#remove_bgc_pop").slideDown(200);
 				$(".project_inn_mask").fadeIn(200);
 			}
