@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
@@ -38,7 +39,7 @@ public class BgcCandidateDetails implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
-	private Candidate candidate;
+	private CandidateGlobal candidate;
 	
 	@ManyToOne
 	@JoinColumn(name = "SOURCE_ORG_LOCATION_ID")
@@ -117,11 +118,11 @@ public class BgcCandidateDetails implements Serializable{
 		this.uuid = uuid;
 	}
 
-	public Candidate getCandidate() {
+	public CandidateGlobal getCandidate() {
 		return candidate;
 	}
 
-	public void setCandidate(Candidate candidate) {
+	public void setCandidate(CandidateGlobal candidate) {
 		this.candidate = candidate;
 	}
 
