@@ -607,7 +607,7 @@ public class CandidateOnBoardingServiceImpl implements CandidateOnBoardingServic
 		 OrgLocations bgcOrgLocations = orgLocationService.getOrgLocationById(candidateOnBoarding.getBgcOrglocationId().getId());
 		 System.out.println("after candidateOnBoarding.getBgcOrglocationId().getId() "+candidateOnBoarding.getBgcOrglocationId().getId());
 		 BgcCandidateDetailsDTO bgcCandidateDetailsDto = new BgcCandidateDetailsDTO();
-		 bgcCandidateDetailsDto.setCandidateId(candidateOnBoarding.getCandidateId().getId());
+		 bgcCandidateDetailsDto.setGlobalCandidateId(candidateOnBoarding.getCandidateId().getId());
 		 
 		 System.out.println("candidateOnBoarding.getCandidateId().getId() >>>>>>>>>>>>>>>>::: "+candidateOnBoarding.getCandidateId().getId());
 		 //HERE setting source org location to BGC CANDIDATE to identify parent ORG LOCATION.

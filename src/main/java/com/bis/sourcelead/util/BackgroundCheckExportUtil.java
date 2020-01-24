@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
-import com.bis.sourcelead.dto.MarketplacePurchaseSalesDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.util.CommonUtil;
@@ -63,7 +62,7 @@ public class BackgroundCheckExportUtil {
 							col.column("Comments", "comments", type.stringType()),
 							col.column("Client/Vendor", "clinetOrVendorName", type.stringType()),
 							col.column("Updated Date", "updatedDate", type.stringType())).pageFooter(Templates.footerComponent)
-					.setDataSource(createSalesOrderDataSource(bgcCandidateDetailsDTOList)).toPdf(pdfExporter);
+					.setDataSource(createBgcDataSource(bgcCandidateDetailsDTOList)).toPdf(pdfExporter);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -99,14 +98,14 @@ public class BackgroundCheckExportUtil {
 							col.column("Others Info", "othersInfoStatus", type.stringType()),
 							col.column("Comments", "comments", type.stringType()),
 							col.column("Client/Vendor", "clinetOrVendorName", type.stringType()),
-							col.column("Updated Date", "updatedDate", type.stringType())).setDataSource(createSalesOrderDataSource(bgcCandidateDetailsDTOList)).toXls(xlsExporter);
+							col.column("Updated Date", "updatedDate", type.stringType())).setDataSource(createBgcDataSource(bgcCandidateDetailsDTOList)).toXls(xlsExporter);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return file;
 	}
 	
-	private DRDataSource createSalesOrderDataSource(ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList) {
+	private DRDataSource createBgcDataSource(ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList) {
 		DRDataSource dataSource = new DRDataSource("currentBgcStatus", "generatedId", "fullName", "updatedPercentage", "personalInfoStatus", "educationCheckStaus", 
 				"priorEmployersCheckStatus", "healthCheckStatus", "crimeCheckStatus", "othersInfoStatus", "comments","clinetOrVendorName", "updatedDate");
 			String currentBgcStatus= "---";
