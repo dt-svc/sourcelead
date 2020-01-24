@@ -197,7 +197,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetailsDTO.setPanNumber(bgcCandidateDetails.getCandidate().getPanNumber());
 			bgcCandidateDetailsDTO.setAddress(bgcCandidateDetails.getCandidate().getAddress());
 			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
-			bgcCandidateDetailsDTO.setCandidateUUID(bgcCandidateDetails.getCandidate().getCandidateUUID());
+			bgcCandidateDetailsDTO.setCandidateId(bgcCandidateDetails.getCandidate().getId());
 			bgcCandidateDetailsDTO.setUpdatedPercentage(bgcCandidateDetails.getupdatedPercentage());
 		}
 		return bgcCandidateDetailsDTO;
@@ -210,14 +210,14 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 
 
 	@Override
-	public List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)  {
+	public List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateId(Long candidateId)  {
 		try{
-			CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByUUID(candidateUuid);
 		List<CandidateEducation> candidateEducationList = new ArrayList<CandidateEducation>();
-		if(candidate != null){
+		if(candidateId != null){
 			StringBuilder academicYearBuilder = new StringBuilder("");
 			SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
-			candidateEducationList = bgcCommonDao.getBgcCandidateEducationSummaryListByCandidateId(candidate.getId());
+			candidateEducationList = bgcCommonDao.getBgcCandidateEducationSummaryListByCandidateId(candidateId);
+			if(candidateEducationList.size() > 0){
 			for(int i=0; i<candidateEducationList.size(); i++){
 				Date startDate = candidateEducationList.get(i).getStartDate();
 				Date endDate = candidateEducationList.get(i).getEndDate();
@@ -226,6 +226,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 				candidateEducationList.get(i).setAcademicYear(academicYearBuilder.toString());
 				academicYearBuilder.delete(0, academicYearBuilder.length());
 			   }
+			}
 			}
 		}
 		return candidateEducationList;
@@ -238,12 +239,12 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 
 
 	@Override
-	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid) {
+	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, Long candidateId) {
 		try{
-			CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByUUID(candidateUuid);
 		List<CandidateEmployers> candidateEmploymentList = new ArrayList<CandidateEmployers>();
-		if(candidate != null){
-			candidateEmploymentList = bgcCommonDao.getBgcCandidateEmploymentSummaryListByCandidateId(candidate.getId());
+		if(candidateId != null){
+			candidateEmploymentList = bgcCommonDao.getBgcCandidateEmploymentSummaryListByCandidateId(candidateId);
+			if(candidateEmploymentList.size() > 0){
 			for(int i=0; i<candidateEmploymentList.size(); i++){
 				if(candidateEmploymentList.get(i).getStartDate() == null && candidateEmploymentList.get(i).getEndDate() == null){
 					if(StringUtils.isNotBlank(candidateEmploymentList.get(i).getStartYear()) && StringUtils.isNotBlank(candidateEmploymentList.get(i).getStartMonth() )
@@ -279,6 +280,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 						candidateEmploymentList.get(i).setPeriod(period.toString());	
 					}
 				}
+			}
 			}
 		}
 		return candidateEmploymentList;
