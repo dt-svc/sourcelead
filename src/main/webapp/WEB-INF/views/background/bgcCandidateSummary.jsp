@@ -136,7 +136,7 @@
 
 <script>
 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
-var candidateUuid = '${bgcCandidate.candidateUUID}';
+var candidateId = '${bgcCandidate.candidateId}';
 var bgcUuid = '${bgcCandidate.uuid}';
 // project side bar tabs
 $(document).ready(function() {
@@ -155,10 +155,10 @@ $(document).ready(function() {
         	bgc.getBgcCandidateSummary(bgcUuid);
         }else if(tab == "#tab-education"){
         	showLoading("educationLoading");
-        	bgc.getBgcCandidateEducationSummary(candidateUuid);
+        	bgc.getBgcCandidateEducationSummary(candidateId);
         }else if(tab == "#tab-previousEmployer"){
         	showLoading("employmentLoading");
-        	bgc.getBgcCandidateEmploymentSummary(candidateUuid);        	
+        	bgc.getBgcCandidateEmploymentSummary(candidateId);        	
         }else if(tab == "#tab-criminialCheck"){
         	showLoading("legalAndCriminalLoading");
         	bgc.getBgcCandidateLegalAndCriminalSummary(bgcUuid);
