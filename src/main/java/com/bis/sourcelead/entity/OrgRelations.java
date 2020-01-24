@@ -155,6 +155,8 @@ public class OrgRelations implements Serializable{
 	@Column(name="GENERATE_BILL")
 	private String generateBill;
 
+	@Column(name="IS_MSP_VENDOR")
+	private String isMSPVendor;
 	
 	@Transient
 	@JsonProperty
@@ -391,6 +393,10 @@ public class OrgRelations implements Serializable{
     @Transient
 	@JsonProperty
     private String vendorNameForList;
+    
+    @Transient
+   	@JsonProperty
+    private String mspVendorIds;
     
 	public String getStringDate()
 	{
@@ -1203,6 +1209,20 @@ public class OrgRelations implements Serializable{
 		this.generateBill = generateBill;
 	}
 
-	
+	public String getIsMSPVendor() {
+		return isMSPVendor;
+	}
 
+	public void setIsMSPVendor(String isMSPVendor) {
+		this.isMSPVendor = isMSPVendor;
+	}
+
+	public String getMspVendorIds() {
+		return mspVendorIds;
+	}
+
+	public void setMspVendorIds(String mspVendorIds) {
+		this.mspVendorIds = mspVendorIds;
+	}
+	
 }
