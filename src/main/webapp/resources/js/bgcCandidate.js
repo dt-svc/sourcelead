@@ -8,10 +8,10 @@ var filterStatusVal = [];
 var filterDurationVal = [];
 
 function bgcCandidate(){
-	this.getBgcCandidateEducationSummary= function(uuid){
+	this.getBgcCandidateEducationSummary= function(candidateId){
 			$.ajax({
 				type : "GET",
-				url : vmsUrl + "/bgc/getBgcCandidateEducationSummary?uuid="+uuid,
+				url : vmsUrl + "/bgc/getBgcCandidateEducationSummary?candidateId="+candidateId,
 				success : function(dataList) {
 					var result = "";	
 					if(dataList != null && dataList.length > 0){
@@ -39,10 +39,10 @@ function bgcCandidate(){
 			});
 	}
 	
-	this.getBgcCandidateEmploymentSummary = function(uuid){
+	this.getBgcCandidateEmploymentSummary = function(candidateId){
 		$.ajax({
 			type : "GET",
-			url : vmsUrl + "/bgc/getBgcCandidateEmploymentSummary?uuid="+uuid,
+			url : vmsUrl + "/bgc/getBgcCandidateEmploymentSummary?candidateId="+candidateId,
 			success : function(dataList) {
 				var result = "";
 				if(dataList != null && dataList.length > 0){
@@ -53,7 +53,7 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>Previous Employer Name</span><p>: "+(dataList[i].name == null ? "":dataList[i].name)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Designation</span><p>: "+(dataList[i].designation == null ? "":dataList[i].designation)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Start Year</span><p>: "+(dataList[i].startYear == null ? "":dataList[i].startYear)+"</p></li>";
-						result = result + "<li class='clearfix'><span>End Year</span><p>: "+(dataList[i].EndYear == null ? "":dataList[i].EndYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>End Year</span><p>: "+(dataList[i].endYear == null ? "":dataList[i].endYear)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "" : dataList[i].period)+" Year(s)</p></li>";
 						/*result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
