@@ -31,9 +31,9 @@ public interface BgcCommonService {
 	
 	BgcCandidateDetailsDTO getBgcCandidateDetailsByBgcUuid(String bgcUuid)throws Exception;
 	
-	List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)throws Exception;
+	List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateId(Long candidateId)throws Exception;
 	
-	List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid)throws Exception;
+	List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, Long candidateId)throws Exception;
 	
 	BgcCandidateDetails saveEditBgcCandidate(BgcCandidateDetailsDTO bgcCandidateDetailsDTO)throws Exception;
 
