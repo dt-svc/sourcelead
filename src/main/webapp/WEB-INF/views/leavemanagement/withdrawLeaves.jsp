@@ -118,8 +118,8 @@ function getWithdrawLeavesList(){
 			        		 result = result + '   <div title="'+opt.updatedDate+'" class="tbldata-dotdot-100">'+opt.updatedDate+'</div>';
 			        		 result = result + '</td>';
 			        		 result = result + ' <td>';
-			        		 if(opt.reason !=null && opt.reason != 'undefined' && opt.reason != ''){
-			        			 result = result + '     <div title="'+opt.reason+'" class="tbldata-dotdot-vsm">'+opt.reason+'</div>';	 
+			        		 if(opt.withdrawReason != null && opt.withdrawReason != 'undefined' && opt.withdrawReason != ''){
+			        			 result = result + '     <div title="'+opt.withdrawReason+'" class="tbldata-dotdot-vsm">'+opt.withdrawReason+'</div>';	 
 			        		 }else{
 			        			 result = result + '     <div title="" class="tblminwidth-75">--</div>';	
 			        		 }
