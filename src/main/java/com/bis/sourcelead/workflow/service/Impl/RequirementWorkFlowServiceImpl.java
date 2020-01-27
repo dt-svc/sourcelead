@@ -172,7 +172,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 			requirementWorkFlowStages.setEditable(Constants.NO);
 			requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
-			requirementWorkFlowStages.setCommentRequired(Constants.YES);
+			requirementWorkFlowStages.setCommentRequired(Constants.NO);
 			requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
 			// 11-october-2019.
 			// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
@@ -1662,7 +1662,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 				requirementWorkFlowStages.setEditable(Constants.NO);
 				requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
-				requirementWorkFlowStages.setCommentRequired(Constants.YES);
+				requirementWorkFlowStages.setCommentRequired(Constants.NO);
 				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
 				// 11-october-2019.
 				// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
