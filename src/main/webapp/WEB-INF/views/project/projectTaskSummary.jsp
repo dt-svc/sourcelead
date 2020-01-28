@@ -330,7 +330,7 @@ function severityColorPic(){
 						<div id="commnetPopUpDivId"></div>						  
 						</div>
 						
-						<div class="clearfix project_wrap_table taskComments projecttask-div">
+						<div class="clearfix taskComments projecttask-div">
 						<div id="taskCommentsListDivId"></div>
 						</div>
 						
