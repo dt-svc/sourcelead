@@ -667,7 +667,7 @@ public class RequirementWorkflowController {
 			return response;
 			
 		}
-		@RequestMapping(value = "/editStage")
+		@RequestMapping(value = {"/editStage", "/viewStage"})
 		public ModelAndView editStage(HttpServletRequest request,
 				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
 				@RequestParam(value = "workflowName", required = false)String workflowName) throws Exception{
@@ -683,10 +683,21 @@ public class RequirementWorkflowController {
 			if(StringUtils.isNotBlank(workflowName)) {
 				modelandview.addObject("workFlowName", workflowName);
 			}
+			
+			/*
+			 * 28/jan/2020 - vishnu
+			 * checking for getIsStageViewed as the value is true when user clicks on viewStage link.
+			 * and not true when user clicks on editStage. 
+			 * when getIsStageViewed is true, user can only view the stage and cannot edit it.
+			 * */
+			if(requirementWorkFlowStagesDTO.getIsStageViewed() == null){
 			List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(null,requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid(), orgLocations.getId());
 			modelandview.addObject("onlyQuestAndTasksEditable", false);
 			if(requirementSubLst != null && requirementSubLst.size()>0) {
 				modelandview.addObject("onlyQuestAndTasksEditable", true);
+			}
+			}else{
+				modelandview.addObject("isStageViewed", Constants.BOOLEAN_TRUE);
 			}
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());

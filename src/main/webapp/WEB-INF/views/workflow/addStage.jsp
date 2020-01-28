@@ -207,7 +207,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					<span class="cursorPointer btn btn-primary pull-left" onclick="requirementWorkflow.getRequirementQuestionnaireTemplates();"><i class="fa fa-refresh "></i></span>
 					 <!-- dynamic stage content ends here -->
 					
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default minHeBtn" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
+					<div class="col-md-1"> <a id ='addQuestionnaireButton' class="fa fa-plus btn btn-default minHeBtn" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
 				  </div>
 				</div>
 			  </div>
@@ -436,12 +436,23 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
           
-          <c:if test="${not empty requirementWorkFlowStagesDTO}">  
+		<c:choose>
+		<c:when test="${isStageViewed eq true}">
+		<c:if test="${not empty requirementWorkFlowStagesDTO}">
+		<input value="<< Back To View Workflow" class="btn btn-primary" type="button" id ="backToViewWorkflowButton"
+            onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
+		</c:if>
+		</c:when>
+		<c:otherwise>
+		<c:if test="${not empty requirementWorkFlowStagesDTO}">  
             <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
             <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
+          
+		</c:otherwise>
+		</c:choose>
           </div>
         </div>
       </div>
@@ -469,7 +480,7 @@ $(document).ready(function() {
 		questionnaireId = '${questionnaireId}';
 		questionnaireName = '${questionnaireName}';
 		
-		requirementWorkflow.getRequirementQuestionnaireTemplates();
+		requirementWorkflow.getRequirementQuestionnaireTemplates('${isStageViewed}');
 	
 	
 	if($('#stageName').val().length < 4){
@@ -494,9 +505,10 @@ $(document).ready(function() {
 	    	$("#saveTaskButton").removeClass("disabled");
 	   }
 	})
-	
-	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid,'${isStageViewed}');
 	checkValidEditableFields('${onlyQuestAndTasksEditable}')
+	
+	requirementWorkflow.checkIsStageViewed('${isStageViewed}');
 });
 // below function disabled the fileds if workflow initiated any requirement for the job.
 function checkValidEditableFields(checkValidEditableFields){

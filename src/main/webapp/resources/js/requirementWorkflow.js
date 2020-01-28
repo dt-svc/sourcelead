@@ -538,7 +538,7 @@ function RequirementWorkflow(){
 			}
 			
 			
-			this.getRequirementWorkflowTasks = function(currentStageUuid){
+			this.getRequirementWorkflowTasks = function(currentStageUuid, isStageViewed){
 					$("#dynamicWorkflowTask").empty();
 					var result = "";
 				  	var url = "";
@@ -554,10 +554,10 @@ function RequirementWorkflow(){
 				  	result = result +"</thead>";
 				  	result = result +"</table>";
 				  	$("#dynamicWorkflowTask").html(result);
-				  	requirementWorkflow.getDynamicWorkflowTasks(currentStageUuid);
+				  	requirementWorkflow.getDynamicWorkflowTasks(currentStageUuid, isStageViewed);
 				}
 				
-				this.getDynamicWorkflowTasks = function(currentStageUuid){
+				this.getDynamicWorkflowTasks = function(currentStageUuid, isStageViewed){
 					   var colIndex = 0;
 					    $('#workflowTaskTable').DataTable( { 
 					    	"processing": true,
@@ -632,10 +632,12 @@ function RequirementWorkflow(){
 					    	  	"sortable": false,
 					    	  	"render": function(data, type, workflowTask, meta) {
 					    	  		var result = "";
+					    	  		if(isStageViewed != 'true'){
 					    	  		'<sec:authorize access="hasAnyRole(\'ROLE_EDIT_VIEW_WORKFLOW\')">';
 					    	  		 result = result +"<div class='tbldata-dotdot-vsm'><a class='glyphicon glyphicon-trash text-danger ml' title='Delete' onclick='requirementWorkflow.deleteAssignTaskpoup(\""+workflowTask.uuid+"\",\""+workflowTask.workFlowTaskName+"\")'></a></div>";
 					    	  		'</sec:authorize>';
-					    	  		 return result;
+					    	  		}
+					    	  		return result;
 				  	             	
 					    	  	}
 					        }],
@@ -776,7 +778,7 @@ function RequirementWorkflow(){
 						});
 				}
 			
-				this.getRequirementQuestionnaireTemplates = function(){
+				this.getRequirementQuestionnaireTemplates = function(isStageViewed){
 					$.ajax({
 						type : "GET",
 						url : sourceleadUrl + "/getRequirementQuestionnaireTemplates",
@@ -795,7 +797,12 @@ function RequirementWorkflow(){
 							}
 							result = result + "</select>";
 							$("#questionnaireList").empty().append(result);
-						}
+						},
+					 complete: function () {
+						 if(isStageViewed == 'true'){
+							 $("#questionnaireTemplateId").attr("disabled", "disabled");
+						 }
+			            }
 						});
 				}
 
@@ -1282,5 +1289,27 @@ function RequirementWorkflow(){
 						}
 					});
    }
+				 
+				 this.viewStage = function(uuid, requirementWorkFlowUuid){
+					 location.href = sourceleadUrl+ "/viewStage?uuid="+uuid+"&isStageViewed=true&requirementWorkFlowUuid="+requirementWorkFlowUuid;
+					 
+				 }
+				 
+				 this.checkIsStageViewed = function(isStageViewed){
+					if(isStageViewed == 'true'){
+						$("#addStageForm :input").prop("disabled", true);
+						$("#addTaskForm :input").prop("disabled", true);
+						$("#stagesForm :input").prop("disabled", true);
+						$("#saveTaskButton").removeAttr("onClick");
+						$("#saveTaskButton").attr("disabled", "disabled");
+						$("#addQuestionnaireButton").removeAttr("href");
+						$("#addQuestionnaireButton").attr("disabled", "disabled");
+						$("#commentRequired").attr("disabled", "disabled");
+						$("#backToViewWorkflowButton").removeAttr("disabled");
+						$("#questionnaireDisableId").attr("disabled", "disabled");
+						$("#columnsCHkbx").hide();
+					}
+				 }
+				 
 }
 				 
