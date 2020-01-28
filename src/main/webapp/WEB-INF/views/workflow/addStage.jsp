@@ -17,10 +17,13 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			</div>
   <section class="content-header clearfix">
     <div class="pull-left">
+      <h2><c:out value="${workFlowName}"/>&nbsp >> &nbsp</h2> 
+    </div>
+    <div class="pull-left">
       <h2>Add Stage</h2>
     </div>
     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-    <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application Workflow</a> &raquo;
+    <a onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');"><c:out value="${workFlowName}"/></a> &raquo;
     Add Stage</div>
   </section>
   <form id="addStageForm" name="addStageForm">

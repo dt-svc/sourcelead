@@ -683,6 +683,9 @@ public class RequirementWorkflowController {
 			if(StringUtils.isNotBlank(workflowName)) {
 				modelandview.addObject("workFlowName", workflowName);
 			}
+			else{
+				modelandview.addObject("workFlowName", stages.getRequirementWorkFlowId().getWorkFlowName());
+			}
 			
 			/*
 			 * 28/jan/2020 - vishnu
