@@ -581,7 +581,7 @@ public class OrgSettingsController {
 				} else if (tabName.equalsIgnoreCase("Associates List")) {
 					tabName = "Associates";
 				} else if (tabName.equalsIgnoreCase("Receivable") || tabName.equalsIgnoreCase("Payables")) {
-					tabName = "Billing";
+					tabName = "Finance";
 				} else if (tabName.equalsIgnoreCase("My Expenses") || tabName.equalsIgnoreCase("Expenses Approval")) {
 					tabName = "Expenses";
 				} else if (tabName.equalsIgnoreCase("Blogs") || tabName.equalsIgnoreCase("User Manuals")) {
