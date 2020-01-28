@@ -207,7 +207,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					   -->
 					   </select>
 					</div>
-					<span class="cursorPointer btn btn-primary pull-left" onclick="requirementWorkflow.getRequirementQuestionnaireTemplates();"><i class="fa fa-refresh "></i></span>
+					<span class="cursorPointer btn btn-primary pull-left" id="questionnaireAddSpanId" onclick="requirementWorkflow.getRequirementQuestionnaireTemplates();"><i class="fa fa-refresh "></i></span>
 					 <!-- dynamic stage content ends here -->
 					
 					<div class="col-md-1"> <a id ='addQuestionnaireButton' class="fa fa-plus btn btn-default minHeBtn" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
