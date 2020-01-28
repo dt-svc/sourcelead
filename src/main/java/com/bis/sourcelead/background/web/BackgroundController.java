@@ -238,10 +238,10 @@ public class BackgroundController {
 	}
 	
 	@RequestMapping(value = "/getBgcCandidateEducationSummary")
-	public @ResponseBody List<CandidateEducation> getBgcCandidateEducationSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+	public @ResponseBody List<CandidateEducation> getBgcCandidateEducationSummary(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		try {
 			logger.debug("inside getbgcCandidateEducationSummary");
-			List<CandidateEducation> candidateEducationList= bgcCommonService.getBgcCandidateEducationSummaryByCandidateUuid(uuid);
+			List<CandidateEducation> candidateEducationList= bgcCommonService.getBgcCandidateEducationSummaryByCandidateId(candidateId);
 			return candidateEducationList;
 		} catch (Exception e) {
 			logger.error(e+" in getbgcCandidateEducationSummary");
@@ -251,11 +251,11 @@ public class BackgroundController {
 	}
 	
 	@RequestMapping(value = "/getBgcCandidateEmploymentSummary")
-	public @ResponseBody List<CandidateEmployers> getBgcCandidateEmploymentSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+	public @ResponseBody List<CandidateEmployers> getBgcCandidateEmploymentSummary(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		try {
 			logger.debug("inside getBgcCandidateEmploymentSummary");
 			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
-			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(dateFormat, uuid);
+			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(dateFormat, candidateId);
 			return candidateEducationList;
 		} catch (Exception e) {
 			logger.error(e+" in getBgcCandidateEmploymentSummary");

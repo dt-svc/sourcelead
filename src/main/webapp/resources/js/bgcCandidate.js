@@ -8,10 +8,10 @@ var filterStatusVal = [];
 var filterDurationVal = [];
 
 function bgcCandidate(){
-	this.getBgcCandidateEducationSummary= function(uuid){
+	this.getBgcCandidateEducationSummary= function(candidateId){
 			$.ajax({
 				type : "GET",
-				url : vmsUrl + "/bgc/getBgcCandidateEducationSummary?uuid="+uuid,
+				url : vmsUrl + "/bgc/getBgcCandidateEducationSummary?candidateId="+candidateId,
 				success : function(dataList) {
 					var result = "";	
 					if(dataList != null && dataList.length > 0){
@@ -20,11 +20,11 @@ function bgcCandidate(){
 						for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Education "+(i+1)+"</h2>";
 						result = result + "<ul>";
-						result = result + "<li class='clearfix'><span>Higher Education</span><p>: "+(dataList[i].name == null ? "--":dataList[i].name)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Institute Name</span><p>: "+(dataList[i].institute == null ? "--":dataList[i].institute)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "--":dataList[i].academicYear)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Grade</span><p>: "+(dataList[i].grade == null ? "--":dataList[i].grade)+"</p></li>";
-						/*result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";*/
+						result = result + "<li class='clearfix'><span>Higher Education</span><p>: "+(dataList[i].name == null ? "":dataList[i].name)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Institute Name</span><p>: "+(dataList[i].institute == null ? "":dataList[i].institute)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Academic Year</span><p>: "+(dataList[i].academicYear == null ? "":dataList[i].academicYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Grade/Percentage/Score</span><p>: "+(dataList[i].grade == null ? "":dataList[i].grade)+"</p></li>";
+						/*result = result + "<li class='clearfix'><span>University / Authority</span><p>: --</p></li>";
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].educationFileName == null ? "--":dataList[i].educationFileName)+"" +
 								"<a download href = "+(dataList[i].educationFileUrl == null ? "--":dataList[i].educationFileUrl)+">  <i class='fa fa-download ml'></i></a></p></li>";
 						/*result = result + "<li class='clearfix'><span>Comments</span><p>: --</p></li>";*/
@@ -39,10 +39,10 @@ function bgcCandidate(){
 			});
 	}
 	
-	this.getBgcCandidateEmploymentSummary = function(uuid){
+	this.getBgcCandidateEmploymentSummary = function(candidateId){
 		$.ajax({
 			type : "GET",
-			url : vmsUrl + "/bgc/getBgcCandidateEmploymentSummary?uuid="+uuid,
+			url : vmsUrl + "/bgc/getBgcCandidateEmploymentSummary?candidateId="+candidateId,
 			success : function(dataList) {
 				var result = "";
 				if(dataList != null && dataList.length > 0){
@@ -50,12 +50,14 @@ function bgcCandidate(){
 					for(var i=0; i < dataList.length; i++){
 						result = result + "<h2>Previous Employer "+(i+1)+"</h2>";
 						result = result + "<ul>";
-						result = result + "<li class='clearfix'><span>Previous Employer Name</span><p>: "+(dataList[i].name == null ? "--":dataList[i].name)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Designation</span><p>: "+(dataList[i].designation == null ? "--":dataList[i].designation)+"</p></li>";
-						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "--" : dataList[i].period)+" Year(s)</p></li>";
-						result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
+						result = result + "<li class='clearfix'><span>Previous Employer Name</span><p>: "+(dataList[i].name == null ? "":dataList[i].name)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Designation</span><p>: "+(dataList[i].designation == null ? "":dataList[i].designation)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Start Year</span><p>: "+(dataList[i].startYear == null ? "":dataList[i].startYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>End Year</span><p>: "+(dataList[i].endYear == null ? "":dataList[i].endYear)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Period</span><p>: "+(dataList[i].period == null ? "" : dataList[i].period)+" Year(s)</p></li>";
+						/*result = result + "<li class='clearfix'><span>Attach document</span><p>: "+(dataList[i].employerFileName == null ? "--":dataList[i].employerFileName)+"" +
 								"<a download href = "+(dataList[i].employerFileUrl == null ? "--":dataList[i].employerFileUrl)+"><i class='fa fa-download ml'></i></a></p></li>";//
-						/*result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";*/
+*/						/*result = result + "<li class='clearfix'><span>Conduct</span><p>: --</p></li>";*/
 						result = result + "</ul>";
 					}
 				}else{
@@ -69,6 +71,7 @@ function bgcCandidate(){
 	
 	this.editBgcCandidate = function(){
 		$("#bgcId").val(uuid);
+		$("#bgcGeneratedId").val(bgcGeneratedId);
 		$("#bgcName").val(name);
 		$("#currentBgcId option:contains(" + currentBgcStatus + ")").attr('selected', 'selected');
 		$("#educationId option:contains(" + educationCheckStaus + ")").attr('selected', 'selected');
@@ -157,8 +160,8 @@ function bgcCandidate(){
 						result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
 						result = result + "<li class='clearfix'><span>Address</span><p>: "+(data.address == null ? "--" : data.address)+"</p></li>";
 						/*result = result + "<li class='clearfix'><span>Family</span><p>: --</p></li>";
-						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";*/
-						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";
+						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";
+						result = result + "<li class='clearfix'><span>Comments</span><p>: "+(data.comments == null ? "--" : data.comments)+"</p></li>";*/
 						result = result + "</ul>";
 					}else{
 						$("#detailsLoading").removeAttr("style");

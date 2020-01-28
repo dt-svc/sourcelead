@@ -110,8 +110,7 @@ function getMspVendorTable(vendorLocationId,orgRelationId){
 	        result = result +'  <tr>  ';
 	        result = result +'  <th>Vendor Name</th>  ';
 	        result = result +'  <th>Location</th>  ';
-	        result = result +'  <th>Number of Counts</th>  ';
-// 	        result = result +'  <th>Action</th>  ';
+	        result = result +'  <th>Number of Contacts</th>  ';
 	        result = result +'  </tr>  ';
 	        result = result +'  </thead>  ';
 	        result = result +'  <tbody>  ';
