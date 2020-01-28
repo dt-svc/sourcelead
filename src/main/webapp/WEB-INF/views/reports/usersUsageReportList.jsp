@@ -15,7 +15,7 @@
 <script>
  $(document).ready(function() {
      usageReportList("ACTIVE");
-//      getCountList();
+     getCountList();
      getAllOrgs();
     
  });
@@ -54,7 +54,7 @@
         </sec:authorize>
         
         <sec:authorize access="!hasRole('ROLE_ENROLL_ORG')">
-        <input type="hidden" name="orgId" id="orgs" value="${SourceLeadWeb_orgLocations.org.id}">
+        <input type="hidden" name="orgId" id="orgs" value="${SourceLeadWeb_orgId}">
         </sec:authorize>
     </div>
         </div>
@@ -517,7 +517,7 @@ function activePagination(url, userType){
                 } */],
             "scrollCollapse": false,
             "lengthMenu": [[10, 15, 20], [10, 15, 20]],
-//             "aaSorting": [[3,'desc']],
+            "aaSorting": [],
             "bLengthChange": true,
             "bDestroy": true,
             "ordering": true,

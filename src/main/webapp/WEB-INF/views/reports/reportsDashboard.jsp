@@ -539,7 +539,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">HR Reports</a></h2>
                 <ul class="repSearchList">
-                
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/assetsReport">Asset Assigned History</a></li>                
                 <li><a href="${SourceLeadWeb_sourceleadUrl}/projectReport">Project Report</a></li>
                 
                 <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">
