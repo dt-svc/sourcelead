@@ -1308,6 +1308,8 @@ function RequirementWorkflow(){
 						$("#backToViewWorkflowButton").removeAttr("disabled");
 						$("#questionnaireDisableId").attr("disabled", "disabled");
 						$("#columnsCHkbx").hide();
+						$("#questionnaireAddSpanId").removeAttr("onClick");
+						$("#questionnaireAddSpanId").attr("disabled", "disabled");
 					}
 				 }
 				 
