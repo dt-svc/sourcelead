@@ -309,7 +309,25 @@
 	              <h4>Candidate</h4>
 	            </div>
 	          </div>
-				
+	         <sec:authorize access="hasAnyRole('ROLE_ADD_BACKGROUND_DETAILS','ROLE_VIEW_BACKGROUND_DETAILS','ROLE_EDIT_BACKGROUND_DETAILS','ROLE_DELETE_BACKGROUND_DETAILS')">
+				<!-- Candidate Background check Configuration -->
+				 <div class="col-md-2 reportNewCta"> 
+	            <!-- DropDown -->
+	            <div class="dropdown pull-right report-dropdown"> 
+	            <span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu15" data-toggle="dropdown"> <span class="caret cursorPointer"></span> </span>
+	              <ul class="dropdown-menu minHeight100 maxHeight250">
+	                <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgStatusList">Status</a></li>
+	                <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgComponentList">Component</a></li>
+	                 <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgOrgcTemplateList">Template</a></li>
+	              </ul>
+	            </div>
+	            <!-- Dropdown -->
+	            <div class="clearfix text-center mb10"><i class="userconfigSVG"></i></div>
+	            <div class="clearfix text-center">
+	              <h4>Background Verification</h4>
+	            </div>
+	          </div>
+	          </sec:authorize>
 				<div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/clockInOutConfig">
 							<div class="clearfix text-center mb10"><i class="clockAni clockIcon"></i></div>
@@ -317,7 +335,7 @@
 						<h4>Clock In - Clock Out</h4>
 					</div>
 				</div>
-				
+				 
 				<%--  <div class="col-md-2 reportNewCta">
 					<a href="${SourceLeadWeb_sourceleadUrl}/configureCustomDashBoard">
 							<div class="clearfix text-center mb10"><i class="inviteSVG"></i></div>
