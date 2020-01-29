@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -29,4 +32,10 @@ public interface BgcCommonDao {
 	List<CandidateEducation> getBgcCandidateEducationSummaryListByCandidateId(Long candidateId)throws Exception;
 	
 	List<CandidateEmployers> getBgcCandidateEmploymentSummaryListByCandidateId(Long candidateId)throws Exception;
+
+	List<BgcStatus> getBgcStatusListByOrgLocationId(Long orgLocationId);
+
+	List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId);
+
+	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
 }

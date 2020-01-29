@@ -27,7 +27,10 @@ import org.springframework.util.FileCopyUtils;
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -383,5 +386,17 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	}catch(Exception e){
 		e.printStackTrace();
 	}
+	}
+	@Override
+	public List<BgcStatus> getBgcStatusListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcStatusListByOrgLocationId(orgLocationId);
+	}
+	@Override
+	public List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcComponentListByOrgLocationId(orgLocationId);
+	}
+	@Override
+	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcOrgcTemplateListByOrgLocationId(orgLocationId) ;
 	}
 }

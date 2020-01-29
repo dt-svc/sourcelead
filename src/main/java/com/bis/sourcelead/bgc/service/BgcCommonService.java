@@ -6,7 +6,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.CandidateEducation;
@@ -39,4 +42,10 @@ public interface BgcCommonService {
 
 	void exportBgcToPdfOrExcel(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList,
 			OrgLocations orgLocations, HttpServletResponse response);
+
+	List<BgcStatus> getBgcStatusListByOrgLocationId(Long orgLocationId);
+
+	List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId);
+
+	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
 }

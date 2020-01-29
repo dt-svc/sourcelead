@@ -19,7 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -238,6 +241,22 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			logger.error(e+" in getBgcCandidateEmploymentSummaryListByCandidateId");
 			return null;
 		}
+	}
+
+	@Override
+	public List<BgcStatus> getBgcStatusListByOrgLocationId(Long orgLocationId) {
+		return null;
+	}
+
+	@Override
+	public List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
+		return null;
 	}
 
 }
