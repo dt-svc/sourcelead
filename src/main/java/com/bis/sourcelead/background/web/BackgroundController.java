@@ -33,7 +33,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
+import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -301,6 +304,59 @@ public class BackgroundController {
 			return bgcCandidateDetailsDTO;
 		} catch (Exception e) {
 			logger.error(e+" in getBgcCandidateLegalAndCriminalSummary");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@RequestMapping(value = { "/bgcOrgStatusList"})
+	public  ModelAndView getBgcStatusListByOrgLocationId(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcStatusListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			List<BgcStatus> bgcStatusList = bgcCommonService.getBgcStatusListByOrgLocationId(orgLocationId);
+			 model.addObject("bgcStatusLst",bgcStatusList);
+			 model.setViewName("/background/bgcStatus");
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcStatusListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@RequestMapping(value = { "/bgcOrgComponentList"})
+	public  ModelAndView getBgcComponentListByOrgLocationId(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcComponentListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			List<BgcComponent> bgcComponentList = bgcCommonService.getBgcComponentListByOrgLocationId(orgLocationId);
+			 model.addObject("bgcComponentList",bgcComponentList);
+			 model.setViewName("/background/bgcComponent");
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcComponentListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	@RequestMapping(value = { "/bgOrgcTemplateList"})
+	public ModelAndView getBgcOrgcTemplateListByOrgLocationId(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
+			model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
+			 model.setViewName("/background/bgcTemplate");
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
 			e.printStackTrace();
 			return null;
 		}
