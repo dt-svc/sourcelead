@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
@@ -26,6 +27,7 @@ import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.AssetCustomFieldData;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateLcaJobDetails;
@@ -259,4 +261,112 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		return null;
 	}
 
+	@Override
+	public String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatus bgcStatus) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(bgcStatus);
+			return Constants.SUCCESS;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while saving Bgc status Details in Database "+e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public String deleteBgcStatusListByOrgLocationId(Long statusId) {
+		try {
+			   Session session = this.sessionFactory.getCurrentSession();
+			   Query query = session.createQuery("delete from BgcStatus where id=:statusId").setLong("statusId", statusId);
+		        int count = query.executeUpdate();
+		        if(count != 0) {
+		        	return Constants.SUCCESS;
+		        }
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete  bgcStatus by id-->" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			return Constants.FAILED;
+	}
+	
+	@Override
+	public ResponseList<BgcStatusDTO> getBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO,
+			String searchValue, OrgLocations orgLocations) {
+		ResponseList<BgcStatusDTO> bgcStatusResponseList = new ResponseList<>();
+		
+		try {
+		
+			Session session = this.sessionFactory.getCurrentSession();
+			List<BgcStatus> bgcReturnList=null;
+			System.out.println("orgLocations.getId( ) in dao >>>>>>>>>. "+orgLocations.getId());
+			 StringBuilder searchBuilder = new StringBuilder("");
+			 if(searchValue != null && !searchValue.equalsIgnoreCase("")){
+				 searchBuilder.append(" AND (bgcStatus.statusName like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bgcStatus.color like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bgcStatus.description like '%"+searchValue+"%')");
+			 } 
+			 
+			 bgcReturnList= session.createQuery("from BgcStatus bgcStatus where bgcStatus.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bgcStatus.updatedDate, bgcStatus.id desc ").
+					                                   setLong("orgLocationId",orgLocations.getId()).list();
+			List<BgcStatusDTO> bgcResponseDtoList = new ArrayList<BgcStatusDTO>();	
+			
+			if(bgcReturnList != null && bgcReturnList.size()>0) {
+				BgcStatusDTO target = null;
+			  for(BgcStatus bgcStatus : bgcReturnList) {
+				  target = new BgcStatusDTO();
+				BeanUtils.copyProperties(bgcStatus, target);
+				 
+				bgcResponseDtoList.add(target);
+			  }
+			}
+			bgcStatusResponseList.setData(bgcResponseDtoList);
+			
+			// Below is for pagination in DATATABLE.
+			String resultCountQuery = "";
+				resultCountQuery= "select count(*) from BgcStatus bgcStatus where bgcStatus.orgLocationId =:orgLocationId "+searchBuilder.toString();
+			
+			Query hqlQuery = session.createQuery(resultCountQuery);
+			hqlQuery.setFirstResult(bgcStatusDTO.getStart()).setMaxResults(bgcStatusDTO.getLength())
+			          .setLong("orgLocationId",orgLocations.getId()).list();
+            List<Long> countList = hqlQuery.list();
+			int totalCount = 0;
+			int filterCount =0;
+			
+			if (bgcStatusDTO != null) {
+				if (countList != null && !countList.isEmpty()) {
+					totalCount = countList.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			bgcStatusResponseList.setRecordsTotal(totalCount);
+			if (resultCountQuery.toString() != null && !resultCountQuery.toString().isEmpty()) {
+				bgcStatusResponseList.setRecordsFiltered(filterCount);
+			} else {
+				bgcStatusResponseList.setRecordsFiltered(totalCount);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return bgcStatusResponseList;
+	}
+
+	@Override
+	public BgcStatusDTO getBgcStatusDetailsById(Long statusId) {
+		 BgcStatusDTO BgcStatusDto = null;
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			BgcStatus bgcStatus = (BgcStatus) session.get(BgcStatus.class, statusId);
+			if(bgcStatus != null) {
+				BgcStatusDto = new BgcStatusDTO();
+				BeanUtils.copyProperties(bgcStatus, BgcStatusDto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return BgcStatusDto;
+	}
 }

@@ -27,6 +27,7 @@ import org.springframework.util.FileCopyUtils;
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
@@ -398,5 +399,45 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
 		return bgcCommonDao.getBgcOrgcTemplateListByOrgLocationId(orgLocationId) ;
+	}
+	@Override
+	public String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO, User user, OrgLocations orgLocations) {
+		
+		
+		BgcStatus  bgcStatus = new BgcStatus();
+		if(bgcStatusDTO.getId() != null) {
+			bgcStatus.setId(bgcStatusDTO.getId());
+		}
+		bgcStatus.setOrgLocationId(orgLocations);
+		Date date = new Date();
+        Date currentDate = commonUtil.orgLocationCommonDate(date, orgLocations);
+        bgcStatus.setStatusName(bgcStatusDTO.getStatusName());
+        bgcStatus.setColor(bgcStatusDTO.getColor());
+        bgcStatus.setDescription(bgcStatusDTO.getDescription());
+        
+		if(bgcStatus.getId() == null) { // for new record creation 
+			bgcStatus.setCreatedBy(user);
+			bgcStatus.setCreatedDate(currentDate);
+			bgcStatus.setUpdatedBy(user);
+			bgcStatus.setUpdatedDate(currentDate);
+		}else { // for update record 
+			bgcStatus.setId(bgcStatusDTO.getId());
+			bgcStatus.setUpdatedBy(user);
+			bgcStatus.setUpdatedDate(currentDate);
+		}
+		return bgcCommonDao.saveOrUpdateBgcStatusListByOrgLocationId(bgcStatus) ;
+	}
+	@Override
+	public ResponseList<BgcStatusDTO> getBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO, String searchValue,
+			OrgLocations orgLocations) {
+		return  bgcCommonDao.getBgcStatusListByOrgLocationId(bgcStatusDTO, searchValue,orgLocations);
+	}
+	@Override
+	public String deleteBgcStatusListById(Long statusId) {
+		return bgcCommonDao.deleteBgcStatusListByOrgLocationId(statusId);
+	}
+	@Override
+	public BgcStatusDTO getBgcStatusDetailsById(Long statusId) {
+		return bgcCommonDao.getBgcStatusDetailsById(statusId);
 	}
 }
