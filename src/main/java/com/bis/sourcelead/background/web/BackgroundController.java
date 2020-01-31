@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 //import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
@@ -309,6 +311,41 @@ public class BackgroundController {
 		}
 	}
 	
+	@RequestMapping(value = { "/getBgcDynamicStatusList" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<BgcStatusDTO> getBgcDynamicStatusList(
+			BgcStatusDTO bgcStatusDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<BgcStatusDTO> bgcStatusDTOList = null;
+		logger.debug("inisde controller  Bgc Status DTO  --> ");
+		try {
+			String[] tableColumns = { "statusName", "color", "description"};// should be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (bgcStatusDTO.getOrder() != null && !bgcStatusDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(bgcStatusDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = bgcStatusDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				bgcStatusDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.
+			}
+			
+			
+			if (sortColumnIndex != -1)
+				bgcStatusDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			bgcStatusDTO.setOrgLocationId(orgLocations.getId());
+			bgcStatusDTOList = (ResponseList<BgcStatusDTO>) bgcCommonService.getBgcStatusListByOrgLocationId(bgcStatusDTO, searchValue,
+					orgLocations);
+			System.out.println("bgcStatusDTOList size "+bgcStatusDTOList.getRecordsTotal());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getAllImmigartionList  --> ");
+		return bgcStatusDTOList;
+	}
 	@RequestMapping(value = { "/bgcOrgStatusList"})
 	public  ModelAndView getBgcStatusListByOrgLocationId(HttpServletRequest request)
 	{
@@ -326,7 +363,82 @@ public class BackgroundController {
 			return null;
 		}
 	}
+
+	// below method is for saving bgc status lists by org location id by srinivas sabbu.
+	@RequestMapping(value = { "/SaveOrUpdateBgcStatus"}, method = RequestMethod.POST)
+	public  @ResponseBody Response<String>  saveOrUpdateBgcStatus(BgcStatusDTO bgcStatusDTO,
+			HttpServletRequest request){
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+			try {
+				if (Validator.validate(bgcStatusDTO)) {
+					bgcCommonService.saveOrUpdateBgcStatusListByOrgLocationId(bgcStatusDTO, user , orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Template Task Details" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	// below method is used to get the bgc status details using by id by SRINIVAS SABBU.
+	@RequestMapping(value = { "/getBgcStatusById"})
+	public @ResponseBody BgcStatusDTO getBgcStatusById(@RequestParam(value = "id", required = true) Long statusId,
+			HttpServletRequest request){
+		BgcStatusDTO bgcStatusDto = null;
+		try {
+			User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+			if(statusId != null &&  user != null) {
+				bgcStatusDto = bgcCommonService.getBgcStatusDetailsById(statusId);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return bgcStatusDto;
+	}
 	
+	
+	// below method is for delete bgc status by org location id by srinivas sabbu.
+		@RequestMapping(value = { "/deleteBgcStatusById"})
+		public @ResponseBody Response<String> deleteBgcStatusById(@RequestParam(value = "id", required = true) Long statusId,
+				HttpServletRequest request){
+			Response<String> response = new Response<String>();
+			
+			try {
+				User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if(statusId != null &&  user != null) {
+					bgcCommonService.deleteBgcStatusListById(statusId);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+			 logger.debug("after Deleted Bgc Status Record !!!!!!!");
+			return response;
+		}
+		
 	@RequestMapping(value = { "/bgcOrgComponentList"})
 	public  ModelAndView getBgcComponentListByOrgLocationId(HttpServletRequest request)
 	{
@@ -344,6 +456,7 @@ public class BackgroundController {
 			return null;
 		}
 	}
+	
 	@RequestMapping(value = { "/bgOrgcTemplateList"})
 	public ModelAndView getBgcOrgcTemplateListByOrgLocationId(HttpServletRequest request)
 	{

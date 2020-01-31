@@ -436,7 +436,7 @@ function bgcCandidate(){
 		                       result = result + '<td><div><a href='+vmsUrl+'/bgc/editBgcCandidate?bgcUUID='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
 		                	 }
 		                	 if(roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS") > -1){ 
-		                        result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
+		                        result = result + '<i id="delete' + opt.uuid + '" onclick="bgc.deleteBgcCandidateDetailsbyUuiId(\''+opt.uuid+'\',\''+opt.fullName+'\');" class="glyphicon glyphicon-trash ml10"></i></div></td>';
 		                	 }
 		                 }
 		                    return result;
@@ -485,17 +485,71 @@ function bgcCandidate(){
 		   // $("table").colResizable(); // for resizing columns in tables.
 		}
 		
+		this.deleteBgcRecord = function(elem,arg1,arg2,value){
+	    	$(".project_inn_mask").remove();
+			var result = "";
+			result = result +"	<div class='project_inn_mask'></div>";
+			result = result +"	   <div id='remove_Bgc_popup' class='remove_user_pop remove_user_pop_a'>";
+			result = result +" <b>Do you want to remove \'"+value+"\' record permanently?</b>";
+			result = result + ' <div id="reasonForTemplateDiv"/>';
+			result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='bgc.deleteBgcRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick=bgc.deleteBgcPopupDiv();></b>";
+			result = result +"	</div>";
+			$("#deletepopUp").append(result);
+			$("#remove_Bgc_popup").slideDown(200);
+			$(".project_inn_mask").fadeIn(200);
+	   
+			}
+		
+		this.deleteBgcPopupDiv = function (){
+			$("#remove_Bgc_popup").fadeOut(200);
+			$(".project_inn_mask").fadeOut(200);
+			$("#deletepopUp").empty();
+		}
+		this.deleteBgcRecordById=function(elem, arg1, arg2){	
+			if(typeof elem ==='function') {
+				if(typeof arg2 == 'undefiend'){
+					elem(arg1);
+				}
+				else{
+				elem(arg1, arg2);
+			}
+			}
+			else{
+				alert("Not a valid Function call.");
+			}
+		}
+		
+		this.deleteBgcStatusById = function (id) {
+			$.ajax({
+				type : "GET",
+				url : vmsUrl + "/bgc/deleteBgcStatusById?id="+id,
+				success : function(result) {
+					if (result.response == "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response == "SUCCESS") {
+						if (result.object == "DataMissing") {
+							showError("Invalid data");
+						} else {
+							bgc.deleteBgcPopupDiv();
+							location.replace(vmsUrl+"/bgc/bgcOrgStatusList");
+							showSuccessMsg("Record Deleted Successfully!");
+						}
+					} else {
+						showError("Operation failed, please try again");
+					}
 
+				}
+			});
+		}
 
-		this.deleteBgcCandidateDetailsbyUuiId = function(uuid){ // only stauts updated with reason. active 1 , deactive 0.
+		this.deleteBgcCandidateDetailsbyUuiId = function(uuid, value){ // only stauts updated with reason. active 1 , deactive 0.
 			 $(".project_inn_mask").remove();
 				var result = "";
 				result = result +"	<div class='project_inn_mask'></div>";
 				result = result +"	   <div id='remove_bgc_pop' class='remove_user_pop remove_user_pop_a'>";
 				/* result = result +"		<  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>"; */
-				result = result +" <b>Do you want to remove record permanently?</b>";
+				result = result +" <b>Do you want to remove \'"+value+"\' record permanently?</b>";
 				result = result + ' <div id="reasonForTemplateDiv"/>';
-				uuid="sffer5";
 				result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='bgc.deleteBgcDetailsByUuid(\""+uuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='bgc.cancelBgcDelete();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
