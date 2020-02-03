@@ -575,13 +575,14 @@ function getVendorDetails(){
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
 		              <div class="row">
-		              <div class="col-md-4">
+		             <!-- 		This functionality inprogress dont delete the code -->
+		              <!-- <div class="col-md-4">
 		                <div class="checkbox checkBox">
 		                  <label>
 		                   <input id="isMSPVendor" title="MSP Vendor" name="isMSPVendor"  type="checkbox" value = "N" onclick = "isMSPVendorFunction();">
 		                  MSP Vendor</label>
 		                </div>
-		                 </div>
+		                 </div> -->
 		              
 		              
 		              <div class="col-md-3">
