@@ -268,14 +268,14 @@
                         result = result + ' </select>';
                         result = result + ' </div>';
 						
-                        
-                        result = result +' <div class="col-md-9">';
+                       // This functionality inprogress dont delete the code
+                       /*  result = result +' <div class="col-md-9">';
 			            result = result +' <div class="checkbox checkBox">';
 			            result = result +' <label>';
 			            result = result +' <input id="isMSPVendor" title="MSP Vendor" name="isMSPVendor"  type="checkbox" value="" onclick = "isMSPVendorFunction();">';
 			            result = result +' MSP Vendor</label>';
 			            result = result +' </div>';
-			            result = result +' </div>';
+			            result = result +' </div>'; */
 			            
 	                    result = result +' <div class="col-md-9">';
 			            result = result +' <div class="checkbox checkBox">';
