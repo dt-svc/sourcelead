@@ -954,8 +954,12 @@ function vendorPaginationUrl(url){
 	    	  		var result = "";
 	    	  		if( report.orgName != null && report.orgName != '' && report.orgName != 'undefined'){
    	        			result = result +'<td>';
-   	        			
-   	        			if(report.isMspVendor == 'Y'){
+   	        			result = result +'<div  class="tbldata-dotdot-sm">';
+   	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
+   	        			result = result +'</div>';
+                        
+   	        			// This functionality inprogress dont delete the code
+   	        			/* if(report.isMspVendor == 'Y'){
    	        				result = result +'<div class="width180px">';
    	        			  result = result +'<div class="tbldata-dotdot text-left"><i title="Is MSP" class="fa fa-diamond text-orange mt2 mr10 pull-left"></i> <div class="pull-left"  title='+report.orgName+'>'+report.orgName+'</div></div>';
    	        			result = result +'</div>';
@@ -963,7 +967,7 @@ function vendorPaginationUrl(url){
    	        				result = result +'<div class="width180px inlineBlock text-left">';
    	        			  result = result +'<div class="tbldata-dotdot text-left" title='+report.orgName+'> '+report.orgName+'</div>';
    	        			result = result +'</div>';
-   	        			}
+   	        			} */
    	        			
    	        			result = result +'</td>';
    	        		}else{
