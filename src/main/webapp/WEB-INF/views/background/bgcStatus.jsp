@@ -235,6 +235,7 @@ dynamicStatusPagination = function(url) {
 $(function(){
   $("#addStatus").click(function() {
     $(".mask, #modalTasktype").fadeIn();
+    $('#addStatus')[0].reset();
   });
   $(".popClose").click(function() {
     $(".mask, #modalTasktype").fadeOut();
