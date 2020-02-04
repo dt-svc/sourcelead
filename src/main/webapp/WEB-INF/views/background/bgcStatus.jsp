@@ -36,7 +36,6 @@
     </div>
         
         <!-- Content Area Ends--> 
-        <div id="popUp"></div>
       </div>
     </section>
   <!-- Content Area -->
@@ -67,7 +66,7 @@
             </div>
         </div>
         <div class="clearfix mb">
-            <label class="noPad">Description</label>
+            <label class="noPad">Description<b class="valStar">*</b></label>
             <div class="clearfix">
       <textarea placeholder="Description" id="description" name="description" class="form-control" field-name="Description" rows="3" data-validation="required validate_length length2-500"></textarea>
             </div>
@@ -197,7 +196,7 @@ dynamicStatusPagination = function(url) {
                       result = result + '<td><i id="edit"  onclick=ediBgcStatusById('+opt.id+'); class="glyphicon glyphicon-pencil"></i></a>';
                	 }
                	 if(roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS") > -1){ 
-                       result = result + '<i id="delete" onclick=bgc.deleteBgcRecord(bgc.deleteBgcStatusById,'+opt.id+',"","'+opt.statusName+'"); class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                       result = result + '<i id="delete" onclick=bgc.deleteBgcRecord(bgc.deleteBgcStatusById,'+opt.id+',"","'+encodeURIComponent(opt.statusName)+'"); class="glyphicon glyphicon-trash ml10"></i></div></td>';
                	 }
                    return result;
                   

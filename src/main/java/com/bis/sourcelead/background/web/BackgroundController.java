@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcComponentDTO;
 import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
@@ -364,7 +365,7 @@ public class BackgroundController {
 		}
 	}
 
-	// below method is for saving bgc status lists by org location id by srinivas sabbu.
+	// below method is for saving BGC status lists by ORG LOCATION id by SRINIVAS SABBU.
 	@RequestMapping(value = { "/SaveOrUpdateBgcStatus"}, method = RequestMethod.POST)
 	public  @ResponseBody Response<String>  saveOrUpdateBgcStatus(BgcStatusDTO bgcStatusDTO,
 			HttpServletRequest request){
@@ -393,7 +394,7 @@ public class BackgroundController {
 		}
 		return response;
 	}
-	// below method is used to get the bgc status details using by id by SRINIVAS SABBU.
+	//Below method is used to get the bgc status details using by id by SRINIVAS SABBU.
 	@RequestMapping(value = { "/getBgcStatusById"})
 	public @ResponseBody BgcStatusDTO getBgcStatusById(@RequestParam(value = "id", required = true) Long statusId,
 			HttpServletRequest request){
@@ -411,7 +412,7 @@ public class BackgroundController {
 	}
 	
 	
-	// below method is for delete bgc status by org location id by srinivas sabbu.
+	// Below method is for delete  BGC status record by ID .SRINIVA SABBU 
 		@RequestMapping(value = { "/deleteBgcStatusById"})
 		public @ResponseBody Response<String> deleteBgcStatusById(@RequestParam(value = "id", required = true) Long statusId,
 				HttpServletRequest request){
@@ -445,9 +446,9 @@ public class BackgroundController {
 		try {
 			logger.debug("inside getBgcComponentListByOrgLocationId");
 			ModelAndView model = new ModelAndView();
-			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-			List<BgcComponent> bgcComponentList = bgcCommonService.getBgcComponentListByOrgLocationId(orgLocationId);
-			 model.addObject("bgcComponentList",bgcComponentList);
+		//	Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			//List<BgcComponent> bgcComponentList = bgcCommonService.getBgcComponentListByOrgLocationId(orgLocationId);
+		//	 model.addObject("bgcComponentList",bgcComponentList);
 			 model.setViewName("/background/bgcComponent");
 			return model;
 		} catch (Exception e) {
@@ -474,4 +475,123 @@ public class BackgroundController {
 			return null;
 		}
 	}
+	
+	/** 
+	 * Below methods are related component add/edit/delete functionality SRINIVAS 03-FEB-2020
+	 * 
+	 */
+	@RequestMapping(value = { "/getBgcDynamicComponentList" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<BgcComponentDTO> getBgcDynamicComponentList(
+			BgcComponentDTO bgcComponentDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<BgcComponentDTO> bgcComponentDTOList = null;
+		logger.debug("inisde controller  Bgc Status DTO  --> ");
+		try {
+			String[] tableColumns = { "name",  "description"};// should be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (bgcComponentDTO.getOrder() != null && !bgcComponentDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(bgcComponentDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = bgcComponentDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				bgcComponentDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.
+			}
+			
+			
+			if (sortColumnIndex != -1)
+				bgcComponentDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			bgcComponentDTO.setOrgLocationId(orgLocations.getId());
+			bgcComponentDTOList = (ResponseList<BgcComponentDTO>) bgcCommonService.getBgcComponentListByOrgLocationId(bgcComponentDTO, searchValue,
+					orgLocations);
+			System.out.println("bgcComponentDTOList size "+bgcComponentDTOList.getRecordsTotal());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getBgcDynamicComponentList  --> ");
+		return bgcComponentDTOList;
+	}
+	/**
+	 * method is used for save or update existing record by SRINIVAS SABBU
+	 * @param bgcStatusDTO
+	 * @param request
+	 * @return
+	 */
+	
+	@RequestMapping(value = { "/SaveOrUpdateBgcComponent"}, method = RequestMethod.POST)
+	public  @ResponseBody Response<String>  saveOrUpdateBgcComponent(BgcComponentDTO bgcComponentDTO,
+			HttpServletRequest request){
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+			try {
+				if (Validator.validate(bgcComponentDTO)) {
+					bgcCommonService.saveOrUpdateBgcComponentListByOrgLocationId(bgcComponentDTO, user , orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Template Task Details" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	
+	// below method is used to get the BGC component details by ID by SRINIVAS SABBU.
+		@RequestMapping(value = { "/getBgcComponentById"})
+		public @ResponseBody BgcComponentDTO getBgcComponentById(@RequestParam(value = "id", required = true) Long componentId,
+				HttpServletRequest request){
+			BgcComponentDTO bgcComponentDto = null;
+			try {
+				User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if(componentId != null &&  user != null) {
+					bgcComponentDto = bgcCommonService.getBgcComponentDetailsById(componentId);
+				}	
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+			return bgcComponentDto;
+		}
+     
+		// Below method is for delete  BGC  Component by ID SRINIVAS SABBU.
+		@RequestMapping(value = { "/deleteBgcComponentById"})
+		public @ResponseBody Response<String> deleteBgcComponentById(@RequestParam(value = "id", required = true) Long componentId,
+				HttpServletRequest request){
+			Response<String> response = new Response<String>();
+			
+			try {
+				User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if(componentId != null &&  user != null) {
+					bgcCommonService.deleteBgcComponentById(componentId);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+			 logger.debug("after Deleted Bgc Component Record !!!!!!!");
+			return response;
+		}
 }

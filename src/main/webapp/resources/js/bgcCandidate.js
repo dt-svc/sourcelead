@@ -490,7 +490,7 @@ function bgcCandidate(){
 			var result = "";
 			result = result +"	<div class='project_inn_mask'></div>";
 			result = result +"	   <div id='remove_Bgc_popup' class='remove_user_pop remove_user_pop_a'>";
-			result = result +" <b>Do you want to remove \'"+value+"\' record permanently?</b>";
+			result = result +" <b>Do you want to remove \'"+decodeURIComponent(value)+"\' record permanently?</b>";
 			result = result + ' <div id="reasonForTemplateDiv"/>';
 			result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='bgc.deleteBgcRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick=bgc.deleteBgcPopupDiv();></b>";
 			result = result +"	</div>";
@@ -541,7 +541,28 @@ function bgcCandidate(){
 				}
 			});
 		}
+		this.deleteBgcComponentById = function (id) {
+			$.ajax({
+				type : "GET",
+				url : vmsUrl + "/bgc/deleteBgcComponentById?id="+id,
+				success : function(result) {
+					if (result.response == "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response == "SUCCESS") {
+						if (result.object == "DataMissing") {
+							showError("Invalid data");
+						} else {
+							bgc.deleteBgcPopupDiv();
+							location.replace(vmsUrl+"/bgc/bgcOrgComponentList");
+							showSuccessMsg("Record Deleted Successfully!");
+						}
+					} else {
+						showError("Operation failed, please try again");
+					}
 
+				}
+			});
+		}
 		this.deleteBgcCandidateDetailsbyUuiId = function(uuid, value){ // only stauts updated with reason. active 1 , deactive 0.
 			 $(".project_inn_mask").remove();
 				var result = "";
