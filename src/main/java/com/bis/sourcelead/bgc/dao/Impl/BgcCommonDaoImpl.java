@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcComponentDTO;
 import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
@@ -34,6 +35,7 @@ import com.bis.sourcelead.entity.CandidateLcaJobDetails;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.ImmigrationListView;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.util.CommonUtil;
 
 /**
@@ -90,10 +92,10 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			 } 
 			 
 			if(orgLocations.getIsBackgroundCheck() != null && orgLocations.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
-			 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1"+searchBuilder.toString()).
+			 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.orgLocationId =:orgLocationId and bgc.status=1 "+searchBuilder.toString() +" order by bgc.updatedDate desc, id desc ").
 					                                   setLong("orgLocationId",orgLocations.getId()).list();
 			}else {
-				 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.sourceOrglocationId =:orgLocationId and bgc.status=1"+searchBuilder.toString()).
+				 bgcReturnList= session.createQuery("from BgcCandidateDetails bgc where bgc.sourceOrglocationId =:orgLocationId and bgc.status=1 "+searchBuilder.toString()+" order by bgc.updatedDate desc , id desc ").
                          setLong("orgLocationId",orgLocations.getId()).list();
 			}
 			List<BgcCandidateDetailsDTO> bgcResponseDtoList = new ArrayList<BgcCandidateDetailsDTO>();	
@@ -251,9 +253,64 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	}
 
 	@Override
-	public List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, String searchValue, OrgLocations orgLocations) {
+		
+		ResponseList<BgcComponentDTO> bgcComponentResponseList = new ResponseList<>();
+		try {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<BgcComponent> bgcReturnList=null;
+			System.out.println("orgLocations.getId( ) in dao >>>>>>>>>. "+orgLocations.getId());
+			 StringBuilder searchBuilder = new StringBuilder("");
+			 if(searchValue != null && !searchValue.equalsIgnoreCase("")){
+				 searchBuilder.append(" AND (bc.name like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bc.description like '%"+searchValue+"%')");
+			 } 
+			 
+			 bgcReturnList= session.createQuery("from BgcComponent bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bc.updatedDate desc, bc.id desc ").
+					                                   setLong("orgLocationId",orgLocations.getId()).list();
+			List<BgcComponentDTO> bgcComponentDtoList = new ArrayList<BgcComponentDTO>();	
+			
+			if(bgcReturnList != null && bgcReturnList.size()>0) {
+				BgcComponentDTO target = null;
+			  for(BgcComponent bgcComponent : bgcReturnList) {
+				  target = new BgcComponentDTO();
+				BeanUtils.copyProperties(bgcComponent, target);
+				 
+				bgcComponentDtoList.add(target);
+			  }
+			}
+			bgcComponentResponseList.setData(bgcComponentDtoList);
+			
+			// Below is for pagination in DATATABLE.
+			String resultCountQuery = "";
+				
+				resultCountQuery= "select count(*) from BgcComponent bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString();
+			
+			Query hqlQuery = session.createQuery(resultCountQuery);
+			hqlQuery.setFirstResult(bgcComponentDTO.getStart()).setMaxResults(bgcComponentDTO.getLength())
+			          .setLong("orgLocationId",orgLocations.getId()).list();
+            List<Long> countList = hqlQuery.list();
+			int totalCount = 0;
+			int filterCount =0;
+			
+			if (bgcComponentDTO != null) {
+				if (countList != null && !countList.isEmpty()) {
+					totalCount = countList.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			bgcComponentResponseList.setRecordsTotal(totalCount);
+			if (resultCountQuery.toString() != null && !resultCountQuery.toString().isEmpty()) {
+				bgcComponentResponseList.setRecordsFiltered(filterCount);
+			} else {
+				bgcComponentResponseList.setRecordsFiltered(totalCount);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return bgcComponentResponseList;
 	}
 
 	@Override
@@ -308,7 +365,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 				 searchBuilder.append(" OR (bgcStatus.description like '%"+searchValue+"%')");
 			 } 
 			 
-			 bgcReturnList= session.createQuery("from BgcStatus bgcStatus where bgcStatus.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bgcStatus.updatedDate, bgcStatus.id desc ").
+			 bgcReturnList= session.createQuery("from BgcStatus bgcStatus where bgcStatus.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bgcStatus.updatedDate desc, bgcStatus.id desc ").
 					                                   setLong("orgLocationId",orgLocations.getId()).list();
 			List<BgcStatusDTO> bgcResponseDtoList = new ArrayList<BgcStatusDTO>();	
 			
@@ -368,5 +425,51 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		}
 		
 		return BgcStatusDto;
+	}
+
+	@Override
+	public String saveOrUpdateBgcComponentListByOrgLocationId(BgcComponent bgcComponent) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(bgcComponent);
+			return Constants.SUCCESS;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while saving bgcComponent Details in Database "+e.getMessage());
+			return null;
+		}
+    }
+
+	@Override
+	public BgcComponentDTO getBgcComponentDetailsById(Long componentId) {
+		BgcComponentDTO BgcComponentDto = null;
+			try {
+				Session session = sessionFactory.getCurrentSession();
+				BgcComponent bgcComponent = (BgcComponent) session.get(BgcComponent.class, componentId);
+				if(bgcComponent != null) {
+					BgcComponentDto = new BgcComponentDTO();
+					BeanUtils.copyProperties(bgcComponent, BgcComponentDto);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return BgcComponentDto;
+	}
+
+	@Override
+	public String deleteBgcComponentById(Long componentId) {
+		try {
+			   Session session = this.sessionFactory.getCurrentSession();
+			   Query query = session.createQuery("delete from BgcComponent where id=:componentId").setLong("componentId", componentId);
+		        int count = query.executeUpdate();
+		        if(count != 0) {
+		        	return Constants.SUCCESS;
+		        }
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete  BgcComponent by id-->" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			return Constants.FAILED;
 	}
 }

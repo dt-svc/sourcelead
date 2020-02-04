@@ -27,6 +27,7 @@ import org.springframework.util.FileCopyUtils;
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcComponentDTO;
 import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
@@ -393,8 +394,9 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		return bgcCommonDao.getBgcStatusListByOrgLocationId(orgLocationId);
 	}
 	@Override
-	public List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId) {
-		return bgcCommonDao.getBgcComponentListByOrgLocationId(orgLocationId);
+	public ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO,String searchValue,
+			OrgLocations orgLocations) {
+		return bgcCommonDao.getBgcComponentListByOrgLocationId(bgcComponentDTO, searchValue, orgLocations);
 	}
 	@Override
 	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
@@ -439,5 +441,38 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public BgcStatusDTO getBgcStatusDetailsById(Long statusId) {
 		return bgcCommonDao.getBgcStatusDetailsById(statusId);
+	}
+	@Override
+	public String saveOrUpdateBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, User user,
+			OrgLocations orgLocations) {
+		BgcComponent  bgcComponent = new BgcComponent();
+		if(bgcComponentDTO.getId() != null) {
+			bgcComponent.setId(bgcComponentDTO.getId());
+		}
+		bgcComponent.setOrgLocationId(orgLocations);
+		Date date = new Date();
+        Date currentDate = commonUtil.orgLocationCommonDate(date, orgLocations);
+        bgcComponent.setName(bgcComponentDTO.getName());
+        bgcComponent.setDescription(bgcComponentDTO.getDescription());
+        
+		if(bgcComponent.getId() == null) { // for new record creation 
+			bgcComponent.setCreatedBy(user);
+			bgcComponent.setCreatedDate(currentDate);
+			bgcComponent.setUpdatedBy(user);
+			bgcComponent.setUpdatedDate(currentDate);
+		}else { // for update record 
+			bgcComponent.setId(bgcComponentDTO.getId());
+			bgcComponent.setUpdatedBy(user);
+			bgcComponent.setUpdatedDate(currentDate);
+		}
+		return bgcCommonDao.saveOrUpdateBgcComponentListByOrgLocationId(bgcComponent) ;
+	}
+	@Override
+	public BgcComponentDTO getBgcComponentDetailsById(Long componentId) {
+		return bgcCommonDao.getBgcComponentDetailsById(componentId);
+	}
+	@Override
+	public String deleteBgcComponentById(Long componentId) {
+		return bgcCommonDao.deleteBgcComponentById(componentId);
 	}
 }

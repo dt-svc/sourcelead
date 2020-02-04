@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
+import com.bis.sourcelead.bgc.dto.BgcComponentDTO;
 import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
@@ -47,8 +48,8 @@ public interface BgcCommonService {
 
 	List<BgcStatus> getBgcStatusListByOrgLocationId(Long orgLocationId);
 
-	List<BgcComponent> getBgcComponentListByOrgLocationId(Long orgLocationId);
-
+	ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, String searchValue,
+			OrgLocations orgLocations);
 	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
 
 	String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO,  User usr, OrgLocations orglocations);
@@ -59,4 +60,11 @@ public interface BgcCommonService {
 			OrgLocations orgLocations);
 
 	BgcStatusDTO getBgcStatusDetailsById(Long statusId);
+
+	String saveOrUpdateBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, User user,
+			OrgLocations orgLocations);
+
+	BgcComponentDTO getBgcComponentDetailsById(Long componentId);
+
+	String deleteBgcComponentById(Long componentId);
 }
