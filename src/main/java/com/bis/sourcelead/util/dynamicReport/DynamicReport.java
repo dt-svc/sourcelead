@@ -988,7 +988,7 @@ public class DynamicReport {
 			 
 			String role = associateData.getUserRole();
 			
-			if(rate !=null){
+			if(rate !=null && associateData.getRate() != null && associateData.getRatePer() != null){
 			rate = associateData.getCurrency()+" "+associateData.getRate()+" "+associateData.getRatePer();
 			}
 			
