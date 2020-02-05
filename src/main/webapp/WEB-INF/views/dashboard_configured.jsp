@@ -36,7 +36,8 @@ var loaded = false;
 <section class="content-wraper">
 
 	<div class="clearfix">
-	        <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y' || SourceLeadWeb_isAdmin == true}">
+			<!-- 		This functionality inprogress dont delete the code -->
+	        <%-- <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y' || SourceLeadWeb_isAdmin == true}">
 	        <div class="mt mspdashboard-tasli">
 				<ul id="dashboardEventsul" class="list-unstyled	">
 					<li id="PrimaryDashboard"><a class="active-mspli" >Primary Dashboard</a></li>
@@ -44,7 +45,7 @@ var loaded = false;
 					<div class="clearfix"></div>
 				</ul>
 			</div>
-			</c:if>
+			</c:if> --%>
 				<div class="clearfix"></div>
 				<div id="primaryDashboard-div" class="clearfix">
 				<div class="dashboard_loaded">
