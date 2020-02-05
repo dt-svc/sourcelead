@@ -458,15 +458,16 @@ public class BackgroundController {
 		}
 	}
 	
-	@RequestMapping(value = { "/bgOrgcTemplateList"})
+	
+	@RequestMapping(value = { "/bgcOrgTemplateList"})
 	public ModelAndView getBgcOrgcTemplateListByOrgLocationId(HttpServletRequest request)
 	{
 		try {
 			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
 			ModelAndView model = new ModelAndView();
-			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-			List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
-			model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
+			//Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		//	List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
+		//	model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
 			 model.setViewName("/background/bgcTemplate");
 			return model;
 		} catch (Exception e) {
@@ -475,7 +476,61 @@ public class BackgroundController {
 			return null;
 		}
 	}
-	
+	@RequestMapping(value = { "/addBgcTemplate"})
+	public ModelAndView addBgcTemplate(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			//Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		//	List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
+		//	model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
+			 model.setViewName("/background/addTemplate");
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/** 
+	 * Below method is used to get the template list SRINIVAS 03-FEB-2020
+	 * 
+	 */
+	@RequestMapping(value = { "/getBgcDynamicTemplateList" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<BgcTemplateDTO> getBgcDynamicTemplateList(
+			BgcTemplateDTO bgcTemplateDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<BgcTemplateDTO> bgcTemplateDTOList = null;
+		logger.debug("inisde controller  Bgc Status DTO  --> ");
+		try {
+			String[] tableColumns = { "name",  "description"};// should be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (bgcTemplateDTO.getOrder() != null && !bgcTemplateDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(bgcTemplateDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = bgcTemplateDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				bgcTemplateDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.
+			}
+			
+			
+			if (sortColumnIndex != -1)
+				bgcTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			bgcTemplateDTO.setOrgLocationId(orgLocations.getId());
+			 bgcTemplateDTOList =  (ResponseList<BgcTemplateDTO>)bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(bgcTemplateDTO, searchValue,
+					orgLocations);
+			System.out.println("BgcTemplateDTOList size "+bgcTemplateDTOList.getRecordsTotal());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getBgcDynamicComponentList  --> ");
+		return bgcTemplateDTOList;
+	}
 	/** 
 	 * Below methods are related component add/edit/delete functionality SRINIVAS 03-FEB-2020
 	 * 

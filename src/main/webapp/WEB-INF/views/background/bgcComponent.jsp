@@ -26,7 +26,7 @@
 				</li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id=dynamicComponentListSearch type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick=" getDynamicComponentList();"></span></li>
             </ul>
           </div>
           <div id="dynamicBgcComponentListViewDiv" class="project_wrap_table datatable_filter"></div>
