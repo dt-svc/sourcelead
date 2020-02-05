@@ -318,7 +318,7 @@
 	              <ul class="dropdown-menu minHeight100 maxHeight250">
 	                <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgStatusList">Status</a></li>
 	                <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgComponentList">Component</a></li>
-	                 <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgOrgcTemplateList">Template</a></li>
+	                 <li><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgTemplateList">Template</a></li>
 	              </ul>
 	            </div>
 	            <!-- Dropdown -->
