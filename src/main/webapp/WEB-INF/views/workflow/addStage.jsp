@@ -20,7 +20,14 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
       <h2><c:out value="${workFlowName}"/>&nbsp >> &nbsp</h2> 
     </div>
     <div class="pull-left">
-      <h2>Add Stage</h2>
+    <c:choose>
+    <c:when test="${isStageViewed eq true}">
+    <h2>View Stage</h2>
+    </c:when>
+    <c:otherwise>
+    <h2>Add Stage</h2>
+    </c:otherwise>
+    </c:choose>
     </div>
     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
     <a onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');"><c:out value="${workFlowName}"/></a> &raquo;
