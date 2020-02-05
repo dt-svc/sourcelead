@@ -50,7 +50,6 @@ public interface BgcCommonService {
 
 	ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, String searchValue,
 			OrgLocations orgLocations);
-	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
 
 	String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO,  User usr, OrgLocations orglocations);
 
@@ -67,4 +66,7 @@ public interface BgcCommonService {
 	BgcComponentDTO getBgcComponentDetailsById(Long componentId);
 
 	String deleteBgcComponentById(Long componentId);
+
+	ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
+			String searchValue, OrgLocations orgLocations);
 }

@@ -25,6 +25,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -314,8 +315,64 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	}
 
 	@Override
-	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
-		return null;
+	public ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
+			String searchValue, OrgLocations orgLocations) {
+		ResponseList<BgcTemplateDTO> bgcTemplateResponseList = new ResponseList<>();
+		try {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<BgcTemplate> bgcReturnList=null;
+			System.out.println("orgLocations.getId( ) in dao >>>>>>>>>. "+orgLocations.getId());
+			 StringBuilder searchBuilder = new StringBuilder("");
+			 if(searchValue != null && !searchValue.equalsIgnoreCase("")){
+				 searchBuilder.append(" AND (bc.name like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bc.description like '%"+searchValue+"%')");
+			 } 
+			 
+			 bgcReturnList= session.createQuery("from BgcTemplate bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bc.updatedDate desc, bc.id desc ").
+					                                   setLong("orgLocationId",orgLocations.getId()).list();
+			List<BgcTemplateDTO> bgcTemplateDtoList = new ArrayList<BgcTemplateDTO>();	
+			
+			if(bgcReturnList != null && bgcReturnList.size()>0) {
+				BgcTemplateDTO target = null;
+			  for(BgcTemplate bgcTemplate : bgcReturnList) {
+				  target = new BgcTemplateDTO();
+				BeanUtils.copyProperties(bgcTemplate, target);
+				 
+				bgcTemplateDtoList.add(target);
+			  }
+			}
+			bgcTemplateResponseList.setData(bgcTemplateDtoList);
+			
+			// Below is for pagination in DATATABLE.
+			String resultCountQuery = "";
+				
+				resultCountQuery= "select count(*) from BgcTemplate bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString();
+			
+			Query hqlQuery = session.createQuery(resultCountQuery);
+			hqlQuery.setFirstResult(bgcTemplateDTO.getStart()).setMaxResults(bgcTemplateDTO.getLength())
+			          .setLong("orgLocationId",orgLocations.getId()).list();
+            List<Long> countList = hqlQuery.list();
+			int totalCount = 0;
+			int filterCount =0;
+			
+			if (bgcTemplateDTO != null) {
+				if (countList != null && !countList.isEmpty()) {
+					totalCount = countList.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			bgcTemplateResponseList.setRecordsTotal(totalCount);
+			if (resultCountQuery.toString() != null && !resultCountQuery.toString().isEmpty()) {
+				bgcTemplateResponseList.setRecordsFiltered(filterCount);
+			} else {
+				bgcTemplateResponseList.setRecordsFiltered(totalCount);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return bgcTemplateResponseList;
 	}
 
 	@Override

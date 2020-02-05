@@ -41,7 +41,8 @@ public interface BgcCommonDao {
 	ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, String searchValue,
 			OrgLocations orgLocations);
 
-	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
+	ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
+			String searchValue, OrgLocations orgLocations);
 
 	String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatus bgcStatus);
 

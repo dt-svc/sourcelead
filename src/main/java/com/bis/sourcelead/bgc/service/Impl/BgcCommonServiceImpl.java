@@ -399,8 +399,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		return bgcCommonDao.getBgcComponentListByOrgLocationId(bgcComponentDTO, searchValue, orgLocations);
 	}
 	@Override
-	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
-		return bgcCommonDao.getBgcOrgcTemplateListByOrgLocationId(orgLocationId) ;
+	public ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,String searchValue, OrgLocations orgLocations) {
+		return bgcCommonDao.getBgcOrgcTemplateListByOrgLocationId(bgcTemplateDTO, searchValue, orgLocations) ;
 	}
 	@Override
 	public String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO, User user, OrgLocations orgLocations) {
