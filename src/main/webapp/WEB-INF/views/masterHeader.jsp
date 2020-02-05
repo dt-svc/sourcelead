@@ -1620,7 +1620,7 @@ $("#searchType").selectpicker('refresh');
 <div class="success_pop" id="inviteCompanyId" style="display: none;">
    	<i class="fa fa-check-circle"></i><span id="inviteCompanyMsgDiv"></span>
 </div>
-
+<div id="deletepopUp"></div>
 <div class="popupWrap" id="modalBulkImport" role="dialog">
 	<div class="popupHead"><span>Bulk Import</span><i class="closePop pull-right popClose"></i></div>
         <form:form id="bulkImportForm" name="bulkImportForm" method="post">
@@ -2502,3 +2502,10 @@ function getPreviousClockInData(){
 <link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" type="text/css" />
 <div id='imagecrop' class='post_popup'></div>
 <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
+<script>
+function showSuccessMsg(msg){
+	$('#inviteCompanyId').show();
+	$('#inviteCompanyMsgDiv').text(msg)
+	setTimeout(function(){ $('#inviteCompanyId').hide();$('#inviteCompanyMsgDiv').text("") }, 1000);
+}
+</script>

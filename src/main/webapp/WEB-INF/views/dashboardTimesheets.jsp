@@ -30,7 +30,6 @@ $(document).ready(function(){
         	<div class="dashNewWrapHead clearfix">
         		<a id="timeSheetLink" href="<c:url value="/app/timesheet"/>" class="pull-left"> ${bothTimesheets ? 'Timesheets' : onlyTimesheets ? 'Timesheets' : onlyApprovalTimesheets ? 'Approval' : ''} &nbsp;&nbsp;</a>
 	        	<input type="hidden" value="" id="timesheetSocketsFor">
-	             <c:if test="${bothTimesheets}">
 		             <ul class="nav nav-tabs pull-right">
 		             <li class="pt5">
 				        <div class="dropdown-select positionRelative repSelWrap clearfix">
@@ -60,10 +59,12 @@ $(document).ready(function(){
 				                           
 				        </div>    		
 		    		</li> 
+		    		 <c:if test="${bothTimesheets}">
 		               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" >Self</a></li>
 		               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" >Employees</a></li>
+		               </c:if>
 		             </ul>
-	             </c:if>
+	             
         	</div>
 
             <div class="db-widget-sm">
