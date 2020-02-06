@@ -50,9 +50,9 @@ if(sessionId == null || sessionId == "null" || sessionId == "" || sessionId == "
 
 var templateUuid = '${templateUuid}';
 
-window.onload = function () {
+$(document).ready(function(){
 	viewQuestionnaireTemplateForm();
- };
+ });
  
  $('body').on('blur', '#questionnaireTemplate_form', function() {
 		$("#questionnaireTemplate_form").showHelpOnFocus();
