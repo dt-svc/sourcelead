@@ -42,32 +42,16 @@
               <button class="btn btn-default dropdown-toggle width100percnt" type="button" id="menu1" data-toggle="dropdown">-- Select Status --
               <span class="caret mt10 pull-right"></span></button>
               <ul class="dropdown-menu width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn">
+              <c:forEach var="status" items="${statusList}" varStatus="rows">
                 <li>
                   <div class="checkbox-new clearfix ml mt5">
-                    <input id="status2" class="checkbox-custom" name="status" type="checkbox">
-                    <label for="status2" class="checkbox-custom-label"><span class="ml5">Status-1</span></label>
+                    <input id="status${status.id}" class="checkbox-custom" name="status${status.id}" type="checkbox">
+                    <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
                   </div>
                 </li>
+                </c:forEach>
                 <li role="Address">
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="status3" class="checkbox-custom" name="status" type="checkbox">
-                    <label for="status3" class="checkbox-custom-label"><span class="ml5">Status-1</span></label>
-                  </div>
-                </li>
-                <li role="Address">
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="status4" class="checkbox-custom" name="status" type="checkbox">
-                    <label for="status4" class="checkbox-custom-label"><span class="ml5">Status-1</span></label>
-                  </div>
-                </li>
-                <li role="Address">
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="status1" class="checkbox-custom" name="status" type="checkbox">
-                    <label for="status1" class="checkbox-custom-label"><span class="ml5">Status-1</span></label>
-                  </div>
-                </li>
-                <li role="Address">
-                  <a href="status-list.html" class="text-primary">
+                  <a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgStatusList" target="_blank" class="text-primary">
                     <i class="fa fa-plus paddingRight mr10"></i>Add Status
                   </a>
                 </li>
@@ -89,37 +73,14 @@
               <button class="btn btn-default dropdown-toggle width100percnt" type="button" id="menu1" data-toggle="dropdown">-- Select Component Type --
               <span class="caret"></span></button>
               <ul class="dropdown-menu ml width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn">
+               <c:forEach var="component" items="${componentList}" varStatus="rows">
                 <li>
                   <div class="checkbox-new clearfix ml mt5">
-                    <input id="address" class="checkbox-custom" name="componentType" type="checkbox">
-                    <label for="address" class="checkbox-custom-label"><span class="ml5">Address</span></label>
+                    <input id="com${component.id}" class="checkbox-custom" name="${component.id}" type="checkbox">
+                    <label for="com${component.id}" class="checkbox-custom-label"><span class="ml5">${component.name}</span></label>
                   </div>
                 </li>
-
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="criminialBackground" class="checkbox-custom" name="componentType" type="checkbox">
-                    <label for="criminialBackground" class="checkbox-custom-label"><span class="ml5">Criminial Background</span></label>
-                  </div>
-                </li>
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="educational" class="checkbox-custom" name="componentType" type="checkbox">
-                    <label for="educational" class="checkbox-custom-label"><span class="ml5">Educational</span></label>
-                  </div>
-                </li>
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="previousEmployment" class="checkbox-custom" name="componentType" type="checkbox">
-                    <label for="previousEmployment" class="checkbox-custom-label"><span class="ml5">Previous Employment</span></label>
-                  </div>
-                </li>
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="socialMedia" class="checkbox-custom" name="componentType" type="checkbox">
-                    <label for="socialMedia" class="checkbox-custom-label"><span class="ml5">Social Media</span></label>
-                  </div>
-                </li>
+ 			</c:forEach>
                 <li role="Address">
                   <a id="addComponentType">
                     <i class="fa fa-plus paddingRight mr10 text-primary"></i>Add Component Type
@@ -234,6 +195,34 @@
   </section>
         <!-- Content Area Ends-->
 <jsp:include page="../masterFooter.jsp" />
+<div class="mask"></div>
+<div class="popupWrap" id="componenttypepop">
+  <div class="popupHead"><span>Add Component Type</span><i class="closePop pull-right popClose"></i></div>
+    <form id="#" name="" action="" method="post">
+    <div class="popupContent">
+        <div class="clearfix mb">
+            <label class="noPad">Component Type <b class="valStar">*</b></label>
+            <div class="clearfix">
+                <input class="form-control" placeholder="Name" type="text">
+            </div>
+        </div>
+        <div class="clearfix mb">
+            <label class="noPad">Description</label>
+            <div class="clearfix">
+      <textarea placeholder="Description" class="form-control" rows="3"></textarea>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="popupFoot text-right">
+      <button type="button" class="slBtn md colorBtn">Save</button>
+      <button type="button" class="slBtn md popClose" onclick="flushComponent();"> Cancel</button>
+    </div>
+    
+    <div>
+</div></form>
+</div>
 <script>
 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
@@ -300,4 +289,21 @@ function  ediBgcTemplateById(TemplateId) {
 
 		});
 	}
+</script>
+
+<script>
+
+$("ul#ctBtn li").click(function(e){
+   e.stopPropagation();
+});
+
+$("#addComponentType").click(function() {
+  $("#componenttypepop, .mask").fadeIn();
+})
+function flushComponent() {
+  $("#componenttypepop, .mask").fadeOut();
+}
+$(".popClose").click(function() {
+  $("#componenttypepop, .mask").fadeOut();
+})
 </script>

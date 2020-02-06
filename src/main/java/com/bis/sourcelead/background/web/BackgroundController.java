@@ -482,10 +482,18 @@ public class BackgroundController {
 		try {
 			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
 			ModelAndView model = new ModelAndView();
-			//Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-		//	List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
-		//	model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
-			 model.setViewName("/background/addTemplate");
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			
+			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+			System.out.println(" status list size is "+statusList.size());
+			statusList.forEach(System.out::println);
+			model.addObject("statusList",statusList);
+			System.out.println(" status list size is "+statusList.size());
+			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+			model.addObject("componentList",componentList);
+			System.out.println(" componentList list size is "+componentList.size());
+			model.setViewName("/background/addTemplate");
+			 
 			return model;
 		} catch (Exception e) {
 			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
@@ -649,4 +657,6 @@ public class BackgroundController {
 			 logger.debug("after Deleted Bgc Component Record !!!!!!!");
 			return response;
 		}
+		
+		
 }
