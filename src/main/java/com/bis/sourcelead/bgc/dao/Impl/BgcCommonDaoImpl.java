@@ -529,4 +529,34 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			}
 			return Constants.FAILED;
 	}
+
+	@Override
+	public List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query = session.createQuery("from  BgcStatus status where status.orgLocationId = :orgLocationId")
+					       .setLong("orgLocationId", orgLocationId);
+			List<BgcStatus> statusList = query.list();
+			return statusList;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while getting status list by org location id-->" + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query = session.createQuery("from  BgcComponent comp where comp.orgLocationId = :orgLocationId")
+					       .setLong("orgLocationId", orgLocationId);
+			List<BgcComponent> componentList = query.list();
+			return componentList;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while getting component list by org location id-->" + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

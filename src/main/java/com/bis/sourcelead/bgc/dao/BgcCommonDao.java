@@ -58,4 +58,8 @@ public interface BgcCommonDao {
 	BgcComponentDTO getBgcComponentDetailsById(Long componentId);
 
 	String deleteBgcComponentById(Long componentId);
+
+	List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId);
+
+	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
 }

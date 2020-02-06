@@ -475,4 +475,12 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	public String deleteBgcComponentById(Long componentId) {
 		return bgcCommonDao.deleteBgcComponentById(componentId);
 	}
+	@Override
+	public List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+	}
+	@Override
+	public List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+	}
 }

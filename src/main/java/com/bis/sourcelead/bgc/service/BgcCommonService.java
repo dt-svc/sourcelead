@@ -69,4 +69,17 @@ public interface BgcCommonService {
 
 	ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
 			String searchValue, OrgLocations orgLocations);
+	
+	/***
+	 * Below method used to get distinct status based on ORG LOCATION ID , now using in add template screen.
+	 */
+	
+	List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId);
+	
+	/***
+	 * Below method used to get distinct Component based on ORG LOCATION ID , now using in add template screen.
+	 */
+	
+	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
+	
 }
