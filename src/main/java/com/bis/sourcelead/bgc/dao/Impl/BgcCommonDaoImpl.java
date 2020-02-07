@@ -534,7 +534,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	public List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			Query query = session.createQuery("from  BgcStatus status where status.orgLocationId = :orgLocationId")
+			Query query = session.createQuery("from  BgcStatus status where status.orgLocationId = :orgLocationId order by status.updatedDate desc, status.id desc")
 					       .setLong("orgLocationId", orgLocationId);
 			List<BgcStatus> statusList = query.list();
 			return statusList;
@@ -549,7 +549,7 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	public List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			Query query = session.createQuery("from  BgcComponent comp where comp.orgLocationId = :orgLocationId")
+			Query query = session.createQuery("from  BgcComponent comp where comp.orgLocationId = :orgLocationId order by comp.updatedDate desc, comp.id desc")
 					       .setLong("orgLocationId", orgLocationId);
 			List<BgcComponent> componentList = query.list();
 			return componentList;
