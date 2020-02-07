@@ -36,30 +36,8 @@
 
         <div class="col-md-6 mt25">
           <div class="clearfix">
-            <label class="col-md-4 mt10">Status</label>
-            <div class="col-md-7 padding_right">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle width100percnt" type="button" id="menu1" data-toggle="dropdown">-- Select Status --
-              <span class="caret mt10 pull-right"></span></button>
-              <ul class="dropdown-menu width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn">
-              <c:forEach var="status" items="${statusList}" varStatus="rows">
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="status${status.id}" class="checkbox-custom" name="status${status.id}" type="checkbox">
-                    <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
-                  </div>
-                </li>
-                </c:forEach>
-                <li role="Address">
-                  <a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgStatusList" target="_blank" class="text-primary">
-                    <i class="fa fa-plus paddingRight mr10"></i>Add Status
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-1 text-center padding_left">
-              <a class="fa fa-refresh btn btn-primary newRefreshbtn"></a>
+           <div id ="orgStatusDiv">
+           <jsp:include page= "bgcStatusList.jsp"/>
           </div>
           </div>
         </div>
@@ -67,30 +45,8 @@
         <div class="clearfix">
         <div class="col-md-6">
           <div class="clearfix">
-            <label class="col-md-4 mt10">Component Type</label>
-            <div class="col-md-7 padding_right">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle width100percnt" type="button" id="menu1" data-toggle="dropdown">-- Select Component Type --
-              <span class="caret"></span></button>
-              <ul class="dropdown-menu ml width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn">
-               <c:forEach var="component" items="${componentList}" varStatus="rows">
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                    <input id="com${component.id}" class="checkbox-custom" name="${component.id}" type="checkbox">
-                    <label for="com${component.id}" class="checkbox-custom-label"><span class="ml5">${component.name}</span></label>
-                  </div>
-                </li>
- 			</c:forEach>
-                <li role="Address">
-                  <a id="addComponentType">
-                    <i class="fa fa-plus paddingRight mr10 text-primary"></i>Add Component Type
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-1 text-center padding_left">
-            <a class="fa fa-refresh btn btn-primary newRefreshbtn"></a>
+            <div id ="orgComponentsDiv">
+           <jsp:include page= "bgcComponentList.jsp"/>
           </div>
           </div>
         </div>
@@ -198,25 +154,26 @@
 <div class="mask"></div>
 <div class="popupWrap" id="componenttypepop">
   <div class="popupHead"><span>Add Component Type</span><i class="closePop pull-right popClose"></i></div>
-    <form id="#" name="" action="" method="post">
+  <form id="bgcComponentFrm" name="bgcComonentFrm" action="" method="post">
     <div class="popupContent">
         <div class="clearfix mb">
-            <label class="noPad">Component Type <b class="valStar">*</b></label>
+              <input type="hidden" id ="id" name ="id" val=""/>
+            <label class="noPad">Component Name <b class="valStar">*</b></label>
             <div class="clearfix">
-                <input class="form-control" placeholder="Name" type="text">
+               <input class="form-control" placeholder="Name" type="text"id ="componentName" name="name" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
             </div>
         </div>
         <div class="clearfix mb">
             <label class="noPad">Description</label>
             <div class="clearfix">
-      <textarea placeholder="Description" class="form-control" rows="3"></textarea>
+         <textarea placeholder="Description" id="description" name="description" class="form-control" field-name="Description" rows="3" data-validation="required validate_length length2-500"></textarea>
             </div>
         </div>
 
     </div>
     
     <div class="popupFoot text-right">
-      <button type="button" class="slBtn md colorBtn">Save</button>
+      <button type="button" class="slBtn md colorBtn"  id="saveBgcComponentBtn" onclick ="addBgcComponent();">Save</button>
       <button type="button" class="slBtn md popClose" onclick="flushComponent();"> Cancel</button>
     </div>
     

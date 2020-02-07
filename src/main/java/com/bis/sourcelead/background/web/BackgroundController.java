@@ -501,6 +501,57 @@ public class BackgroundController {
 			return null;
 		}
 	}
+	/**
+	 * used to refresh status list when clicked refresh icon at add template screen.
+	 */
+	@RequestMapping(value = { "/refreshBgcStatusList"})
+	public ModelAndView refreshBgcStatusList(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			
+			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+			System.out.println(" status list size is "+statusList.size());
+			statusList.forEach(System.out::println);
+			model.addObject("statusList",statusList);
+			System.out.println(" status list size is "+statusList.size());
+			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+			model.addObject("componentList",componentList);
+			System.out.println(" componentList list size is "+componentList.size());
+			model.setViewName("/background/bgcStatusList");
+			 
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * used to refresh component list when clicked refresh icon at add template screen.
+	 */
+	@RequestMapping(value = { "/refreshBgcComponentList"})
+	public ModelAndView refreshBgcComponentList(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			
+			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+			model.addObject("componentList",componentList);
+			System.out.println(" componentList list size is "+componentList.size());
+			model.setViewName("/background/bgcComponentList");
+			 
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
 	/** 
 	 * Below method is used to get the template list SRINIVAS 03-FEB-2020
 	 * 

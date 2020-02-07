@@ -42,6 +42,7 @@
     <form id="bgcComponentFrm" name="bgcComonentFrm" action="" method="post">
     <div class="popupContent">
         <div class="clearfix mb">
+        <input type="hidden" id ="id" name ="id" val=""/>
             <label class="noPad">Component Name <b class="valStar">*</b></label>
             <div class="clearfix">
                 <input class="form-control" placeholder="Name" type="text"id ="componentName" name="name" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
@@ -174,7 +175,7 @@ dynamicComponentPagination = function(url) {
                       result = result + '<td><i id="edit"  onclick=ediBgcComponentById('+opt.id+'); class="glyphicon glyphicon-pencil"></i></a>';
                	 }
                	 if(roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS") > -1){ 
-                       result = result + '<i id="delete" onclick=bgc.deleteBgcRecord(bgc.deleteBgcComponentById,'+opt.id+',"","'+encodeURIComponent(name)+'"); class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                       result = result + '<i id="delete" onclick=bgc.deleteBgcRecord(bgc.deleteBgcComponentById,'+opt.id+',"","'+encodeURIComponent(opt.name)+'"); class="glyphicon glyphicon-trash ml10"></i></div></td>';
                	 }
                    return result;
                   
