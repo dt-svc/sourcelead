@@ -327,27 +327,30 @@ public class DashboardRestController {
 			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			
 			Date[] searchDates = null;
-			if(!tedDTO.getDateSelection().equalsIgnoreCase("custom")) {
-				searchDates = reportsUtil.getJobFilterDate(tedDTO.getDateSelection(),orgLoc);
-			}else {
-				Date startDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), tedDTO.getFromDate());
-	    	    Date endDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), tedDTO.getToDate());
-	    	   
-	    	    Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
-	    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
-	    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
-	    	    String customStartTimeStr = TZ_DF_CSD.format(startDate);
-	    	    String customEndTimeStr = TZ_DF_CED.format(endDate);
-	    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
-	    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
-	    	    startDate = TZ_DF_TS.parse(startDateString);
-	    	    endDate = TZ_DF_TS.parse(endDateString);
-	    	    
-	    	    searchDates = new Date[2];
-	    	    searchDates[0] = startDate;
-	    	    searchDates[1] = endDate;
+			if(StringUtils.isNotBlank(tedDTO.getDateSelection())) {
+				if(!tedDTO.getDateSelection().equalsIgnoreCase("custom")) {
+					searchDates = reportsUtil.getJobFilterDate(tedDTO.getDateSelection(),orgLoc);
+				}else {
+					Date startDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), tedDTO.getFromDate());
+		    	    Date endDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), tedDTO.getToDate());
+		    	   
+		    	    Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+		    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+		    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+		    	    String customStartTimeStr = TZ_DF_CSD.format(startDate);
+		    	    String customEndTimeStr = TZ_DF_CED.format(endDate);
+		    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+		    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+		    	    startDate = TZ_DF_TS.parse(startDateString);
+		    	    endDate = TZ_DF_TS.parse(endDateString);
+		    	    
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDate;
+		    	    searchDates[1] = endDate;
+				}	
 			}
+		
 			
 			if("employes".equalsIgnoreCase(timesheetFor)){
 				 Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
