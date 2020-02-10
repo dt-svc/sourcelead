@@ -693,7 +693,7 @@ public class RequirementWorkflowController {
 			 * and not true when user clicks on editStage. 
 			 * when getIsStageViewed is true, user can only view the stage and cannot edit it.
 			 * */
-			if(requirementWorkFlowStagesDTO.getIsStageViewed() == null){
+			if(requirementWorkFlowStagesDTO.getIsStageViewed() == null || !requirementWorkFlowStagesDTO.getIsStageViewed().equalsIgnoreCase("true")){
 			List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(null,requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid(), orgLocations.getId());
 			modelandview.addObject("onlyQuestAndTasksEditable", false);
 			if(requirementSubLst != null && requirementSubLst.size()>0) {
@@ -1024,5 +1024,24 @@ public class RequirementWorkflowController {
 	
 	}
 	
+	@RequestMapping(value = "/viewQuestionnaire")
+	public ModelAndView viewQuestionnaire(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) throws Exception{
+		ModelAndView modelandview = new ModelAndView();
+		modelandview.addObject("templateUuid",templateUuid);
+		modelandview.setViewName("workflow/viewQuestionnaire");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
+		return modelandview;
+	}
 	
+	@RequestMapping(value = "/loadViewQuestionnaire", method = RequestMethod.GET)
+	@ResponseBody
+	public RequirementQuestionnaireTemplateDTO loadViewQuestionnaire(@RequestParam(value="templateUuid", required=true) String templateUuid){
+		RequirementQuestionnaireTemplateDTO templateDTO = new RequirementQuestionnaireTemplateDTO();
+		RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+		templateDTO.setName(questionnaireTemplate.getName());
+	    templateDTO.setDescription(questionnaireTemplate.getDescription());
+	    templateDTO.setJsonString(questionnaireTemplate.getJsonString());
+		return templateDTO;
+		
+	}
 }
