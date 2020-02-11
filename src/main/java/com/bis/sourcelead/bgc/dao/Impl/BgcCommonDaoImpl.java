@@ -559,4 +559,35 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			return null;
 		}
 	}
+
+	@Override
+	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(bgcTemplate);
+			return Constants.SUCCESS;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while saving BGC Template Details in Database in Database "+e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid) {
+		BgcTemplateDTO bgcTemplateDTO = null;
+			try {
+				Session session = sessionFactory.getCurrentSession();
+				
+				BgcTemplate bgcTemplate= (BgcTemplate) session.createQuery("from BgcTemplate template where template.uuid =:uuid").setString("uuid", uuid).uniqueResult();
+				if(bgcTemplate != null) {
+					bgcTemplateDTO = new BgcTemplateDTO();
+					BeanUtils.copyProperties(bgcTemplate, bgcTemplateDTO);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		return bgcTemplateDTO;
+	}
 }

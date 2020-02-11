@@ -81,5 +81,9 @@ public interface BgcCommonService {
 	 */
 	
 	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
+
+	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user, OrgLocations orgLocations);
+
+	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
 	
 }

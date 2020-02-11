@@ -33,6 +33,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -482,5 +483,38 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId) {
 		return bgcCommonDao.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+	}
+	@Override
+	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user,
+			OrgLocations orgLocations) {
+		BgcTemplate  bgcTemplate = new BgcTemplate();
+		if(bgcTemplateDTO.getId() != null) {
+			bgcTemplate.setId(bgcTemplateDTO.getId());
+		}
+		bgcTemplate.setOrgLocationId(orgLocations);
+		Date date = new Date();
+        Date currentDate = commonUtil.orgLocationCommonDate(date, orgLocations);
+        bgcTemplate.setName(bgcTemplateDTO.getName());
+        bgcTemplate.setDescription(bgcTemplateDTO.getDescription());
+        bgcTemplate.setBgcStatusString(bgcTemplateDTO.getStatuString());
+        bgcTemplate.setBgcComponentString(bgcTemplateDTO.getComponentString());
+        bgcTemplate.setConfigureType(bgcTemplateDTO.getConfigureType());
+        bgcTemplate.setStatus(Constants.RECORD_ACTIVE);
+		if(bgcTemplate.getId() == null) { // for new record creation 
+			bgcTemplate.setCreatedBy(user);
+			bgcTemplate.setCreatedDate(currentDate);
+			bgcTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID()); // need to add random UUID for the BGC Template Details.
+			bgcTemplate.setUpdatedBy(user);
+			bgcTemplate.setUpdatedDate(currentDate);
+		}else { // for update record 
+			bgcTemplate.setId(bgcTemplateDTO.getId());
+			bgcTemplate.setUpdatedBy(user);
+			bgcTemplate.setUpdatedDate(currentDate);
+		}
+		return bgcCommonDao.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplate, orgLocations);
+	}
+	@Override
+	public BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid) {
+		return bgcCommonDao.getBgcTemplateDetailsByUuid(uuid);
 	}
 }

@@ -2,6 +2,7 @@ package com.bis.sourcelead.bgc.dto;
 
 import java.io.Serializable;
 
+import com.bis.sourcelead.annotations.Required;
 import com.bis.sourcelead.dto.SearchDTO;
 
 /**
@@ -18,7 +19,8 @@ public class BgcTemplateDTO extends SearchDTO implements Serializable{
 	private Long id;
 	
 	private Long orgLocationId;
-	
+	 
+	@Required(desc = "Template Name")
 	private String name;
 	
 	private String description;
@@ -27,9 +29,11 @@ public class BgcTemplateDTO extends SearchDTO implements Serializable{
 	
 	private String uuid;
 	
-	private Long bgcStatusId;
+	@Required(desc = "status ids")
+	private String statuString;
 	
-	private Long bgcComponentId;
+	@Required(desc = "component ids")
+	private String componentString;
 	
 	private Integer status;
 	
@@ -89,23 +93,22 @@ public class BgcTemplateDTO extends SearchDTO implements Serializable{
 		this.uuid = uuid;
 	}
 
-	public Long getBgcStatusId() {
-		return bgcStatusId;
+
+	public String getStatuString() {
+		return statuString;
 	}
 
-	public void setBgcStatusId(Long bgcStatusId) {
-		this.bgcStatusId = bgcStatusId;
+	public void setStatuString(String statuString) {
+		this.statuString = statuString;
 	}
 
-	public Long getBgcComponentId() {
-		return bgcComponentId;
+	public String getComponentString() {
+		return componentString;
 	}
 
-	public void setBgcComponentId(Long bgcComponentId) {
-		this.bgcComponentId = bgcComponentId;
+	public void setComponentString(String componentString) {
+		this.componentString = componentString;
 	}
-
-	
 
 	public Integer getStatus() {
 		return status;

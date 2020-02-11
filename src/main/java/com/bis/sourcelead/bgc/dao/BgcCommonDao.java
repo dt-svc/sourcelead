@@ -10,6 +10,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -62,4 +63,8 @@ public interface BgcCommonDao {
 	List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId);
 
 	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
+
+	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
+
+	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
 }
