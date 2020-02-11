@@ -322,7 +322,7 @@
 	              </ul>
 	            </div>
 	            <!-- Dropdown -->
-	            <div class="clearfix text-center mb10"><i class="userconfigSVG"></i></div>
+	            <div class="clearfix text-center mb10"><i class="bgcconfigSVG"></i></div>
 	            <div class="clearfix text-center">
 	              <h4>Background Verification</h4>
 	            </div>
