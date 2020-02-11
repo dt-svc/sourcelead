@@ -12,24 +12,25 @@
   <section class="content-wraper">
     <section class="content-header clearfix">
       <div class="pull-left">
-        <h2>Add Template</h2>
+        <h2>Add BGC Template</h2>
       </div>
-      <div class="pull-right brud-crum">Settings &raquo; Performance &raquo; Add Template</div>
+      <div class="pull-right brud-crum">Settings &raquo; Background Check &raquo; Add Template</div>
     </section>
     <div class="clearfix">
       <div class="timesheet_out clearfix minHeightcol5 box-shadow-large rounded-2">
+      <form id="bgcTemplateFrm" name="bgcTemplateFrm" action="" method="post">
         <div class="mt25 clearfix"></div>
         <div class="col-md-6">
           <label class="col-md-4 mt5">Template Name</label>
           <div class="col-md-8">
-            <input type="text" class="form-control">
+           <input class="form-control" placeholder="Name" type="text"  id ="templateName" name="name" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
           </div>
         </div>
         <div class="clearfix"></div>
         <div class="col-md-6">
           <label class="col-md-4 mt5">Description</label>
           <div class="col-md-8">
-            <textarea class="form-control" rows="3"></textarea>
+            <textarea placeholder="Description" id="description" name="description" class="form-control" field-name="Description" rows="3" data-validation="required validate_length length2-500"></textarea>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -105,7 +106,7 @@
               <div class="quetionwidgetFooter clearfix mt">
                 <div class="pull-right">
                   <button type="button" class="btn btn-default mr">Cancel</button>
-                  <button type="button" class="btn btn-primary">Save</button>
+                  <button type="button" id ="saveBgcTemplateBtn" class="btn btn-primary" onclick="saveBgcTemplate();" >Save</button>
                 </div>
               </div>
             </div>
@@ -137,13 +138,13 @@
               <div class="clearfix"></div>
               <div class="quetionwidgetFooter clearfix mt">
                 <div class="pull-right">
-                  <button type="button" class="btn btn-default mr">Cancel</button>
-                  <button type="button" class="btn btn-primary">Save</button>
+                  <button type="button"  class="btn btn-default mr">Cancel</button>
+                  <button type="button"  class="btn btn-primary" >Save</button>
                 </div>
               </div>
             </div>
           </div>
-
+		</form>
       </div>
     </div>
   </section>
@@ -198,8 +199,18 @@ $(".overIcon, .newActPop").click(function(e){
 
 <script>
 function  saveBgcTemplate() {
+	pushStatusIds();
+	pushComponentIds();
 	if ($('#bgcTemplateFrm').validate(false, validationSettings)) {
 		var formData = getFormData("bgcTemplateFrm");
+		var validStatus = pushStatusIds();
+		if(validStatus == false ) return;
+		
+		var validComponent = pushComponentIds();
+		if(validComponent == false ) return;
+		
+		formData ["statuString"]="1,2,3";
+		formData ["componentString"]="1,2,3";
 		// below is for edit functionality of the status
 		  $("#saveBgcTemplateBtn").text('Processing..'); 
           $("#saveBgcTemplateBtn").addClass("disabled");
@@ -228,7 +239,12 @@ function  saveBgcTemplate() {
 		});
 	}
 }
-function  ediBgcTemplateById(TemplateId) {
+
+$('body').on('blur', '#bgcTemplateFrm', function() {
+	$("#bgcTemplateFrm").showHelpOnFocus();
+	$("#bgcTemplateFrm").validateOnBlur(false, validationSettings);
+});
+/* function  ediBgcTemplateById(TemplateId) {
 			$.ajax({
 			type : "GET",
 			url : vmsUrl + "/bgc/getBgcTemplateById?id="+TemplateId,
@@ -245,7 +261,7 @@ function  ediBgcTemplateById(TemplateId) {
 			}
 
 		});
-	}
+	} */
 </script>
 
 <script>

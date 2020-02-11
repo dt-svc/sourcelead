@@ -708,6 +708,73 @@ public class BackgroundController {
 			 logger.debug("after Deleted Bgc Component Record !!!!!!!");
 			return response;
 		}
-		
-		
+	// below method is for saving BGC Template details by ORG LOCATION id by SRINIVAS SABBU.
+	@RequestMapping(value = { "/SaveOrUpdateBgcTemplate"}, method = RequestMethod.POST)
+	public  @ResponseBody Response<String>  saveOrUpdateBgcTemplate(BgcTemplateDTO bgcTemplateDTO,
+			HttpServletRequest request){
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+			try {
+				if (Validator.validate(bgcTemplateDTO)) {
+					bgcCommonService.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplateDTO, user , orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Template Task Details" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	/*// below method is used to get the BGC Template details by UUID by SRINIVAS SABBU.
+	@RequestMapping(value = { "/getBgcTemplateDetails"})
+	public @ResponseBody BgcTemplateDTO getBgcTemplateDetailsByUuid(@RequestParam(value = "uuid", required = true) String uuid,
+			HttpServletRequest request){
+		BgcTemplateDTO bgcTemplateDTO = null;
+		try {
+			if(StringUtils.isNotBlank(uuid)) {
+				bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(uuid);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return bgcTemplateDTO;
+	}*/
+	
+	//editBgcTemplate
+		@RequestMapping(value = { "/editBgcTemplate" })
+		public ModelAndView editBgcTemplate(
+				@RequestParam(value="uuid", required=true) String uuid,
+				HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+			BgcTemplateDTO bgcTemplateDTO = null;
+			try {
+				if(StringUtils.isNotBlank(uuid)) {
+					bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(uuid);
+					if(bgcTemplateDTO != null){
+						model.addObject("bgcTemplateDto", bgcTemplateDTO);
+					}
+			}	
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			SessionMaintainanceData sessionData = new SessionMaintainanceData();
+			sessionData.setNav(Constants.COMPLETED);
+			      
+				  model.addObject("sourceleadUrl", sourceleadUrl);
+				  model.setViewName("/background/editTemplate");
+			return model;
+		}
 }

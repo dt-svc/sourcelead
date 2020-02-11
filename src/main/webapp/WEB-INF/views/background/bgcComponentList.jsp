@@ -7,13 +7,13 @@
              <label class="col-md-4 mt10">Component Type</label>
             <div class="col-md-7 padding_right">
             <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle width100percnt" type="button" id="menu1" data-toggle="dropdown">-- Select Component Type --
+              <button class="btn btn-default dropdown-toggle width100percnt tbldata-dotdot-200" type="button" id="componentList" data-toggle="dropdown">-- Select Component Type --
               <span class="caret"></span></button>
               <ul class="dropdown-menu ml width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn">
                <c:forEach var="component" items="${componentList}" varStatus="rows">
                 <li>
                   <div class="checkbox-new clearfix ml mt5">
-                    <input id="com${component.id}" class="checkbox-custom" name="${component.id}" type="checkbox">
+                    <input id="com${component.id}" class="checkbox-custom componentGroup"  onclick="pushComponentIds();" componentId ="${component.id}" name="componentString" type="checkbox">
                     <label for="com${component.id}" class="checkbox-custom-label"><span class="ml5">${component.name}</span></label>
                   </div>
                 </li>
@@ -25,6 +25,7 @@
                 </li>
               </ul>
             </div>
+             <p id="componentValid" style="color: red; display:none">Component is required</p>
           </div>
           <div class="col-md-1 text-center padding_left">
             <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgComponentList();"></a>
@@ -32,7 +33,8 @@
      <script>
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
      var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
-     
+     var componentObj= [];
+     var componentNames = [];
      function refreshOrgComponentList(){
     	 $.ajax({
 				type : "GET",
@@ -60,9 +62,10 @@
     							$("#saveBgcComponentBtn").removeClass("disabled");
     							$("#saveBgcComponentBtn").text('Save');
     							showError("Invalid data");
-    						} else {
-    							location.replace(vmsUrl+"/bgc/addBgcTemplate");	
+    						}else{
+    							$(".popClose").trigger("click");
     						}
+    						
     					} else if (result.indexOf('Sign In') != -1) {
     						location.replace(sourceleadUrl);
     					} else {
@@ -73,4 +76,26 @@
     			});
     		}
     	}
+     function pushComponentIds() {
+    	 componentObj= [];
+    	 componentNames = [];
+    	 //componentObj.toString();
+    	 $('.componentGroup').each(function(index, value){
+        	 if ($(value).is(":checked")){
+        		 componentObj.push($(value).attr("componentId"));
+        		 componentNames.push($(value).closest("li").text());
+             }
+         });
+    	 if(componentObj.length==0){
+    		 $('#componentValid').show();
+    		 $('#componentList').text("-- Select Component --");
+    		 return false;
+    	 }else{
+    		 $('#componentValid').hide();
+    		 $('#componentList').text("");
+    		 $('#componentList').text(componentNames.join(','));
+    		 return true;
+    	 }
+    	 
+     }
      </script>

@@ -6,14 +6,14 @@
     pageEncoding="ISO-8859-1"%>
             <label class="col-md-4 mt10">Status</label>
             <div class="col-md-7 padding_right">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle width100percnt" type="button" id="menu1" data-toggle="dropdown">-- Select Status --
+            <div class="dropdown" >
+              <button class="btn btn-default dropdown-toggle width100percnt tbldata-dotdot-200" type="button" id="statusList" data-toggle="dropdown">-- Select Status --
               <span class="caret mt10 pull-right"></span></button>
               <ul class="dropdown-menu width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn" >
               <c:forEach var="status" items="${statusList}" varStatus="rows">
-                <li>
+                <li >
                   <div class="checkbox-new clearfix ml mt5">
-                    <input id="status${status.id}" class="checkbox-custom" name="status${status.id}" type="checkbox">
+                    <input id="status${status.id}" class="checkbox-custom statusGroup" statusId ="${status.id}" onclick="pushStatusIds();" name="statusString" type="checkbox" data-validation="required">
                     <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
                   </div>
                 </li>
@@ -25,6 +25,7 @@
                 </li>
               </ul>
             </div>
+            <p id="statusValid" style="color: red; display:none">Status is required</p>
           </div>
           <div class="col-md-1 text-center padding_left">
               <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgStatusList();"></a>
@@ -35,7 +36,8 @@
      <script>
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
      var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
-     
+     var statusObj= [];
+     var statusNames=[];
      function refreshOrgStatusList(){
     	 $.ajax({
 				type : "GET",
@@ -45,5 +47,27 @@
 				},
 			});
      }
-     
+     function pushStatusIds() {
+    	 statusObj= [];
+    	 statusNames = [];
+    	 //statusObj.toString();
+    	 $('.statusGroup').each(function(index, value){
+        	 if ($(value).is(":checked")){
+        		 statusObj.push($(value).attr("statusId"));
+        		 statusNames.push($(value).closest("li").text());
+             }
+         });
+    	 if(statusObj.length==0){
+    		 $('#statusValid').show();
+    		 $('#statusList').text("-- Select Status --");
+    		 return false;
+    	 }else{
+    		 $('#statusValid').hide();
+    		 $('#statusList').text("");
+    		 $('#statusList').text(statusNames.join(','));
+    		 return true;
+    	 }
+    	 
+     }
+    
      </script>
