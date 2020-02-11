@@ -209,8 +209,8 @@ function  saveBgcTemplate() {
 		var validComponent = pushComponentIds();
 		if(validComponent == false ) return;
 		
-		formData ["statuString"]="1,2,3";
-		formData ["componentString"]="1,2,3";
+		formData ["statuString"]=statusObj.toString();
+		formData ["componentString"]=componentObj.toString();
 		// below is for edit functionality of the status
 		  $("#saveBgcTemplateBtn").text('Processing..'); 
           $("#saveBgcTemplateBtn").addClass("disabled");
