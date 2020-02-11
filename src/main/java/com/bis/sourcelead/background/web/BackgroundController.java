@@ -760,13 +760,21 @@ public class BackgroundController {
 				HttpServletRequest request) throws Exception {
 			ModelAndView model = new ModelAndView();
 			BgcTemplateDTO bgcTemplateDTO = null;
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			try {
 				if(StringUtils.isNotBlank(uuid)) {
 					bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(uuid);
 					if(bgcTemplateDTO != null){
 						model.addObject("bgcTemplateDto", bgcTemplateDTO);
 					}
+					
+					List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+					model.addObject("statusList",statusList);
+
+					List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+					model.addObject("componentList",componentList);
 			}	
+				
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
