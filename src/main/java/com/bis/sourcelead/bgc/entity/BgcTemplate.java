@@ -45,10 +45,10 @@ public class BgcTemplate implements Serializable{
 	private String uuid;
 	
 	@Column(name = "BGC_STATUS_STRING ")
-	private String  bgcStatusString;
+	private String  statusString;
 
 	@Column(name = "BGC_COMPONENT_STRING ")
-	private String  bgcComponentString;
+	private String  componentString;
 	
 	@Column(name = "DESCRIPTION ", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -105,22 +105,21 @@ public class BgcTemplate implements Serializable{
 		this.uuid = uuid;
 	}
 
-	
 
-	public String getBgcStatusString() {
-		return bgcStatusString;
+	public String getStatusString() {
+		return statusString;
 	}
 
-	public void setBgcStatusString(String bgcStatusString) {
-		this.bgcStatusString = bgcStatusString;
+	public void setStatusString(String statusString) {
+		this.statusString = statusString;
 	}
 
-	public String getBgcComponentString() {
-		return bgcComponentString;
+	public String getComponentString() {
+		return componentString;
 	}
 
-	public void setBgcComponentString(String bgcComponentString) {
-		this.bgcComponentString = bgcComponentString;
+	public void setComponentString(String componentString) {
+		this.componentString = componentString;
 	}
 
 	public String getDescription() {

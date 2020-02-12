@@ -496,8 +496,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
         Date currentDate = commonUtil.orgLocationCommonDate(date, orgLocations);
         bgcTemplate.setName(bgcTemplateDTO.getName());
         bgcTemplate.setDescription(bgcTemplateDTO.getDescription());
-        bgcTemplate.setBgcStatusString(bgcTemplateDTO.getStatuString());
-        bgcTemplate.setBgcComponentString(bgcTemplateDTO.getComponentString());
+        bgcTemplate.setStatusString(bgcTemplateDTO.getStatusString());
+        bgcTemplate.setComponentString(bgcTemplateDTO.getComponentString());
         bgcTemplate.setConfigureType(bgcTemplateDTO.getConfigureType());
         bgcTemplate.setStatus(Constants.RECORD_ACTIVE);
 		if(bgcTemplate.getId() == null) { // for new record creation 

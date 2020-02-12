@@ -30,7 +30,7 @@ public class BgcTemplateDTO extends SearchDTO implements Serializable{
 	private String uuid;
 	
 	@Required(desc = "status ids")
-	private String statuString;
+	private String statusString;
 	
 	@Required(desc = "component ids")
 	private String componentString;
@@ -94,12 +94,12 @@ public class BgcTemplateDTO extends SearchDTO implements Serializable{
 	}
 
 
-	public String getStatuString() {
-		return statuString;
+	public String getStatusString() {
+		return statusString;
 	}
 
-	public void setStatuString(String statuString) {
-		this.statuString = statuString;
+	public void setStatusString(String statusString) {
+		this.statusString = statusString;
 	}
 
 	public String getComponentString() {
