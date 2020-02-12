@@ -2,6 +2,7 @@
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
             <label class="col-md-4 mt10">Status</label>
@@ -13,9 +14,17 @@
               <c:forEach var="status" items="${statusList}" varStatus="rows">
                 <li >
                   <div class="checkbox-new clearfix ml mt5">
-                    <input id="status${status.id}" class="checkbox-custom statusGroup" statusId ="${status.id}" onclick="pushStatusIds();" name="statusString" type="checkbox" data-validation="required">
+                    <c:choose>
+                    <c:when test="${not empty selStatusList && fn:contains(selStatusList, status.id)}">
+                    <input id="status${status.id}" class="checkbox-custom statusGroup" statusId ="${status.id}" onclick="pushStatusIds();" name="statusString" checked type="checkbox" data-validation="required"  >
                     <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
                   </div>
+                 </c:when>
+                   <c:otherwise>
+                    <input id="status${status.id}" class="checkbox-custom statusGroup" statusId ="${status.id}" onclick="pushStatusIds();" name="statusString"  type="checkbox" data-validation="required"  >
+                    <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
+                   </c:otherwise>
+                  </c:choose>
                 </li>
                 </c:forEach>
                 <li role="Address">

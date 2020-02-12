@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -485,13 +486,9 @@ public class BackgroundController {
 			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			
 			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
-			System.out.println(" status list size is "+statusList.size());
-			statusList.forEach(System.out::println);
 			model.addObject("statusList",statusList);
-			System.out.println(" status list size is "+statusList.size());
 			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
 			model.addObject("componentList",componentList);
-			System.out.println(" componentList list size is "+componentList.size());
 			model.setViewName("/background/addTemplate");
 			 
 			return model;
@@ -513,13 +510,8 @@ public class BackgroundController {
 			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			
 			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
-			System.out.println(" status list size is "+statusList.size());
-			statusList.forEach(System.out::println);
 			model.addObject("statusList",statusList);
 			System.out.println(" status list size is "+statusList.size());
-			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
-			model.addObject("componentList",componentList);
-			System.out.println(" componentList list size is "+componentList.size());
 			model.setViewName("/background/bgcStatusList");
 			 
 			return model;
@@ -766,6 +758,14 @@ public class BackgroundController {
 					bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(uuid);
 					if(bgcTemplateDTO != null){
 						model.addObject("bgcTemplateDto", bgcTemplateDTO);
+						if(StringUtils.isNotBlank(bgcTemplateDTO.getStatusString())) {
+							List<String> selStatusList = Arrays.asList(bgcTemplateDTO.getStatusString().split("\\s*,\\s*"));
+							model.addObject("selStatusList",selStatusList);
+						}
+						if(StringUtils.isNotBlank(bgcTemplateDTO.getComponentString())) {
+							List<String> selComponentList = Arrays.asList(bgcTemplateDTO.getComponentString().split("\\s*,\\s*"));
+							model.addObject("selComponentList",selComponentList);
+						}
 					}
 					
 					List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
@@ -773,6 +773,8 @@ public class BackgroundController {
 
 					List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
 					model.addObject("componentList",componentList);
+					
+					
 			}	
 				
 			}catch(Exception e) {
