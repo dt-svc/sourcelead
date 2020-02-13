@@ -35,9 +35,10 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				getExpensesList();
 				$("#appro-pop").show();
 			}
+			
 		 };
 </script>
-	
+
 
 <!-- Content Area -->
       <section class="content-wraper">
@@ -47,6 +48,15 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
           </div>
           <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; My Expenses</div>
         </section>
+        
+     <c:if test="${SourceLeadWeb_expensesTabCount == 2}">
+        <div id="tabs-menu" class="clearfix project-tabs-menu backgroundWhite">
+			<ul class="newTabs">
+				<li id="myExpensesLi" class="current"><a href="${SourceLeadWeb_pmsUrl}/expenses" class="cursorPoninter">My Expenses</a></li>
+				<li id="employeeExpensesLi"  class=""><a href="${SourceLeadWeb_pmsUrl}/expensesApprovalList" class="cursorPoninter">Employee Expenses</a></li>
+			</ul>
+	   </div>
+     </c:if>
         
         
 		<!-- Timesheet -->
