@@ -207,6 +207,12 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 						}else{
 							spocLastName = "";
 						}
+						if(null != json.userList && json.userList != '' && json.userList != 'undefined'){
+							userList = json.userList;
+						}else{
+							userList = "";
+						}
+						
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
@@ -341,8 +347,8 @@ function getCustomDependentFieldVedorContact(clientLocationId,orgRelationID,sect
 						result = result  +'	   <select class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
 						
 					    //alert("json.userList.length"+json.userList.length);
-						 for (var j = 0; j < json.userList.length; j++) {
-							var user = json.userList[j];
+						 for (var j = 0; j < userList.length; j++) {
+							var user = userList[j];
 							   if(user.id == tempOwnerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";
