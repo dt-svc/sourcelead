@@ -480,13 +480,13 @@ function invoicePagination(url){
         "columns": [
             { "data": "invoiceId" },
             { "data": "clientName"},
-            { "data": "clientContact"},
+            { "data": "clientContactName"},
             { "data": "projectName" },
             { "data": "invoiceDate" },
             { "data": "inoviceTotal"},
             { "data": "inoviceDue"},
             { "data": "dueDate"},
-            { "data": "inoviceStatus"},
+            { "data": "invoiceStatus"},
             { "data": "paymentStatus"},
             { "data": "action"}
         ],
@@ -639,7 +639,7 @@ function invoicePagination(url){
               }
 	          },{
             "targets": colIndex++,
-            "data": "clientContact",
+            "data": "clientContactName",
             "render": function ( data, type, report, meta ) {
             	var result = "";
             	result = result +'         <td>';
@@ -711,10 +711,11 @@ function invoicePagination(url){
                   }
                 },{
                     "targets": colIndex++,
-                    "data": "inoviceStatus",
+                    "data": "invoiceStatus",
                     "render": function ( data, type, report, meta ) {
                     	var result = "";
                     	var invoiceStatus = null;
+                    	result = result +'         <td> ';
                			if(report.invoiceStatus == "SENT"){
                				invoiceStatus = "Sent"
                			}else if(report.invoiceStatus == "DRAFT"){
@@ -722,8 +723,9 @@ function invoicePagination(url){
                			}else{
                				invoiceStatus = report.invoiceStatus
                			}
-               			result = result +'         <td> ';
-                    	result = result +'           <div class="tbldata-dotdot-100">'+invoiceStatus+'</div>';
+               			
+               			
+                    	result = result +'           <div class="tbldata-dotdot-vsm">'+invoiceStatus+'</div>';
                     	if(report.invoiceStatus == "Rejected"){
         			 		result = result + '    <i class="glyphicon glyphicon-comment ml10 edit-reason"><div class="edit-status"><p>'+report.rejectReason+'</p></div></i>';
         				}
@@ -736,7 +738,7 @@ function invoicePagination(url){
                       "render": function ( data, type, report, meta ) {
                     	  var result = "";
                     	  result = result +'         <td> ';
-          				result = result +'           <div class="tbldata-dotdot-100">'+report.paymentStatus+'</div> ';
+          				result = result +'           <div class="tbldata-dotdot-vsm">'+report.paymentStatus+'</div> ';
           				result = result +'         </td>';
                     	  return result;
                       }
