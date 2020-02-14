@@ -22,7 +22,7 @@ function mspVendor(orgRelationId,vendorLocationId){
 			        result = result +'  <div class="clearfix col-md-12 mb"> '; 
 			        result = result +'  <div class="pull-right">  ';
 			        result = result +'  <input value="Save" class="btn btn-primary" type="button" onclick="saveMSPVendor('+orgRelationId+','+vendorLocationId+');">  ';
-			        result = result +'  <input value="Cancel" class="btn btn-default ml" type="button" onclick="getMspVendorList('+orgRelationId+')">  ';
+// 			        result = result +'  <input value="Cancel" class="btn btn-default ml" type="button" onclick="getMspVendorList('+orgRelationId+')">  ';
 			        result = result +'  </div>  ';
 			        result = result +'  </div>  ';
 			        
@@ -58,7 +58,6 @@ var selectedMspVendorIds = [];
 	   	type: "POST",
 	    url: vmsUrl+"/getMspVendorList?&orgRelationId="+orgRelationId,	    	   
 	    success: function(data) {
-	    	console.log(data);
 	    	if(data[0].mspVendorIds != null && data[0].mspVendorIds != "" && data[0].mspVendorIds != 'undefined'){
 		    	selectedMspVendorIds = data[0].mspVendorIds.split(",");
 	    	}
