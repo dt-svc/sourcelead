@@ -1064,5 +1064,14 @@ public class PayrollRestController {
    	}
     
      
+    @RequestMapping(value = "/sendAllEmployeePlayslips", method = RequestMethod.POST)
+   	public String sendAllEmployeePlayslips(HttpServletRequest request,@RequestParam(value = "payrollUUIDs", required = false) String payrollUUIDs) throws Exception {
+		OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User loginUser = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+   		   payrollPaySlipIndService.sendAllEmployeePlayslips(loginUser, payrollUUIDs, orgLocation);
+   		 
+   		return "success";
+   	}
+    
     
 }
