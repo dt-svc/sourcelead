@@ -7,6 +7,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcCandidate.js?staticTime=${staticTime}"></script>
+<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bgcTemplateComponentFormBuilder.js"></script>
        <!-- Content Area -->
     <!-- Content Area -->
   <section class="content-wraper">
@@ -85,12 +86,6 @@
               <div class="clearfix"></div>
               <div class="row mt"> <span class="closePop"></span>
                 <div class="col-md-6">
-                      <label>Status<span class="colorRed ml5">*</span></label>
-                      <div class="clearfix">
-                        <input type="text" class="form-control">
-                      </div>
-                </div>
-                <div class="col-md-6">
                     <label>Sent to</label>
                     <div class="clearfix">
                       <input type="text" class="form-control">
@@ -108,39 +103,6 @@
                 <div class="pull-right">
                   <button type="button" class="btn btn-default mr">Cancel</button>
                   <button type="button" id ="saveBgcTemplateBtn" class="btn btn-primary" onclick="saveBgcTemplate();" >Save</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="col-md-10">
-            <div class="quetionwidget mb" style="display:block;">
-              <div class="checkbox-new">
-                <input id="address" class="checkbox-custom" name="paidComponent" type="checkbox">
-                <label for="address" class="checkbox-custom-label"></label>
-                Criminial Background
-              </div>
-              <div class="clearfix"></div>
-              <div class="row mt"> <span class="closePop"></span>
-                <div class="col-md-6">
-                      <label>Status<span class="colorRed ml5">*</span></label>
-                      <div class="clearfix">
-                        <input type="text" class="form-control">
-                      </div>
-                </div>
-                <div class="col-md-6">
-                    <label>Component</label>
-                    <div class="clearfix">
-                      <input type="text" class="form-control">
-                    </div>
-              </div>
-              </div>
-              <div class="clearfix"></div>
-              <div class="quetionwidgetFooter clearfix mt">
-                <div class="pull-right">
-                  <button type="button"  class="btn btn-default mr">Cancel</button>
-                  <button type="button"  class="btn btn-primary" >Save</button>
                 </div>
               </div>
             </div>

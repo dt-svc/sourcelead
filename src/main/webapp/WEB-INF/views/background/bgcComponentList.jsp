@@ -40,6 +40,13 @@
             <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgComponentList();"></a>
           </div>
      <script>
+     $(document).ready(function() {
+    	 <c:if test="${not empty selComponentList}">
+    	 pushComponentIds();
+    	 </c:if>
+     })
+     </script>
+     <script>
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
      var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
      var componentObj= [];

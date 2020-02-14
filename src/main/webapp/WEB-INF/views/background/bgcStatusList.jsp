@@ -80,3 +80,10 @@
      }
     
      </script>
+     <script>
+     $(document).ready(function() {
+    	 <c:if test="${not empty selStatusList}">
+    	 pushStatusIds();
+    	 </c:if>
+     })
+     </script>

@@ -489,7 +489,7 @@ public class BackgroundController {
 			model.addObject("statusList",statusList);
 			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
 			model.addObject("componentList",componentList);
-			model.setViewName("/background/addTemplate");
+			model.setViewName("/background/addBgcTemplate");
 			 
 			return model;
 		} catch (Exception e) {
@@ -784,7 +784,7 @@ public class BackgroundController {
 			sessionData.setNav(Constants.COMPLETED);
 			      
 				  model.addObject("sourceleadUrl", sourceleadUrl);
-				  model.setViewName("/background/editTemplate");
+				  model.setViewName("/background/editBgcTemplate");
 			return model;
 		}
 }
