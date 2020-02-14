@@ -387,7 +387,7 @@ public class DataMigrationCommonController {
 	            		String [] category = categoryList.toArray(new String[categoryList.size()]);
 		            	sheet.addValidationData(getDropDownListForCell(category, cellnum-1, "xls"));
 	            	}
-	            }else if(key.equalsIgnoreCase("Work Status*")) {
+	            }else if(key.equalsIgnoreCase("Working Status*")) {
 	            	sheet.addValidationData(getDropDownListForCell(Constants.ASSET_WORKING_STATUS, cellnum-1, "xls"));
 	            }
 	        }
