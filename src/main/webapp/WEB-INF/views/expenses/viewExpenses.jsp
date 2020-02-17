@@ -71,7 +71,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					
 
 					     <c:if test="${submissionStatus == 'DRAFT' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
-					        <a href="${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit" title = "Edit" class="editIcon appEditBtn"></a>
+					        <a href="${SourceLeadWeb_pmsUrl}/addExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit" title = "Edit" style="background-position: 0" class="editIcon appEditBtn"></a>
 					     </c:if>					
 					
 
