@@ -1442,7 +1442,13 @@ function changefunction(){
 </script>
 <script>
 function savePaymentAccountTestRun(){
+	var value = $("#paymentAccountType").val();
+	if(value == "SAVINGS"||value == "CHECKING"){
+	$('#emailErr').find('p.jquery_form_error_message').remove(); 
+	$('#paymentAccountEmail').removeAttr('data-validation');
+	}
 	 if ($('#paymentaccount_form').validate(false, validationSettings)){
+    	 $("#savePaymentButton").addClass("disabled");
 		 var data =  {};
 		 var val = $("#paymentAccountType").val();
 		 data["email"] = $("#paymentAccountEmail").val();
@@ -1460,7 +1466,7 @@ function savePaymentAccountTestRun(){
         	   showError(data.responseMessage);
              if(data.response === "SUCCESS" || data.response === "UNABLE_SET_PAYMENT_ACCOUNT") {
             	 closePaymentAccountPopup(val);
-            	 $("#savePaymentButton").removeAttr("disabled", "disabled");
+            	 $("#savePaymentButton").removeClass("disabled");
              }
              getPaymentAccounts();
          });
@@ -1473,6 +1479,7 @@ $('body').on('blur', '#paymentaccount_form', function() {
 	$("#paymentaccount_form").showHelpOnFocus();
 	$("#paymentaccount_form").validateOnBlur(false, validationSettings);  
 });
+
 
 </script>
 <script>

@@ -47,10 +47,15 @@
 			<div class="pull-right">
 				<c:if test="${uploadType == 'submmissionTemplateUpload'}">
 				<button type="button" class="btn btn-sm btn-primary mr"
-					onclick="saveSubmissionTemplateDataFields();">Import</button>
+					onclick="saveSubmissionTemplateDataFields();disableOnClick(this);">Import</button>
 				</c:if>
 				
-				<c:if test="${uploadType != 'submmissionTemplateUpload'}">
+				<c:if test="${uploadType == 'profileTracker' || uploadType == 'interviewTracker'}">
+				<button type="button" class="btn btn-sm btn-primary mr"
+					onclick="saveProfileTrackerTemplateDataFields();">Import</button>
+				</c:if>
+				
+				<c:if test="${uploadType != 'submmissionTemplateUpload' && uploadType != 'profileTracker' && uploadType != 'interviewTracker'}">
 				<button type="button" class="btn btn-sm btn-primary mr"
 					onclick="saveDataFields();">Import</button>
 				</c:if>
@@ -87,6 +92,7 @@
 				<input type="hidden"  readonly id="headerPosition" name="headerPosition" value="${headerPosition}">
 				<input type="hidden"  readonly id="timesheetMode" name="timesheetMode" value="${timesheetMode}">
 				<input type="hidden"  readonly id="importStatus" name="importStatus" value="${importStatus}">
+				<input type="hidden"  readonly id="requirementId" name="requirementId" value="${requirementId}">
 			</div>
 			<!-- Select Dropdowns -->
 		</div>
@@ -266,6 +272,101 @@
 </script>
 
 
+
+
+
+<script type="text/javascript">
+	function saveProfileTrackerTemplateDataFields() {
+		if ($('#dataMigration_form').validate(false, validationSettings)) {
+			
+			    var frm = $('#dataMigration_form').serializeFormJSON();
+			    var con = JSON.stringify(frm);
+			    con = con.replace(/[{}]/g, "");
+			    var jsonData = encodeURIComponent(con);
+			    var formData = getFormData1("dataMigration_form");
+			    var requirementId = '${requirementId}'
+			    var sessionId = '${SourceLeadWeb_sessionId}';
+			    var inviteEmail = '';
+			    
+			    $('#dataFileImportDiv').removeAttr("style");
+		    	$('#dataFieldsDiv').removeAttr("style");
+		    	$('#dataFieldsDiv').empty();
+		    	var flag= true;
+				
+				var uploadid = new Date().getTime();
+				var refreshId = setInterval(function(){
+					if(flag == true){
+						getUploadProgressBar();
+					  }else{
+						  clearInterval(refreshId);
+						  $(".browseProgress").hide();
+						  getUploadProgressBar();
+					  }
+					},1000);
+				
+			if($("#inviteEmail").val() != null && $("#inviteEmail").val() != 'undefined' && $("#inviteEmail").val() != ''){
+				inviteEmail = $("#inviteEmail").val();
+			}
+			$.ajax({
+				type : "POST",
+				data : formData,
+				processData : false,
+				contentType : false,
+				url : sourceleadUrl + "/getDataByMatchedFields?"
+						+ tokenParamName + "=" + tokenValue+"&jsonData="+jsonData+"&requirementId="+requirementId+"&uploadid="+uploadid+"&sessionId="+sessionId,
+				success : function(data) {
+			    	$('#dataFieldsDiv').append(data);
+			    	var importStatus = $('#importStatus').val();
+			    	if(importStatus == "success"){
+			    		$('#selector11').removeClass('bg-red').addClass('success_pop');
+          				$("#msgDiv").html("Data imported successfully");
+          				$('#errorDownloadDiv').removeAttr("style");
+          				$('#errorDownloadDiv').prepend("<span class='text-green'>Data imported successfully</span>");
+          				
+          				$(".import_submission_side_wrap").removeClass("import_submission_side_wrap_active");
+          				$("body").css('overflow-y', 'auto');
+          				requirementPipeline('${requirementId}','all')
+          				
+          			}else if(importStatus == "fail"){
+          				$('#selector11').removeClass('success_pop').addClass('bg-red');
+          				$("#msgDiv").html("Should upload file with valid data");
+          				$('#errorDownloadDiv').removeAttr("style");
+          				$('#errorDownloadDiv').prepend("<span class='colorRed'>Should upload file with valid data</span>");
+          			}else if(importStatus != ''){
+          				$('#selector11').removeClass('success_pop').addClass('bg-red');
+          				$("#msgDiv").html("Some data is failed to import");
+          				$('#errorDownloadDiv').removeAttr("style");
+          				$('#errorDownloadDiv').prepend("<span class='colorRed'>Some data is failed to import <a download class='colorRed glyphicon glyphicon-download-alt' target='_blank' href='"+importStatus+"' title='Download error file'></a></span>");
+          			}
+			    	$('#newUploadFile').text('');
+			    	flag = false;
+			    	$("#upload_button").removeAttr("disabled");
+			    	
+			    	var uploadType = $('#uploadType').val();
+			    	if(uploadType == 'jobUpload'){
+			    		$('#upload_job_form')[0].reset();
+			    	}if(uploadType == 'assetUpload'){
+			    		$('#upload_asset_form')[0].reset();
+			    	}if(uploadType == 'timesheetUpload'){
+			    		$('#upload_timesheet_form')[0].reset();
+			    	}
+			    	$('#dataFieldsDiv').removeAttr("style");
+			    	$('#dataFieldsDiv').empty();
+			    	$("#dataFileImportDiv").removeAttr("style");
+			    	$('#loading').removeAttr("style");
+			    	$("#selector11").fadeOut(3000);
+				}
+			}); 
+		}
+		
+	}
+	$('body').on('blur', '#dataMigration_form', function() {
+		$("#dataMigration_form").showHelpOnFocus();
+		$("#dataMigration_form").validateOnBlur(false, validationSettings);
+	});
+</script>
+
+
 <script>
 function getUploadProgressBar(){
 	var uploadType = '${uploadType}'
@@ -288,6 +389,10 @@ function getUploadProgressBar(){
 		uploadType = 'Immigration';
 	}else if(uploadType == 'lcaUpload'){
 		uploadType = 'LCA';
+	}else if(uploadType == 'profileTracker'){
+		uploadType = 'ProfileTracker';
+	}else if(uploadType == 'interviewTracker'){
+		uploadType = 'InterviewTracker';
 	}
 	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
 	
@@ -420,4 +525,11 @@ function getUploadProgressBar(){
 
 <script>
     $(".chosen-select").chosen();
+</script>
+<script> 
+function disableOnClick(link) {
+  link.onclick = function(event) {
+     event.preventDefault();
+  }
+}   
 </script>

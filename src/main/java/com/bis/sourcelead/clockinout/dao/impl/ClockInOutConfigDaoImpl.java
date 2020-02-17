@@ -1,8 +1,6 @@
 package com.bis.sourcelead.clockinout.dao.impl;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,14 +35,12 @@ import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.ProjectMembers;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
-import com.bis.sourcelead.payroll.dto.IntiateUSPayrollDTO;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -141,7 +137,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Override
 	@Transactional
-	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId)
+	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userId,String customDashboard)
 	{
 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -217,7 +213,11 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 				}
 
 			}
-			jobsList = query.list();	
+			if(customDashboard!=null && customDashboard.equalsIgnoreCase(Constants.Dashboard)) {
+				jobsList = query.setMaxResults(5).list();
+			}else {
+				jobsList = query.list();	
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}

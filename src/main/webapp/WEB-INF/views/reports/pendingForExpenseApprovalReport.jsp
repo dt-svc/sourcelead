@@ -243,18 +243,18 @@ function getPendingApprovalExpenseReports(){
 	        		  }   */
 		    	   
 		    	  result = result	+ '<tr>';
-		    	  result = result	+ '	  <td style="vertical-align: middle;"><div title ="'+report.employeId +'" class="tblminwidth-50">'+employeId+'</div></td>';
-				  result = result	+ '	  <td style="vertical-align: middle;"><div title ="'+report.employeName +'" class="tbldata-dotdot-sm">'+employeName+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.employeType +'" class="tblminwidth-50">'+employeType+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.projectName +'" class="tbldata-dotdot-sm">'+projectName+'</div></td>';
+		    	  result = result	+ '	  <td style="vertical-align: middle;"><div title ="'+employeId +'" class="tblminwidth-50">'+employeId+'</div></td>';
+				  result = result	+ '	  <td style="vertical-align: middle;"><div title ="'+employeName +'" class="tbldata-dotdot-sm">'+employeName+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+employeType +'" class="tblminwidth-50">'+employeType+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+projectName +'" class="tbldata-dotdot-sm">'+projectName+'</div></td>';
 	              //result = result	+ '   <td><div title ='+report.employeId +'><class="tbldata-dotdot-me">'+frequency+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.approvalMechanism +'" class="tbldata-dotdot-sm">'+approvalMechanism+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerOne +'" class="tbldata-dotdot-sm">'+managerOne+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+approvalMechanism +'" class="tbldata-dotdot-sm">'+approvalMechanism+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+managerOne +'" class="tbldata-dotdot-sm">'+managerOne+'</div></td>';
 	             /*  result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerOne +','+report.reportingManager+'" class="tbldata-dotdot-vsm">'+managerOne + (reportingManager != null ? ','+reportingManager: "")+' </div></td>'; */
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.managerTwo +'" class="tbldata-dotdot-vsm">'+managerTwo+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.submittedAmount +'" class="tblminwidth-50">'+submittedAmount+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.submittedOn +'" class="tbldata-dotdot-vsm">'+submittedOn+'</div></td>';
-	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.approvedBy +'" class="tbldata-dotdot-vsm">'+approvedBy+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+managerTwo +'" class="tbldata-dotdot-vsm">'+managerTwo+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+submittedAmount +'" class="tblminwidth-50">'+submittedAmount+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+submittedOn +'" class="tbldata-dotdot-vsm">'+submittedOn+'</div></td>';
+	              result = result	+ '   <td style="vertical-align: middle;"><div title ="'+approvedBy +'" class="tbldata-dotdot-vsm">'+approvedBy+'</div></td>';
 	             // result = result	+ '   <td style="vertical-align: middle;"><div title ="'+report.noofDaysPending +'" class="width300px">'+noofDaysPending+'</div></td>';
 	              result = result	+ '	</tr>';
    				}
@@ -265,6 +265,12 @@ function getPendingApprovalExpenseReports(){
 		        $("#loadingId").removeAttr('style');
 				$("#pendingForApprovalExpenseDivDiv").append(result);
 				dynamicMissingTimesheetReportPagination();
+				if(data.length == 0){
+					$("#customSearch").show();
+				}else{
+					$("#customSearch").hide();
+				}
+				
 		    }
 		 });
 	  }	  
@@ -274,8 +280,7 @@ function getPendingApprovalExpenseReports(){
 
 <script>
 function resetDatepickers() {
-	var $dates = $('#fromDate, #toDate').datepicker();
-	$dates.datepicker('setDate', null);
+location.reload(true);
 }
 $('.content-wraper, .content-header, .reportHead, .vendor_wrap').click(function(){
 	$("#customSearch").hide();

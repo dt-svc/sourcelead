@@ -17,10 +17,20 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 			</div>
   <section class="content-header clearfix">
     <div class="pull-left">
-      <h2>Add Stage</h2>
+      <h2><c:out value="${workFlowName}"/>&nbsp >> &nbsp</h2> 
+    </div>
+    <div class="pull-left">
+    <c:choose>
+    <c:when test="${isStageViewed eq true}">
+    <h2>View Stage</h2>
+    </c:when>
+    <c:otherwise>
+    <h2>Add Stage</h2>
+    </c:otherwise>
+    </c:choose>
     </div>
     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-    <a href="${SourceLeadWeb_sourceleadUrl}/workflowList">Application Workflow</a> &raquo;
+    <a onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');"><c:out value="${workFlowName}"/></a> &raquo;
     Add Stage</div>
   </section>
   <form id="addStageForm" name="addStageForm">
@@ -136,9 +146,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				<div class="col-md-9" id = "assignToUserId">
 				  <select class="sel form-control" name = 'assignToUserId' id = 'assignToUserId' field-name='Assign To' data-validation='required'>
 					<option selected="" value="">Select</option>
-					<!-- <option>Applicant Owner</option>
+					<option>Applicant Owner</option>
 					<option>Job Owner</option>
-					<option>Primary Recruiter</option> -->
+					<option>Primary Recruiter</option>
 				  </select>
 				</div>
 			  </div>
@@ -204,10 +214,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 					   -->
 					   </select>
 					</div>
-					<span class="cursorPointer btn btn-primary pull-left" onclick="requirementWorkflow.getRequirementQuestionnaireTemplates();"><i class="fa fa-refresh "></i></span>
+					<span class="cursorPointer btn btn-primary pull-left" id="questionnaireAddSpanId" onclick="requirementWorkflow.getRequirementQuestionnaireTemplates();"><i class="fa fa-refresh "></i></span>
 					 <!-- dynamic stage content ends here -->
 					
-					<div class="col-md-1"> <a class="fa fa-plus btn btn-default minHeBtn" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
+					<div class="col-md-1"> <a id ='addQuestionnaireButton' class="fa fa-plus btn btn-default minHeBtn" href="${SourceLeadWeb_sourceleadUrl}/addQuestionnaire" target="_blank"></a> </div>
 				  </div>
 				</div>
 			  </div>
@@ -369,16 +379,19 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                                                 <span class="ml10">Status *</span>
                                               </div>
                                         </li>
+                                        
                                         </ul>
+                                        <div class="clearfix"></div>
+                                 <div class="clearfix">
+  								<div class="pull-right">
+    							<button type="button" class="btn btn-primary mr" onclick = "requirementWorkflow.selectChosenColumns();">Select All</button>
+    							<button type="button" class="btn btn-default" onclick = "requirementWorkflow.resetChosenColumns();">Reset</button>
+  								</div>
+								</div>
+
                                         
       </div>
-<div class="clearfix"></div>
-<div class="clearfix col-xs-12 col-sm-12 col-md-12 col-lg-12">
-  <div class="pull-right">
-    <button type="button" class="btn btn-primary mr" onclick = "requirementWorkflow.selectChosenColumns();">Select All</button>
-    <button type="button" class="btn btn-default" onclick = "requirementWorkflow.resetChosenColumns();">Reset</button>
-  </div>
-</div>
+      
 
     </div>
     <%-- <c:if test ="${onlyQuestAndTasksEditable == false}"> --%>
@@ -433,12 +446,23 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
           
-          <c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save & Finish" class="btn btn-primary" type="button" id="saveStageButton"
+		<c:choose>
+		<c:when test="${isStageViewed eq true}">
+		<c:if test="${not empty requirementWorkFlowStagesDTO}">
+		<input value="<< Back To View Workflow" class="btn btn-primary" type="button" id ="backToViewWorkflowButton"
+            onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
+		</c:if>
+		</c:when>
+		<c:otherwise>
+		<c:if test="${not empty requirementWorkFlowStagesDTO}">  
+            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
             <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
+          
+		</c:otherwise>
+		</c:choose>
           </div>
         </div>
       </div>
@@ -466,7 +490,7 @@ $(document).ready(function() {
 		questionnaireId = '${questionnaireId}';
 		questionnaireName = '${questionnaireName}';
 		
-		requirementWorkflow.getRequirementQuestionnaireTemplates();
+		requirementWorkflow.getRequirementQuestionnaireTemplates('${isStageViewed}');
 	
 	
 	if($('#stageName').val().length < 4){
@@ -491,9 +515,10 @@ $(document).ready(function() {
 	    	$("#saveTaskButton").removeClass("disabled");
 	   }
 	})
-	
-	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid);
+	requirementWorkflow.getRequirementWorkflowTasks(currentStageUuid,'${isStageViewed}');
 	checkValidEditableFields('${onlyQuestAndTasksEditable}')
+	
+	requirementWorkflow.checkIsStageViewed('${isStageViewed}');
 });
 // below function disabled the fileds if workflow initiated any requirement for the job.
 function checkValidEditableFields(checkValidEditableFields){

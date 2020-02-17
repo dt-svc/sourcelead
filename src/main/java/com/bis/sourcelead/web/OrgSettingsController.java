@@ -581,7 +581,7 @@ public class OrgSettingsController {
 				} else if (tabName.equalsIgnoreCase("Associates List")) {
 					tabName = "Associates";
 				} else if (tabName.equalsIgnoreCase("Receivable") || tabName.equalsIgnoreCase("Payables")) {
-					tabName = "Billing";
+					tabName = "Finance";
 				} else if (tabName.equalsIgnoreCase("My Expenses") || tabName.equalsIgnoreCase("Expenses Approval")) {
 					tabName = "Expenses";
 				} else if (tabName.equalsIgnoreCase("Blogs") || tabName.equalsIgnoreCase("User Manuals")) {
@@ -771,32 +771,64 @@ public class OrgSettingsController {
 	   		return model;
 	       }
 	    
+//	    @RequestMapping(value = "/emailReminderLeaveConfiguration")
+//	   	public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
+//	   	    ModelAndView model = new ModelAndView();
+//	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+//			
+//			//get job related reminders
+//			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
+//			//model.addObject("emailReminderList", emailReminderList);
+//			
+//			for(EmailReminder emailReminder : emailReminderList) {
+//				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+//				if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
+//					model.addObject("Holiday", emailReminder);
+//				}
+//				else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
+//					model.addObject("approvePendingLeaves", emailReminder);
+//				}
+//			
+//			  else {
+//			  model.addObject("employeeonLeave", emailReminder); 
+//			  }
+//			}
+//	   		model.setViewName("emailReminderLeaveConfiguration");
+//	   		model.addObject("sourceleadUrl", sourceleadUrl);
+//	   		return model;
+//	       
+	    
+	    
 	    @RequestMapping(value = "/emailReminderLeaveConfiguration")
-	   	public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
-	   	    ModelAndView model = new ModelAndView();
-	   	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-			
-			//get job related reminders
-			List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
-			//model.addObject("emailReminderList", emailReminderList);
-			
-			for(EmailReminder emailReminder : emailReminderList) {
-				emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
-				if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
-					model.addObject("Holiday", emailReminder);
-				}
-				else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
-					model.addObject("approvePendingLeaves", emailReminder);
-				}
-			
-			  else {
-			  model.addObject("employeeonLeave", emailReminder); 
-			  }
-			}
-	   		model.setViewName("emailReminderLeaveConfiguration");
-	   		model.addObject("sourceleadUrl", sourceleadUrl);
-	   		return model;
-	       }
+	    public ModelAndView reminderLeaveConfigureEmails(HttpServletRequest request) throws Exception {
+	    ModelAndView model = new ModelAndView();
+	    OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+
+	    List<String> leavesConfigurationRolesList = Arrays.asList(Constants.LEAVE_CONFIGURATION_ROLES);
+	    model.addObject("leavesConfigurationRolesList", leavesConfigurationRolesList);
+
+	    //get job related reminders
+	    List<EmailReminder> emailReminderList = emailReminderService.getEmailReminderListByTabsIdAndOrgLocationId(31l , orgLocations.getId());
+	    if(emailReminderList != null && !emailReminderList.isEmpty()) {
+	    for(EmailReminder emailReminder : emailReminderList) {
+	    emailReminder.setEmailReminderHierarchyList(emailReminder.getEmailReminderHierarchyList().stream().filter(h->h.getStatus() != 0).collect(Collectors.toList()));
+	    if(emailReminder.getScenarionName().equalsIgnoreCase("HolidayRemainder")) {
+	    model.addObject("Holiday", emailReminder);
+	    }
+	    else if(emailReminder.getScenarionName().equalsIgnoreCase("approvePendingLeaves")) {
+	    model.addObject("approvePendingLeaves", emailReminder);
+	    }
+
+	    else {
+	    model.addObject("employeeonLeave", emailReminder);
+	    model.addObject("configuredRoles", emailReminder.getRoles());
+	    }
+	    }
+	    }
+	    model.setViewName("emailReminderLeaveConfiguration");
+	    model.addObject("sourceleadUrl", sourceleadUrl);
+	    return model;
+	    }
 	    
 	    @RequestMapping(value = "/contractConfigureEmails")
 	   	public ModelAndView reminderContractsConfigureEmails(HttpServletRequest request) throws Exception {

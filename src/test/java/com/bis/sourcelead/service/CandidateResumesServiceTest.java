@@ -27,6 +27,7 @@ import com.bis.sourcelead.WebAppConfig;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateResumeDTO;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -48,28 +49,7 @@ public class CandidateResumesServiceTest {
 	CandidateResumesService candidateResumesService;
 	private static final Logger logger = LoggerFactory.getLogger(CandidateResumesServiceTest.class);
 	
-	// @Test
-	public void storeCandidateResume() throws Exception
-	{
-		CandidateResumes candidateResumes = new CandidateResumes();
-		Candidate candidate = new Candidate();
-		User user = new User();
-		OrgLocations orgLocationId = new OrgLocations();
-		orgLocationId.setId(1l);
-		user.setId(1l);
-		candidate.setId(1l);
-		CandidateResumeDTO candidateResumeDTO = new CandidateResumeDTO();
-		candidateResumeDTO.setTitle("exp");
-		candidateResumeDTO.setDescription("hello hi");
-		candidateResumeDTO.setFileName("input.txt");
-		candidateResumes.setId(1l);
-		candidateResumes.setStatus(Constants.CANDIDATE_ACTIVE);
-		candidate.setOrgLocationId(orgLocationId);
-		File multipartFile = new File(staticPath);
-		String fileURL = new FileUploadUtil().uploadFile(staticPath, 1l, orgLocationId.getId(), "resume", multipartFile);
-		candidateResumes = candidateResumesService.storeCandidateResume(candidateResumeDTO, user, candidate, "1", orgLocationId);
-		logger.info("success fully store " + candidateResumes.getStatus());
-	}
+
 	
 	private MultipartFile getMultiPartFile() throws IOException
 	{
@@ -114,7 +94,7 @@ public class CandidateResumesServiceTest {
 	{
 		CandidateResumes candidateResumes = new CandidateResumes();
 		OrgLocations orgLocations = new OrgLocations();
-		Candidate candidate = new Candidate();
+		CandidateGlobal candidate = new CandidateGlobal();
 		candidate.setId(1l);
 		orgLocations.setId(1l);
 		candidate.setOrgLocationId(orgLocations);
@@ -138,7 +118,7 @@ public class CandidateResumesServiceTest {
 	public void getCandidateLatesResumes() throws Exception
 	{
 		CandidateResumes candidateResumes = new CandidateResumes();
-		Candidate candidate = new Candidate();
+		CandidateGlobal candidate = new CandidateGlobal();
 		candidate.setCandidateId(1l);
 		candidate.setId(1l);
 		candidateResumes.setCandidateId(candidate);

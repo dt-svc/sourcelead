@@ -204,8 +204,8 @@
 			                    location.href = "/errorPage";
 			                } else if (result.response === "SUCCESS") {
 							 $("#linkUserLoading").removeAttr("style");
-							 location.replace(sourceleadUrl+"/userProfile");
 							 cancelAddDetails();
+							 location.replace(sourceleadUrl+"/userProfile");
 			                } else if (result.indexOf('Sign In') !== -1) {
 								location.replace(sourceleadUrl);
 							} else {

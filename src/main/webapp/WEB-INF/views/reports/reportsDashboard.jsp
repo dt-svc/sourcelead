@@ -153,6 +153,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				</sec:authorize>
 				
 			   <li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
+			   
+			   <c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureSummaryReport">Closure Summary Report</a></li>
+				</c:if>
 				
 				
 			    
@@ -523,6 +527,10 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 				
 				<li><a href='${SourceLeadWeb_sourceleadUrl}/assetmanagementGrowth'>Asset Growth</a></li>
 				
+				<c:if test="${SourceLeadWeb_isSuperUser == 'Y'  || SourceLeadWeb_isSuperAdmin == 'Y'}">
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/closureSummaryReport">Closure Summary Report</a></li>
+				</c:if>
+				
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
@@ -531,7 +539,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
             <div class="newRepListCta">
                 <h2><a href="javascript:void(0)">HR Reports</a></h2>
                 <ul class="repSearchList">
-                
+				<li><a href="${SourceLeadWeb_sourceleadUrl}/assetsReport">Asset Assigned History</a></li>                
                 <li><a href="${SourceLeadWeb_sourceleadUrl}/projectReport">Project Report</a></li>
                 
                 <sec:authorize access="hasRole('ROLE_DAYWISE_TIMESHEET_REPORT')">

@@ -270,7 +270,9 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
 						 result = result + '										<div class="userdetails">                                                      ';
 						 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
-						 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+						 if(report.candidatePhoneNumber != null){
+							 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+						 }
 						 result = result + ' 									</div>                                                                         ';
 						 result = result + ' 								</div>                                                                         ';
 						 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+atsUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
@@ -369,6 +371,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 	function getJobsForSelectedFairDate() {
 		var sourceleadUrl ='${sourceleadUrl}';
 		var atsUrl = "${SourceLeadWeb_atsUrl}";
+		var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		
 		var date = getSelectedDateFromCalendar($("#jobFairCalendar").val());
 		$("#fairJobsDiv").empty();
@@ -407,7 +410,7 @@ function getSelectedDateFromCalendar(selectedDate) {
 							text += "		</p>";
 							if(data[e].clientId != null) {								
 								text += "		<p>";
-								text += " 			<a target='_blank' href='" + atsUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
+								text += " 			<a target='_blank' href='" + vmsUrl + "/clientDashboard?orgRelationUUID=" + data[e].clientId.uuid + "' title='" + data[e].clientId.clientName + "'>" + data[e].clientId.clientName + "</a>";
 								text += "		</p>";
 							}
 							text += "		<p>";
@@ -501,6 +504,7 @@ function dashboardAddInterview(){
 	result = result + '</div>';
 
 	result = result + '		<input value="2" style="display: none;" type="text" id="maxTsRowNum" name="maxTsRowNum">';
+	result = result + '<input style="display: none;" type="text" id="changeMaxTsRowNum" name="changeMaxTsRowNum" value="2" />';
 	
 	
 	result = result + '<table cellpadding="0" cellspacing="0" id="addInterviewTbl" class="addinterTable">';

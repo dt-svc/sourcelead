@@ -38,6 +38,19 @@ function logoutForConfigure() {
 </form>
 
 <section class="content-wraper">
+		<div class="clearfix">
+		<!-- 		This functionality inprogress dont delete the code -->
+		<%-- <c:if test="${SourceLeadWeb_isSuperAdmin == 'Y' || SourceLeadWeb_isAdmin == true }">
+		<div class="mt mspdashboard-tasli">
+			<ul id="dashboardEventsul" class="list-unstyled	">
+				<li id="PrimaryDashboard"><a class="active-mspli" >Primary Dashboard</a></li>
+				<li id="MSPDashboard"><a>MSP Dashbaord</a></li>
+				<div class="clearfix"></div>
+			</ul>
+		</div>
+		</c:if> --%>
+			<div class="clearfix"></div>
+			<div id="primaryDashboard-div" class="clearfix">
 	    <section class="content-header clearfix">
 	      
 	      <c:if test="${!empty param.invitation}">
@@ -141,7 +154,22 @@ function logoutForConfigure() {
 
 		<jsp:include page="dashboard_configure_popup.jsp"></jsp:include>
 		</div>
+		</div>
+		<jsp:include page="mspJobs_Dashboard.jsp"></jsp:include>
+</div>
 </section>
+
 
 <jsp:include page="masterFooter.jsp" />
 <jsp:include page="dashboard_scripts.jsp"/>
+
+
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+</script>
+ 
+<script src="/resources/amcharts/amcharts.js"></script>
+<script src="/resources/amcharts/pie.js"></script>
+ 
