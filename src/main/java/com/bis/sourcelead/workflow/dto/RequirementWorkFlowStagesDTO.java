@@ -52,6 +52,12 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 	
 	private String configureType;
 	
+	/* 
+	 * 28/jan/2020 - vishnu
+	 * added isStageViewed variable to check when user wants to view the stage without editing it.
+	 * */
+	private String isStageViewed;
+	
 	public long getId() {
 		return id;
 	}
@@ -236,5 +242,12 @@ public class RequirementWorkFlowStagesDTO implements Serializable{
 		this.deletedStageUuids = deletedStageUuids;
 	}
 
-	
+	public String getIsStageViewed() {
+		return isStageViewed;
+	}
+
+	public void setIsStageViewed(String isStageViewed) {
+		this.isStageViewed = isStageViewed;
+	}
+
 }

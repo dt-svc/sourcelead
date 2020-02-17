@@ -112,6 +112,7 @@ public class TokenManagerImpl implements TokenManager {
 				SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 				SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
 				System.out.println(" New token is created for the user id "+user.getId()+", Orglocation Id :"+orgLocations.getId()+", for user role id  : "+userRole.getId());
 			} catch (Exception e) {}

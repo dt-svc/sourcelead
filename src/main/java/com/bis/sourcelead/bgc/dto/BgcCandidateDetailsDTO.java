@@ -21,7 +21,7 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	
 	private String generatedId;
 	
-	private Long candidateId;
+	private Long globalCandidateId;
 	
 	private Long sourceOrglocationId;
 	
@@ -61,8 +61,6 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	//dto fields for candidate
 	
-	private String candidateUUID;
-	
 	private String aadharNumber;
 		
 	private String panNumber;
@@ -76,6 +74,8 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	private String OrgType;
 	
 	private String exportType;
+	
+	private Long candidateId;
 	
 	public Long getId() {
 		return id;
@@ -93,12 +93,12 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 		this.uuid = uuid;
 	}
 
-	public Long getCandidateId() {
-		return candidateId;
+	public Long getGlobalCandidateId() {
+		return globalCandidateId;
 	}
 
-	public void setCandidateId(Long candidateId) {
-		this.candidateId = candidateId;
+	public void setGlobalCandidateId(Long globalCandidateId) {
+		this.globalCandidateId = globalCandidateId;
 	}
 
 	public Long getSourceOrglocationId() {
@@ -237,14 +237,6 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 		this.fullName = fullName;
 	}
 	
-	public String getCandidateUUID() {
-		return candidateUUID;
-	}
-
-	public void setCandidateUUID(String candidateUUID) {
-		this.candidateUUID = candidateUUID;
-	}
-
 	public String getAadharNumber() {
 		return aadharNumber;
 	}
@@ -315,6 +307,14 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setExportType(String exportType) {
 		this.exportType = exportType;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
 	}
 	
 	
