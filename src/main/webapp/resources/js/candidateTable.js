@@ -51,11 +51,8 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	       availability.push($(this).val());
 		 });
 	 
-	 var candidateTypeFilter = []
-	 $('input:checkbox[name=candidateTypeFilter]:checked').each(function() 
-	     {
-		 candidateTypeFilter.push($(this).val());
-		 });
+	  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+	  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 	 
 	 
  	 
@@ -459,10 +456,12 @@ function cpagination(url){
 function getCandidateSubmittedJobsCount(){
 	 $('.submittedRequirementCount').each(function() {
 		 var candidateId = this.id;
+		  var candidateTypeRadio = $('input[name=candidateTypeFilter]');
+		  var candidateTypeFilter = candidateTypeRadio.filter(':checked').val();
 		 if(candidateId != null &&  candidateId !='undefined' && candidateId != ''){
 			 $.ajax({
 		           type : "GET",
-		           url: atsUrl+"/getCandidateSubmittedRequirementCount?candidateId="+candidateId,    
+		           url: atsUrl+"/getCandidateSubmittedRequirementCount?candidateId="+candidateId+"&candidateType="+candidateTypeFilter,    
 		            success :function(data) {
 		            	  $("#"+candidateId+"submittedRequirementCount").empty();
 		             	  $("#"+candidateId+"submittedRequirementCount").html(data.submittedJobsCount);

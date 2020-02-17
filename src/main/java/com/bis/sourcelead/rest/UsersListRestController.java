@@ -752,6 +752,128 @@ public class UsersListRestController {
 		response.sendRedirect(redirectUrl.append("/ats/userSummaryDetails?userCode=").append(userCode).toString());
 
 	}
+	
+	
+	
+	
+	@PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE')")
+	@RequestMapping(value = "/getUserProfileSummaryDetailsById", method = RequestMethod.POST)
+	public @ResponseBody UserRole getUserProfileSummaryDetailsById(HttpServletRequest request,
+			@RequestParam(value = "userId", required = false) Long userId,AddUserDTO userDto) throws Exception {
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 OrgLocations orgLocations =  orgLocationService.getOrgLocationById(orgLocationId);
+		 UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
+
+		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
+		userRole.setUserType(userRole.getUserType());
+		
+		if (employee != null) {
+			userRole.setEmployeeId(employee.getEmployeeId());
+			userRole.setRate(employee.getRate());
+			userRole.setRatePer(employee.getRatePer());
+			userRole.setCurrentCurrency(employee.getCurrentCurrency());
+			
+			if (employee.getHireDate() != null) {
+				userRole.setHireDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getHireDate()));
+			} else {
+				userRole.setHireDateStr("");
+			}
+			
+			if (employee.getConfirmationDate() != null) {
+				userRole.setConfirmationDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),employee.getConfirmationDate()));
+			} else {
+				userRole.setConfirmationDateStr("");
+			}
+			
+			if (employee.getProbationPeriod() != null) {
+				userRole.setProbationPeriod(employee.getProbationPeriod());
+			} else {
+				userRole.setProbationPeriod("");
+			}
+			
+			if (employee.getProbationStatus() != null) {
+				userRole.setProbationStatus(employee.getProbationStatus());
+			} else {
+				userRole.setProbationStatus("");
+			}
+			
+			if(userRole != null) {
+				userRole.setTerminateDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getTerminateDate()));
+			}
+			userRole.setDailyHours(employee.getDailyHours());
+			userRole.setUserEmploymentType(employee.getUserEmploymentType());
+			userRole.setDesignationOtherType(employee.getDesignationOtherType());
+			userRole.setSsn(userRole.getUser().getSsn());
+			if(userRole.getShift() != null) {
+				userRole.setShiftId(userRole.getShift().getId());
+				userRole.setShiftName(userRole.getShift().getShiftName());
+			}
+			
+			if(null != employee.getDepartmentId()){
+				userRole.setDepartment(employee.getDepartmentId().getId().toString());
+				userRole.setDepartmentName(employee.getDepartmentId().getDepartmentName());
+			}
+			
+			if(null != employee.getOrgRelationId()){
+				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
+				if(employee.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					userRole.setVendorName(employee.getOrgRelationId().getLocationId().getOrgLocationName());	
+				}
+				if(employee.getOrgRelationId().getLocationId().getId().longValue() == orgLocations.getId().longValue()){
+					userRole.setVendorName(employee.getOrgRelationId().getResponderLocationId().getOrgLocationName());	
+				}
+				
+			}
+			if(null != employee.getSpocId()){
+				StringBuilder contactName = new StringBuilder();
+				userRole.setVendorSpocId(employee.getSpocId().getId().toString());
+				if(null != employee.getSpocId().getVendorUser().getLastName()){
+					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).append(" ").append(employee.getSpocId().getVendorUser().getLastName()).toString());	
+				}else{
+					userRole.setVendorContactName(contactName.append(employee.getSpocId().getVendorUser().getFirstName()).toString());	
+
+				}
+				
+			}
+			
+		}
+
+		 if (userRole.getUser().getDateOfBirth() != null) {
+				userRole.setDateofBirthStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),userRole.getUser().getDateOfBirth()));
+			} else {
+				userRole.setDateofBirthStr("");
+			}
+
+		 
+		  Candidate candidate = candidateService.getCandidateByConsultantUserId(userId, orgLocations.getId());
+		  if(candidate != null) {
+			  if(candidate.getWorkLocation() != null) {
+				  userRole.setWorkLocationId(candidate.getWorkLocation().getId());
+				  userRole.setWorkLocation(candidate.getWorkLocation().getLocation());
+				  userRole.setResidenceAddress(candidate.getResidenceAddress());
+				  userRole.setResidenceCountry(candidate.getResidenceCountry());
+				  userRole.setResidenceState(candidate.getResidenceState());
+				  userRole.setResidenceCity(candidate.getResidenceCity());
+				  userRole.setResidenceZipCode(candidate.getResidenceZipCode());
+				  userRole.setResidenceLatitude(candidate.getResidenceLatitude());
+				  userRole.setResidenceLongitude(candidate.getResidenceLongitude());
+			  }
+			  
+			  if(candidate.getPanNumber() != null) {
+				  userRole.setPanNumber(candidate.getPanNumber());
+			  }else {
+				  userRole.setPanNumber("");
+			  }
+			  if(candidate.getAadharNumber() != null) {
+				  userRole.setAadharNumber(candidate.getAadharNumber());
+			  }else {
+				  userRole.setAadharNumber("");
+			  }
+		  }
+		  
+		return userRole;
+	}
+	
 
 	/**
 	 * Get Employee details by User ID
@@ -773,7 +895,6 @@ public class UsersListRestController {
 		UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(userId, orgLocations.getId());
 
 		Employees employee = employeesService.getEmployeeByUserIdAndOrgLocationsId(userId, orgLocations.getId());
-		//SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		userRole.setUserType(userRole.getUserType());
 		
 		if (employee != null) {
@@ -2444,6 +2565,9 @@ public class UsersListRestController {
 			candidate.setGender(addUserDTO.getGender());
 			candidate.setMobilePhone(addUserDTO.getPhoneNumber());
 			candidate.setMaritalStatus(addUserDTO.getMaritalStatus());
+			if (isUserActive == false) {
+				candidate.setEmail(addUserDTO.getEmail());
+			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getResidenceAddress())){
 			   candidate.setResidenceAddress(addUserDTO.getResidenceAddress());

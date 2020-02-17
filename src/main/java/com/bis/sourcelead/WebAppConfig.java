@@ -86,7 +86,7 @@ public class WebAppConfig extends WebMvcConfigurationSupport {
 	    resolver.setMaxInMemorySize(10485760); // 1 MB
 	    return resolver;
 	}
-
+	
 	/*
 	 * @Bean public MessageSource messageSource() { ResourceBundleMessageSource
 	 * messageSource = new ResourceBundleMessageSource();

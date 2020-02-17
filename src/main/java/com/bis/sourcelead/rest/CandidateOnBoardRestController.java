@@ -39,6 +39,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.entity.AssociateNominee;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateOnBoarding;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.OnBoardingTemplate;
@@ -63,6 +64,7 @@ import com.bis.sourcelead.payroll.entity.AssociateContribution;
 import com.bis.sourcelead.payroll.entity.AssociateDeduction;
 import com.bis.sourcelead.payroll.service.AssociatePfEsiService;
 import com.bis.sourcelead.service.AssociateNomineeService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateOnBoardingService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.EmployeesService;
@@ -151,6 +153,9 @@ public class CandidateOnBoardRestController {
 	
 	@Autowired
 	ShiftService shiftService;
+	
+	@Autowired
+	CandidateGlobalService candidateGlobalService;
 
 	protected static boolean isNullOrEmpty(String str) {
 		return (str == null || "".equals(str.trim()));
@@ -274,7 +279,7 @@ public class CandidateOnBoardRestController {
 		return response;
 	}
 
-/*	@RequestMapping(value = { "/getOnboardTemplateDocumentByTemplateId",
+	@RequestMapping(value = { "/getOnboardTemplateDocumentByTemplateId",
 			"/rest/getOnboardTemplateDocumentByTemplateId" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<OnBoardingTemplateDocumentsDTO> getOnboardTemplateDocumentByTemplateId(
 			@RequestParam(value = "templateId", required = false) Long templateId,
@@ -303,7 +308,7 @@ public class CandidateOnBoardRestController {
 			e.printStackTrace();
 		}
 		return responseList;
-	}*/
+	}
 
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO,
@@ -674,7 +679,7 @@ public class CandidateOnBoardRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		Response<CandidateDTO> response = new Response<>();
 		try {
-			Candidate candidate = candidateService.getCandidateByCandidateId(candidateId);
+			CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateId);
 			CandidateDTO candidateDTO = new CandidateDTO();
 			candidateDTO.setFirstName(candidate.getFirstName());
 			candidateDTO.setLastName(candidate.getLastName());
@@ -989,13 +994,24 @@ public class CandidateOnBoardRestController {
 				} else {
 					candidateOnBoardingDTO.setCandidateName(candidateName.append(candidateOnBoarding.getFirstName()).toString());
 				}
-				Candidate candidate = candidateService.getCandidateByCandidateId(candidateOnBoarding.getCandidateId().getId());
+				CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(candidateOnBoarding.getCandidateId().getId());
 				if (candidate.getOrgRelationId() != null) {
 					candidateOnBoardingDTO.setVendors(candidate.getOrgRelationId().getId().toString());
+				}
+				// below changes are added for BGC functionality.
+				if (null != candidateOnBoarding.getBgcOrglocationId()) {
+					candidateOnBoardingDTO.setBgc(candidateOnBoarding.getBgcOrglocationId().getId().toString());
+				}
+				if (null != candidateOnBoarding.getBgcOrgRelationId()) {
+					candidateOnBoardingDTO.setBgcOrgRelationId(candidateOnBoarding.getBgcOrgRelationId().getId().toString());
+				}
+				if (null != candidateOnBoarding.getBgcOrgContactId()) {
+					candidateOnBoardingDTO.setBgcVendorContact(candidateOnBoarding.getBgcOrgContactId().getId().toString());
 				}
 				if (candidate.getSpocId() != null) {
 					candidateOnBoardingDTO.setVendorContact(candidate.getSpocId().getId().toString());
 				}
+				// Above changes are added for BGC functionality.
 			}
 			response.setObject(candidateOnBoardingDTO);
 			response.setResponse(Result.SUCCESS.name());

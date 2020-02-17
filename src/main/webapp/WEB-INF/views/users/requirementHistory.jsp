@@ -248,7 +248,7 @@ function requirementHistoryDetails(candidateId,positionType,requirementId,requir
     		        			result = result  +'<span>Added & Request Sent by  '+report.loginUserName+' <b>'+report.createdDateStr+'</b></span>';
     		        			result = result  +'<a href=\"'+report.resumeid+'\" download><i class="fa fa-paperclip"></i></a><a class="fa fa-eye ml10" onClick="viewFile(\''+report.fileUrl+'\',\''+report.fileName+'\',\''+report.contentType+'\');"></a><div class="clearfix"></div>';
     		        		} else if(report.toStage == "REJECTED"){
-    		        			 result = result  +'<span>Request Rejected By '+report.userName+' <b>'+report.createdDateStr+'</b><h7>Reject Reson : '+report.requirementReson+'</h7></span>';
+    		        			 result = result  +'<span>Request Rejected By '+report.userName+' <b>'+report.createdDateStr+'</b><h7>Reject Reason : '+report.requirementReson+'</h7></span>';
     		        		} else if(report.toStage == "SUBMISSION_ACCEPT"){
     		        			result = result  +'<span>Request Accepted By '+report.userName+' <b>'+report.createdDateStr+'</b></span>';
     		        		} else if(report.toStage == "OFFERACCEPTED"){

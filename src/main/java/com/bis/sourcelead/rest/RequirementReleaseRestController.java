@@ -23,6 +23,7 @@ import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.OrgSpocDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
+import com.bis.sourcelead.entity.MspVendor;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgRelations;
@@ -33,6 +34,7 @@ import com.bis.sourcelead.entity.RequirementLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.Result;
+import com.bis.sourcelead.service.MspVendorService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.service.RecommendedCustomizeScoreService;
@@ -84,6 +86,9 @@ public class RequirementReleaseRestController {
 	@Autowired
 	RequirementLocationsService requirementLocationsService;
 	
+	@Autowired
+	MspVendorService mspVendorService;
+
 	@Autowired
 	RequirementWorkFlowDao requirementWorkFlowDao;
 	
@@ -273,6 +278,7 @@ public class RequirementReleaseRestController {
 					orgRelationsDTO.setState(orgRelation.getResponderLocationId().getState());
 					orgRelationsDTO.setCity(orgRelation.getResponderLocationId().getCity());
 					orgRelationsDTO.setVendorlocationId(orgRelation.getResponderLocationId().getId());
+					orgRelationsDTO.setIsMspVendor(orgRelation.getIsMSPVendor());
 					if (orgRelation.getInitiatorLevel() != null) {
 						orgRelationsDTO.setLevel(orgRelation.getInitiatorLevel());
 					}
@@ -312,6 +318,8 @@ public class RequirementReleaseRestController {
 					orgRelationsDTO.setState(orgRelation.getLocationId().getState());
 					orgRelationsDTO.setCity(orgRelation.getLocationId().getCity());
 					orgRelationsDTO.setVendorlocationId(orgRelation.getLocationId().getId());
+					orgRelationsDTO.setIsMspVendor(orgRelation.getIsMSPVendor());
+
 					if (orgRelation.getResponderLevel() != null) {
 						orgRelationsDTO.setLevel(orgRelation.getResponderLevel());
 					}
@@ -392,32 +400,7 @@ public class RequirementReleaseRestController {
 					String[] vendors = vendorIds.split(",");
 					if(vendors != null &&  vendors.length>0 && vendors[0] != null && vendors[0] != ""){
 						for(String vendor   : vendors){
-							
-							
-							OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
-							List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
-								   if(orgRelations.getResponderLocationId().getId().equals(loginOrgLocation.getId())){
-									   vendorOrgLocationsIds.add(orgRelations.getLocationId().getId());
-								   }else if(orgRelations.getLocationId().getId().equals(loginOrgLocation.getId())){
-									   vendorOrgLocationsIds.add(orgRelations.getResponderLocationId().getId());
-								   }
-							
-							 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"", vendorOrgLocationsIds);
-							
-							for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
-							    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
-							    if(isJobReleased.toString().equalsIgnoreCase("false")){
-							    	Requirement requirement  = new Requirement();
-							    	releasetype = Constants.VENDORSTYPE;
-							    	
-									releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType(),loginOrgLocation);
-									// for URL redirections from mail
-									String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
-									Long redirectOrgLocationId = requirement.getOrgLocationId().getId();
-									requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,redirectURL,redirectOrgLocationId);
-		
-							    }
-							}
+ 							releaseToVendors(vendor,loginOrgLocation,loginUser,requirementId,releasetype,parentRequirement);
 						}
 					}
 					
@@ -454,6 +437,34 @@ public class RequirementReleaseRestController {
 			}
 		return response;
 	}
+
+	private void releaseToVendors(String vendor,OrgLocations loginOrgLocation,User loginUser,Long requirementId,String releasetype,Requirement parentRequirement) throws Exception {
+		OrgRelations orgRelations = orgRelationsService.getOrRelationsById(Long.parseLong(vendor));
+		List<Long> vendorOrgLocationsIds = new ArrayList<Long>();
+			   if(orgRelations.getResponderLocationId().getId().equals(loginOrgLocation.getId())){
+				   vendorOrgLocationsIds.add(orgRelations.getLocationId().getId());
+			   }else if(orgRelations.getLocationId().getId().equals(loginOrgLocation.getId())){
+				   vendorOrgLocationsIds.add(orgRelations.getResponderLocationId().getId());
+			   }
+		
+		 List<OrgSpoc> vandorsContactListByOrgLocationId = orgRelationsService.getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(loginUser.getId(),loginOrgLocation.getId(), "Client","Active",vendor,"", vendorOrgLocationsIds);
+		
+		for(OrgSpoc orgSpoc : vandorsContactListByOrgLocationId){
+		    Boolean isJobReleased = requirementService.getRequirementByParentRequirementIdAndSpocId(requirementId, orgSpoc.getId());
+		    if(isJobReleased.toString().equalsIgnoreCase("false")){
+		    	Requirement requirement  = new Requirement();
+		    	releasetype = Constants.VENDORSTYPE;
+				releaseJobToVendorOrContacts(requirement, parentRequirement, orgSpoc, orgRelations.getInitiatorType(),loginOrgLocation);
+				// for URL redirections from mail
+				String redirectURL = "/requirementSummary-params-requirementUUID="+requirement.getRequirementUUID();
+				Long redirectOrgLocationId = requirement.getOrgLocationId().getId();
+				requirementService.releaseMailScenario(loginUser, requirement, orgSpoc, loginOrgLocation,releasetype,redirectURL,redirectOrgLocationId);
+
+		    }
+		}
+		
+	}
+
 
 	private void releaseJobToVendorOrContacts(Requirement requirement, Requirement parentRequirement, OrgSpoc orgSpoc, String initiator,OrgLocations loginOrgLocation) throws Exception {
 		
