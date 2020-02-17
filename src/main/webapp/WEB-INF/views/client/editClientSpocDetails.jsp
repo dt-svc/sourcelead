@@ -190,6 +190,12 @@
 						}else{
 							spocLastName = "";
 						}
+						if(null != json.userList && json.userList != '' && json.userList != 'undefined'){
+							userList = json.userList;
+						}else{
+							userList = "";
+						}
+						
 						if(json.spocStatus == 'Active'){
 							selected1 = 'selected';
 						} 
@@ -320,8 +326,8 @@
 						result = result  +'	 <label class="col-md-12">Owner<span class="text-danger">&nbsp;*</span></label>';
 						result = result  +'	 <div class="col-md-12">';
 						result = result  +'	   <select  class="form-contorl chosen-select" name="owner" id="owner" field-name="Owner" data-validation="required">';
-						for (var j = 0; j < json.userList.length; j++) {
-							var user = json.userList[j];
+						for (var j = 0; j < userList.length; j++) {
+							var user = userList[j];
 							  if(user.id == tempOwnerId && user.id != json.tempSpocId){
 								   selected = 'selected';
 								   result = result+"<option value="+user.id+" "+selected+" >"+user.firstName+" "+user.lastName+"</option>";

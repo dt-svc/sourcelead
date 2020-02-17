@@ -607,7 +607,7 @@ function payablePagination(url){
         "columns": [
             { "data": "invoiceId" },
             { "data": "vendorName"},
-            { "data": "vendorContact"},
+            { "data": "clientContactName"},
             { "data": "projectName" },
             { "data": "invoiceDate" },
             { "data": "inoviceTotal"},
@@ -773,7 +773,7 @@ function payablePagination(url){
 	              }
 		          },{
 	            "targets": colIndex++,
-	            "data": "vendorContact",
+	            "data": "clientContactName",
 	            "render": function ( data, type, report, meta ) {
 	            	var result = "";
 	            	result = result +'         <td>';
