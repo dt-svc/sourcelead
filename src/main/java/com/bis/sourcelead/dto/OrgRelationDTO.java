@@ -93,6 +93,8 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	
 	private String isLawFirm;
 	
+	private String isBackgroundCheck;
+	
 	private String isAccountingFirm;
 	
 	private String noOfNonReleasedContacts;
@@ -106,6 +108,8 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 	private BigInteger orgRelId;
 	
 	private String vendorName;
+
+	private String isMspVendor;
 
 	public Long getId() {
 		return id;
@@ -450,6 +454,14 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 		this.isLawFirm = isLawFirm;
 	}
 
+	public String getIsBackgroundCheck() {
+		return isBackgroundCheck;
+	}
+
+	public void setIsBackgroundCheck(String isBackgroundCheck) {
+		this.isBackgroundCheck = isBackgroundCheck;
+	}
+
 	public String getIsAccountingFirm() {
 		return isAccountingFirm;
 	}
@@ -496,6 +508,14 @@ public class OrgRelationDTO extends SearchDTO implements Serializable{
 
 	public void setVendorLocationId(BigInteger vendorLocationId) {
 		this.vendorLocationId = vendorLocationId;
+	}
+
+	public String getIsMspVendor() {
+		return isMspVendor;
+	}
+
+	public void setIsMspVendor(String isMspVendor) {
+		this.isMspVendor = isMspVendor;
 	}
 
 }

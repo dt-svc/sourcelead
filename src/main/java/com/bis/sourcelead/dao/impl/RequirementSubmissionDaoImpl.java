@@ -138,7 +138,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<Object[]> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+	public List<Object[]> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole, String isWorkflowConfigured) throws Exception {
 		List<Object[]> objList = null;
 		Calendar c1 = Calendar.getInstance(); 
 		Session session = this.sessionFactory.getCurrentSession();
@@ -146,7 +146,13 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		 if(isClientInterview != null && "Y".equalsIgnoreCase(isClientInterview)){
 			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' ) "; 
 		 }else{
+			//29-10-2019
+			 //checking isWorkflowConfigured to generate offer for applicant from any previous stage.
+			 if(!isWorkflowConfigured.equalsIgnoreCase(Constants.BOOLEAN_TRUE)){
 			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
+		 }else{
+			 subQuery = " and (rs.submissionStatus <> 'OFFERMADE' AND rs.submissionStatus <> 'NORESPONSE' AND rs.submissionStatus <> 'ONHOLD' AND rs.submissionStatus <> 'JOINED' AND rs.submissionStatus <> 'REJECTED' AND rs.submissionStatus <> 'BACKOUT') ";
+		 }
 		 }
 		 
 		 String subQuery2 = "";
@@ -176,22 +182,28 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = { Exception.class })
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations, Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception {
 		 Session session = this.sessionFactory.getCurrentSession();
 		 
 		 String subQuery = "";
 		 if(isClientOffer != null && "Y".equalsIgnoreCase(isClientOffer)){
-			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') "; 
+			 subQuery = " and (rs.submissionStatus = 'SUBMIT_TO_CLIENT' OR rs.submissionStatus = 'CLIENT_INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' "
+			 		+ " OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
 		 }else{
+			 //29-10-2019
+			 //checking isWorkflowConfigured to generate offer for applicant from any previous stage.
+			 if(!isWorkflowConfigured.equalsIgnoreCase(Constants.BOOLEAN_TRUE)){
 			if(isClientRequirement.equalsIgnoreCase(Constants.NO)){
 				 /*subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "*/
-				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR "
+				subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR "
 					 		+ " rs.submissionStatus = 'CLIENT_OFFERMADE' OR rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED') ";
 			}else{
-				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' "
+				 subQuery = " and (rs.submissionStatus = 'CLIENT_OFFERACCEPTED' OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' "
 					 		+ "  OR rs.submissionStatus = 'CLIENT_OFFERREJECTED' OR rs.submissionStatus = 'CLIENT_OFFERHIRED' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW') ";
 			}
-			 
+			 }else{
+				 subQuery = " and (rs.submissionStatus <> 'NORESPONSE' AND rs.submissionStatus <> 'ONHOLD' AND rs.submissionStatus <> 'JOINED' AND rs.submissionStatus <> 'REJECTED' AND rs.submissionStatus <> 'BACKOUT') ";
+			 }
 		 }
 		 
 		 String subQuery2 = "";
@@ -2441,8 +2453,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			Session session = this.sessionFactory.getCurrentSession();
 			boolean flag = false;
 			String query ="from RequirementSubmission submission where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId  ";
-			List<CandidateEducation> educationList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
-			if(educationList !=null && educationList.size() >0){
+			List<RequirementSubmission> submissionList = session.createQuery(query).setLong("candidateId", candidateId).setLong("requirementId", requirementId).list();
+			if(submissionList !=null && submissionList.size() >0){
 				flag = true;
 				return flag;
 			}else{
@@ -2695,7 +2707,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		{
 			Session session = this.sessionFactory.getCurrentSession();
 			
-		     String query = "from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId ";
+		     String query = "from RequirementSubmission submission left join fetch submission.candidate left join fetch submission.requirement left join fetch submission.candidateResumes where submission.candidate.id = :candidateId and submission.requirement.id = :requirementId ";
 		     List<RequirementSubmission> requirementSubmissionList = session.createQuery(query).setLong( "candidateId", candidateId).setLong( "requirementId", requirementId).list();
 		   
 		     if(requirementSubmissionList != null && requirementSubmissionList.size() >0){
@@ -2742,7 +2754,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		@SuppressWarnings({ "unchecked", "unused" })
 		@Override
 		@Transactional(rollbackFor = { Exception.class })
-		public ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations) throws Exception
+		public ResponseList<RequirementSubmissionHistory> getRequirementSubmissionsListWithDTOByOrgLocationsIdAndSubmissionStatus(RequirementSubmissionHistoryDTO requirementSubmissionHistoryDTO,Long orgLocationsId, String submissionStatus, String dateRange, String userType, User user, Date startUTCDate, Date endUTCDate,OrgLocations orgLocations,String customDashBoard) throws Exception
 		{
 			ResponseList<RequirementSubmissionHistory> response = new ResponseList<>();
 			try {
@@ -2912,14 +2924,18 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 					
 		    		String subQuery = "";
 		    		if(subQuery1 != "" || subQuery2 != "" || subQuery3 != "" ){
-		    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+		    			if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+		    			{
+				    		subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and (rsh.updatedDate >= :endDate or rsh.updatedDate <= :endDate) and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+		    			}else {
+			    			subQuery = "where rsh.submissionId.orgLocations.id = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" and rsh.submissionId.status = 1 and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate and ( ("+subQuery1+" "+subQuery2+" "+subQuery3+" "+subQuery4+" ) "+subQuery5+") ";
+		    			}
 		    			params.put("orgLocationsId",orgLocationsId);
 		    			params.put("startDate",startUTCDate);
 		    			params.put("endDate",endUTCDate);
 		    		}
 		    		String whereCondition = subQuery;
 		    		Query query =  session.createQuery(from+" "+whereCondition+"  "+query1+"").setFirstResult(requirementSubmissionHistoryDTO.getStart()).setMaxResults(requirementSubmissionHistoryDTO.getLength());
-		    		
 		    		for (String str : query.getNamedParameters())
 		            {
 		    			if(str.equalsIgnoreCase("orgLocationsId")  || str.equalsIgnoreCase("userId") || str.equalsIgnoreCase("approverUserId") || str.equalsIgnoreCase("managerUserId")){
@@ -2966,14 +2982,19 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		    		}else {
 		    			response.setRecordsFiltered(totalCount);
 		    		}
-		    		
-		    		response.setData(query.list());
+		    		if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+		    		{
+		    			Query q = query.setMaxResults(5);
+		    		response.setData(q.list());
+		    		}else {
+		    			response.setData(query.list());
+		    		}
 		    		return response;
 		        }else{
 		        	if(!searchValueType.matches()){
 			        	Map<String, Object> params = new HashMap<String,Object>();
 			    		List<Long> countlist = null;
-			    		List  requirementSubmissionHistoryList = null;
+			    		List  requirementSubmissionHistoryList = new ArrayList<>();
 			        	
 			        	if(clientIdsList != null) {
 			    			clientSubQuery = " and (rsh.submissionId.requirement.clientId.id IN (:clientIdsList))";
@@ -2989,13 +3010,33 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}
 			    		String query="";
 			        	if(requirementSubmissionHistoryDTO.getType() != null &&requirementSubmissionHistoryDTO.getType().equalsIgnoreCase("applicantReport")){
-				     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rs.joinedDate >= :startDate and rs.joinedDate <= :endDate "+query1+"";
+			        		if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+			    			{
+			        		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rs.joinedDate >= :startDate and rs.joinedDate <= :endDate "+query1+"";
+			    			}
+			        		else {
+				        		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and (rs.joinedDate >= :endDate or rs.joinedDate <= :endDate) "+query1+"";
+			        		}	
 			        	}
 			        	else{
-				     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+			        		if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+			    			{
+					     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and (rsh.updatedDate >= :endDate or rsh.updatedDate <= :endDate) "+query1+"";
 			        	}
+			        		else {
+					     		query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
+			        		}
+			        	}
+			        	String countQuery = null;
 	//		     		String query =" from RequirementSubmissionHistory rsh left join fetch rsh.submissionId.candidate can left join fetch rsh.submissionId.requirement req left join fetch rsh.submissionId rs where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate "+query1+"";
-		     			String countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+			        	if(startUTCDate!= null && endUTCDate!= null)
+		    			{
+				        	 countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :startDate and rsh.updatedDate <= :endDate";
+
+		    			}else {
+				        	countQuery ="select count(*) from RequirementSubmissionHistory rsh  where rsh.submissionId.orgLocations = :orgLocationsId "+submissionStages+" "+empQuery+" "+clientSubQuery+" "+teamSubQuery+" "+incentivizedQuery+" "+subQuery1+" and rsh.submissionId.status = 1  and rsh.submissionId.requirement IS NOT NULL and rsh.updatedDate >= :endDate or rsh.updatedDate <= :endDate";
+
+		    			}
 		     			params.put("orgLocationsId",orgLocationsId);
 		     			if(clientIdsList != null) {
 		     				params.put("clientIdsList",clientIdsList);
@@ -3008,7 +3049,6 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 		     			
 		     			Query listCountQuery = session.createQuery(countQuery);
 		     			Query listQuery = session.createQuery(query);
-		     			
 		     			for (String str : listQuery.getNamedParameters())
 			            {
 			    			if(str.equalsIgnoreCase("orgLocationsId")){
@@ -3028,7 +3068,16 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    				listQuery.setParameter( str, params.get( str ) );
 			    			}
 			            }
-	
+		     			if(customDashBoard == null)
+			    		{
+		     			listCountQuery.setParameter("startDate", startUTCDate);
+			    		}
+		     			if(customDashBoard!=null && customDashBoard.equalsIgnoreCase(Constants.Dashboard))
+			    		{
+		     				Query q = listQuery.setMaxResults(5);
+			    		response.setData(q.list());
+			    		}
+		     			else {
 		     			 Pattern p1 = Pattern.compile("(?:\\(\\d{3}\\)|\\d{3}[-]*)\\d{3}[-]*\\d{4}");
 						 Matcher mobNumMacher=p1.matcher(requirementSubmissionHistoryDTO.getSearchValue());
 						 
@@ -3106,6 +3155,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			    		}
 			        	}
 			    		response.setData(requirementSubmissionHistoryList);
+			    		}
 					}
 		        }
 			} catch (Exception e) {
@@ -3458,7 +3508,8 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			  Session session = this.sessionFactory.getCurrentSession();
 			
 			  /*String  subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";*/
-			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT') ";
+			  String  subQuery = " and (rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMIT_TO_CLIENT' "
+			  		+ " OR rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) ";
 			 
 			 List<RequirementSubmission> shortListCandidatesList;
 			 if(existingApplicantsIds != null && !existingApplicantsIds.isEmpty()){
@@ -4979,6 +5030,74 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 	     String query = "from RequirementSubmission rs left join fetch rs.requirement left join fetch rs.candidate left join fetch rs.sourceSubmission left join fetch rs.candidateResumes where rs.orgLocations.id = :orgLocationsId and rs.submissionStatus = 'SUBMISSION' and date(rs.joinedDate) =:joiningDate and rs.status = '1' ";
 	     List<RequirementSubmission> shortListCandidatesList = session.createQuery(query).setLong( "orgLocationsId", orgLocationId).setDate("joiningDate", sqlJoiningDate).list();
 	     return shortListCandidatesList;
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,
+			Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.email = :candidateEmail and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("candidateEmail", candidateEmail).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+		
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(String panNumber,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.panNumber = :panNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("panNumber", panNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(String aadharNumber,
+			Long requirementId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.aadharNumber = :aadharNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("aadharNumber", aadharNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	}
+	
+	@Override
+	@Transactional
+	public boolean isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(String ssnNumber,
+			Long requirementId) throws Exception {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		boolean flag = false;
+		String query ="from RequirementSubmission submission left join fetch submission.requirement left join fetch submission.candidate where submission.candidate.aadharNumber = :ssnNumber and submission.requirement.id = :requirementId  ";
+		List<RequirementSubmission> submissionList = session.createQuery(query).setString("ssnNumber", ssnNumber).setLong("requirementId", requirementId).list();
+		if(submissionList !=null && submissionList.size() >0){
+			flag = true;
+			return flag;
+		}else{
+			return flag;
+		}
+	
 	}
 
 }

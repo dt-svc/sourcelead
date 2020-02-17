@@ -31,6 +31,10 @@ public class AddTaskDTO implements Serializable{
 	private String email;
 	
 	private String notification;
+	
+	/* 21/jan/2020 - vishnu
+	added new field to fetch multiple user ids from saveTask ajax call in masterHeader.*/
+	private String assignToUserString;
 
 	public Long getAssignTo()
 	{
@@ -121,6 +125,14 @@ public class AddTaskDTO implements Serializable{
 	{
 		this.notification = notification;
 	}
-	
+
+	public String getAssignToUserString() {
+		return assignToUserString;
+	}
+
+	public void setAssignToUserString(String assignToUserString) {
+		this.assignToUserString = assignToUserString;
+	}
+
 	
 }

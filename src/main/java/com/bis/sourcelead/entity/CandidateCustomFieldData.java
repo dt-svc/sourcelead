@@ -29,7 +29,7 @@ public class CandidateCustomFieldData implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CANDIDATE_ID", nullable=false )        
-    private Candidate candidate;
+    private CandidateGlobal candidate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CUSTOM_FORM_FIELD_ID", nullable=false )        
@@ -51,11 +51,11 @@ public class CandidateCustomFieldData implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Candidate getCandidate() {
+	public CandidateGlobal getCandidate() {
 		return candidate;
 	}
 
-	public void setCandidate(Candidate candidate) {
+	public void setCandidate(CandidateGlobal candidate) {
 		this.candidate = candidate;
 	}
 
@@ -90,8 +90,7 @@ public class CandidateCustomFieldData implements Serializable{
 	public void setCustomFormFieldData2(String customFormFieldData2) {
 		this.customFormFieldData2 = customFormFieldData2;
 	}
-	
-	
+
 	
 }
 

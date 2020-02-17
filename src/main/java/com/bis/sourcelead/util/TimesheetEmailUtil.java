@@ -371,9 +371,10 @@ public class TimesheetEmailUtil {
 			Long redirectOrgLocationId = loginOrgLocation.getId();
 			for (ProjectApproverHierarchy approver : approverHierarchyList) {
 				boolean flag = true;
-				if(approver.getProjectId().getProjectApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL) 
-						&& approver.getLevel() == 2) {
+				if(approver.getProjectId() != null && approver.getProjectId().getProjectApprovalType().equalsIgnoreCase(Constants.SEQUENTIAL) &&
+						approver.getLevel() != null && approver.getLevel() == 2) {
 					flag = false;
+//					break;
 				}
 					
 

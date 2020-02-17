@@ -65,8 +65,8 @@ public class CandidateDocuments implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID", nullable=false)
-	private Candidate candidateId;
-		
+	private CandidateGlobal candidateId;
+	
 	@Column(name = "DOCUMENT_TYPE ")
 	private String documentType;
 	
@@ -126,11 +126,11 @@ public class CandidateDocuments implements Serializable{
 		this.orgLocationId = orgLocationId;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -297,7 +297,6 @@ public class CandidateDocuments implements Serializable{
 	{
 		this.fileURL = fileURL;
 	}
-	
-	
+
 	
 }

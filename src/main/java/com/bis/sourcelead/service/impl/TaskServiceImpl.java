@@ -197,7 +197,17 @@ public class TaskServiceImpl implements TaskService {
 
 		if (addTaskDTO.getAssignTo() != null) {
 			String assignOwnersId = null;
-			assignOwnersId = addTaskDTO.getAssignTo().toString();
+			
+			/* 21/jan/2020 - vishnu
+			added an if-else block for getAssignToUserString as multiple user ids can be sent as a String from saveTask ajax call in masterHeader.
+			and getAssignTo is Long datatype and can only fetch one value.
+			*/ 
+			if(addTaskDTO.getAssignToUserString() != null && !addTaskDTO.getAssignToUserString().equals("")){
+				assignOwnersId = addTaskDTO.getAssignToUserString();
+			}else{
+				assignOwnersId = addTaskDTO.getAssignTo().toString();
+			}
+			
 			assignOwnersId = assignOwnersId.replaceAll("\\[", "").replaceAll("\\]", "");
 			String[] owners = assignOwnersId.split(",");
 

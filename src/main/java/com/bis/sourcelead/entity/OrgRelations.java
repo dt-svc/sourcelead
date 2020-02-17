@@ -138,6 +138,11 @@ public class OrgRelations implements Serializable{
 	@Column(name = "IS_LAW_FIRM")
 	private String isLawFirm;
 	
+
+	@Column(name = "IS_BACKGROUND_CHECK_FIRM")
+	private String isBackgroundCheck;
+	
+	
 	@Column(name = "IS_ACCOUNTING_FIRM")
 	private String isAccountingFirm;
 
@@ -150,6 +155,8 @@ public class OrgRelations implements Serializable{
 	@Column(name="GENERATE_BILL")
 	private String generateBill;
 
+	@Column(name="IS_MSP_VENDOR")
+	private String isMSPVendor;
 	
 	@Transient
 	@JsonProperty
@@ -386,6 +393,10 @@ public class OrgRelations implements Serializable{
     @Transient
 	@JsonProperty
     private String vendorNameForList;
+    
+    @Transient
+   	@JsonProperty
+    private String mspVendorIds;
     
 	public String getStringDate()
 	{
@@ -1151,6 +1162,13 @@ public class OrgRelations implements Serializable{
 		this.isLawFirm = isLawFirm;
 	}
 
+    public String getIsBackgroundCheck() {
+		return isBackgroundCheck;
+	}
+	public void setIsBackgroundCheck(String isBackgroundCheck) {
+		this.isBackgroundCheck = isBackgroundCheck;
+	}
+
 	public String getIsAccountingFirm() {
 		return isAccountingFirm;
 	}
@@ -1191,6 +1209,20 @@ public class OrgRelations implements Serializable{
 		this.generateBill = generateBill;
 	}
 
-	
+	public String getIsMSPVendor() {
+		return isMSPVendor;
+	}
 
+	public void setIsMSPVendor(String isMSPVendor) {
+		this.isMSPVendor = isMSPVendor;
+	}
+
+	public String getMspVendorIds() {
+		return mspVendorIds;
+	}
+
+	public void setMspVendorIds(String mspVendorIds) {
+		this.mspVendorIds = mspVendorIds;
+	}
+	
 }

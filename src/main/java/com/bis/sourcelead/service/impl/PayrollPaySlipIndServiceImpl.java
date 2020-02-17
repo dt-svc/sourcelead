@@ -1,7 +1,11 @@
 package com.bis.sourcelead.service.impl;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,10 +15,19 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.PayrollPaySlipIndDao;
 import com.bis.sourcelead.dto.PayrollPaySlipIndDTO;
+import com.bis.sourcelead.dto.Response;
+import com.bis.sourcelead.entity.EmailAttachment;
+import com.bis.sourcelead.entity.EmailMessage;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
+import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.indPayroll.dao.IndPaysheetFrequencyDao;
+import com.bis.sourcelead.indPayroll.entity.IndEmployeePayroll;
+import com.bis.sourcelead.indPayroll.service.IndPaysheetFrequencyService;
 import com.bis.sourcelead.service.PayrollPaySlipIndService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.dynamicReport.IndPaySlipPdf;
 
 @Service
 public class PayrollPaySlipIndServiceImpl implements PayrollPaySlipIndService{
@@ -27,7 +40,16 @@ public class PayrollPaySlipIndServiceImpl implements PayrollPaySlipIndService{
 	
 	 @Autowired
 	 private CommonUtil commonUtil;
+	 
+	 @Autowired
+	 private IndPaysheetFrequencyDao indPaysheetFrequencyDao;
+	 
+	 @Autowired
+	 IndPaySlipPdf indPaySlipPdf;
 
+	 @Autowired
+	 IndPaysheetFrequencyService indPaysheetFrequencyService;
+	 
 	@Override
 	public PayrollPaySlipInd savePayrollPaySlipInd(PayrollPaySlipInd payrollPaySlipInd) throws Exception {
 		return payrollPaySlipIndDao.savePayrollPaySlipInd(payrollPaySlipInd);
@@ -127,6 +149,43 @@ public class PayrollPaySlipIndServiceImpl implements PayrollPaySlipIndService{
 	@Override
 	public PayrollPaySlipInd getActivePayslipByOrglocationId(Long orgLocationId) throws Exception {
 		return payrollPaySlipIndDao.getActivePayslipByOrglocationId(orgLocationId);
+	}
+
+
+	@Override
+	public void sendAllEmployeePlayslips(User loginUser, String playrollUUIDs, OrgLocations orgLocation) throws Exception {
+		
+		String[] uuids = playrollUUIDs.split(",");
+		for(String employeePayrollUUID:uuids) {
+			IndEmployeePayroll  indEmployeePayroll = indPaysheetFrequencyDao.indEmployeePayrollByEmpPayrollUUID(employeePayrollUUID);
+			EmailMessage emailMessage = new EmailMessage();
+			emailMessage.setFromName(loginUser.getFullName());
+			emailMessage.setFirstName(loginUser.getFullName());
+			emailMessage.setToEmail(indEmployeePayroll.getCandidate().getEmail());
+			emailMessage.setFromEmail(loginUser.getEmail());
+			emailMessage.setCreatedBy(loginUser.getUserCode());
+			emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL); 
+			
+			Map<String, String> globalVarsMap = new HashMap<String, String>();
+			String StartDdate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), indEmployeePayroll.getIndPaysheetFrequency().getFrequencyStartDate());
+			String EndDate = commonUtil.dateStrFromOrgDateFormatter(orgLocation.getDateFormat(), indEmployeePayroll.getIndPaysheetFrequency().getFrequencyEndDate());
+			
+			globalVarsMap.put("employeeName", indEmployeePayroll.getCandidate().getFullName());
+			globalVarsMap.put("payPeriod",  StartDdate + " To " + EndDate);
+			globalVarsMap.put("loginUser", loginUser.getFullName());
+			globalVarsMap.put("loginOrg", orgLocation.getOrgLocationName());
+			
+			ArrayList<EmailAttachment> attachmentList = new ArrayList<EmailAttachment>();
+			EmailAttachment emailAttachment = new EmailAttachment();
+			File  file=  indPaySlipPdf.getIndiaPaySlipPdf(indEmployeePayroll,orgLocation);
+			emailAttachment.setName(file.getName());
+			emailAttachment.setFileUrl(file.toURI().toString());
+			emailAttachment.setType(file.getParent());
+			emailAttachment.setDocFile(commonUtil.readBytesFromFile(file.toPath().toString()));
+			attachmentList.add(emailAttachment);
+			commonUtil.sendTemplateEmail(emailMessage, globalVarsMap,orgLocation.getOrg(),orgLocation,Constants.EMPLOYEE_PAYSLIP_EMAILS,attachmentList);
+		}
+		
 	}
 
 

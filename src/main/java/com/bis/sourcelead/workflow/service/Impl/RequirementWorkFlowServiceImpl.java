@@ -33,10 +33,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.RequirementSubmissionDao;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
@@ -48,6 +51,7 @@ import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.RequirementSubmissionTemplateFields;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
+import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.EmailScenarioService;
 import com.bis.sourcelead.util.CommonUtil;
@@ -88,6 +92,12 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	private UserRoleDao userRoleDao;
+	
+	@Autowired
+	private RequirementSubmissionDao requirementSubmissionDao;
 	
 	@Value("${sourceleadLoginUrl}")
 	private String sourceleadLoginUrl;
@@ -162,8 +172,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 			requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 			requirementWorkFlowStages.setEditable(Constants.NO);
 			requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
-			requirementWorkFlowStages.setCommentRequired(Constants.YES);
+			requirementWorkFlowStages.setCommentRequired(Constants.NO);
 			requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+			// 11-october-2019.
+			// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
+			if(defaultWorkflowMap.getKey().equalsIgnoreCase("NORESPONSE") || defaultWorkflowMap.getKey().equalsIgnoreCase("ONHOLD")){
+				requirementWorkFlowStages.setChosenColumns(Constants.DEFAULT_STAGE_COLUMNS);
+			}
 			requirementWorkFlowStages.setCreatedDate(new Date());
 			requirementWorkFlowStages.setCreatedBy(user);
 			requirementWorkFlowStages.setUpdatedDate(new Date());
@@ -648,7 +663,6 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		}
 		
 		//task saving..
-		User assignedUser = new User();
 		Set<RequirementWorkFlowTasks> requirementWorkFlowTasks = new HashSet<RequirementWorkFlowTasks>();
 		
 		if(requirementWorkFlowStagesDTO.getTaskList() != null && requirementWorkFlowStagesDTO.getTaskList().size() > 0) {
@@ -659,8 +673,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				tasks.setOrgLocationId(orgLocations);
 				tasks.setWorkFlowTaskName(workFlowTasksDTO.getWorkFlowTaskName());
 				
-				assignedUser.setId(Long.parseLong(workFlowTasksDTO.getAssignToUserId()));
-				tasks.setAssignTo(assignedUser);
+				tasks.setAssignTo(workFlowTasksDTO.getAssignToUserId());
 				
 				tasks.setPriority(workFlowTasksDTO.getPriority());
 				tasks.setDescription(workFlowTasksDTO.getWorkFlowTaskDescription());
@@ -799,7 +812,70 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	if(orgLocations != null){
 		workFlow.setOrgLocationId(orgLocations);
 		}
-	workFlow.setWorkFlowName(requirementWorkFlowDTO.getWorkFlowName()+"Copy"); // appending "Copy" post fix to identify cloned work flow.
+	
+	// appending "Copy1" post fix to identify cloned work flow.	
+	if(!requirementWorkFlowDTO.getWorkFlowName().contains("Copy")){
+		
+		StringBuilder clonedWorkflow = new StringBuilder("");
+		List<RequirementWorkFlow> workflow = requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+		
+		
+		Long existingCloneCount = 0l;
+		if(workflow != null){
+		Stream<RequirementWorkFlow> workflowStream = workflow.stream().filter(wf -> wf.getWorkFlowName().contains("Copy"));
+			existingCloneCount = workflowStream.count();
+		}
+		if(existingCloneCount > 0l){
+			existingCloneCount = existingCloneCount + 1;
+			workFlow.setWorkFlowName(clonedWorkflow.append(requirementWorkFlowDTO.getWorkFlowName()).append("(Copy").append(existingCloneCount).append(")").toString());	
+		}
+		else{
+			workFlow.setWorkFlowName(clonedWorkflow.append(requirementWorkFlowDTO.getWorkFlowName()).append("(Copy").append(Constants.LEVEL1).append(")").toString());
+		}
+		
+	}else{
+		List<RequirementWorkFlow> workflow = requirementWorkFlowDao.getRequirementWorkFlowByOrgLocationId(orgLocations.getId());
+		String check1 = requirementWorkFlowDTO.getWorkFlowName();
+		Long existingCloneCount = 0l;
+		if(workflow != null){
+		Stream<RequirementWorkFlow> workflowStream = workflow.stream().filter(wf -> wf.getWorkFlowName().contains("Copy"));
+			existingCloneCount = workflowStream.count();
+		}
+		
+		Integer startIndex = check1.lastIndexOf("(");
+		StringBuilder cloneCopyString = new StringBuilder("");
+		StringBuilder cloneCount  = new StringBuilder("");
+		StringBuilder finalCloneString = new StringBuilder(check1);
+		
+		for(int j=startIndex; j< check1.length(); j++){
+			cloneCopyString.append(check1.toCharArray()[j]);
+		}
+		
+		char copyString[] = cloneCopyString.toString().toCharArray();
+		
+		for(char c: copyString){
+			int asciiValue = (int)c;
+			if(asciiValue >= 48 && asciiValue <= 57){
+				char ch = (char)asciiValue;
+				cloneCount.append(ch);
+			}
+		}
+		
+		Long addedCloneCount = Long.valueOf(cloneCount.toString());
+		
+		finalCloneString.replace(startIndex, check1.length(), "");
+		if(existingCloneCount > 0l){
+			addedCloneCount = existingCloneCount + 1;
+			finalCloneString.append("(Copy").append(addedCloneCount).append(")");
+		}else{
+			addedCloneCount = addedCloneCount + 1;
+			finalCloneString.append("(Copy").append(addedCloneCount).append(")");
+		}
+		
+	
+		workFlow.setWorkFlowName(finalCloneString.toString());
+	}
+	
 	workFlow.setDescription(requirementWorkFlowDTO.getDescription());
 	
 	
@@ -1167,7 +1243,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 	public String sendEmailToCandidateWithQuestionnaireTemplate(HashMap<String , Object> paramList) throws Exception {
 		
 		try {
-		Candidate candidate = (Candidate) paramList.get("candidate");
+			CandidateGlobal candidate = (CandidateGlobal) paramList.get("candidate");
 		User loginUser = (User) paramList.get("loginUser");
 		OrgLocations orgLocations = (OrgLocations) paramList.get("orgLocations");
 		String templateUuid = (String) paramList.get("templateUuid");
@@ -1203,7 +1279,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		 emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 		 
 	
-		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageId, submissionId);
+		 StringBuilder  questionnaireLink  = buildCandidateQuestionnaireTable(templateUuid, stageUuid, submissionId);
 		 StringBuilder linkBuild = new StringBuilder();
 		//setting the class filed values
 		 Map<String, String> globalVarsMap = new HashMap<String, String>();
@@ -1240,7 +1316,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		return Constants.SUCCESS;
 	}
 
-	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, Long stageId, Long submissionId)
+	public StringBuilder buildCandidateQuestionnaireTable(String templateUuid, String stageUuid, Long submissionId)
 			throws Exception {
 		StringBuilder tempHTML = new StringBuilder();
 		tempHTML.append(
@@ -1251,8 +1327,8 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 		int i = 0;
 		if (null != templateUuid && !"".equalsIgnoreCase(templateUuid)) {
 			tempHTML.append("<td>").append("<a href='").append(sourceleadUrl)
-					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageId=")
-					.append(stageId).append("&submissionId=").append(submissionId)
+					.append("/ws/publicQuestionnaireTemplate?templateUuid=").append(templateUuid).append("&stageUuid=")
+					.append(stageUuid).append("&submissionId=").append(submissionId)
 					.append("'style='text-decoration:none; '><div style=' width:100px; border-radius:30px; background-color:#D33B39; color:#FFF; font-size:15px; font-weight:500; margin:10px auto 5px auto; padding:10px 0px; text-align:center; letter-spacing:2px;'>Click Here</div></a>")
 					.append("</td>");
 		}
@@ -1407,63 +1483,109 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public void copyWorkflowStagesAndTask(String uuid, User user, OrgLocations orgLocations,
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO) {
-		User user1 = new User();
+	public String copyWorkflowStagesAndTask(OrgLocations orgLocations, RequirementWorkFlowTasks task, User loginUser, User assignedUser) {
+		try{
 				Tasks tasks = new Tasks();
-				tasks.setOwnerOrglocationId(orgLocations);
-				tasks.setAssignedOrglocationId(orgLocations);
-				tasks.setTaskOwnerId(user);
-				user1.setId(Long.parseLong(requirementWorkFlowTasksDTO.getAssignToUserId()));
-				tasks.setAssignedUserId(user1);
-				tasks.setPriority(requirementWorkFlowTasksDTO.getPriority());
-				tasks.setDescription(requirementWorkFlowTasksDTO.getWorkFlowTaskDescription());
-				tasks.setSubject(requirementWorkFlowTasksDTO.getWorkFlowTaskName());
-				tasks.setStatus(requirementWorkFlowTasksDTO.getStatus());
+				UserRole loginUserId = userRoleDao.getUserRoleByUserId(loginUser.getId());
+				if(loginUserId != null){
+					tasks.setOwnerOrglocationId(loginUserId.getOrgLocations());	
+					tasks.setAssignedOrglocationId(loginUserId.getOrgLocations());
+				}
+				tasks.setTaskOwnerId(loginUser);
+				tasks.setAssignedUserId(assignedUser);
+				tasks.setPriority(task.getPriority());
+				tasks.setDescription(task.getDescription());
+				tasks.setSubject(task.getWorkFlowTaskName());
+				tasks.setStatus(task.getStatus());
 				tasks.setTaskDate(new Date());
-				SimpleDateFormat localDateFormat = new SimpleDateFormat("HH:mm:ss");
-				//tasks.setworkflow(requirementWorkFlowTasksDTO.getTaskName());
 				tasks.setAlertType(Constants.ENTITY_TYPE_EMAIL + "," + Constants.ENTITY_TYPE_NOTIFICATION);
 				//tasks.setTaskRepeat(templateTasks.getTaskRepeat());
-				//tasks.setDescription(templateTasks.getDescription());
 				tasks.setTaskStatus(Constants.TASK_STATUS_OPEN);
 				tasks.setStatus(Constants.RECORD_ACTIVE);
 				Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
 				tasks.setCreatedDate(currentDate);
-				tasks.setCreatedBy(user.getUserUUID());
+				tasks.setCreatedBy(loginUser.getUserCode());
 				tasks.setUpdatedDate(currentDate);
-				tasks.setUpdatedBy(user.getUserUUID());
+				tasks.setUpdatedBy(loginUser.getUserCode());
 				requirementWorkFlowDao.copyWorkflowStagesAndTasks(tasks);		
+				return Constants.SUCCESS;
+	}catch(Exception e){
+		e.printStackTrace();
+		return Constants.FAILED;
+	}
 	}
 
 
 	public  String getRequirementworkflowTaskListById
-	               ( Long StageId, OrgLocations orgLocations, User user) throws Exception {
+	               (Long submissionId, Long StageId, OrgLocations orgLocations, User fromUser) throws Exception {
 		try {
-		
+			RequirementSubmission requirementSubmission= null;
+			User assignedUser = null;
+			String emailResponse = null;
 		 List<RequirementWorkFlowTasks> requirementWorkFlowTasksList = requirementWorkFlowDao.getRequirementWorkFlowTaskListById(StageId);
 		 if(requirementWorkFlowTasksList != null && !requirementWorkFlowTasksList.isEmpty()) {
+			 requirementSubmission = requirementSubmissionDao.getRequirementSubmissionById(submissionId);
 			 for(RequirementWorkFlowTasks task : requirementWorkFlowTasksList) {
-		        	User assignUser = userDao.getUserById(task.getAssignTo().getId());	
+				 if(task.getAssignTo().equalsIgnoreCase(Constants.APPLICANT_OWNER)){
+					 if(requirementSubmission != null){
+						 assignedUser = userDao.getUserByUserCode(requirementSubmission.getCreatedBy());
+						 if(assignedUser != null){
+							 String response = copyWorkflowStagesAndTask(orgLocations, task, fromUser, assignedUser);
+							 if(response.equalsIgnoreCase(Constants.SUCCESS)){
+								 emailResponse = sendMailToAssignedUsers(orgLocations, fromUser, assignedUser, task);
+						 }
+						 }
+					 }
+				 }else if(task.getAssignTo().equalsIgnoreCase(Constants.JOB_OWNER)){
+					 if(requirementSubmission != null){
+						 assignedUser = requirementSubmission.getRequirement().getManagerUserId();
+						 String response = copyWorkflowStagesAndTask(orgLocations, task, fromUser, assignedUser);
+						 if(response.equalsIgnoreCase(Constants.SUCCESS)){
+							 emailResponse = sendMailToAssignedUsers(orgLocations, fromUser, assignedUser, task);
+					 }
+					 }
+				 }else if(task.getAssignTo().equalsIgnoreCase(Constants.PRIMARY_RECRUITER)){
+					 if(requirementSubmission != null){
+						 assignedUser = requirementSubmission.getRequirement().getPrimaryRecruiterUserId();	
+						 String response = copyWorkflowStagesAndTask(orgLocations, task, fromUser, assignedUser);
+						 if(response.equalsIgnoreCase(Constants.SUCCESS)){
+							 emailResponse =  sendMailToAssignedUsers(orgLocations, fromUser, assignedUser, task);
+					 }
+					 }
+				 }
+		      		 }
+		}
+		 return emailResponse;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while send task email in service "+e.getLocalizedMessage());
+			return Constants.FAILED;
+		}
+	}
+
+	@Override
+	public String sendMailToAssignedUsers(OrgLocations orgLocations, User fromUser, User toUser, RequirementWorkFlowTasks task){
+		try{
 			   //This code is display for Current Date and time 
 			   Date date = new Date();
 			   SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 		       String dateAndTime= formatter.format(date);
 				
 				EmailMessage emailMessage = new EmailMessage();
-				emailMessage.setFirstName(assignUser.getFirstName());
-				emailMessage.setLastName(assignUser.getLastName());
-				emailMessage.setToEmail(assignUser.getEmail());
-				emailMessage.setFromEmail(user.getEmail());
-				emailMessage.setCreatedBy(user.getUserCode());
+				emailMessage.setFirstName(toUser.getFirstName());
+				emailMessage.setLastName(toUser.getLastName());
+				emailMessage.setToEmail(toUser.getEmail());
+				emailMessage.setFromEmail(fromUser.getEmail());
+				emailMessage.setCreatedBy(fromUser.getUserCode());
 				emailMessage.setEmailType(Constants.CUSTOM_USER_EMAIL);
 				InternetAddress[] iAdressArray = InternetAddress.parse(emailMessage.getToEmail());
 				
 				Map<String, String> globalVarsMap = new HashMap<String, String>();
 				globalVarsMap.put("taskDescription", task.getDescription());
 				globalVarsMap.put("taskTitle", task.getWorkFlowTaskName());
-				globalVarsMap.put("assignedUser", assignUser.getFirstName());
-				globalVarsMap.put("loginUser", user.getFirstName()+" "+ user.getLastName());
+				globalVarsMap.put("assignedUser", toUser.getFirstName());
+				globalVarsMap.put("loginUser", fromUser.getFirstName()+" "+ fromUser.getLastName());
 				globalVarsMap.put("loginOrg", orgLocations.getOrgLocationName());
 	
 				//Login link for string builder
@@ -1498,19 +1620,15 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				emailScenerioUtil.sendEmail(emailMessage, orgLocations.getId(), iAdressArray, new ArrayList<EmailAttachment>());
 	
 				String actionLink = "";
-				emailScenerioUtil.sendNotification(actionLink, user, assignUser, orgLocations, notificationScenario, new HashMap<String, String>());
-			 }
-		}
-	 }
-		catch(Exception e) {
+				emailScenerioUtil.sendNotification(actionLink, fromUser, toUser, orgLocations, notificationScenario, new HashMap<String, String>());
+	
+			
+			return Constants.SUCCESS;
+		}catch(Exception e){
 			e.printStackTrace();
-			logger.error("Exception caught while send task email in service "+e.getLocalizedMessage());
 			return Constants.FAILED;
 		}
-		return Constants.SUCCESS;
 	}
-
-	
 	
 	public List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId) {
 		return  requirementWorkFlowDao.validateWorkflowUpdate(workflowId, workflowUuid, orgLocationId);
@@ -1544,8 +1662,13 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				requirementWorkFlowStages.setConfigureType(Constants.DEFAULT);
 				requirementWorkFlowStages.setEditable(Constants.NO);
 				requirementWorkFlowStages.setStatus(Constants.RECORD_ACTIVE);
-				requirementWorkFlowStages.setCommentRequired(Constants.YES);
+				requirementWorkFlowStages.setCommentRequired(Constants.NO);
 				requirementWorkFlowStages.setRequiredStatsList(Constants.NO);
+				// 11-october-2019.
+				// setting chosen columns for 'noresponse' and 'onhold' stages in requirement workflow configuration.
+				if(defaultWorkflowMap.getKey().equalsIgnoreCase("NORESPONSE") || defaultWorkflowMap.getKey().equalsIgnoreCase("ONHOLD")){
+					requirementWorkFlowStages.setChosenColumns(Constants.DEFAULT_STAGE_COLUMNS);
+				}
 				requirementWorkFlowStages.setCreatedDate(new Date());
 				requirementWorkFlowStages.setUpdatedDate(new Date());
 				requirementWorkFlowSet.add(requirementWorkFlowStages);
@@ -1569,7 +1692,7 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public Candidate getCandidateByRequirementSubmissionId(Long submissionId) {
+	public CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId) {
 		return requirementWorkFlowDao.getCandidateByRequirementSubmissionId(submissionId);
 	}
 	public String updateDefaultWorkflowInRequirementProcedure() throws Exception {
@@ -1598,7 +1721,10 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 				qDto.setJsonString(requirementQuestionnaireTemplate.getJsonString());
 				qDto.setTimeLimitMinutes(requirementQuestionnaireTemplate.getTimeLimitMinutes());
 				qDto.setTimeLimitSeconds(requirementQuestionnaireTemplate.getTimeLimitSeconds());
+			}else{
+				qDto.setJsonString(Constants.BOOLEAN_FALSE);
 			}
+			
 		}else {
 			qDto.setJsonString(feedbackTemplateDto.getJsonString());
 			qDto.setJsonStringValues(feedbackTemplateDto.getJsonStringValues());
@@ -1629,9 +1755,9 @@ public class RequirementWorkFlowServiceImpl implements RequirementWorkFlowServic
 
 
 	@Override
-	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId,
+	public String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageUuid, Long submissionId,
 			Integer minutes, Integer seconds) {
-		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageId,submissionId, minutes, seconds);
+		return requirementWorkFlowDao.updateFeedbackQuestionnaireTimer(questTemplUuid, stageUuid,submissionId, minutes, seconds);
 	}
 	
 	@Override

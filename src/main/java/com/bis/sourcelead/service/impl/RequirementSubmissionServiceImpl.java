@@ -46,6 +46,7 @@ import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.CandidateDao;
 import com.bis.sourcelead.dao.CandidateEducationDao;
 import com.bis.sourcelead.dao.CandidateEmployersDao;
+import com.bis.sourcelead.dao.CandidateGlobalDao;
 import com.bis.sourcelead.dao.CandidateResumesDao;
 import com.bis.sourcelead.dao.InvoiceDao;
 import com.bis.sourcelead.dao.RequirementDao;
@@ -64,12 +65,14 @@ import com.bis.sourcelead.dto.RequirementSubmissionsCountDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.CandidateIndex;
+import com.bis.sourcelead.elk.index.helper.CandidateGlobalIndexHelper;
 import com.bis.sourcelead.elk.index.helper.CandidateIndexHelper;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.CandidateVerificationConfig;
 import com.bis.sourcelead.entity.Contracts;
@@ -100,7 +103,7 @@ import com.bis.sourcelead.entity.Timezone;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
-import com.bis.sourcelead.enums.Submission_Status;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.CountriesService;
 import com.bis.sourcelead.service.EmailScenarioService;
@@ -123,8 +126,10 @@ import com.bis.sourcelead.service.TimeZoneService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CalendarUtil;
 import com.bis.sourcelead.util.CandidateActivityCommonUtil;
+import com.bis.sourcelead.util.CandidateGlobalUtil;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.EmailScenerioUtil;
+import com.bis.sourcelead.util.ExperienceTrackerHelper;
 import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.PdfUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
@@ -167,9 +172,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	
 	@Value("${static.path}")
 	private String staticPath;
-	
-	@Autowired
-	private CandidateDao candidateDao;
 	
 	@Autowired
 	private CandidateEducationDao candidateEducationDao;
@@ -265,6 +267,21 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
     RequirementInterviewService requirementInterviewService;
     
     @Autowired
+    CandidateGlobalDao candidateGlobalDao;
+    
+    @Autowired
+    CandidateGlobalService candidateGlobalService;
+    
+    @Autowired
+    CandidateGlobalIndexHelper candidateGlobalIndexHelper;
+    
+    @Autowired
+    CandidateGlobalUtil candidateGlobalUtil;
+    
+    @Autowired
+    ExperienceTrackerHelper experienceTrackerHelper;
+    
+    @Autowired
     PdfUtil pdfUtil;
 	@Override
 	public RequirementSubmission getRequirementSubmissionById(Long submissionId) throws Exception {
@@ -277,9 +294,9 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole) throws Exception {
+	public List<RequirementSubmissionsDTO> getAllShortListCandidatesByOrgLocationsIdAndRequirementId(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientInterview,User user,String loginUserRole, String isWorkflowConfigured) throws Exception {
 		List<RequirementSubmissionsDTO> requirementSubmissionsDTOList = new LinkedList<>();
-		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole);
+		List<Object[]> objList = requirementSubmissionDao.getAllShortListCandidatesByOrgLocationsIdAndRequirementId(orgLocations,requirementId,existingApplicantsIds,isClientInterview,user,loginUserRole, isWorkflowConfigured);
 		if(objList != null && !objList.isEmpty()) {
 			for(Object[] obj : objList) {
 				RequirementSubmissionsDTO requirementSubmissionsDTO = new RequirementSubmissionsDTO();
@@ -293,8 +310,8 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	@Override
-	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement) throws Exception {
-		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement);
+	public List<RequirementSubmission> getAllSubmittedAndShortListAndInterviewededCandidates(OrgLocations orgLocations,Long requirementId, List<Long> existingApplicantsIds, String isClientOffer,User user,String loginUserRole,String isClientRequirement,String isWorkflowConfigured) throws Exception {
+		return requirementSubmissionDao.getAllSubmittedAndShortListAndInterviewededCandidates(orgLocations,requirementId,existingApplicantsIds,isClientOffer,user,loginUserRole,isClientRequirement,isWorkflowConfigured);
 	}
 
 	
@@ -316,7 +333,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		
 		 Requirement requirement = null;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
-		 Candidate candidate = null;
+		 CandidateGlobal candidate = null;
 		 CandidateResumes candidateResumes = null;
 		 Date date = new Date();
 		 OrgLocations guestOrglocation=null;
@@ -340,24 +357,24 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 }
 		 
 		 if(jsonObj.has("candidateId") && !isNullOrEmpty(jsonObj.getString("candidateId"))){
-			 candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
+			 candidate = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
 		 }else if(candidate == null && jsonObj.has("EmailId") && !isNullOrEmpty(jsonObj.getString("EmailId"))){
 				if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
-					 candidate = candidateDao.getCandidateByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
+					 candidate = candidateGlobalDao.getCandidateGlobalByEmailAndRecruiterUserId(jsonObj.getString("EmailId"), user.getId());
 				}else {
 					if(orgLocations != null){
-						 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),orgLocations.getId());
+						 candidate = candidateGlobalDao.findByCandidateGlobalEmail(jsonObj.getString("EmailId"),orgLocations.getId());
 						}
 						else{
-							 candidate = candidateDao.findByCandidateEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
+							 candidate = candidateGlobalDao.findByCandidateGlobalEmail(jsonObj.getString("EmailId"),requirement.getOrgLocationId().getId());
 						}
 				}
 		 }
 		 
 		 if(candidate == null){
-			       candidate = new Candidate();
+			       candidate = new CandidateGlobal();
 			       
 					if(orgLocations == null){
 						guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
@@ -390,6 +407,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					 
 					if(jsonObj.has("city") && !isNullOrEmpty(jsonObj.getString("city"))){
 						 candidate.setCity(jsonObj.getString("city"));
+					}
+					
+					if(jsonObj.has("DOB") && !isNullOrEmpty(jsonObj.getString("DOB"))){
+						 candidate.setDateOfBirth(commonUtil.orgLocationDateFormat(orgLocations.getDateFormat(),jsonObj.getString("DOB")));
 					}
 					
 					 if(jsonObj.has("zipcode") && !isNullOrEmpty(jsonObj.getString("zipcode"))){
@@ -476,7 +497,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					if(jsonObj.has("vendors") && !"".equalsIgnoreCase(jsonObj.getString("vendors"))){
 						OrgRelations orgRelation = orgRelationsService.getOrRelationsById(Long.parseLong(jsonObj.getString("vendors")));
 						candidate.setOrgRelationId(orgRelation);
-						Candidate vendorCandidate = commonUtil.getVendorCandidate(jsonObj, orgRelation, orgLocations, user);
+						CandidateGlobal vendorCandidate = commonUtil.getVendorGlobalCandidate(jsonObj, orgRelation, orgLocations, user);
 						candidate.setParentCandidateId(vendorCandidate);
 					}else{
 						candidate.setOrgRelationId(null);
@@ -494,13 +515,6 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					}
 					MasterCandidate masterCandidate = null;
 					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
-					
-//					User guestUser = null ;
-//					if(user == null){
-//						guestUser = userService.getUserById(requirement.getCreatedBy().getId());
-//					}
-				
-					
 					
 					if(orgLocations != null){
 						if(null == masterCandidate){
@@ -558,13 +572,10 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 					
 					 }
 					
-					 candidate = candidateDao.storeCandidate(candidate);
-					 candidateService.getCandidatePercentage(candidate, orgLocations);
-					 CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-					
-					sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
-					
-					requirementSubmission.setCandidate(candidate);
+					 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+					 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+					 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);					
+					 requirementSubmission.setCandidate(candidate);
 					
 					if(jsonObj.has("Education") && !isNullOrEmpty(jsonObj.getString("Education"))){
 						
@@ -609,24 +620,37 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
 					 }
 					 
-					 candidateActivityCommonUtil.storeCandidateHistory(candidate, user);
-					 candidateActivityCommonUtil.storeCandidateActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
+					 candidateActivityCommonUtil.storeCandidateGlobalHistory(candidate, user);
+					 candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
 					
 		 }else{
 			 requirementSubmission.setCandidate(candidate);
 			 
-			 
-			if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
-				 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+			Candidate associateCandidate = candidateService.getCandidateByCandidateGlobalId(candidate.getId());
+			if(associateCandidate != null) {
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					associateCandidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					associateCandidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				 associateCandidate = candidateService.addCandidate(associateCandidate);
+				 candidateService.saveOrUpdateCandidateElkDocument(associateCandidate);	
+			}else {
+				if(jsonObj.has("PhoneNumber") && !isNullOrEmpty(jsonObj.getString("PhoneNumber"))){
+					 candidate.setMobilePhone(jsonObj.getString("PhoneNumber"));
+				}
+				
+				if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
+				}
+				
+				 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+				 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+				 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);	
 			}
-			
-			if(jsonObj.has("AlternateNumber") && !isNullOrEmpty(jsonObj.getString("AlternateNumber"))){
-				 candidate.setAlternateMobilePhone(jsonObj.getString("AlternateNumber"));
-			}
-			
-		    candidate = candidateDao.storeCandidate(candidate);
-			CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-			sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
 				
 			
 		 }
@@ -773,7 +797,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(new Date());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
-		 String score = recommendationsService.getCandidateScore(candidate,requirement,recommendedCustomizeScore);
+		 String score = recommendationsService.getCandidateGlobalScore(candidate,requirement,recommendedCustomizeScore);
 		 if(null !=score){
 			 requirementSubmission.setCandidateScore(score);			 
 		 }
@@ -986,7 +1010,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 	
-	public void sendEmailToGuestUserForAppliedJob(Candidate user, Requirement requirement) throws Exception {
+	public void sendEmailToGuestUserForAppliedJob(CandidateGlobal user, Requirement requirement) throws Exception {
 		
 		 
 		 StringBuilder nameBuilder = new StringBuilder();
@@ -1074,7 +1098,7 @@ public class RequirementSubmissionServiceImpl implements RequirementSubmissionSe
 	}
 	
 
-	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations, String submissionType) throws Exception {
+	private void notifyToapplicantMailAboutRequirement(Long submissionId ,Requirement requirement,  CandidateGlobal candidate ,User loginUser,OrgLocations orgLocations, String submissionType) throws Exception {
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
 		 EmailMessage emailMessage = new EmailMessage();
@@ -1654,7 +1678,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 			
 		}
 	
-	public void applicantReceiveMailAboutRequirement(Long submissionId ,Requirement requirement,  Candidate candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
+	public void applicantReceiveMailAboutRequirement(Long submissionId ,Requirement requirement,  CandidateGlobal candidate ,User loginUser,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
 		
@@ -1756,7 +1780,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public void applicantAcceptMailAboutRequirement(Requirement requirement, User initiatorUser,RequirementSubmission requirementSubmission,
 			OrgLocations orgLocations) throws Exception {
 		
-		Candidate candidate = requirementSubmission.getCandidate(); 
+		CandidateGlobal candidate = requirementSubmission.getCandidate(); 
 		 EmailMessage emailMessage = new EmailMessage();
 		 emailMessage.setFirstName(initiatorUser.getFirstName());
 		 emailMessage.setLastName(initiatorUser.getLastName());
@@ -1873,7 +1897,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, Candidate candidate,
+	public void applicantRejectMailAboutRequirement(Requirement requirement, User initiatorUser, 
 			OrgLocations orgLocations,String rejectreason, StringBuilder tempHTML, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, Long submissionId) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
@@ -1964,7 +1988,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 	
 	@Override
-	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser, Candidate candidate,
+	public void applicantNegotiateEmail(Requirement requirement, User initiatorUser,
 			OrgLocations orgLocations,RequirementRateSubmissionNegotiation negotiation,StringBuilder tempHTML) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(negotiation.getRequirementsubmissionId().getId());
@@ -2831,7 +2855,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	
 
 	@Override
-	public void userNegotiateEmail(Requirement requirement, User user, Candidate candidate, OrgLocations orgLocations,
+	public void userNegotiateEmail(Requirement requirement, User user, OrgLocations orgLocations,
 			RequirementRateSubmissionNegotiation neogtation, StringBuilder tempHTML) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(neogtation.getRequirementsubmissionId().getId());
@@ -2899,7 +2923,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
+	public void sendEmailtoClient(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission,
 			StringBuilder tempHTML,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -2992,7 +3016,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void userAcceptRateNegotiation(Requirement requirement, User user, Candidate candidate,
+	public void userAcceptRateNegotiation(Requirement requirement, User user, 
 			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, StringBuilder tempHtml) throws Exception {
 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementRateSubmissionNegotiation.getRequirementsubmissionId().getId());
@@ -3501,7 +3525,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, Candidate candidate,
+	public void sendEmailtoVendor(Org loginOrg, User users, User pastUser, RequirementSubmission requirementSubmission, 
 			StringBuilder tempHTML,OrgLocations orgLocations) throws Exception {
 		
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -3574,7 +3598,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	}
 
 	@Override
-	public void userRejectRateNegotiation(Requirement requirement, User user, Candidate candidate,
+	public void userRejectRateNegotiation(Requirement requirement, User user,
 			OrgLocations orgLocations, RequirementRateSubmissionNegotiation requirementRateSubmissionNegotiation, String rejectreason, StringBuilder tempHTML)
 			throws Exception {
 		
@@ -3639,7 +3663,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 
 	@Override
 	public void clientOrVendorAcceptOrRejectRateNegotiation(Org loginOrg, User users, User pastUser,
-			RequirementSubmission requirementSubmission, Candidate candidate, StringBuilder tempHTML,
+			RequirementSubmission requirementSubmission, StringBuilder tempHTML,
 			OrgLocations loginOrgLocation,String type, String status) throws Exception {
 
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(requirementSubmission.getId());
@@ -3804,7 +3828,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		
 		 Requirement requirement = null;;
 		 RequirementSubmission requirementSubmission = new RequirementSubmission();
-		 Candidate candidate = null;
+		 CandidateGlobal candidate = null;
 		 CandidateResumes candidateResumes = null;
 	//	 SimpleDateFormat simpleDateFormat = orgLocations.getLocFullFormDateFormatter();
 		 if(jsonObj.has("requirementId")){
@@ -3814,7 +3838,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 }
 		 
 		 if(jsonObj.has("candidateId") && !isNullOrEmpty(jsonObj.getString("candidateId"))){
-			 candidate = candidateDao.getCandidateByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
+			 candidate = candidateGlobalDao.getCandidateGlobalByCandidateId(Long.parseLong(jsonObj.getString("candidateId")));
 			 candidate.setId(Long.parseLong(jsonObj.getString("candidateId")));
 			 requirementSubmission.setCandidate(candidate);
 		 }
@@ -3932,9 +3956,8 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 				}
 				candidate.setMasterCandidateId(masterCandidate);
 			    
-			    candidateDao.storeCandidate(candidate);
-				CandidateIndex candidateIndex = candidateIndexHelper.getCandidateIndexFromCandidate(candidate);
-				sourceleadELKBaseIndexer.saveOrUpdateElkDocument(candidateIndex, Constants.ELK_CANDIDATE_INDEX, Constants.ELK_CANDIDATE_TYPE,candidate.getId().toString());
+			    candidateGlobalDao.storeCandidateGlobal(candidate);
+			    candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);
 		 }
 		 
 		 
@@ -4060,7 +4083,7 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 		 requirementSubmission.setCreatedDate(new Date());
 		 requirementSubmission.setUpdatedDate(commonUtil.currentDate());
 		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirementSubmission.getRequirement().getId());
-		 String score = recommendationsService.getCandidateScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
+		 String score = recommendationsService.getCandidateGlobalScore(candidate,requirementSubmission.getRequirement(),recommendedCustomizeScore);
 		 if(null != score){
 			 requirementSubmission.setCandidateScore(score);
 		 }
@@ -6040,6 +6063,465 @@ private void createXlsSheet(Sheet createExcelsheet,Row writeRow,int column,Strin
 	public List<RequirementSubmission> getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(
 			Long orgLocationId, String submissionStatus, Date joiningDate) throws Exception {
 		return requirementSubmissionDao.getSubmissionListByOrgLocationAndSubmissionStatusAndJoiningDate(orgLocationId, submissionStatus, joiningDate);
+	}
+
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(String candidateEmail,
+			Long requirementId) throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateEmailAndRequirementId(candidateEmail, requirementId);
+	}
+	
+	
+	
+	@SuppressWarnings("unused")
+	@Override
+	public RequirementSubmission saveRequirementProfileTrackerSubmission(JSONObject jsonObj,User user,OrgLocations orgLocations,String jsonStringvalues,String loginUserRole) throws Exception {
+		
+		 Requirement requirement = null;
+		 RequirementSubmission requirementSubmission = new RequirementSubmission();
+		 CandidateGlobal candidate = null;
+		 CandidateResumes candidateResumes = null;
+		 Date date = new Date();
+		 OrgLocations guestOrglocation=null;
+		 String submissionstatus=null;
+		 Countries countries = null;
+		 if(orgLocations != null && StringUtils.isNotBlank(orgLocations.getCountry())) {
+			 countries = countiresService.getCountriesByCountryName(orgLocations.getCountry());
+		 }
+		
+		 if(jsonObj.has("requirementId")){
+			 requirement = requirementDao.getRequirementByRequirementId(Long.parseLong(jsonObj.getString("requirementId")));
+			 requirementSubmission.setRequirement(requirement);
+			 requirementSubmission.setSubmissionTemplateJsonString(requirement.getSubmissionTemplateJsonString());
+			 
+		 }
+		 
+	       if(candidate == null && jsonObj.has("emailId") && !isNullOrEmpty(jsonObj.getString("emailId"))){
+	    		if(orgLocations != null){
+					 candidate = candidateGlobalDao.findByCandidateGlobalEmail(jsonObj.getString("emailId"),orgLocations.getId());
+					}
+					else{
+						 candidate = candidateGlobalDao.findByCandidateGlobalEmail(jsonObj.getString("emailId"),requirement.getOrgLocationId().getId());
+					}
+		     }
+		 
+		 if(candidate == null){
+			       candidate = new CandidateGlobal();
+			       
+					if(orgLocations == null){
+						guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
+					}
+					if(orgLocations != null){
+			        candidate.setOrgLocationId(orgLocations);
+					}else{
+					candidate.setOrgLocationId(guestOrglocation);
+					}
+					
+			        if(jsonObj.has("candidateName") && !isNullOrEmpty(jsonObj.getString("candidateName"))){
+					candidate.setFirstName(jsonObj.getString("candidateName"));
+					}
+					
+			        if(jsonObj.has("currentLocation") && !isNullOrEmpty(jsonObj.getString("currentLocation"))){
+			        	candidate.setLocation(jsonObj.getString("currentLocation"));
+					}
+					
+					
+					if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+						 candidate.setMobilePhone(jsonObj.getString("mobileNumber"));
+					}
+					
+					if(jsonObj.has("alternateMobileNumber") && !isNullOrEmpty(jsonObj.getString("alternateMobileNumber"))){
+						 candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobileNumber"));
+					}
+					
+					if(jsonObj.has("emailId") && !isNullOrEmpty(jsonObj.getString("emailId"))){
+					candidate.setEmail(jsonObj.getString("emailId"));
+					}
+					
+					candidate.setCurrentRateCurrency(countries.getCurrency());
+					
+					if(jsonObj.has("ctc") && !isNullOrEmpty(jsonObj.getString("ctc"))){
+						candidate.setCurrentRate(jsonObj.getString("ctc"));
+					}
+					
+					if(jsonObj.has("ratePer") && !isNullOrEmpty(jsonObj.getString("ratePer"))){
+						 candidate.setCurrentRateType(jsonObj.getString("ratePer"));
+					}else {
+						candidate.setCurrentRateType("Monthly");
+					}
+					
+					candidate.setExpectedRateCurrencey(countries.getCurrency());
+					 
+					if(jsonObj.has("ectc") && !isNullOrEmpty(jsonObj.getString("ectc"))){
+						 candidate.setExpectedRate(jsonObj.getString("ectc"));
+						 
+					}
+					
+					if(jsonObj.has("expectedCTCRatePer") && !isNullOrEmpty(jsonObj.getString("ratePer"))){
+						 candidate.setRateType(jsonObj.getString("ratePer"));
+					}else {
+						candidate.setRateType("Monthly");
+					}
+					
+					if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod"))){
+						 candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));
+						 
+					}
+					
+					if(jsonObj.has("position") && !isNullOrEmpty(jsonObj.getString("position"))){
+						candidate.setDesignation(jsonObj.getString("position"));
+					}
+					
+					if(jsonObj.has("panNumber") && !isNullOrEmpty(jsonObj.getString("panNumber"))){
+						candidate.setPanNumber(jsonObj.getString("panNumber"));
+					}
+					
+					if(jsonObj.has("aadharNumber") && !isNullOrEmpty(jsonObj.getString("aadharNumber"))){
+						candidate.setAadharNumber(jsonObj.getString("aadharNumber"));
+					}
+					
+					if(jsonObj.has("ssnNumber") && !isNullOrEmpty(jsonObj.getString("ssnNumber"))){
+						candidate.setSsnNumber(jsonObj.getString("ssnNumber"));
+					}
+					
+					if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod"))){
+						candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));
+					}
+					
+					
+				/*	if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod")) &&  
+							(jsonObj.getString("noticePeriod").equalsIgnoreCase("Immediately Available") || 
+									jsonObj.getString("noticePeriod").equalsIgnoreCase("15 Days") || 
+									jsonObj.getString("noticePeriod").equalsIgnoreCase("1 Month") || 
+									jsonObj.getString("noticePeriod").equalsIgnoreCase("2 Months") || 
+									jsonObj.getString("noticePeriod").equalsIgnoreCase("3 Months"))){
+						
+						candidate.setNoticePeriod(jsonObj.getString("noticePeriod"));
+						
+					}else {
+						candidate.setNoticePeriod("Other");
+						candidate.setOtherNoticePeriod(jsonObj.getString("noticePeriod"));
+					}*/
+					
+					if(jsonObj.has("totalExperience") && !isNullOrEmpty(jsonObj.getString("totalExperience"))){
+						Map<String, Integer> experienceMap = experienceTrackerHelper.getExperienceFromTextFile(jsonObj.getString("totalExperience"));
+						candidate.setExperienceYears(String.valueOf(experienceMap.get("years")));
+						candidate.setExperienceMonths(String.valueOf(experienceMap.get("months")));
+					 }
+					
+					MasterCandidate masterCandidate = null;
+					masterCandidate = masterCandidateService.getMasterCandidateByInteligence(jsonObj);
+					
+					if(orgLocations != null){
+						if(null == masterCandidate){
+							masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,orgLocations);
+						}
+					candidate.setGeneratedId(candidateService.getCandidateId(orgLocations));
+					candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+					candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+					
+					}
+					else{
+						if(null == masterCandidate){
+							masterCandidate = masterCandidateService.storeMasterCandidateByJsonObject(jsonObj, user,guestOrglocation);
+						}
+						candidate.setGeneratedId(candidateService.getCandidateId(guestOrglocation));
+						candidate.setCreatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));
+						candidate.setUpdatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));	
+					}
+					
+					if(user != null){
+						
+						candidate.setCreatedBy(user.getUserCode());	
+					}
+					
+					else{
+						
+						candidate.setCreatedBy(null);	
+					}
+					candidate.setMasterCandidateId(masterCandidate);
+					candidate.setCandidateType("Candidate");
+					candidate.setIsAssociate(Constants.NO);
+					candidate.setCandidateUUID(SourceLeadRandomCodeHelper.generateRandomUUID());
+					candidate.setStatus(Constants.CANDIDATE_ACTIVE);
+					if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+						candidate.setRecruiterUserId(user);
+					}
+					
+					 
+					 if(jsonObj.has("skills") && !isNullOrEmpty(jsonObj.getString("skills"))){
+						 
+						  
+						 String candidateSkills = null;
+							try{
+					    		   JSONArray jsonArray = jsonObj.getJSONArray("skills");
+					    		   candidateSkills = jsonArray.toString();
+					    	  }
+					    	  catch(JSONException e){
+					    		  candidateSkills= jsonObj.getString("skills");
+					    	  }
+							candidateSkills = candidateSkills.replaceAll("\"", "").replaceAll("\\[", "").replaceAll("\\]","");
+							
+						 
+						 candidate.setSkillsName(candidateSkills);
+						 
+					
+					 }
+					
+					 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+					 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+					 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);					
+					 requirementSubmission.setCandidate(candidate);
+					
+					 if(jsonObj.has("currentCompany") && !isNullOrEmpty(jsonObj.getString("currentCompany"))){
+						 CandidateEmployers candidateEmployers = new CandidateEmployers();
+						 candidateEmployers.setOrgLocationId(orgLocations);
+						 candidateEmployers.setCandidateId(candidate);
+						 candidateEmployers.setName(jsonObj.getString("currentCompany"));
+						 candidateEmployers.setStatus(Constants.CANDIDATE_ACTIVE);
+						 candidateEmployers.setCreatedDate(new Date());
+						 if(user != null){
+							 candidateEmployers.setCreatedBy(user.getUserCode());
+
+						 }
+						 else{
+						 candidateEmployers.setCreatedBy(null);
+						 }
+						 candidateEmployers.setUpdatedDate(new Date());
+						 candidateEmployersDao.storeCandidateEmployers(candidateEmployers);
+						 candidateActivityCommonUtil.storeCandidateEmployersHistory(candidateEmployers, user);
+					 }
+					 
+					 candidateActivityCommonUtil.storeCandidateGlobalHistory(candidate, user);
+					 candidateActivityCommonUtil.storeCandidateGlobalActivity(user, orgLocations, candidate, requirement.getJobTitle(), Constants.CANDIDATE_ADDED_FROM_JOB, "", "JOBS");
+					
+		 }else{
+			 requirementSubmission.setCandidate(candidate);
+			 
+			Candidate associateCandidate = candidateService.getCandidateByCandidateGlobalId(candidate.getId());
+			if(associateCandidate != null) {
+				if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+					associateCandidate.setMobilePhone(jsonObj.getString("mobileNumber"));
+				}
+				
+				if(jsonObj.has("alternateMobileNumber") && !isNullOrEmpty(jsonObj.getString("alternateMobileNumber"))){
+					associateCandidate.setAlternateMobilePhone(jsonObj.getString("alternateMobileNumber"));
+				}
+				
+				 associateCandidate = candidateService.addCandidate(associateCandidate);
+				 candidateService.saveOrUpdateCandidateElkDocument(associateCandidate);	
+			}else {
+				if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+					 candidate.setMobilePhone(jsonObj.getString("mobileNumber"));
+				}
+				
+				if(jsonObj.has("alternateMobileNumber") && !isNullOrEmpty(jsonObj.getString("alternateMobileNumber"))){
+					 candidate.setAlternateMobilePhone(jsonObj.getString("alternateMobileNumber"));
+				}
+				
+				 candidate = candidateGlobalDao.storeCandidateGlobal(candidate);
+				 candidateGlobalUtil.getCandidatePercentage(candidate, orgLocations);
+				 candidateGlobalService.saveOrUpdateCandidateGlobalElkDocument(candidate);	
+			}
+			
+		 }
+		
+		if(orgLocations == null){
+			guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
+		}
+		 if(orgLocations !=null){
+		 requirementSubmission.setOrgLocations(orgLocations);
+		 }
+		 else{
+			 requirementSubmission.setOrgLocations(guestOrglocation); 
+		 }
+		 requirementSubmission.setSubmissionTemplateJsonStringValue(jsonStringvalues);
+		  requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.SUBMISSION.toString());
+		 
+		 requirementSubmission.setStatus(Constants.CANDIDATE_ACTIVE);
+		 requirementSubmission.setCreatedDate(new Date());
+		 requirementSubmission.setUpdatedDate(new Date());
+		 RecommendedCustomizeScore recommendedCustomizeScore = recommendedCustomizeScoreService.getRecommendedCustomizeScoreByRequirementId(requirement.getId());
+		 String score = recommendationsService.getCandidateGlobalScore(candidate,requirement,recommendedCustomizeScore);
+		 if(null !=score){
+			 requirementSubmission.setCandidateScore(score);			 
+		 }
+		 
+		 User sourceUser = userService.findByEmailAndOrgLocationsId(jsonObj.getString("recruiterEmail"), orgLocations.getId());
+		 requirementSubmission.setCreatedBy(sourceUser.getUserCode());
+		 StringBuilder userName = new StringBuilder();
+		 StringBuilder nameBuilder = new StringBuilder();
+		 if(user !=null){
+		 if(!isNullOrEmpty(sourceUser.getLastName())){
+			 userName = nameBuilder.append(sourceUser.getFirstName()).append(" ").append(sourceUser.getLastName());
+	   	 }else{
+	   		 userName = nameBuilder.append(sourceUser.getFirstName());
+	   	 }
+		 requirementSubmission.setCreatedUser(userName.toString());
+		 requirementSubmission.setUpdatedUser(userName.toString());
+		 }
+		 else{
+		 requirementSubmission.setCreatedUser(null);
+		 requirementSubmission.setUpdatedUser(null);
+		 }
+		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+			 requirementSubmission.setRecruiterUserId(user);
+			 requirementSubmission.setOrgLocations(requirement.getOrgLocationId());
+		 }else{
+			 if(orgLocations != null){
+			 requirementSubmission.setOrgLocations(orgLocations);
+			 }else{
+				 requirementSubmission.setOrgLocations(guestOrglocation); 
+			 }
+		 }
+		 
+		 requirementSubmission = requirementSubmissionDao.storeRequirementSubmission(requirementSubmission);
+		
+		 RequirementSubmissionTemplateFields templateFields = new RequirementSubmissionTemplateFields();
+		 templateFields.setRequirementSubmission(requirementSubmission);
+		
+		 if(jsonObj.has("candidateName") && !isNullOrEmpty(jsonObj.getString("candidateName"))){
+			 templateFields.setFirstName(jsonObj.getString("candidateName"));
+		 }
+		 
+		 
+		 if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+			 templateFields.setPhoneNumber(jsonObj.getString("mobileNumber"));
+		 }
+		 
+		 if(jsonObj.has("alternateMobileNumber") && !isNullOrEmpty(jsonObj.getString("alternateMobileNumber"))){
+			 templateFields.setAlternateNumber(jsonObj.getString("alternateMobileNumber"));
+		 }
+		 
+		 if(jsonObj.has("emailId") && !isNullOrEmpty(jsonObj.getString("emailId"))){
+			 templateFields.setEmailId(jsonObj.getString("emailId"));
+		 }
+		 
+		 
+		 if(jsonObj.has("currentLocation") && !isNullOrEmpty(jsonObj.getString("currentLocation"))){
+			 templateFields.setLocation(jsonObj.getString("currentLocation"));
+		 }
+		 
+		 
+		 if(jsonObj.has("currentCompany") && !isNullOrEmpty(jsonObj.getString("currentCompany"))){
+			 templateFields.setCurrentORLastCompany(jsonObj.getString("currentCompany"));
+		 }
+		 
+		 if(jsonObj.has("position") && !isNullOrEmpty(jsonObj.getString("position"))){
+			 templateFields.setDesignation(jsonObj.getString("position"));
+		 }
+		 
+		 
+		 if(jsonObj.has("ctc") && !isNullOrEmpty(jsonObj.getString("ctc"))){
+			 templateFields.setCurrentCTC(jsonObj.getString("ctc"));
+		 }
+		 
+		 templateFields.setCurrentRateType(countries.getCurrency());
+		 
+		 if(jsonObj.has("ectc") && !isNullOrEmpty(jsonObj.getString("ectc"))){
+			 templateFields.setExpectedCTC(jsonObj.getString("ectc"));
+		 }
+		 
+		 templateFields.setExpectedRateType(countries.getCurrency());
+		 
+			
+		 if(jsonObj.has("ratePer") && !isNullOrEmpty(jsonObj.getString("ratePer"))){
+			templateFields.setCurrentRatePer(jsonObj.getString("ratePer"));
+		 }else {
+			 templateFields.setCurrentRatePer("Monthly");
+		 }
+			
+		 if(jsonObj.has("ratePer") && !isNullOrEmpty(jsonObj.getString("ratePer"))){
+			 templateFields.setExpectedRatePer(jsonObj.getString("ratePer"));
+		 }else {
+			 templateFields.setExpectedRatePer("Monthly");
+		 }
+		 
+		 if(jsonObj.has("noticePeriod") && !isNullOrEmpty(jsonObj.getString("noticePeriod"))){
+			 templateFields.setNoticePeriod(jsonObj.getString("noticePeriod"));
+		 }
+		 
+		 if(jsonObj.has("totalExperience") && !isNullOrEmpty(jsonObj.getString("totalExperience"))){
+				Map<String, Integer> experienceMap = experienceTrackerHelper.getExperienceFromTextFile(jsonObj.getString("totalExperience"));
+				StringBuilder experienceBulider = new StringBuilder();
+				String experience = experienceBulider.append(String.valueOf(experienceMap.get("years"))).append(".").append(String.valueOf(experienceMap.get("months"))).toString();
+				templateFields.setWorkExperience(experience);
+			 }
+		 
+		 templateFields.setStatus(Constants.CANDIDATE_ACTIVE);
+		 if(user != null){
+		 templateFields.setCreatedBy(user.getUserCode());
+		 }
+		 else{
+			 templateFields.setCreatedBy(null);
+
+		 }
+			
+			if(orgLocations == null){
+				guestOrglocation=orgLocationService.getOrgLocations(requirement.getOrgLocationId().getId());
+			}
+			 if(orgLocations !=null){
+		 templateFields.setCreatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+		 templateFields.setUpdatedDate(commonUtil.orgLocationCommonDate(date, orgLocations));
+			 }
+			 
+			 else{
+				 
+				 templateFields.setCreatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));
+				 templateFields.setUpdatedDate(commonUtil.orgLocationCommonDate(date, guestOrglocation));
+			 }
+		 requirementSubmissionTemplateFieldsDao.storeRequirementSubmissionTemplateFields(templateFields);
+		 
+		 if(!isNullOrEmpty(loginUserRole) && loginUserRole.equalsIgnoreCase("ROLE_CROWDSOURCING_RECRUITER")){
+				if(null == requirement.getAppliedRecruiters()){
+					requirement.setAppliedRecruiters(user.getId().toString());
+				}else{
+					List<Long> userId = new ArrayList<Long>();
+					for (String s : requirement.getAppliedRecruiters().split(",")){
+						userId.add(Long.parseLong(s));
+					 }
+					boolean flag = userId.contains(user.getId());
+	         		if(flag == false){
+	         			StringBuilder appliedUser = new StringBuilder();
+	         			appliedUser = appliedUser.append(",").append(user.getId().toString());
+	    				requirement.setAppliedRecruiters(requirement.getAppliedRecruiters()+appliedUser.toString());
+	         		}
+				}
+				requirementDao.storeRequirement(requirement);
+		 }
+	
+		/* if(jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant")) && (!"Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
+			 if(jsonObj.getString("notifyToApplicant").equals("Y")){
+				 notifyToapplicantMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations,"");
+			 }
+		 }
+		 
+		 if("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()) && (jsonObj.has("notifyToApplicant") && !isNullOrEmpty(jsonObj.getString("notifyToApplicant"))) || ("Y".equalsIgnoreCase(requirementSubmission.getNeedApplicantPermit()))){
+			 applicantReceiveMailAboutRequirement(requirementSubmission.getId(),requirement,candidate,user,orgLocations);
+		 }
+		 if(jsonObj.has("guestApplicant") && !isNullOrEmpty(jsonObj.getString("guestApplicant")) && ("guestApplicant".equalsIgnoreCase(jsonObj.getString("guestApplicant")))){
+		 sendEmailToGuestUserForAppliedJob(candidate, requirement);
+		 }*/
+		return requirementSubmission;
+		
+	}
+
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(String panNumber,
+			Long requirementId) throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidatePanNumberAndRequirementId(panNumber, requirementId);
+	}
+
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(String aadharNumber,
+			Long requirementId) throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateAadharNumberAndRequirementId(aadharNumber, requirementId);
+	}
+
+	@Override
+	public boolean isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(String ssnNumber,
+			Long requirementId) throws Exception {
+		return requirementSubmissionDao.isCandidateSubmittedForRequirementByCandidateSSNAndRequirementId(ssnNumber, requirementId);
 	}
 
 } 

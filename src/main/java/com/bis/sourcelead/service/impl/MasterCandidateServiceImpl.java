@@ -74,6 +74,20 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 			phoneNumber = jsonObj.getString("AlternateNumber");
 		}
 		
+		
+		// Tihs for add applicant profile Tracker
+				if(jsonObj.has("emailId") && !isNullOrEmpty(jsonObj.getString("emailId"))){
+					email = jsonObj.getString("emailId");
+				}
+				
+				if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+					phoneNumber = jsonObj.getString("mobileNumber");
+				}
+				
+				if(jsonObj.has("alternateMobileNumber") && !isNullOrEmpty(jsonObj.getString("alternateMobileNumber"))){
+					phoneNumber = jsonObj.getString("alternateMobileNumber");
+				}
+		
 		MasterCandidate masterCandidate = masterCandidateDao.getMasterCandidateByEmailOrPhoneNumber(email, phoneNumber);
 		
 		return masterCandidate;
@@ -135,6 +149,26 @@ public class MasterCandidateServiceImpl implements MasterCandidateService{
 			masterCandidate.setPhoneNumber(jsonObj.getString("AlternateNumber"));
 		}
 		
+		
+		// Tihs for add applicant profile Tracker
+		
+		if(jsonObj.has("candidateName")){
+			masterCandidate.setFirstName(jsonObj.getString("candidateName"));
+		}
+		
+		
+		if(jsonObj.has("emailId")){
+			masterCandidate.setEmail(jsonObj.getString("emailId"));
+		}
+		
+		if(jsonObj.has("mobileNumber") && !isNullOrEmpty(jsonObj.getString("mobileNumber"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("mobileNumber"));
+		}
+		
+		if(jsonObj.has("alternateMobileNumber") && !isNullOrEmpty(jsonObj.getString("alternateMobileNumber"))){
+			masterCandidate.setPhoneNumber(jsonObj.getString("alternateMobileNumber"));
+		}
+
 		
 		
 		masterCandidate.setStatus(Constants.RECORD_ACTIVE);

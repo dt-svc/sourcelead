@@ -53,6 +53,8 @@ public interface RequirementInterviewDao {
 	List<Date> getInterviewDatesForInterviewrsInterviewSlots(List<Long> interivewerIds,Long orgLocationId) throws Exception;
 	
 	List<Date> getInterviewDatesForCandidateInterviewSlots(List<Long> applicantSubmissionIds) throws Exception;
+	
+	List<Date> getProfessionalInterviewDatesForCalendarEvent(Long candidateId) throws Exception;
 
 	//List<RequirementInterview> getAllInterviewListByCurrentDate(String currentTime, String triggerTime);
 

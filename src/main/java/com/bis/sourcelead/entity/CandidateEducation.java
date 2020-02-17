@@ -49,8 +49,9 @@ public class CandidateEducation implements Serializable{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CANDIDATE_ID", nullable = false)
-	private Candidate candidateId;
-
+	private CandidateGlobal candidateId;
+	
+	
 	@Column(name = "NAME")
 	private String name;
 	
@@ -126,6 +127,10 @@ public class CandidateEducation implements Serializable{
 	@Transient
 	 private LinkedHashSet<String> allAndCandidateEducations;
 	
+	@Transient
+	@JsonProperty
+	private String academicYear;
+	
 	public long getCandidateEduId() {
 		return candidateEduId;
 	}
@@ -150,11 +155,11 @@ public class CandidateEducation implements Serializable{
 		this.orglocationId = orglocationId;
 	}
 
-	public Candidate getCandidateId() {
+	public CandidateGlobal getCandidateId() {
 		return candidateId;
 	}
 
-	public void setCandidateId(Candidate candidateId) {
+	public void setCandidateId(CandidateGlobal candidateId) {
 		this.candidateId = candidateId;
 	}
 
@@ -333,7 +338,14 @@ public class CandidateEducation implements Serializable{
 	public void setCandidateEducationHistoryList(Set<CandidateEducationHistory> candidateEducationHistoryList) {
 		this.candidateEducationHistoryList = candidateEducationHistoryList;
 	}
-	
+
+	public String getAcademicYear() {
+		return academicYear;
+	}
+
+	public void setAcademicYear(String academicYear) {
+		this.academicYear = academicYear;
+	}
 	
 	
 }

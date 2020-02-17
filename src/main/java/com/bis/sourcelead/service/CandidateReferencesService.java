@@ -37,6 +37,11 @@ public interface CandidateReferencesService {
     public CandidateReferences validateReferenceEmailByReferEmailAndReferId(String referEmail,Long referId) throws Exception;
 
 	Boolean validateReferenceEmailByReferEmailAndCandidateId(String referenceEmail, Long candidateId) throws Exception;
+	
+	public ResponseList<CandidateReferencesDTO>  getCandidateReferencesListByCandidateGlobalIdAndOrgLocationID(Long candidateId, Long orgLocationId, String loginUserCode) throws Exception;
+	
+	Boolean validateReferenceEmailByReferEmailAndCandidateGlobalId(String referenceEmail, Long candidateId) throws Exception;
+	
 
 	
 	

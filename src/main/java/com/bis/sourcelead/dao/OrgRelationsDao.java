@@ -48,7 +48,7 @@ public interface OrgRelationsDao {
 	
 	List<OrgRelations> getAllVendorsFilterByOrgLocationId(Long id,String status, String vendorsRelationId)throws Exception;
 	
-	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus);
+	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationId(Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus, String dashboard);
 	
 	List<OrgSpoc> getAllVendorsContactFilterListByOrgLocationIdAndTabAccess(Long loginUserId, List<Long> userIds, Long orgLocationId, String relationType,String vendorStatus,String vendorIds,String vendorInvitationStatus, Long tabId, List<Long> vendorOrgLocationsIds);
 
@@ -82,5 +82,12 @@ public interface OrgRelationsDao {
 	
 	int updatePaymentTermsInOrgrelations();
 
+ 	public List<OrgRelations> getMSPVendorListByOrgLocationId(Long orgLocationId,Long orgRelationId) throws Exception;
+
+	public List<OrgRelations> selectedMSPVendorListByOrgRelationIds(String orgRelationIds) throws Exception;
+
+	public List<OrgSpoc> getMSPVendorContactListByOrgRelationId(Long orgRelationId) throws Exception;
+ 
+	List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId);
 
 }

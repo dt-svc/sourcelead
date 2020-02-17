@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.CandidateCustomFieldDataDao;
 import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.entity.CandidateCustomFieldData;
+import com.bis.sourcelead.entity.CandidateReferences;
 import com.bis.sourcelead.entity.JobCustomFieldData;
 
 @Repository
@@ -74,5 +75,39 @@ public class CandidateCustomFieldDataDaoImpl implements CandidateCustomFieldData
 			logger.error(ExceptionUtils.getFullStackTrace(exception));
 		}
 		return candidateCustomFields;
+	}
+
+	@Override
+	@Transactional
+	public Map<Long, String[]> getCandidateGlobalCustomFieldDataMapByLocationId(Long orgId,
+			List<CustomFormFieldDTO> formFieldId, Long candidateId) throws Exception {
+		Session session = sessionFactory.getCurrentSession();
+		List<Long> formIds = new ArrayList<>();
+		for(CustomFormFieldDTO form:formFieldId) {
+			formIds.add(form.getCustomFormFieldId());
+		}
+		String query = "from CandidateCustomFieldData candidateData left join fetch candidateData.orglocationsFormFields formField left join fetch formField.org org left join fetch candidateData.candidate can where org.id =:orgId and can.candidateGlobalId.id =:candidateId and formField.id IN(:formFieldId)";
+		List<CandidateCustomFieldData> candidateCustomFieldData  = session.createQuery(query).setLong("orgId", orgId).setLong("candidateId", candidateId).setParameterList("formFieldId", formIds).list();
+		Map<Long,String[]> candidateCustomFieldDataMap = new HashMap<Long,String[]>();
+		if(candidateCustomFieldData != null && !candidateCustomFieldData.isEmpty()) {
+			for(CandidateCustomFieldData candidateData:candidateCustomFieldData) {
+				String candidateDataArray[] =  new String[4];
+				candidateDataArray[0] = candidateData.getOrglocationsFormFields().getFieldName();
+				candidateDataArray[1] = candidateData.getCustomFormFieldData();
+				candidateDataArray[2] = candidateData.getId().toString();
+				candidateCustomFieldDataMap.put(candidateData.getOrglocationsFormFields().getId(), candidateDataArray);
+			}
+		}
+		return candidateCustomFieldDataMap;
+	}
+
+	@Override
+	@Transactional
+	public List<CandidateCustomFieldData> getCandidateCustomFieldDataByCandidateGlobalId(Long candidateGlobalId)
+			throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from CandidateCustomFieldData cfd left join fetch cfd.candidate where cfd.candidate.id =:candidateGlobalId ";
+		List<CandidateCustomFieldData> candidateCustomFieldDataList = session.createQuery(query).setLong("candidateGlobalId", candidateGlobalId).list();
+		return candidateCustomFieldDataList;
 	}
 }

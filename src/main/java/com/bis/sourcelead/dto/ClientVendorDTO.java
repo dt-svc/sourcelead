@@ -94,11 +94,15 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String isLawFirm;
 	
+	private String isBackgroundCheck;
+	
 	private String isAccountingFirm;
 	
 	private String generateBill;
 	
 	private String generateInvoice;
+	
+	private String isMspVendor;
 	
 	public String getOrgRelationIds() {
 		return orgRelationIds;
@@ -660,6 +664,14 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		return isLawFirm;
 	}
 
+	public String getIsBackgroundCheck() {
+		return isBackgroundCheck;
+	}
+
+	public void setIsBackgroundCheck(String isBackgroundCheck) {
+		this.isBackgroundCheck = isBackgroundCheck;
+	}
+
 	public void setIsLawFirm(String isLawFirm) {
 		this.isLawFirm = isLawFirm;
 	}
@@ -688,6 +700,11 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.generateInvoice = generateInvoice;
 	}
 
-	
-	
+	public String getIsMspVendor() {
+		return isMspVendor;
+	}
+
+	public void setIsMspVendor(String isMspVendor) {
+		this.isMspVendor = isMspVendor;
+	}
 }

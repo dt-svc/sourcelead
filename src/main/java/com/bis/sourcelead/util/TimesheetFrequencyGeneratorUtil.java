@@ -697,66 +697,75 @@ public  class TimesheetFrequencyGeneratorUtil {
 								employeeBiweeklyEndDate = getBiweeklyEndSunDayDateByUsingProjectStartDateAndEmployeeEndDate(projectMember.getProjects(), empEndDate);
 								
 								
-								
-							    /**
-							     * checking whether prior 6th week monday date is greaterthan employee startdate or not
-						         */
-							     if(empBiweeklyStartDate.after(previousMondayDate)){
-							    	 empBiweeklyStartDate = previousMondayDate;
-							     }
-								   
-								 /**
-								   * checking whether post 6th week sunday date is lesserthan employee enddate or not
-							      */
-								  if(employeeBiweeklyEndDate == null || (employeeBiweeklyEndDate != null && employeeBiweeklyEndDate.after(nextSundayDate))){
-									  employeeBiweeklyEndDate = nextSundayDate;
-								  }
-								
+							if (empBiweeklyStartDate != null && employeeBiweeklyEndDate != null) {
+
+								/**
+								 * checking whether prior 6th week monday date is greaterthan employee startdate
+								 * or not
+								 */
+								if (empBiweeklyStartDate.after(previousMondayDate)) {
+									empBiweeklyStartDate = previousMondayDate;
+								}
+
+								/**
+								 * checking whether post 6th week sunday date is lesserthan employee enddate or
+								 * not
+								 */
+								if (employeeBiweeklyEndDate == null || (employeeBiweeklyEndDate != null && employeeBiweeklyEndDate.after(nextSundayDate))) {
+									employeeBiweeklyEndDate = nextSundayDate;
+								}
+
+								Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
+								startCal.setLenient(false);
+								startCal.setTime(empBiweeklyStartDate);
+								Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON", orgLocations.getDateFormat());
+
+								Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
+								endCal.setLenient(false);
+								endCal.setTime(employeeBiweeklyEndDate);
+								Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON", orgLocations.getDateFormat());
+								int totalWeeks = 0;
+								Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
+								tsCal.setLenient(false);
+
+								Date tsStartDate = null;
+								Date tsEndDate = null;
+
+								totalWeeks = (int) ((empEndMonday.getTimeInMillis() - empStartMonday.getTimeInMillis())
+										/ (7l * 24l * 60l * 60l * 1000l));
+								for (int week = 0; week < (totalWeeks / 2); week++) {
+									if (tsStartDate == null) {
+										tsCal.setTime(empStartMonday.getTime());
+										tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON", orgLocations.getDateFormat()).getTime();
+										tsEndDate = CalendarUtil.getDateIncrementByincrement(tsCal, 13).getTime();
+									} else {
+										tsCal.setTime(tsStartDate);
+									}
+									timesheetFrequencyList.put(
+											commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsStartDate),
+											commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), tsEndDate)
+											);
+
+									tsStartDate = CalendarUtil.getDateIncrementByincrement(tsCal, 14).getTime();
+									Calendar tsEndCal = Calendar.getInstance(TimeZone.getDefault());
+									tsEndCal.setLenient(false);
+									tsEndCal.setTime(tsStartDate);
+									tsEndDate = CalendarUtil.getDateIncrementByincrement(tsEndCal, 13).getTime();
+
+								}
+								if (totalWeeks == 0) {
+									tsCal.setTime(empStartMonday.getTime());
+									tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON", orgLocations.getDateFormat()).getTime();
+									tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN", orgLocations.getDateFormat()).getTime();
+									timesheetFrequencyList.put(
+											commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), tsStartDate),
+											commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), tsEndDate)
+											);
+								}
+							}
 						    
-								    Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
-									 startCal.setLenient(false);
-									 startCal.setTime(empBiweeklyStartDate);
-									 Calendar empStartMonday = CalendarUtil.getCurrentWeekDayByCalendar(startCal, "MON",orgLocations.getDateFormat());
-									 
-									 Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
-									 endCal.setLenient(false);
-									 endCal.setTime(employeeBiweeklyEndDate);
-									 Calendar empEndMonday = CalendarUtil.getNextWeekDayByCalendar(endCal, "MON",orgLocations.getDateFormat());
-									  int totalWeeks = 0; 
-									  Calendar tsCal = Calendar.getInstance(TimeZone.getDefault());
-									  tsCal.setLenient(false);
-									  
-									  Date tsStartDate = null;
-									  Date tsEndDate = null;
-										
-									  totalWeeks = (int)((empEndMonday.getTimeInMillis()-empStartMonday.getTimeInMillis())/(7l * 24l * 60l * 60l * 1000l));
-									  for (int week = 0; week <(totalWeeks/2); week++) {
-										  if(tsStartDate == null){
-												tsCal.setTime(empStartMonday.getTime());
-												tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON",orgLocations.getDateFormat()).getTime();
-												tsEndDate = CalendarUtil.getDateIncrementByincrement(tsCal, 13).getTime();
-											}
-											else{
-												tsCal.setTime(tsStartDate);
-											}
-										    timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsStartDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsEndDate));
-										    
-										    tsStartDate = CalendarUtil.getDateIncrementByincrement(tsCal, 14).getTime();
-										    Calendar tsEndCal = Calendar.getInstance(TimeZone.getDefault());
-										    tsEndCal.setLenient(false);
-										    tsEndCal.setTime(tsStartDate);
-											tsEndDate = CalendarUtil.getDateIncrementByincrement(tsEndCal, 13).getTime();
-										    
-									  }
-									  if(totalWeeks == 0){
-										  tsCal.setTime(empStartMonday.getTime());
-										  tsStartDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "MON",orgLocations.getDateFormat()).getTime();
-										  tsEndDate = CalendarUtil.getCurrentWeekDayByCalendar(tsCal, "SUN",orgLocations.getDateFormat()).getTime();
-										  timesheetFrequencyList.put(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsStartDate), commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),tsEndDate));
-									  }
-						    
-						    
-						    
+							timesheetFrequencyList = getEmployeeTimesheetFrequencyListFromInvoiceFrequency(timesheetFrequency, orgLocations);
+						    System.out.println("hiiiii");
 						    }
 						    /**
 						     * Default Invoice Frequency is weekly

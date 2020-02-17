@@ -75,7 +75,7 @@ public interface TimesheetSubmissionsService {
 	
 	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(Long userId,Long orgLocationId,Long orgId, String timesheetCountType) throws Exception;
 	
-	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId,Long orgId,String countType,String isGlobalUser,Boolean isAdmin) throws Exception;
+	public TimeSheetSubmissionCount getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(Long userId,Long orgLocationId,Long orgId,String countType,String isGlobalUser,Boolean isAdmin,Date[] searchDates) throws Exception;
 	
 	public List<TimesheetSubmissions> getSubmissionApproverHierarchyForEmployeeList(Long approverUserId)throws Exception ;
 	
@@ -98,4 +98,6 @@ public interface TimesheetSubmissionsService {
 	public String getWeekCommentByCurrentFrequency(Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception;
 	
 	public void updateWeekCommentForAllSubmissions(String weekComment,Date startDate,Date endDate,Long projectId,Long  masterCandidateId) throws Exception;
+	
+	public List<TimesheetSubmissions> getAllEmployeeTimesheetSubmissionsForMonthlyClosureReport(Date startDate,Date endDate, Long  orgLocationId)throws Exception; 
 }

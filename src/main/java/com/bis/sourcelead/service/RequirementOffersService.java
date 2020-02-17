@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementOffers;
@@ -47,7 +48,7 @@ public interface RequirementOffersService {
 
 	List<RequirementOffers> getOfferAcceptedVendorCandidatesByOrgLocationId(Long locationId) throws Exception;
 	
-	Candidate addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception;
+	CandidateGlobal addCandidateToClientAfterOfferAccepted(RequirementOffers requirementOffers,OrgLocations orgLocations) throws Exception;
 	
 	void sendApplicantOfferAcceptMail(RequirementOffers requirementOffers) throws Exception;
 

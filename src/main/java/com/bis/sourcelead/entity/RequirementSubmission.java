@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,13 +21,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Type;
 
-import com.bis.sourcelead.enums.ApplicantSubmissionStatus;
 import com.bis.sourcelead.enums.REQUIREMENT_SUBMISSION_STATUS;
 import com.bis.sourcelead.enums.SubmissionRateStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -55,13 +51,13 @@ public class RequirementSubmission implements Serializable{
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "CANDIDATE_ID")
-   	private Candidate candidate;
+   	private CandidateGlobal candidate;
 	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumn(name = "VENDOR_CANDIDATE_ID")
-   	private Candidate vendorCandidateId;
+   	private CandidateGlobal vendorCandidateId;
 	
 	
 	@NotFound(action=NotFoundAction.IGNORE)
@@ -638,8 +634,6 @@ public class RequirementSubmission implements Serializable{
 	@JsonProperty
 	private String invoiceGenerateDate;
 
-    
-    
 	public int getProfilePercentage()
 	{
 		return profilePercentage;
@@ -756,13 +750,7 @@ public class RequirementSubmission implements Serializable{
 		this.requirement = requirement;
 	}
 
-	public Candidate getCandidate() {
-		return candidate;
-	}
 
-	public void setCandidate(Candidate candidate) {
-		this.candidate = candidate;
-	}
 
 
 	public RequirementSubmission getSourceSubmission() {
@@ -1658,11 +1646,19 @@ public class RequirementSubmission implements Serializable{
 		this.requirementOfferHistoryList = requirementOfferHistoryList;
 	}
 
-	public Candidate getVendorCandidateId() {
+	public CandidateGlobal getCandidate() {
+		return candidate;
+	}
+
+	public void setCandidate(CandidateGlobal candidate) {
+		this.candidate = candidate;
+	}
+
+	public CandidateGlobal getVendorCandidateId() {
 		return vendorCandidateId;
 	}
 
-	public void setVendorCandidateId(Candidate vendorCandidateId) {
+	public void setVendorCandidateId(CandidateGlobal vendorCandidateId) {
 		this.vendorCandidateId = vendorCandidateId;
 	}
 
@@ -1864,4 +1860,5 @@ public class RequirementSubmission implements Serializable{
 		this.submittedQuestionrUuid = submittedQuestionrUuid;
 	}
 
+		
 }

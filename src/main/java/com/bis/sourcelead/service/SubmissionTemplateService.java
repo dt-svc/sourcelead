@@ -28,4 +28,6 @@ public interface SubmissionTemplateService {
 	
 	SubmissionTemplate getSubmissionTemplateByUUID(String uuid) throws Exception;
 	
+	SubmissionTemplate getDefaultInterviewTemplateByOrgLocationId(Long orgLocationId) throws Exception;
+	
 }

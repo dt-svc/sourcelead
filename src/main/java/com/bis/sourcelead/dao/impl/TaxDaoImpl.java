@@ -1,5 +1,8 @@
 package com.bis.sourcelead.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -905,6 +908,11 @@ public class TaxDaoImpl implements TaxDao {
 			Query queryObj = session.createQuery(query);
 			queryObj.setString("financialYear", financialYear);
 			List<Tds> tdsList = queryObj.list();
+			
+		//	ArrayList<Employee> employees = getUnsortedEmployeeList();
+			Comparator<Tds> fromAmount = (Tds o1, Tds o2) -> o1.getFromamount().compareTo( o2.getFromamount() );
+			Collections.sort(tdsList, fromAmount);
+            
 			if (tdsList != null && !tdsList.isEmpty() && tdsList.size()>0) {
 				return tdsList;
 			}

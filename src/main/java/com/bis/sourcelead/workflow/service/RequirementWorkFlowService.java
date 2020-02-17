@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
@@ -117,10 +118,9 @@ public interface RequirementWorkFlowService {
 
 	RequirementQuestionnaireFeedbackTemplateDTO getQuestionnaireTemplateFeedbackList(String uuid)throws Exception;
 
-	void copyWorkflowStagesAndTask(String uuid, User user, OrgLocations orgLocations,
-			RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO);
+	String copyWorkflowStagesAndTask(OrgLocations orgLocations, RequirementWorkFlowTasks task, User loginUser, User assignUser)throws Exception;
 
-	String getRequirementworkflowTaskListById(Long stageId, OrgLocations orgLocations, User user) throws Exception;
+	String getRequirementworkflowTaskListById(Long submissionId,Long stageId, OrgLocations orgLocations, User user) throws Exception;
 
 	List<RequirementSubmission> validateWorkflowUpdate(Long workflowId, String workflowUuid, Long orgLocationId);
 	
@@ -128,7 +128,7 @@ public interface RequirementWorkFlowService {
 	
 	String saveDefaultRequirementWorkflowAndStages()throws Exception;
 
-	Candidate getCandidateByRequirementSubmissionId(Long submissionId);
+	CandidateGlobal getCandidateByRequirementSubmissionId(Long submissionId);
 	
 	String updateDefaultWorkflowInRequirementProcedure() throws Exception;
 	
@@ -138,9 +138,11 @@ public interface RequirementWorkFlowService {
 
 	String deleteAssignedTask(String currentStageUuid, Long id);
 
-	String updateFeedbackQuestionnaireTimer(String questTemplUuid, Long stageId, Long submissionId, Integer minutes,
+	String updateFeedbackQuestionnaireTimer(String questTemplUuid, String stageId, Long submissionId, Integer minutes,
 			Integer seconds);
 	
-	String getWorkflowStageNameByShortCode(String shortCode)throws Exception;	
+	String getWorkflowStageNameByShortCode(String shortCode)throws Exception;
+	
+	String sendMailToAssignedUsers(OrgLocations orgLocations, User fromUser, User toUser, RequirementWorkFlowTasks task)throws Exception;
 	
 }

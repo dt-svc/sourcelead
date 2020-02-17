@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.JobFairRequirementsDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementIncentiveDTO;
@@ -64,6 +65,7 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.elk.index.RequirementIndex;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidateResumes;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
@@ -3083,7 +3085,7 @@ public class RequirementServiceImpl implements RequirementService {
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(
 			Long orgLocationId, String userType, Long userId, String userCode, boolean isWalkIn, String walkinDay) throws Exception {
 		return requirementDao.getAssignedRequirementListByOrgLocationIDAndUserIdSubStatusApprovedOpenNew(orgLocationId,
-				userType, userId, userCode, isWalkIn, walkinDay);
+				userType, userId, userCode, isWalkIn, walkinDay,Constants.Dashboard);
 	}
 	
 	@Override
@@ -4039,7 +4041,7 @@ public class RequirementServiceImpl implements RequirementService {
 
 	@Override
 	public void shareRecomendedApplicant(User loginUser, OrgLocations orgLocation, Requirement requirement,
-			Candidate candidate) throws Exception {
+			CandidateGlobal candidate) throws Exception {
 		EmailMessage emailMessage = new EmailMessage();
 		emailMessage.setFirstName(loginUser.getFirstName());
 		emailMessage.setLastName(loginUser.getLastName());
@@ -4118,8 +4120,9 @@ public class RequirementServiceImpl implements RequirementService {
 		StringBuilder actionLinkBuilder = new StringBuilder();
 		String actionLink = actionLinkBuilder.append(atsUrl).append("/jobCampaignSummary?requirementUUID=")
 				.append(requirement.getRequirementUUID()).toString();
-		if (candidate.getConsultantUser() != null)
-			emailScenerioUtil.sendNotification(actionLink, loginUser, candidate.getConsultantUser(), orgLocation,
+		Candidate associateCandiate = candidateService.getCandidateByCandidateGlobalId(candidate.getId());
+		if (associateCandiate.getConsultantUser() != null)
+			emailScenerioUtil.sendNotification(actionLink, loginUser, associateCandiate.getConsultantUser(), orgLocation,
 					notificationScenario, new HashMap<String, String>());
 
 	}
@@ -4863,22 +4866,10 @@ public class RequirementServiceImpl implements RequirementService {
 	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
 		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
 	}
-	
+
+	@Override
+	public List<MspVendorDTO> getMSPVendorJobsList(MspVendorDTO mspVendorDTO) throws Exception {
+		return requirementDao.getMSPVendorJobsList(mspVendorDTO);
+	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
