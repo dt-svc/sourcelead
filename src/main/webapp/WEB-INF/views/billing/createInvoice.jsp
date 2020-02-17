@@ -1136,7 +1136,7 @@ function cancelPopup(){
 	             	    result = result +'       <table id="invoiceAssociatesList" class="table table-bordered table-striped  clearfix" cellspacing="0" width="100%" >';
 	             		result = result +'           <thead>';
 	             		result = result +'           <tr>';
-	             		if(invoiceCreateType == "Bulk"){
+	             		if(invoiceCreateType == "Bulk" || invoiceCreateType == "null"){
 	             		result = result +'             <th><input type="checkbox" id="checkAllAssociates" onclick="toggleAssociates(this);"></th>';
 	             		}else if(invoiceCreateType == "Individual"){
 		             		result = result +'             <th></th>';
@@ -1149,7 +1149,6 @@ function cancelPopup(){
 	                    result = result +"<tbody>"; 
 	                    
 // 	                    var json = JSON.parse(data);
-	                    
 	                    for (var i = 0; i < json.data.length; i++) { 
 	                    	 var opt = json.data[i]; 
 	                    	 var mobilephone = '';
@@ -1169,7 +1168,8 @@ function cancelPopup(){
 	                    	 
 	                    	 
 	                    	 result = result +'<tr>';
-	                    	 if(invoiceCreateType == "Bulk"){
+	                    	 
+	                    	 if(invoiceCreateType == "Bulk" || invoiceCreateType == "null"){
 	                    	 result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="checkbox" name="associates[]" class="myCheckbox" >';
 	                    	 }else if(invoiceCreateType == "Individual"){
 		                     result = result +'<td><input id="'+opt.id+'" value="'+opt.id+','+associateName+'"  type="radio" name="associates[]" class="myCheckbox" >';

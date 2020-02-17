@@ -1634,8 +1634,8 @@ function contractTypeLabels(){
 		$("#hoursPerWeek").val('');
 		$("#paymentFrequency").val(''); 
 		$("#taxPercentageRewardValue").val('');
-		$("#taxFlatRewardValue").val('');
 		
+		$("#taxFlatRewardValue").val('');
 		
 		$("#approver").val('');
 		$('#approver').trigger("chosen:updated");
@@ -2319,7 +2319,8 @@ function getTaxRewardType(rewardType){
 		$("#taxPercentageBtn").removeClass('btn-primary');
 		$("#taxflatBtn").removeClass('btn-default');
 		$("#taxflatBtn").addClass('btn-primary');
-		
+		var orgCurr='${SourceLeadWeb_currencyCode}';
+		$("#taxFlatRateType").val(orgCurr);
 		//document.getElementById("taxPercentageBtn").className = 'btn btn-sm btn-primary'
 		//document.getElementById("taxFlatBtn").className = 'btn btn-sm btn-primary active'
 		$('#taxFlatRewardValue').attr("data-validation","required validate_float");

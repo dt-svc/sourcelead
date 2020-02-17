@@ -651,6 +651,8 @@ function resetImmForm(){
 	    	 var dateFrequency=$("#dateFrequency").val();
 	    	 var attorneyId=$("#attorneyId").val();
 	    	 var searchValue = $("#immSearch").val();
+	    	 var  freqStartDate = $("#custFromDate").val();
+	 		 var  freqEndDate = $("#custToDate").val();
 	         searchValue = searchValue ? searchValue : "";
 	    	 if(petitionStatus == "" || petitionStatus == null || petitionStatus == 'undefined'){
 	    		 petitionStatus = "";
@@ -662,7 +664,7 @@ function resetImmForm(){
 	    		 dateFrequency = "";
 	    	 }
 	    	
-			window.location.href = vmsUrl+ "/exportPetitionReportPdf?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&exportType="+exportType; 
+			window.location.href = vmsUrl+ "/exportPetitionReportPdf?&searchValue="+searchValue+"&petitionType="+petitionType+"&petitionStatus="+petitionStatus+"&dateFrequency="+dateFrequency+"&attorneyId="+attorneyId+"&exportType="+exportType+"&freqStartDate="+freqStartDate+"&freqEndDate="+freqEndDate;
 	   }
 	}
 </script>

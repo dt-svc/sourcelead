@@ -2390,7 +2390,11 @@ function clearCustomEndDate(){
 		$("#newcontract_form input[data-id*=uploadBtn]").remove();
 	});
 </script> -->
-
+<script>
+    $(document).ready(function () {
+        document.getElementById("newcontract_form").reset();
+    });
+</script>
 <!-- Footer Area -->
 <jsp:include page="../masterFooter.jsp" />
 <!-- Footer Area -->
