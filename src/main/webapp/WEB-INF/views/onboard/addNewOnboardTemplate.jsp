@@ -7,7 +7,9 @@
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script src="/resources/js/formvalidator.js"></script>
-
+<script>
+var atsUrl = '${SourceLeadWeb_atsUrl}';
+</script>
 <section class="content-wraper">
     <div id="loading"></div>
     <section class="content-header clearfix">
@@ -663,7 +665,7 @@ function createTemplate(saveType){
 	        $.ajax({
 	        	type : "POST",
   	    	    data: formData,
-		    	url: sourceleadUrl+"/createNewOnBoardingTemplate?${_csrf.parameterName}=${_csrf.token}&tab="+tab, 
+		    	url: atsUrl+"/createNewOnBoardingTemplate?tab="+tab, 
 		        success: function(response) {
 					if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	        		    showError(response.responseMessage);
@@ -711,7 +713,6 @@ function createTemplateDocs(saveType){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }; 
-	
 	  var sourceleadUrl ='${sourceleadUrl}';
 	  
 	  if ($('#templateDocuments_form').validate(false, validationSettings)){ 
@@ -722,7 +723,7 @@ function createTemplateDocs(saveType){
 		$.ajax({
 		      type : "POST",
     	      data: formData,
-	    	  url: sourceleadUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
+	    	  url: atsUrl+"/saveOnboardingTemplateDocuments?${_csrf.parameterName}=${_csrf.token}",		
 		      success :function(response) {
 		    	  if (response && response.response === "INVALID_DATA") {
 		    		    showError(response.responseMessage);
@@ -765,7 +766,6 @@ function createTemplateDocs(saveType){
 
 <script>
 function saveOnboardTask(){
-	
 	var validationSettings = {
 	        errorMessagePosition : 'element',
 	       borderColorOnError : '',
@@ -784,7 +784,7 @@ function saveOnboardTask(){
   	    	    data: formData,
   	    	    processData: false,
 		        contentType:false,
-		    	 url: sourceleadUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
+		    	 url: atsUrl+"/saveOnBoardTasks?${_csrf.parameterName}=${_csrf.token}", 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 	        		    showError(response.responseMessage);
@@ -858,10 +858,10 @@ function getTemplateDetails(){
 	$("#onboardTasksList").empty();
 	var templateId = document.getElementById("templateId").value;
 	if(templateId){
-		var sourceleadUrl ='${sourceleadUrl}';
+		var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
         $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
+	    	 url: atsUrl+"/getOnboardTemplateById?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -894,7 +894,7 @@ function getTemplatePolicyDocumentsDetails(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -944,7 +944,7 @@ function getTemplateSupportingDocumentsDetails(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -991,7 +991,7 @@ function getTemplateContractsDocumentsDetails(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
 		        		
@@ -1044,7 +1044,7 @@ function getTemplateFormsDocumentsDetails(templateId){
 		var sourceleadUrl ='${sourceleadUrl}';
 	     $.ajax({
 		    	type: "POST",
-		    	 url: sourceleadUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
+		    	 url: atsUrl+"/getOnboardTemplateDocumentByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId+"&documentType="+documentType, 
 		        success: function(response) {
 		        	if (response.response === "AWKWARD") {
 		        	    location.href = "/errorPage";
@@ -1085,11 +1085,10 @@ function getTemplateFormsDocumentsDetails(templateId){
 
 <script>
 function deleteTemplateDocument(documentUUID,documentId,documentType){
-	
 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
+	    	 url: atsUrl+"/deleteTemplateDocumentByDocumentUUID?${_csrf.parameterName}=${_csrf.token}&documentUUID="+documentUUID, 
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
@@ -1122,7 +1121,7 @@ function validateTemplateName(){
 	if(templateName){
 		$.ajax({
 	    	type: "POST",
-	    	url : sourceleadUrl+"/validateOnboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
+	    	url : atsUrl+"/validateOnboardingTemplateName?${_csrf.parameterName}=${_csrf.token}&templateName="+templateName+"&templateId="+templateId, 
 	        success: function(response) {
 	        	if (response.response === "AWKWARD") {
 	        	    location.href = "/errorPage";
@@ -1163,7 +1162,7 @@ function getOnboardingTasksList(){
 	 $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: atsUrl+"/getOnboardTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
 	    	if (response.response === "AWKWARD") {
 	    	    location.href = "/errorPage";
@@ -1243,7 +1242,7 @@ function deleteTask(taskId){
 	var sourceleadUrl ='${sourceleadUrl}';
 	   $.ajax({
 	    	type: "POST",
-	    	 url: sourceleadUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
+	    	 url: atsUrl+"/deleteOnboardTaskByTaskId?${_csrf.parameterName}=${_csrf.token}&taskId="+taskId, 
 	        success: function(response) {
 	        	if (response && response.response === "INVALID_DATA") {
 	        	    showError(response.responseMessage);
@@ -1272,7 +1271,7 @@ function saveAndFinishOnboardTemplate(templateId) {
 	$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
 	   	type: "POST",
-	    url: sourceleadUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
+	    url: atsUrl+"/saveAndFinishOnboardTemplate?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
     		    showError(response.responseMessage);

@@ -1606,6 +1606,8 @@ function saveOnHoldStatusForApplicant(requirementId, submissionId, selectBox, co
 	    		if (data.response === "AWKWARD") {
 	    		location.href = "/errorPage";
 	    	} else if (data.response === "SUCCESS") {
+	    		$("#stageComment"+submissionId).fadeOut(200);
+	    		$(".project_inn_mask").fadeOut(200);
 	    		$("tr").removeClass("row-success");
 	    		// below funtion is used to check whether the questinniare is assigned to stage or not.
 	    		 getQuestionnaireIdAssignedToStage(selectBox, submissionId);  
