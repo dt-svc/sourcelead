@@ -2495,7 +2495,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 		if(candidateDTO.getDocFile() != null && !candidateDTO.getDocFile().equals("")) {
 			candidateResumesList = new HashSet<CandidateResumes>();
 			long time = new Date().getTime();
-			File folder = new File(staticPath+"/"+orgLocations.getOrgId()+"/"+orgLocations.getId()+"/resumes/");
+			File folder = new File(staticPath+"/"+orgLocations.getOrg().getId()+"/"+orgLocations.getId()+"/resumes/");
 			if (!folder.exists())
 				folder.mkdirs();
 			File file = new File(folder,candidateDTO.getFirstName() + time+".docx");
@@ -2521,7 +2521,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	        
 	        CandidateResumes resume = new CandidateResumes();
 	        resume.setOrgLocationId(orgLocations);
-	      //  resume.setCandidateGlobalId(candidate);
+	        resume.setCandidateId(candidate);
 	        resume.setFileContentType("application/msword");
 	        resume.setFileName(candidateDTO.getFirstName()+" Resume.doc");
 	        resume.setStatus(Constants.CANDIDATE_ACTIVE);
@@ -2534,7 +2534,8 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	        resume.setFileURL(fileUrl);
 	        candidateResumesList.add(resume);
 	        candidate.setCandidateResumes(candidateResumesList);
-		}
+	        
+		}	        
 		
 		int percentage = 0;
 		if(candidate.getFirstName() != null  && candidate.getEmail() != null){
@@ -2578,7 +2579,7 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 			 percentage = percentage + 5; 
 		 }
 		 
-		candidate.setCandidateProfilePercentage(percentage);
+	    candidate.setCandidateProfilePercentage(percentage);
 		candidateGlobalDao.storeCandidateGlobal(candidate);
 		
 		CandidateIndex candidateIndex = candidateGlobalIndexHelper.getCandidateGlobalIndexFromCandidate(candidate);
