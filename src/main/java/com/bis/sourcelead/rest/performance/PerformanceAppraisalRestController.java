@@ -1,6 +1,8 @@
 package com.bis.sourcelead.rest.performance;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -639,7 +641,9 @@ public class PerformanceAppraisalRestController {
 	    	 
 	    	 if(StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalStartDate()) &&
 	    			 StringUtils.isNotBlank(performanceAppraisalTemplateDTO.getAppraisalEndDate())) {
-	    		 
+	    		 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yy"); 
+	    		 startDate = dateFormat.parse(performanceAppraisalTemplateDTO.getAppraisalStartDate());
+	    		 endDate = dateFormat.parse(performanceAppraisalTemplateDTO.getAppraisalEndDate());
 	    	 }else {
 	    		 int year = Calendar.getInstance().get(Calendar.YEAR);
 		    	    Calendar calendarStart = Calendar.getInstance();

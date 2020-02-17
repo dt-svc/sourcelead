@@ -70,7 +70,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 					 
 					      <sec:authorize access="hasAnyRole(\'ROLE_VIEW_EDIT_EMPLOYEE_EXPENSES\')">
 					     <c:if test="${submissionStatus == 'SUBMITTED' || submissionStatus == 'REJECTED' || submissionStatus == 'REOPENED'}">
-					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="editIcon appEditBtn" title="Edit"></a>
+					        <a href="${SourceLeadWeb_pmsUrl}/addApprovalExpense?expenseId=${expenses.expenseAutoId}&expenseLocationCode=${expenses.expenseLocationCode}&type=edit"  class="editIcon appEditBtn" title="Edit" style="background-position: 0"></a>
 					     </c:if>
 					     </sec:authorize>
 					     

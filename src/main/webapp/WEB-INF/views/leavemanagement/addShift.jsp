@@ -323,6 +323,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
   
 <script type="text/javascript">
 	function validateShiftEndTime() {
+		validateShiftName();
 		 	$("#timeDiv").find('p.jquery_form_error_message').remove();
 // 		 	refreshTime();
 			var startTime = $("#shiftTimeIn").val();

@@ -62,6 +62,22 @@ public class PerformanceFeedback implements Serializable{
 	@Column(name = "FINAL_SCORE ")
 	private Integer finalScore;
 	
+	@Column(name = "FEEDBACK_AVG_SCORE ")
+	private Double feedbackAvgScore;
+	
+	@Column(name = "GOALS_AVG_SCORE ")
+	private Double goalsAvgScore;
+	
+	@Column(name = "TASKS_AVG_SCORE ")
+	private Double tasksAvgScore;
+	
+	@Column(name = "COMPETENCIES_AVG_SCORE ")
+	private Double competenciesAvgScore;
+	
+	@Column(name = "FINAL_AVG_SCORE ")
+	private Double finalAvgScore;
+	
+	
 	@Column(name = "SUBMISSION_STAGE")
 	private String submissionStage;
 	
@@ -229,7 +245,45 @@ public class PerformanceFeedback implements Serializable{
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
-	
+
+	public Double getFeedbackAvgScore() {
+		return feedbackAvgScore;
+	}
+
+	public void setFeedbackAvgScore(Double feedbackAvgScore) {
+		this.feedbackAvgScore = feedbackAvgScore;
+	}
+
+	public Double getGoalsAvgScore() {
+		return goalsAvgScore;
+	}
+
+	public void setGoalsAvgScore(Double goalsAvgScore) {
+		this.goalsAvgScore = goalsAvgScore;
+	}
+
+	public Double getTasksAvgScore() {
+		return tasksAvgScore;
+	}
+
+	public void setTasksAvgScore(Double tasksAvgScore) {
+		this.tasksAvgScore = tasksAvgScore;
+	}
+
+	public Double getCompetenciesAvgScore() {
+		return competenciesAvgScore;
+	}
+
+	public void setCompetenciesAvgScore(Double competenciesAvgScore) {
+		this.competenciesAvgScore = competenciesAvgScore;
+	}
+
+	public Double getFinalAvgScore() {
+		return finalAvgScore;
+	}
+
+	public void setFinalAvgScore(Double finalAvgScore) {
+		this.finalAvgScore = finalAvgScore;
+	}
 	
 }

@@ -29,6 +29,8 @@ public class PerformanceFeedbackCategoryDTO implements Serializable{
 	
 	private Integer categoryScore;
 	
+	private Integer feedbackWeightage;
+	
 	
 	public List<FileInfo> getUploadedFileInfo() {
 		return uploadedFileInfo;
@@ -108,6 +110,14 @@ public class PerformanceFeedbackCategoryDTO implements Serializable{
 
 	public void setCategoryScore(Integer categoryScore) {
 		this.categoryScore = categoryScore;
+	}
+
+	public Integer getFeedbackWeightage() {
+		return feedbackWeightage;
+	}
+
+	public void setFeedbackWeightage(Integer feedbackWeightage) {
+		this.feedbackWeightage = feedbackWeightage;
 	}
 	
 	

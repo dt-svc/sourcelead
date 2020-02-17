@@ -40,6 +40,18 @@ public class PerformanceFeedbackDTO implements Serializable{
 	private String timeSheetHours;
 	
 	private BigInteger managerUserId;
+	
+	private Integer goalsWeightage;
+	
+	private Integer tasksWeightage;
+	
+	private Integer feedbackWeightage;
+	
+	private double finalAvgScore;
+	
+	private double tasksAvgScore;
+	
+	private double goalsAvgScore;
 
 	public String getJsonCategoriesString() {
 		return jsonCategoriesString;
@@ -177,6 +189,53 @@ public class PerformanceFeedbackDTO implements Serializable{
 		this.managerUserId = managerUserId;
 	}
 
+	public Integer getGoalsWeightage() {
+		return goalsWeightage;
+	}
+
+	public void setGoalsWeightage(Integer goalsWeightage) {
+		this.goalsWeightage = goalsWeightage;
+	}
+
+	public Integer getTasksWeightage() {
+		return tasksWeightage;
+	}
+
+	public void setTasksWeightage(Integer tasksWeightage) {
+		this.tasksWeightage = tasksWeightage;
+	}
+
+	public Integer getFeedbackWeightage() {
+		return feedbackWeightage;
+	}
+
+	public void setFeedbackWeightage(Integer feedbackWeightage) {
+		this.feedbackWeightage = feedbackWeightage;
+	}
+
+	public double getFinalAvgScore() {
+		return finalAvgScore;
+	}
+
+	public void setFinalAvgScore(double finalAvgScore) {
+		this.finalAvgScore = finalAvgScore;
+	}
+
+	public double getTasksAvgScore() {
+		return tasksAvgScore;
+	}
+
+	public void setTasksAvgScore(double tasksAvgScore) {
+		this.tasksAvgScore = tasksAvgScore;
+	}
+
+	public double getGoalsAvgScore() {
+		return goalsAvgScore;
+	}
+
+	public void setGoalsAvgScore(double goalsAvgScore) {
+		this.goalsAvgScore = goalsAvgScore;
+	}
 	
 
 }
