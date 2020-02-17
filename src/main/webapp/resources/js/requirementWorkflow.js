@@ -938,7 +938,7 @@ function RequirementWorkflow(){
 				 	    	  	"render": function(data, type, workflow, meta) {
 				 	    	  		var result = "";
 				               		if(workflow.name != null && workflow.name != '' && workflow.name != "undefined"){
-				               			result = result +"<div class ='tbldata-dotdot-200'><span title='"+workflow.name+"'>"+workflow.name+"</span></div>";
+				               			result = result +"<div class ='tbldata-dotdot-200'><a href= "+sourceleadUrl+"/viewQuestionnaire?templateUuid="+workflow.uuid+"><span title='"+workflow.name+"'>"+workflow.name+"</span></a></div>";
 				   	              	}else{
 				   	            	  		result = result +"<div>---</div>";
 				   	             	}
@@ -1289,11 +1289,11 @@ function RequirementWorkflow(){
 						}
 					});
    }
-				 
-				 this.viewStage = function(uuid, requirementWorkFlowUuid){
+				  this.viewStage = function(uuid, requirementWorkFlowUuid){
 					 location.href = sourceleadUrl+ "/viewStage?uuid="+uuid+"&isStageViewed=true&requirementWorkFlowUuid="+requirementWorkFlowUuid;
 					 
 				 }
+				
 				 
 				 this.checkIsStageViewed = function(isStageViewed){
 					if(isStageViewed == 'true'){
@@ -1312,6 +1312,7 @@ function RequirementWorkflow(){
 						$("#questionnaireAddSpanId").attr("disabled", "disabled");
 					}
 				 }
+				 
 				 
 }
 				 
