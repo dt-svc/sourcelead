@@ -1844,4 +1844,11 @@ public class RequirementOffersServiceImpl implements RequirementOffersService{
 		return requirementOffersDao.getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(orgLocationId, joiningDate);
 	}
 
+
+	@Override
+	public RequirementOffers getRequirementOfferSubmissionByIdAndStatus(Long submissionId, String status)
+			throws Exception {
+		return requirementOffersDao.getRequirementOfferSubmissionByIdAndStatus(submissionId,status);
+	}
+
 }
