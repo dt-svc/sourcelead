@@ -40,6 +40,12 @@ width: auto !important; padding-right: 15px;
 .choices input[type="checkbox"], .choices input[type="radio"]{
  margin-right: 10px; position: relative; top: 1px;
 }
+.viewTemplate.questionary_template .sjfb-field:nth-child(2n+2) { margin-left: 0; }
+.viewTemplate.questionary_template .sjfb-field { display: inline-block !important; }
+.viewTemplate.questionary_template p.jquery_form_error_message {
+top: 100% !important; left: 0 !important; padding-left: 0px !important; margin-bottom: 15px;
+}
+
 </style>
 
 <script type="text/javascript">
@@ -96,7 +102,7 @@ window.onload = function () {
 
 
 <body>
-<div class="clearfix"> 
+<div class="clearfix positionRelative"> 
   <!-- Header Area -->
   <header class="main-header">
    <span class="logo">
@@ -108,14 +114,14 @@ window.onload = function () {
    </header>
    <div id="popUp"></div> 
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
-   <div id="cancelFeedbackDiv" class="container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
+   <div id="cancelFeedbackDiv" class="mb container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
    <p><h3 class="col-md-5">
    You can submit the details later. Thank You!
    </h3></p>
    </div>
    
    
-   <footer class="clearfix stickyfooterDiv">
+   <footer class="clearfix stickyfooterDiv mt25">
    <div class="container">
     <div class="pull-left"> @ Copyright : Source Lead, All right reserved </div>
     <div class="pull-right"> Powered by: businessintelli.com </div>
@@ -142,7 +148,7 @@ function saveQuestionnaireTemplate(){
 	        var fieldDropDown = '';
 	        var fileCount = 0;
 	        var points = 0;
-	        var attempts = 0;
+	        var attempts ;
 	        var pointsArray = new Array();
 	        var totalPointsArray = new Array();
 	        var totalPoints = 0;
@@ -155,7 +161,9 @@ function saveQuestionnaireTemplate(){
 		    	  var inputtype = null;
 		    	  var flag = 1;
 		    	  
-		    	  points = $('#pointId').html().trim();
+		    	  if($("#pointId").length > 0) {
+		    		  points = $('#pointId').html().trim();
+		    		}
 		    	 
 		    	  
 		    	  inputtype = $(this).find('input').attr('field-type');
@@ -240,7 +248,9 @@ function saveQuestionnaireTemplate(){
 			     		
 			     	  }
 		     	  }else{
-		     		 attempts = $('#attemptId').html().trim();
+		     		 if($("#attemptId").length > 0) {
+		     			attempts = $('#attemptId').html().trim();	 
+		     		 }
 			     	  if(inputValue != null && inputValue != ""){
 			     		 attempts = attempts-1;
 			     		 if(attempts <= 0){
@@ -421,6 +431,7 @@ function saveAutoSubmitQuestionnaireForm(){
 			     	  }	
 		     	  } 
 		     	 
+		     		     	  
 		     		fields.push({
 			              label: fieldLabel,
 			              type : inputtype,
