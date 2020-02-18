@@ -994,19 +994,19 @@ $('body').on('submit', '#sjfb', function(e){
 					var input = "";	
 	                 switch (fieldType) {
 	                     case 'text':
-	                    	 if(attempt == 0){
-	                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
-	                    	 }else{
-	                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s) </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="text-' + uniqueID + '"></label>' +
-	                             input +
-	                             '</div>' +
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + attemptsDiv + pointsDiv
 
 	                     case 'textarea':
 	                    	 if(attempt == 0){
