@@ -832,9 +832,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			.append("LEFT JOIN USER_ROLE uRole ON clk.USER_ID = uRole.USER_ID ")
 			.append("LEFT JOIN EMPLOYEE emp ON clk.USER_ID = emp.USER_ID ")
 			.append("LEFT JOIN TEAM_MEMBERS tm ON clk.USER_ID = tm.MEMBER_USER_ID ")
-			.append("where clk.ORG_LOCATION_ID = :clkOrgLocationID ")
-			.append("AND uRole.ORG_LOCATIONS_ID = :uRoleOrgLocationID ")
-			.append("AND emp.ORG_LOCATIONS_ID = :empOrgLocationID")
+			.append("where clk.ORG_LOCATION_ID = :orgLocationID ")
+			.append("AND uRole.ORG_LOCATIONS_ID = :orgLocationID ")
+			.append("AND emp.ORG_LOCATIONS_ID = :orgLocationID ")
 			.append("AND clk.CLOCK_OUT_DATE is NOT NULL");
 			
 			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments())) {
@@ -913,9 +913,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 //			}
  				
 			Query queryObj = session.createSQLQuery(sb.toString()+subQuery);
-			queryObj.setLong("clkOrgLocationID", orgLocation.getId());
-			queryObj.setLong("uRoleOrgLocationID", orgLocation.getId());
-			queryObj.setLong("empOrgLocationID", orgLocation.getId());
+			queryObj.setLong("orgLocationID", orgLocation.getId());
 			
 			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments()))
 				queryObj.setParameterList("deptList", deptList);
@@ -968,13 +966,70 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			StringBuilder sb = new StringBuilder();
 			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
 			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("proj.PROJECT_NAME as projectName,")
 			.append("task.TASK_NAME as projectTaskName,")
+			.append("NULL as jobTitle,")
+			.append("NULL as taskName,")
 			.append("clk.TOTAL_TIME as totalTime,")
 			.append("clk.COMMENTS as comments,")
 			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
 			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
-			.append("FROM CLOCK_INOUT clk INNER JOIN PROJECT_TASKS task ")
-			.append("ON clk.PROJECTS_TASK_ID = task.ID and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL");
+			.append("FROM CLOCK_INOUT clk INNER JOIN PROJECT_TASKS task ON clk.PROJECTS_TASK_ID = task.ID ")
+			.append("INNER JOIN PROJECTS proj ON clk.PROJECT_ID = proj.ID ")
+			.append(" and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ")
+			
+			.append(" UNION ALL ")
+			
+			.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("NULL as projectName,")
+			.append("NULL as projectTaskName,")
+			.append("req.JOB_TITLE as jobTitle,")
+			.append("NULL as taskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk ")
+			.append("INNER JOIN REQUIREMENT req ON  clk.JOBS_TASK_ID = req.ID AND clk.JOBS_TASK_ID IS NOT NULL ")
+			.append(" and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ")
+			
+			
+			.append(" UNION ALL ")
+			
+			.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("NULL as projectName,")
+			.append("NULL as projectTaskName,")
+			.append("NULL as jobTitle,")
+			.append("gt.SUBJECT as taskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk ")
+			.append("INNER JOIN TASKS gt ON clk.GENERAL_TASK_ID = gt.ID AND clk.GENERAL_TASK_ID IS NOT NULL ")
+			.append(" and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ")
+			
+			.append(" UNION ALL ")
+			
+			.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("NULL as projectName,")
+			.append("NULL as projectTaskName,")
+			.append("NULL as jobTitle,")
+			.append("NULL as taskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk ")
+			.append("WHERE ")
+			.append("clk.PROJECT_ID IS NULL AND ")
+			.append("clk.PROJECTS_TASK_ID IS NULL AND ")
+			.append("clk.JOBS_TASK_ID IS NULL AND ")
+			.append("clk.GENERAL_TASK_ID IS NULL AND ")
+			.append("clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ");
 			
 			clockList = session.createSQLQuery(sb.toString())
 			.setLong("userId", userId)
