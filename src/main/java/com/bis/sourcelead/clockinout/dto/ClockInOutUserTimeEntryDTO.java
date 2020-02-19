@@ -51,6 +51,11 @@ public class ClockInOutUserTimeEntryDTO {
 	
 	private String geoLocationData;
 	
+	private String projectName;
+	
+	private String jobTitle;
+	
+	private String taskName;
 
 	public BigInteger getId() {
 		return id;
@@ -234,6 +239,30 @@ public class ClockInOutUserTimeEntryDTO {
 
 	public void setGeoLocationData(String geoLocationData) {
 		this.geoLocationData = geoLocationData;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+	public String getJobTitle() {
+		return jobTitle;
+	}
+
+	public void setJobTitle(String jobTitle) {
+		this.jobTitle = jobTitle;
+	}
+
+	public String getTaskName() {
+		return taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
 	}
 
 }
