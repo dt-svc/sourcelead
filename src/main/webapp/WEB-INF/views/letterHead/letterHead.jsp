@@ -91,7 +91,7 @@
 					<div class="row form-group clearfix">
 					<label class="col-md-12">Upload Logo<span class="text-danger paddingLeft">*</span></label>
 					<div class="clearfix col-md-12">
-					<div class="input-group positionRelative">
+					<div class="input-group positionRelative attachfile-error">
 					<label class="input-group-btn">
 					<span class="btn btn-primary">
 					Browse <input style="display: none;" id="uploadBtn" multiple type="file">

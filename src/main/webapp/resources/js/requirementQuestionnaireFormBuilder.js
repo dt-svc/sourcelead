@@ -672,7 +672,7 @@ $('body').on('submit', '#sjfb', function(e){
 			
 			
 			result = result + '<div class="form-horizontal clearfix">';
-			result = result + '<div id="viewQuestionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph">';
+			result = result + '<div id="viewQuestionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph questionary_template">';
 			result = result + '</div>';
 			result = result + '</div>';
 			
@@ -780,7 +780,7 @@ $('body').on('submit', '#sjfb', function(e){
 	                              					 selected = v1['sel'] ? ' checked' : '';
 	                              				   }
 	                                             
-	                                             var choiceHTML = '<span><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span class="inlineBlock mr"><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                             }
@@ -801,7 +801,7 @@ $('body').on('submit', '#sjfb', function(e){
 	                              				     }
 	                                			 }
 	                                             
-	                                             var choiceHTML = '<span><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             var choiceHTML = '<span class="inlineBlock mr"><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
 	                                             if(required == 1 && flag == 0){
 	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
 	                                             }
@@ -899,7 +899,7 @@ $('body').on('submit', '#sjfb', function(e){
 	                                    }
 
 	                                 else if (fieldType == 'radio') {
-	                                     var choiceHTML = '<span><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span class="inlineBlock mr tblminwidth-50 mb10"><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
 	                                     }
@@ -908,7 +908,7 @@ $('body').on('submit', '#sjfb', function(e){
 
 	                                 else if (fieldType == 'checkbox') {
 	                                     var selected = v['sel'] ? ' checked' : 'checked';
-	                                     var choiceHTML = '<span><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     var choiceHTML = '<span class="inlineBlock mr tblminwidth-50 mb10"><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
 	                                     if(required == 1 && flag == 0){
 	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
 	                                     }
@@ -994,19 +994,19 @@ $('body').on('submit', '#sjfb', function(e){
 					var input = "";	
 	                 switch (fieldType) {
 	                     case 'text':
-	                    	 if(attempt == 0){
-	                    		 input = '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
-	                    	 }else{
-	                    		 input =  '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s) </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="text-' + uniqueID + '"></label>' +
-	                             input +
-	                             '</div>' +
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + attemptsDiv + pointsDiv
 
 	                     case 'textarea':
 	                    	 if(attempt == 0){
