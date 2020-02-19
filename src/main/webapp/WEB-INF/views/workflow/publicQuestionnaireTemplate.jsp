@@ -114,11 +114,12 @@ window.onload = function () {
    </header>
    <div id="popUp"></div> 
    <div id="questionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
+   <div class="clearfix mb">
    <div id="cancelFeedbackDiv" class="mb container paddingTop55 container-wraper container-publicFBT positionRelative" style="display: none;"> 
    <p><h3 class="col-md-5">
    You can submit the details later. Thank You!
    </h3></p>
-   </div>
+   </div></div>
    
    
    <footer class="clearfix stickyfooterDiv mt25">
