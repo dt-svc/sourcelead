@@ -125,9 +125,9 @@ function statusvalidating(id){
 	<section class="content-header clearfix">
 		<div class="pull-left">
         	<h2>Jobs 
-					<sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
+					<%-- <sec:authorize access="hasAnyRole('ROLE_CREATE_REQUIREMENT')">
 						<a href="${SourceLeadWeb_atsUrl}/professionalRequirements" class="jobHeadBtn">Crowdsourcing Jobs</a>
-					</sec:authorize>        	
+					</sec:authorize>  --%>       	
         	</h2>
       	</div>
 		<c:if test="${!empty msg}">

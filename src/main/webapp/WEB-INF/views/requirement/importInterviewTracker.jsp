@@ -107,6 +107,7 @@ var uploadflag= true;
 function resetSubmissionTemplate(){
 	$('#upload_interviewTracker_form')[0].reset();
 	$('#newUploadFile').text('');
+	$(".jquery_form_error_message").remove();
 }
 </script>
 	
