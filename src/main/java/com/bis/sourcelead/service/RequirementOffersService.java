@@ -20,6 +20,9 @@ public interface RequirementOffersService {
 	
 	RequirementOffers getRequirementOfferSubmissionById(Long submissionId)throws Exception;
 	
+	
+	RequirementOffers getRequirementOfferSubmissionByIdAndStatus(Long submissionId, String status)throws Exception;
+	
 	RequirementOffers getRequirementOfferId(Long offerId)throws Exception;
 	
 	RequirementOffers saveOfferStatus(RequirementOffers requirementOffers)throws Exception;
