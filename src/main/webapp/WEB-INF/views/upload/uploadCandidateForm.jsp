@@ -169,7 +169,15 @@ function checkInviteEmail(){
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
-	  if(sizeinbytes > 6000000){
+	  
+	  $('#sizeinbytes').val(sizeinbytes); 
+	  document.getElementById("errorImage").style.display="none";
+	  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  fileUpload("uploadBtn", "dataMigration");
+	  $("#upload_button").removeAttr("disabled");
+	  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  
+	/*   if(sizeinbytes > 6000000){
 		  document.getElementById("errorImage").style.display="";
 		  $('#newUploadFile').text('');
 		  $("#upload_button").attr("disabled","disabled");
@@ -181,7 +189,7 @@ document.getElementById("uploadBtn").onchange = function () {
 		  fileUpload("uploadBtn", "dataMigration");
 		  $("#upload_button").removeAttr("disabled");
 		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
-	  }
+	  } */
 	
 };
 </script>

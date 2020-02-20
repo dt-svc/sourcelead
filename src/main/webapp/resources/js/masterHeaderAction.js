@@ -100,68 +100,76 @@
        
        $(".tree-view").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli ").next('ul').slideUp();
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli, ., .performanceli ").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".usersLi, .billingLi, .backofficeLi, .timesheetLi, .associatesLi, .expencesLi, .campaignsli, .resourcesli,  .performanceli, .emsli ").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".backofficeLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .timesheetLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".timesheetLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .associatesLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });	
        $(".associatesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .billingLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".billingLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .expencesLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        $(".expencesLi").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli, .payrollli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .campaignsli, .resourcesli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        $(".campaignsli").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        $(".resourcesli").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .payrollli, .performanceli").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .payrollli, .performanceli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .payrollli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .campaignsli, .payrollli, .performanceli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        
        $(".performanceli").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        $(".payrollli").click(function(){
     	   $(this).next('ul').slideToggle();
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .performanceli, .campaignsli").next('ul').slideUp();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .performanceli, .campaignsli, .emsli").next('ul').slideUp();
            $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
-           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .performanceli, .campaignsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .performanceli, .campaignsli, .emsli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
+       });
+       
+       
+       $(".emsli").click(function(){
+    	   $(this).next('ul').slideToggle();
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli, .performanceli").next('ul').slideUp();
+           $(this).find("i.fa-fw").toggleClass("fa-caret-down fa-caret-up");
+           $(".tree-view, .associatesLi, .timesheetLi, .backofficeLi, .billingLi, .expencesLi, .resourcesli, .payrollli, .campaignsli, .performanceli").find("i.fa-fw").removeClass("fa-caret-up").addClass("fa-caret-down");
        });
        
        
