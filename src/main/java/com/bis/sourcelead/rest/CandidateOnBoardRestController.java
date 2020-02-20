@@ -279,7 +279,7 @@ public class CandidateOnBoardRestController {
 		return response;
 	}
 
-/*	@RequestMapping(value = { "/getOnboardTemplateDocumentByTemplateId",
+	@RequestMapping(value = { "/getOnboardTemplateDocumentByTemplateId",
 			"/rest/getOnboardTemplateDocumentByTemplateId" }, method = RequestMethod.POST)
 	public @ResponseBody ResponseList<OnBoardingTemplateDocumentsDTO> getOnboardTemplateDocumentByTemplateId(
 			@RequestParam(value = "templateId", required = false) Long templateId,
@@ -308,7 +308,7 @@ public class CandidateOnBoardRestController {
 			e.printStackTrace();
 		}
 		return responseList;
-	}*/
+	}
 
 	@RequestMapping(value = "/saveOnboardingTemplateDocuments", method = RequestMethod.POST)
 	public @ResponseBody Response<String> saveOnboardingTemplateDocuments(OnBoardingTemplateDTO onBoardingTemplateDTO,
