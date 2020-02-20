@@ -51,11 +51,18 @@
 								<option selected>Salary</option>
 							</select>
 						</div>
-						
+						<c:if test="${freqResponse.approverStatus eq 'APPROVED'}">
+						<div class="col-md-4"  style="display: none" id="checkBoxCheckedId">
+						<div class="pull-left mr10 mt5">
+							<a onclick="senAllEmployeePayslips()"><i class="fa fa-envelope mr10" title="Send Payslips"></i></a>
+<!-- 							<a href="#"><i class="glyphicon glyphicon-download-alt" title="Download Payslips"></i></a> -->
+						  </div>
+						</div>
+						</c:if>
 						<c:if test="${freqResponse.approverStatus != 'APPROVED'}">
 							<div class="col-md-4">
-								<a class="pull-left ml btn btn-primary anchorWhite" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk Actions</a>
-								<div class="pull-right ml positionRelative">
+								<a class="pull-left btn-sm btn btn-primary anchorWhite" onClick="bulkAdjustment('${freqResponse.paySheetFrequencyUUID}');" title="Payhead Bulk Adjustment"><i class="fa fa-object-group paddingRight"></i>Bulk Actions</a>
+								<div class="pull-right positionRelative">
 						         	<input type="text" class="repSearchBar" placeholder="Search" id="orgPayrollTableSearch" onkeyup="myPayrollSerach()"><span class="repSearchIcon" onclick="myPayrollSerach();"></span>
 						         	</div>
 							</div>
@@ -71,6 +78,14 @@
 						style="width: 100%">
 						<thead>
 							<tr>
+							<c:if test="${freqResponse.approverStatus eq 'APPROVED'}">
+								<th>
+								 <div class="pull-left mr10">                                      
+								 	<input id="documentCheckbox" class="checkbox-custom fmcheckbox" name="documentCheckbox" type="checkbox" onclick="toggleDocuments(this);getAllCheckBoxes();">  
+								 	<label for="documentCheckbox" class="checkbox-custom-label fmcheckbox-lable"></label> 
+								 </div> 
+								 </th> 
+							 </c:if>	 
 								<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}">
 									<th>Exclude</th>
 								</c:if>
@@ -82,11 +97,22 @@
 								<th>Gross Pay</th>
 								<th>TDS</th>
 								<th>Net Pay</th>
+								<c:if test="${freqResponse.approverStatus eq 'APPROVED'}">
+								<th>Action</th>
+								</c:if>
 							</tr>
 						</thead>
 						<tbody id="payrollSerachTbody">
 							<c:forEach var="empPayroll" items="${employeePayrollList}">
 								<tr>
+								 <c:if test="${freqResponse.approverStatus eq 'APPROVED'}">
+								   <td>
+									  <div class="pull-left mr10">   
+										 <input id="checkbox${empPayroll.indEmpPayrollUUID}" value="${empPayroll.indEmpPayrollUUID}" name="payrollUUIDs[]"  class="checkbox-custom fmcheckbox"  type="checkbox" onclick="getAllCheckBoxes()">
+										 <label for="checkbox${empPayroll.indEmpPayrollUUID}" class="checkbox-custom-label fmcheckbox-lable"></label> 
+									   </div>
+								   </td>
+								  </c:if> 
 									<c:if test="${fn:length(employeePayrollList) gt 1 && freqResponse.approverStatus != 'SENT' && freqResponse.approverStatus != 'APPROVED'}"> 
 										 <td>
 												<div class="checkbox-new pull-left ml">
@@ -96,6 +122,7 @@
 												</div>
 									     </td>
 								   </c:if> 
+								   
 									<td><div class="tblminwidth-50">${empPayroll.empId}</div></td>
 									<td><div class="tbldata-dotdot-vsm">${empPayroll.empName}</div></td>
 									<td><div class="tblminwidth-50"><fmt:formatNumber value="${empPayroll.regularHours}" pattern="0"/></div></td>
@@ -114,6 +141,14 @@
 											<a onClick="netPay('${empPayroll.indEmpPayrollUUID}', '${empPayroll.paySheetFrequencyUUID}');"> ${empPayroll.netPay}<span class="paddingLeft">&#8377;</span> </a>
 										</div>
 									</td>
+									<c:if test="${freqResponse.approverStatus eq 'APPROVED'}">
+									<td>
+										<div class="tbldata-dotdot-vsm">
+											<a title="Send Payslip" onclick="sendPayslip('${empPayroll.indEmpPayrollUUID}')"><i class="fa fa-envelope mr"></i></a>
+											<a class="glyphicon glyphicon-download-alt" title="Download Payslip" onclick="downloadPayslip('${empPayroll.indEmpPayrollUUID}')"></a>
+										</div>
+									</td>
+									</c:if>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -146,6 +181,7 @@
 			</nav>
 		</div>
 	</div>
+	 <div id="loading"></div> 
 </section>
 
 <div class="comMask"></div>
@@ -165,7 +201,69 @@
 	 </div>
 </div>
 <!-- Content Area Ends--> 
+<script>
+function downloadPayslip(payslipUUID){
+	var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 window.location.href = pmsUrl+"/getDownloadPayslipInd?indEmpPayrollUUID="+payslipUUID;
 
+}
+
+function getAllCheckBoxes(){
+	var payrollUUIDs = [];
+	 $("input[name='payrollUUIDs[]']:checked").each( function (i) {
+		 payrollUUIDs[i] = $(this).val();
+	});
+	 
+	 if(payrollUUIDs.length > 0){
+		 $("#checkBoxCheckedId").show();
+	 }else{
+		 $("#checkBoxCheckedId").hide();
+	 }
+	 
+}
+function toggleDocuments(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+        
+    }
+$('input:checkbox:not(#documentCheckbox)').click(function() {
+    if(!this.checked) {
+        $('#documentCheckbox').removeAttr('checked');
+    }
+});
+}
+
+
+function sendPayslip(payrollUUID){
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 $.ajax({
+			type : "POST",
+			url : pmsUrl+"/sendAllEmployeePlayslips?${_csrf.parameterName}=${_csrf.token}&payrollUUIDs="+payrollUUID,
+			success : function(result) {
+				   alert("Employ's Payslip's are sending")
+			},
+		}); 
+}
+
+function senAllEmployeePayslips(){
+	var payrollUUID = [];
+	 $("input[name='payrollUUIDs[]']:checked").each( function (i) {
+		 payrollUUID[i] = $(this).val();
+	});
+	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
+	 $("#loading").attr('style','position:absolute; width:100%; height:210%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+	 $.ajax({
+			type : "POST",
+			url : pmsUrl+"/sendAllEmployeePlayslips?${_csrf.parameterName}=${_csrf.token}&payrollUUIDs="+payrollUUID,
+			success : function(result) {
+				   alert("Employ's Payslip's are sending")
+				   $("#loading").removeAttr('style');
+			},
+		}); 
+}
+</script>
 <script>
 function myPayrollSerach(){
 	var hasResults = false, flag = false;

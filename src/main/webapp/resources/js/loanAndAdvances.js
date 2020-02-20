@@ -30,10 +30,12 @@ this.saveLoanAndAdvanceDetails  = function (){
 		        	} else if (response.response === "SUCCESS") {
 		        		 var loanAndAdv = response.object;
 	                	 $("#loanAndAdvId").val(loanAndAdv.id);
-	                	 var indSalaryDetails = document.getElementById("indSalaryDetails");
-						 document.getElementById("indSalaryDetails").removeAttribute("class");
-						 indSalaryDetails.href="#tab-5";
-						 $("#indSalaryDetails").click();
+	                	 
+	                	 var leaveTypeDetails = document.getElementById("indLeaveTypeDetails");
+	                	 document.getElementById("indLeaveTypeDetails").removeAttribute("class");
+	                	 leaveTypeDetails.href="#tab-6";
+	                	 $("#indLeaveTypeDetails").click();
+	                	 
 		        	} else if (response.indexOf('Sign In') !== -1) {
 		        		location.replace(pmsUrl);
 		        	} else {
