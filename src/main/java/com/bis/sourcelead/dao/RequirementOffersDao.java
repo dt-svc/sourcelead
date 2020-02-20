@@ -27,4 +27,6 @@ public interface RequirementOffersDao {
 	RequirementOffers getOnboardRequirementOfferId(Long offerId)throws Exception;
 
 	List<RequirementOffers> getOfferAcceptedCandidatesByOrgLocationIdAndDateOfJoin(Long orgLocationId, Date joiningDate) throws Exception;
+
+	RequirementOffers getRequirementOfferSubmissionByIdAndStatus(Long submissionId, String status);
 }
