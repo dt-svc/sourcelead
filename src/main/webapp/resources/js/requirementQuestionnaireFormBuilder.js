@@ -250,7 +250,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includeHintMsgHTML = ''+
 	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Help Text:</div>' +
        ' <div class="col-md-9" id="hint'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'"   field-name="Help Text" class="field-hint form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'" data-validation-optional="true" field-name="Help Text" class="field-hint form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -259,7 +259,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includePointsHTML = ''+
 	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Points:</div>' +       
 	   ' <div class="col-md-9" id="points'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="points'+addField.i+'"   field-name="Points" class="field-points form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="points'+addField.i+'" data-validation="validate_int" data-validation-optional="true" field-name="Points" class="field-points form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -267,7 +267,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includeAttemptHTML = ''+
 	   '<label class="col-md-5 mt10"><div class="col-md-3 lblHeight">Attempt:</div>' +
        ' <div class="col-md-9" id="attempt'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'"   field-name="Attempt" class="field-attempt form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'" data-validation="validate_int" data-validation-optional="true" field-name="Attempt" class="field-attempt form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -997,142 +997,167 @@ $('body').on('submit', '#sjfb', function(e){
 	                    	 var attemptsDiv = "";
 	                    	 var pointsDiv = "";
 	                    	 if(attempt != "" && attempt != null){
-	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s) </div>';
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
 	                    	 }if(points != "" && points != null){
 	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="text-' + uniqueID + '"></label>' +
 	                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >'  +
-	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + attemptsDiv + pointsDiv
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + attemptsDiv + pointsDiv+
+	                             '</div>';
 
 	                     case 'textarea':
-	                    	 if(attempt == 0){
-	                    		 input = '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled></textarea>' ;
-	                    	 }else{
-	                    		 input =  '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="textarea-' + uniqueID + '"></label>' +
-	                             input +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 
 	                     case 'select':
-	                    	 if(attempt == 0){
-	                    		 input = '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
-	                    	 }else{
-	                    		 input =  '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="select-' + uniqueID + '"></label>' +
-	                             input +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 
 	                     case 'radio':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label></label>' +
 	                             '<div class="clearfix mt"></div>'+
 	                             '<div class="choices choices-radio"></div>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 
 	                     case 'checkbox':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label class="sjfb-label"></label>' +
 	                             '<div class="clearfix mt"></div>'+
 	                             '<div class="choices choices-checkbox"></div>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 	                         
 
 	                     case 'calendar':
-	                    	 if(attempt == 0){
-	                    		 input = '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' disabled>' ;
-	                    	 }else{
-	                    		 input =  '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="calendar-' + uniqueID + '"></label>' +
-	                             input +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 	                     
 	                     case 'scale':
-	                    	 if(attempt == 0){
-	                    		 input = '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
-	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider" disabled>' ;
-	                    	 }else{
-	                    		 input =  '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
-	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="text-' + uniqueID + '"></label>' +
 	                             '<div class="slidecontainer mt clearfix">' +
 	                             '<span id=\'demo-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="col-md-4">0</span>' +
-	                             input +
+	                             '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' +
 	                             '</div>'+
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
-	                         
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 	                     case 'star':
-	                    	 if(attempt == 0){
-	                    		 input = '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'disabled></span>' ;
-	                    	 }else{
-	                    		 input =  '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' ;
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
 	                    	 }
 	                         return '' +
+	                         '<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
 	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                             '<label for="text-' + uniqueID + '"></label>' +
-	                             input +
+	                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' +
 	                             '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
 	                             '<div class="clearfix mt"></div>'+
 	                             StarHtml+
 	                             '</ul>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
 	                         
 	                     case 'file':
-	                    	 if(attempt == 0){
-	                    		 input = '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/\s+/g, '')+'\',\''+attachmentCount+'\');" class="upload" disabled>' +
-	                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'" disabled>';
-	                            }else{
-	                    		 input =  '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\',\''+attachmentCount+'\');" class="upload">' +
-	                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >';
-	                            }
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
 	                    	 return '' +
+	                    	 '<div class="clearfix mb">'+
 	                         '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
 	                         '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
 	                         '<label for="text-' + uniqueID + '"></label>' +
 	                         '<div class="clearfix mt"></div>'+
-	                         input +
+	                         '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >' +
 	                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/[^A-Z0-9]+/ig, '')+'\'></span></a>'+
-	                         '</div>'+
-	                         '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                         '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                         '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                         '</div>';
 	                 }
 	                 
 	             }
