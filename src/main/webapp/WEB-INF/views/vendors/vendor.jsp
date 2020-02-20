@@ -549,6 +549,7 @@ function getVendorDetails(){
 							<label class="col-md-3">Status</label>
 							<div class="col-md-9">
 								<select class="form-control valid sel" id="spocStatus"
+
 									name="spocStatus">
 									<option value="Active">Active</option>
 									<option value="In-Active">In-Active</option>
@@ -573,6 +574,18 @@ function getVendorDetails(){
 						<div class="form-group">
 		             <label class="col-md-3"></label>
 		              <div class="col-md-9">
+		              <div class="row">
+		             <!-- 		This functionality inprogress dont delete the code -->
+		              <!-- <div class="col-md-4">
+		                <div class="checkbox checkBox">
+		                  <label>
+		                   <input id="isMSPVendor" title="MSP Vendor" name="isMSPVendor"  type="checkbox" value = "N" onclick = "isMSPVendorFunction();">
+		                  MSP Vendor</label>
+		                </div>
+		                 </div> -->
+		              
+		              
+		              <div class="col-md-3">
 		                <div class="checkbox checkBox">
 		                  <label>
 		                   <input id="isLawFirm" title="Is law firm" name="isLawFirm"  type="checkbox" value = "N" onclick = "allowIsLawFirm();">
@@ -580,39 +593,40 @@ function getVendorDetails(){
 		                  Law firm</label>
 		                </div>
 		                 </div>
-		                 </div>
-		                 
-		                 <div class="form-group">
-		                 <label class="col-md-3"></label>
-		              <div class="col-md-9">
+		              <div class="col-md-5">
 		                <div class="checkbox checkBox">
 		                  <label>
-		                 <input id="isAccountingFirm" title="Is law firm" name="isAccountingFirm"  type="checkbox" value = "N" onclick = "allowIsAccountFirm();">
-		                  
+		                 <input id="isAccountingFirm" title="Accounting Firm" name="isAccountingFirm"  type="checkbox" value = "N" onclick = "allowIsAccountFirm();">
 		                   Accounting Firm</label>
 		                </div>
+		                 </div>
+		                  </div>
 		                 </div>
                		</div>
                		
                		<div class="form-group">
               <label class="col-md-3"></label>
-              <div class="col-md-9 checkBox">
+              <div class="col-md-6">
+              <div class="row">
+              
+              <div class="col-md-6 checkBox">
                  <label> <input type="checkbox" value="N" name="invoiceOrBillSent" id= "invoiceOrBillSent" onclick = "allowInvoiceEmailSent();"> Billing Email </label>
               </div>
-            </div>
-            
-            <div class="form-group">
-              <label class="col-md-3"></label>
-              <div class="col-md-9 checkBox">
+              <div class="col-md-6 checkBox">
                  <label> <input type="checkbox" value="N" name="apOrArSent" id="apOrArSent" onclick = "allowApEmailSent();"> AR Email </label>
               </div>
             </div>
+
+             </div>
+             </div>
+
               <div class="form-group">
               <label class="col-md-3"></label>
               <div class="col-md-9 checkBox">
                  <label> <input type="checkbox" value="N" name="isBackgroundCheck" id="isBackgroundCheck" onclick = "allowBackgroundCheck();"> Background Check </label>
               </div>
             </div>  		
+
 						<div class="clearfix"></div>	
 					 <c:forEach var="section" items="${sourceleadSectionList}" varStatus="sectionOrder">
 		               <c:if test="${sectionOrder.index == 1}">
@@ -683,6 +697,14 @@ function getVendorDetails(){
 
 
 <script>
+function isMSPVendorFunction(){
+	var checked = document.getElementById("isMSPVendor").checked
+	if(checked == true){
+		$("#isMSPVendor").val("Y");
+	}else{
+		$("#isMSPVendor").val("N");
+	}
+}
 
 function allowIsLawFirm(){
 	var checked = document.getElementById("isLawFirm").checked

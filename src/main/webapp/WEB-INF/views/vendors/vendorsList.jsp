@@ -681,7 +681,7 @@ function getVendorDashboardName(vendorDashboardName){
 
 
 <script>
-	function vendorSideBar(vendorLocationId,orgRelationId,orgName) {
+	function vendorSideBar(vendorLocationId,orgRelationId,orgName,isMSP) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
@@ -720,6 +720,9 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		 result = result + '<li><a href="#tab-10" onClick="vendorOnboardTasksList('+orgRelationId+');">Onboard Tasks</a></li>';
 
+		 if(isMSP == "Y"){
+			 result = result + '<li><a href="#tab-11" onClick="mspVendor('+orgRelationId+','+vendorLocationId+');">MSP</a></li>';
+		 }
 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -758,7 +761,9 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<div id="tab-8" class="project_tabs_inn">';
 		result = result + '</div>';
 		
-		
+		 result = result + '<div id="tab-11" class="project_tabs_inn">';
+         result = result + '</div>';
+         
 		//for vendor onboard Documents list tab
 		  result = result + '<div class="tab-pane clearfix emp_onboarddocs" id="vendorDocuments">';
 		  result = result + '<div class="col-md-12 clearfix mt">';
@@ -772,8 +777,8 @@ function getVendorDashboardName(vendorDashboardName){
 		  result = result + '<div class="tab-panes" id="tasks"> ';
 		  result = result + '<div id="tab-10" class="project_tabs_inn">';
           result = result + '</div>';
-
 		result = result + '</div>';
+		
 		result = result + '</div>'
 		$("#vendorSideDiv").empty();
 		$("#vendorSideDiv").append(result);
@@ -1330,6 +1335,7 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorContactsDataTable.jsp" />  <!-- done -->
 <jsp:include page="vendorOnboardSubmittedDocuments.jsp" />  <!-- done -->
 <jsp:include page="vendorOnboardSubmittedTasks.jsp" />  <!-- done -->
+<jsp:include page="mspVendor.jsp" />  <!-- done -->
 
 
 <!-- Scripts for invitations  -->

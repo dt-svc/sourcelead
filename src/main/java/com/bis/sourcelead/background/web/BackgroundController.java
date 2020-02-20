@@ -2,6 +2,11 @@ package com.bis.sourcelead.background.web;
 
 
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +52,7 @@ import com.bis.sourcelead.util.SessionMaintainanceData;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
+
 
 @Controller
 @RequestMapping("/bgc")
@@ -152,7 +159,7 @@ public class BackgroundController {
 	 * below method is used to fetch background candidates details for the 
 	 * Data table is using for showing records.
 	 */
-	@RequestMapping(value = "/getBgcCandidageteList",  method = RequestMethod.POST)
+	@RequestMapping(value = {"/getBgcCandidageteList","/exportBgcToPdfOrExcel"})
 	public @ResponseBody ResponseList<BgcCandidateDetailsDTO> getAllBgcList(
 			BgcCandidateDetailsDTO bgcCandidateDetailsDTO,
 			@RequestParam(value = "searchValue", required = false) String searchValue,
@@ -160,7 +167,7 @@ public class BackgroundController {
 			@RequestParam(value = "filterTypeVal", required = false) Long[] filterTypeVal,
 			@RequestParam(value = "filterStatusVal", required = false) Long[] filterStatusVal,
 			@RequestParam(value = "filterDurationVal", required = false) Long[] filterDurationVal,
-			@RequestParam(value = "orgTypeVal", required = false) String orgTypeVal, HttpServletRequest request) {
+			@RequestParam(value = "orgTypeVal", required = false) String orgTypeVal, HttpServletRequest request, HttpServletResponse response) {
 		ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList = null;
 		logger.debug("inisde controller  BgcCandidateDetailsDTO  --> ");
 		try {
@@ -196,6 +203,15 @@ public class BackgroundController {
 			bgcCandidateDetailsDTO.setOrgLocationId(orgLocations.getId());
 			bgcCandidateDetailsDTOList = (ResponseList<BgcCandidateDetailsDTO>) bgcCommonService.getBgcCadidateListByOrgLocationId(bgcCandidateDetailsDTO, searchValue,
 					orgLocations, filterVal, orgTypeVal);
+			
+			//17-jan-2020
+			//export bgc to pdf or excel.
+			if(bgcCandidateDetailsDTO.getExportType() != null){
+			if(bgcCandidateDetailsDTOList != null && bgcCandidateDetailsDTOList.getData().size() > 0){
+				bgcCommonService.exportBgcToPdfOrExcel(bgcCandidateDetailsDTO, bgcCandidateDetailsDTOList, orgLocations, response);
+			}
+			}
+			
 			System.out.println("bgcCandidateDetailsDTOList size "+bgcCandidateDetailsDTOList.getRecordsTotal());
 			// commonUtil.highLightMenu(Constants.Immigration, request);
 		} catch (Exception e) {
@@ -222,10 +238,10 @@ public class BackgroundController {
 	}
 	
 	@RequestMapping(value = "/getBgcCandidateEducationSummary")
-	public @ResponseBody List<CandidateEducation> getBgcCandidateEducationSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+	public @ResponseBody List<CandidateEducation> getBgcCandidateEducationSummary(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		try {
 			logger.debug("inside getbgcCandidateEducationSummary");
-			List<CandidateEducation> candidateEducationList= bgcCommonService.getBgcCandidateEducationSummaryByCandidateUuid(uuid);
+			List<CandidateEducation> candidateEducationList= bgcCommonService.getBgcCandidateEducationSummaryByCandidateId(candidateId);
 			return candidateEducationList;
 		} catch (Exception e) {
 			logger.error(e+" in getbgcCandidateEducationSummary");
@@ -235,11 +251,11 @@ public class BackgroundController {
 	}
 	
 	@RequestMapping(value = "/getBgcCandidateEmploymentSummary")
-	public @ResponseBody List<CandidateEmployers> getBgcCandidateEmploymentSummary(@RequestParam(value = "uuid", required = true) String uuid, HttpServletRequest request) {
+	public @ResponseBody List<CandidateEmployers> getBgcCandidateEmploymentSummary(@RequestParam(value = "candidateId", required = true) Long candidateId, HttpServletRequest request) {
 		try {
 			logger.debug("inside getBgcCandidateEmploymentSummary");
 			String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
-			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(dateFormat, uuid);
+			List<CandidateEmployers> candidateEducationList= bgcCommonService.getBgcCandidateEmploymentSummary(dateFormat, candidateId);
 			return candidateEducationList;
 		} catch (Exception e) {
 			logger.error(e+" in getBgcCandidateEmploymentSummary");

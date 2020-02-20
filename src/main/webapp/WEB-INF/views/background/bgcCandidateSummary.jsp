@@ -36,8 +36,8 @@
 										<ul class="immigraTabs">
 										  <li class="current"><a href="#tab-Details">Personal / Identification</a></li>
 										  <li><a href="#tab-education">Education</a></li>
-										  <li><a href="#tab-previousEmployer">Previous Employer</a></li>
-										  <li><a href="#tab-criminialCheck">Legal and Criminial Check</a></li>
+										  <li><a href="#tab-previousEmployer">Employer</a></li>
+										  <!-- <li><a href="#tab-criminialCheck">Legal and Criminial Check</a></li> -->
 										  <div class="clearfix"></div>
 										</ul>
 									</div>
@@ -56,9 +56,11 @@
 					  <li class="clearfix"><span>Aadhar Card</span><p>: --</p></li>
 					  <li class="clearfix"><span>PAN Card</span><p>: --</p></li>
 					  <li class="clearfix"><span>Address</span><p>: --</p></li>
-					  <li class="clearfix"><span>Family</span><p>: --</p></li>
-					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
-					  <li class="clearfix"><span>Comments</span><p>: --</p></li>
+					  <!--06-jan-2020 
+					  commented some fields in the below list to be used later. -->
+					  <!-- <li class="clearfix"><span>Family</span><p>: --</p></li>
+					  <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li> -->
+					<!--   <li class="clearfix"><span>Comments</span><p>: --</p></li> -->
 				  </ul>
 			  </div>	
 			  <div class="clearfix"></div>
@@ -71,13 +73,15 @@
 	  	<div class="immigraDetailsCta" id ="educationList">
 		<h2>Education</h2>
 		<ul>
+		<!--06-jan-2020 
+		commented some fields in the below list to be used later. -->
 		<li class="clearfix"><span>Higher Education</span><p>: --</p></li>
 		<li class="clearfix"><span>Institute Name</span><p>: --</p></li>
 		<li class="clearfix"><span>Academic Year</span><p>: --</p></li>
-		<li class="clearfix"><span>Grade</span><p>: --</p></li>
-		<li class="clearfix"><span>University / Authority</span><p>: --</p></li>
-		<li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li>
-		<li class="clearfix"><span>Comments</span><p>: --</p></li>
+		<li class="clearfix"><span>Grade/Percentage/Score</span><p>: --</p></li>
+		<!-- <li class="clearfix"><span>University / Authority</span><p>: --</p></li> -->
+		<!-- <li class="clearfix"><span>Attach document</span><p>: <a>-- <i class="fa fa-download ml"></i></a></p></li> -->
+		<!-- <li class="clearfix"><span>Comments</span><p>: --</p></li> -->
 		</ul>
 		</div>
 	 </div>
@@ -87,11 +91,15 @@
 			<div class="immigraDetailsCta" id = "employmentList">
 			<h2>Previous Employer</h2>
 			<ul>
+			<!--06-jan-2020 
+				commented some fields in the below list to be used later. -->
 				<li class="clearfix"><span>Previous Employer Name</span><p>: --</p></li>
 				<li class="clearfix"><span>Designation</span><p>: --</p></li>
+				<li class="clearfix"><span>Start Year</span><p>: --</p></li>
+				<li class="clearfix"><span>End Year</span><p>: --</p></li>
 				<li class="clearfix"><span>Period</span><p>: --</p></li>
-				<li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li>
-				<li class="clearfix"><span>Conduct</span><p>: --</p></li>
+				<!-- <li class="clearfix"><span>Attach document</span><p>: <a>--<i class="fa fa-download ml"></i></a></p></li> -->
+				<!-- <li class="clearfix"><span>Conduct</span><p>: --</p></li> -->
 			</ul>
 </div>
 			
@@ -128,7 +136,7 @@
 
 <script>
 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
-var candidateUuid = '${bgcCandidate.candidateUUID}';
+var candidateId = '${bgcCandidate.candidateId}';
 var bgcUuid = '${bgcCandidate.uuid}';
 // project side bar tabs
 $(document).ready(function() {
@@ -147,10 +155,10 @@ $(document).ready(function() {
         	bgc.getBgcCandidateSummary(bgcUuid);
         }else if(tab == "#tab-education"){
         	showLoading("educationLoading");
-        	bgc.getBgcCandidateEducationSummary(candidateUuid);
+        	bgc.getBgcCandidateEducationSummary(candidateId);
         }else if(tab == "#tab-previousEmployer"){
         	showLoading("employmentLoading");
-        	bgc.getBgcCandidateEmploymentSummary(candidateUuid);        	
+        	bgc.getBgcCandidateEmploymentSummary(candidateId);        	
         }else if(tab == "#tab-criminialCheck"){
         	showLoading("legalAndCriminalLoading");
         	bgc.getBgcCandidateLegalAndCriminalSummary(bgcUuid);
