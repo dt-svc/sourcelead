@@ -718,7 +718,7 @@ public class Constants {
 			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Workflow","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
-	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
+	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Working Status*",
 			"Name","Laptop Serial Number/CPU Serial Number*", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
@@ -1606,6 +1606,8 @@ public class Constants {
 	public static final String CANDIDATE_GLOBAL = "candidateGlobal";
 
 	public static final String LCA_MANAGER_EXPIRES_IN_DAYS_NOTIFICATION ="LCAManagerExpiresInDaysNotification";
+	
+	public static final String EMPLOYEE_PAYSLIP_EMAILS = "employeePayslipSendingEmail";
 
 	//added on 4th nov 2019
 	public static final String[] LEAVE_CONFIGURATION_ROLES = { "Reporting Manager", "Project Manager", "Team Leader"};

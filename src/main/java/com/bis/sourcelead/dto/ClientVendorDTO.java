@@ -102,6 +102,8 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 	
 	private String generateInvoice;
 	
+	private String isMspVendor;
+	
 	public String getOrgRelationIds() {
 		return orgRelationIds;
 	}
@@ -698,6 +700,11 @@ public class ClientVendorDTO extends SearchDTO implements Serializable {
 		this.generateInvoice = generateInvoice;
 	}
 
-	
-	
+	public String getIsMspVendor() {
+		return isMspVendor;
+	}
+
+	public void setIsMspVendor(String isMspVendor) {
+		this.isMspVendor = isMspVendor;
+	}
 }

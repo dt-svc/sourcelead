@@ -3,7 +3,9 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.PayrollPaySlipIndDTO;
+import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.PayrollPaySlipInd;
+import com.bis.sourcelead.entity.User;
 
 public interface PayrollPaySlipIndService {
 
@@ -23,5 +25,6 @@ public interface PayrollPaySlipIndService {
 	
 	PayrollPaySlipInd getActivePayslipByOrglocationId(Long orgLocationId)throws Exception;
 
+	void sendAllEmployeePlayslips(User loginUser, String playrollUUIDs, OrgLocations orgLocation) throws Exception;
 	
 }

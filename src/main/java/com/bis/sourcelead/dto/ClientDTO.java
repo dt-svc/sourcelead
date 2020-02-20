@@ -117,6 +117,8 @@ public class ClientDTO {
 	private String generateBill;
 	
 	private String generateInvoice;
+
+	private String isMSPVendor;
 	
 	private String isBackgroundCheck;
 	
@@ -465,12 +467,26 @@ public class ClientDTO {
 	public void setGenerateInvoice(String generateInvoice) {
 		this.generateInvoice = generateInvoice;
 	}
+
+	public String getIsMSPVendor() {
+		return isMSPVendor;
+	}
+	public void setIsMSPVendor(String isMSPVendor) {
+		this.isMSPVendor = isMSPVendor;
+	}
+
+//	public String getIsBackgroundCheck() {
+//		return isBackgroundCheck;
+//	}
+//	public void setIsBackgroundCheck(String isBackgroundCheck) {
+//		this.isBackgroundCheck = isBackgroundCheck;
+//	}
+
 	public String getIsBackgroundCheck() {
 		return isBackgroundCheck;
 	}
 	public void setIsBackgroundCheck(String isBackgroundCheck) {
 		this.isBackgroundCheck = isBackgroundCheck;
 	}
-	
 	
 }

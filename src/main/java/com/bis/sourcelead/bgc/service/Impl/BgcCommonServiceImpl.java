@@ -1,5 +1,10 @@
 package com.bis.sourcelead.bgc.service.Impl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,11 +14,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
 import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
@@ -26,15 +35,18 @@ import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.CandidateEducationService;
+import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.bis.sourcelead.util.BackgroundCheckExportUtil;
 
 
 /**
@@ -57,10 +69,16 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	CandidateService candidateService;
 	
 	@Autowired
+	CandidateGlobalService candidateGlobalService;
+	
+	@Autowired
 	OrgLocationService orgLocationService;
 	
 	@Autowired
 	OrgSpocService orgSpocService;
+	
+	@Autowired
+	BackgroundCheckExportUtil backgroundCheckExportUtil;
 	
 	
 	@Override
@@ -69,7 +87,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	    try {
 		BgcCandidateDetails bgcCandidateDetails = new BgcCandidateDetails();
 		
-		Candidate candidate = candidateService.getCandidateByCandidateId(bgcCandidateDetailsDto.getCandidateId());
+		CandidateGlobal candidate = candidateGlobalService.getCandidateGlobalByCandidateId(bgcCandidateDetailsDto.getGlobalCandidateId());
 		bgcCandidateDetails.setCandidate(candidate);
 		bgcCandidateDetails.setComments(bgcCandidateDetailsDto.getComments());
 		bgcCandidateDetails.setCreatedBy(user);  
@@ -174,11 +192,12 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			}
 			
 			bgcCandidateDetailsDTO.setFullName(fullName.toString());
+			bgcCandidateDetailsDTO.setGeneratedId(bgcCandidateDetails.getGeneratedId());
 			bgcCandidateDetailsDTO.setAadharNumber(bgcCandidateDetails.getCandidate().getAadharNumber());
 			bgcCandidateDetailsDTO.setPanNumber(bgcCandidateDetails.getCandidate().getPanNumber());
 			bgcCandidateDetailsDTO.setAddress(bgcCandidateDetails.getCandidate().getAddress());
 			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
-			bgcCandidateDetailsDTO.setCandidateUUID(bgcCandidateDetails.getCandidate().getCandidateUUID());
+			bgcCandidateDetailsDTO.setCandidateId(bgcCandidateDetails.getCandidate().getId());
 			bgcCandidateDetailsDTO.setUpdatedPercentage(bgcCandidateDetails.getupdatedPercentage());
 		}
 		return bgcCandidateDetailsDTO;
@@ -191,20 +210,23 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 
 
 	@Override
-	public List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateUuid(String candidateUuid)  {
+	public List<CandidateEducation> getBgcCandidateEducationSummaryByCandidateId(Long candidateId)  {
 		try{
-		Candidate candidate = candidateService.getCandidateByUUID(candidateUuid);
 		List<CandidateEducation> candidateEducationList = new ArrayList<CandidateEducation>();
-		if(candidate != null){
+		if(candidateId != null){
 			StringBuilder academicYearBuilder = new StringBuilder("");
 			SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
-			candidateEducationList = bgcCommonDao.getBgcCandidateEducationSummaryListByCandidateId(candidate.getCandidateGlobalId().getId());
+			candidateEducationList = bgcCommonDao.getBgcCandidateEducationSummaryListByCandidateId(candidateId);
+			if(candidateEducationList.size() > 0){
 			for(int i=0; i<candidateEducationList.size(); i++){
 				Date startDate = candidateEducationList.get(i).getStartDate();
 				Date endDate = candidateEducationList.get(i).getEndDate();
+				if(startDate != null && endDate != null) {
 				academicYearBuilder.append(formatter.format(startDate)).append(" to ").append(formatter.format(endDate));
 				candidateEducationList.get(i).setAcademicYear(academicYearBuilder.toString());
 				academicYearBuilder.delete(0, academicYearBuilder.length());
+			   }
+			}
 			}
 		}
 		return candidateEducationList;
@@ -217,37 +239,48 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 
 
 	@Override
-	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, String candidateUuid) {
+	public List<CandidateEmployers> getBgcCandidateEmploymentSummary(String dateFormat, Long candidateId) {
 		try{
-		Candidate candidate = candidateService.getCandidateByUUID(candidateUuid);
 		List<CandidateEmployers> candidateEmploymentList = new ArrayList<CandidateEmployers>();
-		if(candidate != null){
-			candidateEmploymentList = bgcCommonDao.getBgcCandidateEmploymentSummaryListByCandidateId(candidate.getCandidateGlobalId().getId());
+		if(candidateId != null){
+			candidateEmploymentList = bgcCommonDao.getBgcCandidateEmploymentSummaryListByCandidateId(candidateId);
+			if(candidateEmploymentList.size() > 0){
 			for(int i=0; i<candidateEmploymentList.size(); i++){
 				if(candidateEmploymentList.get(i).getStartDate() == null && candidateEmploymentList.get(i).getEndDate() == null){
+					if(StringUtils.isNotBlank(candidateEmploymentList.get(i).getStartYear()) && StringUtils.isNotBlank(candidateEmploymentList.get(i).getStartMonth() )
+							&& StringUtils.isNotBlank(candidateEmploymentList.get(i).getEndYear()) && StringUtils.isNotBlank(candidateEmploymentList.get(i).getEndMonth())) {
 					Integer startMonth = Integer.parseInt(candidateEmploymentList.get(i).getStartMonth().split("&")[0]);
 					Integer startYear = Integer.parseInt(candidateEmploymentList.get(i).getStartYear());	
 					Integer endMonth = Integer.parseInt(candidateEmploymentList.get(i).getEndMonth().split("&")[0]);
 					Integer endYear = Integer.parseInt(candidateEmploymentList.get(i).getEndYear());
-					StringBuilder startMonthBuilder = new StringBuilder("");
-					StringBuilder endMonthBuilder = new StringBuilder("");
-					if(startMonth < 10){
-						startMonthBuilder.append(Constants.RECORD_INACTIVE).append(startMonth);
-					}if(endMonth < 10){
-						endMonthBuilder.append(Constants.RECORD_INACTIVE).append(endMonth);
+						StringBuilder startMonthBuilder = new StringBuilder("");
+						StringBuilder endMonthBuilder = new StringBuilder("");
+						if(startMonth < 10){
+							startMonthBuilder.append(Constants.RECORD_INACTIVE).append(startMonth);
+						}else {
+							startMonthBuilder.append(startMonth);
+						}
+						if(endMonth < 10){
+							endMonthBuilder.append(Constants.RECORD_INACTIVE).append(endMonth);
+						}else {
+							endMonthBuilder.append(endMonth);
+						}
+						Date startDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", startYear+"-"+startMonthBuilder.toString()+"-"+"01");
+						Date endDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", endYear+"-"+endMonthBuilder.toString()+"-"+"01");
+						Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
+						Integer period = difference / 365;
+						candidateEmploymentList.get(i).setPeriod(period.toString());
 					}
-					Date startDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", startYear+"-"+startMonthBuilder.toString()+"-"+"01");
-					Date endDate = commonUtil.orgLocationDateFormat("yyyy-MM-dd", endYear+"-"+endMonthBuilder.toString()+"-"+"01");
-					Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
-					Integer period = difference / 365;
-					candidateEmploymentList.get(i).setPeriod(period.toString());
 				}else{
 					Date startDate = candidateEmploymentList.get(i).getStartDate();
 					Date endDate = candidateEmploymentList.get(i).getEndDate();
-					Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
-					Integer period = difference / 365;
-					candidateEmploymentList.get(i).setPeriod(period.toString());	
+					if(startDate != null && endDate!= null) {
+						Integer difference = commonUtil.diffBtwTowDates(startDate, endDate);
+						Integer period = difference / 365;
+						candidateEmploymentList.get(i).setPeriod(period.toString());	
+					}
 				}
+			}
 			}
 		}
 		return candidateEmploymentList;
@@ -317,5 +350,38 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			return null;
 		}
 	}
-
+	
+	@Override
+	public void exportBgcToPdfOrExcel(BgcCandidateDetailsDTO bgcCandidateDetailsDTO, ResponseList<BgcCandidateDetailsDTO> bgcCandidateDetailsDTOList,
+			OrgLocations orgLocations, HttpServletResponse response) {
+		try{
+		File file = null;
+  		
+	    if(bgcCandidateDetailsDTO.getExportType().equalsIgnoreCase("pdf")) {
+	    	 file = backgroundCheckExportUtil.exportBgcToPdf(bgcCandidateDetailsDTOList, orgLocations);
+	    }else {
+	    	 file = backgroundCheckExportUtil.exportBgcToExcel(bgcCandidateDetailsDTOList, orgLocations);
+	    }
+		
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			mimeType = "application/octet-stream";
+		}
+		response.setContentType(mimeType);
+		StringBuilder fileNameSB = new StringBuilder();
+		response.setHeader("Content-Disposition", fileNameSB.append("attachment; filename=\"").append(file.getName()).append("\"").toString());
+		response.setContentLength((int) file.length());
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+		inputStream.close();
+		response.getOutputStream().close();
+		response.getOutputStream().flush();	
+		if(file!= null){
+			file.delete();
+		}
+		
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+	}
 }
