@@ -180,7 +180,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						<i class='fa fa-sitemap pull-left fa-2x text-muted'></i>
 					</c:otherwise>
 					</c:choose>
-					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
+					<a onclick='requirementWorkflow.viewStage("${requirementWorkFlowStages.uuid}", "${requirementWorkFlowStages.requirementWorkFlowUuid}")'><h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4></a>
 				</div>
 				</div>
 				<div class="col-md-2">

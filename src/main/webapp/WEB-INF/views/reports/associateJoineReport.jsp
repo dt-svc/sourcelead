@@ -1170,20 +1170,7 @@ function candidtaeCancel(){
 	$(".project_inn_mask").fadeOut(200);
 }
 </script>
-<script>
-function addValidClass(){
-	 var StartDate = document.getElementById("ReportStartDate").value;
-	 if(StartDate){
-		 document.getElementById("reportsStartDate").style.display="block";
-	 }
-	 
-	 var EndDate = document.getElementById("ReportEndDate").value;
-	
-	 if(EndDate){
-		 document.getElementById("reportsEndDate").style.display="block";
-	 }
-}
-</script>
+ 
 <script>
 	$(function() {
 		var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
@@ -1199,7 +1186,7 @@ function addValidClass(){
 				dt.setDate(dt.getDate() + 1);
 				$("#ReportEndDate").datepicker("option", "minDate", dt); */
 				$("#ReportEndDate").datepicker("option", "minDate", selected);
-				addValidClass();
+				removeStartDate();
 			}
 		
 		});
@@ -1218,11 +1205,18 @@ function addValidClass(){
 				$("#ReportStartDate").datepicker("option", "maxDate", dt);
 				 $( "#ReportStartDate" ).datepicker({  maxDate: new Date() }); */
 				 $("#ReportStartDate").datepicker("option", "maxDate", selected);
-				addValidClass();
+				removeEndDate();
 			}
 		});
 		
 	});
+	
+	function removeStartDate(){
+		$("#reportsStartDate").hide();
+	}
+	function removeEndDate(){
+		$("#reportsEndDate").hide();
+	}
 </script>	
 <script>
 function exportReportOptions(){
@@ -1715,6 +1709,12 @@ function associateGraph(data){
 				$("#customDateRecurter").hide();
 				$("#customDatesDropdown").hide();
 				$("#associateTerminatedDiv").hide();
+				
+				var serachDate = $("#reportTypeId").val();
+				if(serachDate=="custom"){
+					$("#customSearch").hide();
+				}
+				
 
 
 		});
@@ -1731,8 +1731,10 @@ function associateGraph(data){
 // 			$("#customDateRecurter").show();
 			$("#year").hide();
 			$("#customize_btn").hide();
-			
-			
+			var serachDate = $("#reportTypeId").val();
+			if(serachDate=="custom"){
+				$("#customSearch").show();
+			}
 			var optval=$("#araginglistSel").val();
 			if(optval === "associateTerminated") {
 				getAssociatesTerminatedList();
