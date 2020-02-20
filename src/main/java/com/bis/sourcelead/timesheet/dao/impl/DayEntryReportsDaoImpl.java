@@ -659,7 +659,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		if(reportList != null && !reportList.isEmpty()) {
 			for(DayWiseTimesheetReoprtsListDTO daywiseDTO : reportList) {
 				
-				if(daywiseDTO.getProjectTerimationDate() == null || (daywiseDTO.getProjectTerimationDate() != null && daywiseDTO.getProjectTerimationDate().after(daywiseDTO.getTimeEntryDate()))) {
+				/*if(daywiseDTO.getProjectTerimationDate() == null || (daywiseDTO.getProjectTerimationDate() != null && daywiseDTO.getProjectTerimationDate().after(daywiseDTO.getTimeEntryDate()))) {*/
 					if(daywiseDTO.getParentCandidteId() != null) {
 						Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
 						if(candiate != null && candiate.getConsultantUser() != null) {
@@ -674,7 +674,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 						}
 					}
 					daywiseReportList.add(daywiseDTO);
-				}
+				/*}*/
 			
 			}
 		}
@@ -988,7 +988,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
 		if(reportList != null && !reportList.isEmpty()) {
 			for(DayWiseTimesheetReoprtsListDTO daywiseDTO : reportList) {
-				if(daywiseDTO.getProjectTerimationDate() == null || (daywiseDTO.getProjectTerimationDate() != null && daywiseDTO.getProjectTerimationDate().after(daywiseDTO.getTimeEntryDate()))) {
+				/*if(daywiseDTO.getProjectTerimationDate() == null || (daywiseDTO.getProjectTerimationDate() != null && daywiseDTO.getProjectTerimationDate().after(daywiseDTO.getTimeEntryDate()))) {*/
 					if(daywiseDTO.getParentCandidteId() != null) {
 						Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
 						if(candiate != null && candiate.getConsultantUser() != null) {
@@ -1003,7 +1003,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 						}
 					}
 					daywiseReportList.add(daywiseDTO);
-				}
+				/*}*/
 				
 			}
 		}
