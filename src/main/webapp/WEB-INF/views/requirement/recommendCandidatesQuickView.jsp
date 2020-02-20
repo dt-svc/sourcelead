@@ -15,7 +15,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 	  var skillsList = '${skillsList}'; 
 	  $.ajax({
         type : "POST",
-         url: atsUrl+"/getCandidateGlobalById?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+         url: atsUrl+"/getCandidateGlobalById?candidateId="+candidateId,        
          success :function(result) {
         	 var json = result.object;
         	 if(result.response === "SESSION_TIMEDOUT") {
@@ -24,7 +24,6 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 					location.href = "/errorPage";
 				} else if (result.response === "SUCCESS") {
 		        	 if(json != null){  
-		              //	var json = JSON.parse(data);
 									var result ="";
 									if(json.country != null && json.country != '' && json.country != 'undefined'){
 			         			 		country =json.country;
@@ -85,7 +84,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 			         			 		}
 			         			 		
 						                qvSkills = "<ul>";
-						                for(i = 0; i<=minSkills.length ; i++){
+						                for(i = 0; i<= minSkills.length ; i++){
 						                		if(res[i] != null && res[i] != '' && res[i] != 'undefined'){
 							                		qvSkills += "<li>" + res[i] + "</li>";
 							                	}
@@ -237,7 +236,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 	function recQvemployeeSubmission(candidateId) {
 				$.ajax({
 					type : "POST",
-					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId=" + candidateId,
+					url : atsUrl	+ "/getCandidatesEmployersListByCandidateIdAndOrgLocationID?candidateId=" + candidateId,
 					success : function(response) {
 						if (response && response.response === "INVALID_DATA") {
 						    showError(response.responseMessage);
@@ -326,7 +325,7 @@ function recomendcandidateQuickViewProfile(candidateId,recScore){
 function recQveducationSubmission(candidateId){
 	 $.ajax({  
           type : "GET",
-          url: atsUrl+"/getCandidateEducationListByCandidateId?&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateEducationListByCandidateId?candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && response.response === "INVALID_DATA") {
         		    showError(response.responseMessage);
@@ -414,7 +413,7 @@ function recQveducationSubmission(candidateId){
 function recQwikCertificates(candidateId){
 	 $.ajax({  
           type : "POST",
-          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?"+tokenParamName+"="+tokenValue+"&candidateId="+candidateId,        
+          url: atsUrl+"/getCandidateCertificationListByCandidateIdAndOrgLocationID?candidateId="+candidateId,        
           success :function(response) {
         	  	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
         		    showError(response.responseMessage);
