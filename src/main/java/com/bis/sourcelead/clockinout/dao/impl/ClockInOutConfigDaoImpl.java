@@ -848,29 +848,36 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 
 	@Override
 	@Transactional
-	public ResponseList<ClockInOutTimerDTO> getProjectsListForClockInTimerByUserId(Long userId, Long orgLocationId) {
+	public List<ClockInOutTimerDTO> getProjectsTasksListForClockInTimerByUserId(Long userId, Long projectId, Long orgLocationId) {
 		
 		Session session = this.sessionFactory.getCurrentSession();
-		ResponseList<ClockInOutTimerDTO> projectsResponseList = new ResponseList<ClockInOutTimerDTO>();
-		String projectTaskQuery = " SELECT proj.PROJECT_NAME as projectName, " + 
-				   " proj.ID as projectId " + 
+		String projectTaskQuery = " SELECT ptasks.TASK_NAME as taskName, " + 
+				   " ptasks.ID as id " + 
 			       " FROM PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc, USER user " + 
 			       " where assignTask.PROJECT_TASK_ID = ptasks.ID AND ptasks.PROJECT_ID = proj.ID  " + 
 			       " AND projMem.ID = assignTask.PROJECT_MEMBER_ID " + 
 			       " AND can.ID = projMem.CANDIDATE_ID " + 
 			       " AND can.CONSULTANT_USER_ID = user.ID " + 
-			       " AND pc.PROJECT_ID = proj.ID "+
+			       " AND ptasks.PROJECT_ID = :projectId "+
 			       " AND can.ORG_LOCATION_ID = pc.ORG_LOCATIONS_ID "+
-			       " AND pc.ORG_LOCATIONS_ID = :orgLocationId AND user.ID = :userId group by proj.ID" ;
+			       " AND pc.ORG_LOCATIONS_ID = :orgLocationId AND user.ID = :userId group by proj.ID" +
+		
+				    " UNION ALL "+
+				    
+ 				  " SELECT ptasks.TASK_NAME as taskName, " + 
+				  " ptasks.ID as id " + 
+				  " FROM PROJECT_TASKS ptasks,LOOKUP_DATA lData " + 
+				  " where lData.ID = ptasks.TASK_TYPE   " + 
+				  " AND ptasks.PROJECT_ID = :projectId " + 
+				  " AND lData.NAME = 'General' ";
 			       
 			        Query projectQueryObj = session.createSQLQuery(projectTaskQuery);
-			        projectQueryObj.setLong("userId", userId);
+			        projectQueryObj.setLong("projectId", projectId);
 			        projectQueryObj.setLong("orgLocationId", orgLocationId);
+			        projectQueryObj.setLong("userId", userId);
 			        projectQueryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutTimerDTO.class));
 			        List<ClockInOutTimerDTO> projectsList = projectQueryObj.list();
-			        projectsResponseList.setData(projectsList);
-					
-					return projectsResponseList;
+					return projectsList;
 	}
 
 }

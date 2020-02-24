@@ -1417,7 +1417,7 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public ResponseList<ClockInOutTimerDTO> getProjectsListForClockInTimerByUserId(Long userId, Long orgLocationId) {
-		return clockInOutConfigDao.getProjectsListForClockInTimerByUserId(userId, orgLocationId);
+	public List<ClockInOutTimerDTO> getProjectsTasksListForClockInTimerByUserId(Long userId, Long projectId, Long orgLocationId) {
+		return clockInOutConfigDao.getProjectsTasksListForClockInTimerByUserId(userId, projectId, orgLocationId);
 	}
 }

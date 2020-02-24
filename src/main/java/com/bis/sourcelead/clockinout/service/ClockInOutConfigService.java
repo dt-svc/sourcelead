@@ -59,6 +59,6 @@ public interface ClockInOutConfigService {
 
 	public List<ClockInOutUserTimeEntryDTO> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId);
 	
-	public ResponseList<ClockInOutTimerDTO> getProjectsListForClockInTimerByUserId(Long userId, Long orgLocationId);
+	public List<ClockInOutTimerDTO> getProjectsTasksListForClockInTimerByUserId(Long userId, Long projectId, Long orgLocationId);
 
 }

@@ -213,7 +213,7 @@ public class ClockInOutRestController {
 
 	
 	@RequestMapping(value = {"/getAllProjectsForClockInOut","/rest/getAllProjectsForClockInOut"})
-	public ResponseList<ClockInOutTimerDTO> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+	public ResponseList<ClockInOutTimerDTO> getAllProjectsForClockInOut(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 		ResponseList<ClockInOutTimerDTO> projectsList = null;
 		try {
@@ -233,9 +233,13 @@ public class ClockInOutRestController {
 	}
 	
 	@RequestMapping(value = {"/getProjectsTasksByProjectId","/rest/getProjectsTasksByProjectId"})
-	public List<ProjectTasks> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
+	public List<ClockInOutTimerDTO> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
 
-		return clockInOutConfigService.getProjectsTasksByProjectId(projectId);
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 List<ClockInOutTimerDTO> projectsTasksList = null;
+		 projectsTasksList = clockInOutConfigService.getProjectsTasksListForClockInTimerByUserId(user.getId(), projectId, orgLocationId);
+		 return projectsTasksList;
 	   
 	}
 	
