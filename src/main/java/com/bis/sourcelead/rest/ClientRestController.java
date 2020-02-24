@@ -783,7 +783,10 @@ public class ClientRestController {
 			                                        ,@RequestParam(value = "type", required = false) String type,@RequestParam(value = "orgRelationId", required = false) Long orgRelationId,
 			                                        @RequestParam(value = "spocLocationId", required = false) Long spocLocationId) throws Exception{
 		     User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-	         OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	        
+		    // OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		     Long orgLocId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			 OrgLocations orgLoc = orgLocationService.getOrgLocationById(orgLocId);
 
 	         OrgSpoc orgSpoc =  orgSpocService.getSpocAndOwnerDetailsByIdAndOwnerId(spocId,ownerId,user.getId(),spocUserId,orgLoc.getId(),type);
 		     List<Long> ownerListOfSpoc =  orgSpocService.getOwnerIdbySpocId(spocUserId,ownerId);
