@@ -638,7 +638,23 @@ function RequirementQuestionnaireTemplate(){
 	                    	 if(labelAndAttemptsMap.get(label) != null){
 	                    		 attempt = labelAndAttemptsMap.get(label);
 	                    	 }
-	                    	 
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(labelAndAttemptsMap.get(label) != null){
+	                    		 attempt = labelAndAttemptsMap.get(label);
+	                    	 }
+	                    	 if(attempt != null && attempt !== ""){
+		                    	 if(attempt == 0){
+		                    		 attemptsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s),</div>' ;
+		                    	 }else if(attempt > 0){
+		                    		 attemptsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s),</div>' ;
+		                    	 }
+		                    	 }else{
+		                    		 infiniteAttemptsMap.set(label, true);
+		                    	 }
+		                    	 if(points != "" && points != null){
+		                    		 pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+		                    	 }
 	                         return '' +
 	                         	'<div class="clearfix mb">'+
 	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
@@ -646,15 +662,27 @@ function RequirementQuestionnaireTemplate(){
 	                             '<label></label>' +
 	                             '<div class="clearfix mt"></div>'+
 	                             '<div class="choices choices-radio"></div>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>'+
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
 	                             '</div>';
 
 	                     case 'checkbox':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
 	                    	 if(labelAndAttemptsMap.get(label) != null){
 	                    		 attempt = labelAndAttemptsMap.get(label);
 	                    	 }
+	                    	 if(attempt != null && attempt !== ""){
+		                    	 if(attempt == 0){
+		                    		 attemptsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s),</div>' ;
+		                    	 }else if(attempt > 0){
+		                    		 attemptsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s),</div>' ;
+		                    	 }
+		                    	 }else{
+		                    		 infiniteAttemptsMap.set(label, true);
+		                    	 }
+		                    	 if(points != "" && points != null){
+		                    		 pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+		                    	 }
 	                         return '' +	
 	                         	'<div class="clearfix mb">'+
 	                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
@@ -662,9 +690,7 @@ function RequirementQuestionnaireTemplate(){
 	                             '<label class="sjfb-label"></label>' +
 	                             '<div class="clearfix mt"></div>'+
 	                             '<div class="choices choices-checkbox"></div>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>'+
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
 	                             '</div>';
 	                         
 
@@ -1272,6 +1298,18 @@ function RequirementQuestionnaireTemplate(){
 	                             
 
 	                     case 'radio':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 var dynamicAttempts = labelAndAttemptsMap.get(label);
+	                    	 if(attempt != "" && attempt != null){
+	                    		 attemptsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id = "attemptId">'+dynamicAttempts+'</strong> Attempt(s),</div>' ;
+	                    	 }
+	                    	 else{
+	                    		 infiniteAttemptsMap.set(label, true);
+	                    	 }
+	                    	 if(points != "" && points != null){
+	                    		 pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
 	                    	 
 	                         return '' +
 	                         	'<div class="clearfix mb">'+
@@ -1280,12 +1318,22 @@ function RequirementQuestionnaireTemplate(){
 	                             '<label></label>' +
 	                             '<div class="clearfix mt"></div>'+
 	                             '<div class="choices choices-radio"></div>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>'+
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
 	                             '</div>';
 
 	                     case 'checkbox':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 var dynamicAttempts = labelAndAttemptsMap.get(label);
+	                    	 if(attempt != "" && attempt != null){
+	                    		 attemptsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id = "attemptId">'+dynamicAttempts+'</strong> Attempt(s),</div>' ;
+	                    	 }
+	                    	 else{
+	                    		 infiniteAttemptsMap.set(label, true);
+	                    	 }
+	                    	 if(points != "" && points != null){
+	                    		 pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
 	                         return '' +
 	                         	'<div class="clearfix mb">'+
 	                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
@@ -1293,9 +1341,7 @@ function RequirementQuestionnaireTemplate(){
 	                             '<label class="sjfb-label"></label>' +
 	                             '<div class="clearfix mt"></div>'+
 	                             '<div class="choices choices-checkbox"></div>' +
-	                             '</div>'+
-	                             '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+labelAndAttemptsMap.get(label)+'</strong> Attempt(s)</div>' +
-	                             '<div class="clearfix" style="display:inline-block;"> ,&nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>'+
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
 	                             '</div>';
 	                         
 
@@ -1589,7 +1635,6 @@ function RequirementQuestionnaireTemplate(){
 	}
 	
 	this.deleteDoc = function(label){
-		$('#newUploadFile'+label).val("");
 	      $("#download-"+label).removeAttr("href");
 	      $("#attachmentTitle-"+label).empty();
 	}
