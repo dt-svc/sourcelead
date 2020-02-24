@@ -165,6 +165,7 @@ function saveQuestionnaireTemplate(){
 		    	  if($("#pointId").length > 0) {
 		    		  points = $('#pointId').html().trim();
 		    		}
+		    	  
 		    	 
 		    	  
 		    	  inputtype = $(this).find('input').attr('field-type');
@@ -238,6 +239,7 @@ function saveQuestionnaireTemplate(){
 		     		 fileCount = fileCount+1;
 		     	  }
 		     	 totalPointsArray.push(points);
+		     	 
 		     	  if(labelAndAttemptsMap.get(fieldLabel) != null){
 		     		 attempts = labelAndAttemptsMap.get(fieldLabel);
 		     	 	if(inputValue != null && inputValue != ""){
@@ -262,6 +264,13 @@ function saveQuestionnaireTemplate(){
 			     	  }	
 		     	  } 
 		     	 
+		     	 if(infiniteAttemptsMap.get(fieldLabel) == true){
+		     		attempts="";
+		     	 }
+		     	  
+		     	  /* if($this.find('input').attr('uniqueAttemptID')){
+		     		console.log("attempts "+attempts);
+		     	  } */
 		     		fields.push({
 			              label: fieldLabel,
 			              type : inputtype,
@@ -346,8 +355,9 @@ function saveAutoSubmitQuestionnaireForm(){
 		    	  var inputtype = null;
 		    	  var flag = 1;
 		    	  
+		    	  if($("#pointId").length > 0) {
 		    	  points = $('#pointId').html().trim();
-		    	 
+		    	  }
 		    	  
 		    	  inputtype = $(this).find('input').attr('field-type');
   			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
@@ -432,7 +442,9 @@ function saveAutoSubmitQuestionnaireForm(){
 			     	  }	
 		     	  } 
 		     	 
-		     		     	  
+		     	 if(infiniteAttemptsMap.get(fieldLabel) == true){
+			     		attempts="";
+			     	 }     	  
 		     		fields.push({
 			              label: fieldLabel,
 			              type : inputtype,
