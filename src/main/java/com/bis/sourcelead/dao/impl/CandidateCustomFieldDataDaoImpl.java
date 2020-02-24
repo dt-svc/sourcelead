@@ -86,7 +86,7 @@ public class CandidateCustomFieldDataDaoImpl implements CandidateCustomFieldData
 		for(CustomFormFieldDTO form:formFieldId) {
 			formIds.add(form.getCustomFormFieldId());
 		}
-		String query = "from CandidateCustomFieldData candidateData left join fetch candidateData.orglocationsFormFields formField left join fetch formField.org org left join fetch candidateData.candidate can where org.id =:orgId and can.candidateGlobalId.id =:candidateId and formField.id IN(:formFieldId)";
+		String query = "from CandidateCustomFieldData candidateData left join fetch candidateData.orglocationsFormFields formField left join fetch formField.org org left join fetch candidateData.candidate can where org.id =:orgId and can.id =:candidateId and formField.id IN(:formFieldId)";
 		List<CandidateCustomFieldData> candidateCustomFieldData  = session.createQuery(query).setLong("orgId", orgId).setLong("candidateId", candidateId).setParameterList("formFieldId", formIds).list();
 		Map<Long,String[]> candidateCustomFieldDataMap = new HashMap<Long,String[]>();
 		if(candidateCustomFieldData != null && !candidateCustomFieldData.isEmpty()) {
