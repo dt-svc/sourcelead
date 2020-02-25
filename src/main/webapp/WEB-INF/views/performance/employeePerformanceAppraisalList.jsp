@@ -23,6 +23,24 @@ $(document).ready(function() {
 		</div>
 	</section>
 	
+	<div id="tabs-menu" class="clearfix project-tabs-menu backgroundWhite">
+			<ul class="newTabs">
+				<li id="myGoalsLi" class=""><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" class="cursorPoninter">Goals</a></li>
+				 <sec:authorize access="hasRole('ROLE_ADD_MY_APPRAISAL')"> 
+					<li id="myAppraisalLi"  class=""><a href="${SourceLeadWeb_pmsUrl}/performanceAppraisalList" class="cursorPoninter">My Appraisal</a></li>
+				</sec:authorize>
+				
+				<sec:authorize access="hasRole('ROLE_ADD_EMPLOYEE_APPRAISAL')">
+				<li id="employeeAppraisalLi" class="current"><a href="${SourceLeadWeb_pmsUrl}/employeePerformanceAppraisalList"  class="cursorPoninter">Employee Appraisal</a></li>
+				</sec:authorize>
+				
+				<sec:authorize access="hasRole('ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')">
+				<li id="orgChartLi"  class=""><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" class="cursorPoninter">Org Chart</a></li>
+			    </sec:authorize>
+			</ul>
+	   </div>
+	
+	
 	<div class="project_wrap">
 			 	<div id="appraisalAssignLoading"></div>
 			         <div class="clearfix">
