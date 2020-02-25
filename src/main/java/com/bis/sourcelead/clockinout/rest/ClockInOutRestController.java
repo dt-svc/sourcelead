@@ -1,7 +1,5 @@
 package com.bis.sourcelead.clockinout.rest;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +19,7 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
@@ -32,27 +30,20 @@ import com.bis.sourcelead.clockinout.util.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.TimeSheetSubmissionDayEntryDTO;
-import com.bis.sourcelead.dto.TimesheetEntriesDTO;
-import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.rest.TaskRestController;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.api.client.util.Clock;
 
 @RestController
 @RequestMapping("/app")
@@ -282,6 +273,15 @@ public class ClockInOutRestController {
 	@RequestMapping(value = {"/getExistedBreakTime","/rest/getExistedBreakTime"})
 	public Breaks getExistedBreakTime(@RequestParam(value="clockInOutId", required=false) Long clockInOutId) {
 		return clockInOutConfigService.getExistedBreakTime(clockInOutId);
+		
+	}
+	
+	
+	@RequestMapping(value = {"/getLoginUserClockInOutTimerDetails","/rest/getLoginUserClockInOutTimerDetails"})
+	public ClockInOutLoginTimerDTO getLoginUserClockInOutTime(HttpServletRequest request) {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		return clockInOutConfigService.getLoginUserClockInOutTimerDetails(user,loginOrgLocation);
 		
 	}
 	
