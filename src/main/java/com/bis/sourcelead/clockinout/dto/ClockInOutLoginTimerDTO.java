@@ -8,47 +8,69 @@ public class ClockInOutLoginTimerDTO implements Serializable{
 	
 	private String isClockIn;
 	
-	private Long clockInOutId;
+	private String clockInOutId;
 	
-	private Long projectId;
+	private String projectId;
 	
-	private Long projectTaskId;
+	private String projectTaskId;
 	
-	private Long generalTaskId;
+	private String generalTaskId;
 	
-	private Long jobId;
+	private String jobId;
 	
 	private String isInBreak;
 	
 	private String time;
 	
-	private Long breakId;
-	
+	private String breakId;
 	
 	
 
-	public Long getProjectId() {
+	public String getIsClockIn() {
+		return isClockIn;
+	}
+
+	public void setIsClockIn(String isClockIn) {
+		this.isClockIn = isClockIn;
+	}
+
+	public String getClockInOutId() {
+		return clockInOutId;
+	}
+
+	public void setClockInOutId(String clockInOutId) {
+		this.clockInOutId = clockInOutId;
+	}
+
+	public String getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(Long projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
-	
-	public Long getProjectTaskId() {
+	public String getProjectTaskId() {
 		return projectTaskId;
 	}
 
-	public void setProjectTaskId(Long projectTaskId) {
+	public void setProjectTaskId(String projectTaskId) {
 		this.projectTaskId = projectTaskId;
 	}
 
-	public Long getJobId() {
+	public String getGeneralTaskId() {
+		return generalTaskId;
+	}
+
+	public void setGeneralTaskId(String generalTaskId) {
+		this.generalTaskId = generalTaskId;
+	}
+
+	public String getJobId() {
 		return jobId;
 	}
 
-	public void setJobId(Long jobId) {
+	public void setJobId(String jobId) {
 		this.jobId = jobId;
 	}
 
@@ -68,37 +90,18 @@ public class ClockInOutLoginTimerDTO implements Serializable{
 		this.time = time;
 	}
 
-	public Long getGeneralTaskId() {
-		return generalTaskId;
-	}
-
-	public void setGeneralTaskId(Long generalTaskId) {
-		this.generalTaskId = generalTaskId;
-	}
-
-	public Long getBreakId() {
+	public String getBreakId() {
 		return breakId;
 	}
 
-	public void setBreakId(Long breakId) {
+	public void setBreakId(String breakId) {
 		this.breakId = breakId;
 	}
+	
+	
+	
 
-	public String getIsClockIn() {
-		return isClockIn;
-	}
-
-	public void setIsClockIn(String isClockIn) {
-		this.isClockIn = isClockIn;
-	}
-
-	public Long getClockInOutId() {
-		return clockInOutId;
-	}
-
-	public void setClockInOutId(Long clockInOutId) {
-		this.clockInOutId = clockInOutId;
-	}
+	
 	
 
 }

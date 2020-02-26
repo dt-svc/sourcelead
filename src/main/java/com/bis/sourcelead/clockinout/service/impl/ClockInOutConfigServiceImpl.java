@@ -1432,17 +1432,29 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			try {
 				
 				timerDTO.setIsClockIn(Constants.YES);
-				timerDTO.setClockInOutId(clk.getId());
-				timerDTO.setJobId(clk.getJobsTaskId());
-				timerDTO.setGeneralTaskId(clk.getGeneralTaskId());
-				timerDTO.setProjectId(clk.getProjectId());
-				timerDTO.setProjectTaskId(clk.getProjectsTaskId());
+				timerDTO.setClockInOutId(String.valueOf(clk.getId()));
+				
+				if(clk.getJobsTaskId() != null) {
+					timerDTO.setJobId(String.valueOf(clk.getJobsTaskId()));
+				}
+				
+				if(clk.getGeneralTaskId() != null) {
+					timerDTO.setGeneralTaskId(String.valueOf(clk.getGeneralTaskId()));
+				}
+				
+				if(clk.getProjectId() != null) {
+					timerDTO.setProjectId(String.valueOf(clk.getProjectId()));
+				}
+				
+				if(clk.getProjectsTaskId() != null) {
+					timerDTO.setProjectTaskId(String.valueOf(clk.getProjectsTaskId()));
+				}
 				
 				String loginTime = getWorkingTimeByClockId(loginOrgLocation, user);
 				timerDTO.setTime(loginTime);
 				Breaks timerBreak = getExistedBreakTime(clk.getId());
 				if(timerBreak != null) {
-					timerDTO.setBreakId(timerBreak.getId());
+					timerDTO.setBreakId(String.valueOf(timerBreak.getId()));
 					timerDTO.setIsInBreak(Constants.YES);
 				}else {
 					timerDTO.setIsInBreak(Constants.NO);

@@ -476,8 +476,20 @@ function getUploadProgressBar(){
 			           result = result + '</div>';
 			           result = result + '</div>';
 		    			
-		    			$("#uploadXlsHistoryDiv").empty();
-		    			$("#uploadXlsHistoryDiv").append(result);
+		    			
+		    			
+		    			if(uploadType == 'ProfileTracker'){
+		    				$("#uploadProfileXlsHistoryDiv").empty();
+			    			$("#uploadProfileXlsHistoryDiv").append(result);
+		    			}
+		    			else if(uploadType == 'InterviewTracker'){
+		    				$("#uploadInterviewXlsHistoryDiv").empty();
+			    			$("#uploadInterviewXlsHistoryDiv").append(result);
+		    				
+		    			}else{
+		    				$("#uploadXlsHistoryDiv").empty();
+			    			$("#uploadXlsHistoryDiv").append(result);
+		    			}
 		    			
 		    			if(progressRow != ''){
 		    				  $(".browseProgress").show();
