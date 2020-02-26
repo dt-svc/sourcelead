@@ -38,7 +38,7 @@ $(document).ready(function() {
 	<!-- Asset Management Summary tabs starts here  -->
 	<div class="clearfix Project_wrap">
 	<div class="project_side_wrap_inn_tabs">
-		<ul class="project-tabs-menu">
+		<ul class="project-tabs-menu clearfix backgroundWhite">
 			<li class="current"><a href="#tab-1" onclick="assetDetails('${asset.assetUUID}');">Details</a></li>
 			<sec:authorize access="hasAnyRole(\'ROLE_VIEW_ASSET_ADDITIONAL_DETAILS\')">
 			  <li><a href="#tab-3" onclick="assetHistory('${asset.assetUUID}');">Assign History</a></li>
