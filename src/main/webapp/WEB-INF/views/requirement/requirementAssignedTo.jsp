@@ -20,10 +20,12 @@
 									title="--Select Assign Team--">
 								</select>
 							</div>
-							<div class="col-md-4 validLabel">
+							<div class="col-md-6 validLabel">
+							<div class="pull-right">
 								<input type="text" class="repSearchBar" placeholder="Search Employee" id="applicantSelection"> 
-								<span class="repSearchIcon" onclick=""></span>
+								<span class="repSearchIcon mr" onclick=""></span>
 								<!-- <input type="text" class="form-control" id="applicantSelection"> -->
+							</div>
 							</div>
 							<!-- <div class="remove_search fa-pull-right">
 								<input placeholder="Search" type="text">

@@ -1510,7 +1510,7 @@ function notifyToVendor(submissionId,offerId,offerHistoryId){
 		
 		result = result+'	                  <div class="clearfix mb10 row mt" id="docFileuploadFileGroup">';
 		result = result+'	                    <div class="col-md-12">';
-		result = result+'							<div class="input-group positionRelative" id="uploadFileGroup">';
+		result = result+'							<div class="input-group positionRelative attachfile-error" id="uploadFileGroup">';
 		result = result+'	                          <label class="input-group-btn" onchange = "submissionDocFile();"> <span class="btn btn-primary"><i class="fa fa-folder-open-o mr10"></i>Browse File <span class="text-danger">&nbsp;*</span>';
 		result = result+'	                            <input type="file" name="docFile" id="docFile" style="display: none;" class="upload">';
 		result = result+'	                            </span> </label>';

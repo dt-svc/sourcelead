@@ -518,11 +518,11 @@ function openAssetFilterPop(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr"> 
-							<input type="button" value="Apply" id="asset_apply"  style="display: inline-block;" onclick="closeAssetFilterPop();getDynamicAssetList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Apply" id="assignAsset_apply"  style="display: none;" onclick="closeAssetFilterPop();getDynamicAssignedList();" class="btn btn-sm btn-success" />
+							<input type="button" value="Apply" id="asset_apply"  style="display: inline-block;" onclick="closeAssetFilterPop();getDynamicAssetList();" class="btn btn-primary tblminwidth-90" />
+							<input type="button" value="Apply" id="assignAsset_apply"  style="display: none;" onclick="closeAssetFilterPop();getDynamicAssignedList();" class="btn btn-primary tblminwidth-90" />
 							
-							<input type="button" value="Reset" id="asset_clear_search" onclick="resetAssetFilter();" style="display: inline-block;"  class="btn btn-sm btn-primary" />
-							<input type="button" value="Reset" id="assignAsset_clear_search" onclick="resetAssignAssetFilter();" style="display: none;"  class="btn btn-sm btn-primary" />
+							<input type="button" value="Reset" id="asset_clear_search" onclick="resetAssetFilter();" style="display: inline-block;"  class="btn btn-default tblminwidth-90" />
+							<input type="button" value="Reset" id="assignAsset_clear_search" onclick="resetAssignAssetFilter();" style="display: none;"  class="btn btn-default tblminwidth-90" />
 							
 						</div>
 					</div>
@@ -1770,9 +1770,9 @@ function deleteAsset(assetUUID){
 	var result = "";
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
-	result = result +"		<p>Are you sure delete Asset?</p>";
+	result = result +"		<p class='mt10'>Are you sure delete Asset?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' class='btnBg_blue' onclick='removeAssetManagement(\""+assetUUID+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);

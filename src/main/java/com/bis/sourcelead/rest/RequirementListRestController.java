@@ -842,8 +842,15 @@ public class RequirementListRestController {
 												}
 												
 											}
+										 
 										  // previousStageMap used for on hold status for showing previous status and adding all the stages to previousStageMap.
+										 RequirementOffers offer = requirementOffersService.getRequirementOfferSubmissionByIdAndStatus(requirementSubmission.getId(), "OFFERACCEPTED");
+										 if(offer == null && !requirementSubmission.getSubmissionStatus().equalsIgnoreCase("JOINED")) {
+											 stagesMap.remove("JOINED");
+											 stagesMap.remove("BACKOUT");
+										 }
 											previousStageMap.putAll(stagesMap);
+											
 									 	requirementSubmission.setWorkflowStagesMap(previousStageMap);
 									   }
 									}
@@ -1085,6 +1092,11 @@ public class RequirementListRestController {
 												
 											}
 											// previousStageMap used for on hold status for showing previous status and adding all the stages to previousStageMap.
+											 RequirementOffers offer = requirementOffersService.getRequirementOfferSubmissionByIdAndStatus(requirementSubmission.getId(), "OFFERACCEPTED");
+											 if(offer == null && !requirementSubmission.getSubmissionStatus().equalsIgnoreCase("JOINED")) {
+												 stagesMap.remove("JOINED");
+												 stagesMap.remove("BACKOUT");
+											 }
 											previousStageMap.putAll(stagesMap);
 											requirementSubmission.setWorkflowStagesMap(previousStageMap);
 										}
