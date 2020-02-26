@@ -37,6 +37,11 @@ width: auto !important; padding-right: 15px;
 .choices input[type="checkbox"], .choices input[type="radio"]{
  margin-right: 10px; position: relative; top: 1px;
 }
+.viewTemplate.questionary_template .sjfb-field:nth-child(2n+2) { margin-left: 0; }
+.viewTemplate.questionary_template .sjfb-field { display: inline-block !important; }
+.viewTemplate.questionary_template p.jquery_form_error_message {
+top: 100% !important; left: 0 !important; padding-left: 0px !important; margin-bottom: 15px;
+}
 </style>
 
 <script type="text/javascript">
@@ -95,11 +100,9 @@ $(document).ready(function(){
       View Questionnaire</div>
     </section>
 
-<div class="clearfix"> 
    <div id="popUp"></div> 
    <div id="viewQuestionnaireTemplateFormDiv" class="container container-wraper container-publicFBT positionRelative paddingTop55" style="display: none;"> </div> 
    
-</div>
 </section>
 </div>
 

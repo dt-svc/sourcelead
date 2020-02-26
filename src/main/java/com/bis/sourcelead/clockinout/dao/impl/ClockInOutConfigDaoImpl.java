@@ -1,5 +1,6 @@
 package com.bis.sourcelead.clockinout.dao.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.clockinout.dao.ClockInOutConfigDao;
 import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
@@ -32,6 +35,7 @@ import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
 import com.bis.sourcelead.clockinout.util.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.UserDao;
+import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -227,99 +231,18 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 
 	@Override
 	@Transactional
-	public ResponseList<Projects> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, String clients, String values, Long orgLocationId, String userRole, Long candidateId)
+	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId)
 	{
-		ResponseList<Projects> response = new ResponseList<>();
+		ResponseList<ClockInOutTimerDTO> response = new ResponseList<>();
+		List<ClockInOutTimerDTO> projectsTimerList = new CopyOnWriteArrayList<ClockInOutTimerDTO>();
 		List<Projects> projectsList = null;
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			String approverQuery = "";
 			String projectModeQuery = "";
 			String query = null;
-			List<Long> countlist = null;
-			Integer filterCount = 0;
 			Query queryObj = null;
-	
-			
-			StringBuilder query1 = new StringBuilder("");
-			if(projectsDTO.getSearchValue() !=null && !"".equalsIgnoreCase(projectsDTO.getSearchValue())) {
-				
-				
-				
-				Pattern pattern = Pattern.compile("^(\\d{0,4}(\\-|\\/{1})\\d{0,4}(\\-|\\/{1})\\d{0,4})$");
-			   Matcher matcher = pattern.matcher(projectsDTO.getSearchValue());
-			   java.sql.Date sqlDate = null;
-			    if(matcher.matches() == true) {
-							if(projectsDTO.getSearchValue().contains("/")||(projectsDTO.getSearchValue().contains("-"))) {
-								String replacedValue = projectsDTO.getSearchValue().replaceAll("/", "-");
-								    OrgLocations orgLoc = orgLocationService.getOrgLocations(orgLocationId);
-									SimpleDateFormat format = new SimpleDateFormat(orgLoc.getDateFormat());
-							        java.util.Date utilDate = format.parse(replacedValue);
-							        sqlDate = new java.sql.Date(utilDate.getTime());
-							}
-			    }
-				
-				
-			 query1.append(" ps.projectSequeneNumber like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
-					.append("OR ps.projectName like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
-					.append("OR ps.invoiceFrequency like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ")
-					.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.firstName like '" + projectsDTO.getSearchValue().replace("'", "") + "%' OR pah.approverUserId.lastName like '%" + projectsDTO.getSearchValue().replace("'", "") + "' ) ")
-					.append("OR ps.id IN (select pah.projectId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')))" )
-					.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.firstName like '" + projectsDTO.getSearchValue().replace("'", "") + "%' OR pex.approverUserId.lastName like '%" + projectsDTO.getSearchValue().replace("'", "") + "' ) ")
-					.append("OR ps.id IN (select pex.projectId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.id IN (select user.id from User user where (concat(user.firstName,user.lastName) like '%" + projectsDTO.getSearchValue().replace("'", "").replaceAll("[\\s]+", "").trim() + "%')))" )
-					.append("OR ps.projectMode like '%" + projectsDTO.getSearchValue().replace("'", "") + "%' ");
-			 
-				 if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in-progress") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("in progress") 
-						 || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("inprogress")) {
-					 query1.append("OR ps.projectStatus like '%INPROGRESS%' ");
-				 }else if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on-hold") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("on hold") 
-						 || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("onhold")) {
-					 query1.append("OR ps.projectStatus like '%ONHOLD%' ");
-				 }else if(projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("not started") || projectsDTO.getSearchValue().toLowerCase().equalsIgnoreCase("notstarted")) {
-					 query1.append("OR ps.projectStatus like '%NOTSTARTED%' ");
-				 }else {
-					 query1.append("OR ps.projectStatus like '%" + Project_Status.getNameByValue(projectsDTO.getSearchValue()) + "%' ");
-				 }
-				 
-			     if(sqlDate != null) {
-			    	query1.append("OR ps.startDate like '%" + sqlDate + "%' OR ps.endDate like '%" + sqlDate + "%' ");
-				 }
-				
-						
-			}
-			
-			
-			List<Long> clientIdsList = new ArrayList<>();
-			if(clients != null && !clients.isEmpty()){
-				String[] client = clients.split(",");
-				for(int i=0; i<client.length; i++){
-					clientIdsList.add(Long.valueOf(client[i]));
-				}
-			}else {
-				clientIdsList.add(0L);
-			}
-			
-			List<Long> managerIdsList = new ArrayList<>();
-			if(projectsDTO.getProjectManagers() != null && !projectsDTO.getProjectManagers().isEmpty()){
-				String[] manager = projectsDTO.getProjectManagers().split(",");
-				for(int i=0; i<manager.length; i++){
-					managerIdsList.add(Long.valueOf(manager[i]));
-				}
-			}else {
-				managerIdsList.add(0L);
-			}
-			
-			
-			List<String> tagsList = new ArrayList<>();
-			if(projectsDTO.getTags() != null && !projectsDTO.getTags().isEmpty()) {
-				String[] tags = projectsDTO.getTags().split(",");
-				for(int i=0; i<tags.length; i++){
-					tagsList.add(tags[i]);
-				}
-			}else {
-				tagsList.add("");
-			}
-			
+		
 			if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
 				approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+" and pah.status ='1') OR "
 						+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+" and pex.status = '1') OR pc.createdBy.id = "+userId+" "
@@ -327,71 +250,10 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 								+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.parentCandidateId.id = "+candidateId+" and pm.status = '1')) ";
 			}
 			
-			/*if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-				projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId  OR ps.projectMode = 'Finished')";
-			}else {
-				projectModeQuery = " and (ps.orgLocationsId = :orgLocationsId OR ps.sharedLocationId = :orgLocationsId  OR ps.projectMode = 'Finished')";
-			}*/
 			
-			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId  OR ps.projectMode = 'Finished')";
-			
-			String subQuery2 = " and ((:varZero  IN (:clientIdsList)) OR (:varZero NOT IN (:clientIdsList) and pc.orgRelationId.id IN (:clientIdsList)))";
-			
-			String subQuery3 ="";
-			if(projectsDTO.getProjectType() != null && !projectsDTO.getProjectType().isEmpty()){
-				String[] projectsType = projectsDTO.getProjectType().split(",");
-				if (Arrays.asList(projectsType).contains("Internal")) {
-					/*if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-						subQuery3 = subQuery3 + "ps.orgLocationsId.org.id = :orgId or ";
-					}else {
-						subQuery3 = subQuery3 + "ps.orgLocationsId = :orgLocationsId or ";
-					}*/
-					
-					subQuery3 = subQuery3 + "ps.orgLocationsId.org.id = :orgId or ";
-					
-				}
-				if (Arrays.asList(projectsType).contains("Client")) {
-					subQuery3 = subQuery3 + "ps.orgLocationsId <> '"+orgLocationId+"' or ";
-				}
-				subQuery3 = "and (" + subQuery3.substring(0, subQuery3.length() - 4) + ")";
-			}
-			
-			String subQuery4 = " and ((:varZero  IN (:managerIdsList)) OR (:varZero NOT IN (:managerIdsList) and "
-					+ " (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId.id IN (:managerIdsList)) OR "
-					+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId.id IN (:managerIdsList))))) ";
-			
-			String subQuery6 = " and ((:varString  IN (:tagsList)) OR (:varString NOT IN (:tagsList) and pc.projectId.id IN (select st.entityId from SourceleadTags st where st.tagName IN (:tagsList) and st.status ='1' ))) ";
-
-			
-			String subQuery5 ="";
-			if(projectsDTO.getInvoiceFrequency() != null && !projectsDTO.getInvoiceFrequency().isEmpty()){
-				String[] frequencyFilter = projectsDTO.getInvoiceFrequency().split(",");
-				if (Arrays.asList(frequencyFilter).contains("Weekly")) {
-					subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Weekly' or ";
-				}
-				
-				if (Arrays.asList(frequencyFilter).contains("Bi-Weekly")) {
-					subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Bi-Weekly' or ";
-				}
-				
-				if (Arrays.asList(frequencyFilter).contains("Semi-Monthly")) {
-					subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Semi-Monthly' or ";
-				}
-				
-				if (Arrays.asList(frequencyFilter).contains("Monthly")) {
-					subQuery5 = subQuery5 + "ps.invoiceFrequency = 'Monthly' or ";
-				}
-				
-				subQuery5 = "and (" + subQuery5.substring(0, subQuery5.length() - 4) + ")";
-			}
+			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId  OR ps.projectMode = 'Finished') and (ps.projectStatus = 'INPROGRESS' OR ps.projectStatus = 'ONHOLD') ";
 			
 			
-			
-			//usertList shorting order
-					String sortingQry = "";
-					if(StringUtils.isNotBlank(projectsDTO.getSortColumn())) {
-						sortingQry = " order by ps."+ projectsDTO.getSortColumn() +" "+projectsDTO.getSortOrder();
-					}
 					String projectAccessQuery = "";
 					
 					if(userRole.equalsIgnoreCase("ROLE_ADMIN") && (StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES))){
@@ -413,78 +275,24 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 					}
 					
 					
-					
-					
+					query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId and pc.status = 1 "+approverQuery+" ) "+projectModeQuery+"  ";
+			        query = query+projectAccessQuery;
 			
-					/*if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-						query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId "+subQuery2+" "+approverQuery+" "+subQuery4+" "+subQuery6+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
-					}else {
-						query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId = :orgLocationsId "+subQuery2+" "+approverQuery+" "+subQuery4+" "+subQuery6+") "+projectModeQuery+" "+subQuery1+" "+subQuery3+" "+subQuery5+" ";
-					}*/
-					
-					query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId and pc.status = 1 "+subQuery2+" "+approverQuery+" "+subQuery4+" "+subQuery6+") "+projectModeQuery+" "+subQuery3+" "+subQuery5+" ";
-			         query = query+projectAccessQuery;
+			         queryObj = session.createQuery(query);
 			
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				 queryObj = session.createQuery(query + "and "+"("+query1.toString()+")"+sortingQry);
-			}else{
-				 queryObj = session.createQuery(query + query1.toString()+sortingQry);
-			}
-			
-			queryObj.setFirstResult(projectsDTO.getStart());
-			queryObj.setMaxResults(projectsDTO.getLength());
-			/*if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-				queryObj.setLong("orgId", projectsDTO.getOrgId()).setString("varString", "").setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-			}else {
-				queryObj.setLong("orgLocationsId", orgLocationsId).setString("varString", "").setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-			}*/
-			
-			queryObj.setLong("orgId", projectsDTO.getOrgId()).setString("varString", "").setLong("varZero", 0).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
+			queryObj.setLong("orgId", projectsDTO.getOrgId()).list();
 			
 			projectsList = queryObj.list();
-			
-			
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				/*if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-					countlist = session.createQuery("select count(*) " + query +projectAccessQuery + "and "+"("+query1.toString()+")").setString("varString", "").setLong("varZero", 0).setLong("orgId", projectsDTO.getOrgId()).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-				}else {
-					countlist = session.createQuery("select count(*) " + query +projectAccessQuery + "and "+"("+query1.toString()+")").setString("varString", "").setLong("varZero", 0).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-				}*/
-				
-				countlist = session.createQuery("select count(*) " + query +projectAccessQuery + "and "+"("+query1.toString()+")").setString("varString", "").setLong("varZero", 0).setLong("orgId", projectsDTO.getOrgId()).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-				
-				
-				filterCount = countlist.iterator().next().intValue();
-			}else {
-				/*if(StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {
-					countlist = session.createQuery("select count(*) " + query +projectAccessQuery).setString("varString", "").setLong("varZero", 0).setLong("orgId", projectsDTO.getOrgId()).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-				}else {
-					countlist = session.createQuery("select count(*) " + query +projectAccessQuery).setString("varString", "").setLong("varZero", 0).setLong("orgLocationsId", orgLocationsId).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-				}*/
-				
-				countlist = session.createQuery("select count(*) " + query +projectAccessQuery).setString("varString", "").setLong("varZero", 0).setLong("orgId", projectsDTO.getOrgId()).setParameterList("clientIdsList", clientIdsList).setParameterList("managerIdsList", managerIdsList).setParameterList("tagsList", tagsList).list();
-				
-				filterCount = countlist.iterator().next().intValue();
-			}
-			
-			
-			int totalCount = 0;
-
-			
-			if (projectsDTO != null) {
-				if(countlist != null && !countlist.isEmpty()) {
-					totalCount = countlist.iterator().next().intValue();
+			if(projectsList != null && !projectsList.isEmpty()) {
+				for(Projects projects : projectsList) {
+					ClockInOutTimerDTO timerDTO = new ClockInOutTimerDTO();
+					timerDTO.setId(BigInteger.valueOf(projects.getId()));
+					timerDTO.setProjectName(projects.getProjectName());
+					projectsTimerList.add(timerDTO);
 				}
-			} 
-			response.setRecordsTotal(totalCount);
-			
-			if(query1.toString() != null && !query1.toString().isEmpty()){
-				response.setRecordsFiltered(filterCount);
-			}else {
-				response.setRecordsFiltered(totalCount);
 			}
 			
-			response.setData(projectsList);
+			response.setData(projectsTimerList);
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -828,9 +636,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			.append("LEFT JOIN USER_ROLE uRole ON clk.USER_ID = uRole.USER_ID ")
 			.append("LEFT JOIN EMPLOYEE emp ON clk.USER_ID = emp.USER_ID ")
 			.append("LEFT JOIN TEAM_MEMBERS tm ON clk.USER_ID = tm.MEMBER_USER_ID ")
-			.append("where clk.ORG_LOCATION_ID = :clkOrgLocationID ")
-			.append("AND uRole.ORG_LOCATIONS_ID = :uRoleOrgLocationID ")
-			.append("AND emp.ORG_LOCATIONS_ID = :empOrgLocationID")
+			.append("where clk.ORG_LOCATION_ID = :orgLocationID ")
+			.append("AND uRole.ORG_LOCATIONS_ID = :orgLocationID ")
+			.append("AND emp.ORG_LOCATIONS_ID = :orgLocationID ")
 			.append("AND clk.CLOCK_OUT_DATE is NOT NULL");
 			
 			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments())) {
@@ -909,9 +717,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 //			}
  				
 			Query queryObj = session.createSQLQuery(sb.toString()+subQuery);
-			queryObj.setLong("clkOrgLocationID", orgLocation.getId());
-			queryObj.setLong("uRoleOrgLocationID", orgLocation.getId());
-			queryObj.setLong("empOrgLocationID", orgLocation.getId());
+			queryObj.setLong("orgLocationID", orgLocation.getId());
 			
 			if(clockInOutFiltersDTO.getOrgDepartments() != null && !clockInOutFiltersDTO.getOrgDepartments().isEmpty() && !"null".equalsIgnoreCase(clockInOutFiltersDTO.getOrgDepartments()))
 				queryObj.setParameterList("deptList", deptList);
@@ -964,13 +770,70 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			StringBuilder sb = new StringBuilder();
 			sb.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
 			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("proj.PROJECT_NAME as projectName,")
 			.append("task.TASK_NAME as projectTaskName,")
+			.append("NULL as jobTitle,")
+			.append("NULL as taskName,")
 			.append("clk.TOTAL_TIME as totalTime,")
 			.append("clk.COMMENTS as comments,")
 			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
 			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
-			.append("FROM CLOCK_INOUT clk INNER JOIN PROJECT_TASKS task ")
-			.append("ON clk.PROJECTS_TASK_ID = task.ID and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL");
+			.append("FROM CLOCK_INOUT clk INNER JOIN PROJECT_TASKS task ON clk.PROJECTS_TASK_ID = task.ID ")
+			.append("INNER JOIN PROJECTS proj ON clk.PROJECT_ID = proj.ID ")
+			.append(" and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ")
+			
+			.append(" UNION ALL ")
+			
+			.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("NULL as projectName,")
+			.append("NULL as projectTaskName,")
+			.append("req.JOB_TITLE as jobTitle,")
+			.append("NULL as taskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk ")
+			.append("INNER JOIN REQUIREMENT req ON  clk.JOBS_TASK_ID = req.ID AND clk.JOBS_TASK_ID IS NOT NULL ")
+			.append(" and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ")
+			
+			
+			.append(" UNION ALL ")
+			
+			.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("NULL as projectName,")
+			.append("NULL as projectTaskName,")
+			.append("NULL as jobTitle,")
+			.append("gt.SUBJECT as taskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk ")
+			.append("INNER JOIN TASKS gt ON clk.GENERAL_TASK_ID = gt.ID AND clk.GENERAL_TASK_ID IS NOT NULL ")
+			.append(" and clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ")
+			
+			.append(" UNION ALL ")
+			
+			.append("SELECT clk.CLOCK_IN_TIME as clockInTime,")
+			.append("clk.CLOCK_IN_DATE as clockInDate,")
+			.append("NULL as projectName,")
+			.append("NULL as projectTaskName,")
+			.append("NULL as jobTitle,")
+			.append("NULL as taskName,")
+			.append("clk.TOTAL_TIME as totalTime,")
+			.append("clk.COMMENTS as comments,")
+			.append("clk.CLOCK_OUT_TIME as clockOutTime, ")
+			.append("clk.CLOCK_OUT_DATE as clockOutDate ")
+			.append("FROM CLOCK_INOUT clk ")
+			.append("WHERE ")
+			.append("clk.PROJECT_ID IS NULL AND ")
+			.append("clk.PROJECTS_TASK_ID IS NULL AND ")
+			.append("clk.JOBS_TASK_ID IS NULL AND ")
+			.append("clk.GENERAL_TASK_ID IS NULL AND ")
+			.append("clk.USER_ID =:userId and clk.ORG_LOCATION_ID =:orgLocationId and clk.CLOCK_IN_DATE =:sqlDate and clk.CLOCK_OUT_DATE is NOT NULL ");
 			
 			clockList = session.createSQLQuery(sb.toString())
 			.setLong("userId", userId)
@@ -981,6 +844,40 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			e.printStackTrace();
 		}
 		return clockList;
+	}
+
+	@Override
+	@Transactional
+	public List<ClockInOutTimerDTO> getProjectsTasksListForClockInTimerByUserId(Long userId, Long projectId, Long orgLocationId) {
+		
+		Session session = this.sessionFactory.getCurrentSession();
+		String projectTaskQuery = " SELECT ptasks.TASK_NAME as taskName, " + 
+				   " ptasks.ID as id " + 
+			       " FROM PROJECT_ASSIGN_TASK assignTask,PROJECT_TASKS ptasks,PROJECTS proj,PROJECT_MEMBERS projMem,CANDIDATE can, PROJECT_CLIENTS pc, USER user " + 
+			       " where assignTask.PROJECT_TASK_ID = ptasks.ID AND ptasks.PROJECT_ID = proj.ID  " + 
+			       " AND projMem.ID = assignTask.PROJECT_MEMBER_ID " + 
+			       " AND can.ID = projMem.CANDIDATE_ID " + 
+			       " AND can.CONSULTANT_USER_ID = user.ID " + 
+			       " AND ptasks.PROJECT_ID = :projectId "+
+			       " AND can.ORG_LOCATION_ID = pc.ORG_LOCATIONS_ID "+
+			       " AND pc.ORG_LOCATIONS_ID = :orgLocationId AND user.ID = :userId group by proj.ID" +
+		
+				    " UNION ALL "+
+				    
+ 				  " SELECT ptasks.TASK_NAME as taskName, " + 
+				  " ptasks.ID as id " + 
+				  " FROM PROJECT_TASKS ptasks,LOOKUP_DATA lData " + 
+				  " where lData.ID = ptasks.TASK_TYPE   " + 
+				  " AND ptasks.PROJECT_ID = :projectId " + 
+				  " AND lData.NAME = 'General' ";
+			       
+			        Query projectQueryObj = session.createSQLQuery(projectTaskQuery);
+			        projectQueryObj.setLong("projectId", projectId);
+			        projectQueryObj.setLong("orgLocationId", orgLocationId);
+			        projectQueryObj.setLong("userId", userId);
+			        projectQueryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutTimerDTO.class));
+			        List<ClockInOutTimerDTO> projectsList = projectQueryObj.list();
+					return projectsList;
 	}
 
 }

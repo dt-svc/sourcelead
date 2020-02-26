@@ -8772,7 +8772,7 @@ content: ""; height: 0; margin-left: 32px; position: absolute; top:-8px; width: 
 	
 }
 .multidropdown-caret .multiselect, .multidropdown-caret .btn-group, .btn-group-vertical  {
-	width: 95%;text-align: left;
+	width: 95%; text-align: left;
 }
 .multidropdown-caret .caret {
 	float: right; top: -10px; position: relative;
@@ -10602,12 +10602,25 @@ input-control:focus + .floating-label { color: #909090; -webkit-transform: trans
 .newcontent_widget_flex_inner_width100 { min-height: 25vh; width: 100%; display: flex; flex-flow: column;
 padding: 30px; background: #fff; box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.3); border-radius: 3px; }
 
-div.select_swaplist { width: 20%; height: 100px%; overflow: auto;
+div.select_swaplist { width: 35%; height: 100%; overflow: auto;
 border: 1px solid #ededed; border-radius: 5px;}
-.select_swaplist select { width: 100%; border: 1px solid #ededed; padding: 15px; min-height: 100px; max-height: 100%; }
-
+.select_swaplist select { width: 100%; border: 1px solid #ededed; padding: 15px; min-height: 250px; max-height: 100%; position: relative;}
 .select_swaplist select:hover{overflow: auto; }
 .select_swaplist option { padding: 4px 0;}
+.swaplist-styles { display: flex; flex-direction: row;}
+.multidropdown-styles_new .btn-group, .multidropdown-styles_new .multiselect, .multidropdown-styles_new .multiselect-container
+{ width: 100%; text-align: left;}
+.multidropdown-styles_new .multiselect { height: 45px;}
+.multidropdown-styles_new .btn .caret { position: absolute; right: 12px; top: 20px;}
+.select_swaplist_icon option { position: relative; background-color: transparent;}
+.select_swaplist_icon option:hover::after { color: #a21e23; content: "\f00d"; font-family: fontawesome; padding-right: 5px; position: absolute; right:0px; top: 4px; cursor: pointer;}
+.btnSwap ul { position: absolute; top: 25%; left: 8%; }
+.btnSwap ul li { padding: 15px; }
+.padd10px { padding: 10px !important;}
+.btnBg_blue{ background-color: #337ab7 !important;}
+.btnBg_white{ background-color: #fff !important; color: #333 !important; border-top:1px solid #dcdcdc !important;}
+.remove_user_pop.remove_user_pop_a { border-radius: 6px; }
+.remove_user_pop b { margin: 0 -3px; }
 
 @media (max-width: 320px) {
 .uasrch-selectpicker {
