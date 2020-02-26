@@ -5,6 +5,10 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
  <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
  
+ <style type="text/css">
+ 
+ </style>
+ 
 <script>
 function jobFairListCheck(){
 	viewTab = "jobFair";
@@ -578,16 +582,16 @@ function jpagination(url,atsUrl){
 		            	    result = result +'<td>';
 		   		        	result = result +'<div class="positionRelative">';
 			   		         for(var k=0; k<1; k++){
-			   		        	result = result + '<p class="tbldata-dotdot-me pull-left">'+opt.locationsList[k]+'</p>';
+			   		        	result = result + '<p class="tbldata-dotdot-me mt">'+opt.locationsList[k]+'</p>';
 			   		         }
 		   		    	
-			   		        result = result +'<div class="show_Empdetails showjoblist">';
-		   		        	result = result +'<i class="fa fa-ellipsis-v"></i>';
+			   		        result = result +'<div class="showjoblist_location mt10 mb10">';
+		   		        	result = result +'<i class="fa fa-angle-down"></i>';
 	
-		   		        	result = result +'<div class="emailvalues emailvaluesNew">';
+		   		        	result = result +'<div class="clearfix showjoblist_location_inner">';
 		   		        	
  							for(var k=0; k<opt.locationsList.length; k++){
- 								result = result +'<p><i class="fa fa-map-marker"></i>'+opt.locationsList[k]+'</p>';
+ 								result = result +'<p class="mb0"><i class="fa fa-map-marker mr10"></i>'+opt.locationsList[k]+'</p>';
  			   		        	
 		   		    	 	}
 		   		        	result = result +'</div>';
