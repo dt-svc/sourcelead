@@ -17,6 +17,7 @@
 <script src="/resources/js/serial.js"></script> 
 
 <script> 
+var vmsUrl = '${SourceLeadWeb_vmsUrl}';
 $(document).ready(function(){
 	var invoiceTYpe = "Receivable";
 	getBillingReports(invoiceTYpe);
@@ -208,9 +209,10 @@ function getCustomBillingReports(invoiceType){
 		document.getElementById("billingErrorReportEndDate").style.display = "none";
 		$.ajax({
 	         type : "GET",
-	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
+	         url: vmsUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
 	         success :function(json) {
 // 	        	  var json = JSON.parse(data);
+				var json = json.object;
 		        	 getBillingReportsChart(invoiceType,json);
 	        	/*  var json = JSON.parse(data);
 	        	 var result = "";
@@ -272,7 +274,7 @@ function getCustomPayableBillingReports(invoiceType){
 	}else{
 		$.ajax({
 	         type : "GET",
-	         url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
+	         url: vmsUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate,     
 	         success :function(json) {
 // 	        	 var json = JSON.parse(data);
 	        	 var result = "";
@@ -423,7 +425,6 @@ function getBillingReportsChart(invoiceType,json){
 	 
 	 //startatatat============
 	 var chartData = [];
-	 
   var firstDate = new Date();
  if(typeof json.billingGraphBean != 'undefined'){
   for (var i = 0; i < json.billingGraphBean.length; i++) { 
@@ -499,9 +500,10 @@ function getBillingReports(invoiceType){
 		if(billingReportType!="CUSTOM"){
 			$.ajax({
 		    	type: "GET",
-		    	 url: sourceleadUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
+		    	 url: vmsUrl+"/getBillingReportByFrequency?"+tokenParamName+"="+tokenValue+"&billingReportType="+billingReportType+"&invoiceType="+invoiceType+"&startDate="+startDate+"&endDate="+endDate, 
 		         success: function(json) {
 // 		        	 var json = JSON.parse(data);
+					var json = json.object;
 		        	 getBillingReportsChart(invoiceType,json);
 		         }
 			});	
@@ -545,6 +547,8 @@ function customPayableReportPagination(){
 </script> 
 <script>
 function custBillingDates(){
+	$("#billingErrorReportStartDate").hide();
+	$("#billingErrorReportEndDate").hide();
 	var billingReportType = $("#billingReportType").val();
 	if(billingReportType=="CUSTOM"){
 		document.getElementById("runButtonBillingDiv").style.display = "none";
