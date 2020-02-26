@@ -394,8 +394,13 @@ function getUploadProgressBar(){
 	}else if(uploadType == 'interviewTracker'){
 		uploadType = 'InterviewTracker';
 	}
-	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
 	
+	if($("#uploadedPercentage").length > 0) {
+	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
+	}else{
+		var uploadedPercentage = 0;
+	}
+	 
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getXlsProcessingHistroyListByEntityType?"+tokenParamName+"="+tokenValue+"&entityType="+uploadType, 
