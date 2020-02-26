@@ -27,6 +27,7 @@ import com.bis.sourcelead.couchbase.UserRoleSessionProfileDTO;
 import com.bis.sourcelead.dto.UserDetailsDTO;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.Countries;
+import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.SourceleadActions;
 import com.bis.sourcelead.entity.UserRole;
@@ -680,6 +681,14 @@ public class UserStatsCacheHelper {
 		
 		UserRoleSessionProfileDTO userRoleDTO = new UserRoleSessionProfileDTO();
 		try {
+			
+			Org loginOrg = null;
+			if(userRole.getOrgLocations().getOrg() != null) {
+				loginOrg = userRole.getOrgLocations().getOrg();
+			}else {
+				loginOrg = orgService.findOrgByID(userRole.getOrgLocations().getOrgId());
+			}
+			
 			 userRoleDTO.setDocumentType(Constants.COUCH_DOCUMENT_TYPE_USER_LOGIN_ACCOUNT);
 			 userRoleDTO.setUserRoleId(String.valueOf(userRole.getId()));
 			 userRoleDTO.setUserId(String.valueOf(userRole.getUser().getId()));
@@ -758,7 +767,7 @@ public class UserStatsCacheHelper {
 					userRoleDTO.setIsSuperUser(Constants.NO);
 				}
 				
-				boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),userRole.getOrgLocations().getOrg().getId());
+				boolean isSuperAdmin = orgService.isLoginUserIsSuperAdmin(userRole.getUser().getId(),loginOrg.getId());
 				if(isSuperAdmin == true){
 					userRoleDTO.setIsSuperAdmin(Constants.YES);
 				}else{
@@ -794,8 +803,8 @@ public class UserStatsCacheHelper {
 		       	    	actionIdsList.add(actions.getId());
 		       	    	actionRolesList.add(actions.getActionRole());
 		       	    }
-		   		if(StringUtils.isNotBlank(userRole.getOrgLocations().getOrg().getOrgType()) && 
-		   				!userRole.getOrgLocations().getOrg().getOrgType().equalsIgnoreCase("Guest")) {
+		   		if(StringUtils.isNotBlank(loginOrg.getOrgType()) && 
+		   				!loginOrg.getOrgType().equalsIgnoreCase("Guest")) {
 		   			tabNamesList = tabsService.getTabsNamesListByActionsIds(actionIdsList);
 		   		}else {
 		   			tabNamesList = new ArrayList<String>();
