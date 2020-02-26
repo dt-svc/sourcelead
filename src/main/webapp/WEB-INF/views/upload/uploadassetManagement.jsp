@@ -61,7 +61,7 @@ var uploadflag= true;
 										value="Import">
 								</div>
 								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
+									<input type="reset" class="btn btn-default" value="Reset"
 										onClick="javascript:window.location.href = '<c:url value='${appPath}/uploadassetManagement'/>'">
 								</div>
 							</div>
