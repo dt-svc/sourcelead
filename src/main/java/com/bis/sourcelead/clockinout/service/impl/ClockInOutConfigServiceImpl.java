@@ -1450,14 +1450,39 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 					timerDTO.setProjectTaskId(String.valueOf(clk.getProjectsTaskId()));
 				}
 				
-				String loginTime = getWorkingTimeByClockId(loginOrgLocation, user);
-				timerDTO.setTime(loginTime);
 				Breaks timerBreak = getExistedBreakTime(clk.getId());
 				if(timerBreak != null) {
 					timerDTO.setBreakId(String.valueOf(timerBreak.getId()));
 					timerDTO.setIsInBreak(Constants.YES);
+					
+					Calendar calendar = Calendar.getInstance();
+					
+					calendar.setTime(clk.getClockInDateTime());
+					Date date1 = calendar.getTime();
+					
+					calendar.setTime(timerBreak.getBreakStartDateTime());
+					Date date2 = calendar.getTime();;
+					
+					
+					long diff = date2.getTime() - date1.getTime();
+					long diffDays = diff / (24 * 60 * 60 * 1000);
+					long diffSeconds = diff / 1000 % 60;
+					long diffMinutes = diff / (60 * 1000) % 60;
+					long diffHours = diff / (60 * 60 * 1000) % 24;
+
+					if(diffDays>0) {
+						diffHours = diffDays * 24;
+					}
+					
+					
+					DecimalFormat df = new DecimalFormat("00");
+					timerDTO.setTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
+					
+					
 				}else {
 					timerDTO.setIsInBreak(Constants.NO);
+					String loginTime = getWorkingTimeByClockId(loginOrgLocation, user);
+					timerDTO.setTime(loginTime);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
