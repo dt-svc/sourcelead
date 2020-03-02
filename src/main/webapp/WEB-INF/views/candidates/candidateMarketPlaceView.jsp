@@ -540,7 +540,7 @@ function withdrawCandidateFromMarketPlace(id){
 	result = result +"	<div id='remove_marketPlace_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"	<textarea  id='reasonForMarketPlace' name='reasonForSpoc' data-validation='required validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForMarketPlaceDiv"/>';
-	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Withdraw' onclick='withdrawCandidate("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
+	result = result +"	<b href='javascript:void(0)'><input class='btnBg_blue' id='confirm-id' type='button' value='Withdraw' onclick='withdrawCandidate("+id+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelMarketPlace();'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
 	$("#remove_marketPlace_pop").slideDown(200);
