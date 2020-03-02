@@ -231,7 +231,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 
 	@Override
 	@Transactional
-	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId)
+	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId,String dateFormat)
 	{
 		ResponseList<ClockInOutTimerDTO> response = new ResponseList<>();
 		List<ClockInOutTimerDTO> projectsTimerList = new CopyOnWriteArrayList<ClockInOutTimerDTO>();
@@ -288,6 +288,14 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 					ClockInOutTimerDTO timerDTO = new ClockInOutTimerDTO();
 					timerDTO.setId(BigInteger.valueOf(projects.getId()));
 					timerDTO.setProjectName(projects.getProjectName());
+					timerDTO.setDateFormat(dateFormat);
+					timerDTO.setProjectStartDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, projects.getStartDate()));
+		    		if(projects.getEndDate() != null) {
+		    			timerDTO.setProjectEndDate(commonUtil.dateStrFromOrgDateFormatter(dateFormat, projects.getEndDate()));
+		    		}else {
+		    			timerDTO.setProjectEndDate("");
+		    		}
+		    		timerDTO.setProjectTimeSheetFrequency(projects.getTimesheetFrequency());
 					projectsTimerList.add(timerDTO);
 				}
 			}

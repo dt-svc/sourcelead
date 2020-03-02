@@ -13,6 +13,14 @@ public class ClockInOutTimerDTO implements Serializable{
 	
 	private String taskName;
 	
+	private String dateFormat;
+	
+	private String projectStartDate;
+	
+	private String projectEndDate;
+	
+	private String projectTimeSheetFrequency;
+	
 	// url means jobTitle. 
 	private String url;
 	
@@ -47,6 +55,38 @@ public class ClockInOutTimerDTO implements Serializable{
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getProjectStartDate() {
+		return projectStartDate;
+	}
+
+	public void setProjectStartDate(String projectStartDate) {
+		this.projectStartDate = projectStartDate;
+	}
+
+	public String getProjectEndDate() {
+		return projectEndDate;
+	}
+
+	public void setProjectEndDate(String projectEndDate) {
+		this.projectEndDate = projectEndDate;
+	}
+
+	public String getProjectTimeSheetFrequency() {
+		return projectTimeSheetFrequency;
+	}
+
+	public void setProjectTimeSheetFrequency(String projectTimeSheetFrequency) {
+		this.projectTimeSheetFrequency = projectTimeSheetFrequency;
+	}
+
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
 	}
 
 }
