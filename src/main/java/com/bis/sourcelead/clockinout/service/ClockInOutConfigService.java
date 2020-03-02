@@ -10,6 +10,7 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
@@ -63,5 +64,7 @@ public interface ClockInOutConfigService {
 	public List<ClockInOutTimerDTO> getProjectsTasksListForClockInTimerByUserId(Long userId, Long projectId, Long orgLocationId);
 	
 	ClockInOutLoginTimerDTO getLoginUserClockInOutTimerDetails(User user, OrgLocations orgLocations);
+	
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId);
 
 }
