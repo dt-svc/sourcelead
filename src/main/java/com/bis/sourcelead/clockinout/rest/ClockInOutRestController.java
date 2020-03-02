@@ -214,9 +214,10 @@ public class ClockInOutRestController {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 				projectsDTO.setIsGlobalAccess(isGlobalAccess);
 				projectsDTO.setOrgId(org.getId());
-				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId);
+				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId,dateFormat);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
