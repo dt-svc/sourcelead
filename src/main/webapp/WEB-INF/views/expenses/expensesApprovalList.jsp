@@ -65,6 +65,13 @@ $(document).ready(function(){
 			<div class="pull-right brud-crum"><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}'/>">Home</a> &raquo; Expenses Approval</div>
 		</section>
 		
+		<div id="tabs-menu" class="clearfix project-tabs-menu backgroundWhite">
+			<ul class="newTabs">
+				<li id="myExpensesLi" class=""><a href="${SourceLeadWeb_pmsUrl}/expenses" class="cursorPoninter">My Expenses</a></li>
+				<li id="employeeExpensesLi"  class="current"><a href="${SourceLeadWeb_pmsUrl}/expensesApprovalList" class="cursorPoninter">Employee Expenses</a></li>
+			</ul>
+	   </div>
+		
 		<!-- Project -->
 		<div class="timesheet_out">
 			<div class="vendor_wrap">
