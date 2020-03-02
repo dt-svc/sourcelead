@@ -94,9 +94,9 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
-                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                    <input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
+                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="mr10 ml10 btn btn-primary tblminwidth-90">
+                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-primary tblminwidth-90">
                   </div>
                 </div>
              </form:form>
@@ -168,9 +168,9 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
-                    <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
+                    <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn ml10 mr10 btn-primary tblminwidth-90">
+                    <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn tblminwidth-90 btn-primary">
                   </div>
                 </div>
                 </form>
@@ -183,7 +183,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary tblminwidth-90" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -357,8 +357,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary tblminwidth-90" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default tblminwidth-90 ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
@@ -2284,7 +2284,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" id="finish_task" value="Send" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" id="finish_task" value="Send" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn tblminwidth-90 btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
