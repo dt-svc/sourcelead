@@ -2034,7 +2034,7 @@ private String getCellValueAsString(Cell cell, String fileName) {
 		
 		String password = null;
 		
-		User userExisted = userService.findByEmail(userImport.getEmailId());
+		User userExisted = userService.findByEmail(userImport.getEmail());
 		
 		if(null !=  userExisted){
 			UserRole userRole1 = userRoleService.getLoginUserPrimaryRole(userExisted.getId());
