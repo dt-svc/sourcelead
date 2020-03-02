@@ -39,8 +39,9 @@
 				  </a>
 					  
 			        <ul class="collapses" style="display: none">
+			          <sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE','ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE','ROLE_CREATE_ASSOCIATE')">
                                <li class="${sessionData.nav == 'Users' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_atsUrl}/usersList" title="Associates"><i class="fa fa-chevron-right"></i> Associates</a></li>
-                               
+                      </sec:authorize>         
                                <li class="${sessionData.nav == 'Leave Management' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management"><i class="fa fa-chevron-right"></i> Leave Management</a></li>
                                
                                <c:if test="${SourceLeadWeb_expensesTabCount > 0}">
