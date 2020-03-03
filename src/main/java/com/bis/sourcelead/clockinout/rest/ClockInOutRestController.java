@@ -411,7 +411,7 @@ public class ClockInOutRestController {
 	}
 	
 	
-	@RequestMapping(value = {"/getAllAssignedMobileProjectsList","/rest/getAllAssignedMobileProjectsList"})
+	@RequestMapping(value = {"/getUserAssignedProjectsList","/rest/getUserAssignedProjectsList"})
 	public ResponseList<ProjectDetailsDTO> getAssignedProjectsList(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
 		ResponseList<ProjectDetailsDTO> projectsList = null;
