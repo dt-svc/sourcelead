@@ -25,6 +25,10 @@ public class ProjectDetailsDTO implements Serializable{
 	private String manager2;
 	
 	private String projectStatus;
+	
+	private String manager1ImgUrl;
+	
+	private String manager2ImgUrl;
 
 	public String getProjectId() {
 		return projectId;
@@ -104,6 +108,22 @@ public class ProjectDetailsDTO implements Serializable{
 
 	public void setProjectStatus(String projectStatus) {
 		this.projectStatus = projectStatus;
+	}
+
+	public String getManager1ImgUrl() {
+		return manager1ImgUrl;
+	}
+
+	public void setManager1ImgUrl(String manager1ImgUrl) {
+		this.manager1ImgUrl = manager1ImgUrl;
+	}
+
+	public String getManager2ImgUrl() {
+		return manager2ImgUrl;
+	}
+
+	public void setManager2ImgUrl(String manager2ImgUrl) {
+		this.manager2ImgUrl = manager2ImgUrl;
 	}
 
 
