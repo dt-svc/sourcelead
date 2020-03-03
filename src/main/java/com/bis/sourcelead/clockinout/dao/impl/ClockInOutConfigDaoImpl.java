@@ -1056,6 +1056,13 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 						    		}else{
 						    			projectsDTO.setManager1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
 						    		}
+						    		
+						    		if(StringUtils.isNotBlank(approverHierarchy.getApproverUserId().getFileUrl())) {
+						    			projectsDTO.setManager1ImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    		}else {
+						    			projectsDTO.setManager1ImgUrl("");
+						    		}
+						    		
 						    	}
 						    	
 						    	if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
@@ -1065,8 +1072,16 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 						    		}else{
 						    			projectsDTO.setManager2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
 						    		}
+						    		
+						    		if(StringUtils.isNotBlank(approverHierarchy.getApproverUserId().getFileUrl())) {
+						    			projectsDTO.setManager2ImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    		}else {
+						    			projectsDTO.setManager2ImgUrl("");
+						    		}
+						    		
 						    	}else {
 						    		projectsDTO.setManager2("");
+						    		projectsDTO.setManager2ImgUrl("");
 						    	}
 						    }
 						    projectsDTO.setDateFormat(orglo.getDateFormat());
