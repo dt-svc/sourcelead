@@ -316,7 +316,7 @@ public class DataMigrationCommonRestController {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request,"user");
 		 List<UploadXlsHistoryDTO> uploadXlsHistoryDTOList  = null;
 		try {
-//			uploadXlsHistoryDTOList = uploadXlsHistoryService.getUploadXlsHistoryListByInterviewId(orgLocations.getId(), entityType,orgLocations.getDateFormat(),requirementId);
+			uploadXlsHistoryDTOList = uploadXlsHistoryService.getUploadXlsHistoryListByInterviewId(orgLocations.getId(), entityType,orgLocations.getDateFormat(),requirementId);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

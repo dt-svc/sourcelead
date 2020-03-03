@@ -10621,7 +10621,13 @@ border: 1px solid #ededed; border-radius: 5px;}
 .btnBg_white{ background-color: #fff !important; color: #333 !important; border-top:1px solid #dcdcdc !important;}
 .remove_user_pop.remove_user_pop_a { border-radius: 6px; }
 .remove_user_pop b { margin: 0 -3px; }
-
+.showjoblist_location .showjoblist_location_inner { margin:5px 0; background-color: #e3f2fd; border:1px solid #cae1f1;
+ 	min-width: 150px; min-height: 10px; padding:8px 5px; display: none; border-radius: 5px; text-align: left; line-height: 20px; }
+ .showjoblist_location .fa-angle-down { -webkit-transition: -webkit-transform .2s ease-in-out;
+    -ms-transition: -ms-transform .2s ease-in-out; transition: transform .2s ease-in-out;  font-size:20px; 
+ position: absolute; right: -8px; top:-6px; padding: 5px 10px; z-index: 99;}
+ .showjoblist_location:hover .showjoblist_location_inner { display: block; }
+ .showjoblist_location .fa-angle-down:hover { color: #368ee0; -ms-transform: rotate(180deg); transform: rotate(180deg); }
 @media (max-width: 320px) {
 .uasrch-selectpicker {
     width: 48% !important; float: left !important;

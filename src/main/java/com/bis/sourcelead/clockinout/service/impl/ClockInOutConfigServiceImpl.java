@@ -38,6 +38,7 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutSubDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
@@ -264,9 +265,9 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId)
+	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId,String dateFormat)
 	{
-		return clockInOutConfigDao.getProjectsListByUserId(projectsDTO,userId,orgLocationId,userRole,candidateId);
+		return clockInOutConfigDao.getProjectsListByUserId(projectsDTO,userId,orgLocationId,userRole,candidateId,dateFormat);
 	}
 
 	@Override
@@ -1432,20 +1433,57 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 			try {
 				
 				timerDTO.setIsClockIn(Constants.YES);
-				timerDTO.setClockInOutId(clk.getId());
-				timerDTO.setJobId(clk.getJobsTaskId());
-				timerDTO.setGeneralTaskId(clk.getGeneralTaskId());
-				timerDTO.setProjectId(clk.getProjectId());
-				timerDTO.setProjectTaskId(clk.getProjectsTaskId());
+				timerDTO.setClockInOutId(String.valueOf(clk.getId()));
 				
-				String loginTime = getWorkingTimeByClockId(loginOrgLocation, user);
-				timerDTO.setTime(loginTime);
+				if(clk.getJobsTaskId() != null) {
+					timerDTO.setJobId(String.valueOf(clk.getJobsTaskId()));
+				}
+				
+				if(clk.getGeneralTaskId() != null) {
+					timerDTO.setGeneralTaskId(String.valueOf(clk.getGeneralTaskId()));
+				}
+				
+				if(clk.getProjectId() != null) {
+					timerDTO.setProjectId(String.valueOf(clk.getProjectId()));
+				}
+				
+				if(clk.getProjectsTaskId() != null) {
+					timerDTO.setProjectTaskId(String.valueOf(clk.getProjectsTaskId()));
+				}
+				
 				Breaks timerBreak = getExistedBreakTime(clk.getId());
 				if(timerBreak != null) {
-					timerDTO.setBreakId(timerBreak.getId());
+					timerDTO.setBreakId(String.valueOf(timerBreak.getId()));
 					timerDTO.setIsInBreak(Constants.YES);
+					
+					Calendar calendar = Calendar.getInstance();
+					
+					calendar.setTime(clk.getClockInDateTime());
+					Date date1 = calendar.getTime();
+					
+					calendar.setTime(timerBreak.getBreakStartDateTime());
+					Date date2 = calendar.getTime();;
+					
+					
+					long diff = date2.getTime() - date1.getTime();
+					long diffDays = diff / (24 * 60 * 60 * 1000);
+					long diffSeconds = diff / 1000 % 60;
+					long diffMinutes = diff / (60 * 1000) % 60;
+					long diffHours = diff / (60 * 60 * 1000) % 24;
+
+					if(diffDays>0) {
+						diffHours = diffDays * 24;
+					}
+					
+					
+					DecimalFormat df = new DecimalFormat("00");
+					timerDTO.setTime(df.format(diffHours)+":"+df.format(diffMinutes)+":"+df.format(diffSeconds));
+					
+					
 				}else {
 					timerDTO.setIsInBreak(Constants.NO);
+					String loginTime = getWorkingTimeByClockId(loginOrgLocation, user);
+					timerDTO.setTime(loginTime);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1455,5 +1493,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		}
 		return timerDTO;
 	
+	}
+
+	@Override
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsListByUserId(ProjectsDTO projectsDTO, Long userId,
+			Long orgLocationId, String userRole, Long candidateId) {
+		return clockInOutConfigDao.getAssignedProjectsListByUserId(projectsDTO, userId, orgLocationId, userRole, candidateId);
 	}
 }
