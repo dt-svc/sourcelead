@@ -68,9 +68,9 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
 
           <sec:authorize access="hasAnyRole(\'ROLE_SHARE_PROFILE\',\'ROLE_ADD_PROFILE\')"> 
 
-        <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml" value="Share">
+        <input type="button" onclick="callValidatePriceAmount();" class="btn btn-success btnSuccess ml tblminwidth-90" value="Share">
          </sec:authorize> 
-        <input type="button" class="btn btn-default ml" onclick="cancelPriceAmount();" value="Cancel">
+        <input type="button" class="btn btn-default ml tblminwidth-90" onclick="cancelPriceAmount();" value="Cancel">
         </div>
         </div>
         </div>
