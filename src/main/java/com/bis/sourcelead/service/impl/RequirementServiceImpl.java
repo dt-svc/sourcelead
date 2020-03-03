@@ -940,6 +940,43 @@ public class RequirementServiceImpl implements RequirementService {
 				}
 			}
 		}
+		
+		
+		// 28/feb/2020 - vishnu
+		// storing requirement assignedto record to show the imported jobs to the assigned user.
+		// this record is stored when assignTO value is given in excel sheet in job imports.
+		if(requirementDTO.getAssignedTo() != null){
+				if (!requirementDTO.getAssignedTo().get(0).split(",")[0].toString().equalsIgnoreCase("")) {
+					String userId = requirementDTO.getAssignedTo().get(0).split(",")[0];
+
+					RequirementAssignTo requirementAssignTo;
+					User assignedUser = new User();
+					assignedUser.setId(Long.parseLong(userId));
+					if (requirement.getId() != null) {
+						requirementAssignTo = requirementAssignToService
+								.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(),
+										assignedUser.getId());
+						if (requirementAssignTo == null) {
+							requirementAssignTo = new RequirementAssignTo();
+						}
+					} else {
+						requirementAssignTo = new RequirementAssignTo();
+					}
+
+					requirementAssignTo.setAssignUserId(assignedUser);
+					requirementAssignTo.setRequirementId(requirement);
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assignedUser.getId(),
+							orgLocations.getId());
+					requirementAssignTo.setRoleId(userRole.getRoles());
+					requirementAssignTo.setStatus(Constants.MEMBER_ACTIVE);
+					requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+					requirementAssignTo.setCreatedBy(user.getUserCode());
+					requirementAssignTo.setUpdatedBy(user.getUserCode());
+					requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+					requirementAssignToList.add(requirementAssignTo);
+				}
+			}
+
 
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 

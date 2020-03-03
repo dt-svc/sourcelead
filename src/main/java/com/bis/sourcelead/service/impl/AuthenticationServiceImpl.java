@@ -145,6 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
 						SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 						SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+						SourceLeadSessionManager.setSessionAttribute(request, "dateFormat", orgLocations.getDateFormat()); 
 					} catch (Exception e) {}
 					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 					System.out.println("SSSSSSSSSSSSSSSSSSs===getAuthentication END Here SSSSSSSSSSSSSSSSSSSSSSSSS");
