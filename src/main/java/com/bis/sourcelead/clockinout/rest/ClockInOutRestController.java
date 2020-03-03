@@ -22,6 +22,7 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
@@ -214,9 +215,10 @@ public class ClockInOutRestController {
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 				projectsDTO.setIsGlobalAccess(isGlobalAccess);
 				projectsDTO.setOrgId(org.getId());
-				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId);
+				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId,dateFormat);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -407,4 +409,26 @@ public class ClockInOutRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		return clockInOutConfigService.getListOfClockDataBasedOnDate(selectedDate,loginOrgLocation,userId);
 	}
+	
+	
+	@RequestMapping(value = {"/getAllAssignedMobileProjectsList","/rest/getAllAssignedMobileProjectsList"})
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsList(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+
+		ResponseList<ProjectDetailsDTO> projectsList = null;
+		try {
+			    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				projectsDTO.setIsGlobalAccess(isGlobalAccess);
+				projectsDTO.setOrgId(org.getId());
+				projectsList = clockInOutConfigService.getAssignedProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectsList;
+	}
+	
 }
