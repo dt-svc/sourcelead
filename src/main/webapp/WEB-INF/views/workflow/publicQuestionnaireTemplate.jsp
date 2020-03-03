@@ -355,8 +355,9 @@ function saveAutoSubmitQuestionnaireForm(){
 		    	  var inputtype = null;
 		    	  var flag = 1;
 		    	  
+		    	  if($("#pointId").length > 0) {
 		    	  points = $('#pointId').html().trim();
-		    	 
+		    	  }
 		    	  
 		    	  inputtype = $(this).find('input').attr('field-type');
   			  if(inputtype != null || inputtype != '' || inputtype != 'undefined'){
@@ -441,7 +442,9 @@ function saveAutoSubmitQuestionnaireForm(){
 			     	  }	
 		     	  } 
 		     	 
-		     		     	  
+		     	 if(infiniteAttemptsMap.get(fieldLabel) == true){
+			     		attempts="";
+			     	 }     	  
 		     		fields.push({
 			              label: fieldLabel,
 			              type : inputtype,
