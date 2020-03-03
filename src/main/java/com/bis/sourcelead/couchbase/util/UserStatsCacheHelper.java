@@ -683,7 +683,9 @@ public class UserStatsCacheHelper {
 		try {
 			
 			Org loginOrg = null;
-			if(userRole.getOrgLocations().getOrg() != null) {
+			if(userRole.getOrgId() != null){
+				loginOrg = orgService.findOrgByID(userRole.getOrgId().getId());
+			}else if(userRole.getOrgLocations().getOrg() != null) {
 				loginOrg = userRole.getOrgLocations().getOrg();
 			}else {
 				loginOrg = orgService.findOrgByID(userRole.getOrgLocations().getOrgId());
