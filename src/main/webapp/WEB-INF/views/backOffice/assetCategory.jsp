@@ -288,9 +288,9 @@ function addCategoryDoc(categoryId){
 
 	result = result  +'	                <div class="clearfix mr">';
 	result = result  +'	                  <div class="pull-right">';
-	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-sm btn-primary ">Update</button>';
-	result = result  +'	                    <button type="button" class="btn btn-sm btn-primary" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>';
-	result = result  +'	                    <button type="button" class="btn btn-sm btn-default ml10" onclick="closePopupDemo();">Cancel</button>';
+	result = result  +'		                 <button type="button" id="update_button" style="display: none;" class="btn btn-primary tblminwidth-90">Update</button>';
+	result = result  +'	                    <button type="button" class="btn btn-primary tblminwidth-90" value="Add" name="btnAddPr" id="save_button" onclick="addCategory(null,null);">Add</button>';
+	result = result  +'	                    <button type="button" class="btn btn-default ml10 tblminwidth-90" onclick="closePopupDemo();">Cancel</button>';
 	result = result  +'	                  </div>';
 	result = result  +'	                </div>';
 	result = result  +'	              </div>';
@@ -345,7 +345,7 @@ function deleteCategory(categoryId){
 	result = result +"	   <div id='remove_category' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to delete category?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='terminateCategory("+categoryId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='terminateCategory("+categoryId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_category").slideDown(200);
