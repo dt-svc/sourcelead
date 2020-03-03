@@ -1052,16 +1052,27 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 						    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
 						    		StringBuilder manager1 = new StringBuilder();
 						    		if(approverHierarchy.getApproverUserId().getLastName() != null){
-						    			projectsDTO.setManagerName(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+						    			projectsDTO.setManager1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
 						    		}else{
-						    			projectsDTO.setManagerName(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+						    			projectsDTO.setManager1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
 						    		}
-						    		
+						    	}
+						    	
+						    	if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+						    		StringBuilder manager2 = new StringBuilder();
+						    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+						    			projectsDTO.setManager2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+						    		}else{
+						    			projectsDTO.setManager2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+						    		}
+						    	}else {
+						    		projectsDTO.setManager2("");
 						    	}
 						    }
 						    projectsDTO.setDateFormat(orglo.getDateFormat());
 						    projectsDTO.setProjectName(projects.getProjectName());
 						    projectsDTO.setProjectTimeSheetFrequency(projects.getTimesheetFrequency());
+						    projectsDTO.setProjectStatus(projects.getProjectStatus().getValue().toString());
 						    projectsDTOList.add(projectsDTO);
 			    		 
 			    	 }

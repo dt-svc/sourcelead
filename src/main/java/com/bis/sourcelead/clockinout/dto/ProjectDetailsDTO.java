@@ -20,9 +20,11 @@ public class ProjectDetailsDTO implements Serializable{
 	
 	private String client;
 	
-	private String managerName;
+	private String manager1;
 	
+	private String manager2;
 	
+	private String projectStatus;
 
 	public String getProjectId() {
 		return projectId;
@@ -80,14 +82,29 @@ public class ProjectDetailsDTO implements Serializable{
 		this.client = client;
 	}
 
-	public String getManagerName() {
-		return managerName;
+	public String getManager1() {
+		return manager1;
 	}
 
-	public void setManagerName(String managerName) {
-		this.managerName = managerName;
+	public void setManager1(String manager1) {
+		this.manager1 = manager1;
 	}
-	
-	
+
+	public String getManager2() {
+		return manager2;
+	}
+
+	public void setManager2(String manager2) {
+		this.manager2 = manager2;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
 
 }
