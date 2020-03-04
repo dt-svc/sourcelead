@@ -67,4 +67,8 @@ public interface BgcCommonDao {
 	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
 
 	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
+	
+	BgcTemplate getBgcTemplateDetailsById(Long id);
+	
+	String deleteBgcTemplateByUuid(String templateUuid);
 }

@@ -590,4 +590,34 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 			
 		return bgcTemplateDTO;
 	}
+	
+	@Override
+	public BgcTemplate getBgcTemplateDetailsById(Long id) {
+		BgcTemplate template = null;
+			try {
+				Session session = sessionFactory.getCurrentSession();
+				template = (BgcTemplate)session.load(BgcTemplate.class, id);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		return template;
+	}
+
+	@Override
+	public String deleteBgcTemplateByUuid(String templateUuid) {
+		try {
+			   Session session = this.sessionFactory.getCurrentSession();
+			   Query query = session.createQuery("delete from BgcTemplate where uuid=:templateUuid").setString("templateUuid", templateUuid);
+		        int count = query.executeUpdate();
+		        if(count != 0) {
+		        	return Constants.SUCCESS;
+		        }
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete  BgcComponent by id-->" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			return Constants.FAILED;
+	}
 }

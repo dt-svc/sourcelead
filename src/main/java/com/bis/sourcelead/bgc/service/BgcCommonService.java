@@ -12,6 +12,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -86,4 +87,5 @@ public interface BgcCommonService {
 
 	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
 	
+	String deleteBgcTemplateByUuid(String templateUuid);
 }
