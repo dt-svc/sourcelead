@@ -5,85 +5,45 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-            <label class="col-md-4 mt10">Status</label>
-            <div class="col-md-7 padding_right">
-            <div class="dropdown" >
-              <button class="btn btn-default dropdown-toggle width100percnt tbldata-dotdot-200" type="button" id="statusList" data-toggle="dropdown">-- Select Status --
-              <span class="caret mt10 pull-right"></span></button>
-              <ul class="dropdown-menu width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn" >
-              <c:forEach var="status" items="${statusList}" varStatus="rows">
-                <li >
-                  <div class="checkbox-new clearfix ml mt5">
-                    <c:choose>
+    <div class="clearfix">
+            <label class="col-md-4 mt10">Status Type<span class="colorRed ml5">*</label>
+            <div class="col-md-6 padding_right">
+            <select multiple class="chosen-select" id="statusString" name="statusString" data-placeholder="Select Status" field-name="Status Type"  data-validation="required">
+             <c:forEach var="status" items="${statusList}" varStatus="rows">
+             <c:choose>
                     <c:when test="${not empty selStatusList && fn:contains(selStatusList, status.id)}">
-                    <input id="status${status.id}" class="checkbox-custom statusGroup" statusId ="${status.id}" onclick="pushStatusIds();" name="statusString" checked type="checkbox" data-validation="required"  >
-                    <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
-                  </div>
-                 </c:when>
+                    <option selected value="${status.id}">${status.statusName}</option>
+                    </c:when>
                    <c:otherwise>
-                    <input id="status${status.id}" class="checkbox-custom statusGroup" statusId ="${status.id}" onclick="pushStatusIds();" name="statusString"  type="checkbox" data-validation="required"  >
-                    <label for="status${status.id}" class="checkbox-custom-label"><span class="ml5">${status.statusName}</span></label>
-                   </c:otherwise>
+                   <option  value="${status.id}">${status.statusName}</option>
+                    </c:otherwise>
                   </c:choose>
-                </li>
                 </c:forEach>
-                <li role="Address">
-                  <a href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgStatusList" target="_blank" class="text-primary">
-                    <i class="fa fa-plus paddingRight mr10"></i>Add Status
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <p id="statusValid" style="color: red; display:none">Status is required</p>
+            </select>
           </div>
-          <div class="col-md-1 text-center padding_left">
-              <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgStatusList();"></a>
-          </div>
+          <div class="col-md-2 text-center padding_left">
+          	 <a title="Add Status" href="${SourceLeadWeb_vmsUrl}/bgc/bgcOrgStatusList" target="_blank" class="text-primary">
+                    <i class="fa fa-plus btn btn-primary newRefreshbtn"></i>
+             </a>
+	         <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgStatusList();"></a>
           </div>
         </div>
      
      <script>
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
      var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
-     var statusObj= [];
-     var statusNames=[];
+     var templateUuid ='${bgcTemplateDto.uuid}';
      function refreshOrgStatusList(){
     	 $.ajax({
 				type : "GET",
-				url : vmsUrl + "/bgc/refreshBgcStatusList?",
+				url : vmsUrl + "/bgc/refreshBgcStatusList?templateUuid="+templateUuid,
 				success : function(reponse) {
 					$("#orgStatusDiv").html(reponse);
+					$("#statusString").chosen();
 				},
 			});
      }
-     function pushStatusIds() {
-    	 statusObj= [];
-    	 statusNames = [];
-    	 //statusObj.toString();
-    	 $('.statusGroup').each(function(index, value){
-        	 if ($(value).is(":checked")){
-        		 statusObj.push($(value).attr("statusId"));
-        		 statusNames.push($(value).closest("li").text());
-             }
-         });
-    	 if(statusObj.length==0){
-    		 $('#statusValid').show();
-    		 $('#statusList').text("-- Select Status --");
-    		 return false;
-    	 }else{
-    		 $('#statusValid').hide();
-    		 $('#statusList').text("");
-    		 $('#statusList').text(statusNames.join(','));
-    		 return true;
-    	 }
-    	 
-     }
-    
+     
+     
      </script>
-     <script>
-     $(document).ready(function() {
-    	 <c:if test="${not empty selStatusList}">
-    	 pushStatusIds();
-    	 </c:if>
-     })
-     </script>
+     

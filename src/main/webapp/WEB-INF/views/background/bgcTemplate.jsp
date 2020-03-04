@@ -137,7 +137,7 @@ DynamicTemplatePagination = function(url) {
                       result = result + '<td><div><a href='+vmsUrl+'/bgc/editBgcTemplate?uuid='+opt.uuid+'><i id="edit' + opt.uuid + '" class="glyphicon glyphicon-pencil"></i></a>';
                	 }
                	 if(roleActionsArray.indexOf("ROLE_DELETE_BACKGROUND_DETAILS") > -1){ 
-                       result = result + '<i id="delete" onclick=bgc.deleteBgcRecord(bgc.deleteBgcTemplateById,'+opt.id+',"","'+encodeURIComponent(opt.name)+'"); class="glyphicon glyphicon-trash ml10"></i></div></td>';
+                       result = result + '<i id="delete" onclick=bgc.deleteBgcRecord(bgc.deleteBgcTemplateByUuid,"'+opt.uuid+'","","'+encodeURIComponent(opt.name)+'"); class="glyphicon glyphicon-trash ml10"></i></div></td>';
                	 }
                    return result;
                   

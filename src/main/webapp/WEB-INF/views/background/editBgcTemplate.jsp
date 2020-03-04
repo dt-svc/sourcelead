@@ -164,8 +164,15 @@ $(".overIcon, .newActPop").click(function(e){
 function  saveBgcTemplate() {
 	if ($('#bgcTemplateFrm').validate(false, validationSettings)) {
 		var formData = getFormData("bgcTemplateFrm");
-		formData ["statuString"]="1,2,3";
-		formData ["componentString"]="1,2,3";
+		if($('#statusString').val() !=  null ){
+			  delete formData ["statusString"];
+			  formData["statusString"] = $('#statusString').val().toString();
+  	    }
+		if($('#componentString').val() !=  null ){
+			  delete formData ["componentString"];
+			  formData["componentString"] = $('#componentString').val().toString();
+	    }
+	//	console.log(formData);
 		// below is for edit functionality of the status
 		  $("#saveBgcTemplateBtn").text('Processing..'); 
           $("#saveBgcTemplateBtn").addClass("disabled");

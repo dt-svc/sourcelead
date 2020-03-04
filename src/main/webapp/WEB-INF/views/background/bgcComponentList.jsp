@@ -5,61 +5,47 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-             <label class="col-md-4 mt10">Component Type</label>
-            <div class="col-md-7 padding_right">
-            <div class="dropdown">
-              <button class="btn btn-default dropdown-toggle width100percnt tbldata-dotdot-200" type="button" id="componentList" data-toggle="dropdown">-- Select Component Type --
-              <span class="caret"></span></button>
-              <ul class="dropdown-menu ml width100percnt" role="menu" aria-labelledby="menu1" id="ctBtn">
-               <c:forEach var="component" items="${componentList}" varStatus="rows">
-                <li>
-                  <div class="checkbox-new clearfix ml mt5">
-                   <c:choose>
-                    <c:when test="${not empty selComponentList && fn:contains(selComponentList, component.id)}">
-                    <input id="com${component.id}" class="checkbox-custom componentGroup"  onclick="pushComponentIds();" componentId ="${component.id}" checked name="componentString" type="checkbox">
-                    <label for="com${component.id}" class="checkbox-custom-label"><span class="ml5">${component.name}</span></label>
-                  </div>
-                   </c:when>
-                   <c:otherwise>
-                    <input id="com${component.id}" class="checkbox-custom componentGroup"  onclick="pushComponentIds();" componentId ="${component.id}" name="componentString" type="checkbox">
-                    <label for="com${component.id}" class="checkbox-custom-label"><span class="ml5">${component.name}</span></label>
-                    </c:otherwise>
-                  </c:choose>
-                </li>
- 			</c:forEach>
-                <li role="Address">
-                  <a id="addComponentType">
-                    <i class="fa fa-plus paddingRight mr10 text-primary"></i>Add Component Type
-                  </a>
-                </li>
-              </ul>
-            </div>
-             <p id="componentValid" style="color: red; display:none">Component is required</p>
-          </div>
-          <div class="col-md-1 text-center padding_left">
+             <label class="col-md-4 mt10">Component Type<span class="colorRed ml5">*</label>
+            <div class="col-md-6 padding_right">
+	            <select multiple class="chosen-select" data-placeholder="Select Component" id="componentString" name="componentString" field-name="Component Type"  data-validation="required">
+			<c:forEach var="component" items="${componentList}" varStatus="rows">
+				<c:choose>
+					<c:when
+						test="${not empty selComponentList && fn:contains(selComponentList, component.id)}">
+						<option selected value="${component.id}">${component.name}</option>
+					</c:when>
+					<c:otherwise>
+						<option value="${component.id}">${component.name}</option>
+					</c:otherwise>
+				</c:choose>
+				</li>
+			 </c:forEach>
+		     </select>
+	      </div>
+          <div class="col-md-2 text-center padding_left">
+          <a id="addComponentType" title="Add Component Type">
+                    <i class="fa fa-plus btn btn-primary newRefreshbtn"></i>
+          </a>
             <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgComponentList();"></a>
           </div>
-     <script>
-     $(document).ready(function() {
-    	 <c:if test="${not empty selComponentList}">
-    	 pushComponentIds();
-    	 </c:if>
-     })
-     </script>
+    
      <script>
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
      var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
-     var componentObj= [];
-     var componentNames = [];
+     var templateUuid ='${bgcTemplateDto.uuid}';
      function refreshOrgComponentList(){
     	 $.ajax({
 				type : "GET",
-				url : vmsUrl + "/bgc/refreshBgcComponentList?",
+				url : vmsUrl + "/bgc/refreshBgcComponentList?templateUuid="+templateUuid,
 				success : function(reponse) {
 					$("#orgComponentsDiv").html(reponse);
+					$("#componentString").chosen();
 				},
 			});
      }
+     $("#addComponentType").click(function() {
+    	  $("#componenttypepop, .mask").fadeIn();
+    });
      function  addBgcComponent() {
     		if ($('#bgcComponentFrm').validate(false, validationSettings)) {
     			var formData = getFormData("bgcComponentFrm");
@@ -92,26 +78,5 @@
     			});
     		}
     	}
-     function pushComponentIds() {
-    	 componentObj= [];
-    	 componentNames = [];
-    	 //componentObj.toString();
-    	 $('.componentGroup').each(function(index, value){
-        	 if ($(value).is(":checked")){
-        		 componentObj.push($(value).attr("componentId"));
-        		 componentNames.push($(value).closest("li").text());
-             }
-         });
-    	 if(componentObj.length==0){
-    		 $('#componentValid').show();
-    		 $('#componentList').text("-- Select Component --");
-    		 return false;
-    	 }else{
-    		 $('#componentValid').hide();
-    		 $('#componentList').text("");
-    		 $('#componentList').text(componentNames.join(','));
-    		 return true;
-    	 }
-    	 
-     }
+   
      </script>

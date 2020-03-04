@@ -16,19 +16,19 @@
       </div>
       <div class="pull-right brud-crum">Settings &raquo; Background Check &raquo; Add Template</div>
     </section>
-    <div class="clearfix">
-      <div class="timesheet_out clearfix minHeightcol5 box-shadow-large rounded-2">
+    <div class="timesheet_out clearfix minHeightcol5 box-shadow-large rounded-2 clearfix">
+      <div class="clearfix">
       <form id="bgcTemplateFrm" name="bgcTemplateFrm" action="" method="post">
         <div class="mt25 clearfix"></div>
         <div class="col-md-6">
-          <label class="col-md-4 mt5">Template Name</label>
+          <label class="col-md-4 mt5">Template Name<span class="colorRed ml5">*</label>
           <div class="col-md-8">
            <input class="form-control" placeholder="Name" type="text"  id ="templateName" name="name" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
           </div>
         </div>
         <div class="clearfix"></div>
         <div class="col-md-6">
-          <label class="col-md-4 mt5">Description</label>
+          <label class="col-md-4 mt5">Description<span class="colorRed ml5">*</label>
           <div class="col-md-8">
             <textarea placeholder="Description" id="description" name="description" class="form-control" field-name="Description" rows="3" data-validation="required validate_length length2-500"></textarea>
           </div>
@@ -38,7 +38,7 @@
         <div class="col-md-6 mt25">
           <div class="clearfix">
            <div id ="orgStatusDiv">
-           <jsp:include page= "bgcStatusList.jsp"/>
+           	<jsp:include page= "bgcStatusList.jsp"/>
           </div>
           </div>
         </div>
@@ -47,7 +47,7 @@
         <div class="col-md-6">
           <div class="clearfix">
             <div id ="orgComponentsDiv">
-           <jsp:include page= "bgcComponentList.jsp"/>
+           		<jsp:include page= "bgcComponentList.jsp"/>
           </div>
           </div>
         </div>
@@ -111,13 +111,11 @@
               </div>
             </div>
           </div>
-          
 		</form>
       </div>
     </div>
   </section>
-    </div>
-  </section>
+  
         <!-- Content Area Ends-->
 <jsp:include page="../masterFooter.jsp" />
 <div class="mask"></div>
@@ -162,23 +160,24 @@ $("html").click(function(){
 $(".overIcon, .newActPop").click(function(e){
  	e.stopPropagation();
 });	
+
+
+
 </script>
 
 
 <script>
 function  saveBgcTemplate() {
-	pushStatusIds();
-	pushComponentIds();
 	if ($('#bgcTemplateFrm').validate(false, validationSettings)) {
 		var formData = getFormData("bgcTemplateFrm");
-		var validStatus = pushStatusIds();
-		if(validStatus == false ) return;
-		
-		var validComponent = pushComponentIds();
-		if(validComponent == false ) return;
-		
-		formData ["statuString"]=statusObj.toString();
-		formData ["componentString"]=componentObj.toString();
+		if($('#statusString').val() !=  null ){
+			  delete formData ["statusString"];
+			  formData["statusString"] = $('#statusString').val().toString();
+  	    }
+		if($('#componentString').val() !=  null ){
+			  delete formData ["componentString"];
+			  formData["componentString"] = $('#componentString').val().toString();
+	    }
 		// below is for edit functionality of the status
 		  $("#saveBgcTemplateBtn").text('Processing..'); 
           $("#saveBgcTemplateBtn").addClass("disabled");
@@ -247,4 +246,4 @@ function flushComponent() {
 $(".popClose").click(function() {
   $("#componenttypepop, .mask").fadeOut();
 })
-</script>
+</script>	

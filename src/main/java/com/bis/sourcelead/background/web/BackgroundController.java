@@ -412,6 +412,34 @@ public class BackgroundController {
 		return bgcStatusDto;
 	}
 	
+
+	// Below method is for delete  BGC status record by ID .SRINIVA SABBU 
+		@RequestMapping(value = { "/deleteBgcTemplateByUuid"})
+		public @ResponseBody Response<String> deleteBgcTemplateByUuid(@RequestParam(value = "templateUuid", required = true) String templateUuid,
+				HttpServletRequest request){
+			Response<String> response = new Response<String>();
+			
+			try {
+				User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if(StringUtils.isNotBlank(templateUuid) &&  user != null) {
+					bgcCommonService.deleteBgcTemplateByUuid(templateUuid);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+			 logger.debug("after Deleted Bgc Status Record !!!!!!!");
+			return response;
+		}
 	
 	// Below method is for delete  BGC status record by ID .SRINIVA SABBU 
 		@RequestMapping(value = { "/deleteBgcStatusById"})
@@ -502,7 +530,7 @@ public class BackgroundController {
 	 * used to refresh status list when clicked refresh icon at add template screen.
 	 */
 	@RequestMapping(value = { "/refreshBgcStatusList"})
-	public ModelAndView refreshBgcStatusList(HttpServletRequest request)
+	public ModelAndView refreshBgcStatusList(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request)
 	{
 		try {
 			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
@@ -511,6 +539,18 @@ public class BackgroundController {
 			
 			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
 			model.addObject("statusList",statusList);
+			if (StringUtils.isNotBlank(templateUuid)) {
+				BgcTemplateDTO bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(templateUuid);
+				if (bgcTemplateDTO != null) {
+					model.addObject("bgcTemplateDto", bgcTemplateDTO);
+					if (StringUtils.isNotBlank(bgcTemplateDTO.getStatusString())) {
+						List<String> selStatusList = Arrays.asList(bgcTemplateDTO.getStatusString().split("\\s*,\\s*"));
+						System.out.println("selStatusList >>>>>>>>> " + selStatusList);
+						model.addObject("selStatusList", selStatusList);
+					}
+
+				}
+			}
 			System.out.println(" status list size is "+statusList.size());
 			model.setViewName("/background/bgcStatusList");
 			 
@@ -525,7 +565,7 @@ public class BackgroundController {
 	 * used to refresh component list when clicked refresh icon at add template screen.
 	 */
 	@RequestMapping(value = { "/refreshBgcComponentList"})
-	public ModelAndView refreshBgcComponentList(HttpServletRequest request)
+	public ModelAndView refreshBgcComponentList(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request)
 	{
 		try {
 			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
@@ -535,6 +575,17 @@ public class BackgroundController {
 			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
 			model.addObject("componentList",componentList);
 			System.out.println(" componentList list size is "+componentList.size());
+			if (StringUtils.isNotBlank(templateUuid)) {
+				BgcTemplateDTO bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(templateUuid);
+				if (bgcTemplateDTO != null) {
+					model.addObject("bgcTemplateDto", bgcTemplateDTO);
+					if (StringUtils.isNotBlank(bgcTemplateDTO.getComponentString())) {
+						List<String> selComponentList = Arrays
+								.asList(bgcTemplateDTO.getComponentString().split("\\s*,\\s*"));
+						model.addObject("selComponentList", selComponentList);
+					}
+				}
+			}
 			model.setViewName("/background/bgcComponentList");
 			 
 			return model;
@@ -760,6 +811,7 @@ public class BackgroundController {
 						model.addObject("bgcTemplateDto", bgcTemplateDTO);
 						if(StringUtils.isNotBlank(bgcTemplateDTO.getStatusString())) {
 							List<String> selStatusList = Arrays.asList(bgcTemplateDTO.getStatusString().split("\\s*,\\s*"));
+							System.out.println("selStatusList >>>>>>>>> " +selStatusList);
 							model.addObject("selStatusList",selStatusList);
 						}
 						if(StringUtils.isNotBlank(bgcTemplateDTO.getComponentString())) {
