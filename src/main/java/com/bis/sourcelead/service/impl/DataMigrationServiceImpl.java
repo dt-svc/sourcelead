@@ -1539,11 +1539,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	public Map<String, String> getCandidateMappingFileData(String filePath, String headerPosition) throws Exception {
 			 
 		     InputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
-			 Workbook workbook = StreamingReader.builder()
+		/*	 Workbook workbook = StreamingReader.builder()
 			            .rowCacheSize(100)    
 			            .bufferSize(8192)     
-			            .open(inputStream); 
-			 
+			            .open(inputStream); */
+			 Workbook workbook = new XSSFWorkbook(inputStream);
 			Sheet firstSheet = workbook.getSheetAt(0);
 			Iterator<Row> rowIterator = firstSheet.iterator();
 			Map<String, String> dataWithCellId = new TreeMap<String, String>();
@@ -1584,10 +1584,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		
 		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		 InputStream inputStream = new FileInputStream(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
-		 Workbook workbook = StreamingReader.builder()
+		/* Workbook workbook = StreamingReader.builder()
 		            .rowCacheSize(100)    
 		            .bufferSize(8192)     
-		            .open(inputStream); 
+		            .open(inputStream); */
+		 
+		 Workbook workbook = new XSSFWorkbook(inputStream);
 		 
 		 FileInfo fileInfo = new FileInfo();
 		 fileInfo.setFileURL(uploadEntriesDTO.getExportFilePath());
