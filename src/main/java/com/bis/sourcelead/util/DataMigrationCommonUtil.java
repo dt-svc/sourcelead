@@ -514,7 +514,7 @@ public class DataMigrationCommonUtil {
 							}
 						}
 					}
-					if(validAssTo.size() > 0){
+					if(validAssTo.size() == 0){
 						errorSet.put("assignedTo", "Assigned members are invalid");
 					}else{
 						dataMigrationDTOJsonCopy.put("assignedTo", validAssTo);
