@@ -2767,7 +2767,7 @@ public class CandidateListRestController {
 								formFieldId.add(custom);
 							}
 						}
-						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+				/*		if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
 							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
 							Map<Long, String[]> candidateData = candidateCustomFieldDataService
 									.getCandidateGlobalCustomFieldDataMapByLocationId(orgLoc.getOrgId(), formFieldId, can.getId());
@@ -2784,7 +2784,7 @@ public class CandidateListRestController {
 									candidateDTO.setCandidateCustomFieldData(dataMap);
 								}
 							}
-						}
+						}*/
 					}
 				}
 
