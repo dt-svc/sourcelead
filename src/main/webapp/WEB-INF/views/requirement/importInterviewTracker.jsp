@@ -9,17 +9,19 @@ var sourceleadUrl = '${sourceleadUrl}';
 var requirementId = '${requirementId}';
 var uploadflag= true;
 		function getSubmissionsUploadedHistory() {
-			var refreshId = setInterval(function(){
+			
 				var dateFormat ='${SourceLeadWeb_orgLocations.dateFormat}';
 				if(uploadflag == true){
 					xlsupload.getInterviewUploadInprogressProgressBar("InterviewTracker",dateFormat,requirementId);
 				  }else{
+					  var refreshId = setInterval(function(){
 					     clearInterval(refreshId);
 						 $(".browseProgress").hide();
 						 $("#upload_button").removeAttr("disabled");
 						 xlsupload.getInterviewUploadInprogressProgressBar("InterviewTracker",dateFormat,requirementId);
+					  },1000);
 				  }
-			},1000);
+			
 		 }
 </script> 
 
@@ -107,6 +109,7 @@ var uploadflag= true;
 function resetSubmissionTemplate(){
 	$('#upload_interviewTracker_form')[0].reset();
 	$('#newUploadFile').text('');
+	$(".jquery_form_error_message").remove();
 }
 </script>
 	

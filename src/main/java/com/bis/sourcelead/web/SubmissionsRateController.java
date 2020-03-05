@@ -260,7 +260,7 @@ public class SubmissionsRateController {
 		
 		RequirementSubmission requirementSubmission = requirementSubmissionService.getRequirementSubmissionById(submissionId);
 		RequirementSubmissionTemplateFields requirementSubmissionTemplateFields = requirementSubmissionTemplateFieldsService.getSubmissionsTemplateFieldsByRequirementSubmissionsId(submissionId);
-		
+		Date date = new Date();
 		ModelAndView model = new ModelAndView();
 		String permission = "NO";
 		if(requirementSubmission.getSubmissionStatus().equalsIgnoreCase(ApplicantSubmissionStatus.REQUEST_SENT.toString())){
@@ -284,7 +284,7 @@ public class SubmissionsRateController {
 				requirementSubmission.setSubmissionRateStatus(SubmissionRateStatus.ACCEPTED);
 			}
 			
-			requirementSubmission.setUpdatedDate(commonUtil.currentDate());
+			requirementSubmission.setUpdatedDate(commonUtil.orgLocationCommonDate(date, requirementSubmission.getOrgLocations()));
 			if(null != requirementSubmissionTemplateFields.getLastName()){
 			requirementSubmission.setUpdatedUser(requirementSubmissionTemplateFields.getFirstName() +" "+requirementSubmissionTemplateFields.getLastName());
 			requirementSubmission.setSubmissionRequestUser(requirementSubmissionTemplateFields.getFirstName() +" "+requirementSubmissionTemplateFields.getLastName());
