@@ -26,7 +26,7 @@
 				</li>
               <li class="">
                 <input class="repSearchBar" placeholder="Search" id="dynamicStatusListSearch" type="text">
-                <span class="repSearchIcon" onclick="getDynamciUserList();"></span></li>
+                <span class="repSearchIcon" onclick="getDynamicStatusList();"></span></li>
             </ul>
           </div>
       <div class="timesheet_out" id="payrollRegister" style="display: block;">

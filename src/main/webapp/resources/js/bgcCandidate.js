@@ -563,6 +563,28 @@ function bgcCandidate(){
 				}
 			});
 		}
+		this.deleteBgcTemplateByUuid = function (templateUuid) {
+			$.ajax({
+				type : "GET",
+				url : vmsUrl + "/bgc/deleteBgcTemplateByUuid?templateUuid="+templateUuid,
+				success : function(result) {
+					if (result.response == "AWKWARD") {
+						location.href = "/errorPage";
+					} else if (result.response == "SUCCESS") {
+						if (result.object == "DataMissing") {
+							showError("Invalid data");
+						} else {
+							bgc.deleteBgcPopupDiv();
+							location.replace(vmsUrl+"/bgc/bgcOrgTemplateList");
+							showSuccessMsg("Record Deleted Successfully!");
+						}
+					} else {
+						showError("Operation failed, please try again");
+					}
+
+				}
+			});
+		}
 		this.deleteBgcCandidateDetailsbyUuiId = function(uuid, value){ // only stauts updated with reason. active 1 , deactive 0.
 			 $(".project_inn_mask").remove();
 				var result = "";

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -411,6 +412,34 @@ public class BackgroundController {
 		return bgcStatusDto;
 	}
 	
+
+	// Below method is for delete  BGC status record by ID .SRINIVA SABBU 
+		@RequestMapping(value = { "/deleteBgcTemplateByUuid"})
+		public @ResponseBody Response<String> deleteBgcTemplateByUuid(@RequestParam(value = "templateUuid", required = true) String templateUuid,
+				HttpServletRequest request){
+			Response<String> response = new Response<String>();
+			
+			try {
+				User user =  (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				if(StringUtils.isNotBlank(templateUuid) &&  user != null) {
+					bgcCommonService.deleteBgcTemplateByUuid(templateUuid);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else if (user == null) {
+					response.setResponse(Result.SESSION_TIMEDOUT.name());
+					response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+				} else {
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				response.setResponse(Result.AWKWARD.name());
+				response.setResponseMessage(Result.AWKWARD.getValue());
+				e.printStackTrace();
+			}
+			 logger.debug("after Deleted Bgc Status Record !!!!!!!");
+			return response;
+		}
 	
 	// Below method is for delete  BGC status record by ID .SRINIVA SABBU 
 		@RequestMapping(value = { "/deleteBgcStatusById"})
@@ -458,15 +487,16 @@ public class BackgroundController {
 		}
 	}
 	
-	@RequestMapping(value = { "/bgOrgcTemplateList"})
+	
+	@RequestMapping(value = { "/bgcOrgTemplateList"})
 	public ModelAndView getBgcOrgcTemplateListByOrgLocationId(HttpServletRequest request)
 	{
 		try {
 			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
 			ModelAndView model = new ModelAndView();
-			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
-			List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
-			model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
+			//Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		//	List<BgcTemplateDTO> bgcTemplateDtoList = bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(orgLocationId);
+		//	model.addObject("bgcTemplateDtoList",bgcTemplateDtoList);
 			 model.setViewName("/background/bgcTemplate");
 			return model;
 		} catch (Exception e) {
@@ -475,7 +505,134 @@ public class BackgroundController {
 			return null;
 		}
 	}
-	
+	@RequestMapping(value = { "/addBgcTemplate"})
+	public ModelAndView addBgcTemplate(HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			
+			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+			model.addObject("statusList",statusList);
+			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+			model.addObject("componentList",componentList);
+			model.setViewName("/background/addBgcTemplate");
+			 
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * used to refresh status list when clicked refresh icon at add template screen.
+	 */
+	@RequestMapping(value = { "/refreshBgcStatusList"})
+	public ModelAndView refreshBgcStatusList(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			
+			List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+			model.addObject("statusList",statusList);
+			if (StringUtils.isNotBlank(templateUuid)) {
+				BgcTemplateDTO bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(templateUuid);
+				if (bgcTemplateDTO != null) {
+					model.addObject("bgcTemplateDto", bgcTemplateDTO);
+					if (StringUtils.isNotBlank(bgcTemplateDTO.getStatusString())) {
+						List<String> selStatusList = Arrays.asList(bgcTemplateDTO.getStatusString().split("\\s*,\\s*"));
+						System.out.println("selStatusList >>>>>>>>> " + selStatusList);
+						model.addObject("selStatusList", selStatusList);
+					}
+
+				}
+			}
+			System.out.println(" status list size is "+statusList.size());
+			model.setViewName("/background/bgcStatusList");
+			 
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/**
+	 * used to refresh component list when clicked refresh icon at add template screen.
+	 */
+	@RequestMapping(value = { "/refreshBgcComponentList"})
+	public ModelAndView refreshBgcComponentList(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request)
+	{
+		try {
+			logger.debug("inside getBgcOrgcTemplateListByOrgLocationId");
+			ModelAndView model = new ModelAndView();
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			
+			List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+			model.addObject("componentList",componentList);
+			System.out.println(" componentList list size is "+componentList.size());
+			if (StringUtils.isNotBlank(templateUuid)) {
+				BgcTemplateDTO bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(templateUuid);
+				if (bgcTemplateDTO != null) {
+					model.addObject("bgcTemplateDto", bgcTemplateDTO);
+					if (StringUtils.isNotBlank(bgcTemplateDTO.getComponentString())) {
+						List<String> selComponentList = Arrays
+								.asList(bgcTemplateDTO.getComponentString().split("\\s*,\\s*"));
+						model.addObject("selComponentList", selComponentList);
+					}
+				}
+			}
+			model.setViewName("/background/bgcComponentList");
+			 
+			return model;
+		} catch (Exception e) {
+			logger.error(e + " in getBgcOrgcTemplateListByOrgLocationId");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	/** 
+	 * Below method is used to get the template list SRINIVAS 03-FEB-2020
+	 * 
+	 */
+	@RequestMapping(value = { "/getBgcDynamicTemplateList" }, method = RequestMethod.POST)
+	public @ResponseBody ResponseList<BgcTemplateDTO> getBgcDynamicTemplateList(
+			BgcTemplateDTO bgcTemplateDTO,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			HttpServletRequest request, HttpServletResponse response) {
+		ResponseList<BgcTemplateDTO> bgcTemplateDTOList = null;
+		logger.debug("inisde controller  Bgc Status DTO  --> ");
+		try {
+			String[] tableColumns = { "name",  "description"};// should be
+			// entity names
+			int sortColumnIndex = -1; // by default sorting using updated date
+			String sortColumnOrder = "desc"; // by default ascending order
+			if (bgcTemplateDTO.getOrder() != null && !bgcTemplateDTO.getOrder().isEmpty()) {
+				sortColumnIndex = Integer.parseInt(bgcTemplateDTO.getOrder().get(0).get("column"));
+				sortColumnOrder = bgcTemplateDTO.getOrder().get(0).get("dir"); // sorting order 'dir' means
+				bgcTemplateDTO.setSortOrder(sortColumnOrder); // direction
+				// of the sorting.
+			}
+			
+			
+			if (sortColumnIndex != -1)
+				bgcTemplateDTO.setSortColumn(tableColumns[sortColumnIndex]);
+
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+			bgcTemplateDTO.setOrgLocationId(orgLocations.getId());
+			 bgcTemplateDTOList =  (ResponseList<BgcTemplateDTO>)bgcCommonService.getBgcOrgcTemplateListByOrgLocationId(bgcTemplateDTO, searchValue,
+					orgLocations);
+			System.out.println("BgcTemplateDTOList size "+bgcTemplateDTOList.getRecordsTotal());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		logger.debug("after controller  getBgcDynamicComponentList  --> ");
+		return bgcTemplateDTOList;
+	}
 	/** 
 	 * Below methods are related component add/edit/delete functionality SRINIVAS 03-FEB-2020
 	 * 
@@ -593,5 +750,93 @@ public class BackgroundController {
 			}
 			 logger.debug("after Deleted Bgc Component Record !!!!!!!");
 			return response;
+		}
+	// below method is for saving BGC Template details by ORG LOCATION id by SRINIVAS SABBU.
+	@RequestMapping(value = { "/SaveOrUpdateBgcTemplate"}, method = RequestMethod.POST)
+	public  @ResponseBody Response<String>  saveOrUpdateBgcTemplate(BgcTemplateDTO bgcTemplateDTO,
+			HttpServletRequest request){
+		Response<String> response = new Response<>();
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+				"orgLocations");
+		if (user != null) {
+			try {
+				if (Validator.validate(bgcTemplateDTO)) {
+					bgcCommonService.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplateDTO, user , orgLocations);
+					response.setResponse(Result.SUCCESS.name());
+					response.setResponseMessage(Result.SUCCESS.getValue());
+				} else {
+					response.setObject("DataMissing");
+					response.setResponse(Result.INVALID_DATA.name());
+					response.setResponseMessage(Result.INVALID_DATA.getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Exception occured while saving Template Task Details" + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			response.setResponse(Result.SESSION_TIMEDOUT.name());
+			response.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+		}
+		return response;
+	}
+	/*// below method is used to get the BGC Template details by UUID by SRINIVAS SABBU.
+	@RequestMapping(value = { "/getBgcTemplateDetails"})
+	public @ResponseBody BgcTemplateDTO getBgcTemplateDetailsByUuid(@RequestParam(value = "uuid", required = true) String uuid,
+			HttpServletRequest request){
+		BgcTemplateDTO bgcTemplateDTO = null;
+		try {
+			if(StringUtils.isNotBlank(uuid)) {
+				bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(uuid);
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return bgcTemplateDTO;
+	}*/
+	
+	//editBgcTemplate
+		@RequestMapping(value = { "/editBgcTemplate" })
+		public ModelAndView editBgcTemplate(
+				@RequestParam(value="uuid", required=true) String uuid,
+				HttpServletRequest request) throws Exception {
+			ModelAndView model = new ModelAndView();
+			BgcTemplateDTO bgcTemplateDTO = null;
+			Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			try {
+				if(StringUtils.isNotBlank(uuid)) {
+					bgcTemplateDTO = bgcCommonService.getBgcTemplateDetailsByUuid(uuid);
+					if(bgcTemplateDTO != null){
+						model.addObject("bgcTemplateDto", bgcTemplateDTO);
+						if(StringUtils.isNotBlank(bgcTemplateDTO.getStatusString())) {
+							List<String> selStatusList = Arrays.asList(bgcTemplateDTO.getStatusString().split("\\s*,\\s*"));
+							System.out.println("selStatusList >>>>>>>>> " +selStatusList);
+							model.addObject("selStatusList",selStatusList);
+						}
+						if(StringUtils.isNotBlank(bgcTemplateDTO.getComponentString())) {
+							List<String> selComponentList = Arrays.asList(bgcTemplateDTO.getComponentString().split("\\s*,\\s*"));
+							model.addObject("selComponentList",selComponentList);
+						}
+					}
+					
+					List<BgcStatus> statusList = bgcCommonService.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+					model.addObject("statusList",statusList);
+
+					List<BgcComponent> componentList = bgcCommonService.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+					model.addObject("componentList",componentList);
+					
+					
+			}	
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			SessionMaintainanceData sessionData = new SessionMaintainanceData();
+			sessionData.setNav(Constants.COMPLETED);
+			      
+				  model.addObject("sourceleadUrl", sourceleadUrl);
+				  model.setViewName("/background/editBgcTemplate");
+			return model;
 		}
 }
