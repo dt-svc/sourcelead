@@ -56,10 +56,10 @@ $(document).ready(function(){
     <div class="clearfix pull-lefet col-md-12 paddingRight customLeaves" id="customSearch" style="display: none; width: 346px;">
 		<div class="pull-left">
 		<div class="pull-left mr5" style="width: 140px">
-		<input value="" name="fromDate" id="fromDate" placeholder="From" class="form-control calendar input-sm" type="text">
+		<input value="" name="fromDate" id="fromDate" placeholder="From" class="form-control calendar" type="text" field-name="Start Date" >
 		</div>
 		<div class="pull-left mr5" style="width: 140px">
-		<input value="" name="toDate" id="toDate" placeholder="To" class="form-control calendar input-sm" type="text">
+		<input value="" name="toDate" id="toDate" placeholder="To" class="form-control calendar" type="text" field-name="End Date">
 		</div>
 		<button type="button" class="btn btn-primary btn-sm" onclick="missingInvoiceReportData();"><i class="fa fa-search"></i></button>
 		</div>
@@ -296,6 +296,8 @@ function missingInvoice(url){
 function getMissingInvoiceCustomDates() {
 	 var dateSelection = $("#filterType").val(); 
 	 if(dateSelection == 'custom'){
+		 $('#fromDate').attr('data-validation',"required");
+	        $('#toDate').attr('data-validation',"required");
 		 document.getElementById("customSearch").style.display="block";
 		 $("#jobReportList_custome").attr("disabled", "disabled");
 		 

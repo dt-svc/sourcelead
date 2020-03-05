@@ -270,7 +270,9 @@ function getSelectedDateFromCalendar(selectedDate) {
 						 result = result + ' 									<i class="fa fa-ellipsis-v" title="Email & Phone"></i>                         ';
 						 result = result + '										<div class="userdetails">                                                      ';
 						 result = result + ' 									<p><i class="fa fa-envelope"></i><label>'+report.candidateEmail+'</label></p>     ';
-						 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+						 if(report.candidatePhoneNumber != null){
+							 result = result + ' 									<p><i class="fa fa-phone"></i><label>'+report.candidatePhoneNumber+'</label></p>                 ';
+						 }
 						 result = result + ' 									</div>                                                                         ';
 						 result = result + ' 								</div>                                                                         ';
 						 result = result + '                          <p><label class="text-muted small col-md-2">Job:</label> <a href="'+atsUrl+"/requirementSummaryView?requirementUUID="+report.requirementUUID+"&interviewId="+report.interviewId.id+'">'+report.requirementTitle+'</a></p>';
