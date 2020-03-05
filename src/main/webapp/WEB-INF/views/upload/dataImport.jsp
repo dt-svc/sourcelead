@@ -394,8 +394,13 @@ function getUploadProgressBar(){
 	}else if(uploadType == 'interviewTracker'){
 		uploadType = 'InterviewTracker';
 	}
-	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
 	
+	if($("#uploadedPercentage").length > 0) {
+	 var uploadedPercentage = document.getElementById("uploadedPercentage").value;
+	}else{
+		var uploadedPercentage = 0;
+	}
+	 
 	$.ajax({
     	type: "POST",
         url: sourceleadUrl+"/getXlsProcessingHistroyListByEntityType?"+tokenParamName+"="+tokenValue+"&entityType="+uploadType, 
@@ -476,8 +481,20 @@ function getUploadProgressBar(){
 			           result = result + '</div>';
 			           result = result + '</div>';
 		    			
-		    			$("#uploadXlsHistoryDiv").empty();
-		    			$("#uploadXlsHistoryDiv").append(result);
+		    			
+		    			
+		    			if(uploadType == 'ProfileTracker'){
+		    				$("#uploadProfileXlsHistoryDiv").empty();
+			    			$("#uploadProfileXlsHistoryDiv").append(result);
+		    			}
+		    			else if(uploadType == 'InterviewTracker'){
+		    				$("#uploadInterviewXlsHistoryDiv").empty();
+			    			$("#uploadInterviewXlsHistoryDiv").append(result);
+		    				
+		    			}else{
+		    				$("#uploadXlsHistoryDiv").empty();
+			    			$("#uploadXlsHistoryDiv").append(result);
+		    			}
 		    			
 		    			if(progressRow != ''){
 		    				  $(".browseProgress").show();

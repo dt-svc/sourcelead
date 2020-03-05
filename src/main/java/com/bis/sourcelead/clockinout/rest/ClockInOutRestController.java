@@ -1,7 +1,5 @@
 package com.bis.sourcelead.clockinout.rest;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +19,10 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
@@ -31,27 +31,20 @@ import com.bis.sourcelead.clockinout.util.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.TimeSheetSubmissionDayEntryDTO;
-import com.bis.sourcelead.dto.TimesheetEntriesDTO;
-import com.bis.sourcelead.dto.TimesheetTaskDTO;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectMembers;
-import com.bis.sourcelead.entity.ProjectTasks;
-import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.rest.TaskRestController;
 import com.bis.sourcelead.service.EmployeesService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.timesheet.service.TimeSheetDayEntriesService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
-import com.google.api.client.util.Clock;
 
 @RestController
 @RequestMapping("/app")
@@ -212,19 +205,20 @@ public class ClockInOutRestController {
 
 	
 	@RequestMapping(value = {"/getAllProjectsForClockInOut","/rest/getAllProjectsForClockInOut"})
-	public ResponseList<Projects> getProjectsByStatusAndClient(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+	public ResponseList<ClockInOutTimerDTO> getAllProjectsForClockInOut(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
 
-		ResponseList<Projects> projectsList = null;
+		ResponseList<ClockInOutTimerDTO> projectsList = null;
 		try {
-			 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
 			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
 				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				String dateFormat = (String) SourceLeadSessionManager.getSessionAttribute(request, "dateFormat");
 				projectsDTO.setIsGlobalAccess(isGlobalAccess);
 				projectsDTO.setOrgId(org.getId());
-				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(), clients, values,orgLocationId,userRole,candidateId);
+				projectsList = clockInOutConfigService.getProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId,dateFormat);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -232,9 +226,13 @@ public class ClockInOutRestController {
 	}
 	
 	@RequestMapping(value = {"/getProjectsTasksByProjectId","/rest/getProjectsTasksByProjectId"})
-	public List<ProjectTasks> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
+	public List<ClockInOutTimerDTO> getProjectsTasksByProjectId(@RequestParam(value="projectId", required=false) Long projectId,HttpServletRequest request) throws Exception {
 
-		return clockInOutConfigService.getProjectsTasksByProjectId(projectId);
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		 List<ClockInOutTimerDTO> projectsTasksList = null;
+		 projectsTasksList = clockInOutConfigService.getProjectsTasksListForClockInTimerByUserId(user.getId(), projectId, orgLocationId);
+		 return projectsTasksList;
 	   
 	}
 	
@@ -277,6 +275,15 @@ public class ClockInOutRestController {
 	@RequestMapping(value = {"/getExistedBreakTime","/rest/getExistedBreakTime"})
 	public Breaks getExistedBreakTime(@RequestParam(value="clockInOutId", required=false) Long clockInOutId) {
 		return clockInOutConfigService.getExistedBreakTime(clockInOutId);
+		
+	}
+	
+	
+	@RequestMapping(value = {"/getLoginUserClockInOutTimerDetails","/rest/getLoginUserClockInOutTimerDetails"})
+	public ClockInOutLoginTimerDTO getLoginUserClockInOutTime(HttpServletRequest request) {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		return clockInOutConfigService.getLoginUserClockInOutTimerDetails(user,loginOrgLocation);
 		
 	}
 	
@@ -402,4 +409,26 @@ public class ClockInOutRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(req, "orgLocations");
 		return clockInOutConfigService.getListOfClockDataBasedOnDate(selectedDate,loginOrgLocation,userId);
 	}
+	
+	
+	@RequestMapping(value = {"/getUserAssignedProjectsList","/rest/getUserAssignedProjectsList"})
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsList(ProjectsDTO projectsDTO,@RequestParam(value="values", required=false) String values,HttpServletRequest request,@RequestParam(value="clients", required=false) String clients) throws Exception {
+
+		ResponseList<ProjectDetailsDTO> projectsList = null;
+		try {
+			    Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+			    String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
+				User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+				Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+				Long candidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "candidateId");
+				String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
+				projectsDTO.setIsGlobalAccess(isGlobalAccess);
+				projectsDTO.setOrgId(org.getId());
+				projectsList = clockInOutConfigService.getAssignedProjectsListByUserId(projectsDTO,user.getId(),orgLocationId,userRole,candidateId);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return projectsList;
+	}
+	
 }

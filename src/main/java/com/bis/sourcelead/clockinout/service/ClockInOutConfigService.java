@@ -7,7 +7,10 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutConfigDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
+import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
@@ -30,7 +33,7 @@ public interface ClockInOutConfigService {
 
 	public List<Requirement> getAssignedRequirementListByOrgLocationIDAndUserId(Long orgLocationId, String userType, Long userI);
 
-	public ResponseList<Projects> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, String clients, String values, Long orgLocationId, String userRole, Long candidateId);
+	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId,String dateFormat);
 
 	public List<ProjectTasks> getProjectsTasksByProjectId(Long projectId);
 
@@ -57,5 +60,11 @@ public interface ClockInOutConfigService {
 	public List<ClockInOutAssociateReportSummaryDTO> getAssociateClockInOutReportSummary(ClockInOutFiltersDTO clockInOutFiltersDTO, Date empJoiningDate, OrgLocations orgLocation);
 
 	public List<ClockInOutUserTimeEntryDTO> getListOfClockDataBasedOnDate(String selectedDate, OrgLocations loginOrgLocation, Long userId);
+	
+	public List<ClockInOutTimerDTO> getProjectsTasksListForClockInTimerByUserId(Long userId, Long projectId, Long orgLocationId);
+	
+	ClockInOutLoginTimerDTO getLoginUserClockInOutTimerDetails(User user, OrgLocations orgLocations);
+	
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId);
 
 }
