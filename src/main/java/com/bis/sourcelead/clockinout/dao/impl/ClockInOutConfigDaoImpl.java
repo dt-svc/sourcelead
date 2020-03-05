@@ -1052,32 +1052,46 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 						    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
 						    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
 						    		StringBuilder manager1 = new StringBuilder();
+						    		String level1Manager = null;
 						    		if(approverHierarchy.getApproverUserId().getLastName() != null){
-						    			projectsDTO.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+						    			level1Manager = manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString();
+						    			projectsDTO.setManagerLevel1(level1Manager);
+						    			projectsDTO.setDisplayManager(level1Manager);
 						    		}else{
-						    			projectsDTO.setManagerLevel1(manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString());
+						    			level1Manager = manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString();
+						    			projectsDTO.setManagerLevel1(level1Manager);
+						    			projectsDTO.setDisplayManager(level1Manager);
 						    		}
 						    		
 						    		if(StringUtils.isNotBlank(approverHierarchy.getApproverUserId().getFileUrl())) {
 						    			projectsDTO.setManagerLevel1ImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    			projectsDTO.setDisplayManagerImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
 						    		}else {
 						    			projectsDTO.setManagerLevel1ImgUrl("");
+						    			projectsDTO.setDisplayManagerImgUrl("");
 						    		}
 						    		
 						    	}
 						    	
 						    	if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
 						    		StringBuilder manager2 = new StringBuilder();
+						    		String level2Manager = null;
 						    		if(approverHierarchy.getApproverUserId().getLastName() != null){
-						    			projectsDTO.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString());	
+						    			level2Manager = manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString();
+						    			projectsDTO.setManagerLevel2(level2Manager);	
+						    			projectsDTO.setDisplayManager(level2Manager);
 						    		}else{
-						    			projectsDTO.setManagerLevel2(manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString());
+						    			level2Manager = manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString();
+						    			projectsDTO.setManagerLevel2(level2Manager);
+						    			projectsDTO.setDisplayManager(level2Manager);
 						    		}
 						    		
 						    		if(StringUtils.isNotBlank(approverHierarchy.getApproverUserId().getFileUrl())) {
 						    			projectsDTO.setManagerLevel2ImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    			projectsDTO.setDisplayManagerImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
 						    		}else {
 						    			projectsDTO.setManagerLevel2ImgUrl("");
+						    			projectsDTO.setDisplayManagerImgUrl("");
 						    		}
 						    		
 						    	}else {
