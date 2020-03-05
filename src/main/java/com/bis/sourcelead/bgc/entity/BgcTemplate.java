@@ -44,13 +44,11 @@ public class BgcTemplate implements Serializable{
 	@Column(name = "UUID ")
 	private String uuid;
 	
-	@ManyToOne
-	@JoinColumn(name = "BGC_STATUS_ID ")
-	private BgcStatus bgcStatusId;
+	@Column(name = "BGC_STATUS_STRING ")
+	private String  statusString;
 
-	@ManyToOne
-	@JoinColumn(name = "BGC_COMPONENT_ID ")
-	private BgcComponent bgcComponentId;
+	@Column(name = "BGC_COMPONENT_STRING ")
+	private String  componentString;
 	
 	@Column(name = "DESCRIPTION ", columnDefinition = "TEXT default NULL")
 	private String description;
@@ -107,20 +105,21 @@ public class BgcTemplate implements Serializable{
 		this.uuid = uuid;
 	}
 
-	public BgcStatus getBgcStatusId() {
-		return bgcStatusId;
+
+	public String getStatusString() {
+		return statusString;
 	}
 
-	public void setBgcStatusId(BgcStatus bgcStatusId) {
-		this.bgcStatusId = bgcStatusId;
+	public void setStatusString(String statusString) {
+		this.statusString = statusString;
 	}
 
-	public BgcComponent getBgcComponentId() {
-		return bgcComponentId;
+	public String getComponentString() {
+		return componentString;
 	}
 
-	public void setBgcComponentId(BgcComponent bgcComponentId) {
-		this.bgcComponentId = bgcComponentId;
+	public void setComponentString(String componentString) {
+		this.componentString = componentString;
 	}
 
 	public String getDescription() {

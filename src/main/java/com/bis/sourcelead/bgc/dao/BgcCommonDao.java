@@ -10,6 +10,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
@@ -41,7 +42,8 @@ public interface BgcCommonDao {
 	ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, String searchValue,
 			OrgLocations orgLocations);
 
-	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
+	ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
+			String searchValue, OrgLocations orgLocations);
 
 	String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatus bgcStatus);
 
@@ -57,4 +59,16 @@ public interface BgcCommonDao {
 	BgcComponentDTO getBgcComponentDetailsById(Long componentId);
 
 	String deleteBgcComponentById(Long componentId);
+
+	List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId);
+
+	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
+
+	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
+
+	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
+	
+	BgcTemplate getBgcTemplateDetailsById(Long id);
+	
+	String deleteBgcTemplateByUuid(String templateUuid);
 }

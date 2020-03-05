@@ -12,6 +12,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
@@ -50,7 +51,6 @@ public interface BgcCommonService {
 
 	ResponseList<BgcComponentDTO> getBgcComponentListByOrgLocationId(BgcComponentDTO bgcComponentDTO, String searchValue,
 			OrgLocations orgLocations);
-	List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId);
 
 	String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO,  User usr, OrgLocations orglocations);
 
@@ -67,4 +67,25 @@ public interface BgcCommonService {
 	BgcComponentDTO getBgcComponentDetailsById(Long componentId);
 
 	String deleteBgcComponentById(Long componentId);
+
+	ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
+			String searchValue, OrgLocations orgLocations);
+	
+	/***
+	 * Below method used to get distinct status based on ORG LOCATION ID , now using in add template screen.
+	 */
+	
+	List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId);
+	
+	/***
+	 * Below method used to get distinct Component based on ORG LOCATION ID , now using in add template screen.
+	 */
+	
+	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
+
+	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user, OrgLocations orgLocations);
+
+	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
+	
+	String deleteBgcTemplateByUuid(String templateUuid);
 }

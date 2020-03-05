@@ -25,6 +25,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.ImmigrationListViewDTO;
 import com.bis.sourcelead.dto.ResponseList;
@@ -314,8 +315,64 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	}
 
 	@Override
-	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
-		return null;
+	public ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,
+			String searchValue, OrgLocations orgLocations) {
+		ResponseList<BgcTemplateDTO> bgcTemplateResponseList = new ResponseList<>();
+		try {
+			
+			Session session = this.sessionFactory.getCurrentSession();
+			List<BgcTemplate> bgcReturnList=null;
+			System.out.println("orgLocations.getId( ) in dao >>>>>>>>>. "+orgLocations.getId());
+			 StringBuilder searchBuilder = new StringBuilder("");
+			 if(searchValue != null && !searchValue.equalsIgnoreCase("")){
+				 searchBuilder.append(" AND (bc.name like '%"+searchValue+"%')");
+				 searchBuilder.append(" OR (bc.description like '%"+searchValue+"%')");
+			 } 
+			 
+			 bgcReturnList= session.createQuery("from BgcTemplate bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bc.updatedDate desc, bc.id desc ").
+					                                   setLong("orgLocationId",orgLocations.getId()).list();
+			List<BgcTemplateDTO> bgcTemplateDtoList = new ArrayList<BgcTemplateDTO>();	
+			
+			if(bgcReturnList != null && bgcReturnList.size()>0) {
+				BgcTemplateDTO target = null;
+			  for(BgcTemplate bgcTemplate : bgcReturnList) {
+				  target = new BgcTemplateDTO();
+				BeanUtils.copyProperties(bgcTemplate, target);
+				 
+				bgcTemplateDtoList.add(target);
+			  }
+			}
+			bgcTemplateResponseList.setData(bgcTemplateDtoList);
+			
+			// Below is for pagination in DATATABLE.
+			String resultCountQuery = "";
+				
+				resultCountQuery= "select count(*) from BgcTemplate bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString();
+			
+			Query hqlQuery = session.createQuery(resultCountQuery);
+			hqlQuery.setFirstResult(bgcTemplateDTO.getStart()).setMaxResults(bgcTemplateDTO.getLength())
+			          .setLong("orgLocationId",orgLocations.getId()).list();
+            List<Long> countList = hqlQuery.list();
+			int totalCount = 0;
+			int filterCount =0;
+			
+			if (bgcTemplateDTO != null) {
+				if (countList != null && !countList.isEmpty()) {
+					totalCount = countList.iterator().next().intValue();
+					filterCount = totalCount;
+				}
+			}
+			bgcTemplateResponseList.setRecordsTotal(totalCount);
+			if (resultCountQuery.toString() != null && !resultCountQuery.toString().isEmpty()) {
+				bgcTemplateResponseList.setRecordsFiltered(filterCount);
+			} else {
+				bgcTemplateResponseList.setRecordsFiltered(totalCount);
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return bgcTemplateResponseList;
 	}
 
 	@Override
@@ -461,6 +518,97 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		try {
 			   Session session = this.sessionFactory.getCurrentSession();
 			   Query query = session.createQuery("delete from BgcComponent where id=:componentId").setLong("componentId", componentId);
+		        int count = query.executeUpdate();
+		        if(count != 0) {
+		        	return Constants.SUCCESS;
+		        }
+			} catch (HibernateException e) {
+				logger.error("SQL Exception occured while doing delete  BgcComponent by id-->" + e.getMessage());
+				e.printStackTrace();
+				return null;
+			}
+			return Constants.FAILED;
+	}
+
+	@Override
+	public List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query = session.createQuery("from  BgcStatus status where status.orgLocationId = :orgLocationId order by status.updatedDate desc, status.id desc")
+					       .setLong("orgLocationId", orgLocationId);
+			List<BgcStatus> statusList = query.list();
+			return statusList;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while getting status list by org location id-->" + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			Query query = session.createQuery("from  BgcComponent comp where comp.orgLocationId = :orgLocationId order by comp.updatedDate desc, comp.id desc")
+					       .setLong("orgLocationId", orgLocationId);
+			List<BgcComponent> componentList = query.list();
+			return componentList;
+		} catch (HibernateException e) {
+			logger.error("SQL Exception occured while getting component list by org location id-->" + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(bgcTemplate);
+			return Constants.SUCCESS;
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while saving BGC Template Details in Database in Database "+e.getMessage());
+			return null;
+		}
+	}
+
+	@Override
+	public BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid) {
+		BgcTemplateDTO bgcTemplateDTO = null;
+			try {
+				Session session = sessionFactory.getCurrentSession();
+				
+				BgcTemplate bgcTemplate= (BgcTemplate) session.createQuery("from BgcTemplate template where template.uuid =:uuid").setString("uuid", uuid).uniqueResult();
+				if(bgcTemplate != null) {
+					bgcTemplateDTO = new BgcTemplateDTO();
+					BeanUtils.copyProperties(bgcTemplate, bgcTemplateDTO);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		return bgcTemplateDTO;
+	}
+	
+	@Override
+	public BgcTemplate getBgcTemplateDetailsById(Long id) {
+		BgcTemplate template = null;
+			try {
+				Session session = sessionFactory.getCurrentSession();
+				template = (BgcTemplate)session.load(BgcTemplate.class, id);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		return template;
+	}
+
+	@Override
+	public String deleteBgcTemplateByUuid(String templateUuid) {
+		try {
+			   Session session = this.sessionFactory.getCurrentSession();
+			   Query query = session.createQuery("delete from BgcTemplate where uuid=:templateUuid").setString("templateUuid", templateUuid);
 		        int count = query.executeUpdate();
 		        if(count != 0) {
 		        	return Constants.SUCCESS;

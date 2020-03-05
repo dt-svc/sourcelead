@@ -458,6 +458,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		String query = "SELECT Q1.*  "
 				+"FROM ( "
 				+ "(SELECT DATE_FORMAT(TDE.TIMESHEET_DATE,"+orgDateFormat+") as timesheetDate,"
+				+ " TDE.TIMESHEET_DATE as timeEntryDate,"
 				+ " TDE.ID as timeEntryId,"
 				+ " TDE.BILLABLE_HOURS as billableHrs,"
 				+ " TDE.TICKET_NUMBER as ticketNo,"
@@ -478,6 +479,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " SAH.UPDATED_DATE AS approvedDate,"
 				+ " SAH.FREQUENCY_START_DATE AS sahFrequenchStartDate,"
 				+ " SAH.FREQUENCY_END_DATE AS sahFrequenchEndDate,"
+				+ " PMH.PROJECT_TERMINATION_DATE AS projectTerimationDate,"
 				+ " CANLOC.LOCATION AS candidateLocation "
 				+ " FROM SUBMISSION_APPROVER_HIERARCHY SAH,TIMESHEET_DAY_ENTRIES TDE "
 				+ " INNER JOIN PROJECT_TASKS PT ON PT.ID = TDE.PROJECT_TASK_ID "
@@ -495,7 +497,12 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
 			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
-			    + "   LEFT JOIN DEPARTMENT DEPART ON DEPART.ID = EMP.DEPARTMENT_ID ";
+			    + "   LEFT JOIN DEPARTMENT DEPART ON DEPART.ID = EMP.DEPARTMENT_ID "
+		
+		
+		        //To get project member details
+		
+		        + "   LEFT JOIN PROJECT_MEMBERS_HISTORY PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID ";
             
 			    //To get current  orglocation details 
 			    if(StringUtils.isNotEmpty(isGlobalAccess) && isGlobalAccess.equalsIgnoreCase("Y")) {
@@ -522,6 +529,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " ( "
 				+ "   SELECT "
 				+ "   DATE_FORMAT(AL.APPLY_LEAVE_DATE,"+orgDateFormat+") AS timesheetDate,"
+				+ "   AL.APPLY_LEAVE_DATE as timeEntryDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
 				+ "        WHEN LT.LEAVE_TYPE ='Billable'  THEN AL.APPLIED_HOURS " 
@@ -550,6 +558,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS approvedDate,"
 				+ "   NULL AS sahFrequenchStartDate,"
 				+ "   NULL AS sahFrequenchEndDate,"
+				+ "   PMH.PROJECT_TERMINATION_DATE AS projectTerimationDate,"
 				+ "   CANLOC.LOCATION AS candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
 				+ "   INNER JOIN PROJECTS PROJ ON PROJ.ID = PM.PROJECT_ID "
@@ -565,6 +574,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
+			    
+			    //To get project member details
+				
+		        + "   LEFT JOIN PROJECT_MEMBERS_HISTORY PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID "
 				
 			    //To get user leave details
 				+ "   LEFT JOIN USER_LEAVE LV ON LV.USER_ID = U.ID "
@@ -581,6 +594,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " ( "
 				+ "   SELECT "
 				+ "   DATE_FORMAT(HRD.DAY,"+orgDateFormat+") AS timesheetDate,"
+				+ "   HRD.DAY as timeEntryDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
 				/*+ "        WHEN HD.BILLABLE_TYPE ='Billable'  THEN HD.ORG_AVG_HRS " */
@@ -612,6 +626,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS approvedDate,"
 				+ "   NULL AS sahFrequenchStartDate,"
 				+ "   NULL AS sahFrequenchEndDate,"
+				+ "   PMH.PROJECT_TERMINATION_DATE AS projectTerimationDate,"
 				+ "   CANLOC.LOCATION AS candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
 				+ "   INNER JOIN PROJECTS PROJ ON PROJ.ID = PM.PROJECT_ID "
@@ -628,6 +643,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
 			    
+			    //To get project member details
+				
+		        + "   LEFT JOIN PROJECT_MEMBERS_HISTORY PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID "
+			    
 			    + "   LEFT JOIN HOLIDAY_RESTRICT_DAYS HRD ON HRD.ORGLOCATION_ID = CAN.WORK_LOCATION "
 			    + "   LEFT JOIN HOLIDAY HD ON HD.ID = HRD.HOLIDAY_ID "
 				+ "   WHERE "+subQuery
@@ -639,20 +658,24 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
 		if(reportList != null && !reportList.isEmpty()) {
 			for(DayWiseTimesheetReoprtsListDTO daywiseDTO : reportList) {
-				if(daywiseDTO.getParentCandidteId() != null) {
-					Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
-					if(candiate != null && candiate.getConsultantUser() != null) {
-						daywiseDTO.setCandidateLocation(candiate.getOrgLocationId().getOrgLocationAddress());
-						Employees employees = employeesDao.getEmployeeByUserIdAndOrgLocationsId(candiate.getConsultantUser().getId(), candiate.getOrgLocationId().getId());
-						if(employees != null) {
-							daywiseDTO.setEmployeeId(String.valueOf(employees.getEmployeeId()));
-							if(employees.getDepartmentId() != null) {
-								daywiseDTO.setDepartmentName(employees.getDepartmentId().getDepartmentName());
+				
+				/*if(daywiseDTO.getProjectTerimationDate() == null || (daywiseDTO.getProjectTerimationDate() != null && daywiseDTO.getProjectTerimationDate().after(daywiseDTO.getTimeEntryDate()))) {*/
+					if(daywiseDTO.getParentCandidteId() != null) {
+						Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
+						if(candiate != null && candiate.getConsultantUser() != null) {
+							daywiseDTO.setCandidateLocation(candiate.getOrgLocationId().getOrgLocationAddress());
+							Employees employees = employeesDao.getEmployeeByUserIdAndOrgLocationsId(candiate.getConsultantUser().getId(), candiate.getOrgLocationId().getId());
+							if(employees != null) {
+								daywiseDTO.setEmployeeId(String.valueOf(employees.getEmployeeId()));
+								if(employees.getDepartmentId() != null) {
+									daywiseDTO.setDepartmentName(employees.getDepartmentId().getDepartmentName());
+								}
 							}
 						}
 					}
-				}
-				daywiseReportList.add(daywiseDTO);
+					daywiseReportList.add(daywiseDTO);
+				/*}*/
+			
 			}
 		}
 		
@@ -768,6 +791,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		String query = "SELECT Q1.*  "
 				+"FROM ( "
 				+ "(SELECT DATE_FORMAT(TDE.TIMESHEET_DATE,"+orgDateFormat+") as timesheetDate,"
+				+ " TDE.TIMESHEET_DATE as timeEntryDate,"
 				+ " TDE.ID as timeEntryId,"
 				+ " TDE.BILLABLE_HOURS as billableHrs,"
 				+ " TDE.TICKET_NUMBER as ticketNo,"
@@ -788,6 +812,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " SAH.UPDATED_DATE AS approvedDate,"
 				+ " SAH.FREQUENCY_START_DATE AS sahFrequenchStartDate,"
 				+ " SAH.FREQUENCY_END_DATE AS sahFrequenchEndDate,"
+				+ " PMH.PROJECT_TERMINATION_DATE AS projectTerimationDate,"
 				+ " CANLOC.LOCATION AS candidateLocation "
 				+ " FROM SUBMISSION_APPROVER_HIERARCHY SAH,TIMESHEET_DAY_ENTRIES TDE "
 				+ " INNER JOIN PROJECT_TASKS PT ON PT.ID = TDE.PROJECT_TASK_ID "
@@ -801,6 +826,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN ORG CANORG ON CANORG.ID = CANLOC.ORG_ID "
 			    + "   LEFT JOIN CANDIDATE ACANLOC ON ACANLOC.MASTER_CANDIDATE_ID = PM.MASTER_CANDIDATE_ID  AND ( ACANLOC.ORG_LOCATION_ID = '"+orgloc.getId()+"' OR CANORG.ID =  '"+orgloc.getOrgId()+"' )"
 			    			       
+			    //To get project member details
+				
+		        + "   LEFT JOIN PROJECT_MEMBERS_HISTORY PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID "
+		        
 			    //To get Employee and department details
 				+ "   LEFT JOIN USER U ON U.ID = CAN.CONSULTANT_USER_ID "
 			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
@@ -830,6 +859,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " ( "
 				+ "   SELECT "
 				+ "   DATE_FORMAT(AL.APPLY_LEAVE_DATE,"+orgDateFormat+") AS timesheetDate,"
+				+ "   AL.APPLY_LEAVE_DATE as timeEntryDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
 				+ "        WHEN LT.LEAVE_TYPE ='Billable'  THEN AL.APPLIED_HOURS " 
@@ -858,6 +888,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS approvedDate,"
 				+ "   NULL AS sahFrequenchStartDate,"
 				+ "   NULL AS sahFrequenchEndDate,"
+				+ "   PMH.PROJECT_TERMINATION_DATE AS projectTerimationDate,"
 				+ "   CANLOC.LOCATION AS candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
 				+ "   INNER JOIN PROJECTS PROJ ON PROJ.ID = PM.PROJECT_ID "
@@ -873,6 +904,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN USER_ROLE UR ON UR.USER_ID = U.ID AND UR.ORG_LOCATIONS_ID = ACANLOC.ORG_LOCATION_ID "
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
+			    
+  				//To get project member details
+				
+		        + "   LEFT JOIN PROJECT_MEMBERS_HISTORY PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID "
 				
 			    //To get user leave details
 				+ "   LEFT JOIN USER_LEAVE LV ON LV.USER_ID = U.ID "
@@ -889,6 +924,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ " ( "
 				+ "   SELECT "
 				+ "   DATE_FORMAT(HRD.DAY,"+orgDateFormat+") AS timesheetDate,"
+				+ "   HRD.DAY as timeEntryDate,"
 				+ "   NULL AS timeEntryId,"
 				+ "   (  CASE" 
 				/*+ "        WHEN HD.BILLABLE_TYPE ='Billable'  THEN HD.ORG_AVG_HRS " */
@@ -920,6 +956,7 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "   NULL AS approvedDate,"
 				+ "   NULL AS sahFrequenchStartDate,"
 				+ "   NULL AS sahFrequenchEndDate,"
+				+ "   PMH.PROJECT_TERMINATION_DATE AS projectTerimationDate,"
 				+ "   CANLOC.LOCATION AS candidateLocation "
 				+ "   FROM PROJECT_MEMBERS PM "
 				+ "   INNER JOIN PROJECTS PROJ ON PROJ.ID = PM.PROJECT_ID "
@@ -936,6 +973,10 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 			    + "   LEFT JOIN EMPLOYEE EMP ON EMP.USER_ID = U.ID AND EMP.ORG_LOCATIONS_ID = UR.ORG_LOCATIONS_ID "
 			    + "   LEFT JOIN DEPARTMENT DEP ON DEP.ID = EMP.DEPARTMENT_ID "
 			    
+  				//To get project member details
+				
+		        + "   LEFT JOIN PROJECT_MEMBERS_HISTORY PMH ON PMH.PROJECT_MEMBERS_ID = PM.ID "
+			    
 			    + "   LEFT JOIN HOLIDAY_RESTRICT_DAYS HRD ON HRD.ORGLOCATION_ID = CAN.WORK_LOCATION "
 			    + "   LEFT JOIN HOLIDAY HD ON HD.ID = HRD.HOLIDAY_ID "
 				+ "   WHERE "+subQuery
@@ -947,20 +988,23 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 		reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();
 		if(reportList != null && !reportList.isEmpty()) {
 			for(DayWiseTimesheetReoprtsListDTO daywiseDTO : reportList) {
-				if(daywiseDTO.getParentCandidteId() != null) {
-					Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
-					if(candiate != null && candiate.getConsultantUser() != null) {
-						daywiseDTO.setCandidateLocation(candiate.getOrgLocationId().getOrgLocationAddress());
-						Employees employees = employeesDao.getEmployeeByUserIdAndOrgLocationsId(candiate.getConsultantUser().getId(), candiate.getOrgLocationId().getId());
-						if(employees != null) {
-							daywiseDTO.setEmployeeId(String.valueOf(employees.getEmployeeId()));
-							if(employees.getDepartmentId() != null) {
-								daywiseDTO.setDepartmentName(employees.getDepartmentId().getDepartmentName());
+				/*if(daywiseDTO.getProjectTerimationDate() == null || (daywiseDTO.getProjectTerimationDate() != null && daywiseDTO.getProjectTerimationDate().after(daywiseDTO.getTimeEntryDate()))) {*/
+					if(daywiseDTO.getParentCandidteId() != null) {
+						Candidate candiate = candidateDao.getCandidateByCandidateId(daywiseDTO.getParentCandidteId().longValue());
+						if(candiate != null && candiate.getConsultantUser() != null) {
+							daywiseDTO.setCandidateLocation(candiate.getOrgLocationId().getOrgLocationAddress());
+							Employees employees = employeesDao.getEmployeeByUserIdAndOrgLocationsId(candiate.getConsultantUser().getId(), candiate.getOrgLocationId().getId());
+							if(employees != null) {
+								daywiseDTO.setEmployeeId(String.valueOf(employees.getEmployeeId()));
+								if(employees.getDepartmentId() != null) {
+									daywiseDTO.setDepartmentName(employees.getDepartmentId().getDepartmentName());
+								}
 							}
 						}
 					}
-				}
-				daywiseReportList.add(daywiseDTO);
+					daywiseReportList.add(daywiseDTO);
+				/*}*/
+				
 			}
 		}
 		

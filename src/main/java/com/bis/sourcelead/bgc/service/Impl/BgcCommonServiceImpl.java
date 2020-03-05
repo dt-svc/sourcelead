@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
 import com.bis.sourcelead.bgc.dao.BgcCommonDao;
-import com.bis.sourcelead.bgc.dao.Impl.BgcCommonDaoImpl;
 import com.bis.sourcelead.bgc.dto.BgcCandidateDetailsDTO;
 import com.bis.sourcelead.bgc.dto.BgcComponentDTO;
 import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
@@ -33,22 +32,21 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
-import com.bis.sourcelead.dto.CandidateEducationDTO;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateEducation;
 import com.bis.sourcelead.entity.CandidateEmployers;
 import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.OrgSpoc;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateGlobalService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgSpocService;
+import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.BackgroundCheckExportUtil;
@@ -85,6 +83,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Autowired
 	BackgroundCheckExportUtil backgroundCheckExportUtil;
 	
+	@Autowired
+	UserService userService;
 	
 	@Override
 	public BgcCandidateDetails saveBgcCandidateDetails(BgcCandidateDetailsDTO bgcCandidateDetailsDto, User user, OrgLocations orgLocations) {
@@ -399,8 +399,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		return bgcCommonDao.getBgcComponentListByOrgLocationId(bgcComponentDTO, searchValue, orgLocations);
 	}
 	@Override
-	public List<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(Long orgLocationId) {
-		return bgcCommonDao.getBgcOrgcTemplateListByOrgLocationId(orgLocationId) ;
+	public ResponseList<BgcTemplateDTO> getBgcOrgcTemplateListByOrgLocationId(BgcTemplateDTO bgcTemplateDTO,String searchValue, OrgLocations orgLocations) {
+		return bgcCommonDao.getBgcOrgcTemplateListByOrgLocationId(bgcTemplateDTO, searchValue, orgLocations) ;
 	}
 	@Override
 	public String saveOrUpdateBgcStatusListByOrgLocationId(BgcStatusDTO bgcStatusDTO, User user, OrgLocations orgLocations) {
@@ -474,5 +474,51 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public String deleteBgcComponentById(Long componentId) {
 		return bgcCommonDao.deleteBgcComponentById(componentId);
+	}
+	@Override
+	public List<BgcStatus> getBgcUniqueStatusListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcUniqueStatusListByOrgLocationId(orgLocationId);
+	}
+	@Override
+	public List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId) {
+		return bgcCommonDao.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
+	}
+	@Override
+	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user,
+			OrgLocations orgLocations) {
+		BgcTemplate  bgcTemplate = new BgcTemplate();
+		if(bgcTemplateDTO.getId() != null) {
+			bgcTemplate = bgcCommonDao.getBgcTemplateDetailsById(bgcTemplateDTO.getId());
+		}
+		
+		Date date = new Date();
+		bgcTemplate.setOrgLocationId(orgLocations);
+        Date currentDate = commonUtil.orgLocationCommonDate(date, orgLocations);
+        bgcTemplate.setName(bgcTemplateDTO.getName());
+        bgcTemplate.setDescription(bgcTemplateDTO.getDescription());
+        bgcTemplate.setStatusString(bgcTemplateDTO.getStatusString());
+        bgcTemplate.setComponentString(bgcTemplateDTO.getComponentString());
+        bgcTemplate.setConfigureType(bgcTemplateDTO.getConfigureType());
+        bgcTemplate.setStatus(Constants.RECORD_ACTIVE);
+		if(bgcTemplateDTO.getId() == null) { // for new record creation 
+			bgcTemplate.setCreatedBy(user);
+			bgcTemplate.setCreatedDate(currentDate);
+			bgcTemplate.setOrgLocationId(orgLocations);
+			bgcTemplate.setUuid(SourceLeadRandomCodeHelper.generateRandomUUID()); // need to add random UUID for the BGC Template Details.
+			bgcTemplate.setUpdatedBy(user);
+			bgcTemplate.setUpdatedDate(currentDate);
+		}else { // for update record 
+			bgcTemplate.setUpdatedBy(user);
+			bgcTemplate.setUpdatedDate(currentDate);
+		}
+		return bgcCommonDao.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplate, orgLocations);
+	}
+	@Override
+	public BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid) {
+		return bgcCommonDao.getBgcTemplateDetailsByUuid(uuid);
+	}
+	@Override
+	public String deleteBgcTemplateByUuid(String templateUuid) {
+		return bgcCommonDao.deleteBgcTemplateByUuid(templateUuid);
 	}
 }
