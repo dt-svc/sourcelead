@@ -1430,6 +1430,14 @@ function imageCancel(){
 										</div>
 						  </div>
 						  
+						  <div class="col-md-8 mt5">
+						  <label>Source</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="candidateSource" name="candidateSource">
+								</select>
+							 </div>
+						 </div>
+						  
 						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
@@ -1459,7 +1467,7 @@ function imageCancel(){
  <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
-      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags(); getCandidateSourceList();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
       </span>
       
       <ul class="pull-right list-unstyled list-inline">
@@ -2344,6 +2352,7 @@ function getCities(){
 	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
+	    $("#candidateSource").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
@@ -2765,6 +2774,7 @@ function minMaxExperience(){
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
 	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
+	    $("#candidateSource").val('').trigger("chosen:updated");
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();
@@ -2805,7 +2815,7 @@ function minMaxExperience(){
 	     $("#canVisa").val('');
 	     $("#canTags").val('');
 	     $("#primarySkill").val('');
-	    
+	     $("#candidateSource").val('');
 	}
 </script>
 
@@ -3424,4 +3434,27 @@ function goToWalletList(){
 }
 
 </script> 
+
+<script>
+    function getCandidateSourceList(){
+ 		 $.ajax({
+		    	type: "GET",
+		        url: atsUrl+"/getCandidateSourceList?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+			        		
+					}
+		        	$("#candidateSource").empty();
+			        $("#candidateSource").append(output);
+			        $('#candidateSource').trigger("chosen:updated");
+		        },
+		    }); 
+   }
+   </script>
+   
 <jsp:include page="../masterFooter.jsp" /> 
