@@ -57,7 +57,7 @@
                 <span class="repSearchIcon" onclick="getCandidateDetailsFromMarketcart()"></span></li>
                  <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <li class="noMar">
-                <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary" id="checkOutButton1"><i class="fa fa-send paddingRight"></i>Check Out</button>
+                <button type="button" onclick="initMarketplacePayment()" class="btn btn-primary tblminwidth-90" id="checkOutButton1"><i class="fa fa-send paddingRight"></i>Check Out</button>
                 </li>
                 </sec:authorize>
             </ul>
@@ -122,7 +122,7 @@
                 <sec:authorize access="hasRole('PURCHASE_PROFILE')">
               <div class="cartInvoiceBodyFooter">
                 <div class="clearfix">
-                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default" href="${SourceLeadWeb_atsUrl}/globalMarketplacePage">Cancel</a> </div>
+                  <div class="pull-right"> <a onclick="initMarketplacePayment()" href="javascript:void(0)" class="btn btn-primary mr tblminwidth-90" id = "checkOutButton2"><i class="fa fa-send paddingRight"></i>Check Out</a> <a class="btn btn-default tblminwidth-90" href="${SourceLeadWeb_atsUrl}/globalMarketplacePage">Cancel</a> </div>
                 </div>
               </div>
               </sec:authorize>
@@ -236,8 +236,8 @@
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetMarketCartFilter();" class="btn btn-sm btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn tblminwidth-90 btn-primary" type="button">
+        <input value="Reset" id="clear_search" onclick="resetMarketCartFilter();" class="btn tblminwidth-90 btn-default" type="button">
       </div>
     </div>
   </div>
@@ -415,7 +415,7 @@ function deleteCandidateFromMarketcart(candidateName, candidateUuid){
 	result = result +"	<div class='project_inn_mask'></div>";
 	result = result +"	<div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"  <div class='modal-body'> <b>Do you want to remove "+candidateName+" from Market cart!</b> </div>";
-	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcartByCandidateUuid(\""+candidateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCart();'></b>";
+	result = result +"	<b href='javascript:void(0)'><input class='btnBg_blue' id='confirm-id' type='button' value='Delete' onclick='deleteCandidateFromMarketcartByCandidateUuid(\""+candidateUuid+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelMarketCart();'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
 	$("#remove_marketCart_pop").slideDown(200);

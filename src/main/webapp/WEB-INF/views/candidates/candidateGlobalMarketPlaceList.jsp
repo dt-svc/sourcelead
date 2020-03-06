@@ -394,8 +394,8 @@
 				  </div>
 				  <div class="clearfix advancedsearch-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList('gMarketPlace'); closePop();minMaxExperience();" class="btn btn-sm btn-success"/>
-                               <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn btn-sm btn-primary"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList('gMarketPlace'); closePop();minMaxExperience();" class="btn tblminwidth-90 btn-primary"/>
+                               <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn tblminwidth-90 btn-default"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>
 					  </div>
@@ -535,8 +535,8 @@
 		</div>
 		<div class="clearfix advancedsearch-footer">
 			<div class="pull-right mr">
-				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();getGloblaMarketPlaceCandidates('listModel');<!-- candidateList('gMarketPlace'); -->" class="btn btn-sm btn-success" />
-				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn btn-sm btn-primary" />
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();getGloblaMarketPlaceCandidates('listModel');<!-- candidateList('gMarketPlace'); -->" class="btn tblminwidth-90 btn-primary" />
+				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn tblminwidth-90 btn-default" />
 			</div>
 		</div>
 </div>
@@ -551,7 +551,7 @@ function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, gridType
 		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +" <div class='modal-body'><b>Do you want to remove "+candidateName+" from the cart!</b></div>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+gridType+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' class='btnBg_blue' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+gridType+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
 		result = result +"	</div>";
 		$("#popUpDeleteCart").empty().append(result);
 		$("#remove_marketCart_pop").slideDown(200);

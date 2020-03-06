@@ -393,8 +393,8 @@
     <div class="form-footer clearfix">
       <div class="col-lg-12">
         <div class="pull-right">
-          <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary">
-          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/professionalProfile'/>'" class="btn btn-default ml">
+          <input type="button" value="Save" id="store_candidate" onclick="storeCandidate();" class="btn btn-primary tblminwidth-90">
+          <input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/professionalProfile'/>'" class="btn btn-default ml tblminwidth-90">
         </div>
       </div>
     </div>
