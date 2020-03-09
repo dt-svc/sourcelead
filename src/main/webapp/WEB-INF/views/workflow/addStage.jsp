@@ -448,10 +448,18 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
           
 		<c:choose>
 		<c:when test="${isStageViewed eq true}">
-		<c:if test="${not empty requirementWorkFlowStagesDTO}">
+		
+		<c:choose>
+		<c:when test="${not empty requirementWorkFlowStagesDTO}">
 		<input value="<< Back To View Workflow" class="btn btn-primary" type="button" id ="backToViewWorkflowButton"
             onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
-		</c:if>
+		</c:when>
+		<c:otherwise>
+		<input value="<< Back To View Workflow" class="btn btn-primary" type="button" id ="backToViewWorkflowButton"
+            onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${workflowUuid}'/>');">
+		</c:otherwise>
+		</c:choose>
+		
 		</c:when>
 		<c:otherwise>
 		<c:if test="${not empty requirementWorkFlowStagesDTO}">  
