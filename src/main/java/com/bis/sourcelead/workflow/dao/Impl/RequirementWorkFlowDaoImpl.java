@@ -456,7 +456,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		logger.debug("Running getRequirementWorkFlowStagesByUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlowStages stages where stages.uuid =:uuid and stages.orgLocationId.id =:orgLocationId";
+			String query = "from RequirementWorkFlowStages stages where stages.uuid =:uuid and (stages.orgLocationId.id =:orgLocationId or stages.orgLocationId.id is null)";
 			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", orgLocationId).uniqueResult();
 			return requirementWorkFlowStages;
 		}catch(Exception e) {
