@@ -41,6 +41,7 @@ import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -753,18 +754,19 @@ public class BackgroundController {
 		}
 	// below method is for saving BGC Template details by ORG LOCATION id by SRINIVAS SABBU.
 	@RequestMapping(value = { "/SaveOrUpdateBgcTemplate"}, method = RequestMethod.POST)
-	public  @ResponseBody Response<String>  saveOrUpdateBgcTemplate(BgcTemplateDTO bgcTemplateDTO,
+	public  @ResponseBody Response<Object>  saveOrUpdateBgcTemplate(BgcTemplateDTO bgcTemplateDTO,
 			HttpServletRequest request){
-		Response<String> response = new Response<>();
+		Response<Object> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (user != null) {
 			try {
 				if (Validator.validate(bgcTemplateDTO)) {
-					bgcCommonService.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplateDTO, user , orgLocations);
+					BgcTemplate bgcTemplate=bgcCommonService.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplateDTO, user , orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(bgcTemplate);
 				} else {
 					response.setObject("DataMissing");
 					response.setResponse(Result.INVALID_DATA.name());

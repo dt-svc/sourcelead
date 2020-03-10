@@ -7,7 +7,7 @@
 <jsp:include page="../masterHeader.jsp" />
 <jsp:include page="../masterSideNav.jsp" />
 <script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcCandidate.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bgcTemplateComponentFormBuilder.js"></script>
+
        <!-- Content Area -->
     <!-- Content Area -->
   <section class="content-wraper">
@@ -181,6 +181,8 @@ function  saveBgcTemplate() {
 			data : formData,
 			url : vmsUrl + "/bgc/SaveOrUpdateBgcTemplate",
 			success : function(result) {
+				console.log(result.object.id);
+				console.log(result.object.id);
 				if (result.response == "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response == "SUCCESS") {

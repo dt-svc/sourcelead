@@ -3,8 +3,11 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+ <script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcTemplateComponentFormBuilder.js"></script>
+
              <label class="col-md-4 mt10">Component Type<span class="colorRed ml5">*</label>
             <div class="col-md-6 padding_right">
 	            <select multiple class="chosen-select" data-placeholder="Select Component" id="componentString" name="componentString" field-name="Component Type"  data-validation="required">
@@ -28,10 +31,10 @@
           </a>
             <a class="fa fa-refresh btn btn-primary newRefreshbtn" onclick ="refreshOrgComponentList();"></a>
           </div>
-    
+      
      <script>
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
-     var sourceleadUrl = '${SourceLeadWeb_vmsUrl}';
+     var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
      var templateUuid ='${bgcTemplateDto.uuid}';
      function refreshOrgComponentList(){
     	 $.ajax({
@@ -46,6 +49,74 @@
      $("#addComponentType").click(function() {
     	  $("#componenttypepop, .mask").fadeIn();
     });
+     
+     var result =""
+     var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
+     var templateUuid =' ';
+	  var idValue ="";
+     $('#componentString').chosen().change(function(e, params){
+         var result =""  	
+          if (params.selected) {
+        	  var selCompDivText =  $('#componentString [value='+params.selected+']').text();
+        	   idValue= selCompDivText.replace(/ /g, "_");
+		       	result= result+'<div class="col-md-10" id ="'+idValue+'">';
+		     	result= result+'  <div class="quetionwidget mb">';
+		     	result= result+' <div class="clearfix row">';
+		     	result= result+' <div class="col-md-2 col-md-offset-10">';
+		     	result= result+'     <div class="dropdown">';
+		     	result= result+'    <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown'+idValue+'"  aria-expanded="false">Add Type';
+		     	result= result+'   <span class="caret"></span></button>';
+		     	result= result+'     <ul id="add-field9'+idValue+'" class="dropdown-menu pull-right">';
+		     	result= result+'        <li><a id="add-text9'+idValue+'" data-type="text" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Box</a>';
+		     	result= result+'         </li><li><a id="add-textarea9'+idValue+'" data-type="textarea" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Area</a></li>';
+		     	result= result+'        <li><a id="add-select9'+idValue+'" data-type="select" href="javascript:void(0)"><span class="fa fa-caret-down">&nbsp;&nbsp;&nbsp;</span>Select Box</a></li>';
+		     	result= result+'         <li><a id="add-checkbox9'+idValue+'"  data-type="checkbox" href="javascript:void(0)"><span class="fa fa-check-square-o">&nbsp;&nbsp;</span>Check Box</a></li>';
+		     	result= result+'          <li><a id="add-radio9'+idValue+'"  data-type="radio" href="javascript:void(0)"><span class="fa fa-check-circle-o">&nbsp;&nbsp;</span>Radio Button</a></li>';
+		     	result= result+'         <li><a id="add-comments9'+idValue+'"  data-type="comments" href="javascript:void(0)"><span class="fa fa-comment-o">&nbsp;&nbsp;</span>Comments</a></li>';
+		     	result= result+'          <li><a id="add-star9'+idValue+'" data-type="star" href="javascript:void(0)"><span class="fa fa-star-o">&nbsp;&nbsp;</span>Star</a></li>';
+		     	result= result+'          <li><a id="add-scale9'+idValue+'"  data-type="scale" href="javascript:void(0)"><span class="fa fa-sliders">&nbsp;&nbsp;</span>Scale</a></li>';
+		     	result= result+'         <li><a id="add-calendar9'+idValue+'"  data-type="calendar" href="javascript:void(0)"><span class="fa fa-calendar">&nbsp;&nbsp;</span>Calendar</a></li>';
+		     	result= result+'       <li><a id="add-file9'+idValue+'"  data-type="file" href="javascript:void(0)"><span class="fa fa-cloud-upload">&nbsp;&nbsp;</span>File Upload</a></li>';
+		     	result= result+'     </ul>';
+		     	result= result+'    </div>';
+		     	result= result+'    </div>';
+		     	result= result+'  </div>';
+		       
+		     	result= result+'      <div class="checkbox-new">';
+		     	result= result+'         <label for="address" class="checkbox-custom-label"></label>';
+		     	result= result+selCompDivText;
+		     	result= result+'      </div>';
+		     	result= result+'     <div class="clearfix"></div>';
+		     	result= result+'      <div class="row mt">';
+		     	result= result+'        <div class="col-md-6">';
+		     	result= result+'           <label>Sent to</label>';
+		     	result= result+'           <div class="clearfix">';
+		     	result= result+'              <input type="text" class="form-control">';
+		     	result= result+'            </div>';
+		     	result= result+'      </div>';
+		     	result= result+'       </div>';
+		     	
+		     	result= result+ ' <div id="sjfb-wrap"> ';
+		     	result= result+ '<form id="sjfb'+idValue+'" novalidate> ';
+		     	
+		        result= result+'     <div id="form-fields'+idValue+'"> ';
+		     	result= result+'     </div>';
+		     	result= result+'   </div>';
+		     	
+		     	result= result+'   </form>';
+		     	result= result+'   </div>';
+		    	result= result+'  	<div id="popUp"></div>';
+		    	result= result+'   <div id="choicepopUp"></div>';
+		     	
+		     	$('#parent_bgc_div').prepend(result);
+        }else{
+        	var removeCompDivId =  $('#componentString [value='+params.deselected+']').text().replace(/ /g, "_");
+        	$('#'+removeCompDivId).remove();
+        }
+         customizeFields(sourceleadUrl,templateUuid);
+     });	
+    
+
      function  addBgcComponent() {
     		if ($('#bgcComponentFrm').validate(false, validationSettings)) {
     			var formData = getFormData("bgcComponentFrm");
@@ -80,3 +151,5 @@
     	}
    
      </script>
+     
+     
