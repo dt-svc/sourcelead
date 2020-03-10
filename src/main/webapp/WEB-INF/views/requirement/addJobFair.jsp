@@ -206,8 +206,8 @@
 		<div class="clearfix footerstyelsNew">
 			<div class="col-lg-12">
 				<div class="pull-right">
-					<input value="Save" class="btn btn-success btnSuccess" type="button" onclick="addJobFair();">
-					<input value="Cancel" class="btn btn-default ml10" type="button" onclick="redirectToJobFairsList();">
+					<input value="Save" class="btn btn-success btnSuccess tblminwidth-90" type="button" onclick="addJobFair();">
+					<input value="Cancel" class="btn btn-default ml10 tblminwidth-90" type="button" onclick="redirectToJobFairsList();">
 				</div>
 			</div>
 		</div>

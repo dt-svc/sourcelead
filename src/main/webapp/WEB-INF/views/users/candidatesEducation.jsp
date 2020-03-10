@@ -327,7 +327,7 @@ function addEducation(candidateId) {
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                                                                                                                                                       ';
 	result = result  +'                  <div class="clearfix mr">                                                                                                            ';
-    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
+    result = result +'<input type="button" value="Add" name="btnAddPr" id="save_button" class="btn tblminwidth-90 btn-primary pull-right" onClick ="candidateEducationStore('+candidateId+');" />'; 
 	/* result = result  +'                  <input onClick ="candidateEmployersStore('+candidateId+');" type="submit" value="Add" class="btn btn-sm btn-primary pull-right"/>                                                       '; */
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
@@ -569,7 +569,7 @@ result = result  +'                  <div class="clearfix mr"> ';
 result = result	+ '	                   <input type="hidden"  value="'+candidateEducationId+'" id="candidateEducationId"  name="candidateEduId" >';
 result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
 
-result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn btn-sm btn-primary pull-right">Update</button>';
+result  = result + '<button type="button"  id="save_button"  onClick ="updateCandidateEducation('+candidateId+');" class="btn tblminwidth-90 btn-primary pull-right">Update</button>';
 result = result  +'                  </div>';
 
 result = result  +'                </div>   ';
@@ -804,7 +804,7 @@ function removeEducation(candidateEducationId, candidateId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Education</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteSelectedEducation("+candidateEducationId+","+candidateId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deleteEduPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);

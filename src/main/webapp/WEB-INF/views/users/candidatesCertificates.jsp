@@ -408,11 +408,11 @@ function addCertification(candidateId) {
 		result  = result + '                 <div class="clearfix mr">';
 		if(candidateType == "Candidates"){
 			result = result +'<sec:authorize access="hasAnyRole(\'ROLE_ADD_CANDIDATE_CERTIFICATION\',\'ROLE_CROWDSOURCING_CANDIDATES\')"> ';
-			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
+			result  = result + '                   <button type="button" class="btn tblminwidth-90 btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 			result = result +' </sec:authorize>';
 		}else{
 			result = result +'<sec:authorize access="hasRole(\'ROLE_ADD_ASSOCIATE_CERTIFICATION_DETAILS\')"> ';
-			result  = result + '                   <button type="button" class="btn btn-sm btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
+			result  = result + '                   <button type="button" class="btn tblminwidth-90 btn-primary pull-right" id="addCandidate"  onclick="storeCertificate('+candidateId+');"  >Add</button>';
 			result = result +' </sec:authorize>';
 		}
 		
@@ -580,7 +580,7 @@ function addCertification(candidateId) {
 					result = result	+ '	                   <input type="hidden"  value="'+candidateCertificationId+'" id="candidateCertificationId"  name="candidatecertificateID" >';
 					result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
 				
-					result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
+					result  = result + '                   <button type="button"  id="addCandidate"  onClick ="updateCandidateCertification('+ candidateId+ ','+ candidateCertificationId+ ');" class="btn tblminwidth-90 btn-primary pull-right"  >Update</button>';
 					result  = result + '                 </div>';
 					result  = result + '               </div>';
 					result  = result + '              </form>';
@@ -739,7 +739,7 @@ function removeCertification(candidateCertificationId, candidateId){
 	result = result +"	   <div id='remove_user_pop_certificates' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Certification</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteSelectedCertification("+candidateCertificationId+","+candidateId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deleteCerPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteCertificationPopUp").empty();
 	$("#deleteCertificationPopUp").append(result);

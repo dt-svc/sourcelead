@@ -39,7 +39,7 @@
     <div class="form-footer clearfix row">
               <div class="col-lg-12">
                 <div class="pull-right">
-                  <input type="button" value="Go to list"  class="btn btn-primary ml" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'"  class="btn btn-default ml">
+                  <input type="button" value="Go to list"  class="btn btn-primary ml tblminwidth-90" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'"  class="btn btn-default ml">
                 </div>
               </div>
     </div>

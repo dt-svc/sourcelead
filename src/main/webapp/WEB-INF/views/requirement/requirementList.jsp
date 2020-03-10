@@ -386,9 +386,9 @@ function statusvalidating(id){
 	<div class="clearfix advancedsearch-footer">
 		<div class="pull-right mr">
 			<input type="button" value="Search" id="search_requiremet"
-				onclick="requirementListCheck('','','advanceSearch','${SourceLeadWeb_atsUrl}');" class="btn btn-sm btn-success" />
+				onclick="requirementListCheck('','','advanceSearch','${SourceLeadWeb_atsUrl}');" class="btn tblminwidth-90 btn-primary" />
 			<input type="button" value="Reset" id="clear_search"
-				onclick="clearSearch();" class="btn btn-sm btn-primary" />
+				onclick="clearSearch();" class="btn tblminwidth-90 btn-default" />
 		</div>
 	</div>
 </div>
@@ -946,7 +946,7 @@ function exportToPdf(type) {
 			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Jobs List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#empty_requirement_pop").slideDown(200);
@@ -1028,7 +1028,7 @@ function exportToExcel(type) {
 			result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Jobs List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#empty_requirement_pop").slideDown(200);
@@ -1407,9 +1407,9 @@ function refreshGoogleApiCity(cityId){
 			<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" 
-								onclick="closeFilter();requirementList('list','${SourceLeadWeb_atsUrl}');" class="btn btn-sm btn-success" />
+								onclick="closeFilter();requirementList('list','${SourceLeadWeb_atsUrl}');" class="btn tblminwidth-90 btn-primary" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="resetJobFilter();" class="btn btn-sm btn-primary" />
+								onclick="resetJobFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 							
