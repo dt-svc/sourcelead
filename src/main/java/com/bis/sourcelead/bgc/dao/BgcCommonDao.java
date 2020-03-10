@@ -64,7 +64,7 @@ public interface BgcCommonDao {
 
 	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
 
-	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
+	BgcTemplate saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
 
 	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
 	

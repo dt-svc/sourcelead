@@ -561,11 +561,11 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	}
 
 	@Override
-	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations) {
+	public BgcTemplate saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(bgcTemplate);
-			return Constants.SUCCESS;
+			return bgcTemplate;
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error("Exception caught while saving BGC Template Details in Database in Database "+e.getMessage());

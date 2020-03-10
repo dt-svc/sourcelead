@@ -484,7 +484,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		return bgcCommonDao.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
 	}
 	@Override
-	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user,
+	public BgcTemplate saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user,
 			OrgLocations orgLocations) {
 		BgcTemplate  bgcTemplate = new BgcTemplate();
 		if(bgcTemplateDTO.getId() != null) {
