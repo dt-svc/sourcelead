@@ -166,9 +166,9 @@ function bgcCandidate(){
 							result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
 							result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
 						}else {
-							if(data.ssnNumber != null){
+							if(country !='India' && data.ssnNumber != null){
 								result = result + "<li class='clearfix'><span>SSN Number</span><p>: "+(data.ssnNumber == null ? "--" : data.ssnNumber)+"</p></li>";
-							}else if(data.aadharNumber != null || data.panNumber != null){
+							}else if(country =='India' && (data.aadharNumber != null || data.panNumber != null)){
 								result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
 								result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
 							}	
