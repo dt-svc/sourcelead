@@ -77,6 +77,10 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 	
 	private Long candidateId;
 	
+	private String country;
+	
+	private String ssnNumber;
+	
 	public Long getId() {
 		return id;
 	}
@@ -315,6 +319,22 @@ public class BgcCandidateDetailsDTO extends SearchDTO implements Serializable{
 
 	public void setCandidateId(Long candidateId) {
 		this.candidateId = candidateId;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getSsnNumber() {
+		return ssnNumber;
+	}
+
+	public void setSsnNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
 	
 	
