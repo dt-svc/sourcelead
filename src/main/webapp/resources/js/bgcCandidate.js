@@ -153,11 +153,27 @@ function bgcCandidate(){
 				success : function(data) {
 					var result = "";	
 					if(data != null){
+						var country = data.country;
 						$("#detailsLoading").removeAttr("style");
 						result = result + "<h2>Personal / Identification</h2>";
 						result = result + "<ul>";
-						result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
-						result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
+						
+						//10/march/2020 - vishnu
+						//added if-else block to display the candidate details based on location.
+						if(country == 'United States'){
+							result = result + "<li class='clearfix'><span>SSN Number</span><p>: "+(data.ssnNumber == null ? "--" : data.ssnNumber)+"</p></li>";
+						}else if(country == 'India'){
+							result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
+							result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
+						}else {
+							if(data.ssnNumber != null){
+								result = result + "<li class='clearfix'><span>SSN Number</span><p>: "+(data.ssnNumber == null ? "--" : data.ssnNumber)+"</p></li>";
+							}else if(data.aadharNumber != null || data.panNumber != null){
+								result = result + "<li class='clearfix'><span>Aadhar Card</span><p>: "+(data.aadharNumber == null ? "--" : data.aadharNumber)+"</p></li>";
+								result = result + "<li class='clearfix'><span>PAN Card</span><p>: "+(data.panNumber == null ? "--" : data.panNumber)+"</p></li>";
+							}	
+						}
+						
 						result = result + "<li class='clearfix'><span>Address</span><p>: "+(data.address == null ? "--" : data.address)+"</p></li>";
 						/*result = result + "<li class='clearfix'><span>Family</span><p>: --</p></li>";
 						result = result + "<li class='clearfix'><span>Attach document</span><p>: <a>--<i class='fa fa-download ml'></i></a></p></li>";
