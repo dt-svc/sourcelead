@@ -195,8 +195,8 @@ function addOffer(requirementId){
 				result= result + '	              <div class="clearfix"></div>';
 				result= result + '<div class="clearfix mr mb">';
 				result = result + '<div class="pull-right">';
-				result = result +'				  <button type="submit" id="add_offer" onclick="validateRateAndRateType();" class="btn btn-sm btn-primary mr">Submit</button>';
-				result= result + '	              <input type="button" class="btn btn-sm btn-default" value="Cancel" onclick="cancelAddOffer();" >';
+				result = result +'				  <button type="submit" id="add_offer" onclick="validateRateAndRateType();" class="btn tblminwidth-90 btn-primary mr">Submit</button>';
+				result= result + '	              <input type="button" class="btn tblminwidth-90 btn-default" value="Cancel" onclick="cancelAddOffer();" >';
 				result= result + '	            </div>';
 				result= result + '	          </div>';
 				result= result + '</div>';

@@ -44,7 +44,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="${SourceLeadWeb_atsUrl}/downloadInterviewTrackerTemplate"
-								class="btn btn-success btn-block" title="Download Profile Tracker Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Interview Schedule Tracker
+								class="btn btn-primary btn-block" title="Download Profile Tracker Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Interview Schedule Tracker
 							</a>
 						</div>
 						
@@ -56,7 +56,7 @@ var uploadflag= true;
 										value="Import">
 								</div>
 								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
+									<input type="reset" class="btn btn-default" value="Reset"
 										onClick="resetSubmissionTemplate();">
 								</div>
 							</div>

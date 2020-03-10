@@ -26,14 +26,14 @@
             
             <div class="clearfix footerstyelsNew">
 			      <div class="col-md-6">
-                 <input type="button" value="Previous" onclick="shiftTab();" class="btn btn-default">
+                 <input type="button" value="Previous" onclick="shiftTab();" class="btn btn-default tblminwidth-90">
 			     </div>
 			     <div class="col-md-6">
                    <div class="pull-right">
                    <!--  <input value="Skip" class="btn btn-default mr10" onclick="saveAssociateleave();" type="button"> -->
-                    <input value="Save &amp; Finish" class="btn btn-success btnSuccess mr" id="save_assoc_leave" type="button" onclick="saveAssociateleave();">
+                    <input value="Save &amp; Finish" class="btn btn-success btnSuccess mr tblminwidth-90" id="save_assoc_leave" type="button" onclick="saveAssociateleave();">
                    <!--  <input value="Cancel" class="btn btn-default ml10" type="button"> -->
-                     <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/usersList'" type="button">
+                     <input value="Cancel" class="btn btn-default ml10 tblminwidth-90" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/usersList'" type="button">
                     </div>
                   </div>
                 </div>

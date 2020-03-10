@@ -280,7 +280,7 @@ function deleteCandidateMarketplaceCart(candidateName, marketPlaceUUID, obj){
 		result = result +"	   <div id='remove_marketCart_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +" <div class='modal-body'><b>Do you want to remove "+candidateName+" from the cart!</b></div>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+obj+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='deleteCandidateMarketCart(\""+candidateName+"\",\""+marketPlaceUUID+"\", \""+obj+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelMarketCartPopup();'></b>";
 		result = result +"	</div>";
 		$("#popUpDeleteCart").empty().append(result);
 		$("#remove_marketCart_pop").slideDown(200);
@@ -923,7 +923,7 @@ function submitRecommendationCandidates(requirementId){
 		 result = result +'</label>';
 		 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
 		 result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		 result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='submitRecommendationCandidatesToJob("+requirementId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSubmitApplicant();'></b>";
+		 result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='submitRecommendationCandidatesToJob("+requirementId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelSubmitApplicant();'></b>";
 		 result = result +"	</div>";
 		 $("#attachResumeDiv").append(result);
 		 $("#remove_user_pop").slideDown(200);
@@ -936,7 +936,7 @@ function submitRecommendationCandidates(requirementId){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please select at least one Candidate</p>";
 		result = result + ' <div id="reasonForInvoiceDiv"/>';
-		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="cancelTermination();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -1053,7 +1053,7 @@ function shareAllRecommendations(requirementId){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";
 			result = result + ' <div id="reasonForInvoiceDiv"/>';
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="cancelTermination();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);

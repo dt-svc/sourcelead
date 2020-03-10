@@ -286,7 +286,8 @@ function clearAlldata(){
 	$('#jobId').val('').trigger('chosen:updated');
 } */
 var reqTable = "";
-function jpagination(url,atsUrl){ 
+function jpagination(url,atsUrl){
+	console.log("url "+url);
 	var selectedColumns = "";
 	$("#jobCustomColumns").each(function () {
 		
@@ -1386,7 +1387,7 @@ function jobForceDelete(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are sure to want to Delete?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirmForceDeleteBtn' type='button' value='Ok' onClick='confirmForceDeleteBtn();'><input class='u_can_color' type='button'  value='Cancel' onClick='closeJobDeleteConformation();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirmForceDeleteBtn' class='btnBg_blue' type='button' value='Ok' onClick='confirmForceDeleteBtn();'><input class='btnBg_white' type='button'  value='Cancel' onClick='closeJobDeleteConformation();'></b>";
 	result = result +"	</div>";
 	$("#deleteJobPopUpDiv").empty();
 	$("#deleteJobPopUpDiv").append(result);
