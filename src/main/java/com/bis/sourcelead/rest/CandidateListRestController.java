@@ -720,6 +720,16 @@ public class CandidateListRestController {
 		}
 		
 		
+		List<String> candidateSourceArray = search.getCandidateSource();
+		if (candidateSourceArray != null && !candidateSourceArray.isEmpty()) {
+			BoolQueryBuilder sourceBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : candidateSourceArray) {
+				sourceBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("candidateSource", keywd));
+			}
+			boolQueryBuilder.must(sourceBoolQueryBuilder);
+		}
+		
+		
 		List<String> candidateTagsArray = search.getCandidateTags();
 		if (candidateTagsArray != null && !candidateTagsArray.isEmpty()) {
 			BoolQueryBuilder tagBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -823,6 +833,7 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateSource", keywd));
 		// QueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
@@ -2123,6 +2134,14 @@ public class CandidateListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<String> tagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.JOBS.getValue(),loginOrgLocation.getId());
 		return tagsList;
+	}
+	
+	@RequestMapping(value = "/getCandidateSourceList")
+	public  List<CandidateSource>  getCandidateSourceList(
+			 HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(), 1);
+		return candidateSourceList;
 	}
 	
 
