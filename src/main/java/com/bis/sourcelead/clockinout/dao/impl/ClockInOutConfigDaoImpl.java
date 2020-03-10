@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,16 +30,23 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutAssociateReportSummaryDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutFiltersDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
 import com.bis.sourcelead.clockinout.util.ClockInOutUtil;
 import com.bis.sourcelead.constants.Constants;
+import com.bis.sourcelead.dao.OrgLocationsDao;
+import com.bis.sourcelead.dao.ProjectClientDao;
 import com.bis.sourcelead.dao.UserDao;
 import com.bis.sourcelead.dto.ProjectassignTasksDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
+import com.bis.sourcelead.entity.ProjectApproverHierarchy;
+import com.bis.sourcelead.entity.ProjectBudget;
+import com.bis.sourcelead.entity.ProjectClients;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.Projects;
 import com.bis.sourcelead.entity.Requirement;
@@ -46,6 +54,7 @@ import com.bis.sourcelead.entity.Tasks;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.enums.Project_Status;
 import com.bis.sourcelead.service.OrgLocationService;
+import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.util.CommonUtil;
 
 @SuppressWarnings("unchecked")
@@ -68,6 +77,15 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	
 	@Autowired
 	private CommonUtil commonUtil;
+	
+	@Autowired
+	ProjectsService projectsService;
+	
+	@Autowired
+	OrgLocationsDao orgLocationsDao;
+	
+	@Autowired
+	ProjectClientDao projectClientDao;
 
 	@Override
 	@Transactional
@@ -231,7 +249,7 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 
 	@Override
 	@Transactional
-	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId)
+	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId,String dateFormat)
 	{
 		ResponseList<ClockInOutTimerDTO> response = new ResponseList<>();
 		List<ClockInOutTimerDTO> projectsTimerList = new CopyOnWriteArrayList<ClockInOutTimerDTO>();
@@ -243,12 +261,12 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			String query = null;
 			Query queryObj = null;
 		
-			if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){
+			/*if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){*/
 				approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+" and pah.status ='1') OR "
-						+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+" and pex.status = '1') OR pc.createdBy.id = "+userId+" "
+						+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+" and pex.status = '1')  "
 						+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') "
 								+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.parentCandidateId.id = "+candidateId+" and pm.status = '1')) ";
-			}
+			/*}*/
 			
 			
 			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId  OR ps.projectMode = 'Finished') and (ps.projectStatus = 'INPROGRESS' OR ps.projectStatus = 'ONHOLD') ";
@@ -878,6 +896,220 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 			        projectQueryObj.setResultTransformer(Transformers.aliasToBean(ClockInOutTimerDTO.class));
 			        List<ClockInOutTimerDTO> projectsList = projectQueryObj.list();
 					return projectsList;
+	}
+
+	@Override
+	@Transactional
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsListByUserId(ProjectsDTO projectsDTO, Long userId,
+			Long orgLocationId, String userRole, Long candidateId) {
+		ResponseList<ProjectDetailsDTO> response = new ResponseList<>();
+		List<Projects> projectsList = null;
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			String approverQuery = "";
+			String projectModeQuery = "";
+			String query = null;
+			Query queryObj = null;
+		
+			/*if(!userRole.equalsIgnoreCase("ROLE_ADMIN") && !userRole.equalsIgnoreCase("ROLE_SOURCELEAD_ADMIN")){*/
+				approverQuery = " and (pc.id IN (select pah.projectClientsId.id from ProjectApproverHierarchy pah where pah.approverUserId = "+userId+" and pah.status ='1') OR "
+						+ " pc.id IN (select pex.projectClientsId.id from ExpenseProjectApproverHierarchy pex where pex.approverUserId = "+userId+" and pex.status = '1')  "
+						+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.id = "+candidateId+" and pm.status = '1') "
+								+ " OR pc.id IN (select pm.projectClientsId.id from ProjectMembers pm where pm.projectMemberCandidteId.parentCandidateId.id = "+candidateId+" and pm.status = '1')) ";
+			/*}*/
+			
+			
+			projectModeQuery = " and (ps.orgLocationsId.org.id = :orgId  OR ps.projectMode = 'Finished') and (ps.projectStatus = 'INPROGRESS' OR ps.projectStatus = 'ONHOLD') ";
+			
+			
+					String projectAccessQuery = "";
+					
+					if(userRole.equalsIgnoreCase("ROLE_ADMIN") && (StringUtils.isNotBlank(projectsDTO.getIsGlobalAccess()) && projectsDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES))){
+								 projectAccessQuery =  " and ("
+					                       + "  ps.id IN(select distinct subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.approverUserId ='"+userId+"' and subpah.status !='0')"
+					                       +" OR "
+					                       + "  ps.id IN( select subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.status = '1' and subpah.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationId+"'))"
+				                           +" OR "
+				                           + "  ps.id IN(select distinct epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.approverUserId ='"+userId+"' and epx.status !='0')"
+					                       +" OR "
+					                       + "  ps.id IN( select epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.status = '1' and epx.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationId+"'))"
+					                       +" )";
+					}else if(userRole.equalsIgnoreCase("ROLE_ADMIN")) {
+						 projectAccessQuery =  " and ("
+			                       + "  ps.id IN( select subpah.projectId.id from ProjectApproverHierarchy subpah where subpah.status = '1' and subpah.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationId+"'))"
+		                           +" OR "
+			                       + "  ps.id IN( select epx.projectId.id from ExpenseProjectApproverHierarchy epx where epx.status = '1' and epx.projectClientsId.orgLocationsId.id IN(select userRole.orgLocations.id from UserRole userRole where userRole.roles.roleName = 'ROLE_ADMIN' and userRole.userState = 'ACTIVE' and userRole.orgLocations.id = '"+orgLocationId+"'))"
+			                       +" )";
+					}
+					
+					
+					query = "from  Projects ps where ps.id IN(select pc.projectId.id from  ProjectClients pc where pc.orgLocationsId.org.id = :orgId and pc.status = 1 "+approverQuery+" ) "+projectModeQuery+"  ";
+			        query = query+projectAccessQuery;
+			
+			         queryObj = session.createQuery(query);
+			
+			queryObj.setLong("orgId", projectsDTO.getOrgId()).list();
+			
+			projectsList = queryObj.list();
+			
+			if(projectsList != null && !projectsList.isEmpty()) {
+				response.setData(getProjectClientAndManagerDetails(projectsList,orgLocationId,userRole,projectsDTO));
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			
+		}
+		return response;
+	}
+	
+	
+	private List<ProjectDetailsDTO> getProjectClientAndManagerDetails(List<Projects> projectsList,Long orgLocationsId,String userRole,ProjectsDTO projectDTO) throws Exception {
+		OrgLocations orglo = orgLocationsDao.getOrgLocations(orgLocationsId);
+		List<ProjectDetailsDTO> projectsDTOList = new ArrayList<>();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");  
+		for (Projects projects :projectsList ){
+			ProjectClients projectClients = null;
+				if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
+					 projects = projectsService.getProjectById(projects.getId());
+					 if(projects.getSharedLocationId().getId().equals(orglo.getId())) {
+						 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+					 }else{
+						 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+						 }else {
+							 ProjectClients clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orglo.getId());
+							 if(clientProjectClients == null) {
+								 clientProjectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getSharedLocationId().getId());
+							 }
+							 if(clientProjectClients != null && clientProjectClients.getOrgRelationId() != null && !clientProjectClients.getOrgRelationId().getResponderLocationId().getId().equals(orglo.getId())) {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getLocationId().getId());
+							 }else {
+								 if(clientProjectClients.getOrgRelationId() != null) {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientProjectClients.getOrgRelationId().getResponderLocationId().getId());
+								 }else {
+									 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+								 }
+							 }
+						 }
+						 
+					 }
+					
+				}else {
+					 projects = projectsService.getProjectById(projects.getId());
+					 
+					 if(projects.getOrgLocationsId().getId().equals(orglo.getId())) {
+						 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+					 }else {
+						 if(projects.getOrgLocationsId().getOrg().getId().equals(orglo.getOrg().getId())) {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), projects.getOrgLocationsId().getId());
+						 }else {
+							 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), orgLocationsId);
+							 if(projectClients != null && projectClients.getOrgRelationId() != null) {
+								 OrgRelations orgRel = projectClients.getOrgRelationId();
+								 OrgLocations clientOrgLocation = null;
+								 if(!orgRel.getResponderLocationId().getId().equals(orglo.getId())) {
+									 clientOrgLocation = orgRel.getLocationId();
+								 }else {
+									 clientOrgLocation = orgRel.getResponderLocationId();
+								 } 
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgLocationId(projects.getId(), clientOrgLocation.getId());
+							 }else {
+								 projectClients = projectClientDao.getProjectClientsByProjectIdAndOrgId(projects.getId(), projectDTO.getOrgId());
+							 }
+						 }
+						
+					 }
+					
+					
+				}
+			    	 if(projectClients != null){
+			    		 
+			    		 ProjectDetailsDTO projectsDTO = new ProjectDetailsDTO();
+			    			    
+			    			 projectsDTO.setProjectStartDate(formatter.format(projects.getStartDate()));
+							    if(projects.getEndDate() != null){
+							    	projectsDTO.setProjectEndDate(formatter.format(projects.getEndDate()));
+							    }else {
+							    	projectsDTO.setProjectEndDate("");
+							    }
+			    			 
+			    			 if(projectClients.getOrgRelationId() != null){
+					    		 
+					    			if(null != projectClients.getOrgRelationId().getLocationId() && projectClients.getOrgRelationId().getLocationId().getId().longValue() == orgLocationsId.longValue()){
+					    				projectsDTO.setClient(projectClients.getOrgRelationId().getResponderLocationId().getOrgLocationName());
+									}else if(null != projectClients.getOrgRelationId().getResponderLocationId() && projectClients.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocationsId.longValue()){
+										projectsDTO.setClient(projectClients.getOrgRelationId().getLocationId().getOrgLocationName());
+									}else {
+										projectsDTO.setClient("");
+									}
+									
+					    	  }else {
+					    		  projectsDTO.setClient("");
+					    	  }
+					    	 
+				    	    Set<ProjectApproverHierarchy> projectApproverHierarchies = projectClients.getProjectApproverHierarchyList();
+						    for(ProjectApproverHierarchy approverHierarchy :projectApproverHierarchies){
+						    	if(approverHierarchy.getLevel() == 1 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+						    		StringBuilder manager1 = new StringBuilder();
+						    		String level1Manager = null;
+						    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+						    			level1Manager = manager1.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString();
+						    			projectsDTO.setManagerLevel1(level1Manager);
+						    			projectsDTO.setDisplayManager(level1Manager);
+						    		}else{
+						    			level1Manager = manager1.append(approverHierarchy.getApproverUserId().getFirstName()).toString();
+						    			projectsDTO.setManagerLevel1(level1Manager);
+						    			projectsDTO.setDisplayManager(level1Manager);
+						    		}
+						    		
+						    		if(StringUtils.isNotBlank(approverHierarchy.getApproverUserId().getFileUrl())) {
+						    			projectsDTO.setManagerLevel1ImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    			projectsDTO.setDisplayManagerImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    		}else {
+						    			projectsDTO.setManagerLevel1ImgUrl("");
+						    			projectsDTO.setDisplayManagerImgUrl("");
+						    		}
+						    		
+						    	}
+						    	
+						    	if(approverHierarchy.getLevel() == 2 && approverHierarchy.getStatus().equalsIgnoreCase("1")){
+						    		StringBuilder manager2 = new StringBuilder();
+						    		String level2Manager = null;
+						    		if(approverHierarchy.getApproverUserId().getLastName() != null){
+						    			level2Manager = manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").append(approverHierarchy.getApproverUserId().getLastName()).toString();
+						    			projectsDTO.setManagerLevel2(level2Manager);	
+						    			projectsDTO.setDisplayManager(level2Manager);
+						    		}else{
+						    			level2Manager = manager2.append(approverHierarchy.getApproverUserId().getFirstName()).append(" ").toString();
+						    			projectsDTO.setManagerLevel2(level2Manager);
+						    			projectsDTO.setDisplayManager(level2Manager);
+						    		}
+						    		
+						    		if(StringUtils.isNotBlank(approverHierarchy.getApproverUserId().getFileUrl())) {
+						    			projectsDTO.setManagerLevel2ImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    			projectsDTO.setDisplayManagerImgUrl(approverHierarchy.getApproverUserId().getFileUrl());
+						    		}else {
+						    			projectsDTO.setManagerLevel2ImgUrl("");
+						    			projectsDTO.setDisplayManagerImgUrl("");
+						    		}
+						    		
+						    	}else {
+						    		projectsDTO.setManagerLevel2("");
+						    		projectsDTO.setManagerLevel2ImgUrl("");
+						    	}
+						    }
+						    projectsDTO.setProjectName(projects.getProjectName());
+						    projectsDTO.setProjectTimeSheetFrequency(projects.getTimesheetFrequency());
+						    projectsDTO.setProjectStatus(projects.getProjectStatus().getValue().toString());
+						    projectsDTOList.add(projectsDTO);
+			    		 
+			    	 }
+			    	
+		}
+		
+		return projectsDTOList;
+	
 	}
 
 }

@@ -38,6 +38,7 @@ import com.bis.sourcelead.clockinout.dto.ClockInOutLoginTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutSubDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutTimerDTO;
 import com.bis.sourcelead.clockinout.dto.ClockInOutUserTimeEntryDTO;
+import com.bis.sourcelead.clockinout.dto.ProjectDetailsDTO;
 import com.bis.sourcelead.clockinout.entity.Breaks;
 import com.bis.sourcelead.clockinout.entity.ClockInOut;
 import com.bis.sourcelead.clockinout.entity.ClockInOutConfig;
@@ -264,9 +265,9 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 	}
 
 	@Override
-	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId)
+	public ResponseList<ClockInOutTimerDTO> getProjectsListByUserId(ProjectsDTO projectsDTO, Long userId, Long orgLocationId, String userRole, Long candidateId,String dateFormat)
 	{
-		return clockInOutConfigDao.getProjectsListByUserId(projectsDTO,userId,orgLocationId,userRole,candidateId);
+		return clockInOutConfigDao.getProjectsListByUserId(projectsDTO,userId,orgLocationId,userRole,candidateId,dateFormat);
 	}
 
 	@Override
@@ -1492,5 +1493,11 @@ public class ClockInOutConfigServiceImpl implements ClockInOutConfigService {
 		}
 		return timerDTO;
 	
+	}
+
+	@Override
+	public ResponseList<ProjectDetailsDTO> getAssignedProjectsListByUserId(ProjectsDTO projectsDTO, Long userId,
+			Long orgLocationId, String userRole, Long candidateId) {
+		return clockInOutConfigDao.getAssignedProjectsListByUserId(projectsDTO, userId, orgLocationId, userRole, candidateId);
 	}
 }
