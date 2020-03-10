@@ -53,7 +53,9 @@ public interface CandidateDao {
 	
 	public List<Candidate> getAllCandidatesByLocation(Long orgLocationId);
 	
-	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates);
+	//public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates);
+	
+	public ResponseList<CandidateGlobal> getAllCandidatesGlobalByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates);
 	
 	public List<Candidate> getAllActiveCandidatesByLocation(Long orgLocationId);
 	

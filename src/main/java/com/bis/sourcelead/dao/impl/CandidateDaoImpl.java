@@ -475,7 +475,7 @@ public class CandidateDaoImpl implements CandidateDao {
 		return session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
 	}
 
-	@Override
+	/*@Override
 	@Transactional(rollbackFor = { Exception.class })
 	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,
 			OrgLocations orgLocations, String userCode, Date[] searchDates) {
@@ -497,7 +497,7 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		}
 
-		String query = "from Candidate cnadidate  where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode "
+		String query = "from Candidate cnadidate where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode "
 				+ query1
 				+ " and (date(cnadidate.createdDate) BETWEEN :fromDate AND :toDate) ORDER BY cnadidate.id DESC";
 		queryObj = session.createQuery(query);
@@ -544,7 +544,79 @@ public class CandidateDaoImpl implements CandidateDao {
 
 		return response;
 	}
+*/
+	
+	@Override
+	@Transactional(rollbackFor = { Exception.class })
+	public ResponseList<CandidateGlobal> getAllCandidatesGlobalByCreatedByUserCode(CandidateDTO candidateDTO,
+			OrgLocations orgLocations, String userCode, Date[] searchDates) {
+		Session session = this.sessionFactory.getCurrentSession();
 
+		List<CandidateGlobal> candidateList = null;
+		ResponseList<CandidateGlobal> response = new ResponseList<>();
+		Query queryObj = null;
+		List<Long> countlist = null;
+
+		StringBuilder query1 = new StringBuilder("");
+		if (candidateDTO.getSearchValue() != null && !"".equalsIgnoreCase(candidateDTO.getSearchValue())) {
+			query1.append(" and (cnadidate.email like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR cnadidate.mobilePhone like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR (concat(cnadidate.firstName,cnadidate.lastName) like '%"
+							+ candidateDTO.getSearchValue().trim() + "%')")
+					.append("OR cnadidate.designationType like '%" + candidateDTO.getSearchValue() + "%' ")
+					.append("OR cnadidate.location like '%" + candidateDTO.getSearchValue() + "%' )");
+
+		}
+
+		String query = "from  CandidateGlobal cnadidate where cnadidate.orgLocationId.id =:orgLocationId and cnadidate.createdBy =:userCode "
+				+ query1
+				+ " and (date(cnadidate.createdDate) BETWEEN :fromDate AND :toDate) ORDER BY cnadidate.id DESC";
+		queryObj = session.createQuery(query);
+
+		queryObj.setFirstResult(candidateDTO.getStart());
+		queryObj.setMaxResults(candidateDTO.getLength());
+
+		candidateList = queryObj.setLong("orgLocationId", orgLocations.getId()).setString("userCode", userCode)
+				.setParameter("fromDate", searchDates[0]).setParameter("toDate", searchDates[1]).list();
+
+		countlist = session.createQuery("select count(*) " + query).setLong("orgLocationId", orgLocations.getId())
+				.setString("userCode", userCode).setParameter("fromDate", searchDates[0])
+				.setParameter("toDate", searchDates[1]).list();
+
+		int totalCount = 0;
+		if (candidateDTO != null) {
+			if (countlist != null && !countlist.isEmpty()) {
+				totalCount = countlist.iterator().next().intValue();
+			}
+		}
+		response.setRecordsTotal(totalCount);
+		response.setRecordsFiltered(totalCount);
+		for (CandidateGlobal c : candidateList) {
+			try {
+				CandidateResumes canResume = candidateResumesDao.getCandidateResumeByCandidateId(c.getId());
+				Integer submittedJobCount = requirementSubmissionDao
+						.getRequirementSubmissionCountByCandiateIdAndOrgLocationId(c.getId(), orgLocations.getId());
+				if (submittedJobCount > 0) {
+					c.setCandidateAssignedJobsCount(submittedJobCount.toString());
+				}
+				if (canResume != null) {
+					c.setCandidateResume(canResume.getFileURL());
+				}
+				c.setCreatedDateStr(
+						commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(), c.getCreatedDate()));
+				// c.setCreatedDateStr(createdDateStr);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		response.setData(candidateList);
+
+		return response;
+	}
+
+	
 	@Override
 	@Transactional
 	public List<Candidate> getHotListCandidatesListByOrgLocationID(Long orgLocationId, String candidateType)

@@ -3276,8 +3276,12 @@ private Sheet createXlsSheet(Sheet createExcelsheet, Row writeRow,CandidateGloba
 	public Object[] updateMarketplaceCartCountAndPrice(Long orgLocationId, String userRole, User user)throws Exception {
 		return candidateDao.updateMarketplaceCartCountAndPrice(orgLocationId, userRole, user);
 	}
-	public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+	/*public ResponseList<Candidate> getAllCandidatesByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
 		return candidateDao.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+	}*/
+
+	public ResponseList<CandidateGlobal> getAllCandidatesGlobalByCreatedByUserCode(CandidateDTO candidateDTO,OrgLocations orgLocations,String userCode,Date[] searchDates) {
+		return candidateDao.getAllCandidatesGlobalByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 	}
 	
 	@Override

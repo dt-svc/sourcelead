@@ -3080,7 +3080,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		}
 		
 		// Recruiter reports candidate list export 
-		public File recruiterReprtsCandidateListPdfTable(ResponseList<Candidate> candidateList, OrgLocations loginOrgLocations,Date[] searchDates) throws Exception{
+		public File recruiterReprtsCandidateListPdfTable(ResponseList<CandidateGlobal> candidateList, OrgLocations loginOrgLocations,Date[] searchDates) throws Exception{
 
 			String[] headers = Constants.RECRUITER_REPORTS_CANDIDATE_HEADERS;
 		    Document document = new Document(PageSize.LETTER.rotate());
@@ -3137,8 +3137,8 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 		        }
 		        table.completeRow();
 		        java.util.List<String[]> dataList = new ArrayList<>();
-		        java.util.List<Candidate> list = candidateList.getData();
-		        for(Candidate data : list){
+		        java.util.List<CandidateGlobal> list = candidateList.getData();
+		        for(CandidateGlobal data : list){
 		        	dataList.add(prepareRecruiterReportsCandidateListStringArray(data,headers,loginOrgLocations));
 		        }
 		        for (String[] userArray: dataList) {
@@ -3165,7 +3165,7 @@ private String[] prepareApplicantsJoinedListStringArray(ApplicantsJoinedReportDT
 			
 		}
 		
-		private String[] prepareRecruiterReportsCandidateListStringArray(Candidate candidate, String[] headers, OrgLocations loginOrgLocations) throws Exception {
+		private String[] prepareRecruiterReportsCandidateListStringArray(CandidateGlobal candidate, String[] headers, OrgLocations loginOrgLocations) throws Exception {
 			String userArray[] = new String[headers.length];
 				
 			 userArray[0] = candidate.getFullName();
