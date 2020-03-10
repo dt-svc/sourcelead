@@ -203,6 +203,8 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			bgcCandidateDetailsDTO.setAddress(bgcCandidateDetails.getCandidate().getAddress());
 			bgcCandidateDetailsDTO.setEmail(bgcCandidateDetails.getCandidate().getEmail());
 			bgcCandidateDetailsDTO.setCandidateId(bgcCandidateDetails.getCandidate().getId());
+			bgcCandidateDetailsDTO.setCountry(bgcCandidateDetails.getCandidate().getCountry());
+			bgcCandidateDetailsDTO.setSsnNumber(bgcCandidateDetails.getCandidate().getSsnNumber());
 			bgcCandidateDetailsDTO.setUpdatedPercentage(bgcCandidateDetails.getupdatedPercentage());
 		}
 		return bgcCandidateDetailsDTO;
