@@ -44,6 +44,12 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 		 candidateFilterSkills.push($(this).val());
 	 });
 	 
+	 var filterCandidateSource = [];
+	 $('input:checkbox[name=filterCandidateSource]:checked').each(function() 
+     {
+		 filterCandidateSource.push($(this).val());
+	 });
+	 
 	 
 	 var availability = []
 	 $('input:checkbox[name=availability]:checked').each(function() 
@@ -104,7 +110,7 @@ function candidateListCheck(searchValue,universalCanddateSearchList,candidateKey
 	  			searchValue=searchValue.split('%')[0];
 	  		}
 	  		
-	  		var url = atsUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter;
+	  		var url = atsUrl+"/searchCandidate?"+_csrfParam+"="+_csrfToken+"&candidateStatus="+candidateStatus+"&searchValue="+searchValue+"&updatedDateRange="+upcandidateStatus+"&isAssociate="+isAssociate+"&candidateType="+candidateType+"&employmnetTypes="+employmnetTypes+"&candidateFilterSkills="+candidateFilterSkills+"&availability="+availability+"&candidateTypeFilter="+candidateTypeFilter+"&createdByFilter="+createdByFilter+"&filterCandidateSource="+filterCandidateSource;
 	  		url += "&"+$($('#candidatelist_form')[0]).serialize();
 	  		if(type == 'gMarketPlace'){
 	  			callMarketPlaceCandidates(url)
