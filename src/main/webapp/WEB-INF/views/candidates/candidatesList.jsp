@@ -1433,7 +1433,7 @@ function imageCancel(){
 						  <div class="col-md-8 mt5">
 						  <label>Source</label>
 							<div class="clearfix">
-								<select class="chosen-select form-control input-sm" multiple data-placeholder="Tags" id="candidateSource" name="candidateSource">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Source" id="candidateSource" name="candidateSource">
 								</select>
 							 </div>
 						 </div>
@@ -3189,19 +3189,22 @@ function resetCandidateFilter(){
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
+	$("ul#sourceUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:radio").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
 	$("#mySkillsInput").val('');
 	
-	
+	$("#sourceInput").val('');
 	$("#dataTableSearch").val('');
 	mySkillsFunction();
+	candSourceFunction();
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
 	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
 	mySkillsFunction();
+	candSourceFunction();
 }
 </script>		
 
@@ -3335,7 +3338,21 @@ function resetCandidateFilter(){
 						</ul>
 					 </div> 
 		 </div> 
-			
+		 
+		 <div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="sourceInput" onkeyup="candSourceFunction()" placeholder="Source" title="Type in a Source">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="sourceUL">
+							<c:forEach var="candSource" items="${sourceCandidateList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="filterCandidateSource" value ="${candSource.id}" ><label>${candSource.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+		
 		</div>
 		</div>
 		<div class="clearfix advancedsearch-footer">
@@ -3352,6 +3369,33 @@ function mySkillsFunction() {
     input = document.getElementById("mySkillsInput");
     filter = input.value.toUpperCase();
     ul = document.getElementById("skillsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeCandidateFilterPop();
+	  }
+	});
+</script>
+
+
+<script>
+function candSourceFunction() {
+	
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("sourceInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("sourceUL");
     li = ul.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];

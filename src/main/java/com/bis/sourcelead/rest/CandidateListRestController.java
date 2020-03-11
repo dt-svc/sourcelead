@@ -541,6 +541,21 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(filterSkillBoolQueryBuilder);
 			}
 		}
+		
+		if (StringUtils.isNotBlank(search.getFilterCandidateSource())) {
+			String[] filterSource = search.getFilterCandidateSource().split(",");
+			List<String> filterSourceList = new ArrayList<>();
+			for (int i = 0; i < filterSource.length; i++) {
+				filterSourceList.add(filterSource[i]);
+			}
+			if (filterSourceList != null && !filterSourceList.isEmpty()) {
+				BoolQueryBuilder filterSourceBoolQueryBuilder = QueryBuilders.boolQuery();
+				for (String keywd : filterSourceList) {
+					filterSourceBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("candidateSource", keywd));
+				}
+				boolQueryBuilder.must(filterSourceBoolQueryBuilder);
+			}
+		}
 
 		if (StringUtils.isNotBlank(search.getAvailability())) {
 			String[] avaliability = search.getAvailability().split(",");
@@ -1054,7 +1069,7 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
-				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),Constants.CANDIDATE_ACTIVE);
 				candidateDTO.setCandidateSourceList(candidateSourceList);
 				
 				if(null != can.getCandidateSource()) {
@@ -1924,6 +1939,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "availability", required = false) String availability,
 			@RequestParam(value = "candidateTypeFilter", required = false) String candidateTypeFilter,
 			@RequestParam(value = "createdByFilter", required = false) String createdByFilter,
+			@RequestParam(value = "filterCandidateSource", required = false) String filterCandidateSource,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1938,7 +1954,7 @@ public class CandidateListRestController {
 			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,filterCandidateSource,user);
 
 		}
 
@@ -2140,7 +2156,7 @@ public class CandidateListRestController {
 	public  List<CandidateSource>  getCandidateSourceList(
 			 HttpServletRequest request) throws Exception {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
-		List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(), 1);
+		List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(), Constants.CANDIDATE_ACTIVE);
 		return candidateSourceList;
 	}
 	
@@ -2750,7 +2766,7 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
-				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),Constants.CANDIDATE_ACTIVE);
 				candidateDTO.setCandidateSourceList(candidateSourceList);
 				
 				if(null != can.getCandidateSource()) {
