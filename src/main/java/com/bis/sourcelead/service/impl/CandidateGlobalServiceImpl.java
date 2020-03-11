@@ -225,9 +225,9 @@ public class CandidateGlobalServiceImpl implements CandidateGlobalService{
 	@Override
 	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationID(Long orgLocationId, Long orgId,
 			Integer candidateStatus, String updatedDateRange, String candidateType, String isAssociate,
-			String candidateFilterSkills, String availability, String candidateTypeFilter, String createdByFilter,
+			String candidateFilterSkills, String availability, String candidateTypeFilter, String createdByFilter,String filterCandidateSource,
 			User user) throws Exception {
-		List<CandidateGlobal> candidateList = candidateGlobalDao.getCandidatesGlobalListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
+		List<CandidateGlobal> candidateList = candidateGlobalDao.getCandidatesGlobalListByOrgLocationID(orgLocationId,orgId,candidateStatus,updatedDateRange,candidateType,isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,filterCandidateSource,user);
 		OrgLocations orgLocations = orgLocationsDao.getOrgLocations(orgLocationId);
 		for(CandidateGlobal can :candidateList){
 			if(can.getUpdatedDate() != null){
