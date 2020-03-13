@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/resources/css/style.css?staticTime=${staticTime}" />
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
- <script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcTemplateComponentFormBuilder.js"></script>
+ <script src="${SourceLeadWeb_vmsUrl}/resources/js/bgcTemplateComponentFormBuilder.js?staticTime=${staticTime}"></script>
 
              <label class="col-md-4 mt10">Component Type<span class="colorRed ml5">*</label>
             <div class="col-md-6 padding_right">
@@ -36,6 +36,7 @@
      var vmsUrl = '${SourceLeadWeb_vmsUrl}';
      var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
      var templateUuid ='${bgcTemplateDto.uuid}';
+     var templateId = '${bgcTemplateDto.id}'; // used for edit mode to show forms.
      function refreshOrgComponentList(){
     	 $.ajax({
 				type : "GET",
@@ -84,29 +85,41 @@
 		       
 		     	result= result+'      <div class="checkbox-new">';
 		     	result= result+'         <label for="address" class="checkbox-custom-label"></label>';
-		     	result= result+selCompDivText;
+		     	result= result+' <h4>'+selCompDivText+'</h4> ';
 		     	result= result+'      </div>';
-		     	result= result+'     <div class="clearfix"></div>';
-		     	result= result+'      <div class="row mt">';
-		     	result= result+'        <div class="col-md-6">';
-		     	result= result+'           <label>Sent to</label>';
-		     	result= result+'           <div class="clearfix">';
-		     	result= result+'              <input type="text" class="form-control">';
-		     	result= result+'            </div>';
-		     	result= result+'      </div>';
-		     	result= result+'       </div>';
+		     	
 		     	
 		     	result= result+ ' <div id="sjfb-wrap"> ';
-		     	result= result+ '<form id="sjfb'+idValue+'" novalidate> ';
+		     	result= result+ '<form id="'+idValue+'" novalidate> ';
+		     	
+		     	result= result+'     <div class="clearfix"></div>';
+				result= result+'     <div class="clearfix row">';
+		        
+		        result= result+'      <label class="col-md-5"><div class="col-md-3 lblHeight">Sent to:</div>';
+		     	result= result+'        <div class="col-md-9">';
+		     	result= result+'              <input type="text" id="sentTo'+idValue+'" field-name="Sentto" class="field-label form-control input-sm">';
+		     	result= result+'      </div>';
+		     	result= result+'       </label>';
+		     	result= result+'     </div>';
+		     	
+		     	
+		     	
+		     	
 		     	
 		        result= result+'     <div id="form-fields'+idValue+'"> ';
+		        
+		        
+		     	
 		     	result= result+'     </div>';
 		     	result= result+'   </div>';
-		     	
 		     	result= result+'   </form>';
 		     	result= result+'   </div>';
-		    	result= result+'  	<div id="popUp"></div>';
-		    	result= result+'   <div id="choicepopUp"></div>';
+		     	if($("#popUp").length == 0){
+		    	    result= result+'  	<div id="popUp"></div>';
+		     	}
+		     	if($("#choicepopUp").length == 0){
+		    	    result= result+'   <div id="choicepopUp"></div>';
+		     	}
 		     	
 		     	$('#parent_bgc_div').prepend(result);
         }else{
@@ -116,6 +129,20 @@
          customizeFields(sourceleadUrl,templateUuid);
      });	
     
+     $(document).ready(function() {
+    	 buildComponetJsonForm('${bgcTemplateDto.id}'); // or use templateId
+     })
+     
+     function buildComponetJsonForm(templateId){
+    	 if(typeof templateId!= "undefined" && templateId != null && templateId !='' && templateId != 'null'){
+    	 $("#componentString  option:selected").each(function(index) {
+    		 var formId=this.text;
+    		 var formId = formId.replace(/ /g, "_");
+    		 console.log(" formId is "+formId);
+    		 loadSavedBgcForm(templateId , formId);
+         });
+       }
+     }
 
      function  addBgcComponent() {
     		if ($('#bgcComponentFrm').validate(false, validationSettings)) {

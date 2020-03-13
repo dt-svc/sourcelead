@@ -55,58 +55,17 @@
         </div>
       </div>
         <div class="clearfix mt mb"></div>
-        <div class="clearfix mt mb">
-          <div class="col-md-2 col-md-offset-8">
-              <div class="dropdown">
-              <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown" aria-expanded="false">Add Type
-              <span class="caret"></span></button>
-                <ul id="add-field" class="dropdown-menu pull-right">
-                  <li><a id="add-text" data-type="text" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Box</a>
-                  </li><li><a id="add-textarea" data-type="textarea" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Area</a></li>
-                  <li><a id="add-select" data-type="select" href="javascript:void(0)"><span class="fa fa-caret-down">&nbsp;&nbsp;&nbsp;</span>Select Box</a></li>
-                  <li><a id="add-checkbox" data-type="checkbox" href="javascript:void(0)"><span class="fa fa-check-square-o">&nbsp;&nbsp;</span>Check Box</a></li>
-                  <li><a id="add-radio" data-type="radio" href="javascript:void(0)"><span class="fa fa-check-circle-o">&nbsp;&nbsp;</span>Radio Button</a></li>
-                  <li><a id="add-comments" data-type="comments" href="javascript:void(0)"><span class="fa fa-comment-o">&nbsp;&nbsp;</span>Comments</a></li>
-                  <li><a id="add-star" data-type="star" href="javascript:void(0)"><span class="fa fa-star-o">&nbsp;&nbsp;</span>Star</a></li>
-                  <li><a id="add-scale" data-type="scale" href="javascript:void(0)"><span class="fa fa-sliders">&nbsp;&nbsp;</span>Scale</a></li>
-                  <li><a id="add-calendar" data-type="calendar" href="javascript:void(0)"><span class="fa fa-calendar">&nbsp;&nbsp;</span>Calendar</a></li>
-                  <li><a id="add-file" data-type="file" href="javascript:void(0)"><span class="fa fa-cloud-upload">&nbsp;&nbsp;</span>File Upload</a></li>
-                </ul>
-              </div>
-            </div>
+         <div id="parent_bgc_div">
           </div>
-      
-        <div class="col-md-10">
-            <div class="quetionwidget mb" style="display:block;">
-              <div class="checkbox-new">
-                <input id="address" class="checkbox-custom" name="paidComponent" type="checkbox">
-                <label for="address" class="checkbox-custom-label"></label>
-                Address
-              </div>
-              <div class="clearfix"></div>
-              <div class="row mt"> <span class="closePop"></span>
-                <div class="col-md-6">
-                    <label>Sent to</label>
-                    <div class="clearfix">
-                      <input type="text" class="form-control">
-                    </div>
-              </div>
-                <div class="col-md-12">
-                  <label>Commment</label>
-                  <div class="clearfix">
-                    <textarea class="form-control" rows="4"></textarea>
-                  </div>
-                </div>
-              </div>
-              <div class="clearfix"></div>
-              <div class="quetionwidgetFooter clearfix mt">
-                <div class="pull-right">
-                  <button type="button" class="btn btn-default mr">Cancel</button>
-                  <button type="button" id ="saveBgcTemplateBtn" class="btn btn-primary" onclick="saveBgcTemplate();" >Save</button>
-                </div>
-              </div>
-            </div>
           </div>
+          
+         <div class="clearfix"></div>
+         <div class="quetionwidgetFooter clearfix mt col-md-10">
+           <div class="pull-right">
+             <button type="button" class="btn btn-default mr">Cancel</button>
+             <button type="button" id ="saveBgcTemplateBtn" class="btn btn-primary" onclick="saveBgcTemplate();" >Save</button>
+           </div>
+         </div>
 		</form>
       </div>
     </div>
@@ -181,8 +140,7 @@ function  saveBgcTemplate() {
 			data : formData,
 			url : vmsUrl + "/bgc/SaveOrUpdateBgcTemplate",
 			success : function(result) {
-				console.log(result.object.id);
-				console.log(result.object.id);
+				//alert(result.object.id);
 				if (result.response == "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response == "SUCCESS") {
@@ -191,7 +149,10 @@ function  saveBgcTemplate() {
 						$("#saveBgcTemplateBtn").text('Save');
 						showError("Invalid data");
 					} else {
-						location.replace(vmsUrl+"/bgc/bgcOrgTemplateList");	
+						 console.log("before calling saveComponentJsonMap>>>>>>>>>>>");
+							  saveComponentJsonMap(result.object.id);
+					//	location.replace(vmsUrl+"/bgc/bgcOrgTemplateList");	
+						
 					}
 				} else if (result.indexOf('Sign In') != -1) {
 					location.replace(sourceleadUrl);

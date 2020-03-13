@@ -5,7 +5,7 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
-function customizeFields(sourceleadUrl,templateUuid){
+function customizeFields(vmsUrl,templateUuid){
 	
     //If loading a saved form from your database, put the ID here. Example id is "1".
     //Adds new field with animation
@@ -14,7 +14,7 @@ function customizeFields(sourceleadUrl,templateUuid){
     	console.log(idText);
     	idValue = idText;
         e.preventDefault();
-        $(addField($(this).data('type'),'Y','Y',sourceleadUrl,templateUuid)).appendTo('#form-fields'+idValue).hide().slideDown('fast');
+        $(addField($(this).data('type'),'Y','Y',vmsUrl,templateUuid)).appendTo('#form-fields'+idValue).hide().slideDown('fast');
         $('#form-field '+idValue).sortable();
     });
 
@@ -74,7 +74,7 @@ function customizeFields(sourceleadUrl,templateUuid){
 
 
 //Add field to builder
-function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId) {
+function addField(fieldType,value,labelValue,labelName,vmsUrl,templateId) {
 
     var hasRequired, hasChoices,fieldName,hasStar,hasScale,hasFileType;
     var includeRequiredHTML = '';
@@ -242,7 +242,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
     }
     
 	   includeTextHTML = ''+
-	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Question:</div>' +
+	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Label:</div>' +
 	   ' <div class="col-md-9" id="label'+addField.i+'"> ' +
 	   '<input type="text" '+readOnly+'  id="textLabel'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Question" class="field-label form-control input-sm" >' +
 	   ' </div> ' +
@@ -342,25 +342,85 @@ function addChoice(labelValue) {
         '</li>'
 }
 
+function buildSavedComponentForm(formId){
+	console.log("buildSavedComponentForm called for "+formId);
+	  var selCompDivText = formId;
+	 var result ="";
+	result= result+'<div class="col-md-10" id ="'+formId+'">';
+ 	result= result+'  <div class="quetionwidget mb">';
+ 	result= result+' <div class="clearfix row">';
+ 	result= result+' <div class="col-md-2 col-md-offset-10">';
+ 	result= result+'     <div class="dropdown">';
+ 	result= result+'    <button class="btn btn-success dropdown-toggle btn-block" type="button" data-toggle="dropdown" id="addFiled-dropdown'+formId+'"  aria-expanded="false">Add Type';
+ 	result= result+'   <span class="caret"></span></button>';
+ 	result= result+'     <ul id="add-field9'+formId+'" class="dropdown-menu pull-right">';
+ 	result= result+'        <li><a id="add-text9'+formId+'" data-type="text" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Box</a>';
+ 	result= result+'         </li><li><a id="add-textarea9'+formId+'" data-type="textarea" href="javascript:void(0)"><span class="fa fa-text-width">&nbsp;&nbsp;</span>Text Area</a></li>';
+ 	result= result+'        <li><a id="add-select9'+formId+'" data-type="select" href="javascript:void(0)"><span class="fa fa-caret-down">&nbsp;&nbsp;&nbsp;</span>Select Box</a></li>';
+ 	result= result+'         <li><a id="add-checkbox9'+formId+'"  data-type="checkbox" href="javascript:void(0)"><span class="fa fa-check-square-o">&nbsp;&nbsp;</span>Check Box</a></li>';
+ 	result= result+'          <li><a id="add-radio9'+formId+'"  data-type="radio" href="javascript:void(0)"><span class="fa fa-check-circle-o">&nbsp;&nbsp;</span>Radio Button</a></li>';
+ 	result= result+'         <li><a id="add-comments9'+formId+'"  data-type="comments" href="javascript:void(0)"><span class="fa fa-comment-o">&nbsp;&nbsp;</span>Comments</a></li>';
+ 	result= result+'          <li><a id="add-star9'+formId+'" data-type="star" href="javascript:void(0)"><span class="fa fa-star-o">&nbsp;&nbsp;</span>Star</a></li>';
+ 	result= result+'          <li><a id="add-scale9'+formId+'"  data-type="scale" href="javascript:void(0)"><span class="fa fa-sliders">&nbsp;&nbsp;</span>Scale</a></li>';
+ 	result= result+'         <li><a id="add-calendar9'+formId+'"  data-type="calendar" href="javascript:void(0)"><span class="fa fa-calendar">&nbsp;&nbsp;</span>Calendar</a></li>';
+ 	result= result+'       <li><a id="add-file9'+formId+'"  data-type="file" href="javascript:void(0)"><span class="fa fa-cloud-upload">&nbsp;&nbsp;</span>File Upload</a></li>';
+ 	result= result+'     </ul>';
+ 	result= result+'    </div>';
+ 	result= result+'    </div>';
+ 	result= result+'  </div>';
+   
+ 	result= result+'      <div class="checkbox-new">';
+ 	result= result+'         <label for="address" class="checkbox-custom-label"></label>';
+ 	result= result+' <h4>'+selCompDivText.replace("_"," ");+'</h4> ';
+ 	result= result+'      </div>';
+ 	
+ 	
+ 	result= result+ ' <div id="sjfb-wrap"> ';
+ 	result= result+ '<form id="'+formId+'" novalidate> ';
+ 	
+ 	result= result+'     <div class="clearfix"></div>';
+	result= result+'     <div class="clearfix row">';
+    
+    result= result+'      <label class="col-md-5"><div class="col-md-3 lblHeight">Sent to:</div>';
+ 	result= result+'        <div class="col-md-9">';
+ 	result= result+'              <input type="text" id="sentTo'+formId+'" field-name="Sentto" class="field-label form-control input-sm">';
+ 	result= result+'      </div>';
+ 	result= result+'       </label>';
+ 	result= result+'     </div>';
+ 	
+    result= result+'     <div id="form-fields'+formId+'"> ';
+    
+ 	result= result+'     </div>';
+ 	result= result+'   </div>';
+ 	result= result+'   </form>';
+ 	result= result+'   </div>';
+ 	if($("#popUp").length == 0){
+	    result= result+'  	<div id="popUp"></div>';
+ 	}
+ 	if($("#choicepopUp").length == 0){
+	    result= result+'   <div id="choicepopUp"></div>';
+ 	}
+ 	$('#parent_bgc_div').prepend(result);
+}
 
-function loadSavedForm(templateUuid,sourceleadUrl) {
+function loadSavedBgcForm(templateId,formId) {
+	
     $.ajax({
     	type: "GET",
-        url: sourceleadUrl+"/loadSavedQuestionnaireTemplate?templateUuid="+templateUuid, 
+        url: vmsUrl+"/bgc/getTemplateComponentJsonMap?templateId="+templateId+"&formId="+formId, 
         success: function(result) {
-             $("#templateName").val(result.name);
-        	 $("textarea[id='templateDescription']").text(result.description);
-        	 $("#templateId").val(result.id);
-        	 $("#minutes").val(result.timeLimitMinutes);
-        	 $("#seconds").val(result.timeLimitSeconds);
-        	 
+        	buildSavedComponentForm(formId);
+             $("#sentTo"+formId).val(result.sentTo);
+           /*  console.log("SUCESSS"+formId);
+        	 console.log(result.sentTo);
+        	 console.log("result.jsonString"+result.jsonString);*/
         	 var data = eval(result.jsonString);
         	 if (data) {
                  //go through each saved field object and render the builder
                  $.each( data, function( k, v ) {
                      //Add the field
-                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],sourceleadUrl,templateUuid,'N')).appendTo('#form-fields').hide().slideDown('fast');
-                     var $currentField = $('#form-fields .field').last();
+                     $(addField(v['type'],v['isRemoved'],v['isLabelModified'],v['label'],vmsUrl,templateUuid,'N')).appendTo('#form-fields'+formId).hide().slideDown('fast');
+                     var $currentField = $('#form-fields'+formId+' .field').last();
 
                      //Add the label
                      $currentField.find('.field-label').val(v['label']);
@@ -395,10 +455,12 @@ function loadSavedForm(templateUuid,sourceleadUrl) {
 
                  });
 
-                 $('#form-fields'+idValue).sortable();
-                 $('.choices ul'+idValue).sortable();
+                 $('#form-fields'+formId).sortable();
+                 $('.choices ul'+formId).sortable();
              }
+        //	  alert("after success");
         },
+      
     });
    
 }
@@ -442,10 +504,13 @@ $("#sjfb").on("click", ".delete", function() {
 
 
 
-$('body').on('submit', '#sjfb', function(e){
-	  if ($(this).validate(false, validationSettings)){
-        e.preventDefault();
-        var frm = $('#sjfb').serializeFormJSON();
+//$('body').on('submit', '#sjfb', function(e){
+ function saveComponentJsonMap(templateId){
+	 $('#parent_bgc_div form').each(function( index ) {
+		 var formId = this.id;
+		 console.log("inside function call test222 "+formId);
+	  if ($(formId).validate(false, validationSettings)){
+        var frm = $('#'+formId).serializeFormJSON();
         var con = JSON.stringify(frm);
         con = con.replace(/[{}]/g, "");
         var jsonData = encodeURIComponent(con);
@@ -457,9 +522,8 @@ $('body').on('submit', '#sjfb', function(e){
         var fieldhint = '';
         var fieldDropDown = '';
         var myArray = new Array();
-        $('.field').each(function() {
+        $('#'+formId+' .field').each(function() {
             var $this = $(this);
-
             //field type
             var fieldType = $this.data('type');
             
@@ -469,15 +533,8 @@ $('body').on('submit', '#sjfb', function(e){
 
             //field label
             fieldLabel = $this.find('.field-label').val();
-            
            //field hint
             fieldhint = $this.find('.field-hint').val(); 
-            
-          //field point
-            fieldPoints = $this.find('.field-points').val(); 
-         
-           //field attempt
-            fieldAttempt = $this.find('.field-attempt').val(); 
             
             //field type dropdown
             fieldDropDown = $this.find('.field-dropdown').val(); 
@@ -524,8 +581,6 @@ $('body').on('submit', '#sjfb', function(e){
             		type: fieldType,
 	                label: fieldLabel,
 	                hint: fieldhint,
-	                points: fieldPoints,
-	                attempt:fieldAttempt,
 	                dropdown : fieldDropDown,
 	                req: fieldReq,
 	                choices: choices,
@@ -533,6 +588,12 @@ $('body').on('submit', '#sjfb', function(e){
             });
 
         });
+        
+     /*   console.log("myArray");
+        console.log(myArray);
+        
+        console.log("fields");
+        console.log(fields);*/
         
         for (var i = 0; i < myArray.length; i++) 
         {
@@ -549,33 +610,29 @@ $('body').on('submit', '#sjfb', function(e){
             }
         }
         
-        
-        var frontEndFormHTML = '';
-       var templateId = document.getElementById("templateId").value;
-       var templateName = $("#templateName").val();
-        if(templateId == 'undefined' || templateId == null || templateId == ''){
-        	templateId = '';
-        }
-        var timeLimitMinutes = $("#minutes").val();
-        var timeLimitSeconds = $("#seconds").val();
         //Save form to database
         //Demo doesn't actually save. Download project files for save
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
+     //   console.log("jsonStringData3333>   "+jsonStringData);
+        var sentTo = $("#sentTo"+formId).val();
+       // console.log(sentTo);
         if(submitTemplate){
-        	$("#save_button").attr("disabled", "disabled");
-        	$("#save_button" ).addClass('button').text('Processing..');
-       
+        //	$("#save_button").attr("disabled", "disabled");
+        //	$("#save_button" ).addClass('button').text('Processing..');
+     //   console.log(vmsUrl + "/saveTemplateComponentJsonMap?templateId="+templateId+"&formId="+formId+"&jsonStringData="+jsonStringData)
       	  $.ajax({
       	    	type: "POST",
-      	        url: sourceleadUrl+"/saveQuestionnaireTemplate?templateId="+templateId+"&timeLimitMinutes="+timeLimitMinutes+"&timeLimitSeconds="+timeLimitSeconds+"&jsonData="+jsonData+"&jsonStringData="+jsonStringData+"&templateName="+templateName, 
+      	        url: vmsUrl +"/bgc/saveTemplateComponentJsonMap?templateId="+templateId+"&formId="+formId+"&sentTo="+sentTo+"&jsonStringData="+jsonStringData, 
       	       success: function(result) {
+      	    	   result ="SUCCESS";
     	           if (result === "AWKWARD") {
 		        	    location.href = "/errorPage";
 		        	} else if (result === "SUCCESS") {
-		        		//performanceManagement.getFeedbackList();
-		        	    location.href = sourceleadUrl+"/questionnaireList?templateName="+templateName,
-		        		$(".mask, #modalTasktype").fadeOut();
+		        		 console.log("Compnent Saved Successfullly");
+		        		if(index == $('#parent_bgc_div form').length-1){
+		        			location.replace(vmsUrl+"/bgc/bgcOrgTemplateList");	
+		        		}
 		        	} else {
 		        	    showError("Operation failed, please try again");
 		        	}
@@ -590,7 +647,9 @@ $('body').on('submit', '#sjfb', function(e){
       else{
       	return false;	
          }
-    });
+	 });
+		
+ }// close of saveComponentJsonMap>>>>>>>
     	
    	$('body').on('blur', '#sjfb', function() {
         $("#sjfb").showHelpOnFocus();
