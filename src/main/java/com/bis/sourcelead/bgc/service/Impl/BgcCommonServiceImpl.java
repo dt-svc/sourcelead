@@ -31,6 +31,7 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
@@ -522,5 +523,28 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public String deleteBgcTemplateByUuid(String templateUuid) {
 		return bgcCommonDao.deleteBgcTemplateByUuid(templateUuid);
+	}
+	@Override
+	public BgcComponentJsonMap saveTemplateComponentJsonMap(Long id, Long templateId, String formId, String sentTo, String jsonStringData,OrgLocations orgLocations) {
+		BgcComponentJsonMap bgcComponentJsonMap =null;
+		if(id != null) {
+			bgcComponentJsonMap = new BgcComponentJsonMap();
+			bgcComponentJsonMap.setId(id);
+		}else {
+			bgcComponentJsonMap =new BgcComponentJsonMap();
+		}
+		BgcTemplate bgcTemplate = new BgcTemplate();
+		bgcTemplate.setId(templateId);
+		bgcComponentJsonMap.setBgcTemplate(bgcTemplate);
+		bgcComponentJsonMap.setSentTo(sentTo);
+		bgcComponentJsonMap.setJsonString(jsonStringData);
+		bgcComponentJsonMap.setFormId(formId);
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		bgcComponentJsonMap.setUpdatedDate(currentDate);
+		return bgcCommonDao.saveTemplateComponentJsonMap(bgcComponentJsonMap);
+	}
+	@Override
+	public BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId) {
+		return bgcCommonDao.getBgcComponentJsonMapByTempalteIdAndFromId(templateId,formId);
 	}
 }

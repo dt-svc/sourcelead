@@ -11,6 +11,7 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -88,4 +89,8 @@ public interface BgcCommonService {
 	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
 	
 	String deleteBgcTemplateByUuid(String templateUuid);
-}
+	
+	BgcComponentJsonMap saveTemplateComponentJsonMap(Long id, Long templateId, String formId, String sentTo, String jsonStringData, OrgLocations orgLocations);
+	
+	BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId);
+} 

@@ -24,6 +24,7 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.constants.Constants;
@@ -619,5 +620,35 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 				return null;
 			}
 			return Constants.FAILED;
+	}
+
+	@Override
+	public BgcComponentJsonMap saveTemplateComponentJsonMap(BgcComponentJsonMap bgcComponentJsonMap) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(bgcComponentJsonMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while saving bgcComponent Details in Database "+e.getMessage());
+		}
+		return bgcComponentJsonMap;
+	}
+
+	@Override
+	public BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId) {
+		BgcComponentJsonMap bgcComponentJsonMap = null;
+		try {
+			Session session = sessionFactory.getCurrentSession();
+
+			bgcComponentJsonMap = (BgcComponentJsonMap) session
+					.createQuery(
+							"from BgcComponentJsonMap comp where comp.bgcTemplate.id =:templateId and comp.formId =:formId")
+					.setLong("templateId", templateId).setString("formId", formId).uniqueResult();
+			System.out.println("query executed .....>");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return bgcComponentJsonMap;
 	}
 }

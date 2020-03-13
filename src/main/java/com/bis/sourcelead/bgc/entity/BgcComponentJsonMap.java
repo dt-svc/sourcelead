@@ -41,6 +41,10 @@ public class BgcComponentJsonMap implements Serializable{
 	@Column(name = "FORM_ID ")
 	private String formId;;
 	
+	@Column(name = "SENT_TO ")
+	private String sentTo;;
+	
+	
 	@Column(name = "JSON_STRING", columnDefinition = "TEXT default NULL")
 	private String jsonString ;
 	
@@ -65,6 +69,14 @@ public class BgcComponentJsonMap implements Serializable{
 
 	public String getFormId() {
 		return formId;
+	}
+
+	public String getSentTo() {
+		return sentTo;
+	}
+
+	public void setSentTo(String sentTo) {
+		this.sentTo = sentTo;
 	}
 
 	public void setFormId(String formId) {
