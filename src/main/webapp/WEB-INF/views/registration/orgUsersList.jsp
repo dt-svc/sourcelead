@@ -838,6 +838,7 @@ function makeAsSuperAdmin(userId){
 <script type="text/javascript">
 function resendInvitation(userId){
 	var sourceleadUrl ='${sourceleadUrl}';
+	var atsUrl = '${SourceLeadWeb_atsUrl}';
 	var orgId = '${orgId}';
 	var orgLocationId =   $('input[name=subscribedOrgLocation]:checked').val();
 	 if(orgLocationId == null || orgLocationId == '' || orgLocationId == 'undefined'){
@@ -846,7 +847,7 @@ function resendInvitation(userId){
 	if(userId != null && userId != ""){
 			 $.ajax({
 			    	type: "POST",
-			        url: sourceleadUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId+"&orgLocationId="+orgLocationId, 
+			        url: atsUrl+"/resendInvitationEmail?${_csrf.parameterName}=${_csrf.token}&userId="+userId+"&orgId="+orgId+"&orgLocationId="+orgLocationId, 
 			        success: function(result) {
 			        	
 			        	document.getElementById("mailSendSuccessMsg").style.display = 'block';
