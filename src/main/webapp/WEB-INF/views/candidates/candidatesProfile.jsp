@@ -601,8 +601,8 @@ function editCandidate(candidateId){
 							
 							result = result + '<div class="clearfix mr">';
 							result = result + '<div class="pull-right">';
-							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn btn-sm btn-primary mr">Save</button>';
-							result = result + '<button type="button" class="btn btn-sm btn-danger" onClick ="cancelEdit();">Cancel</button>';
+							result = result + '<button type="button" id="update_candidate" onClick ="upDateCandidate('+candidateId+');" class="btn tblminwidth-90 btn-primary mr">Save</button>';
+							result = result + '<button type="button" class="btn tblminwidth-90 btn-default" onClick ="cancelEdit();">Cancel</button>';
 							result = result + '		          </div>';
 							result = result + '		          </div>';
 							result = result + '		        </div>';
@@ -800,7 +800,7 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 	result = result +"		<textarea id='rejectReason' class='form-control mt mb5' field-name='Reject Reason'  data-validation='required validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
 	result = result +"	</div>";
 	result = result +"	<div class='rejectErrorMsgs'/>";
-	result = result +'		<b href="javascript:void(0)" class="mt10"><input style="width:50%" id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input style="width:50%" class="u_can_color" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +'		<b href="javascript:void(0)" class="mt10"><input style = "width:49%" class="btnBg_blue" id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="btnBg_white" style = "width:49%" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
 	result = result +"	</div>";
 	result = result +"</form:form>";
 	

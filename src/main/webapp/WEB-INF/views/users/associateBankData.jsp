@@ -58,13 +58,13 @@
                  <div class="clearfix"></div>
                  <div class="clearfix footerstyelsNew">
                   <div class="col-md-6">
-                 <input type="button" value="Previous" onclick="shiftToSalaryTab();" class="btn btn-default">
+                 <input type="button" value="Previous" onclick="shiftToSalaryTab();" class="btn btn-default tblminwidth-90">
 			     </div> 
                   <div class="col-md-6">
                    <div class="pull-right">
-                   <input type="button" onclick="skipAssociateBankDataJsp();" class="btn btn-default mr10" value="Skip">
-                    <input value="Save & Continue" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData();" type="button">
-                    <input value="Cancel" onclick="javascript:window.location.href = '/app/usersList'" class="btn btn-default ml10" type="button">
+                   <input type="button" onclick="skipAssociateBankDataJsp();" class="btn btn-default mr10 tblminwidth-90" value="Skip">
+                    <input value="Save & Continue" class="btn btn-success btnSuccess tblminwidth-90" id="save_associate_bank_data_button" onclick="saveAssociateBankData();" type="button">
+                    <input value="Cancel" onclick="javascript:window.location.href = '/app/usersList'" class="btn btn-default ml10 tblminwidth-90" type="button">
                     </div>
                   </div>
                 </div>

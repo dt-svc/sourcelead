@@ -232,14 +232,14 @@
         <div class="col-lg-12">
           <div class="pull-right">
                <c:if test="${!empty jobRecommendations}">
-	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobRecommendations?requirementUUID=${requirementUUID}'"></a>
+	              <input type="button" value="Skip" class="btn btn-primary ml tblminwidth-90" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobRecommendations?requirementUUID=${requirementUUID}'"></a>
 	           </c:if>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
-            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+            	<input type="button" class="btn btn-primary ml tblminwidth-90" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
 			
-            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'">
+            <input type="button" class="btn btn-default ml tblminwidth-90" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'">
           </div>
         </div>
       </div>

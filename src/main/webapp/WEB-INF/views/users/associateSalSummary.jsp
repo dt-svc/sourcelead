@@ -19,10 +19,10 @@ function associateSalSummary(userId){
             	result = result + '		<div class="col-md-3 col-md-offset-9">';
             	result = result + '	<ul class="list-inline list-unstyled pull-right mb0">';
             	if(json.id != null && json.id != '' && json.id != 'undefined'){
-            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\',\''+json.effectiveDate+'\',\''+json.increasePer+'\');">Update</a></li>';
-                	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block tblminwidth-90" onClick="updateSalaryDetails(\''+json.id+'\',\''+json.payType+'\',\''+json.payFrequency+'\',\''+json.standardHours+'\',\''+json.annualSal+'\',\''+json.perPaySal+'\',\''+json.hourlyRate+'\',\''+userId+'\',\''+json.payGroupUUID+'\',\''+json.effectiveDate+'\',\''+json.increasePer+'\');">Update</a></li>';
+                	result = result + '		<li><a href="javascript:void(0)" class="btn btn-warning btn-block tblminwidth-90" onClick="salaryHistory(\''+json.id+'\');">History</a></li>';
             	}else{
-            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block" onClick="editSalaryDetails(\''+userId+'\');">Update</a></li>';
+            		result = result + '		<li><a href="javascript:void(0)" class="btn btn-primary btn-block tblminwidth-90" onClick="editSalaryDetails(\''+userId+'\');">Update</a></li>';
             	}
             	result = result + '		</ul>';
             	result = result + '	</div>';
@@ -517,8 +517,8 @@ function refreshPayItems(i){
         </div>
       </div>
       <div class="modal-footer">
-        <button data-dismiss="modal" class="btn btn-success btnSuccess" type="button" id="update_associate_sal_button" onclick="updateAssociateSal();">Update</button>
-        <button data-dismiss="modal" class="btn btn-default" type="button" onClick="closeupdateSalaryDetails();">Cancel</button>
+        <button data-dismiss="modal" class="btn btn-success btnSuccess tblminwidth-90" type="button" id="update_associate_sal_button" onclick="updateAssociateSal();">Update</button>
+        <button data-dismiss="modal" class="btn btn-default tblminwidth-90" type="button" onClick="closeupdateSalaryDetails();">Cancel</button>
       </div>
     </div>
   </div>

@@ -101,18 +101,18 @@
 				<div class="pull-right mr" id="summaryButtonsDiv">
 					<c:choose>
 					  <c:when test="${!empty requirement.id}">
-					    <button type="button" id = "editAssignedTeamsOrUsersBtn" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
+					    <button type="button" id = "editAssignedTeamsOrUsersBtn" class="btn btn-primary mr5 tblminwidth-90" data-dismiss="modal" onclick="editAssignedTeamsOrUsers('${requirement.id}');">Save<span id="assignToSelectedPopupCount"> (0) </span></button>
 					  </c:when>
 					  <c:otherwise>
-					    <button type="button" class="btn btn-primary mr5 btn-sm" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>
+					    <button type="button" class="btn btn-primary mr5 tblminwidth-90" data-dismiss="modal" onclick="getAssignedTeamsOrUsers();">Assign<span id="assignToSelectedPopupCount"> (0) </span></button>
 					  </c:otherwise>
 					</c:choose>
 					<c:if test="${empty requirement.id}"> 
-					<button type="button" class="btn btn-default btn-sm" onclick="clearAssignedTeamsOrUsers();">Reset</button>
+					<button type="button" class="btn btn-default tblminwidth-90" onclick="clearAssignedTeamsOrUsers();">Reset</button>
 					</c:if>
 				</div>
 				<div class="pull-right mr" id="listButtonsDiv" style="display: none;">
-					<button type="button" id="listSaveButton" class="btn btn-primary mr5 btn-sm" data-dismiss="modal">Save</button>
+					<button type="button" id="listSaveButton" class="btn btn-primary mr5 tblminwidth-90" data-dismiss="modal">Save</button>
 				</div>
 			</div>
 		</div>

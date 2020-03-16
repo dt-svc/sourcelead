@@ -180,7 +180,7 @@ function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="button" onclick="addApplicantForm();" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" onclick="addApplicantForm();" id="save_button"  class="btn tblminwidth-90 btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  

@@ -119,9 +119,9 @@ $(document).ready(function() {
 				  <div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Search" id="search_requiremet"
-								onclick="getRequirementTableList();closePop();" class="btn btn-sm btn-success" />
+								onclick="getRequirementTableList();closePop();" class="btn tblminwidth-90 btn-primary" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearJobAdvSearch();getRequirementTableList();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 					
@@ -197,7 +197,7 @@ function submitCandidatesToJob(){
     	 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
 		
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit' onclick='submitCandidtesToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitCandidtesToJob()' class='btn btn-primary tblminwidth-90'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='reqDataTableSearch'/>";
@@ -227,7 +227,7 @@ function submitCandidatesToJob(){
 			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";
 			result = result + ' <div id="reasonForInvoiceDiv"/>';
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
 			result = result +"	</div>";
 			$("#shareEmptypopUp").empty();
 			$("#shareEmptypopUp").append(result);
@@ -511,7 +511,7 @@ function submitCandidtesToJob(){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Select Job</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okPopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='okPopUp();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
 			result = result +"	</div>";
 			$("#choicepopUp").append(result);
 			$("#remove_user_pop").slideDown(200);

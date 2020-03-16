@@ -145,8 +145,8 @@ $(document).ready(function(){
 			     </div> 
                   <div class="col-md-12">
                    <div class="pull-right">
-                    <input value="Save" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/userSummaryDetails?tabType=contribution&userCode=${userCode}'" type="button">
+                    <input value="Save" class="btn btn-success btnSuccess tblminwidth-90" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
+                    <input value="Cancel" class="btn btn-default ml10 tblminwidth-90" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/userSummaryDetails?tabType=contribution&userCode=${userCode}'" type="button">
                     </div>
                   </div>
                 </div>

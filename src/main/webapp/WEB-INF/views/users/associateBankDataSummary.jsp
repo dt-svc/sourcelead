@@ -137,9 +137,9 @@ function editAssociateBankDataFun(userId){
                  result += '<div class="clearfix footerstyelsNew">';
                   result += ' <div class="col-md-10">';
                 result += '  <div class="pull-right">';
-               result += '   <input value="Save" class="btn btn-success btnSuccess" id="save_associate_bank_data_button" onclick="saveAssociateBankData('+userId+');" type="button">';
+               result += '   <input value="Save" class="btn btn-success btnSuccess tblminwidth-90" id="save_associate_bank_data_button" onclick="saveAssociateBankData('+userId+');" type="button">';
 
-                 result += '   <input value="Cancel" onclick="cancelButtonBank('+userId+');" class="btn btn-default ml10" type="button">';
+                 result += '   <input value="Cancel" onclick="cancelButtonBank('+userId+');" class="btn btn-default ml10 tblminwidth-90" type="button">';
 
                  result += '   </div>';
                result += ' </div>';

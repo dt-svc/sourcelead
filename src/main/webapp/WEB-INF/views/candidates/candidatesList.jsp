@@ -1430,6 +1430,14 @@ function imageCancel(){
 										</div>
 						  </div>
 						  
+						  <div class="col-md-8 mt5">
+						  <label>Source</label>
+							<div class="clearfix">
+								<select class="chosen-select form-control input-sm" multiple data-placeholder="Source" id="candidateSource" name="candidateSource">
+								</select>
+							 </div>
+						 </div>
+						  
 						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
 							  <div class="clearfix">
@@ -1459,7 +1467,7 @@ function imageCancel(){
  <div class="positionRelative reportHead clearfix">
       <span class="pull-left refreIcon" id="advanceSearchDiv">
       		<a href="javascript:void(0)" class="refeIcon" id="resetVendor" title="Refresh" onclick="resetCandidateFilter();"></a>
-      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
+      		<a href="javascript:void(0)" class="newAdBtn pull-left" title="Advanced Search" onClick="openPop();getSourceleadTags(); getCandidateSourceList();"> Advanced Search &nbsp; <i class="fa fa-search"></i> </a>
       </span>
       
       <ul class="pull-right list-unstyled list-inline">
@@ -2344,6 +2352,7 @@ function getCities(){
 	    $("#canTags").val('').trigger("chosen:updated");
 	    $("#noticePeriod1").val('').trigger("chosen:updated");
 	    $("#primarySkill").val('').trigger("chosen:updated");
+	    $("#candidateSource").val('').trigger("chosen:updated");
 	    
 	    $("#anyOfKeyword").empty();
 	    $("#allKeywords").empty();
@@ -2765,6 +2774,7 @@ function minMaxExperience(){
 	    $("#designationType").val('').trigger("chosen:updated");
 	    
 	    $('#candidatelist_form').find('p.jquery_form_error_message').remove();
+	    $("#candidateSource").val('').trigger("chosen:updated");
 	    
 	     $("#anyOfKeyword").empty();
 	     $("#allKeywords").empty();
@@ -2805,7 +2815,7 @@ function minMaxExperience(){
 	     $("#canVisa").val('');
 	     $("#canTags").val('');
 	     $("#primarySkill").val('');
-	    
+	     $("#candidateSource").val('');
 	}
 </script>
 
@@ -2910,7 +2920,7 @@ function shareJob() {
 			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";
 			result = result + ' <div id="reasonForInvoiceDiv"/>';
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
+			result = result +'		<b href="javascript:void(0)"><input class="btnBg_blue" id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
 			result = result +"	</div>";
 			$("#shareEmptypopUp").empty();
 			$("#shareEmptypopUp").append(result);
@@ -3001,8 +3011,8 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '  </div>';
 	 result = result+ '  <div class="modal-footer">';
 	 result = result+ '    <span class="fa fa-exclamation-triangle text-danger pull-left mt10" '+buttonDisplay+'><strong>&nbsp;Selected Candidates are not more than 50</strong></span>';
-	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
-	 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
+	 result = result+ '    <button type="button" class="btn btn-primary tblminwidth-90" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
+	 result = result+ '    <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
 	 result = result+ '  </div>';
 	 result = result+ '</div>';
 	 result = result+ '</div>';
@@ -3179,19 +3189,22 @@ function resetCandidateFilter(){
 	$("ul#employmentFilter > li input:checkbox").prop("checked",false);
 	$("ul#availabilityFilter > li input:checkbox").prop("checked",false);
 	$("ul#skillsUL > li input:checkbox").prop("checked",false);
+	$("ul#sourceUL > li input:checkbox").prop("checked",false);
 	$("ul#candidateTypeFilter > li input:radio").prop("checked",false);
 	$("ul#createdByTypeFilter > li input:radio").prop("checked",false);
 	$("#mySkillsInput").val('');
 	
-	
+	$("#sourceInput").val('');
 	$("#dataTableSearch").val('');
 	mySkillsFunction();
+	candSourceFunction();
 	document.getElementById("candidateTypeAll").checked = true;
 	document.getElementById("candidateAll").checked = true;
 	document.getElementById("candidateCheck").checked = true;
 	document.getElementById("myCandidatesRadio").checked = true;
 	candidateList();
 	mySkillsFunction();
+	candSourceFunction();
 }
 </script>		
 
@@ -3325,7 +3338,21 @@ function resetCandidateFilter(){
 						</ul>
 					 </div> 
 		 </div> 
-			
+		 
+		 <div class="col-md-3">
+					<div class="clearfix dynamic_search filterDynamicsearch">
+						<input type="text" id="sourceInput" onkeyup="candSourceFunction()" placeholder="Source" title="Type in a Source">
+						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
+					</div>
+					 <div class="clearfix filterSearch-ul">
+						<ul class="list-unstyled positionRelative filterSearch mt5" id="sourceUL">
+							<c:forEach var="candSource" items="${sourceCandidateList}">
+							<li class="checkBox positionRelative"><input  type="checkbox" name="filterCandidateSource" value ="${candSource.id}" ><label>${candSource.name}</label></li>
+							</c:forEach>
+						</ul>
+					 </div> 
+		 </div> 
+		
 		</div>
 		</div>
 		<div class="clearfix advancedsearch-footer">
@@ -3342,6 +3369,33 @@ function mySkillsFunction() {
     input = document.getElementById("mySkillsInput");
     filter = input.value.toUpperCase();
     ul = document.getElementById("skillsUL");
+    li = ul.getElementsByTagName("li");
+    for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("label")[0];
+        if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+        } else {
+            li[i].style.display = "none";
+
+        }
+    }
+}
+
+$(document).keyup(function(e) {
+	  if (e.keyCode === 27) {
+		  closeCandidateFilterPop();
+	  }
+	});
+</script>
+
+
+<script>
+function candSourceFunction() {
+	
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("sourceInput");
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("sourceUL");
     li = ul.getElementsByTagName("li");
     for (i = 0; i < li.length; i++) {
         a = li[i].getElementsByTagName("label")[0];
@@ -3424,4 +3478,27 @@ function goToWalletList(){
 }
 
 </script> 
+
+<script>
+    function getCandidateSourceList(){
+ 		 $.ajax({
+		    	type: "GET",
+		        url: atsUrl+"/getCandidateSourceList?"+tokenParamName+"="+tokenValue, 
+		        success: function(json) {
+		        	
+		        	var output = "";
+		        	for (var i=0; i<json.length; i++)
+					{
+			        		var opt = json[i];
+			        		output = output + "<option value='" +opt.id+ "'>"+opt.name+"</option>";
+			        		
+					}
+		        	$("#candidateSource").empty();
+			        $("#candidateSource").append(output);
+			        $('#candidateSource').trigger("chosen:updated");
+		        },
+		    }); 
+   }
+   </script>
+   
 <jsp:include page="../masterFooter.jsp" /> 
