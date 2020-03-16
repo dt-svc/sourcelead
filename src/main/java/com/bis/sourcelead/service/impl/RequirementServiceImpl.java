@@ -946,9 +946,9 @@ public class RequirementServiceImpl implements RequirementService {
 		// storing requirement assignedto record to show the imported jobs to the assigned user.
 		// this record is stored when assignTO value is given in excel sheet in job imports.
 		if(requirementDTO.getAssignedTo() != null){
-				if (!requirementDTO.getAssignedTo().get(0).split(",")[0].toString().equalsIgnoreCase("")) {
-					String userId = requirementDTO.getAssignedTo().get(0).split(",")[0];
-
+			for(String assignedTO :requirementDTO.getAssignedTo()){
+				if (!assignedTO.split(",")[0].toString().equalsIgnoreCase("")) {
+					String userId = assignedTO.split(",")[0].toString();
 					RequirementAssignTo requirementAssignTo;
 					User assignedUser = new User();
 					assignedUser.setId(Long.parseLong(userId));
@@ -976,7 +976,7 @@ public class RequirementServiceImpl implements RequirementService {
 					requirementAssignToList.add(requirementAssignTo);
 				}
 			}
-
+		}
 
 		if (StringUtils.isNotBlank(requirementDTO.getRequirementId())) {
 
