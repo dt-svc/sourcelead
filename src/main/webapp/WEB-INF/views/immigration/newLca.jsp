@@ -608,10 +608,10 @@
     <div class="col-lg-12">
     <div class="form-footer">
       <div class="pull-right  mr">
-        <input type="button" value="Save" id="saveLca" onclick="saveLcaDetails();" class="btn btn-primary">
+        <input type="button" value="Save" id="saveLca" onclick="saveLcaDetails();" class="btn btn-primary tblminwidth-90">
        <input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/immigration/viewLCAList'"
-							class="btn btn-default ml">
+							class="btn btn-default ml tblminwidth-90">
       </div>
       </div>
     </div>

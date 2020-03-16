@@ -196,7 +196,7 @@ function addNotes(orgRelationId,vendorLocationId) {
 	
 	result = result  +'                  <div class="col-md-3" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right mt5"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onClick ="storeVendorNotes('+orgRelationId+');" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn tblminwidth-90 btn-primary" onClick ="storeVendorNotes('+orgRelationId+');" />'; 
   /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';

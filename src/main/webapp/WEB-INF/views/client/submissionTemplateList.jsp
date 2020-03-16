@@ -243,8 +243,8 @@ function templatepagination(){
 		           result = result + '<div class="form-footer clearfix row mt">';
 		           
 		           result = result + '<div class="pull-right mr">';
-		           result = result + ' <input type="button" value="Save" id="save_button" onclick="submitClientSubmissionTemplate();" class="btn btn-primary mr">';
-		           result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default" >';
+		           result = result + ' <input type="button" value="Save" id="save_button" onclick="submitClientSubmissionTemplate();" class="btn btn-primary mr tblminwidth-90">';
+		           result = result + ' <input type="button" value="Cancel" onclick="clientSubmissionTemplate('+clientLocationId+')" class="btn btn-default tblminwidth-90" >';
 		           result = result + '</div>';
 
 		           result = result + '</div>';

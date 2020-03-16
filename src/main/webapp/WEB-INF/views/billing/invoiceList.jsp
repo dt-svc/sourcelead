@@ -265,9 +265,9 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
 	'<sec:authorize access="hasAnyRole(\'ROLE_RECEIVE_PAYMENT\')">';
-	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
+	result = result +'              <input class="btn btn-primary tblminwidth-90" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
 	'</sec:authorize>';
-	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
+	result = result +'              <input class="btn btn-default tblminwidth-90 ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
 	result = result +'          </div>                                                                                                ';
 	result = result +'        </form>                                                                                                 ';
@@ -1212,7 +1212,7 @@ function exportToReceivablePdf(){
 				result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
 				result = result +"		<p>Receivables List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelExport();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
 				$("#empty_receivable_pop").slideDown(200);
@@ -1268,7 +1268,7 @@ function exportToReceivableExcel(){
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
 				result = result +"		<p>Receivables List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelExport();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
 				$("#empty_requirement_pop").slideDown(200);
@@ -1379,7 +1379,7 @@ function linkInvoice(invoiceUUID,totalAmount){
 			result = result +'    </div>                                                                                                                    ';
 			result = result +'     <div class="clearfix mt10">                                                                                              ';
 			result = result +'         <div class="pull-right">                                                                                             ';
-			result = result +'             <button type="button" class="btn btn-primary" onClick="mergeInvoice(\''+totalAmount+'\');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
+			result = result +'             <button type="button" class="btn btn-primary tblminwidth-90" onClick="mergeInvoice(\''+totalAmount+'\');"><i class="fa fa-external-link paddingRight"></i>Link</button>      ';
 			result = result +'         </div>                                                                                                               ';
 			result = result +'     </div>                                                                                                                   ';
 			result = result +'    </div>                                                                                                                    ';
@@ -1567,7 +1567,7 @@ function voidInvoice(invoiceUUID){
 
 	result = result +"		<p>Are you sure you want to Void Invoice ?</p>";
 	result = result + ' <div id="voidInvoiceId"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="savevoidInvoice(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="savevoidInvoice(\''+invoiceUUID+'\');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1782,8 +1782,8 @@ function resetingInvoiceFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="getInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="getInvoiceList();" class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>
