@@ -45,7 +45,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="${sourceleadUrl}/downloadDataImportTemplateForAssociate"
-								class="btn btn-success btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Template
+								class="btn btn-primary btn-block" title="Download Associate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Associate Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -56,7 +56,7 @@ var uploadflag= true;
 										value="Import">
 								</div>
 								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
+									<input type="reset" class="btn btn-default" value="Reset"
 										onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/uploadForm'">
 								</div>
 							</div>

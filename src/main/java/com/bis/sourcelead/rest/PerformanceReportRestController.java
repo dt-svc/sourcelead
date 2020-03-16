@@ -67,6 +67,7 @@ import com.bis.sourcelead.dto.UserDTO;
 import com.bis.sourcelead.dto.UserRoleDTO;
 import com.bis.sourcelead.elk.index.helper.ClientVendorContactsIndexHelper;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.Contracts;
 import com.bis.sourcelead.entity.Invoice;
 import com.bis.sourcelead.entity.Org;
@@ -1368,7 +1369,7 @@ public class PerformanceReportRestController {
 
 	 
 	 @RequestMapping(value = "/getAllCandidateListForRecruiterReports")
-		public @ResponseBody ResponseList<Candidate> getAllCandidateListForRecruiterReports(CandidateDTO candidateDTO, 
+		public @ResponseBody ResponseList<CandidateGlobal> getAllCandidateListForRecruiterReports(CandidateDTO candidateDTO, 
 				@RequestParam(value="userCode", required=false) String userCode, 
 				@RequestParam(value="timePeriod", required=false) String timePeriod,
 				@RequestParam(value="customStartDate", required=false) String customStartDate,
@@ -1421,7 +1422,8 @@ public class PerformanceReportRestController {
 				candidateDTO.setSortOrder(sortColumnOrder);
 				candidateDTO.setOrgLocationId(orgLocations.getId());
 				
-				ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+				//ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+				ResponseList<CandidateGlobal> list = candidateService.getAllCandidatesGlobalByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
 				
 				return list;
 			}
@@ -2193,8 +2195,9 @@ public class PerformanceReportRestController {
 			    	    searchDates[1] = endDateUTC;
 					}
 				
-				ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
-				File file = null;
+			//	ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+				ResponseList<CandidateGlobal> list = candidateService.getAllCandidatesGlobalByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
+					File file = null;
 				file = pdfUtil.recruiterReprtsCandidateListPdfTable(list, orgLocations,searchDates);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {
