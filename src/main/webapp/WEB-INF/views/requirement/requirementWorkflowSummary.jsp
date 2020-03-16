@@ -1272,7 +1272,7 @@ function closeRequirementPopup(booleanValue,submissionId,requirementId,submissio
     					result = result +"	<div id='stageComment"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
     					result = result +"	<textarea  id='commentForStage' name='reasonForSpoc' data-validation='required validate_Description validate_length length2-250' placeholder='Comment Is Mandatory For This Stage.' onkeypress=';' ></textarea>";
     					result = result + ' <div id="commentForStageDiv"/>';
-    					result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='commentForStage("+reqId+", "+subId+", \""+selectBox+"\", \""+submissionType+"\");'></b>";
+    					result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' class='btnBg_blue' value='Submit' onclick='commentForStage("+reqId+", "+subId+", \""+selectBox+"\", \""+submissionType+"\");'></b>";
     					result = result +"	</div>";
     					$("#popUp").empty().append(result);
     	    	        $("#stageComment"+submissionId).slideDown(200);
@@ -1321,7 +1321,7 @@ function closeRequirementPopup(booleanValue,submissionId,requirementId,submissio
 		    			result = result+" and "+responseData.tasksCount +" task(s) ";
 		    		}
 		    		result =result+"for the "+responseData.stageName +"</div>";
-		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="btnBg_white" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 		    		result = result +" </div>";
 					$("#popUp").empty().append(result);
 					$("#popUp").show();
@@ -2997,7 +2997,7 @@ function customizeScore(requirementId){
 			        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
 			        result = result +'		                   <label>Choose City</label>';
 			        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
-			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
+			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
 			        result = result +'		                  </div>  ';
 			        
 			        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   

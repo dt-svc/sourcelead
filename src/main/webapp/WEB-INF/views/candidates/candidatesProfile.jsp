@@ -800,7 +800,7 @@ function removeCandidateAlertMessage(candidateId,candidateType){
 	result = result +"		<textarea id='rejectReason' class='form-control mt mb5' field-name='Reject Reason'  data-validation='required validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2' onkeypress='candiateRemoveSpacesForRejectReason();'></textarea>";
 	result = result +"	</div>";
 	result = result +"	<div class='rejectErrorMsgs'/>";
-	result = result +'		<b href="javascript:void(0)" class="mt10"><input style="width:50%" class="btnBg_blue" id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input style="width:50%" class="btnBg_white" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
+	result = result +'		<b href="javascript:void(0)" class="mt10"><input style = "width:49%" class="btnBg_blue" id="confirm-id" type="button" value="Ok" onclick="deleteCandidate('+candidateId+',\''+candidateType+'\');"><input class="btnBg_white" style = "width:49%" type="button"  value="Cancel" onClick="cancelAlert();"></b>';
 	result = result +"	</div>";
 	result = result +"</form:form>";
 	
