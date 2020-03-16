@@ -248,8 +248,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary tblminwidth-90" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default tblminwidth-90 ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>

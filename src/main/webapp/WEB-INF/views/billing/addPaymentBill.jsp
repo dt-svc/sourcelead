@@ -270,7 +270,7 @@ $('#paymentDate').datepicker({
 	                 	 result = result +'       </div>'; 
 	                 	 result = result +'   </div>'; 
 	                 	 result = result +'   <div class="modal-footer">';
-	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="addInvoice();" >Add</button>';
+	                 	 result = result +'     <button data-dismiss="modal" class="btn btn-primary tblminwidth-90" type="button" onClick="addInvoice();" >Add</button>';
 	                 	 result = result +'   </div>'; 
 	                 	//result = result +'     </form>'; 
 	                 	 $("#invoiceList").empty(); 
