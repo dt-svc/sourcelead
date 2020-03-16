@@ -608,8 +608,7 @@ $('body').on('submit', '#sjfb', function(e){
         var con2 = JSON.stringify(fields);
         var jsonStringData = encodeURIComponent(con2);
         if(submitTemplate){
-        	console.log(jsonStringData);
-        	/*$("#save_button").attr("disabled", "disabled");
+        	$("#save_button").attr("disabled", "disabled");
         	$("#save_button" ).addClass('button').text('Processing..');
        
       	  $.ajax({
@@ -626,7 +625,7 @@ $('body').on('submit', '#sjfb', function(e){
 		        	    showError("Operation failed, please try again");
 		        	}
     	        },
-      	    });   */
+      	    });   
               return true;
         }else{
         	alertMessage("Provide choice for "+fieldLabel)
