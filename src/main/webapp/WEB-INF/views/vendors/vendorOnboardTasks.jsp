@@ -149,8 +149,8 @@
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary tblminwidth-90" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default tblminwidth-90 ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
@@ -250,7 +250,7 @@ function getVendorOnboardTasksList(){
 		        	result = result +'&nbsp;&nbsp;<input type="checkbox" name="isMailSent" id="isMailSent" value="Y" checked>&nbsp;&nbsp;Send Invitation';
 		        	result = result +' </span>';
 		    		result = result +'<div class="pull-right mr">';
-		    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishVendorOnbord();" class="btn btn-sm btn-primary">';
+		    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishVendorOnbord();" class="btn tblminwidth-90 btn-primary">';
 		    		result = result +'</div>';
 		    		result = result +'</div>';
 		    		

@@ -1020,7 +1020,7 @@ function cancelPopup(){
 		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Select Vendor</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#invoice_pop").slideDown(200);
@@ -1781,7 +1781,7 @@ function saveInvoice(saveType){
 	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
 	     		result = result +"		<p>At least one Add column Payable Line Item</p>";
 	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	     		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	     		result = result +"	</div>";
 	     		$("#popUp").append(result);
 	     		$("#invoice_pop").slideDown(200);
