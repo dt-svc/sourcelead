@@ -97,7 +97,7 @@
 		        
 		        result= result+'      <label class="col-md-5"><div class="col-md-3 lblHeight">Sent to:</div>';
 		     	result= result+'        <div class="col-md-9">';
-		     	result= result+'              <input type="text" id="sentTo'+idValue+'" field-name="Sentto" class="field-label form-control input-sm">';
+		     	result= result+'              <input type="text" id="sentTo'+idValue+'" field-name="Sentto" data-validation="validate_email" data-validation-optional="true" class="field-label form-control input-sm">';
 		     	result= result+'      </div>';
 		     	result= result+'       </label>';
 		     	result= result+'     </div>';
@@ -126,7 +126,7 @@
         	var removeCompDivId =  $('#componentString [value='+params.deselected+']').text().replace(/ /g, "_");
         	$('#'+removeCompDivId).remove();
         }
-         customizeFields(sourceleadUrl,templateUuid);
+         customizeFields(vmsUrl,templateUuid);
      });	
     
      $(document).ready(function() {

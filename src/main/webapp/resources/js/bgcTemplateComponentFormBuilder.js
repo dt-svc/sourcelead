@@ -5,6 +5,7 @@
  * SJFB may be freely distributed under the included MIT license (license.txt).
  */
 
+var idValue ="";
 function customizeFields(vmsUrl,templateUuid){
 	
     //If loading a saved form from your database, put the ID here. Example id is "1".
@@ -19,7 +20,7 @@ function customizeFields(vmsUrl,templateUuid){
     });
 
     //Removes fields and choices with animation
-    $("#sjfb"+idValue).on("click", ".delete", function() {
+    $("#"+idValue).on("click", ".delete", function() {
     	
     	var $this = $(this);
     	var result = "";
@@ -50,21 +51,36 @@ function customizeFields(vmsUrl,templateUuid){
       
     });
 
-    //Makes fields required
-    $("#sjfb").on("click", ".toggle-required", function() {
+    $("#"+idValue).on("click", ".toggle-required", function() {
         requiredField($(this));
     });
 
     //Makes choices selected
-    $("#sjfb").on("click", ".toggle-selected", function() {
+    $("#"+idValue).on("click", ".toggle-selected", function() {
         selectedChoice($(this));
     });
 
     //Adds new choice to field with animation
-    $("#sjfb").on("click", ".add-choice", function() {
+    $("#"+idValue).on("click", ".add-choice", function() {
         $(addChoice('Y')).appendTo($(this).prev()).hide().slideDown('fast');
         $('.choices ul').sortable();
     });
+    /*
+    //Makes fields required
+    $("#sjfb-wrap").on("click", ".toggle-required", function() {
+        requiredField($(this));
+    });
+
+    //Makes choices selected
+    $("#sjfb-wrap").on("click", ".toggle-selected", function() {
+        selectedChoice($(this));
+    });
+
+    //Adds new choice to field with animation
+    $("#sjfb-wrap").on("click", ".add-choice", function() {
+        $(addChoice('Y')).appendTo($(this).prev()).hide().slideDown('fast');
+        $('.choices ul').sortable();
+    });*/
 
    //load saved form
    /* if(null != templateUuid && templateUuid != undefined){
@@ -283,12 +299,16 @@ function addField(fieldType,value,labelValue,labelName,vmsUrl,templateId) {
 
 //Make builder field required
 function requiredField($this) {
+	//console.log("inisde function call ???");
+	//console.log($this);
     if (!$this.parents('.field').hasClass('required')) {
         //Field required
+    	//console.log("adding required");
         $this.parents('.field').addClass('required');
         $this.attr('checked','checked');
     } else {
         //Field not required
+    //	console.log("removing required");
         $this.parents('.field').removeClass('required');
         $this.removeAttr('checked');
     }
@@ -383,7 +403,7 @@ function buildSavedComponentForm(formId){
     
     result= result+'      <label class="col-md-5"><div class="col-md-3 lblHeight">Sent to:</div>';
  	result= result+'        <div class="col-md-9">';
- 	result= result+'              <input type="text" id="sentTo'+formId+'" field-name="Sentto" class="field-label form-control input-sm">';
+ 	result= result+'              <input type="text" id="sentTo'+formId+'" data-validation="validate_email" data-validation-optional="true" field-name="Sentto" class="field-label form-control input-sm">';
  	result= result+'      </div>';
  	result= result+'       </label>';
  	result= result+'     </div>';
@@ -401,6 +421,40 @@ function buildSavedComponentForm(formId){
 	    result= result+'   <div id="choicepopUp"></div>';
  	}
  	$('#parent_bgc_div').prepend(result);
+ 	
+
+    $("#"+formId).on("click", ".delete", function() {
+    	
+    	var $this = $(this);
+    	var result = "";
+    	result = result +"<div class='project_inn_mask'></div>";
+    	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
+    	result = result +"<p>Are you sure you want to delete?</p>";
+    	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
+    	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Ok' /><input class='u_can_color' type='button' id='cancelDelete' value='Cancel'></b>";
+    	result = result +"</div>";
+    	$("#popUp").append(result);
+    	$("#remove_user_pop").slideDown(200);
+    	$(".project_inn_mask").fadeIn(200);
+    	
+    	$("#deleteCustomField").on("click", function() {
+             $this.parent().slideUp( "slow", function() {
+                 $this.parent().remove()
+             });
+            $("#popUp").empty();
+         	$(".project_inn_mask").fadeOut(200);
+    	});
+    	
+    	$("#cancelDelete").on("click", function() {
+           $("#popUp").empty();
+           $(".project_inn_mask").fadeOut(200);
+    	});
+    	
+    	
+      
+    });
+    idValue = formId; // registering event for adding elements through type button.
+    customizeFields(vmsUrl,"");
 }
 
 function loadSavedBgcForm(templateId,formId) {
@@ -471,7 +525,7 @@ function loadSavedBgcForm(templateId,formId) {
 
 
 //Removes fields and choices with animation
-$("#sjfb").on("click", ".delete", function() {
+$("#"+idValue).on("click", ".delete", function() {
 	
 	var $this = $(this);
 	var result = "";
@@ -508,7 +562,7 @@ $("#sjfb").on("click", ".delete", function() {
  function saveComponentJsonMap(templateId){
 	 $('#parent_bgc_div form').each(function( index ) {
 		 var formId = this.id;
-		 console.log("inside function call test222 "+formId);
+		// console.log("inside function call test222 "+formId);
 	  if ($(formId).validate(false, validationSettings)){
         var frm = $('#'+formId).serializeFormJSON();
         var con = JSON.stringify(frm);
@@ -541,7 +595,6 @@ $("#sjfb").on("click", ".delete", function() {
 
             //field required
             var fieldReq = $this.hasClass('required') ? 1 : 0;
-            
             
             if(fieldType == 'checkbox' || fieldType == 'radio' ||  fieldType == 'select'){
             	if($this.find('.choices li').length == 0) {
@@ -651,9 +704,9 @@ $("#sjfb").on("click", ".delete", function() {
 		
  }// close of saveComponentJsonMap>>>>>>>
     	
-   	$('body').on('blur', '#sjfb', function() {
-        $("#sjfb").showHelpOnFocus();
-        $("#sjfb").validateOnBlur(false, validationSettings);  
+   	$('body').on('blur', '#sjfb-wrap', function() {
+        $("#sjfb-wrap").showHelpOnFocus();
+        $("#sjfb-wrap").validateOnBlur(false, validationSettings);  
     });
    	  
     

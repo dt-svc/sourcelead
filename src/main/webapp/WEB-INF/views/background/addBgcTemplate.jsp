@@ -145,9 +145,8 @@ function  saveBgcTemplate() {
 				if (result.response == "AWKWARD") {
 					location.href = "/errorPage";
 				} else if (result.response == "SUCCESS") {
-					
-					console.log(result.object.id);
-					bgcComponetJsonMap(result.object.id);
+					//console.log(result.object.id);
+					saveComponentJsonMap(result.object.id);
 					if (result.object == "DataMissing") {
 						$("#saveBgcTemplateBtn").removeClass("disabled");
 						$("#saveBgcTemplateBtn").text('Save');
