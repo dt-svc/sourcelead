@@ -1430,13 +1430,13 @@ function imageCancel(){
 										</div>
 						  </div>
 						  
-						  <div class="col-md-8 mt5">
+						  <!-- <div class="col-md-8 mt5">
 						  <label>Source</label>
 							<div class="clearfix">
 								<select class="chosen-select form-control input-sm" multiple data-placeholder="Source" id="candidateSource" name="candidateSource">
 								</select>
 							 </div>
-						 </div>
+						 </div> -->
 						  
 						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
@@ -3339,7 +3339,7 @@ function resetCandidateFilter(){
 					 </div> 
 		 </div> 
 		 
-		 <div class="col-md-3">
+		<%--  <div class="col-md-3">
 					<div class="clearfix dynamic_search filterDynamicsearch">
 						<input type="text" id="sourceInput" onkeyup="candSourceFunction()" placeholder="Source" title="Type in a Source">
 						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -3351,7 +3351,7 @@ function resetCandidateFilter(){
 							</c:forEach>
 						</ul>
 					 </div> 
-		 </div> 
+		 </div>  --%>
 		
 		</div>
 		</div>
