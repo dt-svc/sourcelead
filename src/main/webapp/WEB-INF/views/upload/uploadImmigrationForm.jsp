@@ -51,7 +51,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="${SourceLeadWeb_sourceleadUrl}/downloadImmigrationTemplate"
-								class="btn btn-success btn-block" title="Download Petition Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Petition Template
+								class="btn btn-primary btn-block" title="Download Petition Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Petition Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -62,7 +62,7 @@ var uploadflag= true;
 										value="Import">
 								</div>
 								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
+									<input type="reset" class="btn btn-default" value="Reset"
 										onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/uploadImmigrationForm'">
 								</div>
 							</div>

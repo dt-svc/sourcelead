@@ -49,7 +49,7 @@ window.onload = function () {
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/downloadCreateCandidateTemplate'/>"
-								class="btn btn-success btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
+								class="btn btn-primary btn-block" title="Download Candidate Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Candidate Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -60,7 +60,7 @@ window.onload = function () {
 										value="Import">
 								</div>
 								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
+									<input type="reset" class="btn btn-default" value="Reset"
 										onClick="javascript:window.location.href = '<c:url value='${SourceLeadWeb_sourceleadUrl}/uploadCandidateForm'/>'">
 								</div>
 								
@@ -169,7 +169,15 @@ function checkInviteEmail(){
 <script type="text/javascript">
 document.getElementById("uploadBtn").onchange = function () {
 	  var sizeinbytes = document.getElementById('uploadBtn').files[0].size;
-	  if(sizeinbytes > 6000000){
+	  
+	  $('#sizeinbytes').val(sizeinbytes); 
+	  document.getElementById("errorImage").style.display="none";
+	  $('#newUploadFile').text($(this).val().replace(/C:\\fakepath\\/i, ''));
+	  fileUpload("uploadBtn", "dataMigration");
+	  $("#upload_button").removeAttr("disabled");
+	  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
+	  
+	/*   if(sizeinbytes > 6000000){
 		  document.getElementById("errorImage").style.display="";
 		  $('#newUploadFile').text('');
 		  $("#upload_button").attr("disabled","disabled");
@@ -181,7 +189,7 @@ document.getElementById("uploadBtn").onchange = function () {
 		  fileUpload("uploadBtn", "dataMigration");
 		  $("#upload_button").removeAttr("disabled");
 		  $('#uploadDocDiv').find('p.jquery_form_error_message').remove();
-	  }
+	  } */
 	
 };
 </script>

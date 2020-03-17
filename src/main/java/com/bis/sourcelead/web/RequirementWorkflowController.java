@@ -1,10 +1,7 @@
 package com.bis.sourcelead.web;
 
-import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -28,18 +25,11 @@ import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
-import com.bis.sourcelead.dto.UserRoleDTO;
-import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.CandidateGlobal;
-import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
 import com.bis.sourcelead.entity.OrgLocations;
-import com.bis.sourcelead.entity.InterviewFeedbackTemplate;
-import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementSubmission;
 import com.bis.sourcelead.entity.User;
-import com.bis.sourcelead.entity.UserRole;
 import com.bis.sourcelead.enums.Result;
-import com.bis.sourcelead.service.UserRoleService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementQuestionnaireFeedbackTemplateDTO;
@@ -52,12 +42,7 @@ import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireFeedbackTempla
 import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlowStages;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlowTasks;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JsonWriter;
 
 @Controller
 @PropertySource("${propertyLocation:app.properties}")
@@ -66,9 +51,6 @@ public class RequirementWorkflowController {
 	
 	@Autowired
 	private RequirementWorkFlowService requirementWorkFlowService;
-	
-	@Autowired
-	private UserRoleService userRoleService;
 	
 	@Value("${sourceleadUrl}")
 	private String sourceleadUrl;
@@ -652,33 +634,6 @@ public class RequirementWorkflowController {
 			
 		}
 		
-		@RequestMapping(value = "/getAllActiveUsersList")
-		public @ResponseBody List<UserRoleDTO> getAllActiveUsersList(HttpServletRequest request){
-			OrgLocations orgLocations  = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocations");
-			List<UserRoleDTO> userRoleListDTO = new ArrayList<>();
-			logger.debug("inside  getAllActiveUsersList>>> orgLocationid "+orgLocations.getId());
-			try {
-				List<UserRole> userRoleList = userRoleService.getAllActiveUsersListByOrgLocationId(orgLocations.getId());
-				
-				for (UserRole ur : userRoleList) {
-					UserRoleDTO userRoleDTO = new UserRoleDTO();
-					StringBuilder userName = new StringBuilder();
-					userRoleDTO.setUserId(ur.getUser().getId());
-					if (null != ur.getUser().getLastName()) {
-						userRoleDTO.setUserName(
-								userName.append(ur.getUser().getFirstName()).append("").append(ur.getUser().getLastName()).toString());
-					} else {
-						userRoleDTO.setUserName(userName.append(ur.getUser().getFirstName()).toString());
-					}
-					userRoleListDTO.add(userRoleDTO);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			logger.debug("after  getAllActiveUsersList>>> orgLocationid "+orgLocations.getId());
-			return userRoleListDTO;
-		}
-		
 		@RequestMapping(value = "/saveWorkflowTask")
 		public @ResponseBody  Response<String> saveWorkflowTask(RequirementWorkFlowTasksDTO requirementWorkFlowTasksDTO,
 				HttpServletRequest request)throws Exception{
@@ -692,7 +647,7 @@ public class RequirementWorkflowController {
 			try {
 				if (user != null && Validator.validate(requirementWorkFlowTasksDTO)) {
 					Uuid = requirementWorkFlowService.saveRequirementWorkFlowTask(requirementWorkFlowTasksDTO, orgLocations, user);
-					requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
+					//requirementWorkFlowService.copyWorkflowStagesAndTask(Uuid, user, orgLocations,requirementWorkFlowTasksDTO);
 					
 					response.setResponse(Uuid);
 					response.setResponseMessage(Result.SUCCESS.getValue());
@@ -712,7 +667,7 @@ public class RequirementWorkflowController {
 			return response;
 			
 		}
-		@RequestMapping(value = "/editStage")
+		@RequestMapping(value = {"/editStage", "/viewStage"})
 		public ModelAndView editStage(HttpServletRequest request,
 				RequirementWorkFlowStagesDTO requirementWorkFlowStagesDTO,
 				@RequestParam(value = "workflowName", required = false)String workflowName) throws Exception{
@@ -728,10 +683,24 @@ public class RequirementWorkflowController {
 			if(StringUtils.isNotBlank(workflowName)) {
 				modelandview.addObject("workFlowName", workflowName);
 			}
+			else{
+				modelandview.addObject("workFlowName", stages.getRequirementWorkFlowId().getWorkFlowName());
+			}
+			
+			/*
+			 * 28/jan/2020 - vishnu
+			 * checking for getIsStageViewed as the value is true when user clicks on viewStage link.
+			 * and not true when user clicks on editStage. 
+			 * when getIsStageViewed is true, user can only view the stage and cannot edit it.
+			 * */
+			if(requirementWorkFlowStagesDTO.getIsStageViewed() == null || !requirementWorkFlowStagesDTO.getIsStageViewed().equalsIgnoreCase("true")){
 			List<RequirementSubmission> requirementSubLst = requirementWorkFlowService.validateWorkflowUpdate(null,requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid(), orgLocations.getId());
 			modelandview.addObject("onlyQuestAndTasksEditable", false);
 			if(requirementSubLst != null && requirementSubLst.size()>0) {
 				modelandview.addObject("onlyQuestAndTasksEditable", true);
+			}
+			}else{
+				modelandview.addObject("isStageViewed", Constants.BOOLEAN_TRUE);
 			}
 			modelandview.setViewName("workflow/addStage");
 			modelandview.addObject("stageName", stages.getStageName());
@@ -748,7 +717,9 @@ public class RequirementWorkflowController {
 			modelandview.addObject("chosenColumns", stages.getChosenColumns());
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
-			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			if(stagesDTO!=null){
+				modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			}
 			modelandview.addObject("configureType", stages.getConfigureType());
 			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
 			modelandview.addObject("sourceleadUrl", sourceleadUrl);
@@ -847,7 +818,7 @@ public class RequirementWorkflowController {
 			logger.debug("nside sending questionnaire link to candidate Started >>>>>>>>>>>>>>>>>");
 			// Write the code for copying tasks to user which are assigned to Stage level start here.
 			 try {
-		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(stageId,orgLocations,loginUser);
+		     	String taskStatus = requirementWorkFlowService.getRequirementworkflowTaskListById(submissionId,stageId,orgLocations,loginUser);
 		     	logger.debug("Workflow email tasks and notifications status :::"+taskStatus);
 			 }catch(Exception e) {
 				 e.printStackTrace();
@@ -1055,5 +1026,24 @@ public class RequirementWorkflowController {
 	
 	}
 	
+	@RequestMapping(value = "/viewQuestionnaire")
+	public ModelAndView viewQuestionnaire(@RequestParam(value = "templateUuid", required = true) String templateUuid, HttpServletRequest request) throws Exception{
+		ModelAndView modelandview = new ModelAndView();
+		modelandview.addObject("templateUuid",templateUuid);
+		modelandview.setViewName("workflow/viewQuestionnaire");
+		modelandview.addObject("sourceleadUrl", sourceleadUrl);
+		return modelandview;
+	}
 	
+	@RequestMapping(value = "/loadViewQuestionnaire", method = RequestMethod.GET)
+	@ResponseBody
+	public RequirementQuestionnaireTemplateDTO loadViewQuestionnaire(@RequestParam(value="templateUuid", required=true) String templateUuid){
+		RequirementQuestionnaireTemplateDTO templateDTO = new RequirementQuestionnaireTemplateDTO();
+		RequirementQuestionnaireTemplate questionnaireTemplate = requirementWorkFlowService.getQuestionnaireTemplateById(templateUuid);
+		templateDTO.setName(questionnaireTemplate.getName());
+	    templateDTO.setDescription(questionnaireTemplate.getDescription());
+	    templateDTO.setJsonString(questionnaireTemplate.getJsonString());
+		return templateDTO;
+		
+	}
 }

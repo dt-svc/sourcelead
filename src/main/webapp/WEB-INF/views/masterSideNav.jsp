@@ -30,6 +30,30 @@
  		<sec:authorize access="hasAnyRole('ROLE_ENROLL_ORG')"> 
 	        <li class="${sessionData.nav == 'OrgSettings' ? 'navActive' : ''}"><a href="${SourceLeadWeb_sourceleadUrl}/enrolledOrgsList" title="Orgs"><span class="navIcons orgIcon"></span><b>Orgs</b></a></li>
         </sec:authorize>
+        
+        
+        
+        <li>
+				  <a href="#" class="emsli" title="EMS">
+					<span class="navIcons cliIcon"></span><b>EMS</b> <i class="fa fa-fw fa-caret-down"></i>
+				  </a>
+					  
+			        <ul class="collapses" style="display: none">
+			          <sec:authorize access="hasAnyRole('ROLE_VIEW_ASSOCIATE','ROLE_VIEW_EDIT_ASSOCIATE','ROLE_VIEW_DELETE_ASSOCIATE','ROLE_CREATE_ASSOCIATE')">
+                               <li class="${sessionData.nav == 'Users' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_atsUrl}/usersList" title="Associates"><i class="fa fa-chevron-right"></i> Associates</a></li>
+                      </sec:authorize>         
+                               <li class="${sessionData.nav == 'Leave Management' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management"><i class="fa fa-chevron-right"></i> Leave Management</a></li>
+                               
+                               <c:if test="${SourceLeadWeb_expensesTabCount > 0}">
+                               <li class="${sessionData.nav == 'Expenses' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/expenses" title="Expenses"><i class="fa fa-chevron-right"></i> Expenses</a></li>
+                               </c:if>
+                               
+                                <c:if test="${SourceLeadWeb_performanceTabCount > 0}">
+                                 <li class="${sessionData.nav == 'Goals' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceGoalsList" title="Performance"><i class="fa fa-chevron-right"></i> Performance</a></li>
+                                </c:if>
+                    </ul>
+                              
+			  </li>
           
           <c:set var="timesheetTabExist" scope="session" value="N"/>
           <c:forEach var="tabName" items="${SourceLeadWeb_tabsList}">
@@ -61,11 +85,6 @@
 	                <c:if test="${tabName == 'Vendors'}">
 	                   <li class="${sessionData.nav == 'Vendors' ? 'navActive' : ''}"><a href="${SourceLeadWeb_vmsUrl}/vendorsList" title="Vendors"><span class="navIcons venIcon"></span><b>Vendors</b></a></li>
 	                </c:if> 
-	                 
-	                 <c:if test="${tabName == 'Associates'}">
-	                 <li class="${sessionData.nav == 'Users' ? 'navActive' : ''}"><a href="${SourceLeadWeb_atsUrl}/usersList" title="Associates"><span class="navIcons cliIcon"></span><b>Associates</b></a></li>
-
-	                 </c:if>
 	                 
 	                 <c:if test="${tabName == 'Projects'}">
 	                	  <li class="${sessionData.nav == 'Projects' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/projectDashboard" title="Projects"><span class="navIcons projIcon"></span><b>Projects</b></a></li>
@@ -183,7 +202,7 @@
 	                 
 	                 
 	                 
-	                 <c:if test="${SourceLeadWeb_expensesTabCount == 2 && tabName == 'My Expenses'}">
+	                 <%-- <c:if test="${SourceLeadWeb_expensesTabCount == 2 && tabName == 'My Expenses'}">
 	                   <li class="${sessionData.nav == 'My Expenses' || sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}">
 														  
 							  <a href="#" class="expencesLi" title="Expenses">
@@ -214,7 +233,7 @@
 	                 
 	                 <c:if test="${SourceLeadWeb_expensesTabCount < 2 && tabName == 'Expenses Approval'}">
 	                 <li class="${sessionData.nav == 'Expenses Approval' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/expensesApprovalList" title="Expenses Approval"><span class="navIcons expIcon"></span><b>Expenses Approval</b></a></li>
-	                 </c:if>
+	                 </c:if> --%>
 	                 
 	                 <c:if test="${tabName == 'Asset Management'}">
 	                   <li class="${sessionData.nav == 'AssetManagement' ? 'navActive' : ''}"><a href="<c:url value='${SourceLeadWeb_atsUrl}/assetManagement'/>" title="Asset Management"><span class="navIcons asstIcon"></span><b>Asset Management</b></a></li>
@@ -351,9 +370,13 @@
 								</li>
 								</sec:authorize>
 						</c:if>
-				    <c:if test="${tabName == 'Leave Management'}">
+						 <c:if test="${tabName == 'BackgroundCheck'}">
+	                   <li class="${sessionData.nav == 'bgc' ? 'navActive' : ''}"><a href="${SourceLeadWeb_vmsUrl}/bgc/bgcCandidates" title=" BGC Candidates"><span class="navIcons bgIcon"></span><b>BGC Candidates</b></a></li>
+	                </c:if> 
+						
+				   <%--  <c:if test="${tabName == 'Leave Management'}">
 		             <li class="${sessionData.nav == 'Leave Management' ? 'navActive' : ''}"><a href="${SourceLeadWeb_pmsUrl}/leaveManagementReports" title="Leave Management"><span class="navIcons leaveIcon"></span><b>Leave Management</b></a></li>
-		          	</c:if>	
+		          	</c:if>	 --%>
 		          	
           </c:forEach>
 	         
@@ -361,7 +384,7 @@
           			 <li class="${sessionData.nav == 'Taxes' ? 'navActive' : ''}"><a href="${SourceLeadWeb_sourceleadUrl}/stateTax/list" title="Taxes"><span class="navIcons finIcon"></span><b>Taxes</b></a></li>
        	 	  </c:if> --%>
        	 	  
-   	 	  <sec:authorize access="hasAnyRole('ROLE_ADD_MY_GOALS','ROLE_ADD_TEAM_GOALS','ROLE_ADD_MY_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL', 'ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')"> 
+   	 	  <%-- <sec:authorize access="hasAnyRole('ROLE_ADD_MY_GOALS','ROLE_ADD_TEAM_GOALS','ROLE_ADD_MY_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL','ROLE_ADD_EMPLOYEE_APPRAISAL', 'ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')"> 
 			<li>
 				  <a href="#" class="performanceli" title="Performance">
 					<span class="navIcons perorIcon"></span><b>Performance</b> <i class="fa fa-fw fa-caret-down"></i>
@@ -382,13 +405,14 @@
                                <sec:authorize access="hasRole('ROLE_EMPLOYEE_PERFORMANCE_ORG_CHART')">
                                		<li class="${sessionData.nav == 'Org Chart' ? 'treview-active' : ''}"><a href="${SourceLeadWeb_pmsUrl}/performanceOrgChartList" title="Org Chart"><i class="fa fa-chevron-right"></i> Org Chart</a></li>
                               </sec:authorize>
+                              
                                
                     </ul>
                               
 			  </li>
-			</sec:authorize>
+			</sec:authorize> --%>
 			
-          	
+          		
         </ul>
         </nav>
   </aside>

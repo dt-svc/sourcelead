@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +51,8 @@ import com.bis.sourcelead.dto.EventsDTO;
 import com.bis.sourcelead.dto.ExpensesAndTimesheetDashBordCountDTO;
 import com.bis.sourcelead.dto.InvoiceDTO;
 import com.bis.sourcelead.dto.LeaveDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
+import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectPlanningResourceRequestDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementSubmissionHistoryDTO;
@@ -64,7 +67,9 @@ import com.bis.sourcelead.elk.setup.SourceleadELKBaseIndexer;
 import com.bis.sourcelead.entity.Candidate;
 import com.bis.sourcelead.entity.DashboardCounts;
 import com.bis.sourcelead.entity.ExpensesCount;
+import com.bis.sourcelead.entity.MspVendor;
 import com.bis.sourcelead.entity.OrgLocations;
+import com.bis.sourcelead.entity.OrgRelations;
 import com.bis.sourcelead.entity.ProjectPlanningResourceRequest;
 import com.bis.sourcelead.entity.Requirement;
 import com.bis.sourcelead.entity.RequirementApproverHierarchy;
@@ -87,6 +92,7 @@ import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.service.ExpensesApproverHierarchyService;
 import com.bis.sourcelead.service.InvoiceService;
 import com.bis.sourcelead.service.LeaveService;
+import com.bis.sourcelead.service.MspVendorService;
 import com.bis.sourcelead.service.OrgLocationService;
 import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectPlanningResourceRequestService;
@@ -228,6 +234,8 @@ public class DashboardRestController {
 	 @Autowired
 	 DynamicReport dynamicReport;
 	 
+	 @Autowired
+	 MspVendorService mspVendorService;
 	 
 	 @Autowired
 	 private SubmissionTemplateService submissionTemplateService;
@@ -240,13 +248,15 @@ public class DashboardRestController {
 	 * This  controller method is   for getting TimesheetSubmission Counts in dashboard Landing Page Based on User Login
 	 * @author: Sammeta David
 	 */
-    @PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')")
+    @PreAuthorize("hasAnyRole('ROLE_FILL_MY_TIMESHEETS','ROLE_EXPORT_MY_TIMESHEETS','ROLE_MODIFY_MY_TIMESHEETS','ROLE_FILL_MEMBER_TIMESHEETS','ROLE_VIEW_MEMBER_TIMESHEETS','ROLE_EXPORT_MEMBER_TIMESHEETS')") 
 	@RequestMapping(value = "/getTimeSheetSubmissionStatus")
-	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType", required=false) String timesheetCountType,HttpServletRequest request) throws Exception {
+	public TimeSheetSubmissionCount getTimeSheetSubmissionStatus(@RequestParam(value="timesheetType", required=false) String timesheetType,@RequestParam(value="timesheetCountType", required=false) String timesheetCountType,
+			@RequestParam(value="dateSelection", required=false) String dateSelection,
+			@RequestParam(value="fromDate", required=false) String fromDate,
+			@RequestParam(value="toDate", required=false) String toDate,HttpServletRequest request) throws Exception {
 
 	    OrgLocations loginOrgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
-		Candidate candidate =(Candidate) SourceLeadSessionManager.getSessionAttribute(request, "candidate");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
 		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
@@ -256,9 +266,32 @@ public class DashboardRestController {
 		if(loginOrgLocations != null && (loginOrgLocations.getOrg() == null || loginOrgLocations.getOrg() != null && loginOrgLocations.getOrg().getId() == null)) {
 			loginOrgLocations = orgLocationService.getOrgLocations(loginOrgLocations.getId());
 		}
+		
+		Date[] searchDates = null;
+		if(!dateSelection.equalsIgnoreCase("custom")) {
+			searchDates = reportsUtil.getJobFilterDate(dateSelection,loginOrgLocations);
+		}else {
+			Date startDate =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), fromDate);
+    	    Date endDate =  commonUtil.orgLocationDateFormat(loginOrgLocations.getDateFormat(), toDate);
+    	   
+    	    Timezone timezone = timeZoneService.getTimezone(loginOrgLocations.getTimezone().getId());
+    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+    	    String customStartTimeStr = TZ_DF_CSD.format(startDate);
+    	    String customEndTimeStr = TZ_DF_CED.format(endDate);
+    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+    	    startDate = TZ_DF_TS.parse(startDateString);
+    	    endDate = TZ_DF_TS.parse(endDateString);
+    	    
+    	    searchDates = new Date[2];
+    	    searchDates[0] = startDate;
+    	    searchDates[1] = endDate;
+		}
 		if("employes".equalsIgnoreCase(timesheetType)){
 			 Boolean isAdmin = (Boolean) SourceLeadSessionManager.getSessionAttribute(request, "isAdmin");
-			 timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType,isGlobalAccess,isAdmin);
+			 timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(user.getId(), loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType,isGlobalAccess,isAdmin,searchDates);
 		}else if("myTimesheets".equalsIgnoreCase(timesheetType)){
 			timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(masterCandidateId, loginOrgLocations.getId(),loginOrgLocations.getOrg().getId(),timesheetCountType);
 		}
@@ -279,7 +312,6 @@ public class DashboardRestController {
 		}
 		OrgLocations orgLoc = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		String isGlobalAccess = (String) SourceLeadSessionManager.getSessionAttribute(request, "isGlobalAccess");
-		Long masterCandidateId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "masterCandidateId");
 		if(orgLoc == null && StringUtils.isNotEmpty(tedDTO.getLocationCode())){
 			orgLoc = orgLocationService.getOrgLocationsByLocationCode(tedDTO.getLocationCode());
 		}else if(orgLoc != null && (orgLoc.getOrg() == null || orgLoc.getOrg() != null && orgLoc.getOrg().getId() == null)) {
@@ -302,9 +334,35 @@ public class DashboardRestController {
 			 expensesAndTimesheetDashBordCountDTO = new ExpensesAndTimesheetDashBordCountDTO();
 			TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
 			
+			Date[] searchDates = null;
+			if(StringUtils.isNotBlank(tedDTO.getDateSelection())) {
+				if(!tedDTO.getDateSelection().equalsIgnoreCase("custom")) {
+					searchDates = reportsUtil.getJobFilterDate(tedDTO.getDateSelection(),orgLoc);
+				}else {
+					Date startDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), tedDTO.getFromDate());
+		    	    Date endDate =  commonUtil.orgLocationDateFormat(orgLoc.getDateFormat(), tedDTO.getToDate());
+		    	   
+		    	    Timezone timezone = timeZoneService.getTimezone(orgLoc.getTimezone().getId());
+		    	    DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    	    DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
+		    	    DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");
+		    	    String customStartTimeStr = TZ_DF_CSD.format(startDate);
+		    	    String customEndTimeStr = TZ_DF_CED.format(endDate);
+		    	    String startDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customStartTimeStr);
+		    	    String endDateString = CommonUtil.convertTimeZones(timezone.getTimeZoneId(), Constants.UTC_TIMEZONE, customEndTimeStr);
+		    	    startDate = TZ_DF_TS.parse(startDateString);
+		    	    endDate = TZ_DF_TS.parse(endDateString);
+		    	    
+		    	    searchDates = new Date[2];
+		    	    searchDates[0] = startDate;
+		    	    searchDates[1] = endDate;
+				}	
+			}
+		
+			
 			if("employes".equalsIgnoreCase(timesheetFor)){
 				 Boolean isAdmin = userRoleService.isUserAdminByOrgLocationId(loginUser.getId(),orgLoc.getId());
-			     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All",isGlobalAccess,isAdmin);
+			     timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(loginUser.getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All",isGlobalAccess,isAdmin,searchDates);
 			}else if("myTimesheets".equalsIgnoreCase(timesheetFor)){
 				timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByMasterCandidateIdAndOrgLocationId(candidate.getMasterCandidateId().getId(), orgLoc.getId(),orgLoc.getOrg().getId(),"All");
 			}
@@ -2219,5 +2277,87 @@ public class DashboardRestController {
 	  
     }
     
-      
+ 	 @RequestMapping(value = "/getMSPClientList", method = RequestMethod.POST)
+	 public List<MspVendorDTO> getClientList(HttpServletRequest request, DashboardItemsDTO dashboardItemsDTO) throws Exception {
+		Long mspOrgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		List<MspVendorDTO> mspOrgClientList = mspVendorService.getMspClientlistByOrgLocationId(mspOrgLocationId);
+		return mspOrgClientList; 
+	 }
+ 	 
+ 	 
+ 	 @RequestMapping(value = "/mspVendorJobsDashbordList", method = RequestMethod.POST)
+	 public MspVendorDTO mspVendorJobsDashbordList(MspVendorDTO mspVendorDTO,HttpServletRequest request) throws Exception {
+		  Long mspOrgLocationId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		  User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+		  mspVendorDTO.setLoginUser(user);
+		  mspVendorDTO.setOrgLocationId(BigInteger.valueOf(mspOrgLocationId));
+		  List<MspVendorDTO> mspVendorJobsDashbordList = requirementService.getMSPVendorJobsList(mspVendorDTO);
+		  
+		  MspVendorDTO mspDTO = new  MspVendorDTO();
+		  mspDTO.setMspReqList(mspVendorJobsDashbordList);
+		  
+			int applicantsSum = 0;
+			int shortlistedSum = 0;
+			int submitToClientSum = 0;
+			int interviewsSum = 0;
+			int offeredSum = 0;
+			int joindSum = 0;
+			
+		  for(MspVendorDTO mspVendDTO:mspVendorJobsDashbordList) {
+			    int applicantsCount = 0;
+				int shortlistedCount = 0;
+		 		int submitToClientCount = 0;
+				int interviewsCount = 0;
+				int offeredCount = 0;
+				int joindCount = 0;
+				  if(mspVendDTO.getApplicantCount() != null && mspVendDTO.getApplicantCount() > 0) {
+					  applicantsCount = +mspVendDTO.getApplicantCount();
+				  }
+				  if(mspVendDTO.getShortlistCount() != null && mspVendDTO.getShortlistCount() > 0) {
+					  shortlistedCount = + mspVendDTO.getShortlistCount();
+				  }
+				  if(mspVendDTO.getSubmitToClientCount() != null && mspVendDTO.getSubmitToClientCount() > 0) {
+					  submitToClientCount = + mspVendDTO.getSubmitToClientCount();
+				  }
+				  if(mspVendDTO.getInterviewCount() != null && mspVendDTO.getInterviewCount() > 0) {
+					  interviewsCount = + mspVendDTO.getInterviewCount();
+				  }
+				  if(mspVendDTO.getOffersCount() != null && mspVendDTO.getOffersCount() > 0) {
+					  offeredCount = + mspVendDTO.getOffersCount();
+				  }
+				  if(mspVendDTO.getJoinedCount() != null && mspVendDTO.getJoinedCount() > 0) {
+					  joindCount = + mspVendDTO.getJoinedCount();
+				  }
+			 
+				  applicantsSum = applicantsSum+applicantsCount;
+				  shortlistedSum = shortlistedSum+shortlistedCount;
+				  submitToClientSum = submitToClientSum+submitToClientCount;
+				  interviewsSum = interviewsSum+interviewsCount;
+				  offeredSum = offeredSum+offeredCount;
+				  joindSum = joindSum + joindCount;
+					  
+		  }
+		  mspDTO.setApplicantCount(applicantsSum);
+		  mspDTO.setShortlistCount(shortlistedSum);
+		  mspDTO.setSubmitToClientCount(submitToClientSum);
+		  mspDTO.setInterviewCount(interviewsSum);
+		  mspDTO.setOffersCount(offeredSum);
+		  mspDTO.setJoinedCount(joindSum);
+		return  mspDTO; 
+	 }
+ 	 
+ 	 
+ 	 @RequestMapping(value = "/mspVendorList", method = RequestMethod.POST)
+	 public @ResponseBody List<OrgRelations> mspVendorList(MspVendorDTO mspVendorDTO,HttpServletRequest request) throws Exception {
+		 Long orgLocationId = (Long) SourceLeadSessionManager.getSessionAttribute(request, "orgLocationId");
+		 MspVendor mspVendor =  mspVendorService.getMspVendorListByOrgLocationIdAndMspRelationId(orgLocationId, mspVendorDTO.getMspOrgRelationId());
+		 mspVendorDTO.setOrgRelationIds(mspVendor.getOrgRelationIds());
+		 List<OrgRelations> mspVendorList = mspVendorService.selectedMSPVendorListByOrgLocationId(mspVendorDTO);
+		 for(OrgRelations or:mspVendorList) {
+				 or.setOrgName(or.getResponderLocationId().getOrgLocationName());
+				 or.setId(or.getId());
+			 
+		 }
+		return mspVendorList;
+	}
 }

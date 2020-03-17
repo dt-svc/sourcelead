@@ -250,7 +250,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includeHintMsgHTML = ''+
 	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Help Text:</div>' +
        ' <div class="col-md-9" id="hint'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Help Text" class="field-hint form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="hintMsg'+addField.i+'" data-validation-optional="true" field-name="Help Text" class="field-hint form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -259,7 +259,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includePointsHTML = ''+
 	   '<label class="col-md-5"><div class="col-md-3 lblHeight">Points:</div>' +       
 	   ' <div class="col-md-9" id="points'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="points'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Points" class="field-points form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="points'+addField.i+'" data-validation="validate_int" data-validation-optional="true" field-name="Points" class="field-points form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -267,7 +267,7 @@ function addField(fieldType,value,labelValue,labelName,sourceleadUrl,templateId)
        includeAttemptHTML = ''+
 	   '<label class="col-md-5 mt10"><div class="col-md-3 lblHeight">Attempt:</div>' +
        ' <div class="col-md-9" id="attempt'+addField.i+'"> ' +
-       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'" '+dataValidation+' placeholder="Required *" field-name="Attempt" class="field-attempt form-control input-sm" >' +
+       '<input type="text" '+readOnly+'  id="attempt'+addField.i+'" data-validation="validate_int" data-validation-optional="true" field-name="Attempt" class="field-attempt form-control input-sm" >' +
        ' </div> ' +
        '</label>' +
 	   '<div class="clearfix"> '
@@ -661,3 +661,597 @@ $('body').on('submit', '#sjfb', function(e){
     	$(".project_inn_mask").fadeOut(200);
     }
    
+    function viewQuestionnaireTemplateForm(){
+		
+		$("#viewQuestionnaireTemplateFormDiv").show();
+		generateViewQuestionnaireForm1(sourceleadUrl, templateUuid)
+			var result = "";
+			result = result + '<form id="questionnaireTemplate_form" name="questionnaireTemplate_form" enctype="multipart/form-data" method="post">';
+			result = result + '<div class="row"><h3 class="col-md-3" id = "questionnaireName">Questionnaire Template</h3> <div class="col-md-9" id = "timerDiv"><i class="fa fa-clock-o mr10"></i><label class="textSuccess textBold" id="countdownTimerLbl">Starting</label></div></div>';
+			result = result + "";
+			
+			
+			result = result + '<div class="form-horizontal clearfix">';
+			result = result + '<div id="viewQuestionnairesjfb-fields" class="viewTemplate view_templateDiv viewtemplate_paragraph questionary_template">';
+			result = result + '</div>';
+			result = result + '</div>';
+			
+			 result = result + '<div class="form-footer clearfix">';
+			result = result + '<div class="pull-right mr">';
+			result = result + '<button type="button" id = "submitButton" class="btn btn-sm btn-primary" onClick="cancelViewQuestionnaire();">Cancel</button>';
+			result = result + '</div>';
+			result = result + '</div>';
+			result = result + '</div>';  
+			result = result + '</form>';
+			 
+			$("#viewQuestionnaireTemplateFormDiv").empty();
+			$("#viewQuestionnaireTemplateFormDiv").append(result);
+		
+	}
+    
+    function generateViewQuestionnaireForm1(sourceleadUrl, templateUuid) {
+		var attemptsArray = new Array();
+	    //empty out the preview area
+	    $("#viewQuestionnairesjfb-fields").empty();
+	    var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
+		  var finalDateFormatScript = '';
+		  if(locationDate.match("yyyy-MM-dd")){
+			  finalDateFormatScript = 'yy-mm-dd';
+		  }if(locationDate.match("dd-MM-yyyy")){
+			  finalDateFormatScript = 'dd-mm-yy'; 
+		  }if(locationDate.match("MM-dd-yyyy")){
+			  finalDateFormatScript = 'mm-dd-yy'; 
+		  }if(locationDate.match("yyyy-dd-MM")){
+			  finalDateFormatScript = 'yy-dd-mm'; 
+		  }else{
+			  finalDateFormatScript = 'dd-mm-yy';
+		  }
+	    $.ajax({
+	    	type: "GET",
+	        url:sourceleadUrl+"/loadViewQuestionnaire?templateUuid="+templateUuid, 
+	        success: function(result) {
+	        	if(result != null && result.jsonString != 'false'){
+	        		$("#questionnaireName").html(result.name);
+	        	
+	        	var data = null;
+	        	if(result.jsonString != null){
+	        		data = eval(result.jsonString);
+	        	}else{
+	        		data = eval(result.jsonString);
+	        	}
+	        	
+	        	//setting values to labelAndAttemptsMap.
+	        	var valuesData = null;
+	        	if(result.jsonString != null){
+	        		valuesData = eval(result.jsonStringValues);
+	        	}else{
+	        		valuesData = eval(result.jsonStringValues);
+	        	}
+	        	
+	        	
+	        	if(result.uuid != null){
+	        	savedQuestionnaireUuid.set("savedQuestionnaireUuid", result.uuid);
+	        	}
+	        	var attachmentCount = 0;
+	        	var fileCount = 0;
+	        	 if (data) {
+	                 //go through each saved field object and render the form HTML
+	                 $.each( data, function( k, v ) {
+						
+	                     var fieldType = v['type'];
+	                     var labelTitle = v['label'];
+	                     var required =  v['req'];
+	                     //Add the field
+	                     $('#viewQuestionnairesjfb-fields').append(addSavedFieldHTML1(fieldType,v['req'],v['label'],v['hint'],v['dropdown'],v['points'],v['attempt'],attachmentCount));
+	                     var $currentField = $('#viewQuestionnairesjfb-fields .sjfb-field').last();
+	                     
+	                     if(fieldType == "file"){
+	                    	 attachmentCount = attachmentCount+1;
+	                     }
+	                     
+	                     var reqSymbol = '';
+	                	 if(v['req'] == '1'){
+	                		reqSymbol = " * ";
+	                	 }
+	                     
+	                     //Add the label
+	                     if(v['label'] != 'location' ){
+	                    	 $currentField.find('label').text(v['label']+reqSymbol);
+	                     }
+	                     
+	                    
+	                     if(result.jsonStringValues != null && result.jsonStringValues != '' && result.jsonStringValues != 'undefined'){
+	                    	 if (v['choices']) {
+	                    		 var selectChoice = 1;
+	                        	 var selectChoiceHTML = '<option value="">----Select-----</option>';
+	                             var uniqueID = Math.floor(Math.random()*999999)+1;
+	                             $.each( v['choices'], function( k1, v1 ) {
+	                            	 var label = v1['label'];
+	                                if (fieldType == 'radio') {
+	                            	  var details = eval(result.jsonStringValues);
+	                              	   $.each(details, function( k2, v2 ) {
+	                              		   if(v['label'] == v2['label']){
+	                              			   var values = v2['value'].split(",");
+	                              			   for(var i=0; i<values.length; i++){
+	                              				 var selected = '';
+	                              				   if(values[i] == v1['label']){
+	                              					 selected = v1['sel'] ? ' checked' : 'checked';
+	                              				   }else{
+	                              					 selected = v1['sel'] ? ' checked' : '';
+	                              				   }
+	                                             
+	                                             var choiceHTML = '<span class="inlineBlock mr"><input type="radio" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             if(required == 1 && flag == 0){
+	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+	                                             }
+	                                             $currentField.find(".choices").append(choiceHTML);
+	                              			   }
+	                              		   }
+	                              	   });
+	                                 }
+	                                 else if (fieldType == 'checkbox') {
+	                                	 var details = eval(result.jsonStringValues);
+	                                	 var selected = '';
+	                                	 $.each(details, function( k3, v3 ) {
+	                                		 if(v['label'] == v3['label']){
+	                                			 var values = v3['value'].split(",");
+	                                			 for(var i=0; i<values.length; i++){
+	                                				 if(values[i] == v1['label']){
+	                                  					 selected = "checked";
+	                              				     }
+	                                			 }
+	                                             
+	                                             var choiceHTML = '<span class="inlineBlock mr"><input type="checkbox" ' + selected + ' name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v1['label'] + '">' + v1['label'] + '</span>';
+	                                             if(required == 1 && flag == 0){
+	                                            	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+	                                             }
+	                                             $currentField.find(".choices").append(choiceHTML);
+	                                		 }
+	                                	 });
+	                                 }else if (fieldType == 'select') {
+	                                	 var details = eval(result.jsonStringValues);
+	                                	 var selected = '';
+	                                	 $.each(details, function( k4, v4 ) {
+	                                		 if(v['label'] == v4['label']){
+	                                				 if(v4['value'] == v1['label']){
+	                                  					 selected = "selected";
+	                              				     }
+	                                				 if(selectChoice > 1){
+	                                               		 selectChoiceHTML = '';
+	                                               	 }
+	                                             
+	                                				 var choiceHTML = '<option value="'+v1['label']+'" '+selected+'>' + v1['label'] + '</option>';
+	                                                 $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+	                                                 selectChoice = selectChoice+1;
+	                                		 }
+	                                	 });
+	                                 }
+	                             });
+	                         }
+	                    	 
+	                    	 if(fieldType == 'textarea' || fieldType == 'text' || fieldType == 'calendar' || fieldType == 'scale' || fieldType == 'star' || fieldType == 'file'){
+	    	                   	 var details = eval(result.jsonStringValues);
+	    	                   	 var label = v['label'];
+	    	                	 $.each(details, function( k3, v3 ) {
+	    	                		 if(label == v3['label']){
+	    	                			 if(fieldType == 'textarea'){
+	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	    	                					 $('#textarea-'+ label.replace(/[^A-Z0-9]+/ig, '')).html(v3['value']);
+	    	                				 }
+	    	                			 }else if(fieldType == 'text'){
+	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	    	                					 $('#text-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
+	    	                				 }
+	    	                				
+	    	                			 }else if(fieldType == 'calendar'){
+	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	    	                					 $('#calendar-'+ label.replace(/[^A-Z0-9]+/ig, '')).val(v3['value']);
+	    	                				 }
+	    	                			 }else if(fieldType == 'scale'){
+	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	    	                					 evaluatePostSlider(label.replace(/[^A-Z0-9]+/ig, ''),v3['value'])
+	    	                				 }
+	    	                			 }
+	    	                			 else if(fieldType == 'star'){
+	    	                				 if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+	    	                					 fillStarValues(v['dropdown'],label.replace(/[^A-Z0-9]+/ig, ''),v3['value'])
+	    	                				 }
+	    	                			 }
+	    	                			 
+	    	                			 else if(fieldType == 'file'){
+	    	                					  var fileHtml = '';
+	    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileURL'  data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['value']+"' />";
+	    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].fileName' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='"+v3['name']+"' />";
+	    	                					  fileHtml = fileHtml + "<input type='hidden' name='uploadedFileInfo["+fileCount+"].status' data-id='newUploadBtn"+label.replace(/[^A-Z0-9]+/ig, '')+"' value='1' />";
+	    	                					  $("#addFeedbackTemplate_form").append(fileHtml);
+		                					      fileCount = fileCount+1;
+		                					      
+		                					      if(v3['value'] != null && v3['value'] != '' && v3['value'] != 'undefined'){
+		                					    	  $('#newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')).val(v3['name']);
+			                					      $("#download-"+label.replace(/[^A-Z0-9]+/ig, '')).attr("href",v3['value']);
+			                					      $("#attachmentTitle-"+label.replace(/[^A-Z0-9]+/ig, '')).html(v3['name']);
+			                					      document.getElementById("download-"+label.replace(/[^A-Z0-9]+/ig, '')).style.display="";
+		                					      }
+	    	                			 }
+	    	                			
+	    	                		 }
+	    	                	 });
+	    	                  }
+	                    	 
+	                     }else{
+	                    	 
+	                    	 //Any choices?
+	                         if (v['choices']) {
+	                        	 var label = v['label'];
+	                             var uniqueID = Math.floor(Math.random()*999999)+1;
+	                             var selectChoice = 1;
+	                             var flag = 0;
+	                             var selectChoiceHTML = '<option value="">----Select-----</option>';
+	                             $.each( v['choices'], function( k, v ) {
+	                             	
+	                            	    if (fieldType == 'select') {
+	                                   	 if(selectChoice > 1){
+	                                   		 selectChoiceHTML = '';
+	                                   	 }
+	                                        var choiceHTML = '<option value="'+v['label']+'">' + v['label'] + '</option>';
+	                                        $currentField.find(".choices").append(selectChoiceHTML+choiceHTML);
+	                                        selectChoice = selectChoice+1;
+	                                    }
+
+	                                 else if (fieldType == 'radio') {
+	                                     var choiceHTML = '<span class="inlineBlock mr tblminwidth-50 mb10"><input type="radio" name=\''+label.replace(/\s+/g, '')+'\'  onclick="getRadioValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     if(required == 1 && flag == 0){
+	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'radio" data-validation="required" field-name="'+labelTitle+'">';
+	                                     }
+	                                     $currentField.find(".choices").append(choiceHTML);
+	                                 }
+
+	                                 else if (fieldType == 'checkbox') {
+	                                     var selected = v['sel'] ? ' checked' : 'checked';
+	                                     var choiceHTML = '<span class="inlineBlock mr tblminwidth-50 mb10"><input type="checkbox" name=\''+label.replace(/\s+/g, '')+'\' onclick="getCheckBoxValue(this,\''+label.replace(/[^A-Z0-9]+/ig, '')+'\')"  value="' + v['label'] + '">' + v['label'] + '</span>';
+	                                     if(required == 1 && flag == 0){
+	                                    	 choiceHTML = choiceHTML+'<input type="hidden"  id="'+labelTitle.replace(/[^A-Z0-9]+/ig, '')+'checkbox" data-validation="required" field-name="'+labelTitle+'" >';
+	                                     }
+	                                     $currentField.find(".choices").append(choiceHTML);
+	                                 }
+	                                 
+	                                 flag = flag+1;
+
+	                             });
+	                         }
+	                     }
+	                     
+	                     //Is it required?
+	                     if (v['req']) {
+	                         if (fieldType == 'text') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'calendar') { $currentField.find("calendar").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'autocomplete') { $currentField.find("autocomplete").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'textarea') { $currentField.find("textarea").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'select') { $currentField.find("select").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'radio') { $currentField.find("input").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'scale') { $currentField.find("scale").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'star') { $currentField.find("star").prop('required',true).addClass('required-choice') }
+	                         else if (fieldType == 'file') { $currentField.find("file").prop('required',true).addClass('required-choice') }
+	                         $currentField.addClass('required-field');
+	                     }
+
+	                 });
+	             }
+	        	 
+	        	 
+	        	 
+	        	  //HTML templates for rendering frontend form fields
+	             function addSavedFieldHTML1(fieldType,required,label,hint,dropdown,points,attempt,attachmentCount) {
+	            	 var uniqueID = Math.floor(Math.random()*999999)+1;
+	            	 var datavalidation = '';	
+	            	 var attachmentDataValidation = '';
+	            	 var attachmentDataValidationOptional = ''
+	            	 if(required == '1'){
+	            		 datavalidation = 'data-validation="required"';
+	            	 }
+	            	 
+	            	 if(fieldType == "star"){
+	            		 var StarHtml = '';
+	            		 if(attempt == 0){
+	            			 for(var i=1; i<=dropdown; i++){
+	                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"   id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
+	      					}
+	                	 }else{
+	                		 for(var i=1; i<=dropdown; i++){
+	                			 StarHtml = StarHtml+'<li class="fa fa-star cursorPointer text-muted"  onclick="fillStarValues('+i+',\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id="star-select'+i+label.replace(/[^A-Z0-9]+/ig, '')+'"></li>';
+	      					}}
+	            		 
+	            	 }
+	            	 
+	            	 if(fieldType == "file"){
+	            		 if(dropdown == 'docx'){
+	            			 if(required == '1'){
+	            				 attachmentDataValidation = 'data-validation="required validatedoc"';
+	            			 }else{
+	            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+	            				 attachmentDataValidation = 'data-validation="validatedoc"';
+	            			 }
+	            			 
+	            		 }else if(dropdown == 'xls'){
+	            			 
+	            			 if(required == '1'){
+	            				 attachmentDataValidation = 'data-validation="required validate_importFile"';
+	            			 }else{
+	            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+	            				 attachmentDataValidation = 'data-validation="validate_importFile"';
+	            			 }
+	            			 
+	            		 }else if(dropdown == 'png'){
+	            			 if(required == '1'){
+	            				 attachmentDataValidation = 'data-validation="required validateimage"';
+	            			 }else{
+	            				 attachmentDataValidationOptional = 'data-validation-optional="true"';
+	            				 attachmentDataValidation = 'data-validation="validateimage"';
+	            			 }
+	            		 }
+	            	 }
+	                
+					var input = "";	
+	                 switch (fieldType) {
+	                     case 'text':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label for="text-' + uniqueID + '"></label>' +
+	                             '<input type="text" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'text-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp' + attemptsDiv + pointsDiv+
+	                             '</div>';
+
+	                     case 'textarea':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-textarea">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label for="textarea-' + uniqueID + '"></label>' +
+	                             '<textarea rows="3" field-name="'+label+'" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' id=\'textarea-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></textarea>'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+
+	                     case 'select':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-select">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label for="select-' + uniqueID + '"></label>' +
+	                             '<select id="select-' + uniqueID + '" '+datavalidation+' name=\''+label.replace(/\s+/g, '')+'\' field-name="'+label+'" class="choices choices-select"></select>' +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+
+	                     case 'radio':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-radio">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label></label>' +
+	                             '<div class="clearfix mt"></div>'+
+	                             '<div class="choices choices-radio"></div>' +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+
+	                     case 'checkbox':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-checkbox-' + uniqueID + '" class="sjfb-field sjfb-checkbox">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label class="sjfb-label"></label>' +
+	                             '<div class="clearfix mt"></div>'+
+	                             '<div class="choices choices-checkbox"></div>' +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+	                         
+
+	                     case 'calendar':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label for="calendar-' + uniqueID + '"></label>' +
+	                             '<input type="text" class="DatePicker dp" '+datavalidation+' field-name="'+label+'" name=\''+label.replace(/\s+/g, '')+'\' id=\'calendar-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' >'  +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+	                     
+	                     case 'scale':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label for="text-' + uniqueID + '"></label>' +
+	                             '<div class="slidecontainer mt clearfix">' +
+	                             '<span id=\'demo-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="col-md-4">0</span>' +
+	                             '<input type="hidden" field-type="scale" field-name="'+label+'" '+datavalidation+'   id=\'scaleValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' ></span>' +
+	                             '<input type="range" min="0" max="'+dropdown+'" value="0" name=\''+label.replace(/\s+/g, '')+'\' onmouseup="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');" onclick="evaluatePostSlider(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\');"  id=\'scale-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' class="rangeslider">' +
+	                             '</div>'+
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+	                     case 'star':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                         return '' +
+	                         '<div class="clearfix mb">'+
+	                             '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text starclass">' +
+	                             '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                             '<label for="text-' + uniqueID + '"></label>' +
+	                             '<input type="hidden" field-type="star" field-name="'+label+'" '+datavalidation+' id=\'starValue-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' name=\''+label.replace(/\s+/g, '')+'\'></span>' +
+	                             '<ul class="list-unstyled list-inline text-muted" id="starRating-' + uniqueID + '">' +
+	                             '<div class="clearfix mt"></div>'+
+	                             StarHtml+
+	                             '</ul>' +
+	                             '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                             '</div>';
+	                         
+	                     case 'file':
+	                    	 var attemptsDiv = "";
+	                    	 var pointsDiv = "";
+	                    	 if(attempt != "" && attempt != null){
+	                    		 var attemptsDiv = '<div class="clearfix" style="display:inline-block;"> :&nbsp&nbsp<strong id = "attemptId">'+attempt+'</strong> Attempt(s), </div>';
+	                    	 }if(points != "" && points != null){
+	                    		 var pointsDiv = '<div class="clearfix" style="display:inline-block;"> &nbsp&nbsp<strong id="pointId">'+points+'</strong> Point(s)</div>';
+	                    	 }
+	                    	 return '' +
+	                    	 '<div class="clearfix mb">'+
+	                         '<div id="sjfb-' + uniqueID + '" class="sjfb-field sjfb-text">' +
+	                         '<i class="fa fa-info-circle pull-left" title="'+hint+'"></i>'+
+	                         '<label for="text-' + uniqueID + '"></label>' +
+	                         '<div class="clearfix mt"></div>'+
+	                         '<input type="file" id=\'newUploadBtn'+label.replace(/[^A-Z0-9]+/ig, '')+'\'  onchange="uploadFeedbackAttachments(\''+label.replace(/[^A-Z0-9]+/ig, '')+'\',\''+attachmentCount+'\');" class="upload">' +
+                             '<input type="text" class="form-control" style="display: none;" name=\'docFile'+label.replace(/\s+/g, '')+'\'  id=\'newUploadFile'+label.replace(/[^A-Z0-9]+/ig, '')+'\' '+attachmentDataValidationOptional+' '+attachmentDataValidation+' field-name="'+label+'"  >' +
+	                         '<a download="" class="glyphicon glyphicon-download-alt" style="display: none;" id=\'download-'+label.replace(/[^A-Z0-9]+/ig, '')+'\' title="Download">&nbsp;<span id=\'attachmentTitle-'+label.replace(/[^A-Z0-9]+/ig, '')+'\'></span></a>'+
+	                         '</div>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:'+attemptsDiv+pointsDiv+
+	                         '</div>';
+	                 }
+	                 
+	             }
+	             
+	             
+	             
+	             var d = new Date();
+	             var year = d.getFullYear() - 10;
+	             d.setFullYear(year);
+	             $(".DatePicker").datepicker({
+	            	 dateFormat: finalDateFormatScript,
+	            	 changeMonth: true,
+	                 changeYear: true,
+	                 maxDate:0,
+	                 showOn: 'focus',
+	                 showButtonPanel: true,
+	                 closeText: 'Clear',
+	                 onClose : function(selected) {
+	                	  var event = arguments.callee.caller.caller.arguments[0];
+	                     if ($(event.delegateTarget).hasClass('ui-datepicker-close')) {
+	                         $(this).val('');
+	                     }
+	                	 $('p.jquery_form_error_message').remove();
+	                 }
+	                 
+	             });
+	        
+	            
+	        	}
+	        	else{
+	        		questionnaireMessage = "Questionnaire Not Availabe !";
+	             }
+	        	},
+	    
+	    
+	        });
+	}
+    
+    function getRadioValue(id,name){
+		   $('#'+name+"radio").val(id.value); 
+	} 
+
+	function getCheckBoxValue(id,name){
+		 var checkList = [];
+			 $("input[name='"+name+"']:checked").each( function (i) {
+				 checkList[i] = $(this).val();
+			});
+			 
+			 
+		if (checkList.length > 0) { 
+		  $('#'+name+"checkbox").val(id.value); 
+		}else{
+		   $('#'+name+"checkbox").val(''); 
+		}
+	}
+
+
+
+	function fillStarValues(i,label,value){
+		
+		
+		if(value != null && value != 'undefined' && value != ''){
+			i = value;
+		}
+		$("#starValue-"+label).val(i);
+		
+		for(var k=1; k<=i; k++){
+			$("#star-select"+k+label).removeClass('text-muted').addClass('textWarning');
+		}
+		
+		for(var k=i+1; k<=6; k++){
+			$("#star-select"+k+label).removeClass('textWarning').addClass('text-muted');
+		}
+	}
+	function evaluatePreSlider(uniqueID){
+		var slider = document.getElementById("text-"+uniqueID).value;
+		$("#demo"+uniqueID).html(slider);
+		$("#scaleValue"+uniqueID).val(slider);
+		
+	}
+
+	function evaluatePostSlider(label, value){
+		var slider = 0;
+		if(value == null){
+		slider = document.getElementById("scale-"+label).value;
+		}else{
+			slider = value;
+		}
+		$("#demo-"+label).html(slider);
+		$("#scaleValue-"+label).val(slider);
+		$("#scale-"+label).val(slider);
+	}
+
+	function cancelViewQuestionnaire(){
+		location.href = sourceleadUrl+ "/questionnaireList";
+	}
+    

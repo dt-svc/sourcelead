@@ -81,7 +81,7 @@ public class LeaveDashBoardDataUtil {
 
 	@Autowired
 	TimesheetSubmissionsService	 timesheetSubmissionsService;
-	
+ 
 	@Autowired
 	private SessionFactory sessionFactory;
 	
@@ -155,8 +155,7 @@ public class LeaveDashBoardDataUtil {
 	
 	@Autowired
 	RequirementAssignToService requirementAssignToService;
-	
-
+	 
 	/**
 	 * Leave DashBoard Data 
 	 * approved,rejected,pending and canceled leav count
@@ -599,7 +598,7 @@ public class LeaveDashBoardDataUtil {
 		String timesheetCountType = "ALL";
 		Boolean isAdmin = true;
 		TimeSheetSubmissionCount timeSheetSubmissionCount = new TimeSheetSubmissionCount();
-		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),commonDataDto.getOrgLocation().getOrgId(),timesheetCountType,isGlobalAccess,isAdmin);
+		timeSheetSubmissionCount = timesheetSubmissionsService.getTimeSheetSubmissionsCountByUserIdAndOrgLocationIdForApprover(commonDataDto.getUserId(), commonDataDto.getOrgLocation().getId(),commonDataDto.getOrgLocation().getOrgId(),timesheetCountType,isGlobalAccess,isAdmin,null);
 		map.put("Draft",timeSheetSubmissionCount.getSavedTimesheetSubmissionCount().toString());
 		map.put("Waiting",timeSheetSubmissionCount.getWaitingForApprovalTimesheetSubmissionCount().toString());
 		map.put("Approved",timeSheetSubmissionCount.getApprovedTimesheetSubmissionCount().toString());

@@ -180,7 +180,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						<i class='fa fa-sitemap pull-left fa-2x text-muted'></i>
 					</c:otherwise>
 					</c:choose>
-					<h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4>
+					<a onclick='requirementWorkflow.viewStage("${requirementWorkFlowStages.uuid}", "${requirementWorkFlowStages.requirementWorkFlowUuid}")'><h4 class="pull-left mt10 ml">${requirementWorkFlowStages.stageName}</h4></a>
 				</div>
 				</div>
 				<div class="col-md-2">
@@ -250,7 +250,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 						<div class="pull-right">
 						<c:choose>
 							<c:when test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow' && isWorkflowEditable == true}">
-									<input value="Save" id="saveReqWorkFlow"
+									<input value="Save & Finish" id="saveReqWorkFlow"
 										onclick="requirementWorkflow.saveRequirementViewWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+','${requirementWorkFlowStages.stageName}');"
 										class="btn btn-primary" type="button"> <input
 										value="Cancel" class="btn btn-default ml" type="button"
