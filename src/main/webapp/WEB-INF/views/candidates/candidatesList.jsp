@@ -2920,7 +2920,7 @@ function shareJob() {
 			result = result +"	   <div id='shareCandidate' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";
 			result = result + ' <div id="reasonForInvoiceDiv"/>';
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
+			result = result +'		<b href="javascript:void(0)"><input class="btnBg_blue" id="confirm-id" type="button" value="Ok" onclick="cancelShareCandidate();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelShareCandidate();"></b>';
 			result = result +"	</div>";
 			$("#shareEmptypopUp").empty();
 			$("#shareEmptypopUp").append(result);
@@ -3011,8 +3011,8 @@ function sharejobpopup(candidateCount) {
 	 result = result+ '  </div>';
 	 result = result+ '  <div class="modal-footer">';
 	 result = result+ '    <span class="fa fa-exclamation-triangle text-danger pull-left mt10" '+buttonDisplay+'><strong>&nbsp;Selected Candidates are not more than 50</strong></span>';
-	 result = result+ '    <button type="button" class="btn btn-primary" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
-	 result = result+ '    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
+	 result = result+ '    <button type="button" class="btn btn-primary tblminwidth-90" data-dismiss="modal" '+buttonDisabled+' onclick="selectedJobSharing();">Share Job</button>';
+	 result = result+ '    <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="closejobpop();">Cancel</button>';
 	 result = result+ '  </div>';
 	 result = result+ '</div>';
 	 result = result+ '</div>';

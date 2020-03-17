@@ -208,13 +208,13 @@
  <div class="clearfix"></div>
  <div class="clearfix footerstyelsNew">
     <div class="col-md-6">
-          <input type="button" value="Previous" onclick="shiftToAssociateBankingTab();" class="btn btn-default">
+          <input type="button" value="Previous" onclick="shiftToAssociateBankingTab();" class="btn btn-default tblminwidth-90">
   	</div>
   
     <div class="col-md-6">
       <div class="pull-right">
-       <button type="button" class="btn btn-success btnSuccess" id="savePaymentButton" onclick="saveOnboardingCandidatePfEsiDetails();" >Save & Continue</button>
-            <button type="button" class="btn btn-default ml10" onclick="skipToLoanAndAdvancesTab();" >Skip</button>
+       <button type="button" class="btn btn-success btnSuccess tblminwidth-90" id="savePaymentButton" onclick="saveOnboardingCandidatePfEsiDetails();" >Save & Continue</button>
+            <button type="button" class="btn btn-default ml10 tblminwidth-90" onclick="skipToLoanAndAdvancesTab();" >Skip</button>
        </div>
     </div>
  </div>       
