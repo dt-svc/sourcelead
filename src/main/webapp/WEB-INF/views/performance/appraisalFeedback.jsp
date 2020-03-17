@@ -187,6 +187,7 @@ function getFeedbackCategoryForm(feedbackTemplateUUID,appraisalType){
 		    result = result + '<select class="form-control pull-left" id="categoryScore" name="categoryScore"  field-name="Category Score" data-validation="required" >';
 		    result = result + '<option value="">-Select Score-</option>';
 		    result = result + '</select>';
+		    result = result + '<input type="hidden"  name="feedbackWeightage" id="feedbackWeightage">';
 		    result = result + '</div></div>';
 		              
 			result = result + '<div id="sjfb-fields" class="viewTemplate">';
@@ -391,6 +392,7 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID,appraisalType){
 		    var con = JSON.stringify(fields);
 		    con = encodeURIComponent(con);
 		    
+		    var feedbackWeightage = $("#feedbackWeightage").val();
 		    
 		    $.ajax({
 		    	type: "POST",
@@ -400,7 +402,7 @@ function saveFeedbackTemplateDetails(feedbackTemplateUUID,appraisalType){
 		        processData: false,
 		        contentType:false,
 		        dataType : 'json',
-		    	url : pmsUrl+"/saveSubmittedFeedbackTemplate?"+tokenParamName+"="+tokenValue+"&assignedUUID="+assignedUUID+"&jsonDataValues="+con+"&feedbackTemplateUUID="+feedbackTemplateUUID,
+		    	url : pmsUrl+"/saveSubmittedFeedbackTemplate?"+tokenParamName+"="+tokenValue+"&assignedUUID="+assignedUUID+"&jsonDataValues="+con+"&feedbackTemplateUUID="+feedbackTemplateUUID+"&feedbackWeightage="+feedbackWeightage,
 		        success: function(result) {
 		        	 	if(result.response === "SESSION_TIMEDOUT") {
 							location.replace(sourceleadUrl);
