@@ -608,12 +608,19 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	@Override
 	public String deleteBgcTemplateByUuid(String templateUuid) {
 		try {
-			   Session session = this.sessionFactory.getCurrentSession();
-			   Query query = session.createQuery("delete from BgcTemplate where uuid=:templateUuid").setString("templateUuid", templateUuid);
-		        int count = query.executeUpdate();
-		        if(count != 0) {
-		        	return Constants.SUCCESS;
-		        }
+			Session session = this.sessionFactory.getCurrentSession();
+			// First removing child records using SQL query in BGC_COMPONENT_JSONMAP using TEMPLATEUUID.
+			int deletedCount = session.createSQLQuery(
+					"DELETE FROM BGC_COMPONENT_JSONMAP WHERE TEMPLATE_ID=(SELECT ID FROM BGC_TEMPLATE WHERE UUID=:templateUuid)")
+					.setString("templateUuid", templateUuid).executeUpdate();
+			System.out.println("deletedCount >>>>>" + deletedCount);
+			// now removing template from the BGC_TEMPALTE  Table once child records are removed form the table BGC_COMPONENT_JSONMAP.
+			Query query = session.createQuery("delete from BgcTemplate where uuid=:templateUuid")
+					.setString("templateUuid", templateUuid);
+			int count = query.executeUpdate();
+			if (count != 0) {
+				return Constants.SUCCESS;
+			}
 			} catch (HibernateException e) {
 				logger.error("SQL Exception occured while doing delete  BgcComponent by id-->" + e.getMessage());
 				e.printStackTrace();
