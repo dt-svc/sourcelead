@@ -36,8 +36,8 @@ var pmsUrl = '${SourceLeadWeb_pmsUrl}';
 	<div class="form-footer clearfix row">
               <div class="col-lg-12">
                 <div class="pull-right">
-                  <input type="button" value="Save" id="create_user" onclick="createAssociate();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href ='${SourceLeadWeb_atsUrl}/usersList'"  class="btn btn-default ml">
+                  <input type="button" value="Save" id="create_user" onclick="createAssociate();" class="btn btn-primary tblminwidth-90">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href ='${SourceLeadWeb_atsUrl}/usersList'"  class="btn btn-default ml tblminwidth-90">
                 </div>
               </div>
     </div>
@@ -348,7 +348,7 @@ function getAssociatesFilter(){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'   <div class="modal-footer">';
-     	result = result +'     <button data-dismiss="modal" class="btn btn-primary" type="button" onClick="this.disabled=true;addRequestedResources();$(this).blur();">Add</button>';
+     	result = result +'     <button data-dismiss="modal" class="btn btn-primary tblminwidth-90" type="button" onClick="this.disabled=true;addRequestedResources();$(this).blur();">Add</button>';
      	result = result +'   </div>'; 
      	$("#associatesListFilter").empty();
 	    $("#associatesListFilter").append(result);

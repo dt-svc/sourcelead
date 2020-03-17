@@ -587,7 +587,7 @@ function submitRecommendationCandidates(requirementId){
 		 result = result +'</label>';
 		 result = result +"<span class='paddingLeft mt2'>Attach Resume</span></div>";
 		 result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		 result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='submitRecommendationCandidatesToJob("+requirementId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelSubmitApplicant();'></b>";
+		 result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='submitRecommendationCandidatesToJob("+requirementId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelSubmitApplicant();'></b>";
 		 result = result +"	</div>";
 		 $("#attachResumeDiv").append(result);
 		 $("#remove_user_pop").slideDown(200);
@@ -600,7 +600,7 @@ function submitRecommendationCandidates(requirementId){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Please select at least one Candidate</p>";
 		result = result + ' <div id="reasonForInvoiceDiv"/>';
-		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+		result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="cancelTermination();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#remove_user_pop").slideDown(200);
@@ -718,7 +718,7 @@ function shareAllRecommendations(requirementId){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Please select at least one Candidate</p>";
 			result = result + ' <div id="reasonForInvoiceDiv"/>';
-			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="cancelTermination();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+			result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="cancelTermination();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -1154,7 +1154,7 @@ function customizeScore(requirementId){
 		        result = result +'		              </div>                          ';
 		        
 		        result = result +'		            <div class="form-footer clearfix">                                              ';
-		        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closePop();">Cancel</a> </div>';
+		        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn tblminwidth-90 btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn tblminwidth-90 btn-default ml10" onclick="closePop();">Cancel</a> </div>';
 		        result = result +'		            </div>'; 
 		        result = result	+ '               <form>';
 		        result = result +'		            </div>'; 

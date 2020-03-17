@@ -80,6 +80,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
               <div class="form-horizontal">
                <form:form class="login-form clearfix"  id="onboardCandidate_form"  name="onboardCandidate_form" method="post" >
                <input type="hidden" name="savedonboardId" id="savedonboardId" value=""/>
+               <input type="hidden" name="bgcOrgRelationId" id="bgcOrgRelationId" value=""/>
                 <p><strong>Employee Details</strong></p>
                 <div class="form-group" id="onboardCandidatesDiv">
                   <label class="col-md-3 control-label">Select Candidate <span class="text-danger">* </span><i class='fa fa-info-circle' title='Select the candidate who is being onboarded'></i></label>
@@ -93,9 +94,9 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                   
                 <div class="form-footer">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
-                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-sm btn-primary">
+                    <input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
+                    <input type="button" value="Save" id="save_onboardUser" onclick="saveOnboardingCandidateDetails('save');" class="mr10 ml10 btn btn-primary tblminwidth-90">
+                    <input type="button" value="Save and Continue" id="saveAndContinue_onboardUser" onclick="saveOnboardingCandidateDetails('saveAndContinue');"  class="btn btn-primary tblminwidth-90">
                   </div>
                 </div>
              </form:form>
@@ -167,9 +168,9 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                 </div>
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
-                    <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="self.location='${SourceLeadWeb_atsUrl}/candidateOnBoardingList'">
+                    <input type="button" value="Save" id="save_docs_button"  onclick="createTemplateDocs('save');" class="btn ml10 mr10 btn-primary tblminwidth-90">
+                    <input type="button" value="Save and Continue" id="save_continue_docs_button" onclick="createTemplateDocs('saveAndContinue');" class="btn tblminwidth-90 btn-primary">
                   </div>
                 </div>
                 </form>
@@ -182,7 +183,7 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
               <div class="clearfix">
                 <h4 class="pull-left">Task List</h4>
                 <div class="pull-right">
-                  <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
+                  <button type="button" class="btn btn-primary tblminwidth-90" data-toggle="modal" data-target="#addTask" onclick="getAssignToUsersList();flushOnboardTask();"><i class="fa fa-plus paddingRight"></i>Add Task</button>
                   <!-- Modal -->
                   <div id="addTask" class="modal fade add_Task" role="dialog">
                     <div class="modal-dialog modal-lg">
@@ -356,8 +357,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary tblminwidth-90" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default tblminwidth-90 ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
@@ -498,7 +499,7 @@ function getEmploymentType(){
  function getVendorsByOrgLocationForAddApplicant(orgRelationId){
 	 $.ajax({
 	    	type: "GET",
-	        url: atsUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"", 
+	        url: atsUrl+"/getVendorsByOrgLocation?"+tokenParamName+"="+tokenValue+"&isExcludeBgcVendors=true", 
 	        success: function(data) {
 	        	var json = JSON.parse(data);
 	        	var output = "";
@@ -554,17 +555,15 @@ function getEmploymentType(){
 		            		 $('#vendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
 		            	 }
 		            	
+		            	 
 		            } 
 		            $('#vendorContact').trigger("chosen:updated");
 		        }
 		 }); 
  }
- </script>
- 
 
 <!-- getEmployementTye -->
 
-<script>
 function addPoliciesAttachment(){  
 			var checkMaxTsRowNum = $("#policiesAttcahmentMaxRowNumber").val();
 			var tbl = document.getElementById("policiesAttachmentTable");
@@ -1273,9 +1272,86 @@ function loadTeams(onboardTeamId){
 	    }
    });
 }
+// calling bgc vendors list.
+function loadBgcVendors(bgcOrglocationId){
+	$.ajax({
+		type: "GET",
+        url: sourceleadUrl+"/getAllBgcRelationsByOrgLocationAndType?"+tokenParamName+"="+tokenValue, 	    	   
+	    success: function(response) {
+	    	if (response != null) {
+	    	 	var json = JSON.parse(response);
+	    	 	var result = "";
+	        	result = result +'<option selected value="">--Select BGC Vendor--</option>';
+	        	for (var i=0; i<json.length; i++) {
+	        		var bgc = json[i];
+	        		var selected = '';
+	        		if(bgcOrglocationId != null && bgcOrglocationId != "" && bgcOrglocationId !="undefined" && bgcOrglocationId == bgc.responderLocationId.id){
+	            		selected = 'selected';
+	            		  
+	            	}
+	        		result = result +'<option value='+bgc.responderLocationId.id+' '+selected+' bgcOrgRelationId ='+bgc.id + ' >'+bgc.orgName+'</option>';
+				}
+	        	 
+	        	 $("#bgc").empty();
+	           	 $("#bgc").append(result); 
+	           	 var bgcOrgRelId= $("#bgc option:selected").attr("bgcOrgRelationId");
+        		 $("#bgcOrgRelationId").val(bgcOrgRelId);
+	           	 $('#bgc').trigger("chosen:updated");
+	    	} else if (response.indexOf('Sign In') !== -1) {
+	    		location.replace(sourceleadUrl);
+	    	} else {
+	    	    showError("Operation failed, please try again");
+	    	}
+	    }
+   });
+}
 </script>
 
-
+<script>
+ function getAddApplicantBgcVendorContactList(orgRelationId,spocId ){
+    if($("#bgc").val()!=''){
+	     $("#bgcVendorContact").attr("data-validation", "required");  
+	     $("#bgcVendorContact").removeAttr("data-validation-optional"); 
+	     var bgcOrgRelId= $("#bgc option:selected").attr("bgcOrgRelationId");
+	     $("#bgcOrgRelationId").val(bgcOrgRelId);
+	 }else{
+	   $("#bgcVendorContact").removeAttr("data-validation");  
+	    $("#bgcVendorContact").attr("data-validation-optional","true");
+	 }
+  
+	 var vmsUrl = '${SourceLeadWeb_vmsUrl}';
+	 var orgRelationID = '';
+	
+	 if(orgRelationId != null && orgRelationId != 'undefined' && orgRelationId != ''){
+		 orgRelationID = orgRelationId;
+	 }else{
+		 orgRelationID = $("#bgcOrgRelationId").val();
+	 }
+		 $.ajax({
+			    type: "POST",
+		        url: vmsUrl+"/getOrgSpocsList?"+tokenParamName+"="+tokenValue+"&orgRelationId="+orgRelationID+"&type=Vendor",  
+		        success: function(json) {
+		        	$('#bgcVendorContact').empty();
+		        	$('#bgcVendorContact').append('<option value="">--Select Vendor contact--</option>');
+		             for(var i=0;i<json.data.length;i++){
+		            	 var opt = json.data[i];
+		            		var selected = '';
+		            	 if(spocId != null && spocId != 'undefined' && spocId != ''){
+		            		 if(opt.id == spocId){
+			        				selected = "selected";
+			        			}
+		        			 $('#bgcVendorContact').append('<option value='+opt.id+' '+selected+'>'+opt.spocName+'</option>');
+		            	 }else{
+		            		 $('#bgcVendorContact').append('<option value='+opt.id+' >'+opt.spocName+'</option>');
+		            	 }
+		            	
+		            } 
+		            $('#bgcVendorContact').trigger("chosen:updated");
+		        }
+		 }); 
+ }
+ </script>
+ 
 <script>
 function loadOnBoardingTemplates(onboardTemplateId){
 	
@@ -1363,14 +1439,12 @@ function loadOnBoardingTemplates(onboardTemplateId){
   
  <script>
  function saveOnboardingCandidateDetails(saveType){
-	 
 	 var validationSettings = {
 		        errorMessagePosition : 'element',
 		       borderColorOnError : '',
 				scrollToTopOnError : true,
 				dateFormat : 'yyyy/mm/dd' 
-	         }; 
-	 
+              };
 	 if ($('#onboardCandidate_form').validate(false, validationSettings)){ 
 	        var atsUrl ='${SourceLeadWeb_atsUrl}';
 	        $("#save_onboardUser").attr("disabled", "disabled");
@@ -1400,6 +1474,7 @@ function loadOnBoardingTemplates(onboardTemplateId){
 			        	}
 		     	        $("#candidateOnBoardId").val(json.id);
 		     	        $("#savedonboardId").val(json.id);
+		     	        $("#bgcOrgRelationId").val(json.bgcOrgRelationId);
 		     	        $("#save_onboardUser").removeAttr("disabled");
 		   	            $("#saveAndContinue_onboardUser").removeAttr("disabled");
 		     	        $("#loading").removeAttr("style");
@@ -1543,6 +1618,12 @@ function loadOnBoardingTemplates(onboardTemplateId){
    		    	}
    		    	if(json['onBoardTeamId'] != null && json['onBoardTeamId'] != "" && json['onBoardTeamId'] !="undefined"){
    		    		loadTeams(json['onBoardTeamId']);
+   		    	}
+   		    	if(json['bgc'] != null && json['bgc'] != "" && json['bgc'] !="undefined"){
+   		    		loadBgcVendors(json['bgc']);
+   		    	}
+   		    	if(json['bgcVendorContact'] != null && json['bgcVendorContact'] != "" && json['bgcVendorContact'] !="undefined"){
+   		    		getAddApplicantBgcVendorContactList(json['bgcOrgRelationId'],json['bgcVendorContact']);
    		    	}
    		    	 if(json['employmentType'] != null && json['employmentType'] != "" && json['employmentType'] != 'undefined'){
    		    		 if(json['employmentType'] == 'Other'){
@@ -2203,7 +2284,7 @@ function getOnboardingTasksList(){
         	
         	result = result +'<div class="form-footer clearfix mt">';
     		result = result +'<div class="pull-right mr">';
-    		result = result +'<input type="button" id="finish_task" value="Send" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn btn-sm btn-primary">';
+    		result = result +'<input type="button" id="finish_task" value="Send" onclick="saveAndFinishOnboardTemplate('+onboardId+');" class="btn tblminwidth-90 btn-primary">';
     		result = result +'</div>';
     		result = result +'</div>';
     		
@@ -2708,8 +2789,25 @@ function addCandidateDetailsForOnboarding(){
 	 result = result +'</div>';
 	 result = result +'</div>';
 	 result = result +'</div>';
-
+	 // bgc vendor 
 	 result = result +'<div class="form-group">';
+	result = result + '<label class="col-md-3  control-label">BGC Vendors</label>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<select class="chosen-select form-control" id="bgc" name="bgc" data-validation-optional="true"  onchange="getAddApplicantBgcVendorContactList();" field-name="BGC Vendor">';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>';
+	// bgc vedor contact
+    result = result + '	<div class="form-group" id="BgcVendorContactsDiv">';
+	result = result + '<label class="col-md-3  control-label">BGC Vendor Contacts</label>';
+	result = result + '<div class="col-md-6">';
+	result = result + '<select class="chosen-select form-control" id="bgcVendorContact" data-validation-optional="true" name="bgcVendorContact"  field-name="BGC vendor Contacts">';
+	result = result + '<option value="">--Select BGC Vendor Contacts--</option>';
+	result = result + '</select>';
+	result = result + '</div>';
+	result = result + '</div>'; 
+	 // end bgc vendor
+     result = result +'<div class="form-group">';
 	 result = result +'<label class="col-md-3 control-label">Special Conditions <i class="fa fa-info-circle" title="Any special conditions laid by the company"></i></label>';
 	 result = result +'<div class="col-md-6">';
 	 result = result +'<textarea rows="2" class="form-control" id="specialConditions" name="specialConditions" data-validation-optional="true"></textarea>';
@@ -2737,6 +2835,9 @@ function addCandidateDetailsForOnboarding(){
      
 	 loadCandidateRoles();
 	 loadTeams();
+	 loadBgcVendors();
+	// getVendorsByOrgLocationForAddApplicant();
+	// getBgcVendorsByOrgLocationForAddApplicant();
 	 loadOnBoardingTemplates();
 	 getDatesScript();
    	 $("#loading").removeAttr("style");

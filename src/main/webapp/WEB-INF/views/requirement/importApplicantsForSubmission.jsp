@@ -41,7 +41,7 @@ var uploadflag= true;
 					
 						<div class="col-xs-5 col-md-5">
 							<a href="${SourceLeadWeb_atsUrl}/downloadRequirenetSubmissionTemplateByRequirementId/${requirementId}"
-								class="btn btn-success btn-block" title="Submission Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Submission Template
+								class="btn btn-primary btn-block" title="Submission Template"> <i class="fa fa-download"></i>&nbsp;&nbsp; Submission Template
 							</a>
 						</div>
 						<div class="col-xs-4 col-md-4">
@@ -52,7 +52,7 @@ var uploadflag= true;
 										value="Import">
 								</div>
 								<div class="btn-group">
-									<input type="reset" class="btn btn-danger" value="Reset"
+									<input type="reset" class="btn btn-default" value="Reset"
 										onClick="resetSubmissionTemplate();">
 								</div>
 							</div>

@@ -131,13 +131,13 @@ $(document).ready(function(){
                   
                   <div class="clearfix footerstyelsNew">
                  <div class="col-md-6">
-                 <input type="button" value="Previous" onclick="shiftToDeductionTab();" class="btn btn-default">
+                 <input type="button" value="Previous" onclick="shiftToDeductionTab();" class="btn btn-default tblminwidth-90">
 			     </div> 
                   <div class="col-md-12">
                    <div class="pull-right">
-                   <input value="Skip" class="btn btn-default mr10"  onclick="skipContributionJsp();" type="button">
-                    <input value="Save &amp; Continue" class="btn btn-success btnSuccess" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/usersList'" type="button">
+                   <input value="Skip" class="btn btn-default mr10 tblminwidth-90"  onclick="skipContributionJsp();" type="button">
+                    <input value="Save &amp; Continue" class="btn btn-success btnSuccess tblminwidth-90" type="button" id="contribution_save_button" onclick="saveAssociateContribution();">
+                    <input value="Cancel" class="btn btn-default ml10 tblminwidth-90" onclick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/usersList'" type="button">
                     </div>
                   </div>
                 </div>

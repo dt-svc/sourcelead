@@ -541,6 +541,21 @@ public class CandidateListRestController {
 				boolQueryBuilder.must(filterSkillBoolQueryBuilder);
 			}
 		}
+		
+		if (StringUtils.isNotBlank(search.getFilterCandidateSource())) {
+			String[] filterSource = search.getFilterCandidateSource().split(",");
+			List<String> filterSourceList = new ArrayList<>();
+			for (int i = 0; i < filterSource.length; i++) {
+				filterSourceList.add(filterSource[i]);
+			}
+			if (filterSourceList != null && !filterSourceList.isEmpty()) {
+				BoolQueryBuilder filterSourceBoolQueryBuilder = QueryBuilders.boolQuery();
+				for (String keywd : filterSourceList) {
+					filterSourceBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("candidateSource", keywd));
+				}
+				boolQueryBuilder.must(filterSourceBoolQueryBuilder);
+			}
+		}
 
 		if (StringUtils.isNotBlank(search.getAvailability())) {
 			String[] avaliability = search.getAvailability().split(",");
@@ -720,6 +735,16 @@ public class CandidateListRestController {
 		}
 		
 		
+		List<String> candidateSourceArray = search.getCandidateSource();
+		if (candidateSourceArray != null && !candidateSourceArray.isEmpty()) {
+			BoolQueryBuilder sourceBoolQueryBuilder = QueryBuilders.boolQuery();
+			for (String keywd : candidateSourceArray) {
+				sourceBoolQueryBuilder.should(QueryBuilders.matchPhraseQuery("candidateSource", keywd));
+			}
+			boolQueryBuilder.must(sourceBoolQueryBuilder);
+		}
+		
+		
 		List<String> candidateTagsArray = search.getCandidateTags();
 		if (candidateTagsArray != null && !candidateTagsArray.isEmpty()) {
 			BoolQueryBuilder tagBoolQueryBuilder = QueryBuilders.boolQuery();
@@ -823,6 +848,7 @@ public class CandidateListRestController {
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateType", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("noticePriod", keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("createdBy", keywd));
+		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("candidateSource", keywd));
 		// QueryBuilderList.add(QueryBuilders.matchQuery("currentResumeName",
 		// keywd));
 		QueryBuilderList.add(QueryBuilders.matchPhraseQuery("resumeContent", keywd));
@@ -1043,7 +1069,7 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
-				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),Constants.CANDIDATE_ACTIVE);
 				candidateDTO.setCandidateSourceList(candidateSourceList);
 				
 				if(null != can.getCandidateSource()) {
@@ -1913,6 +1939,7 @@ public class CandidateListRestController {
 			@RequestParam(value = "availability", required = false) String availability,
 			@RequestParam(value = "candidateTypeFilter", required = false) String candidateTypeFilter,
 			@RequestParam(value = "createdByFilter", required = false) String createdByFilter,
+			@RequestParam(value = "filterCandidateSource", required = false) String filterCandidateSource,
 			@RequestParam(value = "isAssociate", required = false) String isAssociate, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -1927,7 +1954,7 @@ public class CandidateListRestController {
 			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationIDAndUserId(loginOrgLocation.getId(), user.getId());
 		} else {
 			candidatesList = candidateGlobalService.getCandidatesGlobalListByOrgLocationID(loginOrgLocation.getId(), org.getId(), candidateStatus,
-					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,user);
+					updatedDateRange, candidateType, isAssociate,candidateFilterSkills,availability,candidateTypeFilter,createdByFilter,filterCandidateSource,user);
 
 		}
 
@@ -2123,6 +2150,14 @@ public class CandidateListRestController {
 		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
 		List<String> tagsList = sourceleadTagsService.sourceleadTagsListByEntitypeAndOrgloactionId(TagEntites.JOBS.getValue(),loginOrgLocation.getId());
 		return tagsList;
+	}
+	
+	@RequestMapping(value = "/getCandidateSourceList")
+	public  List<CandidateSource>  getCandidateSourceList(
+			 HttpServletRequest request) throws Exception {
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(), Constants.CANDIDATE_ACTIVE);
+		return candidateSourceList;
 	}
 	
 
@@ -2731,7 +2766,7 @@ public class CandidateListRestController {
 				candidateDTO.setIsProfilePublic(can.getIsProfilePublic());
 				candidateDTO.setId(can.getId());
 				
-				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),1);
+				List<CandidateSource> candidateSourceList = candidateService.getCandidateSourceListByOrgLocationIdAndStatus(loginOrgLocation.getId(),Constants.CANDIDATE_ACTIVE);
 				candidateDTO.setCandidateSourceList(candidateSourceList);
 				
 				if(null != can.getCandidateSource()) {
@@ -2767,7 +2802,7 @@ public class CandidateListRestController {
 								formFieldId.add(custom);
 							}
 						}
-						if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
+				/*		if (formFieldId != null && !formFieldId.isEmpty() && loginOrgLocation != null) {
 							OrgLocations orgLoc = orgLocationService.getOrgLocations(loginOrgLocation.getId());
 							Map<Long, String[]> candidateData = candidateCustomFieldDataService
 									.getCandidateGlobalCustomFieldDataMapByLocationId(orgLoc.getOrgId(), formFieldId, can.getId());
@@ -2784,7 +2819,7 @@ public class CandidateListRestController {
 									candidateDTO.setCandidateCustomFieldData(dataMap);
 								}
 							}
-						}
+						}*/
 					}
 				}
 

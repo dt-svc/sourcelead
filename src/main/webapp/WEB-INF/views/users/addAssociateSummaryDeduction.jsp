@@ -149,8 +149,8 @@ getDeductionType();
                   <div class="clearfix footerstyelsNew">
                   <div class="col-md-6">
                    <div class="pull-right">
-                    <input value="Save" class="btn btn-success btnSuccess" type="button" id="associate_deduction_save_button" onclick="saveAssociateDeduction();">
-                    <input value="Cancel" class="btn btn-default ml10" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/userSummaryDetails?tabType=deduction&userCode=${userCode}'" type="button">
+                    <input value="Save" class="btn btn-success btnSuccess tblminwidth-90" type="button" id="associate_deduction_save_button" onclick="saveAssociateDeduction();">
+                    <input value="Cancel" class="btn btn-default ml10 tblminwidth-90" onclick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/userSummaryDetails?tabType=deduction&userCode=${userCode}'" type="button">
                     </div>
                   </div>
                 </div>

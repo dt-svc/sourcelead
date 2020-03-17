@@ -360,8 +360,8 @@
 		            </div>
 		            <div class="clearfix mr">
 		                  <div class="pull-right">
-		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-primary mr">
-		                   <input type="button" value="Cancel" id="" onclick="closeassetManagementPopup();" class="btn btn-default">
+		                   <input type="button" value="Add" id="add_asset" onclick="storeAsset();" class="btn btn-primary mr tblminwidth-90">
+		                   <input type="button" value="Cancel" id="" onclick="closeassetManagementPopup();" class="btn btn-default tblminwidth-90">
 		                  </div>
 		              </div>
 		            </form:form>

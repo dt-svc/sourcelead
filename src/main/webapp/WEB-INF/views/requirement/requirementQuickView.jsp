@@ -777,7 +777,7 @@
 								<div class="immSub">
 									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
 							    	<div class="immSubMenu immSubMenu-custome">
-										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant Form</a>
+										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant (Form)</a>
 									    <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');">Import Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a>
@@ -798,6 +798,14 @@
 							<sec:authorize access="hasAnyRole('ROLE_CREAE_OFFER')">
 							       <a href="javascript:void(0)" title=""  onclick="addOffer('${requirement.id}');" class="add-offer"><i class="fa fa-plus"></i>&nbsp;Generate Offer</a>
 							</sec:authorize>
+							
+							<div class="immSub">
+									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Via Tracker</a>
+							    	<div class="immSubMenu immSubMenu-custome">
+										<a href="javascript:void(0)" title="" onclick="importProfileTracker('${requirement.id}');">Add Applicants</a>
+										<a href="javascript:void(0)" title="" onclick="importInterviewScheduleTracker('${requirement.id}');">Schedule Interview</a>
+									</div>
+							</div>
 				  </span>
               </div>
           </li>
@@ -827,6 +835,30 @@
 	</div>
 </div>
 
+
+<div class="import_profileTracker_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="dataFilterNew pdtop datatable_filter">
+		    <div id="importProfileTrackerSideDivLoading"></div>
+			<div id="importProfileTrackerSideDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="import_interviewTracker_side_wrap">
+	<div class="new_side_wrap_inn">
+		<div class="new_side_wrap_cta">
+		 <div class="dataFilterNew pdtop datatable_filter">
+		    <div id="importInterviewTrackerSideDivLoading"></div>
+			<div id="importInterviewTrackerSideDiv"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <script>
 function importApplicantsToJob(requirementId){
 	$.ajax({
@@ -847,6 +879,47 @@ function importApplicantsToJob(requirementId){
 
 function bulkResumeParsing(requirementUUID) {
 	window.open(sourceleadUrl + "/bulk-resume-import.html?requirementUUID=" + requirementUUID, "_blank");
+}
+
+
+function importProfileTracker(requirementId){
+	 $.ajax({
+		  type: "GET",
+		    url: atsUrl+"/getProfileTrackerTemplateForBulkImprtApplicants?requirementId="+requirementId,
+		     success :function(response) {
+		    	    $("#importProfileTrackerSideDiv").empty();  
+		    	    $("#importProfileTrackerSideDiv").append(response);
+		    	    
+		    	    $('.action-pop').slideUp();
+		    	    $(".import_profileTracker_side_wrap").addClass("import_profileTracker_side_wrap_active");
+		    	    $(".side_mask").fadeIn(200);
+		    	    $("body").css('overflow-y', 'hidden');
+		    	    getSubmissionsUploadedHistory();
+				},
+			}); 
+			
+	   
+}
+
+
+
+function importInterviewScheduleTracker(requirementId){
+	 $.ajax({
+		  type: "GET",
+		    url: atsUrl+"/getInterviewScheduleTrackerTemplateForBulkImprtApplicants?requirementId="+requirementId,
+		     success :function(response) {
+		    	    $("#importInterviewTrackerSideDiv").empty();  
+		    	    $("#importInterviewTrackerSideDiv").append(response);
+		    	    
+		    	    $('.action-pop').slideUp();
+		    	    $(".import_interviewTracker_side_wrap").addClass("import_interviewTracker_side_wrap_active");
+		    	    $(".side_mask").fadeIn(200);
+		    	    $("body").css('overflow-y', 'hidden');
+		    	    getSubmissionsUploadedHistory();
+				},
+			}); 
+			
+	   
 }
 </script>
 

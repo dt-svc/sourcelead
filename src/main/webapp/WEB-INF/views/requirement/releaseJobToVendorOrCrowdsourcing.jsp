@@ -232,14 +232,14 @@
         <div class="col-lg-12">
           <div class="pull-right">
                <c:if test="${!empty jobRecommendations}">
-	              <input type="button" value="Skip" class="btn btn-primary ml" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobRecommendations?requirementUUID=${requirementUUID}'"></a>
+	              <input type="button" value="Skip" class="btn btn-primary ml tblminwidth-90" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobRecommendations?requirementUUID=${requirementUUID}'"></a>
 	           </c:if>
             <sec:authorize access="hasAnyRole('ROLE_RELEASE_REQUIREMENT')">
             <span class="jquery_form_error_message" style="display:none;">Vendor/Contact selection is mandatory</span>
-            	<input type="button" class="btn btn-primary ml" id="releaseBtn" onclick="releaseTo();" value="Release">
+            	<input type="button" class="btn btn-primary ml tblminwidth-90" id="releaseBtn" onclick="releaseTo();" value="Release">
 			</sec:authorize>
 			
-            <input type="button" class="btn btn-default ml" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'">
+            <input type="button" class="btn btn-default ml tblminwidth-90" id="releaseCancelBtn" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'">
           </div>
         </div>
       </div>
@@ -300,7 +300,6 @@ $(document).ready(function(){
 	 var sourceleadShareUrl ='${sourceleadShareUrl}';
 	 
 	var referLink = "${sourceleadShareUrl}/job/${requirement.url}-${requirement.id}"
-	//alert(sourceleadShareUrl);		
 	$("#referralLink").val(referLink);
 	if('${SourceLeadWeb_isVendorsTabAccessable}'  == 'Y'){
 		openVendors();
@@ -388,7 +387,6 @@ function releaseTo(){
 	    var percentageRewardValue = '';
 	    var jobRecommendations = '${jobRecommendations}';
 	    var requirementUUID = '${requirementUUID}';
-            
             if(contactsIds.length > 0 || vendorIds.length > 0 || isPublic == "Y" || isCrowdScourcing == "Y" || (isPublicGlobel != isPublic && isPublicGlobel != "") || (isCrowdScourcingGlobel != isCrowdScourcing && isCrowdScourcingGlobel != "")){
 	 	    	$('span.jquery_form_error_message').hide();
 	 	    	$('#vendorRelease').find('span.jquery_form_error_message').remove();
@@ -435,13 +433,13 @@ function releaseToOneContact(contactscheckboxId){
 }
 
 function releaseToOneVendor(vendorcheckboxId){
-	$('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
+	 $('input:checkbox[name="vendorcheckbox"]').prop('checked',false);
 	$("#" + vendorcheckboxId).prop('checked', true);
 	
 	$("#releaseToVendorIconDiv"+vendorcheckboxId).empty();
 	$("#releaseToVendorIconDiv"+vendorcheckboxId).prepend('<i class="fa fa-cog fa-spin"></i>');
 	checkedVendors[vendorcheckboxId] = vendorcheckboxId;
-	releaseTo();
+	releaseTo(); 
 }
 </script>
 
@@ -959,6 +957,18 @@ function vendorPaginationUrl(url){
    	        			result = result +'<div  class="tbldata-dotdot-sm">';
    	        			result = result +'<span title='+report.orgName+'>'+report.orgName+'</span>';
    	        			result = result +'</div>';
+                        
+   	        			// This functionality inprogress dont delete the code
+   	        			/* if(report.isMspVendor == 'Y'){
+   	        				result = result +'<div class="width180px">';
+   	        			  result = result +'<div class="tbldata-dotdot text-left"><i title="Is MSP" class="fa fa-diamond text-orange mt2 mr10 pull-left"></i> <div class="pull-left"  title='+report.orgName+'>'+report.orgName+'</div></div>';
+   	        			result = result +'</div>';
+   	        			}else{
+   	        				result = result +'<div class="width180px inlineBlock text-left">';
+   	        			  result = result +'<div class="tbldata-dotdot text-left" title='+report.orgName+'> '+report.orgName+'</div>';
+   	        			result = result +'</div>';
+   	        			} */
+   	        			
    	        			result = result +'</td>';
    	        		}else{
    	        			result = result +'<td><div>--</div></td>';
@@ -1054,13 +1064,14 @@ function vendorPaginationUrl(url){
     } );
     $("#vendorPagination").wrap("<div class='overflow_Auto width100percnt'></div>"); 
     $("input[type=search]").hide();
-    $("#vendorDataTableSearch").keyup(function(e) {
-    	   if(e.which === 13) {
-    		   getVendorLists();
-    	   }
-    	});
+    
 }
 
+$("#vendorDataTableSearch").keyup(function(e) {
+	   if(e.which === 13) {
+		   getVendorLists();
+	   }
+});
 
 function checkOrUncheckParent(tableId, selectedItems, checkboxId) {
 	$("#"+checkboxId).removeProp("checked");
@@ -1403,6 +1414,9 @@ $('#selectorReleaseMsg').delay(2000).fadeOut('slow');
 }
 </script> 
 <style>
+
+
+
 .footer-area {
 display: none;}
 </style>
