@@ -357,7 +357,7 @@ $("#packageZipfile").click(function() {
 		result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
 		result = result +" <b>Do you want to remove record permanently?</b>";
 		result = result + ' <div id="reasonForTemplateDiv"/>';
-		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+		result = result +"	<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
 		result = result +"	</div>";
 		$("#deletepopUp").append(result);
 		$("#remove_immigration_popup").slideDown(200);

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
@@ -47,6 +48,7 @@ import com.bis.sourcelead.entity.CandidateFamilyDetails;
 import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateResidence;
 import com.bis.sourcelead.entity.Immigration;
+import com.bis.sourcelead.entity.ImmigrationActivityHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocuments;
 import com.bis.sourcelead.entity.ImmigrationCandidateDocumentsHistory;
 import com.bis.sourcelead.entity.ImmigrationCandidateForms;
@@ -788,7 +790,7 @@ public class ImmigrationRestController {
 		// candidate residence list for mobile
 		
 		@RequestMapping(value = { "/getCandidateResidenceList" })
-		public ResponseList<CandidateResidence> getCandidateResidenceList(
+		public @ResponseBody ResponseList<CandidateResidence> getCandidateResidenceList(
 				@RequestParam(value = "candidateId", required = true) Long candidateId,
 				@RequestParam(value = "searchVal", required = false) String searchVal, HttpServletRequest request)
 				throws Exception {
@@ -1278,7 +1280,7 @@ public class ImmigrationRestController {
 	// Notes list for immigration candidate for mobile
 	
 	@RequestMapping(value = { "/getNotesListByImmigrationId" })
-	public ResponseList<SourceleadNotes> getNotesListByImmigrationId(
+	public  ResponseList<SourceleadNotes> getNotesListByImmigrationId(
 			@RequestParam(value = "candidateId", required = true) Long candidateId,
 			@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request)
 			throws Exception {
@@ -1330,6 +1332,19 @@ public class ImmigrationRestController {
 			ResponseList<LookUpData> responseList = new ResponseList<LookUpData>();
 			List<LookUpData> documentsList = lookUpDataService.getLookUpDataByCategory(Constants.DOCUMENT_TYPE);
 			responseList.setData(documentsList);
+			return responseList;
+		}
+		
+		@RequestMapping(value = { "/getImmigrationActiviesList" })
+		public ResponseList<ImmigrationActivityHistory> getImmigrationActiviesList(
+				@RequestParam(value = "immigrationId", required = true) Long immigrationId, HttpServletRequest request)
+				throws Exception {
+			ResponseList<ImmigrationActivityHistory> responseList = new ResponseList<ImmigrationActivityHistory>();
+			OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
+					"orgLocations");
+			List<ImmigrationActivityHistory> immigrationActivitiesList = immigrationCommonService
+					.getImmigrationActivitiesList(immigrationId, orgLocations.getId());
+			responseList.setData(immigrationActivitiesList);
 			return responseList;
 		}
 }

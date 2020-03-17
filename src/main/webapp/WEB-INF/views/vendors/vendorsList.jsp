@@ -244,12 +244,12 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
               <div id="enableVendorAdvancedSearch"> 
-              	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
+              	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn tblminwidth-90 btn-primary"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn tblminwidth-90 btn-default"/> 
               	</div>
               	<div id="enableVendorContactAdvancedSearch"> 
-              	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
+              	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn tblminwidth-90 btn-primary"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn tblminwidth-90 btn-default"/> 
               	</div>
               
             </div>
@@ -527,7 +527,7 @@ function terminateSpoc1(spocId, orgRelationID,spocEmail){
 	//result = result +"		<p>Do you want to delete this vendor contact?</p>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='vendorDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForVendorSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+",\""+spocEmail+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='saveReason1("+spocId+","+orgRelationID+",\""+spocEmail+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -681,7 +681,7 @@ function getVendorDashboardName(vendorDashboardName){
 
 
 <script>
-	function vendorSideBar(vendorLocationId,orgRelationId,orgName) {
+	function vendorSideBar(vendorLocationId,orgRelationId,orgName,isMSP) {
 		var result = "";
 		result = result + '<div class="project_side_wrap_inn_tabs">';
 		result = result + '<ul class="project-tabs-menu">';
@@ -720,6 +720,9 @@ function getVendorDashboardName(vendorDashboardName){
 		
 		 result = result + '<li><a href="#tab-10" onClick="vendorOnboardTasksList('+orgRelationId+');">Onboard Tasks</a></li>';
 
+		 if(isMSP == "Y"){
+			 result = result + '<li><a href="#tab-11" onClick="mspVendor('+orgRelationId+','+vendorLocationId+');">MSP</a></li>';
+		 }
 
 		result = result + '<div class="clearfix"></div>'
 		result = result + '</ul>';
@@ -758,7 +761,9 @@ function getVendorDashboardName(vendorDashboardName){
 		result = result + '<div id="tab-8" class="project_tabs_inn">';
 		result = result + '</div>';
 		
-		
+		 result = result + '<div id="tab-11" class="project_tabs_inn">';
+         result = result + '</div>';
+         
 		//for vendor onboard Documents list tab
 		  result = result + '<div class="tab-pane clearfix emp_onboarddocs" id="vendorDocuments">';
 		  result = result + '<div class="col-md-12 clearfix mt">';
@@ -772,8 +777,8 @@ function getVendorDashboardName(vendorDashboardName){
 		  result = result + '<div class="tab-panes" id="tasks"> ';
 		  result = result + '<div id="tab-10" class="project_tabs_inn">';
           result = result + '</div>';
-
 		result = result + '</div>';
+		
 		result = result + '</div>'
 		$("#vendorSideDiv").empty();
 		$("#vendorSideDiv").append(result);
@@ -1330,6 +1335,7 @@ $(".addcon-pop").click(function(){
 <jsp:include page="vendorContactsDataTable.jsp" />  <!-- done -->
 <jsp:include page="vendorOnboardSubmittedDocuments.jsp" />  <!-- done -->
 <jsp:include page="vendorOnboardSubmittedTasks.jsp" />  <!-- done -->
+<jsp:include page="mspVendor.jsp" />  <!-- done -->
 
 
 <!-- Scripts for invitations  -->
@@ -1433,7 +1439,7 @@ function exportVendorToPdf(){
 		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Vendor List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelTermination();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#client_user_pop").slideDown(200);
@@ -1460,7 +1466,7 @@ function exportVendorToExcel(){
 		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Vendor List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelTermination();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#client_user_pop").slideDown(200);
@@ -1825,8 +1831,8 @@ function resetVendorContactFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>
@@ -1873,8 +1879,8 @@ function resetVendorContactFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>

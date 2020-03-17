@@ -58,7 +58,7 @@ function getVendorOnboardTasksList(){
 	        	
 	        	result = result +'<div class="form-footer clearfix mt">';
 	    		result = result +'<div class="pull-right mr">';
-	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishVendorOnbord();" class="btn btn-sm btn-primary">';
+	    		result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishVendorOnbord();" class="btn tblminwidth-90 btn-primary">';
 	    		result = result +'</div>';
 	    		result = result +'</div>';
 	    		

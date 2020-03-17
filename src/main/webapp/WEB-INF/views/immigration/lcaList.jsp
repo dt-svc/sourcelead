@@ -145,9 +145,9 @@
 							<div class="clearfix advancedsearch-footer">
 								<div class="pull-right mr">
 									<input type="button" value="Apply" id="search_requiremet"
-										onclick="closeFilterPop();getDynamicLCAList();" class="btn btn-sm btn-success" />
+										onclick="closeFilterPop();getDynamicLCAList();" class="btn tblminwidth-90 btn-primary tblminwidth-90" />
 									<input type="button" value="Reset" id="clear_search"
-										onclick="resetLcaFilter();" class="btn btn-sm btn-primary" />
+										onclick="resetLcaFilter();" class="btn tblminwidth-90 btn-default tblminwidth-90" />
 								</div>
 							</div>
 		       </div>

@@ -265,11 +265,11 @@ function addDocumentForSpoc(clientLocationId,orgRelationId,spocName,userId) {
 	result = result+'	                  </div>';
 	
 	result = result+'	                  <div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
-	result = result+'	                    <button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result+'	                    <button type="button" id="update_doc" class="btn tblminwidth-90 btn-primary pull-right">Update</button>';
 	result = result+'	                  </div>';
 	
 	result = result  +'                  <div class="clearfix mr" id="docAddButton">                                                                                                            ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_button" class="btn btn-sm btn-primary pull-right" onClick ="storeSpocDocument('+clientLocationId+','+orgRelationId+','+userId+',\''+spocName+'\',null);" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_button" class="btn tblminwidth-90 btn-primary pull-right" onClick ="storeSpocDocument('+clientLocationId+','+orgRelationId+','+userId+',\''+spocName+'\',null);" />'; 
 	result = result  +'                  </div>                                                                                                                               ';
 	result = result  +'                </div>                                                                                                                                 ';
 	result = result  +'                </form>                                                                                                                                ';
@@ -416,7 +416,7 @@ function deleteDocument(clientLocationId,orgRelationId,spocName,userId,docId,doc
 	result = result +"		<p>Document delete message here</p>";
 	result = result +"		<textarea  id='terminateReason' name='terminateReason'  placeholder='Comments here'></textarea>";
 	result = result + ' <div id="terminateReasonDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Submit" onclick="saveReason('+clientLocationId+','+orgRelationId+',\''+spocName+'\','+userId+','+docId+',\''+docName+'\');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelDocTermination();"></b>';
 	result = result +"	</div>";
 	result = result  +' </form> ';
 	$("#deleteDocpopUp").append(result);

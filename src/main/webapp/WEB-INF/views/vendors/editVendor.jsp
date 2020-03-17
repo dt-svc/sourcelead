@@ -91,6 +91,9 @@
 					 	 var location = '';
 					 	 var isLawFirm;
 					 	 var isAccountingFirm;
+
+					 	 var isMspVendor;
+					 	 var isBackgroundCheck;
 					 	 
 					 	 
 						if(json.country != null && json.country !='' && json.country !='undefined'){
@@ -115,6 +118,12 @@
 						}
 						isLawFirm = (json.isLawFirm =='Y' ? true : false);
 						isAccountingFirm = (json.isAccountingFirm =='Y' ? true :false);
+
+						isMspVendor = (json.isMspVendor == 'Y' ? true :false)
+
+						isBackgroundCheck= (json.isBackgroundCheck =='Y' ? true :false);
+						console.log("isBackgroundCheck >>>>>>>>>>   "+isBackgroundCheck ) ;
+
 						result = result + ' <form id="editClient_form"  name="editClient_form" method="post">';
 						if(json.orgType == 'Company'){
 							result = result + '<div class="user_summary_edit_cta" id="vendorNameDiv">';
@@ -259,6 +268,15 @@
                         result = result + ' </select>';
                         result = result + ' </div>';
 						
+                       // This functionality inprogress dont delete the code
+                       /*  result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label>';
+			            result = result +' <input id="isMSPVendor" title="MSP Vendor" name="isMSPVendor"  type="checkbox" value="" onclick = "isMSPVendorFunction();">';
+			            result = result +' MSP Vendor</label>';
+			            result = result +' </div>';
+			            result = result +' </div>'; */
+			            
 	                    result = result +' <div class="col-md-9">';
 			            result = result +' <div class="checkbox checkBox">';
 			            result = result +' <label>';
@@ -275,6 +293,18 @@
 			            result = result +' </div>';
 			            result = result +' </div>';
                         
+			            
+			            result = result +' <div class="col-md-9">';
+			            result = result +' <div class="checkbox checkBox">';
+			            result = result +' <label>';
+			            result = result +' <input id="isBackgroundCheck" title="Is BGC firm" name="isBackgroundCheck"  type="checkbox"  value="" onclick = "allowBackgroundCheck();">';
+			            result = result +' Is Background Check</label>';
+			            result = result +' </div>';
+			            result = result +' </div>';
+			            
+			            
+			            
+			            
                         result = result + ' <div class="user_summary_edit_cta NewStyleFullWidth customElements-fields"  id="customFieldDataId"></div>';
                         
 						 result = result + '<div class="clearfix"></div>';
@@ -293,6 +323,13 @@
 				        $("#isAccountingFirm").attr('checked', isAccountingFirm);
 				        $("#isLawFirm").val(isLawFirm?'Y':'N' );
 				        $("#isAccountingFirm").val(isAccountingFirm?'Y':'N');
+
+				        $("#isMSPVendor").attr('checked', isMspVendor);
+				        $("#isMSPVendor").val(isMspVendor ? 'Y':'N');
+				        
+				        $("#isBackgroundCheck").attr('checked', isBackgroundCheck);
+				        $("#isBackgroundCheck").val(isBackgroundCheck?'Y':'N');
+
 				        if(json.orgType == 'Company'){
 // 				        	initLocationAuto('existingLocation','existingCountry','existingState','existingCity','existingZipCode','','','invite','addressId');
 // 				        	zipcodeMask(country,'existingZipCode');
@@ -327,27 +364,46 @@
 function changeCountry(){
 	 $("#errCountryMsg").find("p.jquery_form_error_message").remove();
 }
-
+function isMSPVendorFunction(){
+	var checked = document.getElementById("isMSPVendor").checked
+	if(checked == true){
+		$("#isMSPVendor").val("Y");
+	}else{
+		$("#isMSPVendor").val("N");
+	}
+}
 </script>
 
 
 
 <script type="text/javascript">
 function allowIsLawFirm(){
+	if(document.getElementById("isLawFirm") != null){
 	var checked = document.getElementById("isLawFirm").checked;
 	if(checked == true){
 		$("#isLawFirm").val("Y");
 	}else{
 		$("#isLawFirm").val("N");
 	}
+  }
 }
 
 function allowIsAccountFirm(){
+	if(document.getElementById("isAccountingFirm") != null){
 	var checked = document.getElementById("isAccountingFirm").checked
-	if(checked == true){
+	if(typeof checked !=null && checked == true){
 		$("#isAccountingFirm").val("Y");
 	}else{
 		$("#isAccountingFirm").val("N");
+	}
+}
+}
+function allowBackgroundCheck(){
+	var checked = document.getElementById("isBackgroundCheck").checked
+	if(checked == true){
+		$("#isBackgroundCheck").val("Y");
+	}else{
+		$("#isBackgroundCheck").val("N");
 	}
 }
 
@@ -543,8 +599,10 @@ function getAllStates(){
 	
 	//to set existing state value(Auto populate)
 	var stateName = $("#spocState").val();
+	if(document.getElementById("existingState") != null){
 	if(stateName == null || stateName == 'undefined' || stateName == ''){
 		stateName = document.getElementById("existingState").value;
+	}
 	}
 	//end state Auto populate
 	

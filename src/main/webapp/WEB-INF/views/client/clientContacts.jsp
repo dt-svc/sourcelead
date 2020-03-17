@@ -281,7 +281,7 @@ function terminateClientSpoc(spocId, orgRelationID,clientLocationId,spocName){
 	//result = result +"		<p>User delete message here</p>";
 	result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Terminate Reason' onkeypress='clientRemoveSpacesForRejectReason();' ></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+",\""+spocName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationResonforClientSpoc();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='saveSpocTerminateReason("+spocId+","+orgRelationID+","+clientLocationId+",\""+spocName+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTerminationResonforClientSpoc();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -494,7 +494,7 @@ function addContact(orgRelationID,clientLocationId) {
 	result = result  +'	 </div>';
 	
 	result = result  +'	  <div class="clearfix mr">';
-	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="checkClientContactAdd('+orgRelationID+','+clientLocationId+');" class="btn btn-sm btn-primary pull-right"/>';
+	result = result  +'	   <input type="button" id ="addClientContact" value="Add" onclick="checkClientContactAdd('+orgRelationID+','+clientLocationId+');" class="btn tblminwidth-90 btn-primary pull-right"/>';
 	result = result  +'	  </div>';
 	
 	result = result  +'	 </div>';

@@ -339,8 +339,8 @@ function receivePaymentPop1(invoiceId,total){
 	result = result +'          <div class="clearfix"></div>                                            ';
 	result = result +'          <div class="clearfix mt col-md-12 mb">                                  ';
 	result = result +'            <div class="pull-right">                                              ';
-	result = result +'              <input class="btn btn-primary btn-sm" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
-	result = result +'              <input class="btn btn-default btn-sm ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
+	result = result +'              <input class="btn btn-primary tblminwidth-90" value="Save" type="button" id="save_payment" onclick="saveReceivePayment('+invoiceId+');">   ';
+	result = result +'              <input class="btn btn-default tblminwidth-90 ml10" value="Cancel" type="button" onclick="cancelbtn();">   ';
 	result = result +'            </div>                                                                                              ';
 	result = result +'          </div>                                                                                                ';
 	result = result +'        </form>                                                                                                 ';
@@ -607,7 +607,7 @@ function payablePagination(url){
         "columns": [
             { "data": "invoiceId" },
             { "data": "vendorName"},
-            { "data": "vendorContact"},
+            { "data": "clientContactName"},
             { "data": "projectName" },
             { "data": "invoiceDate" },
             { "data": "inoviceTotal"},
@@ -773,7 +773,7 @@ function payablePagination(url){
 	              }
 		          },{
 	            "targets": colIndex++,
-	            "data": "vendorContact",
+	            "data": "clientContactName",
 	            "render": function ( data, type, report, meta ) {
 	            	var result = "";
 	            	result = result +'         <td>';
@@ -1368,7 +1368,7 @@ function exportToPayablePdf(){
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
 				result = result +"		<p>Payables List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelExport();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
 				$("#empty_requirement_pop").slideDown(200);
@@ -1423,7 +1423,7 @@ function exportToPayableExcel(){
 				result = result +"	   <div id='empty_requirement_pop' class='remove_user_pop remove_user_pop_a'>";
 				result = result +"		<p>Jobs List is Empty</p>";
 				result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-				result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+				result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelExport();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 				result = result +"	</div>";
 				$("#popUp").append(result);
 				$("#empty_requirement_pop").slideDown(200);
@@ -1724,7 +1724,7 @@ function deleteBill(invoiceUUID){
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +"		<textarea  id='reasonForBill' name='reasonForBill'  placeholder='Comments here' ></textarea>";
 	result = result + ' <div id="reasonForBillDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveBillRejectedReason(\''+invoiceUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Delete" onclick="saveBillRejectedReason(\''+invoiceUUID+'\');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1968,8 +1968,8 @@ function resetingBillsFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="getPayableInvoiceList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetingBillsFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="getPayableInvoiceList();" class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingBillsFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>

@@ -248,8 +248,8 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                                 <div class="clearfix"></div>
                                 <div class="clearfix mt col-md-12 form-footer">
                                   <div class="pull-right">
-                                    <input type="button" id="onboardtask_submit" class="btn btn-primary btn-sm" onclick="saveOnboardTask();"  value="Save">
-                                    <input type="button" class="btn btn-default btn-sm ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
+                                    <input type="button" id="onboardtask_submit" class="btn btn-primary tblminwidth-90" onclick="saveOnboardTask();"  value="Save">
+                                    <input type="button" class="btn btn-default tblminwidth-90 ml10" value="Cancel" data-dismiss="modal" onclick="flushOnboardTask();">
                                   </div>
                                 </div>
                               </div>
@@ -264,7 +264,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                 </div>
               </div>
               
-              <div id="onboardTasksList"></div>
+              <div id="onboardTasksList" class="datatable_filter"></div>
             
             
             </div>
@@ -1071,7 +1071,6 @@ function getVendorOnboardingTasksList(){
 	   	type: "GET",
 	    url: vmsUrl+"/getVendorOnboardTemplateTasksListByTemplateId?${_csrf.parameterName}=${_csrf.token}&templateId="+templateId,	    	   
 	    success: function(response) {
-	    	
 	    	if (response && (response.response === "INVALID_DATA" || response.response === "INVALID_USER")) {
     		    showError(response.responseMessage);
     	  	} else if (response.response === "AWKWARD") {
@@ -1125,17 +1124,13 @@ function getVendorOnboardingTasksList(){
     	        	}else{
     	        		result = result +'<div><h4>No Tasks Found</h4></div>';
     	        	}
-    	        	
     	        	 
     		}else if (response.indexOf('Sign In') !== -1) {
     			location.replace(vmsUrl);
     		} else {
     		    showError("Operation failed, please try again");
     		}
-	    	
-	    }
-   }); 
-	
+	   
 	result = result +'<div class="form-footer clearfix mt">';
 	result = result +'<div class="pull-right mr">';
 	result = result +'<input type="button" value="Finish" id="finish_task" onclick="saveAndFinishOnboardTemplate('+templateId+');" class="btn btn-sm btn-primary">';
@@ -1146,7 +1141,8 @@ function getVendorOnboardingTasksList(){
    	 $("#onboardTasksList").append(result);
 	
   $("#loading").removeAttr("style");
-	
+	    },
+	   }); 
  }
 }
 </script>

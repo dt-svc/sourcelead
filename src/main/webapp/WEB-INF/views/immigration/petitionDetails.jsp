@@ -943,9 +943,9 @@
 		<div class="addImmiFoot">
 		<div class="pull-right">
 			<!--<a href="javascript:void(0)" class="pull-left">Prev</a>-->
-			<input type="button" value="Save & Continue" id="savePageOneContinue" onclick="immigration.savePageAndContinue('saveContinue');" class="btn btn-primary">
-			<input type="button" value="Send Request" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest');" class="btn btn-primary">
-			<input type="button" value="Save As Draft" id="saveAsDraftButton" onclick="immigration.savePageAndContinue('save');" class="btn btn-primary">
+			<input type="button" value="Save & Continue" id="savePageOneContinue" onclick="immigration.savePageAndContinue('saveContinue');" class="btn btn-primary tblminwidth-90">
+			<input type="button" value="Send Request" id="sendRequestButton" onclick="immigration.savePageAndContinue('sendRequest');" class="btn btn-primary tblminwidth-90">
+			<input type="button" value="Save As Draft" id="saveAsDraftButton" onclick="immigration.savePageAndContinue('save');" class="btn btn-primary tblminwidth-90">
 			<div class="clearfix"></div>
 		</div>
 		</div>
@@ -1286,7 +1286,7 @@ $("#experienceValue").change(function () {
 		        }
 		 });
 	}
-	
+	var resultData;
 	function jobTitleDropDown(jobId){
 		var vmsUrl ='${SourceLeadWeb_vmsUrl}'; 
 		if('${SourceLeadWeb_orgLocations.isLawFirm}' == 'Y'){
@@ -1298,11 +1298,14 @@ $("#experienceValue").change(function () {
 		    	type: "GET",
 		        url: vmsUrl+immiModulePath+"/getJobTitleDropDown?locationId="+locationId, 
 		        success: function(data) {
+		        	resultData = data;
+		        	console.log("success..");
 		        	$('#jobId').empty();
 		        	$('#jobId').append('<option value="">--Select Type --</option>');
 		            for(var i=0;i<data.length;i++){
 		            	  var opt = data[i];
 		            	  if(opt.id == jobId){
+		            		  console.log("inside for loop if condition..");
 		            		  $('#jobId').append('<option selected value='+opt.id+' >'+opt.jobTitle+'</option>');
 		            	  }else{
 		            		$('#jobId').append('<option value='+opt.id+' >'+opt.jobTitle+'</option>');
@@ -1453,13 +1456,14 @@ $("#experienceValue").change(function () {
 	  $( document ).ready(function() {
 		  $('#rateCurrency').selectpicker('refresh');  // manually refreshing select picker due to bootstrap css loading issue.
 		  $('#rateType').selectpicker('refresh');
+		  jobTitleDropDown("${immigrationDTO.jobId}");
 		  getAllRelationssByOrgLocation("${immigrationDTO.attorneyId}")
 		  getAttorneyContactList("${immigrationDTO.attorneyId}","${immigrationDTO.attorneyContact}");
 		  getPetitionTypeDropDown("${immigrationDTO.petitionType}");
 		  getUscisTypeDropDown("${immigrationDTO.currUscisStatusId}");
 		  onLoadStatusChange("${immigrationDTO.currUscisStatus}");
 		  employmentLevelDropDown("${immigrationDTO.employmentLevel}");
-		  jobTitleDropDown("${immigrationDTO.jobId}");
+		  //jobTitleDropDown("${immigrationDTO.jobId}");
 		  
 		  if("${immigrationDTO.immigrationId}" == ""){
 			  $('#templateSelect').prop('disabled', false).trigger("chosen:updated");
