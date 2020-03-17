@@ -37,6 +37,10 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
     private List<String> candidateTags;
     private String isSharedInMarketplace;
     
+    private String filterCandidateSource;
+    
+    private List<String> candidateSource;
+    
     
 	public List<String> getCandidateSkills() {
 		return candidateSkills;
@@ -289,6 +293,22 @@ public class CandidateSearchDTO extends SearchDTO implements Serializable {
 
 	public void setIsSharedInMarketplace(String isSharedInMarketplace) {
 		this.isSharedInMarketplace = isSharedInMarketplace;
+	}
+
+	public String getFilterCandidateSource() {
+		return filterCandidateSource;
+	}
+
+	public void setFilterCandidateSource(String filterCandidateSource) {
+		this.filterCandidateSource = filterCandidateSource;
+	}
+
+	public List<String> getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(List<String> candidateSource) {
+		this.candidateSource = candidateSource;
 	}
 
 	@Override

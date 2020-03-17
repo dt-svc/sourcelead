@@ -169,4 +169,18 @@ public class RequirementOffersDaoImpl implements RequirementOffersDao{
 		
 		return requirementOffersList;
 	}
+
+	@Override
+	@Transactional
+	public RequirementOffers getRequirementOfferSubmissionByIdAndStatus(Long submissionId, String status) {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from RequirementOffers ro  where ro.submissionId.id=:submissionId and ro.offerStatus=:status";
+		List<RequirementOffers> requirementOffersList =  session.createQuery(query.toString()).setLong("submissionId", submissionId).setString("status", status).list();
+		RequirementOffers requirementOffers = null;
+		
+		if (requirementOffersList != null && requirementOffersList.size() > 0) {
+			requirementOffers = (RequirementOffers) requirementOffersList.iterator().next();
+		}
+		return requirementOffers;
+	}
 }

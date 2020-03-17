@@ -34,6 +34,12 @@ public class DashboardCountsDTO implements Serializable {
 	private String leavesPendingCount;
 
 	private long leavesBalanceCount;
+	
+	private String fromDate;
+	
+	private String toDate;
+	
+	private String dateSelection;
 
 	public String getLeavesApprovedCount() {
 		return leavesApprovedCount;
@@ -153,6 +159,30 @@ public class DashboardCountsDTO implements Serializable {
 
 	public void setTaskCount(Long taskCount) {
 		this.taskCount = taskCount;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getDateSelection() {
+		return dateSelection;
+	}
+
+	public void setDateSelection(String dateSelection) {
+		this.dateSelection = dateSelection;
 	}
 
 }

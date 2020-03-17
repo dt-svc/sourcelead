@@ -33,6 +33,9 @@ public class DayWiseTimesheetReoprtsListDTO {
 	private Date sahFrequenchEndDate;
 	private BigInteger parentCandidteId;
 	private BigInteger candidateId;
+	private Date projectTerimationDate;
+	private Date timeEntryDate;
+	
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -209,6 +212,18 @@ public class DayWiseTimesheetReoprtsListDTO {
 	}
 	public void setCandidateId(BigInteger candidateId) {
 		this.candidateId = candidateId;
+	}
+	public Date getProjectTerimationDate() {
+		return projectTerimationDate;
+	}
+	public void setProjectTerimationDate(Date projectTerimationDate) {
+		this.projectTerimationDate = projectTerimationDate;
+	}
+	public Date getTimeEntryDate() {
+		return timeEntryDate;
+	}
+	public void setTimeEntryDate(Date timeEntryDate) {
+		this.timeEntryDate = timeEntryDate;
 	}
 	
 }

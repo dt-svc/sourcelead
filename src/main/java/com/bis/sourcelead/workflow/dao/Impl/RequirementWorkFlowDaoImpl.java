@@ -456,7 +456,7 @@ public class RequirementWorkFlowDaoImpl implements RequirementWorkFlowDao {
 		logger.debug("Running getRequirementWorkFlowStagesByUuid DAO");
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
-			String query = "from RequirementWorkFlowStages stages where stages.uuid =:uuid and stages.orgLocationId.id =:orgLocationId";
+			String query = "from RequirementWorkFlowStages stages where stages.uuid =:uuid and (stages.orgLocationId.id =:orgLocationId or stages.orgLocationId.id is null)";
 			RequirementWorkFlowStages requirementWorkFlowStages = (RequirementWorkFlowStages)session.createQuery(query).setParameter("uuid", uuid).setLong("orgLocationId", orgLocationId).uniqueResult();
 			return requirementWorkFlowStages;
 		}catch(Exception e) {
@@ -598,11 +598,9 @@ query2.setLong("StageId", requirementWorkFlowTasksDTO.getStageId());
 			  List<RequirementWorkFlowTasks> requirementWorkFlow = query1.list();
 			  if(requirementWorkFlow != null){
 				  for(RequirementWorkFlowTasks workFlow : requirementWorkFlow){
-					  StringBuilder userName = new StringBuilder("");
-					  userName.append(workFlow.getAssignTo().getFirstName()+" "+workFlow.getAssignTo().getLastName());
 					  workFlowTasksDTO = new RequirementWorkFlowTasksDTO();
 					  workFlowTasksDTO.setWorkFlowTaskName(workFlow.getWorkFlowTaskName());
-					  workFlowTasksDTO.setAssignToUserId(userName.toString());
+					  workFlowTasksDTO.setAssignToUserId(workFlow.getAssignTo());
 					  workFlowTasksDTO.setUuid(workFlow.getUuid());
 					  workFlowTasksDTO.setPriority(workFlow.getPriority());
 					  workFlowTasksDTO.setWorkFlowTaskDescription(workFlow.getDescription());
@@ -1048,9 +1046,15 @@ public List<RequirementWorkFlowTasks> getRequirementWorkFlowTaskListById(Long st
 			  if (stageShortCode.equalsIgnoreCase("INTERVIEW")) {
 					query = query + " and workflowstages.stageShortCode not in ('OFFERMADE')";
 				} 
-			  	if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
+			  	else if (stageShortCode.equalsIgnoreCase("OFFERMADE")) {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW') ";
-				} else {
+				}
+			  	
+			  	//27-dec-2019
+			  	//when applicant is in no respone stage, only reject & other user defined stages should be visible in status dropdown. 
+			  	else if(stageShortCode.equalsIgnoreCase("NORESPONSE")){
+			  		query = query + " and workflowstages.stageShortCode not in ('ONHOLD', 'JOINED', 'REJECTED', 'BACKOUT') ";
+				}else {
 					query = query + " and workflowstages.stageShortCode not in ('INTERVIEW', 'OFFERMADE')";
 				}
 			     query =query	+ " order by workflowstages.seqOrder";

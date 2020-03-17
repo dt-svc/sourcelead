@@ -54,6 +54,7 @@ import com.bis.sourcelead.dto.CustomFormFieldDTO;
 import com.bis.sourcelead.dto.FileInfo;
 import com.bis.sourcelead.dto.JobFairDTO;
 import com.bis.sourcelead.dto.JobFairRequirementsDTO;
+import com.bis.sourcelead.dto.MspVendorDTO;
 import com.bis.sourcelead.dto.RecruiterRrportDTO;
 import com.bis.sourcelead.dto.RequirementDTO;
 import com.bis.sourcelead.dto.RequirementIncentiveDTO;
@@ -923,6 +924,43 @@ public class RequirementServiceImpl implements RequirementService {
 						Team assignedTeam = new Team();
 						assignedTeam.setId(Long.parseLong(teamId));
 						requirementAssignTo.setTeamId(assignedTeam);
+					}
+
+					requirementAssignTo.setAssignUserId(assignedUser);
+					requirementAssignTo.setRequirementId(requirement);
+					UserRole userRole = userRoleService.getUserRoleByUserIdAndLocationId(assignedUser.getId(),
+							orgLocations.getId());
+					requirementAssignTo.setRoleId(userRole.getRoles());
+					requirementAssignTo.setStatus(Constants.MEMBER_ACTIVE);
+					requirementAssignTo.setCreatedDate(commonUtil.currentDate());
+					requirementAssignTo.setCreatedBy(user.getUserCode());
+					requirementAssignTo.setUpdatedBy(user.getUserCode());
+					requirementAssignTo.setUpdatedDate(commonUtil.currentDate());
+					requirementAssignToList.add(requirementAssignTo);
+				}
+			}
+		}
+		
+		
+		// 28/feb/2020 - vishnu
+		// storing requirement assignedto record to show the imported jobs to the assigned user.
+		// this record is stored when assignTO value is given in excel sheet in job imports.
+		if(requirementDTO.getAssignedTo() != null){
+			for(String assignedTO :requirementDTO.getAssignedTo()){
+				if (!assignedTO.split(",")[0].toString().equalsIgnoreCase("")) {
+					String userId = assignedTO.split(",")[0].toString();
+					RequirementAssignTo requirementAssignTo;
+					User assignedUser = new User();
+					assignedUser.setId(Long.parseLong(userId));
+					if (requirement.getId() != null) {
+						requirementAssignTo = requirementAssignToService
+								.getRequirementAssignToByRequirementIdandAssignedUserId(requirement.getId(),
+										assignedUser.getId());
+						if (requirementAssignTo == null) {
+							requirementAssignTo = new RequirementAssignTo();
+						}
+					} else {
+						requirementAssignTo = new RequirementAssignTo();
 					}
 
 					requirementAssignTo.setAssignUserId(assignedUser);
@@ -4865,22 +4903,10 @@ public class RequirementServiceImpl implements RequirementService {
 	public long getVendorSubmittedCandidates(long requirementId, long orgRelationId, long spocId, String status) {
 		return requirementDao.getVendorSubmittedCandidates(requirementId, orgRelationId, spocId, status);
 	}
-	
+
+	@Override
+	public List<MspVendorDTO> getMSPVendorJobsList(MspVendorDTO mspVendorDTO) throws Exception {
+		return requirementDao.getMSPVendorJobsList(mspVendorDTO);
+	}
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -138,11 +138,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 						Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), userRole.getOrgLocations().getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+						SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 						SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+						SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 						SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+						SourceLeadSessionManager.setSessionAttribute(request, "dateFormat", orgLocations.getDateFormat()); 
 					} catch (Exception e) {}
 					SourceLeadSessionManager.setSessionAttribute(request, "user", user);
 					System.out.println("SSSSSSSSSSSSSSSSSSs===getAuthentication END Here SSSSSSSSSSSSSSSSSSSSSSSSS");

@@ -20,11 +20,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.JSONArray;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "IMMIGRATION_CANDIDATE_DOCS")
 //@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL, region = "immigrationCandidateDocs")
+@JsonIgnoreProperties(value={"hibernateLazyInitializer","handler","fieldHandler"})
 public class ImmigrationCandidateDocuments implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -115,7 +117,7 @@ public class ImmigrationCandidateDocuments implements Serializable {
 	private String documentTypeName;
 	
 	@Transient
-	@JsonProperty
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	private JSONArray docsHistoryList;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="immigrationCandidateDocumentId",orphanRemoval=true)

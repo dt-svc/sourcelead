@@ -105,13 +105,16 @@ public class TokenManagerImpl implements TokenManager {
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocations", orgLocations);
 				Candidate candidate = candidateService.getCandidateByConsultantUserId(user.getId(), userRole.getOrgLocations().getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "candidate", candidate);
+				SourceLeadSessionManager.setSessionAttribute(request, "candidateId", candidate.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "org", orgLocations.getOrg());
 				SourceLeadSessionManager.setSessionAttribute(request, "orgId", orgLocations.getOrg().getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "orgLocationId", orgLocations.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "userId", user.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "userRoleId", userRole.getId());
 				SourceLeadSessionManager.setSessionAttribute(request, "displayName", userRole.getRoles().getDisplayName());
+				SourceLeadSessionManager.setSessionAttribute(request, "loginUserRole", userRole.getRoles().getRoleName());
 				SourceLeadSessionManager.setSessionAttribute(request, "isGlobalAccess", userRole.getIsGlobal());
+				SourceLeadSessionManager.setSessionAttribute(request, "dateFormat", orgLocations.getDateFormat()); 
 				System.out.println(" New token is created for the user id "+user.getId()+", Orglocation Id :"+orgLocations.getId()+", for user role id  : "+userRole.getId());
 			} catch (Exception e) {}
 			SourceLeadSessionManager.setSessionAttribute(request, "user", user);

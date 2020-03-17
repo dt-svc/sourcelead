@@ -144,6 +144,7 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 			}else{
 				orgRelations.setInitiatorType("Client"); 
 				orgRelations.setResponderType("Vendor");
+				orgRelations.setIsMSPVendor(clientDTO.getIsMSPVendor());
 				if(StringUtils.isNotBlank(clientDTO.getGenerateBill())){
 				orgRelations.setGenerateBill(clientDTO.getGenerateBill());
 				orgRelations.setGenerateInvoice(clientDTO.getGenerateBill());
@@ -153,11 +154,11 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 				} else {
 					orgRelations.setIsLawFirm(Constants.NO);
 				}
-//				if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
-//					orgRelations.setIsBackgroundCheck(Constants.YES);
-//				} else {
-//					orgRelations.setIsBackgroundCheck(Constants.NO);
-//				}
+				if (StringUtils.isNotBlank(clientDTO.getIsBackgroundCheck()) && clientDTO.getIsBackgroundCheck().equalsIgnoreCase("Y")) {
+					orgRelations.setIsBackgroundCheck(Constants.YES);
+				} else {
+					orgRelations.setIsBackgroundCheck(Constants.NO);
+				}
 					if (StringUtils.isNotBlank(clientDTO.getIsAccountingFirm()) && clientDTO.getIsAccountingFirm().equalsIgnoreCase("Y")) {
 						orgRelations.setIsAccountingFirm(Constants.YES);
 				} else {
@@ -671,6 +672,25 @@ public class OrgRelationsServiceImpl implements OrgRelationsService {
 	@Override
 	public int updatePaymentTermsInOrgrelations() {
 		return orgRelationsDao.updatePaymentTermsInOrgrelations();
+	}
+
+	@Override
+	public List<OrgRelations> getMSPVendorListByOrgLocationId(Long orgLocationId,Long orgRelationId) throws Exception {
+		return orgRelationsDao.getMSPVendorListByOrgLocationId(orgLocationId,orgRelationId);
+	}
+
+	@Override
+	public List<OrgSpoc> getMSPVendorContactListByOrgRelationId(Long orgRelationId) throws Exception {
+		return orgRelationsDao.getMSPVendorContactListByOrgRelationId(orgRelationId);
+	}
+
+	@Override
+	public List<OrgRelations> selectedMSPVendorListByOrgRelationIds(String orgRelationIds) throws Exception {
+		return orgRelationsDao.selectedMSPVendorListByOrgRelationIds(orgRelationIds);
+	}
+	
+	public List<OrgRelations> getClientOrVendorListByOrgLocationIdForBackgroundCheck(Long orgLocationId) {
+		return orgRelationsDao.getClientOrVendorListByOrgLocationIdForBackgroundCheck(orgLocationId);
 	}
 	
 }

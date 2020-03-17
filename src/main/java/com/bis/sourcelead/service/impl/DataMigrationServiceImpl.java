@@ -75,13 +75,13 @@ import com.bis.sourcelead.dto.UploadEntriesDTO;
 import com.bis.sourcelead.elk.setup.RequirementElkUtil;
 import com.bis.sourcelead.entity.Asset;
 import com.bis.sourcelead.entity.Candidate;
+import com.bis.sourcelead.entity.CandidateGlobal;
 import com.bis.sourcelead.entity.CandidatePassport;
 import com.bis.sourcelead.entity.CandidateVisa;
 import com.bis.sourcelead.entity.CandidateVisaHistory;
 import com.bis.sourcelead.entity.Countries;
 import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
-import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Immigration;
 import com.bis.sourcelead.entity.Lca;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -111,15 +111,13 @@ import com.bis.sourcelead.service.OrgRelationsService;
 import com.bis.sourcelead.service.ProjectTasksService;
 import com.bis.sourcelead.service.ProjectsService;
 import com.bis.sourcelead.service.RequirementApproverHierarchyService;
+import com.bis.sourcelead.service.RequirementInterviewService;
 import com.bis.sourcelead.service.RequirementService;
 import com.bis.sourcelead.service.RequirementSubmissionHistoryService;
 import com.bis.sourcelead.service.RequirementSubmissionService;
-import com.bis.sourcelead.service.ShiftService;
 import com.bis.sourcelead.service.SubmissionTemplateService;
 import com.bis.sourcelead.service.UploadFileService;
 import com.bis.sourcelead.service.UploadXlsHistoryService;
-import com.bis.sourcelead.service.UserRoleService;
-import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.service.XlsBulkUploadHistroyService;
 import com.bis.sourcelead.util.CommonUtil;
 import com.bis.sourcelead.util.DataMigrationCommonUtil;
@@ -128,7 +126,6 @@ import com.bis.sourcelead.util.FileUploadUtil;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
-import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 import com.bis.sourcelead.workflow.service.RequirementWorkFlowService;
 import com.couchbase.client.java.Bucket;
 import com.couchbase.client.java.document.JsonArrayDocument;
@@ -228,6 +225,9 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 
 	@Autowired
 	private RequirementApproverHierarchyService requirementApproverHierarchyService;
+	
+	@Autowired
+	RequirementInterviewService requirementInterviewService;
 
 	
 	@Value("${env}")
@@ -341,7 +341,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				Iterator<?> keys = null;
 				JSONObject dataMigrationDTOJsonCopy = null;
 				
-				if(dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") && dataMigrationDTO.getRequirementId() != null) {
+				if((dataMigrationDTO.getUploadType().equalsIgnoreCase("submmissionTemplateUpload") || dataMigrationDTO.getUploadType().equalsIgnoreCase("profileTracker") || dataMigrationDTO.getUploadType().equalsIgnoreCase("interviewTracker")) && dataMigrationDTO.getRequirementId() != null) {
 					    String json1 = "{" + dataMigrationDTO.getJsonData() + "}";
 				     	dataMigrationDTOJson = new JSONObject(json1);
 						dataMigrationDTOJsonCopy = new JSONObject(dataMigrationDTOJson);
@@ -487,7 +487,16 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 				case "submmissionTemplateUpload":
 					dataMigrationCommonUtil.dataValidationForRequirementSubmisssionTemplate(errorSet, dataMigrationDTOJsonCopy, user,
 							orgLocation,jsonString);
-
+					 break;
+					 
+				case "profileTracker":
+					dataMigrationCommonUtil.dataValidationForJobProfileTracker(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,jsonString);
+					break;
+					
+				case "interviewTracker":
+					dataMigrationCommonUtil.dataValidationForInterviewTracker(errorSet, dataMigrationDTOJsonCopy, user,
+							orgLocation,jsonString);
 					break;
 
 				}
@@ -544,19 +553,6 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		history.setEndDate(new Date());
 		uploadXlsHistoryService.storeUploadXlsHistory(history);
 		
-		
-	/*	if(dataMigrationDTO.getUploadType().equalsIgnoreCase("candidatesUpload")) {
-			ExecutorService executorService  = null;
-			if(executorService == null) {
-				executorService = Executors.newSingleThreadExecutor();
-			}
-			
-			executorService.execute(new UploadCandidateThread(uploadedCandidatesList,"Thread "+candidateIndexKey,orgLocation.getId()));
-			uploadedCandidatesList = null;
-			candidateIndexKey = 0;
-		}*/
-		
-		
 		workbook.close();
 		if (isEmptyExcel) {
 			return "fail";
@@ -587,7 +583,7 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	    		history.setUploadId(dataMigrationDTO.getUploadid());
 	    		history.setSessionId(dataMigrationDTO.getSessionId());
 	    		history.setUploadProcessingStatus("Inprogress");
-	    		
+	    		Requirement requirement = null;
 	    		switch (dataMigrationDTO.getUploadType()) {
 				case "jobUpload":
 					history.setUploadEntityType("Jobs");
@@ -621,6 +617,20 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 					
 				case "submmissionTemplateUpload":
 					history.setUploadEntityType("Submissions");
+					break;
+					
+				case "profileTracker":
+					history.setUploadEntityType("ProfileTracker");
+					requirement = new Requirement();
+					requirement.setId(Long.valueOf(dataMigrationDTO.getRequirementId()));
+					history.setRequirementId(requirement);
+					break;
+					
+				case "interviewTracker":
+					requirement = new Requirement();
+					requirement.setId(Long.valueOf(dataMigrationDTO.getRequirementId()));
+					history.setUploadEntityType("InterviewTracker");
+					history.setRequirementId(requirement);
 					break;
 
 				}
@@ -831,7 +841,148 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 			
 			
 			break;
-
+			
+		case "profileTracker":
+			
+				try {
+					
+					RequirementSubmission requirementSubmission = null;
+					Countries countries = null;
+					if(StringUtils.isNotBlank(orgLocation.getCountry())) {
+						 countries = countriesService.getCountriesByCountryName(orgLocation.getCountry());
+					 }
+				
+					JSONArray array = new JSONArray();
+					Iterator<?> keys = dataMigrationDTOJsonCopy.keys();
+					
+					while (keys.hasNext()) {
+						String k = (String) keys.next();
+						if(!k.equalsIgnoreCase("requirementId") && !k.equalsIgnoreCase("recruiterEmail")) {
+							if(!dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("null") && !dataMigrationDTOJsonCopy.get(k).toString().equalsIgnoreCase("undefined")) {
+								JSONObject profileTrackerItem = new JSONObject();
+							            if(k.equalsIgnoreCase("candidateName")) {
+											profileTrackerItem.put("label", "Candidate Name");
+								        }else if(k.equalsIgnoreCase("mobileNumber")) {
+											profileTrackerItem.put("label", "Mobile Number");
+								        }else if(k.equalsIgnoreCase("alternateMobileNumber")) {
+											profileTrackerItem.put("label", "Alternate Number");
+								        }else if(k.equalsIgnoreCase("emailId")) {
+											profileTrackerItem.put("label", "Email Id");
+								        }else if(k.equalsIgnoreCase("currentLocation")) {
+											profileTrackerItem.put("label", "Location");
+								        }else if(k.equalsIgnoreCase("currentCompany")) {
+											profileTrackerItem.put("label", "Current Company");
+								        }else if(k.equalsIgnoreCase("position")) {
+											profileTrackerItem.put("label", "Position");
+								        }else if(k.equalsIgnoreCase("noticePeriod")) {
+											profileTrackerItem.put("label", "Notice Period");
+								        }else if(k.equalsIgnoreCase("totalExperience")) {
+											profileTrackerItem.put("label", "Total Experience");
+								        }else if(k.equalsIgnoreCase("releventExperience")) {
+											profileTrackerItem.put("label", "Relevent Experience");
+								        }else if(k.equalsIgnoreCase("aadharNumber")) {
+											profileTrackerItem.put("label", "Aadhar Number");
+								        }else if(k.equalsIgnoreCase("panNumber")) {
+											profileTrackerItem.put("label", "Pan Number");
+								        }else if(k.equalsIgnoreCase("ssnNumber")) {
+											profileTrackerItem.put("label", "SSN Number");
+								        }else if(k.equalsIgnoreCase("skills")) {
+											profileTrackerItem.put("label", "Skills");
+								        }else if(k.equalsIgnoreCase("ctc")) {
+											profileTrackerItem.put("label", "Current Rate");
+								        }else if(k.equalsIgnoreCase("ectc")) {
+											profileTrackerItem.put("label", "Expected Rate");
+								        }else if(k.equalsIgnoreCase("ratePer")) {
+											profileTrackerItem.put("label", "Rate per");
+								        }
+							           
+							            profileTrackerItem.put("value", dataMigrationDTOJsonCopy.getString(k)); 
+									    array.put(profileTrackerItem);
+								
+							}
+						}
+						
+					}
+					String con = array.toString();
+					requirementSubmission = requirementSubmissionService.saveRequirementProfileTrackerSubmission(dataMigrationDTOJsonCopy,user, orgLocation, con, null);
+					RequirementSubmissionHistory requirementSubmissionHistory = new RequirementSubmissionHistory();
+					requirementSubmissionHistory.setToStage(requirementSubmission.getSubmissionStatus().toString());
+					requirementSubmissionHistory.setFromStage("NEW");
+					requirementSubmissionHistoryService.updateRequirementHistory(requirementSubmission, user,requirementSubmissionHistory, requirementSubmission.getCreatedBy());
+					Requirement req = requirementSubmission.getRequirement();
+					if(null != req){
+						Integer totalApplicatsCountForRequirement = 0;
+					   //updating total number of applicants for requrement
+						totalApplicatsCountForRequirement = requirementSubmissionService.getNumberOfApplicantsForRequirement(req.getOrgLocationId().getId(), req.getId());
+						if(totalApplicatsCountForRequirement > 0){
+							req.setTotalApplicants(totalApplicatsCountForRequirement); 
+							requirementService.updateRequirement(req);
+						}else{
+							req.setTotalApplicants(0); 
+						}
+						
+						// pass dto as parameter
+						RequirementDTO requirementDTO = commonUtil.getRequirementDTO(req);
+						List<String> parallelApprover = new LinkedList<>();
+						List<RequirementApproverHierarchy> list1 = requirementApproverHierarchyService.getRequirementApproverHierarchyListByRequirementId(req.getId());
+						if(list1 != null && !list1.isEmpty()) {
+							for (RequirementApproverHierarchy rah : list1) {
+								if (rah.getHierarchyType() == HIERARCHY_TYPE.PARALLEL) {
+									parallelApprover.add(rah.getApproverUserId().getId() + "");
+									requirementDTO.setParallelApprover(parallelApprover);
+								}
+								if (rah.getHierarchyType() == HIERARCHY_TYPE.SEQUENTIAL) {
+									if(rah.getLevel() == 1) {
+										String sequentialApprover1 = rah.getApproverUserId().getId() + "";
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = sequentialApprover1;
+										req.setLevel1ApproverUserId(levelUserIds);
+										
+										requirementDTO.setSequentialApprover1(sequentialApprover1);
+										requirementDTO.setReqLevel1ApproverStatus(rah.getRequirementApproverStatus().name());
+									}
+									if(rah.getLevel() == 2) {
+										String sequentialApprover2 = rah.getApproverUserId().getId() + "";
+										String[] levelUserIds = new String[1];
+										levelUserIds[0] = sequentialApprover2;
+										req.setLevel2ApproverUserId(levelUserIds);
+										
+										requirementDTO.setSequentialApprover2(sequentialApprover2);
+										requirementDTO.setReqLevel2ApproverStatus(rah.getRequirementApproverStatus().name());
+									}
+								}
+							}
+						}
+						requirementElkUtil.saveElkRequirement(req,requirementDTO);	
+					}
+					
+					
+				}catch (Exception e) {
+					UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
+					history.setUploadProcessingStatus("Completed");
+					history.setEndDate(new Date());
+					uploadXlsHistoryService.storeUploadXlsHistory(history);
+					e.printStackTrace();
+				}
+			break;
+			
+		case "interviewTracker":
+			
+			try {
+				
+				CandidateGlobal canidateGlobal = candidateGlobalService.findByCandidateGlobalEmail(dataMigrationDTOJsonCopy.getString("emailId"), orgLocation.getId());
+				RequirementSubmission submission = requirementSubmissionService.getRequirementSubmissionByCandidateIdAndRequirementId(canidateGlobal.getId(), Long.parseLong(dataMigrationDTOJsonCopy.getString("requirementId")));
+				requirementInterviewService.saveRequirementInterviewTrackerDetails(dataMigrationDTOJsonCopy, user, orgLocation);
+				
+			}catch (Exception e) {
+				UploadXlsHistory history = uploadXlsHistoryService.getUploadXlsHistoryDetailsByUploadId(uploadId);
+				history.setUploadProcessingStatus("Completed");
+				history.setEndDate(new Date());
+				uploadXlsHistoryService.storeUploadXlsHistory(history);
+				e.printStackTrace();
+			}
+			break;
+			
 		case "assetUpload":
 			try {
 			AssetDTO assetDTO = new AssetDTO();
@@ -1388,11 +1539,11 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 	public Map<String, String> getCandidateMappingFileData(String filePath, String headerPosition) throws Exception {
 			 
 		     InputStream inputStream = new FileInputStream(new File(filePath.replace("/dataMigration/", "/temp/")));
-			 Workbook workbook = StreamingReader.builder()
+		/*	 Workbook workbook = StreamingReader.builder()
 			            .rowCacheSize(100)    
 			            .bufferSize(8192)     
-			            .open(inputStream); 
-			 
+			            .open(inputStream); */
+			 Workbook workbook = new XSSFWorkbook(inputStream);
 			Sheet firstSheet = workbook.getSheetAt(0);
 			Iterator<Row> rowIterator = firstSheet.iterator();
 			Map<String, String> dataWithCellId = new TreeMap<String, String>();
@@ -1433,10 +1584,12 @@ public class DataMigrationServiceImpl implements DataMigrationService {
 		
 		 String ac = StringUtils.removeEnd(staticPath, "/slead-static");
 		 InputStream inputStream = new FileInputStream(new File(ac + uploadEntriesDTO.getExportFilePath().replace("/dataMigration/", "/temp/")));
-		 Workbook workbook = StreamingReader.builder()
+		/* Workbook workbook = StreamingReader.builder()
 		            .rowCacheSize(100)    
 		            .bufferSize(8192)     
-		            .open(inputStream); 
+		            .open(inputStream); */
+		 
+		 Workbook workbook = new XSSFWorkbook(inputStream);
 		 
 		 FileInfo fileInfo = new FileInfo();
 		 fileInfo.setFileURL(uploadEntriesDTO.getExportFilePath());

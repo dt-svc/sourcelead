@@ -207,6 +207,8 @@ public class Constants {
 	public static final String MAIL_APPROVERS_REOPEN_EXPENSE = "ExpensesReopenEmailToSuperAdmin";
 	public static final String MAILTO_MANAGER1ANDEMPLOYEE_WHEN_MANAGER2REOPENS = "MailToManager1andEmployeeWhenManager2ReopensExpense";
 	
+	public static final String BACKGROUND_CHECK_MAIL_TO_VENDOR_CONTACT = "backgroundcheckmailtovendorcontact";
+	
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE = "MailReopenApprovedMailToEmployee";
 	public static final String MAIL_REOPEN_APPROVED_MAIL_TO_EMPLOYEE_NOTIFICATION = "MailReopenApprovedMailToEmployeeNotification";
 	
@@ -526,9 +528,12 @@ public class Constants {
 	public static final String Immigration = "Immigration";
 	public static final String Immigrations = "Immigrations";
 	public static final String My_Immigration = "MyImmigration";
-	public static final String Background_Check = "Background Check";
-	public static final String InProgress_Bgc_Details = "In Progress";
-	public static final String Completed_Bgc_Details = "Completed";
+	public static final String NOT_INITIATED= "Not Initiated";
+	public static final String INITIATED="Initiated";
+	public static final String IN_PROGRESS="In Progress";
+	public static final String NOT_APPLICABLE="N/A";
+	public static final String COMPLETED="Completed";
+	public static final String ONHOLD="On Hold";
 	public static final String Projects = "Projects";
 	public static final String Clients = "Clients";
 	public static final String TimeSheet = "TimeSheet";
@@ -650,7 +655,21 @@ public class Constants {
 	public static final String YEARLY = "Yearly";
 	public static final int MIN_PROFILE_PERCENETAGE = 30;
 	
+	//26-dec-2019
+	//background check status map is used to calculate bgc updated percentage.
+	public static final LinkedHashMap<String, Double> BACKGROUND_CHECK_STATUS_MAP = new LinkedHashMap<String, Double> (){
+		{
+			put("Not Initiated", 2.0); 	put("Initiated", 4.0); 
+			put("Onhold", 8.0); put("In Progress", 8.0); 
+			put("Not Approved", 8.0); 	put("Completed", 16.67777);
+			put("N/A", 16.67777);
+		}
+	};
+	
 	//workflow
+	public static final String APPLICANT_OWNER = "Applicant Owner";
+	public static final String JOB_OWNER = "Job Owner";
+	public static final String PRIMARY_RECRUITER = "Primary Recruiter";
 	public static final String QUESTIONNAIRE_AUTO_SUBMISSION = "Auto";
 	public static final String QUESTIONNAIRE_MANUAL_SUBMISSION = "Manual";
 	public static final String DEFAULT_JOB_WORKFLOW = "Default Job WorkFlow";
@@ -699,7 +718,7 @@ public class Constants {
 			"Employment Type", "No. of Positions", "Notice Period", "Industry", "Priority*","Workflow","Description", "Attachment", "Manager(Email)*", "Approver", "Assign To",
 			"Application Form", "Client Name", "Client Contact Name", "Bill Rate / Salary", "Client Submission Form", "Status"};
 	
-	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Work Status*",
+	public static final String[] IMPORT_ASSET_EXCEL_HEADERS = { "Category*", "Working Status*",
 			"Name","Laptop Serial Number/CPU Serial Number*", "Make", "Model", "MAC Address", "Memory", "CPU", "Monitor Serial Number", "Hard Disk","Operating System","OS Key","Anti-Virus","Manufactured Date","Purchase Date","Cost","Depreciation Assessment Date","Depreciation Amount","Vendor Details", "Description"};
 	
 	public static final String[] ROLE_DROPDOWN = { "Admin", "Project Manager", "HR Manager",
@@ -1173,6 +1192,7 @@ public class Constants {
 	public static final String JOB_ENTITY = "JB";
 	public static final String JOB_FAIR = "JF";
 	public static final String IMMIGRATION_ENTITY = "IM";
+	public static final String BGC_ENTITY = "BC";
 	public static final String PROJECT_ENTITY = "PJ";
 	public static final String EXPENSES_ENTITY = "EP";
 	public static final String TICKET_ENTITY = "ST-";
@@ -1586,6 +1606,8 @@ public class Constants {
 	public static final String CANDIDATE_GLOBAL = "candidateGlobal";
 
 	public static final String LCA_MANAGER_EXPIRES_IN_DAYS_NOTIFICATION ="LCAManagerExpiresInDaysNotification";
+	
+	public static final String EMPLOYEE_PAYSLIP_EMAILS = "employeePayslipSendingEmail";
 
 	//added on 4th nov 2019
 	public static final String[] LEAVE_CONFIGURATION_ROLES = { "Reporting Manager", "Project Manager", "Team Leader"};

@@ -39,6 +39,12 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 	private String weekFrequency;
 	
 	private String isGlobalUser;
+	
+	private String fromDate;
+	
+	private String toDate;
+	
+	private String dateSelection;
 
 	public Long getUserId() {
 		return userId;
@@ -178,6 +184,30 @@ public class TimesheetExpenseEntryDetailsUtilDTO extends SearchDTO implements Se
 
 	public void setExpenseLocationCode(String expenseLocationCode) {
 		this.expenseLocationCode = expenseLocationCode;
+	}
+
+	public String getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getDateSelection() {
+		return dateSelection;
+	}
+
+	public void setDateSelection(String dateSelection) {
+		this.dateSelection = dateSelection;
 	}
 	
 
