@@ -30,7 +30,15 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     </c:choose>
     </div>
     <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; 
-    <a onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');"><c:out value="${workFlowName}"/></a> &raquo;
+    <c:choose>
+    <c:when test="${not empty requirementWorkFlowStagesDTO}">
+    <a onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');"><c:out value="${workFlowName}"/></a> 
+    </c:when>
+    <c:otherwise>
+    <a onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${workflowUuid}'/>');"><c:out value="${workFlowName}"/></a>
+    </c:otherwise>
+    </c:choose>
+    &raquo;
     Add Stage</div>
   </section>
   <form id="addStageForm" name="addStageForm">
