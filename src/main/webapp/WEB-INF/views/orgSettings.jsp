@@ -470,9 +470,9 @@ function cancelOrgImg(){
 					<div class="clearfix">
 					<div class="pull-right">
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
-					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
+					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr tblminwidth-90">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/settings'"></input>
+					<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/settings'"></input>
 					</div>
 					</div>
 					</div>
@@ -581,8 +581,8 @@ function cancelOrgImg(){
                 			        
                 			<div class="clearfix"></div>
                 			 <div class="pull-right">
-								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr">
-								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
+								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr tblminwidth-90">
+								<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">
 							</div> 
                 			<div class="clearfix"></div> 
                 			</form>
@@ -898,8 +898,8 @@ function cancelOrgImg(){
 						</div> 
                             </div>
                            <div class="pull-right">
-								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr">
-								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
+								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr tblminwidth-90">
+								<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">
 							</div>
 							</form>
             			</div>
@@ -2062,8 +2062,8 @@ function configCoolingOff(){
 					
 					
 					result = result + '<div class="pull-right">';
-					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
-					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr tblminwidth-90">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					$("#coolingOffPeriodDiv").empty(); 
@@ -2315,8 +2315,8 @@ function loadSignature(){
 						result = result + '</div>';
  					} 
 					result = result + '<div class="pull-right">';
-					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
-					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr tblminwidth-90">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					
@@ -4197,8 +4197,8 @@ function showOrgprobationData(data){
 	
 	
 	result = result + '<div class="pull-right">';
-	result = result + '<input type="submit" value="Save" id="probation_button" class="btn btn-primary mr">';
-	result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+	result = result + '<input type="submit" value="Save" id="probation_button" class="btn btn-primary mr tblminwidth-90">';
+	result = result + '<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">';
 	result = result + '</div>';
 	result = result + ' </form>';
 	$("#probationPeriodDiv").empty(); 

@@ -181,9 +181,9 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     <div class="footerstyelsNew">
         <div class="clearfix col-md-12 mb">
           <div class="pull-right mr">
-            <input value="Save" class="btn btn-primary" onclick = "requirementWorkflow.saveWorkflowTask('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');" 
+            <input value="Save" class="btn btn-primary tblminwidth-90" onclick = "requirementWorkflow.saveWorkflowTask('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');" 
             type="button" id = "saveTaskButton">
-            <input value="Cancel" class="btn btn-default ml" onclick = "requirementWorkflow.deleteTask('addTaskForm');" type="button">
+            <input value="Cancel" class="btn btn-default ml tblminwidth-90" onclick = "requirementWorkflow.deleteTask('addTaskForm');" type="button">
           </div>
         </div>
       </div>
@@ -463,11 +463,11 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 		</c:when>
 		<c:otherwise>
 		<c:if test="${not empty requirementWorkFlowStagesDTO}">  
-            <input value="Save" class="btn btn-primary" type="button" id="saveStageButton"
+            <input value="Save" class="btn btn-primary tblminwidth-90" type="button" id="saveStageButton"
             onclick = "requirementWorkflow.validateAndSaveStage('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+');">
 		  </c:if>  
           
-            <input value="Cancel" class="btn btn-default ml" type="button" onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
+            <input value="Cancel" class="btn btn-default ml tblminwidth-90" type="button" onclick = "requirementWorkflow.viewWorkFlow('<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>');">
           
 		</c:otherwise>
 		</c:choose>

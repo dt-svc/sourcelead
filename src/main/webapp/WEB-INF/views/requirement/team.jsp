@@ -407,7 +407,7 @@ function addMember(teamId){
 	outPut = outPut+ '                </div>';
 	outPut = outPut+ '              </div>';
 	outPut = outPut+ '              <div class="clearfix mr">';
-	outPut = outPut+ '<button type="button" id="add_teamMember" class="btn btn-sm btn-primary pull-right" onclick="storeTeamMembers('+teamId+');">Add</button>';
+	outPut = outPut+ '<button type="button" id="add_teamMember" class="btn tblminwidth-90 btn-primary pull-right" onclick="storeTeamMembers('+teamId+');">Add</button>';
 	outPut = outPut+ '</div>';
 	outPut = outPut+ '</div>';
 	outPut = outPut+ '</form>';
@@ -535,7 +535,7 @@ function removeProjectMemberAlertMessage(teamMemberId,teamId){
 	result = result +"		<textarea id='rejectReason' class='form-control' field-name='Reject Reason' onkeypress='teamMemberRemoveSpaceComment();' data-validation-optional='true' data-validation='validate_Space validate_Description validate_length length2-250' name='rejectReason' value='' placeholder='Terminate Reason' rows='2'></textarea>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
 	result = result +"	<div id='reasonDiv'/>";
-	result = result +"		<b href='#'><input id='confirm-id' type='button' value='Ok' onclick='deleteTeamMember("+teamMemberId+","+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
+	result = result +"		<b href='#'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteTeamMember("+teamMemberId+","+teamId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelAlert();'></b>";
 	result = result +"	</div>";
 	result = result +"	</div>";
 	$("#removeCandidateAlert").append(result);
@@ -800,7 +800,7 @@ function deleteTeam(teamId,teamName){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to delete <strong>"+teamName+"</strong> ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedTeam("+teamId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteSelectedTeam("+teamId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#deleteTeamPopUp").append(result);
 	$("#remove_user_pop").slideDown(200);

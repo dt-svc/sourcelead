@@ -165,7 +165,7 @@ function deleteIdentity(senderId){
 	result = result +"	<p>Are you sure want to delete ?</p>";
 	//result = result +"		<textarea id='reason' class='form-control' field-name='Delete Identity'  readonly data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Are you sure you want to delete ?' rows='2'></textarea>";
 	result = result + ' <div id="deleteIdentityDiv"/>';
-	result = result + "<b href='javascript:void(0)'><input id='confirm-id1' type='button' value='Delete' onclick='deleteSenderIdentity(\""+senderId+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelDeleteIdentity();'></b>";
+	result = result + "<b href='javascript:void(0)'><input id='confirm-id1' class='btnBg_blue' type='button' value='Delete' onclick='deleteSenderIdentity(\""+senderId+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelDeleteIdentity();'></b>";
     result = result +"	</div>";
  	$("#deleteSenderId").append(result);
 	$("#remove_user_pop").slideDown(200);

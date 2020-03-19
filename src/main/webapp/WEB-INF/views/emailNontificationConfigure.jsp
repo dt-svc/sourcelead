@@ -62,7 +62,7 @@
 			<div class="clearfix col-md-10 noPad">
 					<div class="pull-right mb">
 						<input type="hidden" name="id" id="id" value="${emailSceconf.email_UUID}"/>
-							<button type="button" id="save" class="btn btn-primary pull-right" onClick="saveEmailNotification();">Save</button>
+							<button type="button" id="save" class="btn btn-primary pull-right tblminwidth-90" onClick="saveEmailNotification();">Save</button>
 							<!--  <button type="button" class="btn btn-primary btnsStyles" data-dismiss="modal" onClick="">Cancel</button> -->
 						</div>
 					</div>
@@ -276,7 +276,7 @@ function deleteFromMail(emailId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p style='text-align: center;'>.Do you want to delete?</p>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteEmailFromMail('+emailId+')"><input class="u_can_color" type="button"  value="Cancel" onclick="cancelDeleteMail()"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Delete" onclick="deleteEmailFromMail('+emailId+')"><input class="btnBg_white" type="button"  value="Cancel" onclick="cancelDeleteMail()"></b>';
 	result = result +"	</div>";
 	$("#deleteFromMailDiv").append(result);
 	 $(".mask").show();

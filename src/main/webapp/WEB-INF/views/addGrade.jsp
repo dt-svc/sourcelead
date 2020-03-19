@@ -570,7 +570,7 @@ function deleteGrade(uuid,gradeName){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are your sure to delete <strong>"+gradeName+"</strong> ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="deleteAssociateGrade(\''+uuid+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancel();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="deleteAssociateGrade(\''+uuid+'\');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancel();"></b>';
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
