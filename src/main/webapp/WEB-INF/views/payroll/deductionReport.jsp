@@ -80,8 +80,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="deductionReport();"> <!-- runPayrollregister -->
-            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetDeductionReport();">
+            <input value="Run" class="btn btn-success btnSuccess tblminwidth-90" type="button" onClick="deductionReport();"> <!-- runPayrollregister -->
+            <input value="Reset" class="btn btn-defualt ml10 tblminwidth-90" type="button" onclick="resetDeductionReport();">
           </div>
         </div>
       </div>     

@@ -311,8 +311,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" id="save_shift" onclick="saveShift();" class="btn btn-primary" >
-            <input type="button" value="Cancel" class="btn btn-default ml10" id="cancel_shift" onclick="cancelShift();">
+            <input type="button" value="Save" id="save_shift" onclick="saveShift();" class="btn btn-primary tblminwidth-90" >
+            <input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" id="cancel_shift" onclick="cancelShift();">
           </div>
         </div>
       </div>

@@ -1180,8 +1180,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" id="saveLeaveType" value="Save"
-							onclick="submitLeaveType();" class="btn btn-primary"> 
-							<input type="button" value="Cancel" onclick="redirect();" class="btn btn-default ml10">
+							onclick="submitLeaveType();" class="btn btn-primary tblminwidth-90"> 
+							<input type="button" value="Cancel" onclick="redirect();" class="btn btn-default ml10 tblminwidth-90">
 					</div>
 				</div>
 			</div>

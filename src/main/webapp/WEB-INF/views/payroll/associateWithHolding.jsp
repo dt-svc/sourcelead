@@ -113,8 +113,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();associateWithHolding();" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="closePop();associateWithHolding();" class="btn tblminwidth-90 btn-primary mr" type="button">
+        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn tblminwidth-90 btn-default" type="button">
       </div>
     </div>
   </div>
@@ -578,7 +578,7 @@ function resetFilter(){
 		result = result +" <div class='project_inn_mask'></div>";
 		result = result +" <div id='remove_Associatewithholding_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +" <div class='modal-body'><p id='popupMsg'></p></div>";
-		result = result +" <div class='clearfix'><input class='u_can_color width100percnt' type='button'  value='Ok' onClick='cancelAssociatewithholdingPopup();'></div>";
+		result = result +" <div class='clearfix'><input class='btnBg_white width100percnt' type='button'  value='Ok' onClick='cancelAssociatewithholdingPopup();'></div>";
 		result = result +" </div>";
 		$("#emptyPopup").empty().append(result);
 		$("#popupMsg").empty().append("No Records To Export in Associate withholding Report.");
