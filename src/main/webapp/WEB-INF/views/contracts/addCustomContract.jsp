@@ -700,11 +700,11 @@ $(document).ready(function(){
         <div class="col-lg-12">
           <div class="pull-right mt">
           <input type="hidden" name="contrId" id="contrId" value="${contract.id}"/>
-            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary ml10 pull-left">
-            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
+            <input type="button" value="Draft" id="draft_template" onclick="saveNewContract('DRAFT');" class="btn btn-primary ml10 pull-left tblminwidth-90">
+            <input type="button" value="Send" id="save_template" onclick="saveNewContract('PENDING');" class="btn btn-primary ml10 pull-left tblminwidth-90" style="display:${empty contract || (!empty contract && empty contract.approverUser) ? 'block' : 'none'}">
 
             <input type="button" value="Send For Approve" id="save_approver_template" onclick="saveNewContract('PENDING');" class="btn btn-success ml10 pull-left" style="display:${!empty contract && !empty contract.approverUser ? 'block' : 'none'}">
-            <input type="button" value="Cancel" class="btn btn-default ml10 pull-left" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Cancel" class="btn btn-default ml10 pull-left tblminwidth-90" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>

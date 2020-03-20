@@ -57,9 +57,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                 </div>
                 <div class="form-footer clearfix mt">
                   <div class="pull-right mr">
-                    <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList'">
-                    <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn btn-sm btn-primary">
+                    <input type="button" value="Cancel" class="btn tblminwidth-90 btn-default" onClick="self.location='${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList'">
+                    <input type="button" value="Save" id="save_button"  onclick="createTemplate('save');" class="btn tblminwidth-90 btn-primary">
+                    <input type="button" value="Save and Continue" id="save_continue_button" onclick="createTemplate('saveAndContinue');" class="btn tblminwidth-90 btn-primary">
                   </div>
                 </div>
                 </form:form>
@@ -95,9 +95,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                 
                 <div class="form-footer">
                   <div class="pull-right mr">
-                     <input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="self.location='${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList'">
-                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn btn-sm btn-success">
-                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn btn-sm btn-primary">
+                     <input type="button" value="Cancel" class="btn tblminwidth-90 btn-default" onClick="self.location='${SourceLeadWeb_vmsUrl}/vendorOnboardTemplateList'">
+                    <input type="button" value="Save" id="save_doc_button"  onclick="createTemplateDocs('save');" class="btn tblminwidth-90 btn-primary">
+                    <input type="button" value="Save and Continue" id="save_continue_doc_button" onclick="createTemplateDocs('saveAndContinue');" class="btn tblminwidth-90 btn-primary">
                   </div>
                 </div>
                 </form>

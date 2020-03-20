@@ -1731,6 +1731,7 @@ function deleteBill(invoiceUUID){
 	$(".project_inn_mask").fadeIn(200);
 }
 
+
 function voidBill(invoiceUUID){
 	var result = "";
 	$("#popUp").empty();

@@ -457,7 +457,7 @@ function disableTemplateStatus(temlateUuid){ // only stauts updated with reason.
 	result = result +"	   <div id='remove_template_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<textarea  id='reasonForTemplate' name='reasonForSpoc' data-validation='required validate_Space validate_Description validate_length length2-250' placeholder='Reason' onkeypress=';' ></textarea>";
 	result = result + ' <div id="reasonForTemplateDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId(\""+temlateUuid+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='immigration.deleteTempalteDetailsByRowId(\""+temlateUuid+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTerminationReson();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_template_pop").slideDown(200);
