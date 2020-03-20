@@ -120,9 +120,9 @@ $( document ).ready(function() {
 	<div class="clearfix footerstyelsNew margin-top0">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" id="runDiv" class="btn btn-success btnSuccess" type="button" onclick="leaveReport();">
-            <input value="Reset" class="btn btn-warning ml10" type="button" onclick="resetReportCollapse();">
-            <input value="cancel" class="btn btn-default ml10" type="button" onclick="resetValues();">
+            <input value="Run" id="runDiv" class="btn btn-success btnSuccess tblminwidth-90" type="button" onclick="leaveReport();">
+            <input value="Reset" class="btn btn-default ml10 tblminwidth-90" type="button" onclick="resetReportCollapse();">
+            <input value="cancel" class="btn btn-default ml10 tblminwidth-90" type="button" onclick="resetValues();">
           </div>
         </div>
       </div>

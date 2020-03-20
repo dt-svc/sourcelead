@@ -116,8 +116,8 @@ $( document ).ready(function() {
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" id="runDiv" class="btn btn-success btnSuccess" type="button" onclick="validateProjectTimeEntriesReport();">
-            <input value="Reset" class="btn btn-default ml10" type="button" onclick="resetValues();">
+            <input value="Run" id="runDiv" class="btn btn-success btnSuccess tblminwidth-90" type="button" onclick="validateProjectTimeEntriesReport();">
+            <input value="Reset" class="btn btn-default ml10 tblminwidth-90" type="button" onclick="resetValues();">
           </div>
         </div>
       </div>      

@@ -114,8 +114,8 @@
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="assetReportDataTableList();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button" onClick="resetAssetReportDataTableList();">
+            <input value="Run" class="btn btn-success btnSuccess tblminwidth-90" type="button" onClick="assetReportDataTableList();">
+            <input value="Reset" class="btn btn-defualt ml10 tblminwidth-90" type="button" onClick="resetAssetReportDataTableList();">
           </div>
         </div>
       </div>      
