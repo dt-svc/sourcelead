@@ -79,7 +79,7 @@ $(document).ready(function(){
 		</div>
 		<div class="col-md-3" id="docAddButton">
 		<div class="pull-right">
-			<input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onclick="storeContractNotes();"></div>
+			<input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary tblminwidth-90" onclick="storeContractNotes();"></div>
 		</div>
 		</div>
 		

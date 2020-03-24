@@ -326,10 +326,10 @@
 		<div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-          <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-warning" type="button">
-            <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-success mr ml" type="button">
-            <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary" type="button">
-            <input value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/debitNoteList'" type="button">
+          <input value="Draft" id="draftButtonId" onClick="saveDebitNote('Draft');" class="btn btn-primary tblminwidth-90" type="button">
+            <input value="Send" id="sendButtonId" onClick="saveDebitNote('Send');" class="btn btn-primary mr ml tblminwidth-90" type="button">
+            <input value="Submit" id = "submitButtonId" onClick="saveDebitNote('Submit');" class="btn btn-primary tblminwidth-90" type="button">
+            <input value="Cancel" class="btn btn-default ml tblminwidth-90" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/debitNoteList'" type="button">
           </div>
         </div>
       </div>

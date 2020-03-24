@@ -189,11 +189,11 @@ function errRemoveClientContact(){
 
 				<footer class="form-footer">
 					<div class="pull-right mr">
-						<button type="button" id="saveButtonId" class="btn btn-sm btn-primary"
+						<button type="button" id="saveButtonId" class="btn tblminwidth-90 btn-primary"
 							onclick="saveInvoice('DRAFT')">Save</button>
-						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
+						<button type="button" id="sendButtonId" class="btn tblminwidth-90 btn-primary ml"
 							onclick="saveInvoice('SENT')">Send</button>
-						<button type="button" class="btn btn-sm btn-default ml"
+						<button type="button" class="btn tblminwidth-90 btn-default ml"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
 					</div>
 				</footer>
