@@ -450,7 +450,7 @@ function exportToPdf(){
 		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Contribution Report List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' class='btnBg_blue' onclick='cancelExport();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#empty_receivable_pop").slideDown(200);
