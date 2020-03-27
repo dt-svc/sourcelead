@@ -22,7 +22,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
     <div class="pull-left">
     <c:choose>
     <c:when test="${isStageViewed eq true}">
-    <h2>View Stage</h2>
+    <h2>${stageName}</h2>
     </c:when>
     <c:otherwise>
     <h2>Add Stage</h2>
