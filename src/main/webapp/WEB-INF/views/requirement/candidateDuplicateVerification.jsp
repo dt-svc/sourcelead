@@ -23,7 +23,9 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
        <div class="pull-left">
         <h2>Duplicate Verification</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Submission List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> 
+      &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings </a>
+      &raquo; Submission List</div>
     </section>
     
    
