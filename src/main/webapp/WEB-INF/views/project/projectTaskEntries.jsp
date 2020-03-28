@@ -83,8 +83,8 @@
 					        </div>
 					      <div class="modalFooter mt5">
 					      <div class="pull-right">
-					        <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" id="savetask" onclick="saveTaskDetails();">Save</button>
-					        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeTimeEntryTasks()">Cancel</button>
+					        <button type="button" class="btn btn-primary tblminwidth-90 mr" data-dismiss="modal" id="savetask" onclick="saveTaskDetails();">Save</button>
+					        <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="closeTimeEntryTasks()">Cancel</button>
 					       </div>
 					      </div>
 					</div>

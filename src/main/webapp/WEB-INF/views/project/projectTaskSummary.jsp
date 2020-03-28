@@ -864,7 +864,7 @@ function inlineEditBillingType(taskId){
 				 result  = result + '<form id="taskdescription_form" name="taskdescription_form" method="post">';
 			   	 result  = result + '<div class="col-md-12 clearfix txtEditor_p saveBtn">';
 			   	 result = result + '<textarea id="txtEditor2" name="taskDescription" value="'+ json.description +'" class="form-control newContrtextarea">' + json.description + '</textarea>';
-			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn btn-sm btn-warning save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
+			   	 result  = result  + '<div class="mt5 clearfix"><button type"button" class="pull-right btn tblminwidth-90 btn-primary save-btn" onclick="inlineEditDescription('+projectTaskId+');">Save</button></span>';
 			   	 result  = result  + '</div>';
 			   	 result  = result + '</form>';
 			   	 result  = result  + '</div>';
@@ -1141,8 +1141,8 @@ function addDocumentEntry(){
  
 		result  = result + '	  <div class="modalFooter mt mb10">';
 		result  = result + '	    <div class="pull-right">';
-		result  = result + '	      <button type="button" class="btn btn-primary btn-sm" id="save_document" data-dismiss="modal" onclick="saveDocument();">Save</button>';
-		result  = result + '	      <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeTimeEntry()">Cancel</button>';
+		result  = result + '	      <button type="button" class="btn btn-primary tblminwidth-90 mr" id="save_document" data-dismiss="modal" onclick="saveDocument();">Save</button>';
+		result  = result + '	      <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="closeTimeEntry()">Cancel</button>';
 		result  = result + '	    </div>';
 		result  = result + '	  </div>';
 		result = result + '  </form>';
@@ -1682,8 +1682,8 @@ function addSubTasks(){
 			result = result	+ '       </form>';
 			result = result	+ '     </div>';
 			result = result	+ '   <div class="modal-footer">';
-			result = result	+ '     <button type="button" class="btn btn-primary btn-sm" id="save_task" onclick="saveTasks();" data-dismiss="modal">Add</button>';
-			result = result	+ '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="cancelTask();">Cancel</button>';
+			result = result	+ '     <button type="button" class="btn btn-primary tblminwidth-90 mr" id="save_task" onclick="saveTasks();" data-dismiss="modal">Add</button>';
+			result = result	+ '     <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="cancelTask();">Cancel</button>';
 			result = result	+ '   </div>';
 			result = result	+ ' </div>';
 			
@@ -2194,8 +2194,8 @@ function addComment(){
 	result  = result + '</div>';
 	result  = result + ' <div class="modalFooter  mb10 clearfix">';
 	result  = result + '   <div class="pull-right">';
-	result  = result + '     <button type="button" class="btn btn-primary btn-sm" id="save_comment" data-dismiss="modal" onclick="saveComment();">Add</button>';
-	result  = result + '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="closeComment()">Cancel</button>';
+	result  = result + '     <button type="button" class="btn btn-primary tblminwidth-90 mr" id="save_comment" data-dismiss="modal" onclick="saveComment();">Add</button>';
+	result  = result + '     <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="closeComment()">Cancel</button>';
 	result  = result + '   </div>';
 	result  = result + ' </div>';
 	result = result + ' </form>';

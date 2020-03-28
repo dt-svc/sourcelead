@@ -204,9 +204,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet"
-								onclick="closeFilterPop();filter();" class="btn btn-sm btn-success" />
+								onclick="closeFilterPop();filter();" class="btn tblminwidth-90 btn-primary mr" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="resetProjectFilter();" class="btn btn-sm btn-primary" />
+								onclick="resetProjectFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>
