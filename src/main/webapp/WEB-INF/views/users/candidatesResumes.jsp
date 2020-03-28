@@ -150,7 +150,7 @@ function addResume(candidateId) {
 	result = result+'	                  </div>';
 	
 	result = result+'	                  <div class="clearfix mr mt" id="resumeUpdateButton" style="display: none;">';
-	result = result+'	                    <button type="button" id="update_resume" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result+'	                    <button type="button" id="update_resume" class="btn tblminwidth-90 btn-primary pull-right">Update</button>';
 	result = result+'	                  </div>';
 	
 	
@@ -160,7 +160,7 @@ function addResume(candidateId) {
 	
 	
 	result = result+'	                  <div class="clearfix mr mt" id="resumeAddButton">';
-	result = result+'	                    <button type="button" id="add_resume" class="btn btn-sm btn-primary pull-right" onclick="storeCandidateResume('+candidateId+',null);">Add</button>';
+	result = result+'	                    <button type="button" id="add_resume" class="btn tblminwidth-90 btn-primary pull-right" onclick="storeCandidateResume('+candidateId+',null);">Add</button>';
 	result = result+'	                  </div>';
 	result = result+'	                </div>';
 	result = result+'	                </form>';
@@ -462,7 +462,7 @@ function removeresumePopUp(candidateId, resumeId){
 	result = result +"	   <div id='remove_user_pop_resume' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Resume</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteResume("+candidateId+","+resumeId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteResumePopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteResume("+candidateId+","+resumeId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deleteResumePopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteEduPopUp").empty();
 	$("#deleteEduPopUp").append(result);

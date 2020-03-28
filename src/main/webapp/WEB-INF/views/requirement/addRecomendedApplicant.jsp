@@ -27,7 +27,7 @@ function getAddRecomendedApplicant(requirementId){
 	result = result + '</div>';
 	 result = result + '<div class="form-footer clearfix">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_Recom_button"  class="btn btn-sm btn-primary ">SUBMIT</button>';
+	result = result + '<button type="submit" id="save_Recom_button"  class="btn tblminwidth-90 btn-primary ">SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
