@@ -386,7 +386,7 @@ function statusvalidating(id){
 	<div class="clearfix advancedsearch-footer">
 		<div class="pull-right mr">
 			<input type="button" value="Search" id="search_requiremet"
-				onclick="requirementListCheck('','','advanceSearch','${SourceLeadWeb_atsUrl}');" class="btn tblminwidth-90 btn-primary" />
+				onclick="requirementListCheck('','','advanceSearch','${SourceLeadWeb_atsUrl}');" class="btn tblminwidth-90 btn-primary mr" />
 			<input type="button" value="Reset" id="clear_search"
 				onclick="clearSearch();" class="btn tblminwidth-90 btn-default" />
 		</div>
@@ -1407,7 +1407,7 @@ function refreshGoogleApiCity(cityId){
 			<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" 
-								onclick="closeFilter();requirementList('list','${SourceLeadWeb_atsUrl}');" class="btn tblminwidth-90 btn-primary" />
+								onclick="closeFilter();requirementList('list','${SourceLeadWeb_atsUrl}');" class="btn tblminwidth-90 btn-primary mr" />
 							<input type="button" value="Reset" id="clear_search"
 								onclick="resetJobFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>

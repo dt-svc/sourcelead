@@ -23,7 +23,9 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
        <div class="pull-left">
         <h2>Duplicate Verification</h2>
       </div>
-      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> &raquo; Submission List</div>
+      <div class="pull-right brud-crum"><a href="${SourceLeadWeb_sourceleadUrl}/dashboard/${SourceLeadWeb_orgLocationId}">Home</a> 
+      &raquo; <a href="${SourceLeadWeb_sourceleadUrl}/settings">Settings </a>
+      &raquo; Submission List</div>
     </section>
     
    
@@ -79,8 +81,8 @@ var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 
         <div class="clearfix mt col-md-12 mb">
           <div class="pull-right">
-            <button type="button" class="btn btn-primary mr" onclick="saveDuplicateCheckConfig();">Save</button>
-            <button type="button" class="btn btn-default" onclick="cancelDuplicateCheckConfig();">Cancel</button>
+            <button type="button" class="btn btn-primary mr tblminwidth-90" onclick="saveDuplicateCheckConfig();">Save</button>
+            <button type="button" class="btn btn-default tblminwidth-90" onclick="cancelDuplicateCheckConfig();">Cancel</button>
           </div>
         </div>
         </div>

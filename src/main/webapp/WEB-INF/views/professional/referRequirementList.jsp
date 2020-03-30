@@ -976,7 +976,7 @@ function deleteContactsGroup(groupId,groupNmae){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Are you sure to delete <strong>"+groupNmae+"</strong> ?</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedContactsGroup("+groupId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteSelectedContactsGroup("+groupId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#deleteGroupPopUp").append(result);
 	$("#remove_user_pop").fadeIn(100);
@@ -1233,9 +1233,9 @@ function resetContactFilter(){
 			<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet" 
-								onclick="closeFilter();contactsDataTableList();" class="btn btn-sm btn-success" />
+								onclick="closeFilter();contactsDataTableList();" class="btn tblminwidth-90 btn-primary" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="resetContactFilter();" class="btn btn-sm btn-primary" />
+								onclick="resetContactFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 
@@ -1463,7 +1463,7 @@ function deleteContactType(contactId){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Do you want to delete the contact</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedContact("+contactId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteContPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteSelectedContact("+contactId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deleteContPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteContPopUp").empty();
 	$("#deleteContPopUp").append(result);

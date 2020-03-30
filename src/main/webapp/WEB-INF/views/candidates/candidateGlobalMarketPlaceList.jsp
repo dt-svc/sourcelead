@@ -394,7 +394,7 @@
 				  </div>
 				  <div class="clearfix advancedsearch-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList('gMarketPlace'); closePop();minMaxExperience();" class="btn tblminwidth-90 btn-primary"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList('gMarketPlace'); closePop();minMaxExperience();" class="btn tblminwidth-90 btn-primary mr"/>
                                <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn tblminwidth-90 btn-default"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>
@@ -535,7 +535,7 @@
 		</div>
 		<div class="clearfix advancedsearch-footer">
 			<div class="pull-right mr">
-				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();getGloblaMarketPlaceCandidates('listModel');<!-- candidateList('gMarketPlace'); -->" class="btn tblminwidth-90 btn-primary" />
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterPopup();getGloblaMarketPlaceCandidates('listModel');<!-- candidateList('gMarketPlace'); -->" class="btn tblminwidth-90 btn-primary mr" />
 				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn tblminwidth-90 btn-default" />
 			</div>
 		</div>
