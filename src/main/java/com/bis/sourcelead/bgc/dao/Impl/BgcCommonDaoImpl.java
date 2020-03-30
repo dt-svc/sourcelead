@@ -24,6 +24,7 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.constants.Constants;
@@ -561,11 +562,11 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	}
 
 	@Override
-	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations) {
+	public BgcTemplate saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations) {
 		try {
 			Session session = this.sessionFactory.getCurrentSession();
 			session.saveOrUpdate(bgcTemplate);
-			return Constants.SUCCESS;
+			return bgcTemplate;
 		}catch(Exception e) {
 			e.printStackTrace();
 			logger.error("Exception caught while saving BGC Template Details in Database in Database "+e.getMessage());
@@ -607,17 +608,54 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 	@Override
 	public String deleteBgcTemplateByUuid(String templateUuid) {
 		try {
-			   Session session = this.sessionFactory.getCurrentSession();
-			   Query query = session.createQuery("delete from BgcTemplate where uuid=:templateUuid").setString("templateUuid", templateUuid);
-		        int count = query.executeUpdate();
-		        if(count != 0) {
-		        	return Constants.SUCCESS;
-		        }
+			Session session = this.sessionFactory.getCurrentSession();
+			// First removing child records using SQL query in BGC_COMPONENT_JSONMAP using TEMPLATEUUID.
+			int deletedCount = session.createSQLQuery(
+					"DELETE FROM BGC_COMPONENT_JSONMAP WHERE TEMPLATE_ID=(SELECT ID FROM BGC_TEMPLATE WHERE UUID=:templateUuid)")
+					.setString("templateUuid", templateUuid).executeUpdate();
+			System.out.println("deletedCount >>>>>" + deletedCount);
+			// now removing template from the BGC_TEMPALTE  Table once child records are removed form the table BGC_COMPONENT_JSONMAP.
+			Query query = session.createQuery("delete from BgcTemplate where uuid=:templateUuid")
+					.setString("templateUuid", templateUuid);
+			int count = query.executeUpdate();
+			if (count != 0) {
+				return Constants.SUCCESS;
+			}
 			} catch (HibernateException e) {
 				logger.error("SQL Exception occured while doing delete  BgcComponent by id-->" + e.getMessage());
 				e.printStackTrace();
 				return null;
 			}
 			return Constants.FAILED;
+	}
+
+	@Override
+	public BgcComponentJsonMap saveTemplateComponentJsonMap(BgcComponentJsonMap bgcComponentJsonMap) {
+		try {
+			Session session = this.sessionFactory.getCurrentSession();
+			session.saveOrUpdate(bgcComponentJsonMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+			logger.error("Exception caught while saving bgcComponent Details in Database "+e.getMessage());
+		}
+		return bgcComponentJsonMap;
+	}
+
+	@Override
+	public BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId) {
+		BgcComponentJsonMap bgcComponentJsonMap = null;
+		try {
+			Session session = sessionFactory.getCurrentSession();
+
+			bgcComponentJsonMap = (BgcComponentJsonMap) session
+					.createQuery(
+							"from BgcComponentJsonMap comp where comp.bgcTemplate.id =:templateId and comp.formId =:formId")
+					.setLong("templateId", templateId).setString("formId", formId).uniqueResult();
+			System.out.println("query executed .....>");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return bgcComponentJsonMap;
 	}
 }

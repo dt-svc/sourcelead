@@ -9,6 +9,7 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.dto.ResponseList;
@@ -64,11 +65,15 @@ public interface BgcCommonDao {
 
 	List<BgcComponent> getBgcUniqueComponentListByOrgLocationId(Long orgLocationId);
 
-	String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
+	BgcTemplate saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplate bgcTemplate, OrgLocations orgLocations);
 
 	BgcTemplateDTO getBgcTemplateDetailsByUuid(String uuid);
 	
 	BgcTemplate getBgcTemplateDetailsById(Long id);
 	
 	String deleteBgcTemplateByUuid(String templateUuid);
+
+	BgcComponentJsonMap saveTemplateComponentJsonMap(BgcComponentJsonMap bgcComponentJsonMap);
+
+	BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId);
 }

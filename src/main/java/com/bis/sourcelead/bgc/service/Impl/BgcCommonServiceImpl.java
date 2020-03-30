@@ -31,6 +31,7 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
 import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
@@ -486,7 +487,7 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 		return bgcCommonDao.getBgcUniqueComponentListByOrgLocationId(orgLocationId);
 	}
 	@Override
-	public String saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user,
+	public BgcTemplate saveOrUpdateBgcTemplateByOrgLocationId(BgcTemplateDTO bgcTemplateDTO, User user,
 			OrgLocations orgLocations) {
 		BgcTemplate  bgcTemplate = new BgcTemplate();
 		if(bgcTemplateDTO.getId() != null) {
@@ -522,5 +523,30 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	@Override
 	public String deleteBgcTemplateByUuid(String templateUuid) {
 		return bgcCommonDao.deleteBgcTemplateByUuid(templateUuid);
+	}
+	@Override
+	public BgcComponentJsonMap saveTemplateComponentJsonMap(Long id, Long templateId, String formId, String sentTo, String jsonStringData,OrgLocations orgLocations) {
+		BgcComponentJsonMap bgcComponentJsonMap =null;
+		// mapping multiple forms to the single template. initially check whether form id exist or not for the template id if not insert new record.
+		if(templateId != null && StringUtils.isNotBlank(formId)) {
+			bgcComponentJsonMap = bgcCommonDao.getBgcComponentJsonMapByTempalteIdAndFromId(templateId,formId);
+		  if(bgcComponentJsonMap == null) {// if record not found with given template id and form id.
+			bgcComponentJsonMap =new BgcComponentJsonMap();
+			BgcTemplate bgcTemplate = new BgcTemplate();
+			bgcTemplate.setId(templateId);
+			bgcComponentJsonMap.setBgcTemplate(bgcTemplate);
+			bgcComponentJsonMap.setFormId(formId);
+		   }
+		}
+		bgcComponentJsonMap.setSentTo(sentTo);
+		bgcComponentJsonMap.setJsonString(jsonStringData);
+		
+		Date currentDate = commonUtil.orgLocationCommonDate(new Date(), orgLocations);
+		bgcComponentJsonMap.setUpdatedDate(currentDate);
+		return bgcCommonDao.saveTemplateComponentJsonMap(bgcComponentJsonMap);
+	}
+	@Override
+	public BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId) {
+		return bgcCommonDao.getBgcComponentJsonMapByTempalteIdAndFromId(templateId,formId);
 	}
 }

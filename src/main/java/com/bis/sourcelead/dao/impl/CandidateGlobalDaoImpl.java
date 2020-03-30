@@ -353,7 +353,7 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 	public List<CandidateGlobal> getCandidatesGlobalListByOrgLocationID(Long orgLocationId, Long orgId,
 			Integer candidateState, String updatedDateRange, String candidateType, String isAssociate,
 			String candidateFilterSkills, String availability, String candidateTypeFilter, String createdByFilter,
-			User user) throws Exception {
+			String filterCandidateSource,User user) throws Exception {
 
 
 		String subQuery = null;
@@ -385,12 +385,27 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 			candidateTypeSubQuery = " and (cnadidate.isFavourite = '1') ";
 
 		}
-
+		
 		String createdBySubQuery = "";
 		if (createdByFilter != null && !createdByFilter.isEmpty() && createdByFilter.equalsIgnoreCase("myCandidates")) {
 			createdBySubQuery = " and cnadidate.createdBy = '" + user.getUserCode() + "' ";
 		}
 
+		List<String> sourceList = new ArrayList<>();
+		if (StringUtils.isNotBlank(filterCandidateSource)) {
+			String[] source = filterCandidateSource.split(",");
+			for (int i = 0; i < source.length; i++) {
+				sourceList.add(source[i]);
+			}
+
+		} else {
+			sourceList.add("0");
+		}
+		
+
+		String candidateSourceSubQuery = " and ((:varZero  IN (:sourceList)) OR (:varZero NOT IN (:sourceList) and cnadidate.candidateSource IN (:sourceList)))";
+		
+		
 		List<String> skillsList = new ArrayList<>();
 		if (StringUtils.isNotBlank(candidateFilterSkills)) {
 			String[] skills = candidateFilterSkills.split(",");
@@ -446,11 +461,11 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 
 			String query = "from CandidateGlobal cnadidate left join fetch cnadidate.orgLocationId orglocation where  cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "
 					+ subQuery + " " + candidateTypeSubQuery + " " + candidateSkillsSubQuery + " "
-					+ avaliabilitySubQuery + " " + candidateTypeFilterSubQuery + " " + createdBySubQuery
+					+ avaliabilitySubQuery + " " + candidateTypeFilterSubQuery + " " + createdBySubQuery +" "+candidateSourceSubQuery
 					+ " and ( cnadidate.updatedDate >= :endDate) ORDER BY cnadidate.id DESC ";
 			candidateList = session.createQuery(query).setDate("endDate", endDate)
 					.setLong("orgLocationId", orgLocationId).setString("varZero", "0")
-					.setParameterList("skillsList", skillsList).setParameterList("avalibilityList", avalibilityList)
+					.setParameterList("skillsList", skillsList).setParameterList("sourceList", sourceList).setParameterList("avalibilityList", avalibilityList)
 					.setLong("orgId", orgId)
 
 					.list();
@@ -458,10 +473,10 @@ public class CandidateGlobalDaoImpl implements CandidateGlobalDao{
 
 			String query = "from CandidateGlobal cnadidate  left join fetch cnadidate.orgLocationId orglocation where cnadidate.orgLocationId.id =:orgLocationId and  orglocation.org.id =:orgId and "
 					+ subQuery + " " + candidateTypeSubQuery + " " + candidateSkillsSubQuery + " "
-					+ avaliabilitySubQuery + " " + candidateTypeFilterSubQuery + " " + createdBySubQuery
+					+ avaliabilitySubQuery + " " + candidateTypeFilterSubQuery + " " + createdBySubQuery +" "+candidateSourceSubQuery
 					+ " ORDER BY cnadidate.id DESC";
 			candidateList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("orgId", orgId)
-					.setString("varZero", "0").setParameterList("skillsList", skillsList)
+					.setString("varZero", "0").setParameterList("skillsList", skillsList).setParameterList("sourceList", sourceList)
 					.setParameterList("avalibilityList", avalibilityList).list();
 		}
 
