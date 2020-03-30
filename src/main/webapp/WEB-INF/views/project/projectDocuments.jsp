@@ -734,8 +734,8 @@ function getProjectMemberlist(){
 		          </div>
 		        </div>
 		        <div class="modal-footer">
-		        <input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-primary mr10" onClick ="storeProjectDocument();" />
-		          <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+		        <input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-primary mr10 tblminwidth-90" onClick ="storeProjectDocument();" />
+		          <button type="button" class="btn btn-default cancel tblminwidth-90" data-dismiss="modal">Cancel</button>
 		        </div>
 		      </div>
 		    </div>

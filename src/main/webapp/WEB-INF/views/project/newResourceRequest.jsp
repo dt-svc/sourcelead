@@ -252,9 +252,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				<div class="form-footer clearfix mt">
 				  <div class="col-lg-12">
 					<div class="pull-right">
-					  <input type="button" value="Draft" class="btn btn-warning mr" onclick="saveNewResourceRequest('Draft');">
-					  <input type="button" value="Send" class="btn btn-primary" onclick="saveNewResourceRequest('Send');">
-					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'" class="btn btn-default ml">
+					  <input type="button" value="Draft" class="btn btn-primary mr tblminwidth-90" onclick="saveNewResourceRequest('Draft');">
+					  <input type="button" value="Send" class="btn btn-primary tblminwidth-90" onclick="saveNewResourceRequest('Send');">
+					  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/projectSummary?projectUUID=${projectUUID}&projectClientUUID=${projectClientUUID}&tabType=resources'" class="btn btn-default ml tblminwidth-90">
 					</div>
 				  </div>
 			</div>    	    
@@ -923,7 +923,7 @@ function alertMessage(){
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>Add atleast one resource request</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	result = result +"	</div>";
 	$("#choicepopUp").append(result);
 	$("#remove_user_pop").slideDown(200);

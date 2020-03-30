@@ -51,8 +51,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
             <div class="form-group">
          <label class="col-md-12">&nbsp;</label>
 		<div class="col-md-12">
-            <input value="Save" class="btn btn-success btnSuccess" type="button" onclick="savePayrollApprover();">
-            <input value="Cancel" class="btn btn-defualt ml10" type="button" onclick="cancelButton();">
+            <input value="Save" class="btn btn-success btnSuccess tblminwidth-90" type="button" onclick="savePayrollApprover();">
+            <input value="Cancel" class="btn btn-defualt ml10 tblminwidth-90" type="button" onclick="cancelButton();">
 		</div>
             </div>
 			</div>

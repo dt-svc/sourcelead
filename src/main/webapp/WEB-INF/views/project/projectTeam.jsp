@@ -933,7 +933,7 @@ function loadProjectMembersDetails(data,candidateName){
 	
 	
 	result = result + ' <div id="reasonForProjectDiv" class="footerBtns">';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Update" onclick="updateProjectMember();"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelEditProjectMember();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Update" onclick="updateProjectMember();"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelEditProjectMember();"></b>';
 	result = result +"	</div>";
 	result = result +"	</div>";
 	
@@ -1138,7 +1138,7 @@ function deleteProject(projectMemberId,projectId,startDateStr,endDateStr){
 	result = result +"		<p>Are you sure you want to delete ?</p>";
 	result = result +"		<textarea  id='reasonForProject' name='reasonForProject'  placeholder='Terminate reason' ></textarea>";
 	result = result + ' <div id="reasonForProjectDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTeamTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Delete" onclick="saveReason('+projectMemberId+',\''+projectId+'\',\''+startDateStr+'\',\''+endDateStr+'\');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTeamTermination();"></b>';
 	result = result +"	</div>";
 	$("#teampopUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -1232,7 +1232,7 @@ function exportToPdf(projectId){
 		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Employee List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='empCancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='empCancelTermination();'><input class='btnBg_white' type='button'  value='Cancel' onClick='empCancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#teampopUp").append(result);
 		$("#client_user_pop").slideDown(200);
@@ -1622,8 +1622,8 @@ function openFilterTeamPop(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTeamPop();getFilterEmployeeDetails();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetPorjectTeamFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTeamPop();getFilterEmployeeDetails();" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetPorjectTeamFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 	  </div>

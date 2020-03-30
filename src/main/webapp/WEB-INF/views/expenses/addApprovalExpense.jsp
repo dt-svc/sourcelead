@@ -438,7 +438,7 @@ function rejectReopenExpenseBySuperUser(expenseId,reOpenedUserId){
 	result = result +"		<p>Re-open Reject message here</p>";
 	result = result +"		<textarea  id='reOpenRejectedReason' name='reOpenRejectedReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenRejectedReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Submit' onclick='removeEmptyLines($(\"#reOpenRejectedReason\"));storeReopenRejectedReason("+expenseId+","+reOpenedUserId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelReOpenRejected();'></b>";
 	result = result +"	</div>";
 	$("#reOpenRejectedPopup").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -485,7 +485,7 @@ function reOpenMyExpense(expenseId){
 	result = result +"		<p>Re-open Reason message here</p>";
 	result = result +"		<textarea  id='reOpenReason' name='reOpenReason'  placeholder='Comments here''></textarea>";
 	result = result + ' <div id="reOpenReasonDiv"/>';
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button'  value = 'Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenExpense("+expenseId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button'  value = 'Submit' onclick='removeEmptyLines($(\"#reOpenReason\"));notifyReopenExpense("+expenseId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelReOpen();'></b>";
 	result = result +"	</div>";
 	$("#reOpenPopup").append(result);
 	$("#remove_user_pop").slideDown(200);

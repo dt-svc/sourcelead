@@ -140,8 +140,8 @@
 					</form>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="getTimesheetFilterData();" class="btn btn-sm btn-success">
-							<input type="button" value="Reset" id="clear_search" onclick="resetProjectFilter();closeFilterPop();" class="btn btn-sm btn-primary">
+							<input type="button" value="Apply" id="search_requiremet" onclick="getTimesheetFilterData();" class="btn tblminwidth-90 btn-primary mr">
+							<input type="button" value="Reset" id="clear_search" onclick="resetProjectFilter();closeFilterPop();" class="btn tblminwidth-90 btn-default">
 						</div>
 					</div>
 				

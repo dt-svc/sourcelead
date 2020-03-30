@@ -712,8 +712,8 @@ function PerformanceGoals(){
 							result  = result + '</div>';
 							result  = result + ' <div class="modalFooter  mb10 clearfix">';
 							result  = result + '   <div class="pull-right">';
-							result  = result + '     <button type="button" class="btn btn-primary btn-sm" id="save_comment" data-dismiss="modal" onclick="performanceGoals.saveGoalsComment();">Add</button>';
-							result  = result + '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="performanceGoals.closeGoalsComment()">Cancel</button>';
+							result  = result + '     <button type="button" class="btn btn-primary tblminwidth-90 mr" id="save_comment" data-dismiss="modal" onclick="performanceGoals.saveGoalsComment();">Add</button>';
+							result  = result + '     <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="performanceGoals.closeGoalsComment()">Cancel</button>';
 							result  = result + '   </div>';
 							result  = result + ' </div>';
 							result = result + ' </form>';

@@ -87,8 +87,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       </div>
                       <div class="clearfix  form-footer row mt">
                       <div class="pull-right">
-                        <button type="button" class="btn btn-sm btn-primary mr" onclick="saveChecks()">Add Check</button>
-                        <button type="button" class="btn btn-sm btn-default mr" onclick="cancelChecks()">Cancel Check</button>
+                        <button type="button" class="btn tblminwidth-90 btn-primary mr" onclick="saveChecks()">Add Check</button>
+                        <button type="button" class="btn tblminwidth-90 btn-default mr" onclick="cancelChecks()">Cancel Check</button>
                         </div>
                       </div>
                     </div>

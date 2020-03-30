@@ -272,8 +272,8 @@ window.onload = function() {
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Apply" id="ApplyLeave" class="btn btn-primary ml mr" onclick="applyLeave();">
-            <input type="button" value="Cancel" class="btn btn-default" onclick="cancel();">
+            <input type="button" value="Apply" id="ApplyLeave" class="btn btn-primary ml mr tblminwidth-90" onclick="applyLeave();">
+            <input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onclick="cancel();">
           </div>
         </div>
       </div>
