@@ -1452,8 +1452,8 @@ function resetBillFilter(orgRelationId,vendorLocationId){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet"  class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetBillFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet"  class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetBillFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>

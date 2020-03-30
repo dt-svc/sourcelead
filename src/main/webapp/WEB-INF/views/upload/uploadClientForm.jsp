@@ -31,7 +31,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 		  <div class="clearfix mb row">
 
 			<div class="col-xs-8 col-md-8">
-			 <a href="${SourceLeadWeb_vmsUrl}/downloadClientTemplate?name=Contact" class="btn btn-success btn-block">
+			 <a href="${SourceLeadWeb_vmsUrl}/downloadClientTemplate?name=Contact" class="btn btn-primary btn-block">
 					<i class="fa fa-download"></i>&nbsp;&nbsp;Download Client Template
 			</a>
 			</div>
@@ -42,7 +42,7 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 				</div>
 				<div class="btn-group">
 
-			  <input type="reset" class="btn btn-danger" value="Reset" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/uploadClientForm'">
+			  <input type="reset" class="btn btn-default" value="Reset" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/uploadClientForm'">
 			
 				</div>
 			  </div>

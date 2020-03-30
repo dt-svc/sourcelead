@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 //import org.jadira.usertype.spi.utils.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +42,9 @@ import com.bis.sourcelead.bgc.dto.BgcStatusDTO;
 import com.bis.sourcelead.bgc.dto.BgcTemplateDTO;
 import com.bis.sourcelead.bgc.entity.BgcCandidateDetails;
 import com.bis.sourcelead.bgc.entity.BgcComponent;
+import com.bis.sourcelead.bgc.entity.BgcComponentJsonMap;
 import com.bis.sourcelead.bgc.entity.BgcStatus;
+import com.bis.sourcelead.bgc.entity.BgcTemplate;
 import com.bis.sourcelead.bgc.service.BgcCommonService;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.CandidateEducationDTO;
@@ -56,8 +60,10 @@ import com.bis.sourcelead.enums.Result;
 import com.bis.sourcelead.service.CandidateEducationService;
 import com.bis.sourcelead.service.CandidateService;
 import com.bis.sourcelead.util.SessionMaintainanceData;
+import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
 import com.bis.sourcelead.util.SourceLeadSessionManager;
 import com.bis.sourcelead.workflow.dto.RequirementWorkFlowDTO;
+import com.bis.sourcelead.workflow.entity.RequirementQuestionnaireTemplate;
 import com.bis.sourcelead.workflow.entity.RequirementWorkFlow;
 
 
@@ -753,18 +759,19 @@ public class BackgroundController {
 		}
 	// below method is for saving BGC Template details by ORG LOCATION id by SRINIVAS SABBU.
 	@RequestMapping(value = { "/SaveOrUpdateBgcTemplate"}, method = RequestMethod.POST)
-	public  @ResponseBody Response<String>  saveOrUpdateBgcTemplate(BgcTemplateDTO bgcTemplateDTO,
+	public  @ResponseBody Response<Object>  saveOrUpdateBgcTemplate(BgcTemplateDTO bgcTemplateDTO,
 			HttpServletRequest request){
-		Response<String> response = new Response<>();
+		Response<Object> response = new Response<>();
 		User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,
 				"orgLocations");
 		if (user != null) {
 			try {
 				if (Validator.validate(bgcTemplateDTO)) {
-					bgcCommonService.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplateDTO, user , orgLocations);
+					BgcTemplate bgcTemplate=bgcCommonService.saveOrUpdateBgcTemplateByOrgLocationId(bgcTemplateDTO, user , orgLocations);
 					response.setResponse(Result.SUCCESS.name());
 					response.setResponseMessage(Result.SUCCESS.getValue());
+					response.setObject(bgcTemplate);
 				} else {
 					response.setObject("DataMissing");
 					response.setResponse(Result.INVALID_DATA.name());
@@ -839,4 +846,69 @@ public class BackgroundController {
 				  model.setViewName("/background/editBgcTemplate");
 			return model;
 		}
+		// Below methods are related to save Component JSON form. added by SRINIVAS SABBU.
+		@RequestMapping(value = "/saveTemplateComponentJsonMap", method = RequestMethod.POST)
+		public @ResponseBody String saveTemplateComponentJsonMap(
+				@RequestParam(value = "id", required = false) Long id,
+				@RequestParam(value = "templateId", required = false) Long templateId,
+				@RequestParam(value = "formId", required = false) String formId,
+				@RequestParam(value = "sentTo", required = false) String sentTo,
+				@RequestParam(value = "jsonStringData", required = false) String jsonStringData, 
+		         HttpServletRequest request)
+				throws Exception {
+
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			OrgLocations orgLocations = new OrgLocations();
+			orgLocations.setId(orgLocationId);
+			String result = null;
+			System.out.println ("sentTo >>>>>>>>>>>>>>>>   "+sentTo);
+			System.out.println ("templateId >>>>>>>>>>>>>>>>   "+templateId);
+			System.out.println ("formId >>>>>>>>>>>>>>>>   "+formId);
+			System.out.println ("jsonStringData >>>>>>>>>>>>>>>>   "+jsonStringData);
+		try {
+			if (templateId != null) {
+				BgcComponentJsonMap componetJsonMap = bgcCommonService.saveTemplateComponentJsonMap(id, templateId, formId,
+						sentTo, jsonStringData, orgLocations);
+				if (componetJsonMap != null) {
+					System.out.println("componetJsonMap id created is >>>"+componetJsonMap.getId());
+					result = Result.SUCCESS.name();
+				} else {
+					result = Result.FAILED.name();
+				}
+
+				logger.debug("after saveTemplateComponentJsonMap>>> templateId " + templateId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = Result.AWKWARD.name();
+			return result;
+		}
+		  return null;
+	    }
+		
+	// Below methods are related to get component JSON map added by SRINIVAS SABBU.
+	@RequestMapping(value = "/getTemplateComponentJsonMap")
+	@ResponseBody
+	public BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(
+			@RequestParam(value = "templateId", required = false) Long templateId,
+			@RequestParam(value = "formId", required = false) String formId, HttpServletRequest request)
+			throws Exception {
+		System.out.println("get templateId >>>>>>>>>>>>>>>>   " + templateId);
+		System.out.println("get formId >>>>>>>>>>>>>>>>   " + formId);
+		BgcComponentJsonMap bgcComponentJsonMap = null;
+		try {
+			if (templateId != null) {
+				bgcComponentJsonMap = bgcCommonService.getBgcComponentJsonMapByTempalteIdAndFromId(templateId, formId);
+				if (bgcComponentJsonMap != null) {
+					System.out.println("componetJsonMap id created is >>>" + bgcComponentJsonMap.getId());
+					return bgcComponentJsonMap;
+				}
+				logger.debug("after saveTemplateComponentJsonMap>>> templateId " + templateId);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return bgcComponentJsonMap;
+	}
 }

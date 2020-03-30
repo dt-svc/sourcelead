@@ -666,14 +666,14 @@ function getVendorDetails(){
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save & Continue" id="save_vendor"
-							onclick="saveVendor(); saveVendorContact();flushSaveClient();" class="btn btn-primary">
+							onclick="saveVendor(); saveVendorContact();flushSaveClient();" class="btn btn-primary tblminwidth-90 tblminwidth-90">
 						
 						<input type="button" value="Save & Continue" id="update_vendor" style="display: none"
-							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary">
+							onclick="updateVendor(); flushSaveClient()" class="btn btn-primary tblminwidth-90 tblminwidth-90">
 						
 						<input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/vendorsList'"
-							class="btn btn-default ml">
+							class="btn btn-default ml tblminwidth-90 tblminwidth-90">
 					</div>
 				</div>
 			</div>

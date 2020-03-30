@@ -207,7 +207,7 @@ function addClientNotes(orgRelationId,clientLocationId) {
 	
 	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right mt5"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeClientNotes('+orgRelationId+');" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn tblminwidth-90 btn-primary mr" onClick ="storeClientNotes('+orgRelationId+');" />'; 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
 	result = result  +'                </div>';

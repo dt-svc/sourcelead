@@ -232,9 +232,9 @@ $(document).ready(function(){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Apply" id="search_requiremet"
-								onclick="closePop();submitFilterActions();" class="btn btn-sm btn-success" />
+								onclick="closePop();submitFilterActions();" class="btn tblminwidth-90 btn-primary" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="restTimelineFileter();" class="btn btn-sm btn-primary" />
+								onclick="restTimelineFileter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>
@@ -1358,7 +1358,7 @@ function addNotes() {
 	
 	result = result  +'                  <div class="col-md-3" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary" onClick ="storeInvoiceNotes();" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn tblminwidth-90 btn-primary" onClick ="storeInvoiceNotes();" />'; 
   /*   result = result +'                     <input type="button" value="Cancel" name="btnAddPr" id="save_note" class="btn btn-sm btn-default" onClick ="storeClientNotes('+orgRelationId+');" />'; */ 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
