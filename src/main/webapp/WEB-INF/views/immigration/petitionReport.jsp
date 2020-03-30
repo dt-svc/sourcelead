@@ -107,9 +107,9 @@ $(document).ready(function(){
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onclick="runImmigrationReport();">
-            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetImmForm();">
-            <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/reportsDashboard'"class="btn btn-default ml">
+            <input value="Run" class="btn btn-primary btnSuccess tblminwidth-90" type="button" onclick="runImmigrationReport();">
+            <input value="Reset" class="btn btn-default ml10 tblminwidth-90" type="button" onclick="resetImmForm();">
+            <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/reportsDashboard'"class="btn btn-default ml tblminwidth-90">
           </div>
         </div>
       </div>      
