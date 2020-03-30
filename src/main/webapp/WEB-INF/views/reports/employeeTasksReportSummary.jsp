@@ -303,8 +303,8 @@
 			</div>
 	        <div class="clearfix mb mr">
 	        <div class="pull-right mt">
-				<input type="button" value="Apply" id="search_requiremet" onclick="getDynamicEmployeeTaskSummaryRepotList();closePopUp();" class="btn btn-sm btn-success">
-				<input type="button" value="Reset" id="clear_search" onclick="resetTaskRpoertFilter();" class="btn btn-sm btn-primary">
+				<input type="button" value="Apply" id="search_requiremet" onclick="getDynamicEmployeeTaskSummaryRepotList();closePopUp();" class="btn tblminwidth-90 btn-primary mr">
+				<input type="button" value="Reset" id="clear_search" onclick="resetTaskRpoertFilter();" class="btn tblminwidth-90 btn-default">
 			</div>
 	        </div>
 	        <div>

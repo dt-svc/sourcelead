@@ -329,7 +329,7 @@ function RequirementWorkflow(){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Do you want to delete "+workFlowName+"</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"	<b href='javascript:void(0)'><input type='button' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\", \""+workFlowName+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
+			result = result +"	<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='requirementWorkflow.removeWorkFlowEntry(\""+workflowuuid+"\", \""+workFlowName+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='requirementWorkflow.cancel();'></b>";
 			result = result +"	</div>";
 			$("#popUp").empty().append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -489,7 +489,7 @@ function RequirementWorkflow(){
 			result = result +" <div class='project_inn_mask'></div>"; 
 			result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +" <p>Do you want to delete "+stageName+"?</p>";
-			result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteRequirementWorkflowStages(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+			result = result +' <b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="requirementWorkflow.deleteRequirementWorkflowStages(\''+stageUuid+'\', \''+workflowUuid+'\', \''+stageName+'\');"><input class="btnBg_white" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 			result = result +" </div>";
 			$("#popUp").append(result);
 			$("#remove_user_pop").slideDown(200);
@@ -1017,7 +1017,7 @@ function RequirementWorkflow(){
 				 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 				 result = result +" <p>Do you want to delete "+name+"?</p>";
 				 result = result + ' <div id="voidInvoiceId"/>';
-				 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteQuestionnaire(\''+uuid+'\',\''+name+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+				 result = result +' <b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="requirementWorkflow.deleteQuestionnaire(\''+uuid+'\',\''+name+'\');"><input class="btnBg_white" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 				 result = result +" </div>";
 				 $("#popUp").append(result);
 				 $("#remove_user_pop").slideDown(200);
@@ -1031,13 +1031,13 @@ function RequirementWorkflow(){
 					 result = result +" <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 					 result = result +" <p>Do you want to delete "+name+"?</p>";
 					 result = result + ' <div id="voidInvoiceId"/>';
-					 result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="requirementWorkflow.deleteAssignTask(\''+uuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
+					 result = result +' <b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="requirementWorkflow.deleteAssignTask(\''+uuid+'\');"><input class="btnBg_white" type="button" value="Cancel" onClick="requirementWorkflow.cancelTermination();"></b>';
 					 result = result +" </div>";
 					 $("#popUp").append(result);
 					 $("#remove_user_pop").slideDown(200);
 					 $(".project_inn_mask").fadeIn(200);
 					 }
-				 this.deleteQuestionnaire = function(uuid,name){
+				 this.deleteQuestionnaire = function(uuid,name){ 
 				 	  $.ajax({
 				 	    	type: "POST",
 				 	        url: sourceleadUrl+"/deleteQuestionnaireTemplateById?templateUuid="+uuid, 

@@ -321,8 +321,8 @@ function getBankDetails(){
 					 <div class="col-md-12">
 						 <hr>
 							<div class="pull-right">
-							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
-							  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/dashboard'" >
+							  <input type="submit" class="btn btn-primary mr tblminwidth-90" id="profile_submit" value="Save">
+							  <input type="button" class="btn btn-default tblminwidth-90" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/dashboard'" >
 							</div>
 					  </div>
 			 </div>
@@ -375,8 +375,8 @@ function getBankDetails(){
 				 <div class="col-md-7">
 				 <hr class="mr">
 					<div class="pull-right mr">
-					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr" />
-					  <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/dashboard'">
+					  <input type="submit" value="Save" id="save_button" onclick="checkPass();" class="btn btn-primary mr tblminwidth-90" />
+					  <input type="button" class="btn btn-default tblminwidth-90" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/dashboard'">
 					</div>
 				  </div>
 				  </form:form>

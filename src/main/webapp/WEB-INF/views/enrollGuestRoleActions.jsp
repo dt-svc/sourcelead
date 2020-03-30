@@ -88,8 +88,8 @@
 		        
 		        <div class="footerstyelsNew clearfix padding15">
 	                <div class="pull-right">
-	                    <input type="button" value="Save" id="save_client" onclick="saveActions();" class="btn btn-primary"> 
-			     		<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/guestOrgActionRoles'/>'" class="btn btn-default ml">
+	                    <input type="button" value="Save" id="save_client" onclick="saveActions();" class="btn btn-primary tblminwidth-90"> 
+			     		<input type="button" value="Cancel" onClick="javascript:window.location.href = '<c:url value='${appPath}/guestOrgActionRoles'/>'" class="btn btn-default ml tblminwidth-90">
 	                </div>
 	            </div>
 		        
