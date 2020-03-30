@@ -208,11 +208,12 @@ function toDate(selector) {
 	</div>
 
   	<div class="project_tabs_inn_table vendor_wrap_inn_table" >
+  	<div id="applicantsLoderDiv"></div>
 		<div id="requirementReportsDiv12" class="repDataSearch"></div>
 	</div>      
        </div>
 	<div class="repTab2" id="gridshow" style="display: none;">
-	 <div id="applicantsLoderDiv"></div>
+	<!--  <div id="applicantsLoderDiv"></div> -->
 	  	<div class="chatNew" id="container"></div>	 
 	  </div>       
       
@@ -523,7 +524,7 @@ function getDayWiseReports(){
 	}else{
 		document.getElementById("reportEndDate").style.display="none";
 	}
-		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:50px;');
+		$("#applicantsLoderDiv").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; right:0px; margin:0px auto; z-index:10000; background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
          type : "POST",
          url: sourceleadUrl+"/getApplicantReceivedReports?"+tokenParamName+"="+tokenValue+"&reportType="+reportType+"&startDate="+startDate+"&endDate="+endDate+"&searchValue="+searchValue,     

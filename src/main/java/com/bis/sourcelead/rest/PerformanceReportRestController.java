@@ -2194,7 +2194,7 @@ public class PerformanceReportRestController {
 					}
 				
 				ResponseList<Candidate> list = candidateService.getAllCandidatesByCreatedByUserCode(candidateDTO,orgLocations,userCode,searchDates);
-				File file = null;
+					File file = null;
 				file = pdfUtil.recruiterReprtsCandidateListPdfTable(list, orgLocations,searchDates);
 			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
 			if (mimeType == null) {

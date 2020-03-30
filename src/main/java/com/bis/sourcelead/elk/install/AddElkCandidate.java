@@ -180,7 +180,10 @@ public class AddElkCandidate {
 				candidateIndex.setInvitationstatus(rs.getString("INVITATION_STATUS"));
 				candidateIndex.setStatus(rs.getInt("STATUS"));
 				candidateIndex.setTerminateReason(rs.getString("TERMINATE_REASON"));
-
+				
+				if(rs.getString("CANDIDATE_SOURCE") != null) {
+				candidateIndex.setCandidateSource(rs.getString("CANDIDATE_SOURCE"));
+				}
 				candidateIndex.setSkillsName(rs.getString("SKILLS_NAME"));
 				if (rs.getString("VISA_TYPE") != null) {
 					candidateIndex.setVisaType(rs.getString("VISA_TYPE").split(","));

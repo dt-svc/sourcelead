@@ -6,11 +6,7 @@ public class ProjectDetailsDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String projectId;
-	
 	private String projectName;
-	
-	private String dateFormat;
 	
 	private String projectStartDate;
 	
@@ -20,17 +16,20 @@ public class ProjectDetailsDTO implements Serializable{
 	
 	private String client;
 	
-	private String managerName;
+	private String managerLevel1;
 	
+	private String managerLevel2;
 	
+	private String managerLevel1ImgUrl;
+	
+	private String managerLevel2ImgUrl;
+	
+	private String displayManager;
+	
+	private String displayManagerImgUrl;
+	
+	private String projectStatus;
 
-	public String getProjectId() {
-		return projectId;
-	}
-
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
 
 	public String getProjectName() {
 		return projectName;
@@ -38,14 +37,6 @@ public class ProjectDetailsDTO implements Serializable{
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
-	}
-
-	public String getDateFormat() {
-		return dateFormat;
-	}
-
-	public void setDateFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
 	}
 
 	public String getProjectStartDate() {
@@ -80,14 +71,60 @@ public class ProjectDetailsDTO implements Serializable{
 		this.client = client;
 	}
 
-	public String getManagerName() {
-		return managerName;
+	public String getManagerLevel1() {
+		return managerLevel1;
 	}
 
-	public void setManagerName(String managerName) {
-		this.managerName = managerName;
+	public void setManagerLevel1(String managerLevel1) {
+		this.managerLevel1 = managerLevel1;
 	}
-	
-	
+
+	public String getManagerLevel2() {
+		return managerLevel2;
+	}
+
+	public void setManagerLevel2(String managerLevel2) {
+		this.managerLevel2 = managerLevel2;
+	}
+
+	public String getManagerLevel1ImgUrl() {
+		return managerLevel1ImgUrl;
+	}
+
+	public void setManagerLevel1ImgUrl(String managerLevel1ImgUrl) {
+		this.managerLevel1ImgUrl = managerLevel1ImgUrl;
+	}
+
+	public String getManagerLevel2ImgUrl() {
+		return managerLevel2ImgUrl;
+	}
+
+	public void setManagerLevel2ImgUrl(String managerLevel2ImgUrl) {
+		this.managerLevel2ImgUrl = managerLevel2ImgUrl;
+	}
+
+	public String getProjectStatus() {
+		return projectStatus;
+	}
+
+	public void setProjectStatus(String projectStatus) {
+		this.projectStatus = projectStatus;
+	}
+
+	public String getDisplayManager() {
+		return displayManager;
+	}
+
+	public void setDisplayManager(String displayManager) {
+		this.displayManager = displayManager;
+	}
+
+	public String getDisplayManagerImgUrl() {
+		return displayManagerImgUrl;
+	}
+
+	public void setDisplayManagerImgUrl(String displayManagerImgUrl) {
+		this.displayManagerImgUrl = displayManagerImgUrl;
+	}
 
 }
