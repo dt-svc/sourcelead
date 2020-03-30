@@ -1065,8 +1065,8 @@ function rejectApplicant(submissionId,requirementId,submissionType,candidateName
 		result = result +"		<p>Do you want to move <strong>"+candidateName+"</strong> to "+selectBox+"</p>";
 	}
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"<b href='javascript:void(0)'><input type='button' onClick='closeRequirementPopup("+true+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");' value='Ok'>";
-	result = result +"<input class='u_can_color' type='button' value='Cancel' onClick='closeRequirementPopup("+false+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");'></b>";
+	result = result +"<b href='javascript:void(0)'><input type='button' class='btnBg_blue' onClick='closeRequirementPopup("+true+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");' value='Ok'>";
+	result = result +"<input class='btnBg_white' type='button' value='Cancel' onClick='closeRequirementPopup("+false+","+submissionId+","+requirementId+",\""+submissionType+"\",\""+selectBox+"\");'></b>";
 	result = result +"	</div>";
 	$("#popUp").empty().append(result);
 	$("#popUp").show();
@@ -1272,7 +1272,7 @@ function closeRequirementPopup(booleanValue,submissionId,requirementId,submissio
     					result = result +"	<div id='stageComment"+submissionId+"' class='remove_user_pop remove_user_pop_a'>";
     					result = result +"	<textarea  id='commentForStage' name='reasonForSpoc' data-validation='required validate_Description validate_length length2-250' placeholder='Comment Is Mandatory For This Stage.' onkeypress=';' ></textarea>";
     					result = result + ' <div id="commentForStageDiv"/>';
-    					result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Submit' onclick='commentForStage("+reqId+", "+subId+", \""+selectBox+"\", \""+submissionType+"\");'></b>";
+    					result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' class='btnBg_blue' value='Submit' onclick='commentForStage("+reqId+", "+subId+", \""+selectBox+"\", \""+submissionType+"\");'></b>";
     					result = result +"	</div>";
     					$("#popUp").empty().append(result);
     	    	        $("#stageComment"+submissionId).slideDown(200);
@@ -1321,7 +1321,7 @@ function closeRequirementPopup(booleanValue,submissionId,requirementId,submissio
 		    			result = result+" and "+responseData.tasksCount +" task(s) ";
 		    		}
 		    		result =result+"for the "+responseData.stageName +"</div>";
-		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="u_can_color" type="button" value="Cancel" onClick="cancelTermination();"></b>';
+		    		result = result +' <b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Ok" onclick="sendEmailQuestionaireAndCopyTasksToCandidate(\''+responseData.questionnaireId+'\',\''+submissionId+'\',\''+responseData.stageName+'\', \''+responseData.stageId+'\', \''+responseData.questionnaireUuid+'\' , \''+responseData.stageUuid+'\');"><input class="btnBg_white" type="button" value="Cancel" onClick="cancelTermination();"></b>';
 		    		result = result +" </div>";
 					$("#popUp").empty().append(result);
 					$("#popUp").show();
@@ -1733,7 +1733,7 @@ function addReqNotes(requirementId) {
 	
 	result = result  +'                  <div class="clearfix mt5" id="docAddButton"> ';
 	result = result  +'                  <div class="pull-right mt5"> ';
-    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn btn-sm btn-primary mr" onClick ="storeReqNotes('+requirementId+');" />'; 
+    result = result +'                     <input type="button" value="Add" name="btnAddPr" id="save_note" class="btn tblminwidth-90 btn-primary mr" onClick ="storeReqNotes('+requirementId+');" />'; 
 	result = result  +'                  </div> ';
 	result = result  +'                  </div> ';
 	result = result  +'                </div>';
@@ -2832,7 +2832,7 @@ function exportPipelineToExcel(requirementId,submissionType){
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#pipeline_user_pop").slideDown(200);
@@ -2865,7 +2865,7 @@ function exportPipelineToPdf(requirementId,submissionType){
 			result = result +"	   <div id='pipeline_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 			result = result +"	</div>";
 			$("#popUp").append(result);
 			$("#pipeline_user_pop").slideDown(200);
@@ -2997,7 +2997,7 @@ function customizeScore(requirementId){
 			        result = result +'		                    <div class="col-md-3 paddingRight lblup ">   ';
 			        result = result +'		                   <label>Choose City</label>';
 			        result = result +'                              <input type="text" class="form-control positionRelative"  multiple data-placeholder="select city" multiple name="apiLocation"  id="apiLocation">';
-			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2 ref-top" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
+			        result = result +'                              <i class="fa fa-refresh btn btn-primary refresh-icon mr2" title="Refresh" onClick="refreshGoogleApiCity(\''+apiLocation+'\');"></i>';
 			        result = result +'		                  </div>  ';
 			        
 			        result = result +'		                  <div class="col-md-7 paddingRight lblup"> ';   
@@ -3281,7 +3281,7 @@ function customizeScore(requirementId){
 			        result = result +'		            <div class="form-footer clearfix">                                              ';
 
 	
-			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn btn-sm btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn btn-sm btn-default ml10" onclick="closeCustomizePop();">Cancel</a> </div>';
+			        result = result +'		              <div class="pull-right mr"> <a href="javascript:void(0)" title="Submit" class="btn tblminwidth-90 btn-primary" onclick="updateCutomize('+requirementId+');">Apply</a> <a href="javascript:void(0)" title="Cancel" class="btn tblminwidth-90 btn-default ml10" onclick="closeCustomizePop();">Cancel</a> </div>';
 
 			        result = result +'		            </div>'; 
 			        result = result	+ '               <form>';

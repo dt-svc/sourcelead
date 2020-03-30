@@ -475,11 +475,11 @@ function addDocument(candidateId, documentUUID) {
 	result = result+'</div>';  
 	
 	result = result+'<div class="clearfix mr mt" id="docUpdateButton" style="display: none;">';
-	result = result+'<button type="button" id="update_doc" class="btn btn-sm btn-primary pull-right">Update</button>';
+	result = result+'<button type="button" id="update_doc" class="btn tblminwidth-90 btn-primary pull-right">Update</button>';
 	result = result+'</div>';
 	
 	result = result  +'<div class="clearfix mr" id="docAddButton">';
-    result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateDocument('+candidateId+', \''+documentUUID+'\');" />'; 
+    result = result +'<input type="button" value="Upload" name="btnAddPr" id="save_doc" class="btn tblminwidth-90 btn-primary pull-right" onClick ="storeCandidateDocument('+candidateId+', \''+documentUUID+'\');" />'; 
 	result = result  +'</div>';
 	result = result  +'</div>';
 	result = result  +'</form>';
@@ -745,7 +745,7 @@ function removeDocument(candidateId, documentId){
 	result = result +"	   <div id='remove_user_pop_documents' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Documents</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteDocument("+candidateId+","+documentId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deleteDocumentPopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteDocumentPopUp").empty();
 	$("#deleteDocumentPopUp").append(result);
@@ -935,8 +935,8 @@ function createDocsType(candidateId){
 	result = result +'</div>';
     
 	result = result +'<div class="modal-footer clearfix">';
-	result = result +'<button type="submit" id="submit_docs" class="btn btn-sm btn-primary mr10">Send</button>';
-	result = result +'<button type="button" class="btn btn-sm btn-default" onclick="closeRD();">Cancel</button>';
+	result = result +'<button type="submit" id="submit_docs" class="btn tblminwidth-90 btn-primary mr10">Send</button>';
+	result = result +'<button type="button" class="btn tblminwidth-90 btn-default" onclick="closeRD();">Cancel</button>';
 	result = result +' </div>';
 	result = result +'</div>';
 	result = result + '</form>';

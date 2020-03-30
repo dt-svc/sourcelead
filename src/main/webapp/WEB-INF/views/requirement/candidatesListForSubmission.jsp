@@ -126,9 +126,9 @@
 				  <div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 							<input type="button" value="Search" id="search_requiremet"
-								onclick="getCandidatesTableList();closePop();" class="btn btn-sm btn-success" />
+								onclick="getCandidatesTableList();closePop();" class="btn tblminwidth-90 btn-primary" />
 							<input type="button" value="Reset" id="clear_search"
-								onclick="clearCandAdvSearch();getCandidatesTableList();" class="btn btn-sm btn-primary" />
+								onclick="clearCandAdvSearch();getCandidatesTableList();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 					
@@ -204,7 +204,7 @@ function submitCandidatesToJob(){
     	 result = result +"<span class='paddingLeft mt4'>Attach Resume</span></div>";
     	 
 		result = result +" <div class='mr pull-left'>";
-		result = result +" <input type='button' value='Submit' onclick='submitApplicantsToJob()' class='btn btn-primary btn-sm'>";
+		result = result +" <input type='button' value='Submit' onclick='submitApplicantsToJob()' class='btn btn-primary tblminwidth-90'>";
 		result = result +"</div>";
 		result = result +" <div class='dynamic_search pull-left'>";
 	 	result = result +" <input type='text' placeholder='Search' id='candDataTableSearch'/>";

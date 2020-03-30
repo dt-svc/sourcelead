@@ -2364,31 +2364,31 @@ $(document).ready(function () {
 							<input type="button" value="Submit for Approval"
 								id="submitForApproval"
 								onclick="storeRequirement('submitForApproval');"
-								class="btn btn-primary" style="display: none;">
+								class="btn btn-primary tblminwidth-90" style="display: none;">
 						</c:if>
 
 						<c:if
 							test="${empty requirement.requirementSubmissionStatus || requirement.requirementSubmissionStatus == 'DRAFT' || requirement.requirementSubmissionStatus == 'REJECTED'}">
 							<input type="button" value="Draft" id="draft"
-								onclick="storeRequirement('draft'); " class="btn btn-danger ml">
+								onclick="storeRequirement('draft'); " class="btn btn-danger ml tblminwidth-90">
 						</c:if>
 						<c:if test="${requirement.requirementSubmissionStatus == 'OPEN'}">
 							<!-- <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >  -->
 							<input type="button" value="Save & Continue" id="save"
 								onclick="storeRequirement('saveAndContinue');"
-								class="btn btn-primary ml">
+								class="btn btn-primary ml tblminwidth-90">
 						</c:if>
 						<c:if test="${requirement.requirementSubmissionStatus != 'OPEN'}">
 							<!-- <input type="button" value="Save" id="save" onclick="storeRequirement('save');" class="btn btn-primary ml" >  -->
 							<input type="button" value="Save & Continue" id="save"
 								onclick="storeRequirement('saveAndContinue');"
-								class="btn btn-primary ml">
+								class="btn btn-primary ml tblminwidth-90">
 						</c:if>
 
 
 						<input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/jobsList'"
-							class="btn btn-default ml">
+							class="btn btn-default ml tblminwidth-90">
 					</div>
 				</div>
 			</div>
