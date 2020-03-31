@@ -549,4 +549,22 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 	public BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId) {
 		return bgcCommonDao.getBgcComponentJsonMapByTempalteIdAndFromId(templateId,formId);
 	}
+	
+	@Override
+	public Boolean validateBgcStatusNameByOrgLocationId(String statusName, Long statusId, Long orgLocationId){
+		try{
+		List<BgcStatus> bgcStatus = new ArrayList<BgcStatus>();
+		Boolean flag = false;
+		bgcStatus = bgcCommonDao.validateBgcStatusNameByOrgLocationId(statusName, statusId, orgLocationId);
+		if(bgcStatus != null && bgcStatus.size() > 0){
+			flag = true;
+		}else{
+			flag = false;
+		}
+		return flag;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
