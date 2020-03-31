@@ -697,4 +697,29 @@ function bgcCandidate(){
 			$(".project_inn_mask").fadeOut(200);
 		}
 		
+		this.validateBgcStatusName = function(){
+			var statusName = $("#statusName").val();
+			var addOrEdit = $("#statusName").attr("statusName");
+			var statusId = $("#id").val();
+			if(addOrEdit != null && addOrEdit == "add"){
+				statusId = 0;
+			}
+			if(statusName != null && addOrEdit != null){
+			 $.ajax({
+				 type: "GET",
+				 url : vmsUrl + "/bgc/validateBgcStatusNameByOrgLocationId?statusName="+statusName+"&statusId="+statusId,
+				 success:function(dataList){
+					 if (dataList.response =="true") {
+		                    if ($('#statusNameDiv').find('p.jquery_form_error_message').length === 0)
+		                        $("#statusName").after("<p class='jquery_form_error_message'>" + statusName + " Already Exists</span>");
+		                    $("#saveBgcStatusBtn ").attr("disabled", "disabled");
+		                } else {
+		                    $('#statusNameDiv').find('p.jquery_form_error_message').remove();
+		                    $("#saveBgcStatusBtn").removeAttr("disabled");
+		                }
+				 }
+			 })
+		}
+		}
+		
 }
