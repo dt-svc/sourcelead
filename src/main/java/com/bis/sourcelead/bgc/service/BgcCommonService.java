@@ -93,4 +93,6 @@ public interface BgcCommonService {
 	BgcComponentJsonMap saveTemplateComponentJsonMap(Long id, Long templateId, String formId, String sentTo, String jsonStringData, OrgLocations orgLocations);
 	
 	BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId);
+	
+	Boolean validateBgcStatusNameByOrgLocationId(String statusName, Long statusId, Long orgLocationId)throws Exception;
 } 

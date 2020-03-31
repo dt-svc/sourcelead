@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -657,5 +658,28 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		}
 
 		return bgcComponentJsonMap;
+	}
+
+	@Override
+	public List<BgcStatus> validateBgcStatusNameByOrgLocationId(String statusName, Long statusId, Long orgLocationId){
+		try{
+			StringBuilder queryBuilder1 = new StringBuilder("");
+			Session session = sessionFactory.getCurrentSession();
+			List<BgcStatus> bgcStatus = new ArrayList<BgcStatus>();
+			if(statusId != null && statusId != 0) {
+				queryBuilder1.append(" and bgcStatus.id !=:statusId");
+			}
+			String queryString = "from BgcStatus bgcStatus where bgcStatus.statusName =:statusName and bgcStatus.orgLocationId =:orgLocationId";
+			Query query = session.createQuery(queryString + queryBuilder1);
+			if(statusId != null && statusId != 0) {
+				query.setLong("statusId", statusId);
+			}
+			bgcStatus = query.setString("statusName", statusName).setLong("orgLocationId", orgLocationId).list();
+			return bgcStatus;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 }
