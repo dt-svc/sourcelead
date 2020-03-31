@@ -50,8 +50,9 @@
         <div class="clearfix mb">
          <input type="hidden" id ="id" name ="id" val=""/>
             <label class="noPad">Name <b class="valStar">*</b></label>
-            <div class="clearfix">
-                <input class="form-control" placeholder="Name" type="text"  id ="statusName" name="statusName" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
+            <div class="clearfix" id = "statusNameDiv">
+                <input class="form-control" placeholder="Name" type="text"  id ="statusName" name="statusName" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber"
+                onkeyup = "bgc.validateBgcStatusName();" statusName = "add">
             </div>
         </div>
         <div class="clearfix mb">
@@ -234,11 +235,14 @@ dynamicStatusPagination = function(url) {
 <script type="text/javascript">
 $(function(){
   $("#addStatus").click(function() {
-    $(".mask, #modalTasktype").fadeIn();
+	  $("#statusName").attr("statusName", "add");
+	  $(".mask, #modalTasktype").fadeIn();
     $('#addStatus')[0].reset();
   });
   $(".popClose").click(function() {
     $(".mask, #modalTasktype").fadeOut();
+    $('#statusNameDiv').find('p.jquery_form_error_message').remove();
+    $("#saveBgcStatusBtn").removeAttr("disabled");
   });
 });
 function colorPicker() {
@@ -289,13 +293,13 @@ function  ediBgcStatusById(statusId) {
 			type : "GET",
 			url : vmsUrl + "/bgc/getBgcStatusById?id="+statusId,
 			success : function(data) {
-				console.log(data);
 				if (data) {
 					$(".mask, #modalTasktype").fadeIn();
 					$("#statusName").val(data.statusName);
 					$("#id").val(data.id);
 					$("#favcolor").val(data.color);
 					$("textarea#description").val(data.description);
+					$("#statusName").attr("statusName", "edit");
 				} else {
 					showError("Operation failed, please try again");
 				}
