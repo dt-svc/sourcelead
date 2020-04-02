@@ -54,7 +54,7 @@ function after(){
 	result = result +"<div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"<p><strong>Applicant attend Interview ?</strong></p>";
 	result = result +"<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField'  value='Yes' onclick='interviewTemplateForm();' style='background-color:#1ab394'/><input class='u_can_color' type='button' onclick='feedback();' value='No'></b>";
+	result = result +"<b href='javascript:void(0)'><input type='button' id='deleteCustomField' class='btnBg_blue' value='Yes' onclick='interviewTemplateForm();' style='background-color:#1ab394'/><input class='btnBg_white' type='button' onclick='feedback();' value='No'></b>";
 	result = result +"</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
