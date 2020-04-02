@@ -155,9 +155,7 @@ dynamicComponentPagination = function(url) {
                "render": function (data, type, opt, meta) {
                    var result = "";
                    if (opt.description !== null && opt.description !== '' && opt.description !== 'undefined') {
-                   	 if(roleActionsArray.indexOf("ROLE_VIEW_BACKGROUND_DETAILS") > -1){ 
                    		 result = result + "<td><div class='tbldata-dotdot-sm' title = '"+opt.description +"'>"+opt.description+"</div></td>";
-                   	 }
                    } else {
                        result = result + "<td><div class='tbldata-dotdot-100'>---</div></td>";
                    }
