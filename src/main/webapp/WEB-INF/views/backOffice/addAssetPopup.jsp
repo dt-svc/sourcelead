@@ -453,11 +453,13 @@ function getCustomDependentField(sectionId){
      dateFormat: finalDateFormat,
      changeMonth: true,
  	  changeYear: true, 
+ 	  maxDate: 0
  });
  $('#purchaseDate').datepicker({
      dateFormat: finalDateFormat,
      changeMonth: true,
- 	  changeYear: true, 
+ 	  changeYear: true,
+ 	 maxDate: 0
  });
  $('#depreciationDate').datepicker({
      dateFormat: finalDateFormat,
