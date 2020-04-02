@@ -3393,6 +3393,7 @@ $(document).keyup(function(e) {
 function candSourceFunction() {
 	
     var input, filter, ul, li, a, i;
+    if($("#sourceInput").length > 0){
     input = document.getElementById("sourceInput");
     filter = input.value.toUpperCase();
     ul = document.getElementById("sourceUL");
@@ -3406,6 +3407,7 @@ function candSourceFunction() {
 
         }
     }
+}
 }
 
 $(document).keyup(function(e) {
