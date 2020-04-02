@@ -145,10 +145,10 @@
 			         
 	         <div class="clearfix">
 				<div class="pull-right">
-				<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/settings'">
+				<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/settings'">
 				</div>
 				<div class="pull-right">
-				<input type="submit" value="Save" id="save_federal_button" class="btn btn-primary mr">
+				<input type="submit" value="Save" id="save_federal_button" class="btn btn-primary mr tblminwidth-90">
 				</div>
 			</div>
 			         

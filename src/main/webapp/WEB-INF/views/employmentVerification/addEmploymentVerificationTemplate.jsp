@@ -161,8 +161,8 @@
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" id="save_employment_template" value="Add" class="btn btn-primary" onclick="saveEmploymentVerificationTemplate();">
-			<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/employmentVerificationTemplateList'/>'">
+            <input type="button" id="save_employment_template" value="Add" class="btn btn-primary tblminwidth-90" onclick="saveEmploymentVerificationTemplate();">
+			<input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/employmentVerificationTemplateList'/>'">
           </div>
         </div>
       </div>

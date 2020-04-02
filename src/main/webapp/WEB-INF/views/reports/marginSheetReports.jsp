@@ -160,7 +160,7 @@ function exportSheet(exportType){
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='candidtaeCancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";
 			$("#emptyPopup").append(result);
 			$("#candidate_user_pop").slideDown(200);
@@ -552,8 +552,8 @@ function marginpagination(url){
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
 <!-- 							<input type="button" value="Apply" id="applicant_search_requiremet" onclick="closeApplicantFilterPop();getApplicantsJoinedList();" style="display: none" class="btn btn-sm btn-success mr" /> -->
-							<input type="button" value="Apply" id="recruiter_search_requiremet" onclick="closeApplicantFilterPop();getMarginSheetList();" style="display: inline-block" class="btn btn-sm btn-success mr" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetApplicantFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="recruiter_search_requiremet" onclick="closeApplicantFilterPop();getMarginSheetList();" style="display: inline-block" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetApplicantFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>

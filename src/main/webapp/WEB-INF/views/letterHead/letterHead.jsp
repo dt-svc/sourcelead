@@ -189,9 +189,9 @@
                 <div class="pull-right">
 <!--                   <button type="button" class="btn btn-default">Stored</button> -->
 <!--                   <button type="button" class="btn btn-default">Preview</button> -->
-                  <button type="button" class="btn btn-primary" id="saveButton" onmouseover="validateTemplateType();"   onclick="saveLetterheadData();">Save</button>
+                  <button type="button" class="btn btn-primary tblminwidth-90" id="saveButton" onmouseover="validateTemplateType();"   onclick="saveLetterheadData();">Save</button>
 <!--                   <button type="button" class="btn btn-primary">Print</button> -->
-						<button type="button" class="btn btn-default" onClick="javascript:window.location.href = '<c:url value='${appPath}/letterHeadList'/>'">Cancel</button>
+						<button type="button" class="btn btn-default tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/letterHeadList'/>'">Cancel</button>
                 </div>
               </div>
             </div>

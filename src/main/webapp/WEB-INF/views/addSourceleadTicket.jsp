@@ -143,8 +143,8 @@ $(function() {
     <div class="form-footer clearfix mt">
       <div class="col-lg-12">
         <div class="pull-right">
-          <input type="button" value="Report" class="btn btn-primary" id="ticket_save" onclick="saveTickt();">
-          <input type="button" value="Cancel" class="btn btn-default ml" onClick="javascript:window.location.href = '<c:url value='${appPath}/sourceleadTicketList'/>'">
+          <input type="button" value="Report" class="btn btn-primary tblminwidth-90" id="ticket_save" onclick="saveTickt();">
+          <input type="button" value="Cancel" class="btn btn-default ml tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/sourceleadTicketList'/>'">
         </div>
       </div>
     </div>
