@@ -1611,4 +1611,6 @@ public class Constants {
 
 	//added on 4th nov 2019
 	public static final String[] LEAVE_CONFIGURATION_ROLES = { "Reporting Manager", "Project Manager", "Team Leader"};
+	
+	public static final String[] DEFAULT_BGC_COMPONENTS = { "Address", "Education", "Criminal Background", "Previous Employment", "Social Media"};
 }

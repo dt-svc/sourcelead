@@ -2,6 +2,7 @@ package com.bis.sourcelead.bgc.dao.Impl;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -269,7 +270,26 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 				 searchBuilder.append(" AND (bc.name like '%"+searchValue+"%')");
 				 searchBuilder.append(" OR (bc.description like '%"+searchValue+"%')");
 			 } 
-			 
+			 // Below code is used to save the default components if current ORG LOCATION don't have any configured component.
+			 String query = "select count(*) from BgcComponent bc where bc.orgLocationId =:orgLocationId ";  
+			 Long componentCount = (Long)session.createQuery(query).setLong("orgLocationId",orgLocations.getId()).uniqueResult();
+			 if(componentCount == null || componentCount == 0) {
+				 System.out.println("inserting default components for the orglocation id"+orgLocations.getId());
+				 String[] defaultComponentList = Constants.DEFAULT_BGC_COMPONENTS;
+				 for(String componentName : defaultComponentList) {
+					BgcComponent defaultComponent = new BgcComponent();
+					defaultComponent.setOrgLocationId(orgLocations);
+					defaultComponent.setName(componentName);
+					defaultComponent.setDescription(componentName);
+					Date date = new Date();
+					Date currentDate = commonUtil.orgLocationCommonDate(date, orgLocations);
+					defaultComponent.setCreatedDate(currentDate);
+					defaultComponent.setConfigureType(Constants.DEFAULT);
+					saveOrUpdateBgcComponentListByOrgLocationId(defaultComponent) ; 
+					System.out.println("Saving default component "+componentName+" for the orglocation id"+orgLocations.getId());
+				 }
+				 
+			 }// End of saving default compoNents for current  ORG LOCATION.
 			 bgcReturnList= session.createQuery("from BgcComponent bc where bc.orgLocationId =:orgLocationId "+searchBuilder.toString()+" order by bc.updatedDate desc, bc.id desc ").
 					                                   setLong("orgLocationId",orgLocations.getId()).list();
 			List<BgcComponentDTO> bgcComponentDtoList = new ArrayList<BgcComponentDTO>();	
