@@ -244,11 +244,11 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
                <!--  <input type="button" value="Search" id="search_vendor" onclick="getVendorList();" class="btn btn-sm btn-success"/>
                  <input type="button" value="Clear" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> -->
               <div id="enableVendorAdvancedSearch"> 
-              	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn tblminwidth-90 btn-primary"/>
+              	<input type="button" value="Search" id="search_client" onclick="getVendorList();" class="btn tblminwidth-90 btn-primary mr"/>
               	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn tblminwidth-90 btn-default"/> 
               	</div>
               	<div id="enableVendorContactAdvancedSearch"> 
-              	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn tblminwidth-90 btn-primary"/>
+              	<input type="button" value="Search" id="search_client" onclick="getVendorContactList();" class="btn tblminwidth-90 btn-primary mr"/>
               	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn tblminwidth-90 btn-default"/> 
               	</div>
               
@@ -1831,7 +1831,7 @@ function resetVendorContactFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeVendorFilterPop();getVendorList();" class="btn tblminwidth-90 btn-primary mr" />
 							<input type="button" value="Reset" id="clear_search" onclick="resetVendorFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
@@ -1879,7 +1879,7 @@ function resetVendorContactFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn tblminwidth-90 btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="vendorClientContactFilterPop();getVendorContactList();" class="btn tblminwidth-90 btn-primary mr" />
 							<input type="button" value="Reset" id="clear_search" onclick="resetVendorContactFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>

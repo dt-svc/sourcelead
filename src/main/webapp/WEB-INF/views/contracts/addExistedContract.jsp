@@ -534,8 +534,8 @@ $(document).ready(function(){
       <div class="form-footer clearfix contrFoot">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Finalize" id="save_template" onmouseover="validateContractTitle();" onclick="saveExistigContract();" class="btn btn-success ml10">
-            <input type="button" value="Cancel" class="btn btn-default ml10" id="cancel_contract" onclick="cancelContract();">
+            <input type="button" value="Finalize" id="save_template" onmouseover="validateContractTitle();" onclick="saveExistigContract();" class="btn btn-primary ml10 tblminwidth-90">
+            <input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" id="cancel_contract" onclick="cancelContract();">
           </div>
         </div>
       </div>

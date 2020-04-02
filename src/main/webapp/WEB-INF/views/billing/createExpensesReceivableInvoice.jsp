@@ -306,9 +306,9 @@ function checkBox(){
       
           <footer class="form-footer">
               <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" id="saveButtonId" onclick="saveInvoice('DRAFT');">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml" id="sendButtonId" onclick="saveInvoice('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
+                  <button type="button" class="btn tblminwidth-90 btn-primary" id="saveButtonId" onclick="saveInvoice('DRAFT');">Save</button>
+                  <button type="button" class="btn tblminwidth-90 btn-primary ml" id="sendButtonId" onclick="saveInvoice('SENT')">Send</button>
+                 <button type="button" class="btn tblminwidth-90 btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
               </div>
           </footer>
           </form:form>
