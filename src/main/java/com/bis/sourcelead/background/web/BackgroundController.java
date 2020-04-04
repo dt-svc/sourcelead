@@ -931,4 +931,24 @@ public class BackgroundController {
 		}
 		
 	}
+	
+	@RequestMapping(value = "/validateBgcComponentNameByOrgLocationId")
+	@ResponseBody
+	public Response<Boolean> validateBgcComponentNameByOrgLocationId(
+			@RequestParam(value = "componentName", required = true)String componentName,
+			@RequestParam(value = "componentId", required = false)Long componentId,
+			HttpServletRequest request){
+		try{
+			Response<Boolean> respone = new Response<Boolean>();
+			Boolean flag;
+			Long orgLocationId  = (Long) SourceLeadSessionManager.getSessionAttribute(request,	"orgLocationId");
+			flag = bgcCommonService.validateBgcComponentNameByOrgLocationId(componentName, componentId, orgLocationId);
+			respone.setResponse(flag.toString());
+			return respone;
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 }

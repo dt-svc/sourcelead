@@ -712,10 +712,34 @@ function bgcCandidate(){
 					 if (dataList.response =="true") {
 		                    if ($('#statusNameDiv').find('p.jquery_form_error_message').length === 0)
 		                        $("#statusName").after("<p class='jquery_form_error_message'>" + statusName + " Already Exists</span>");
-		                    $("#saveBgcStatusBtn ").attr("disabled", "disabled");
+		                    $("#saveBgcStatusBtn ").addClass("disabled");
 		                } else {
 		                    $('#statusNameDiv').find('p.jquery_form_error_message').remove();
-		                    $("#saveBgcStatusBtn").removeAttr("disabled");
+		                    $("#saveBgcStatusBtn").removeClass("disabled");
+		                }
+				 }
+			 })
+		}
+		}
+		this.validateBgcComponentName = function(){
+			var componentName = $("#componentName").val();
+			var addOrEdit = $("#componentName").attr("componentName");
+			var componentId = $("#id").val();
+			if(addOrEdit != null && addOrEdit == "add"){
+				componentId = 0;
+			}
+			if(componentName != null && addOrEdit != null){
+			 $.ajax({
+				 type: "GET",
+				 url : vmsUrl + "/bgc/validateBgcComponentNameByOrgLocationId?componentName="+componentName+"&componentId="+componentId,
+				 success:function(dataList){
+					 if (dataList.response =="true") {
+		                    if ($('#componentNameDiv').find('p.jquery_form_error_message').length === 0)
+		                        $("#componentName").after("<p class='jquery_form_error_message'>" + componentName + " Already Exists</span>");
+		                    $("#saveBgcComponentBtn ").addClass("disabled");
+		                } else {
+		                    $('#componentNameDiv').find('p.jquery_form_error_message').remove();
+		                    $("#saveBgcComponentBtn").removeClass("disabled");
 		                }
 				 }
 			 })

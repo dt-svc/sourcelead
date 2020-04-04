@@ -82,8 +82,9 @@
         <div class="clearfix mb">
               <input type="hidden" id ="id" name ="id" val=""/>
             <label class="noPad">Component Name <b class="valStar">*</b></label>
-            <div class="clearfix">
-               <input class="form-control" placeholder="Name" type="text"id ="componentName" name="name" field-name="Name" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
+             <div class="clearfix" id = "componentNameDiv">
+                <input class="form-control" placeholder="Name" type="text" id ="componentName" name="name" field-name="Name"
+                onkeyup = "bgc.validateBgcComponentName();" componentName="add" data-validation="required" data-validation="required validate_length length2-100 validate_AlphaNumber">
             </div>
         </div>
         <div class="clearfix mb">
