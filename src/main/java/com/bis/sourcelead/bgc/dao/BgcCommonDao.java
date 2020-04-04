@@ -78,4 +78,7 @@ public interface BgcCommonDao {
 	BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId);
 	
 	List<BgcStatus> validateBgcStatusNameByOrgLocationId(String statusName, Long statusId, Long orgLocationId)throws Exception;
+
+	List<BgcComponent> validateBgcComponentNameByOrgLocationId(String componentName, Long componentId,
+			Long orgLocationId);
 }

@@ -567,4 +567,22 @@ public class BgcCommonServiceImpl implements BgcCommonService{
 			return null;
 		}
 	}
+	@Override
+	public Boolean validateBgcComponentNameByOrgLocationId(String componentName, Long componentId, Long orgLocationId) {
+		// TODO Auto-generated method stub
+		try{
+			List<BgcComponent> bgcBgcComponentList = new ArrayList<BgcComponent>();
+			Boolean flag = false;
+			bgcBgcComponentList = bgcCommonDao.validateBgcComponentNameByOrgLocationId(componentName, componentId, orgLocationId);
+			if(bgcBgcComponentList != null && bgcBgcComponentList.size() > 0){
+				flag = true;
+			}else{
+				flag = false;
+			}
+			return flag;
+			}catch(Exception e){
+				e.printStackTrace();
+				return null;
+			}
+	}
 }

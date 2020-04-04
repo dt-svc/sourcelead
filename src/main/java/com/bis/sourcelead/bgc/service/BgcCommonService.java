@@ -95,4 +95,6 @@ public interface BgcCommonService {
 	BgcComponentJsonMap getBgcComponentJsonMapByTempalteIdAndFromId(Long templateId, String formId);
 	
 	Boolean validateBgcStatusNameByOrgLocationId(String statusName, Long statusId, Long orgLocationId)throws Exception;
+
+	Boolean validateBgcComponentNameByOrgLocationId(String componentName, Long componentId, Long orgLocationId);
 } 

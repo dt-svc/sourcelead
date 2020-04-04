@@ -702,4 +702,28 @@ public class BgcCommonDaoImpl implements BgcCommonDao {
 		}
 		
 	}
+
+	@Override
+	public List<BgcComponent> validateBgcComponentNameByOrgLocationId(String componentName, Long componentId,
+			Long orgLocationId) {
+		try {
+			StringBuilder queryBuilder1 = new StringBuilder("");
+			Session session = sessionFactory.getCurrentSession();
+			List<BgcComponent> bgcComponentList = new ArrayList<BgcComponent>();
+			if (componentId != null && componentId != 0) {
+				queryBuilder1.append(" and bgcComponent.id !=:componentId");
+			}
+			String queryString = "from BgcComponent bgcComponent where bgcComponent.name =:componentName and bgcComponent.orgLocationId =:orgLocationId";
+			Query query = session.createQuery(queryString + queryBuilder1);
+			if (componentId != null && componentId != 0) {
+				query.setLong("componentId", componentId);
+			}
+			bgcComponentList = query.setString("componentName", componentName).setLong("orgLocationId", orgLocationId)
+					.list();
+			return bgcComponentList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
