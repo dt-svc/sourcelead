@@ -253,12 +253,18 @@ function cpagination(url){
 	    	  		var result = "";
 	    	  		var isFavourite = "";
 	    	  		var isFavClass = "";
+	    	  		
+	    	  		//07-April-2020 = vishnu
+	    	  		//isAssociate is decalred as 'N' and associates are not shown as favourite when we click favourite.
+	    	  		//declaring a temp isAssociateTemp variable to check isAssociate or not.
+	    	  		var isAssociateTemp = full.isAssociate;
+	    	  		
 	    	  		var title = "title = 'Add as Favourite'";
-	    	  		if(full.isFavourite == '1' && isAssociate == "N"){
+	    	  		if(full.isFavourite == '1' && isAssociateTemp == "N"){
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            		title = "title = 'Change to un Favourite'";
-	            	} else if(full.isFavouriteAssociate == '1' && isAssociate == "Y") {
+	            	} else if(full.isFavouriteAssociate == '1' && isAssociateTemp == "Y") {
 	            		isFavourite = "checked";
 	            		isFavClass = "activestar-rating";
 	            	}
