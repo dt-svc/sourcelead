@@ -257,8 +257,8 @@ $(document).ready(function() {
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" class="btn btn-primary" id="save_holiday" onclick="saveHoliday();">
-            <input type="button" value="Cancel" onclick="cancel();" class="btn btn-default ml10">
+            <input type="button" value="Save" class="btn btn-primary tblminwidth-90" id="save_holiday" onclick="saveHoliday();">
+            <input type="button" value="Cancel" onclick="cancel();" class="btn btn-default ml10 tblminwidth-90">
           </div>
         </div>
       </div>

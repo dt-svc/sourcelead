@@ -82,8 +82,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         <div class="clearfix footerstyelsNew">
 	        <div class="col-lg-12">
 	          <div class="pull-right">
-	            <input value="Save" class="btn btn-success btnSuccess" id="save_contributionType" type="button" onclick="saveContribution();">
-	            <input value="Cancel" class="btn btn-default ml10" onclick="window.location='/pms/payrollConfiguration';" type="button">
+	            <input value="Save" class="btn btn-success btnSuccess tblminwidth-90" id="save_contributionType" type="button" onclick="saveContribution();">
+	            <input value="Cancel" class="btn btn-default ml10 tblminwidth-90" onclick="window.location='/pms/payrollConfiguration';" type="button">
 	          </div>
 	        </div>
       	</div>   

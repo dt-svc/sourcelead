@@ -132,8 +132,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			  
 			  <div class="col-md-12 mb mt">
 			  	<div class="pull-right mr">
-					<button type="button" class="btn btn-primary mr" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
-					<button type="button" class="btn btn-default" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/pms/payrollScheduleList'">Cancel</button>  
+					<button type="button" class="btn btn-primary mr tblminwidth-90" id="save_pay_schedule_button" name="save_pay_schedule_button" onclick="savePayrollSchedule();">Save</button> 
+					<button type="button" class="btn btn-default tblminwidth-90" id="" name="save_pay_schedule_button" onclick="javascript:window.location.href = '/pms/payrollScheduleList'">Cancel</button>  
 				</div>
 			  </div>
 			  </form:form>

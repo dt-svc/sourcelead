@@ -203,8 +203,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
         </div>
         <div class="clearfix"></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success btnSuccess" id="savePaymentButton" onclick="saveAssociateLoanAndAdvanceDetails();" >Save</button>
-          <button type="button" class="btn btn-default ml10" onclick="closeAssociateLoanAndAdvancePopup();" >Cancel</button>
+          <button type="button" class="btn btn-success btnSuccess tblminwidth-90" id="savePaymentButton" onclick="saveAssociateLoanAndAdvanceDetails();" >Save</button>
+          <button type="button" class="btn btn-default ml10 tblminwidth-90" onclick="closeAssociateLoanAndAdvancePopup();" >Cancel</button>
         </div>
       </div>
        </form:form>

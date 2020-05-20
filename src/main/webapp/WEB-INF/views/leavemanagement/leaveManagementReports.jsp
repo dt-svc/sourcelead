@@ -99,8 +99,8 @@ background-color: #fcfcfc;
 						        			</div>
 						        			<div class="clearfix modalFooter">
 						        				<div class="pull-right">
-						        						<button type="button" class="btn btn-success btnSuccess btn-sm mr" onclick="importLeaves();">Import</button>
-						        						<button type="button" class="btn btn-default btn-sm mr" title="Reset" onclick="resetUpload();">Reset</button>
+						        						<button type="button" class="btn btn-primary btnSuccess tblminwidth-90 mr" onclick="importLeaves();">Import</button>
+						        						<button type="button" class="btn btn-default tblminwidth-90 mr" title="Reset" onclick="resetUpload();">Reset</button>
 						        				</div>
 						        			</div>
 					        			</div>

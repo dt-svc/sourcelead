@@ -129,8 +129,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
       <div class="form-footer clearfix mt">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input type="button" value="Save" class="btn btn-primary" onclick="storeRestrictedDay();">
-            <input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/viewRestrictDay'" >
+            <input type="button" value="Save" class="btn btn-primary tblminwidth-90" onclick="storeRestrictedDay();">
+            <input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '${SourceLeadWeb_pmsUrl}/viewRestrictDay'" >
           </div>
         </div>
       </div>

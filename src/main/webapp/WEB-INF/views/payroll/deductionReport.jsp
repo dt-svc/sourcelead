@@ -80,8 +80,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 	<div class="clearfix footerstyelsNew">
         <div class="col-lg-12">
           <div class="pull-right">
-            <input value="Run" class="btn btn-success btnSuccess" type="button" onClick="deductionReport();"> <!-- runPayrollregister -->
-            <input value="Reset" class="btn btn-defualt ml10" type="button" onclick="resetDeductionReport();">
+            <input value="Run" class="btn btn-success btnSuccess tblminwidth-90" type="button" onClick="deductionReport();"> <!-- runPayrollregister -->
+            <input value="Reset" class="btn btn-defualt ml10 tblminwidth-90" type="button" onclick="resetDeductionReport();">
           </div>
         </div>
       </div>     
@@ -452,7 +452,7 @@ function deductionReportExportToPdf(){
 		result = result +"	   <div id='empty_receivable_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Deduction Report List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelExport();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelExport();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelExport();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelExport();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#empty_receivable_pop").slideDown(200);

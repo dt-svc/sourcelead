@@ -126,8 +126,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                       </div>
                       <div class="clearfix mr">
                       <div class="pull-right">
-                        <button type="button" class="btn btn-sm btn-default" onclick="cancelUpload();">Cancel</button>
-                        <button type="button" class="btn btn-sm btn-primary ml" id="uploadPayroll" onclick="uploadPayrollDocument();">Upload</button>
+                        <button type="button" class="btn tblminwidth-90 btn-default" onclick="cancelUpload();">Cancel</button>
+                        <button type="button" class="btn tblminwidth-90 btn-primary ml" id="uploadPayroll" onclick="uploadPayrollDocument();">Upload</button>
                       </div></div>
                     </div>
                   </div>
