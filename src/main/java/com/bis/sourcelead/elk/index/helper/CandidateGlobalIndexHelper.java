@@ -54,6 +54,8 @@ public class CandidateGlobalIndexHelper {
 			candidateIndex.setMiddleName(candidate.getMiddelName());
 			candidateIndex.setGender(candidate.getGender());
 			candidateIndex.setMaritalStatus(candidate.getMaritalStatus());
+			
+			candidateIndex.setIsSharedInMarketplace(candidate.getIsSharedInMarketplace());
 			if(StringUtils.isNoneBlank(candidate.getLastName())) {
 				StringBuilder fullName = new StringBuilder();
 				fullName = fullName.append(firstLetterCapitalizedString(candidate.getFirstName())).append(" ").append(firstLetterCapitalizedString(candidate.getLastName()));
@@ -78,6 +80,8 @@ public class CandidateGlobalIndexHelper {
 			candidateIndex.setLatitude(candidate.getLatitude());
 			candidateIndex.setLongitude(candidate.getLongitude());		
 			candidateIndex.setGeneratedId(candidate.getGeneratedId());
+			candidateIndex.setCandidateSource(candidate.getCandidateSource());
+			
 			
 			if(StringUtils.isNotBlank(candidate.getPanNumber())){
 				candidateIndex.setPanNumber(candidate.getPanNumber());

@@ -218,6 +218,8 @@ public class CandidateIndex implements Serializable {
 	
 	private Integer candidateProfilePercentage;
 	
+	private String candidateSource;
+	
 	
 	public String getSearchType() {
 		return searchType;
@@ -1088,6 +1090,14 @@ public class CandidateIndex implements Serializable {
 
 	public void setCandidateGlobalId(Long candidateGlobalId) {
 		this.candidateGlobalId = candidateGlobalId;
+	}
+
+	public String getCandidateSource() {
+		return candidateSource;
+	}
+
+	public void setCandidateSource(String candidateSource) {
+		this.candidateSource = candidateSource;
 	}
 
 	
