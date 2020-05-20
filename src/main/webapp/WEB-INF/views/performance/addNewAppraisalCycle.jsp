@@ -113,7 +113,7 @@
 				<div class="col-md-9">
 					
 					<div class="form-group width100percnt">
-			          <label class="col-md-3">Process Period</label>
+			          <label class="col-md-3">Process Period<span class="text-danger paddingLeft">&nbsp;*</span></label>
 			          <div class="col-md-9">
 						  <div class="row">
 							 <div class="col-md-6 valMsgPosition" id="appraisalProcessStartDateDiv">
