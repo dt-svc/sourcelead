@@ -268,9 +268,9 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
       
           <footer class="form-footer">
               <div class="pull-right mr">
-                  <button type="button" class="btn btn-sm btn-primary" id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
-                  <button type="button" class="btn btn-sm btn-success ml" id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
-                 <button type="button" class="btn btn-sm btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
+                  <button type="button" class="btn tblminwidth-90 btn-primary" id="saveInvoice" onclick="saveInvoiceTest('DRAFT');">Save</button>
+                  <button type="button" class="btn tblminwidth-90 btn-primary ml" id="sendInvoice" onclick="saveInvoiceTest('SENT')">Send</button>
+                 <button type="button" class="btn tblminwidth-90 btn-default ml" onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
               </div>
           </footer>
           </form:form>
@@ -1664,7 +1664,7 @@ function getClients(){
 		result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Are you sure to delete Attachment</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteInvoiceDocument("+id+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 		result = result +"	</div>";
 		$("#lineItemPopUp").append(result);
 		$("#remove_user_pop").slideDown(200);

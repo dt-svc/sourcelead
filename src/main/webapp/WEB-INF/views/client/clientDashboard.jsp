@@ -265,12 +265,12 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
           <div class="clearfix advancedsearch-footer">
               <div class="pull-right mr"> 
                <div id="enableClientAdvancedSearch"> 
-              	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
+              	<input type="button" value="Search" id="search_client" onclick="getClientList();" class="btn  btn-primary tblminwidth-90"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn  btn-default tblminwidth-90"/> 
               	</div>
               	<div id="enableClientContactAdvancedSearch"> 
-              	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn btn-sm btn-success"/>
-              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn btn-sm btn-primary"/> 
+              	<input type="button" value="Search" id="search_client" onclick="getClientContactList();" class="btn  btn-primary tblminwidth-90"/>
+              	<input type="button" value="Reset" id="clear_search" onclick="clearSearch();" class="btn  btn-default tblminwidth-90"/> 
               	</div>
             </div>
           </div>
@@ -1966,7 +1966,7 @@ function terminateSpoc1(spocId, orgRelationID, spocEmail){
 	//result = result +"		<textarea  id='reasonForSpoc' name='reasonForSpoc'  placeholder='Comments here'></textarea>";
 	result = result +"		<textarea id='reasonForSpoc' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reasonForSpoc' value='' placeholder='Reason' rows='2' onkeypress='clientDashboardRemoveSpacesForRejectReason();'></textarea>";
 	result = result + ' <div id="reasonForSpocDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="saveReason1('+spocId+',\''+spocEmail+'\','+orgRelationID+');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelRejectPopupClient();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Delete" onclick="saveReason1('+spocId+',\''+spocEmail+'\','+orgRelationID+');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelRejectPopupClient();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -2066,7 +2066,7 @@ function exportClientToPdf(){
 		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Clients List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelTermination();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#client_user_pop").slideDown(200);
@@ -2093,7 +2093,7 @@ function exportClientToExcel(){
 		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Clients List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelTermination();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#client_user_pop").slideDown(200);
@@ -2132,7 +2132,7 @@ function exportContactToPdf(){
 		result = result +"	   <div id='client_user_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Client Contacts List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancelTermination();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancelTermination();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelTermination();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#client_user_pop").slideDown(200);
@@ -2516,8 +2516,8 @@ function resetingClientContactFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetingClientFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientFilterPop();getClientList();" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>
@@ -2564,8 +2564,8 @@ function resetingClientContactFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetingClientContactFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeClientContactFilterPop();getClientContactList();" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingClientContactFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>

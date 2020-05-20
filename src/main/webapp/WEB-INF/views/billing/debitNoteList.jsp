@@ -769,7 +769,7 @@ function deleteCreditDebitNote(creditDebitUUID){
 
 	result = result +"	<div class='modal-body'><p>Are you sure you want to delete ?</p></div>";
 	result = result + ' <div id="deleteCreditDebitNoteDiv"/>';
-	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" type="button" value="Delete" onclick="deleteCreditDebitNoteMethod(\''+creditDebitUUID+'\');"><input class="u_can_color" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
+	result = result +'		<b href="javascript:void(0)"><input id="confirm-id" class="btnBg_blue" type="button" value="Delete" onclick="deleteCreditDebitNoteMethod(\''+creditDebitUUID+'\');"><input class="btnBg_white" type="button"  value="Cancel" onClick="cancelTermination();"></b>';
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
@@ -959,8 +959,8 @@ function resetingInvoiceFilter(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="getDebitList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="getDebitList();" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetingInvoiceFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 				</div>

@@ -189,11 +189,11 @@ function errRemoveClientContact(){
 
 				<footer class="form-footer">
 					<div class="pull-right mr">
-						<button type="button" id="saveButtonId" class="btn btn-sm btn-primary"
+						<button type="button" id="saveButtonId" class="btn tblminwidth-90 btn-primary"
 							onclick="saveInvoice('DRAFT')">Save</button>
-						<button type="button" id="sendButtonId" class="btn btn-sm btn-success ml"
+						<button type="button" id="sendButtonId" class="btn tblminwidth-90 btn-primary ml"
 							onclick="saveInvoice('SENT')">Send</button>
-						<button type="button" class="btn btn-sm btn-default ml"
+						<button type="button" class="btn tblminwidth-90 btn-default ml"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_vmsUrl}/invoiceList'">Cancel</button>
 					</div>
 				</footer>
@@ -1095,7 +1095,7 @@ function cancelPopup(){
 		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Select Vendor</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' class='btnBg_blue' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 		result = result +"	</div>";
 		$("#popUp").append(result);
 		$("#invoice_pop").slideDown(200);
@@ -1871,7 +1871,7 @@ function saveInvoice(saveType){
 	     		result = result +"	   <div id='invoice_pop' class='remove_user_pop remove_user_pop_a'>";
 	     		result = result +"		<p>At least one Add column Receivables Line Item</p>";
 	     		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	     		result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='cancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancel();'></b>";
+	     		result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='cancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancel();'></b>";
 	     		result = result +"	</div>";
 	     		$("#popUp").append(result);
 	     		$("#invoice_pop").slideDown(200);
