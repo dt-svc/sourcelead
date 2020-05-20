@@ -796,8 +796,8 @@ function vendorsList(){
     	result = result +'</div>'; 
     	result = result +'</div>';
     	result = result +'<div class="clearfix pull-right mr mb">';
-     	result = result +'<button class="btn btn-primary"  type="button" data-dismiss="modal" id="vendorbtnId" onclick="getContactEmails();">Add</button>';
-     	result = result +' <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>';
+     	result = result +'<button class="btn btn-primary tblminwidth-90"  type="button" data-dismiss="modal" id="vendorbtnId" onclick="getContactEmails();">Add</button>';
+     	result = result +' <button data-dismiss="modal" class="btn btn-default tblminwidth-90" type="button">Close</button>';
      	result = result +' </div>'; 
 	    $("#mailBoxVendorsList").empty();
 	    $("#mailBoxVendorsList").append(result);

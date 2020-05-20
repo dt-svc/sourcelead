@@ -229,9 +229,9 @@ function hideandshowHoliday(){
 								<div class="col-lg-12">
 									<div class="pull-right">
 										<input type="button" value="Save" id="Leave_Configuration_form_btn"
-											class="btn btn-primary"
+											class="btn btn-primary tblminwidth-90"
 											onclick="stroeLeaveReminderConfiguration('Leave_Configuration_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>
@@ -393,9 +393,9 @@ function hideandshowHoliday(){
 								<div class="col-lg-12">
 									<div class="pull-right">
 									<input type="button" value="Save" id="approve_Pending_Leaves_form_btn"
-											class="btn btn-primary"
+											class="btn btn-primary tblminwidth-90"
 											onclick="stroeLeaveReminderConfiguration('approve_Pending_Leaves_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>
@@ -557,9 +557,9 @@ function hideandshowHoliday(){
 								<div class="col-lg-12">
 									<div class="pull-right">
 										<input type="button" value="Save" id="Holiday_form_btn"
-											class="btn btn-primary"
+											class="btn btn-primary tblminwidth-90"
 											onclick="stroeLeaveReminderConfiguration('Holiday_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>

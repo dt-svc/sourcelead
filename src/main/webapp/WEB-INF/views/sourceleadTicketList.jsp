@@ -445,8 +445,8 @@ function ticketComment(ticketUUID) {
 	
 	result = result + '<div class="modal-footer">';
 	result = result + '<div class="clearfix">';
-	result = result + '<button type="button" class="btn btn-primary mr" onclick="saveTicketComments(\''+ticketUUID+'\');">Save</button>';
-	result = result + '<button type="button" class="btn btn-default" onClick="closeComment()">Cancel</button>';
+	result = result + '<button type="button" class="btn btn-primary mr tblminwidth-90" onclick="saveTicketComments(\''+ticketUUID+'\');">Save</button>';
+	result = result + '<button type="button" class="btn btn-default tblminwidth-90" onClick="closeComment()">Cancel</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result  +' </form>';

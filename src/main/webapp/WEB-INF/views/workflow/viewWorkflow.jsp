@@ -252,8 +252,8 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
 							<c:when test="${requirementWorkFlowStagesDTO[0].workFlowName != 'Default Job WorkFlow' && isWorkflowEditable == true}">
 									<input value="Save & Finish" id="saveReqWorkFlow"
 										onclick="requirementWorkflow.saveRequirementViewWorkFlow('+<c:out value='${requirementWorkFlowStagesDTO[0].requirementWorkFlowUuid}'/>+','${requirementWorkFlowStages.stageName}');"
-										class="btn btn-primary" type="button"> <input
-										value="Cancel" class="btn btn-default ml" type="button"
+										class="btn btn-primary tblminwidth-90" type="button"> <input
+										value="Cancel" class="btn btn-default ml tblminwidth-90" type="button"
 										onclick="requirementWorkflow.cancelViewWorkflow();">
 													</c:when>
 							<c:otherwise>

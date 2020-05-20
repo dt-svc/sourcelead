@@ -91,8 +91,8 @@
 	<p id='changeStatusHeading' data-name="Ticket Status"></p>
 	<div>&nbsp;&nbsp;&nbsp;</div>
 	<b>
-		<input id='confirmId' type='button' value='Ok' onclick='changeTicketStatus()' class="pull-left">
-		<input id="cancelStatusPopup" class='u_can_color' type='button' value='Cancel' onClick='closeDeletePopup()'>
+		<input id='confirmId' type='button' value='Ok' onclick='changeTicketStatus()' class="btnBg_blue">
+		<input id="cancelStatusPopup" class='btnBg_white' type='button' value='Cancel' onClick='closeDeletePopup()'>
 	</b>
 </div>
   <script type="text/javascript">

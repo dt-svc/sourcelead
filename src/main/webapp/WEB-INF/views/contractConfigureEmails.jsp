@@ -208,9 +208,9 @@ function hideandshow_WaitingTobeSigned(){
 								<div class="col-lg-12">
 									<div class="pull-right">
 										<input type="button" value="Save" id="contractExpire_Configuration_form_btn"
-											class="btn btn-primary"
+											class="btn btn-primary tblminwidth-90"
 											onclick="storeContractReminderConfiguration('contractExpire_Configuration_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
+											<input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '<c:url value='${appPath}/emailreminderConfigurationDashboard'/>'">
 									</div>
 								</div>
 							</div>

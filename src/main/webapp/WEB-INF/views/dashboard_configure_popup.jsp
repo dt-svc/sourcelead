@@ -127,8 +127,8 @@
 	</div>
 	<div class="clearfix advancedsearch-footer">
 		<div class="pull-right mr">
-			<input type="button" value="Apply" id="saveConfig" class="btn btn-sm btn-success"/>
-			<input type="button" value="Cancel" onclick="closeConfigurePopup()" class="btn btn-sm btn-primary"/>
+			<input type="button" value="Apply" id="saveConfig" class="btn tblminwidth-90 btn-primary mr"/>
+			<input type="button" value="Cancel" onclick="closeConfigurePopup()" class="btn tblminwidth-90 btn-default"/>
 		</div>
 	</div>
 </div>

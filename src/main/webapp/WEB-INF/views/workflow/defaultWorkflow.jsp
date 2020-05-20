@@ -57,10 +57,10 @@ $(document).ready(function() {
 	<div class="footerstyelsNew">
 	<div class="clearfix">
 		<div class="pull-right" >
-		 <input type="button" value="Save" id="saveReqWorkFlow" onclick="requirementWorkflow.saveRequirementWorkFlow();" class="btn btn-primary">
+		 <input type="button" value="Save" id="saveReqWorkFlow" onclick="requirementWorkflow.saveRequirementWorkFlow();" class="btn btn-primary tblminwidth-90">
 		 <input type="button" value="Cancel"
 							onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/workflowList'"
-							class="btn btn-default ml">
+							class="btn btn-default ml tblminwidth-90">
 		</div>
 	</div>
 	</div>

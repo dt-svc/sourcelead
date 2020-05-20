@@ -717,7 +717,9 @@ public class RequirementWorkflowController {
 			modelandview.addObject("chosenColumns", stages.getChosenColumns());
 			modelandview.addObject("currentStageUuid", requirementWorkFlowStagesDTO.getUuid().trim());
 			modelandview.addObject("workflowUuid", requirementWorkFlowStagesDTO.getRequirementWorkFlowUuid());
-			modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			if(stagesDTO!=null){
+				modelandview.addObject("requirementWorkFlowStagesDTO", stagesDTO);
+			}
 			modelandview.addObject("configureType", stages.getConfigureType());
 			logger.debug("after  editStage>>> orgLocationid "+orgLocations.getId());
 			modelandview.addObject("sourceleadUrl", sourceleadUrl);

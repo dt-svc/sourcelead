@@ -147,8 +147,8 @@
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="closePop();projectReportDataTableList(false);" class="btn btn-sm btn-success" type="button">
-        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn btn-sm btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="closePop();projectReportDataTableList(false);" class="btn tblminwidth-90 btn-primary mr" type="button">
+        <input value="Reset" id="clear_search" onclick="resetFilter();" class="btn tblminwidth-90 btn-default" type="button">
       </div>
     </div>
   </div>

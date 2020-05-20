@@ -470,9 +470,9 @@ function cancelOrgImg(){
 					<div class="clearfix">
 					<div class="pull-right">
 					<sec:authorize access="hasAnyRole('ROLE_VIEW_EDIT_ORG_SETTINGS')">
-					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">
+					<input type="submit" value="Save" id="save_button" class="btn btn-primary mr tblminwidth-90">
 					</sec:authorize>
-					<input type="button" value="Cancel" class="btn btn-default" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/settings'"></input>
+					<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onclick="javascript:window.location.href ='${SourceLeadWeb_sourceleadUrl}/settings'"></input>
 					</div>
 					</div>
 					</div>
@@ -581,8 +581,8 @@ function cancelOrgImg(){
                 			        
                 			<div class="clearfix"></div>
                 			 <div class="pull-right">
-								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr">
-								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
+								<input type="submit" value="Save" id="profilePercentage_button" class="btn btn-primary mr tblminwidth-90">
+								<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">
 							</div> 
                 			<div class="clearfix"></div> 
                 			</form>
@@ -898,8 +898,8 @@ function cancelOrgImg(){
 						</div> 
                             </div>
                            <div class="pull-right">
-								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr">
-								<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">
+								<input type="button" value="Save" id="saveRecommendationSettings" onclick="validateTotalRecommValue();" class="btn btn-primary mr tblminwidth-90">
+								<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">
 							</div>
 							</form>
             			</div>
@@ -1001,9 +1001,9 @@ function cancelOrgImg(){
          <input type="hidden" name="id" id="paymentAccountId"/>
           <div class="col-md-6 minHe">
            <label class="noPad">Account Type <b class="valStar">*</b></label>
-           <div class="clearfix">
-                <select onchange="showOrHidePaymentFormFields($(this).val()); changefunction();" id="paymentAccountType" name="accountType" class="form-control" data-validation="required">
-                    <option value="0">--Select Location--</option>
+           <div class="clearfix" id ="accountTypeErr">
+                <select onchange="showOrHidePaymentFormFields($(this).val()); changefunction();" id="paymentAccountType" name="accountType" field-name="Account Type" class="form-control" data-validation="required">
+                    <option value="">--Select Location--</option>
                     <option value="SAVINGS" data-type="1">Savings</option>
                     <option value="CHECKING" data-type="2">Checking</option>
                       <option value="WEPAY" data-type="3">WePay</option>
@@ -1452,14 +1452,22 @@ function savePaymentAccountTestRun(){
 		 var data =  {};
 		 var val = $("#paymentAccountType").val();
 		 data["email"] = $("#paymentAccountEmail").val();
+		 
+		 //	16/April/2020 -vishnu
+		 if($("#paymentMICRCode").length>0){
 		 data["micrCode"] = $("#paymentMICRCode").val().trim();
+		 }
+		 if($("#paymentMICRCode").length>0){
 		 data["bsrNumber"] = $("#paymentBSRNumber").val().trim();
-         data["accountNumber"] = $("#paymentAccountNumber").val().trim();
+		 }
+		 data["accountNumber"] = $("#paymentAccountNumber").val().trim();
          data["bankName"] = $("#paymentAccountBankName").val().trim();
          data["routingNumber"] = $("#paymentAccountRoutingNumber").val().trim();
          data["firstName"] = $("#paymentAccountFirstName").val().trim();	
          data["lastName"] = $("#paymentAccountLastName").val().trim();
+         if($("#paymentAccountLocation").length>0){
          data["orgLocationId"] = $("#paymentAccountLocation").val();
+         }
          data["accountType"] = val;
          data["id"] = $("#paymentAccountId").val();
          $.post(sourceleadUrl+"/save-payment-account", data, function(data) {
@@ -1792,6 +1800,8 @@ function showOrHidePaymentFormFields(type) {
 }
 function closePaymentAccountPopup(type) {
     $("#savePaymentButton").removeAttr("disabled", false);
+    $('#accountTypeErr').find('p.jquery_form_error_message').remove();
+    $('#acclocationErr').find('p.jquery_form_error_message').remove();
     $('#bankNameErr').find('p.jquery_form_error_message').remove();
 	 $('#accnoErr').find('p.jquery_form_error_message').remove();
 	 $('#BSRErr').find('p.jquery_form_error_message').remove();
@@ -1806,7 +1816,7 @@ function closePaymentAccountPopup(type) {
 	    $(".mask").hide();
 
     if(type) {
-    	paymentAccountLocation('0');
+    	$("#paymentAccountLocation").val('0');
         showOrHidePaymentFormFields(type);
         $("input[id*=paymentAccount]").val("");
     }
@@ -2062,8 +2072,8 @@ function configCoolingOff(){
 					
 					
 					result = result + '<div class="pull-right">';
-					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr">';
-					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+					result = result + '<input type="submit" value="Save" id="saveCoolingOff_button" class="btn btn-primary mr tblminwidth-90">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					$("#coolingOffPeriodDiv").empty(); 
@@ -2315,8 +2325,8 @@ function loadSignature(){
 						result = result + '</div>';
  					} 
 					result = result + '<div class="pull-right">';
-					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
-					result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+					result = result + '<input type="submit" value="Save" id="save_button" class="btn btn-primary mr tblminwidth-90">';
+					result = result + '<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">';
 					result = result + '</div>';
 					result = result + ' </form>';
 					
@@ -4197,8 +4207,8 @@ function showOrgprobationData(data){
 	
 	
 	result = result + '<div class="pull-right">';
-	result = result + '<input type="submit" value="Save" id="probation_button" class="btn btn-primary mr">';
-	result = result + '<input type="button" value="Cancel" class="btn btn-default" onClick="cancelBtn();">';
+	result = result + '<input type="submit" value="Save" id="probation_button" class="btn btn-primary mr tblminwidth-90">';
+	result = result + '<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="cancelBtn();">';
 	result = result + '</div>';
 	result = result + ' </form>';
 	$("#probationPeriodDiv").empty(); 

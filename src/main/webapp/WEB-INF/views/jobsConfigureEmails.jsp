@@ -219,9 +219,9 @@ function hideandshowjobclosing(){
 								<div class="col-lg-12">
 									<div class="pull-right">
 										<input type="button" value="Save" id="job_ApplicantJoining_form_btn"
-											class="btn btn-primary"
+											class="btn btn-primary tblminwidth-90"
 											onclick="stroeJobReminderConfiguration('job_ApplicantJoining_form');"> 
-											<input type="button" value="Cancel" class="btn btn-default ml10" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard'">
+											<input type="button" value="Cancel" class="btn btn-default ml10 tblminwidth-90" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/emailreminderConfigurationDashboard'">
 									</div>
 								</div>
 							</div>

@@ -86,8 +86,8 @@ $(document).ready(function(){
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr" onClick="viewCompleteTemplate('print');">Print</button>
-				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
+				<button type="button" class="btn btn-primary mr tblminwidth-90" onClick="viewCompleteTemplate('print');">Print</button>
+				<button type="button" class="btn btn-default tblminwidth-90" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
 		</div>
@@ -125,8 +125,8 @@ function printPage()
 		</div>
 		<div class="modal-footer">
 			<div class="clearfix">
-				<button type="button" class="btn btn-primary mr" onclick="viewCompleteTemplate();">View</button>
-				<button type="button" class="btn btn-default" onClick="closePOP()">Cancel</button>
+				<button type="button" class="btn btn-primary mr tblminwidth-90" onclick="viewCompleteTemplate();">View</button>
+				<button type="button" class="btn btn-default tblminwidth-90" onClick="closePOP()">Cancel</button>
 			</div>
 		</div>
 		</div>
@@ -254,8 +254,8 @@ function printPage()
 	
 <div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeEmployeeFilterPop();getAllEmployeesList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetEmployeeFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeEmployeeFilterPop();getAllEmployeesList();" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetEmployeeFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 					

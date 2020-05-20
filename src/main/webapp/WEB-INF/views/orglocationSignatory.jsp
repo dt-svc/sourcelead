@@ -358,6 +358,10 @@ function getDesignationType(){
 
 <script type="text/javascript">
 function saveSignatory(){
+	var authorizedType = $('#authorizedType').val();
+	console.log("authorizedType "+authorizedType);
+	var signatoryAssociate = $('#signatoryAssociate').val();
+	console.log("signatoryAssociate "+signatoryAssociate);
 	var associate = $("#showAssociateId").val();
 	if(associate !=null && associate!="" && associate!='undefined')
 		{
@@ -371,6 +375,7 @@ function saveSignatory(){
 			scrollToTopOnError : true,
 			dateFormat : 'yyyy/mm/dd' 
          }
+	 if ($('#signatory_form').validate(false, validationSettings)) {
       var sourceleadUrl ='${sourceleadUrl}';
   	  var formData = $($('#signatory_form')[0]).serialize();
   	$.post(sourceleadUrl+"/saveOrgLocationSignatory?"+tokenParamName+"="+tokenValue+"&associateId="+associateId,formData, function(result) {
@@ -398,6 +403,7 @@ function saveSignatory(){
     
 		    
       return true; 
+	 }
 }
 
 	$('body').on('blur', '#signatory_form', function() {
