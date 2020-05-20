@@ -564,8 +564,8 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
                 
             <div class="footerstyelsNew clearfix">
                 <div class="pull-right">
-                  <input type="button" value="Save &amp; Continue" id="create_user" onclick="createUser();" class="btn btn-primary">
-                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/usersList'"  class="btn btn-default ml">
+                  <input type="button" value="Save &amp; Continue" id="create_user" onclick="createUser();" class="btn btn-primary tblminwidth-90">
+                  <input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/usersList'"  class="btn btn-default ml tblminwidth-90">
                 </div>
             </div>
             </form:form>

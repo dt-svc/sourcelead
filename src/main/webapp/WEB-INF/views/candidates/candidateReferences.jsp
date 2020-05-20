@@ -361,7 +361,7 @@
 
 		result = result + '<div class="clearfix mr" id="docAddButton">';
 		result = result
-				+ '<input type="button" value="Save" name="btnAddPr" id="save_ref" class="btn btn-sm btn-primary pull-right" onClick ="storeCandidateReferences('
+				+ '<input type="button" value="Save" name="btnAddPr" id="save_ref" class="btn tblminwidth-90 btn-primary pull-right" onClick ="storeCandidateReferences('
 				+ candidateId + ');" />';
 		result = result + '</div>';
 		result = result + '</div>';
@@ -494,11 +494,11 @@
 		result = result + "		<p>You are choosing to delete the Reference</p>";
 		result = result + "		<div>&nbsp;&nbsp;&nbsp;</div>";
 		result = result
-				+ "<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteReference("
+				+ "<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteReference("
 				+ candidateId
 				+ ","
 				+ refId
-				+ ");'><input class='u_can_color' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
+				+ ");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deleteReferencesPopup();'></b>";
 		result = result + "	</div>";
 		$("#deleteReferencesPopup").empty();
 		$("#deleteReferencesPopup").append(result);
@@ -723,7 +723,7 @@
 								+ candidateId
 								+ ','
 								+ refId
-								+ ');" class="btn btn-sm btn-primary pull-right"  >Update</button>';
+								+ ');" class="btn tblminwidth-90 btn-primary pull-right"  >Update</button>';
 
 						result = result + '</div>';
 						result = result + '</div>';

@@ -4777,8 +4777,8 @@ function showComment(candidateId){
 		result = result+'	        <form role="form" id="candidateComments_form" name="candidateComments_form" method="post">';
 	    result = result+'              <textarea rows="1" class="form-control clearfix mb10" placeholder="Comments here..." id="comment" name="comment" data-validation="required validate_length length2-500" field-name="Comment" onkeypress="associateListCommentRemoveSpaces();"></textarea>';
 	    result = result+'              <span class="clearfix pull-right">';
-	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onClick="addComment('+candidateId+')">';
-	    result = result+'              		<input type="button" value="Cancel" class="btn btn-sm btn-default" onClick="closeComment()">';
+	    result = result+'              		<input type="button" id="submit_comment" value="Add" class="btn tblminwidth-90 btn-primary" onClick="addComment('+candidateId+')">';
+	    result = result+'              		<input type="button" value="Cancel" class="btn tblminwidth-90 btn-default" onClick="closeComment()">';
 	    result = result+'              </span>';
 		result = result+'	        </form>';
 	$('.add-comment').empty();
@@ -5042,7 +5042,7 @@ function deleteImmigrationRecord(elem,arg1,arg2){
 	result = result +"	   <div id='remove_immigration_popup' class='remove_user_pop remove_user_pop_a'>";
 	result = result +" <b>Do you want to remove record permanently?</b>";
 	result = result + ' <div id="reasonForTemplateDiv"/>';
-	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
+	result = result +"	<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='deleteImmigrationRecordById("+elem+",\""+arg1+"\",\""+arg2+"\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelImmigrationDelete();'></b>";
 	result = result +"	</div>";
 	$("#deletepopUp").append(result);
 	$("#remove_immigration_popup").slideDown(200);

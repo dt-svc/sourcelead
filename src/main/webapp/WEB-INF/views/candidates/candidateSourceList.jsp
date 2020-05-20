@@ -69,8 +69,8 @@
 	<p> Is Delete Candidate Source?</p>
 	<div>&nbsp;&nbsp;&nbsp;</div>
 	<b>
-		<input id="confirmDeleteId" type="button" value="Ok" onclick="deleteCandidateSource();" class="pull-left">
-		<input class="u_can_color" type="button" value="Cancel" onClick="closeDeletePopup();">
+		<input id="confirmDeleteId" type="button" value="Ok" onclick="deleteCandidateSource();" class="btnBg_blue">
+		<input class="btnBg_white" type="button" value="Cancel" onClick="closeDeletePopup();">
 	</b>
 </div>
 

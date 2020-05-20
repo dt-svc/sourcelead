@@ -287,7 +287,7 @@ function closeCertificatePopup(){
 		
 		
 		result = result + '	               <div class="clearfix mr">';
-		result = result	+ '	                 <button type="button" id ="candidateEmployersAdd" onClick ="candidateEmployersStore('+ candidateId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
+		result = result	+ '	                 <button type="button" id ="candidateEmployersAdd" onClick ="candidateEmployersStore('+ candidateId+ ');"class="btn tblminwidth-90 btn-primary pull-right">Add</button>';
 		result = result + '	               </div>';
 		result = result + '	             </div>';
 		result = result + '	        </form> ';
@@ -542,7 +542,7 @@ function closeCertificatePopup(){
 						result = result	+ '	               <div class="clearfix mr">';
 						result = result	+ '	                   <input type="hidden"  value="'+candidateEmpId+'" id="candidateEmpId"  name="candidateEmployeeId" >';
 						result = result	+ '	                   <input type="hidden"  value="'+candidateId+'" id="candidateId" >';
-						result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn btn-sm btn-primary pull-right">Add</button>';
+						result = result + '	                 <button type="button" id ="candidateEmployersAdd" onClick ="updateCandidateEmployers('+ candidateId+ ','+ candidateEmpId+ ');"class="btn tblminwidth-90 btn-primary pull-right">Add</button>';
 						result = result + '	               </div>';
 						result = result + '	             </div>';
 						result = result + '	        </form> ';
@@ -751,7 +751,7 @@ function removeEmployer(candidateemployerId, candidateId){
 	result = result +"	   <div id='remove_user_pop_emp' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You are choosing to delete the Employer</p>";
 	result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='deleteSelectedEmployer("+candidateemployerId+","+candidateId+");'><input class='u_can_color' type='button'  value='Cancel' onClick='deletePopup();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='deleteSelectedEmployer("+candidateemployerId+","+candidateId+");'><input class='btnBg_white' type='button'  value='Cancel' onClick='deletePopup();'></b>";
 	result = result +"	</div>";
 	$("#deleteExcepPopUp").empty();
 	$("#deleteExcepPopUp").append(result);

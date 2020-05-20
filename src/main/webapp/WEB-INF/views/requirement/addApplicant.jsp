@@ -189,7 +189,7 @@ function getAddApplicant(requirementId){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="button" id="save_button"  class="btn btn-sm btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
+	result = result + '<button type="button" id="save_button"  class="btn tblminwidth-90 btn-primary " onclick="addApplicantSubmission();">SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -420,7 +420,7 @@ function submitRecomendedApplicant(requirementId,candidateId,type){
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="button" id="save_button" onclick="addRequirementRecommendations();" class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="button" id="save_button" onclick="addRequirementRecommendations();" class="btn tblminwidth-90 btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  
@@ -542,7 +542,7 @@ function editSubmittedApplicant(requirementId,submissionId,candidateId,resumeId)
 	
 	result = result + '<div class="form-footer clearfix mt">';
 	result = result + '<div class="pull-right mr">';
-	result = result + '<button type="submit" id="save_button"  class="btn btn-sm btn-primary " >SUBMIT</button>';
+	result = result + '<button type="submit" id="save_button"  class="btn tblminwidth-90 btn-primary " >SUBMIT</button>';
 	result = result + '</div>';
 	result = result + '</div>';
 	result = result + '</div>';  

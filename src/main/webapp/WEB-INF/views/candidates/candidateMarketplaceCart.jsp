@@ -47,11 +47,10 @@
 				</li>
 				 <sec:authorize access="hasRole('ROLE_VIEW_CART')">
               <li><i class="shopping-cart inlineBlock pull-left mr10" title="Cart"></i>
-				  <div id = "cartCount" class="inlineBlock pull-left mt2 mr10 animated zoomInDown" href="javascript:void(0)">0</div></li>
+				  <div id = "cartCount" class="inlineBlock pull-left mt2 mr10 animated zoomInDown">0</div></li>
               <li><i class="dollarSvg inlineBlock pull-left mr10" title="Cart"></i>
-				  <div id = "totalPrice" class="animated zoomInDown inlineBlock pull-left mt2 mr10" href="javascript:void(0)">0.00</div></li>
+				  <div id = "totalPrice" class="animated zoomInDown inlineBlock pull-left mt2 mr10">0.00</div></li>
 				  </sec:authorize>
-              <li> <a href="javascript:void(0)" class="sortSvg mr10" title="Sorting"></a> </li>
 				<li> <a href="javascript:void(0)" class="filtIcon" title="Filters" onclick="filterPop();"></a> </li>
               <li class="mr">
                 <input class="repSearchBar" placeholder="Search" id="dynamicUserDataTableSearch" type="text">
@@ -237,7 +236,7 @@
 <div class="clearfix"></div>
     <div class="clearfix advancedsearch-footer">
       <div class="pull-right mr">
-        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn tblminwidth-90 btn-primary" type="button">
+        <input value="Apply" id="search_requiremet" onclick="validateMarketCartFilter();" class="btn tblminwidth-90 btn-primary mr" type="button">
         <input value="Reset" id="clear_search" onclick="resetMarketCartFilter();" class="btn tblminwidth-90 btn-default" type="button">
       </div>
     </div>

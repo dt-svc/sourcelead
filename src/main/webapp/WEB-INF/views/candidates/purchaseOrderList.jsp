@@ -559,7 +559,7 @@ function exportToPdf(){
 			result = result +"		<div class='modal-body text-center'>";
 			result = result +"		<span>No Records To Export in Purchase Order.</span>";
 			result = result +"		</div>";
-			result = result +"		<b href='javascript:void(0)'><input class='width100percnt' type='button' value='Ok' onclick='candidateCancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input class='width100percnt' class='btnBg_white' type='button' value='Ok' onclick='candidateCancel();'></b>";
 			result = result +"	</div>";
 			$("#emptyPopup").append(result);
 			$("#candidate_user_pop").slideDown(200);
