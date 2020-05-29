@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dao.DepartmentDao;
 import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.LineOfBusinessDTO;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LineOfBusiness;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.User;
 import com.bis.sourcelead.service.DepartmentService;
@@ -104,6 +106,56 @@ public class DepartmentServiceImpl implements DepartmentService{
 	@Override
 	public List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception {
 		return departmentDao.getDepartmentsListByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public String saveLineOfBusiness(LineOfBusinessDTO lineOfBusinessDTO) throws Exception {
+		
+		OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+	 	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+	 	
+	 	
+		LineOfBusiness lineOfBusiness = new LineOfBusiness();
+		
+		if(lineOfBusinessDTO.getLobId() != null) {
+			lineOfBusiness.setId(lineOfBusinessDTO.getLobId().longValue());
+	 	}
+		
+		if(StringUtils.isNotBlank(lineOfBusinessDTO.getLobName())){
+			lineOfBusiness.setLobName(lineOfBusinessDTO.getLobName());
+		}
+		
+		if(StringUtils.isNotBlank(lineOfBusinessDTO.getDepartmentId())){
+			Department department = new Department();
+			department.setId(Long.valueOf(lineOfBusinessDTO.getDepartmentId()));
+			lineOfBusiness.setDepartmentId(department);
+		}
+		
+		if(StringUtils.isNotBlank(lineOfBusinessDTO.getDescription())){
+			lineOfBusiness.setDescription(lineOfBusinessDTO.getDescription());
+		}
+		lineOfBusiness.setOrgLocationId(loginOrgLocation);
+		lineOfBusiness.setStatus(Constants.RECORD_ACTIVE);
+		lineOfBusiness.setCreatedDate(commonUtil.currentDate());
+		lineOfBusiness.setCreatedBy(user.getUserCode());
+		departmentDao.saveLineOfBusiness(lineOfBusiness);
+		// TODO Auto-generated method stub
+		return "success";
+	}
+
+	@Override
+	public List<LineOfBusiness> getLineOfBusinessListByOrgLocationId(Long orgLocationId) throws Exception {
+		return departmentDao.getLineOfBusinessListByOrgLocationId(orgLocationId);
+	}
+
+	@Override
+	public LineOfBusinessDTO getLineOfBusinessDTOByLOBId(Long id) throws Exception {
+		return departmentDao.getLineOfBusinessDTOByLOBId(id);
+	}
+
+	@Override
+	public List<LineOfBusinessDTO> getLineOfBusinessDTOList(Long orgLocationId) throws Exception {
+		return departmentDao.getLineOfBusinessDTOList(orgLocationId);
 	}
 	
 }

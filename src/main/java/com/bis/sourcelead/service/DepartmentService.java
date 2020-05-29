@@ -3,7 +3,9 @@ package com.bis.sourcelead.service;
 import java.util.List;
 
 import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.LineOfBusinessDTO;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LineOfBusiness;
 
 public interface DepartmentService {
 
@@ -28,4 +30,14 @@ public interface DepartmentService {
 	List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception;
 	
 	List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	String  saveLineOfBusiness(LineOfBusinessDTO  lineOfBusinessDTO) throws Exception;
+	
+	List<LineOfBusiness> getLineOfBusinessListByOrgLocationId(Long orgLocationId) throws Exception;
+	
+	LineOfBusinessDTO getLineOfBusinessDTOByLOBId(Long id) throws Exception;
+	
+	List<LineOfBusinessDTO> getLineOfBusinessDTOList(Long orgLocationId) throws Exception;
+	
+	
 }

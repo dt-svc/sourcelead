@@ -18,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bis.sourcelead.dao.DepartmentDao;
 import com.bis.sourcelead.dao.UserRoleDao;
 import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.LineOfBusinessDTO;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LineOfBusiness;
 import com.bis.sourcelead.exception.SourceLeadConstraintViolationException;
 import com.bis.sourcelead.util.CommonUtil;
 
@@ -187,6 +189,66 @@ public class DepartmentDaoImpl implements DepartmentDao{
 		queryObj.setResultTransformer(Transformers.aliasToBean(DepartmentDTO.class));
 		departmentDTOList = queryObj.list();
 		return departmentDTOList;
+	}
+
+	@Override
+	@Transactional
+	public LineOfBusiness saveLineOfBusiness(LineOfBusiness lineOfBusiness) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			if (lineOfBusiness != null) {
+				session.saveOrUpdate(lineOfBusiness);
+			}
+			logger.debug("Saving LineOfBusiness");
+		} catch (Exception exception) {
+			 StringBuilder message= new StringBuilder(MessageFormat.format(duplicateValue,"LineOfBusiness"));
+				throw new SourceLeadConstraintViolationException(message.toString() +exception.getCause().toString());
+		}
+		return lineOfBusiness;
+	}
+
+	@Override
+	@Transactional
+	public List<LineOfBusiness> getLineOfBusinessListByOrgLocationId(Long orgLocationId) throws Exception {
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = "from LineOfBusiness lob left join fetch lob.departmentId where lob.orgLocationId.id =:orgLocationId and lob.status = '1' "; 
+		List<LineOfBusiness> lobList = session.createQuery(query).setLong("orgLocationId", orgLocationId).list();
+		return lobList;
+	}
+
+	@Override
+	@Transactional
+	public LineOfBusinessDTO getLineOfBusinessDTOByLOBId(Long id) throws Exception {
+		List<LineOfBusinessDTO> lobDTOList = null;
+		LineOfBusinessDTO lobDTO = new LineOfBusinessDTO();
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT LOB.ID AS lobId, "
+				+ " LOB.LOB_NAME AS lobName, "
+				+ " LOB.DESCRIPTION AS description, "
+				+ " LOB.DEPARTMENT_ID AS deptId "
+				+ " FROM LINE_OF_BUSINESS LOB  WHERE LOB.ID = :id ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("id", id);
+		queryObj.setResultTransformer(Transformers.aliasToBean(LineOfBusinessDTO.class));
+		lobDTO = (LineOfBusinessDTO) queryObj.list().get(0);
+		return lobDTO;
+	}
+
+	@Override
+	@Transactional
+	public List<LineOfBusinessDTO> getLineOfBusinessDTOList(Long orgLocationId) throws Exception {
+		List<LineOfBusinessDTO> lobDTOList = null;
+		Session session = this.sessionFactory.getCurrentSession();
+		String query = null;
+		query = "SELECT LOB.ID AS lobId, "
+				+ " LOB.LOB_NAME AS lobName "
+				+ " FROM LINE_OF_BUSINESS LOB WHERE LOB.ORG_LOCATION_ID = :orgLocationId AND LOB.STATUS = '1' ";
+		Query queryObj = session.createSQLQuery(query);
+		queryObj.setLong("orgLocationId", orgLocationId);
+		queryObj.setResultTransformer(Transformers.aliasToBean(LineOfBusinessDTO.class));
+		lobDTOList = queryObj.list();
+		return lobDTOList;
 	}
 
 }

@@ -3,7 +3,9 @@ package com.bis.sourcelead.dao;
 import java.util.List;
 
 import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.LineOfBusinessDTO;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LineOfBusiness;
 
 public interface DepartmentDao {
 	
@@ -32,5 +34,13 @@ public interface DepartmentDao {
 	 List<DepartmentDTO> getDepartmentsListByIds(List<Long> id) throws Exception;
 	 
 	 List<DepartmentDTO> getDepartmentsListByOrgLocationId(Long orgLocationId) throws Exception;
+	 
+	 LineOfBusiness  saveLineOfBusiness(LineOfBusiness  lineOfBusiness) throws Exception;
+	 
+	 List<LineOfBusiness> getLineOfBusinessListByOrgLocationId(Long orgLocationId) throws Exception;
+	 
+	 LineOfBusinessDTO getLineOfBusinessDTOByLOBId(Long id) throws Exception;
+		
+	 List<LineOfBusinessDTO> getLineOfBusinessDTOList(Long orgLocationId) throws Exception;
 	
 }
