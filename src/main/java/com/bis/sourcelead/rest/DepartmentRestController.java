@@ -1,6 +1,7 @@
 package com.bis.sourcelead.rest;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bis.sourcelead.annotations.Validator;
 import com.bis.sourcelead.constants.Constants;
 import com.bis.sourcelead.dto.DepartmentDTO;
+import com.bis.sourcelead.dto.LineOfBusinessDTO;
 import com.bis.sourcelead.dto.Response;
 import com.bis.sourcelead.dto.ResponseList;
 import com.bis.sourcelead.entity.Department;
+import com.bis.sourcelead.entity.LineOfBusiness;
 import com.bis.sourcelead.entity.OrgLocations;
 import com.bis.sourcelead.entity.ProjectTasks;
 import com.bis.sourcelead.entity.User;
@@ -79,6 +82,73 @@ public class DepartmentRestController {
 		return respons;
   
 	}
+    
+    
+    
+    @RequestMapping(value = "/storeLOB", method = RequestMethod.POST)
+    @ResponseBody
+	public   Response<String> storeLOB(LineOfBusinessDTO  lineOfBusinessDTO,HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+    	User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
+    	Response<String> respons=new Response<>();
+    	try{
+    		if(user !=null){
+    			if(Validator.validate(lineOfBusinessDTO)){
+    				String lob =  departmentService.saveLineOfBusiness(lineOfBusinessDTO);
+    				respons.setResponse(Result.SUCCESS.name());
+    				respons.setResponseMessage(Result.SUCCESS.getValue());
+    			}else{
+    				respons.setObject("DataMissing");
+					respons.setResponse(Result.INVALID_DATA.name());
+					respons.setResponseMessage(Result.INVALID_DATA.getValue());
+    			}
+    		}else{
+    			respons.setResponse(Result.SESSION_TIMEDOUT.name());
+				respons.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    		}
+    		
+    	}catch (Exception e) {
+    		respons.setResponse(Result.AWKWARD.name());
+			respons.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+		return respons;
+  
+	}
+    
+    
+    
+    @RequestMapping(value = "/getLineOfBusinessList", method = RequestMethod.GET)
+	public @ResponseBody  ResponseList<LineOfBusiness> getLineOfBusinessList(HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+    	OrgLocations loginOrgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+    	ResponseList<LineOfBusiness> respons =new ResponseList<>();
+    	try{
+    		if(loginOrgLocation !=null){
+				List<LineOfBusiness> lobList = departmentService.getLineOfBusinessListByOrgLocationId(loginOrgLocation.getId());
+		    	respons.setData(lobList);
+				respons.setResponse(Result.SUCCESS.name());
+				respons.setResponseMessage(Result.SUCCESS.getValue());
+    		}else{
+    			respons.setResponse(Result.SESSION_TIMEDOUT.name());
+				respons.setResponseMessage(Result.SESSION_TIMEDOUT.getValue());
+    		}
+    	}catch (Exception e) {
+    		respons.setResponse(Result.AWKWARD.name());
+			respons.setResponseMessage(Result.AWKWARD.getValue());
+			logger.error(ExceptionUtils.getFullStackTrace(e));
+		}
+	  return respons;
+	}
+    
+    @RequestMapping(value = "/getLineOfBusinessById", method = RequestMethod.GET)
+ 	public @ResponseBody  LineOfBusinessDTO getLineOfBusinessById(@RequestParam(value="lobId", required=false) Long lobId) throws Exception
+ 	{
+    	Response<String> response=new Response<>();
+    	LineOfBusinessDTO lineOfBusinessDTO = departmentService.getLineOfBusinessDTOByLOBId(lobId);
+ 		return lineOfBusinessDTO;
+ 	}
+    
    
     @RequestMapping(value = "/getDepartmentList", method = RequestMethod.GET)
 	public @ResponseBody  ResponseList<Department> getDepartmentList(HttpServletRequest request,@RequestParam(value="departmentStatus", required=false) String departmentStatus, HttpServletResponse response) throws Exception

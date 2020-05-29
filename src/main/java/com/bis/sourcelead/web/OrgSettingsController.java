@@ -451,25 +451,26 @@ public class OrgSettingsController {
 		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
 		ModelAndView model = new ModelAndView();
 		commonUtil.highLightMenu(Constants.OrgSettings, request);
-		/*
-		 * List<RoleHierarchy> hierarchyList =
-		 * roleHierarchyService.getRoleHierarchyByOrgLocationId(orgLocations.
-		 * getId()); List<RoleHierarchy> rolesHierarchyList = new
-		 * ArrayList<RoleHierarchy>();
-		 * 
-		 * if(null != hierarchyList){ for(RoleHierarchy hierarchy :
-		 * hierarchyList){ List<Roles> rolesList =
-		 * rolesService.getUserRolesListByRoleHierarchyIdAndOrgLocationId(
-		 * orgLocations.getId(), hierarchy.getId(),org.getOrgCode());
-		 * hierarchy.setRolesList(rolesList); rolesHierarchyList.add(hierarchy);
-		 * } }
-		 * 
-		 * model.addObject("rolesHierarchyList", rolesHierarchyList);
-		 */
 		model.setViewName("department");
 		model.addObject("sourceleadUrl", sourceleadUrl);
 		return model;
 	}
+	
+	
+	
+	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
+	@RequestMapping(value = "/addLob")
+	public ModelAndView addLob(HttpServletRequest request) throws Exception
+	{
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		Org org = (Org) SourceLeadSessionManager.getSessionAttribute(request, "org");
+		ModelAndView model = new ModelAndView();
+		commonUtil.highLightMenu(Constants.OrgSettings, request);
+		model.setViewName("lineOfBusiness");
+		model.addObject("sourceleadUrl", sourceleadUrl);
+		return model;
+	}
+	
 	
 	@PreAuthorize("hasRole('ROLE_ENROLL_NEW_ROLE')")
 	@RequestMapping(value = "/enrollRoleActions")

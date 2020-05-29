@@ -41,6 +41,7 @@ padding-right: 254px; padding-top: 10px;
 					  	 <sec:authorize access="hasAnyRole('ROLE_ADD_TEAM')">
 								<a href="${SourceLeadWeb_sourceleadUrl}/team">Add Team</a>
 							</sec:authorize>
+						 <a href="${SourceLeadWeb_sourceleadUrl}/addLob">Add LOB</a>
 					  	 <a href="${SourceLeadWeb_sourceleadUrl}/addDepartment">Add Department</a>
 					     <a href="${SourceLeadWeb_sourceleadUrl}/roleHierarchy">Add Hierarchy</a>
 					     <a href="${SourceLeadWeb_sourceleadUrl}/addGrade">Add Grade</a>
