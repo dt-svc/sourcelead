@@ -36,6 +36,7 @@ import com.bis.sourcelead.dto.AddAssociateDTO;
 import com.bis.sourcelead.dto.AddUserDTO;
 import com.bis.sourcelead.dto.AssociateBalanceLeaveDTO;
 import com.bis.sourcelead.dto.CandidateDTO;
+import com.bis.sourcelead.dto.LineOfBusinessDTO;
 import com.bis.sourcelead.dto.OrgRelationDTO;
 import com.bis.sourcelead.dto.ProjectsDTO;
 import com.bis.sourcelead.dto.Response;
@@ -266,6 +267,13 @@ private static final Logger logger = LoggerFactory.getLogger(UserRestController.
 		List<Department> departmentList = departmentService.getDepartmentByOrgLocationId(orgLocations.getId());
 		resultJson = toJSON(departmentList);
 		return resultJson;
+	}
+	
+	@RequestMapping(value = "/getLobDTOList", method = RequestMethod.POST)
+	public @ResponseBody List<LineOfBusinessDTO> getLobDTOList(HttpServletRequest request) throws Exception {
+		OrgLocations orgLocations = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request,"orgLocations");
+		List<LineOfBusinessDTO> lineOfBusinessList = departmentService.getLineOfBusinessDTOList(orgLocations.getId());
+		return lineOfBusinessList;
 	}
 	
 	@RequestMapping(value = "/getActiveAssociateDetails",  method = RequestMethod.POST)

@@ -22,6 +22,7 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			initLocationAuto('residenceLocation','residenceCountry','residenceState','residenceCity','residenceZipCode','residenceLatitude','residenceLongitude','editAssociate','','address');
 			getDesignationType();
 			getDepartmentsList();
+			getLineOfBusinessList();
 			getResourceManagers();
 			maskme();
 			editMe(this);
@@ -334,8 +335,22 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 		                    </div>
 		                </div>
 		          </c:if>
+		          
+		  <div class="form-group">
+                  <label class="col-md-3">Line Of Business</label>
+                  <div class="col-md-9 chooRadius" id="lineOfBusiness">
+                   <div class="input-group col-md-10 pull-left errorInptgroup">
+                         <select class="form-control chosen-select" id="lobId" name="lobId" field-name="Line Of Business" onchange="removeLOBValidation();getLobDepartment();" data-validation-optional="true" >
+			              </select>
+			               <span class="input-group-addon cursorPointer bg-blue" onclick="getLineOfBusinessList();"><i class="fa fa-refresh "></i></span>
+                  </div>
+                  <sec:authorize access="hasAnyRole('ROLE_ENROLL_NEW_ROLE')"> 
+			<a href="${SourceLeadWeb_sourceleadUrl}/addLob" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
+			</sec:authorize>
+                </div> 
+           </div> 
                   
-               <div class="form-group">
+        <div class="form-group">
                   <label class="col-md-3">Department <span class="text-danger">*</span></label>
                   <div class="col-md-9 chooRadius" id="departments">
                    <div class="input-group col-md-10 pull-left errorInptgroup">
@@ -347,8 +362,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 			<a href="${SourceLeadWeb_sourceleadUrl}/addDepartment" target="_blank"><i class="fa fa-plus btn btn-default pull-right minHeBtn"></i></a> 
 			</sec:authorize>
                 </div> 
-                 </div> 
-                <div class="form-group">
+        </div> 
+        
+      <div class="form-group">
          <label class="col-md-3">Employment type<span class="text-danger">&nbsp;*</span></label>
          <div class="col-md-9">
              <select class="selectpicker form-control" id="designationType" name="designationType" onChange="getEmployeementType(this);" field-name="Employment type" data-validation="required">
@@ -1327,7 +1343,7 @@ function getAssociateUserDetails(){
  
  
  <script>
- function getDepartmentsList(){
+ function getDepartmentsList(departmentId){
 	 $.ajax({
 	    	type: "POST",
 	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
@@ -1340,7 +1356,18 @@ function getAssociateUserDetails(){
 	        		var opt = json[i];
 	        		var name = '';
 	        		name = opt.departmentName;
-	        		output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		
+	        		if(departmentId != null && departmentId != 'undefined' && departmentId != ''){
+	        			var selected = '';
+	        			if(departmentId == opt.id){
+	        				selected = 'selected';
+	        			}
+	        			output = output + "<option value='" +opt.id+ "' "+selected+">"+name+"</option>";
+	        		}else{
+	        			output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		}
+	        		
+	        		
 				}
 	        	$("#department").empty();
 		        $("#department").append(output);
@@ -1350,6 +1377,45 @@ function getAssociateUserDetails(){
  }
  
  </script>  
+ 
+ <script>
+ function getLineOfBusinessList(){
+	 $.ajax({
+	    	type: "POST",
+	    	url: atsUrl+"/getLobDTOList?"+tokenParamName+"="+tokenValue+"",
+	        success: function(data) {
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select LOB --</option>"; 
+	        	for (var i=0; i<data.length; i++)
+				{
+	        		var opt = data[i];
+	        		var name = '';
+	        		name = opt.lobName;
+	        		output = output + "<option value='" +opt.lobId+ "'>"+name+"</option>";
+	        		
+				}
+	        	$("#lobId").empty();
+		        $("#lobId").append(output);
+		        $('#lobId').trigger("chosen:updated");
+	        },
+	    });
+ }
+ 
+ </script>  
+ 
+ <script>
+function getLobDepartment(){
+	var lobId = $("#lobId").val();
+	 $.ajax({
+	    	type: "GET",
+	    	url : sourceleadUrl+ "/getLineOfBusinessById?${_csrf.parameterName}=${_csrf.token}&lobId="+lobId,
+	        success: function(data) {
+	        	 getDepartmentsList(data.deptId);
+	        	 
+	        },
+	    });
+ }
+ </script>
  
  <script>
  function getDesignationType(){
@@ -1788,6 +1854,13 @@ function removeValidation(){
 	 $('#departments').find('p.jquery_form_error_message').remove();
 }
 </script>
+
+<script>
+function removeLOBValidation(){
+	 $('#lineOfBusiness').find('p.jquery_form_error_message').remove();
+}
+</script>
+
 
 <script>
 function removeResourceValidation(){
