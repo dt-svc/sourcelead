@@ -946,6 +946,13 @@ window.onload = function () {
 					result = result + '<div class="clearfix"></div>';
 				}
 				
+				 if(json.lineOfBusiness != null && json.lineOfBusiness != "" && json.lineOfBusiness != 'undefined'){
+						result = result + '			<div class="project_details_cta">';
+						result = result + '				 <strong>Line Of Business:</strong><span class="fix" title="'+json.lineOfBusiness+'">'+json.lineOfBusiness+'</span><div class="clearfix"></div>';
+						result = result + ' 		</div>';
+						result = result + '<div class="clearfix"></div>';
+					} 
+				
 				 if(json.departmentName != null && json.departmentName != "" && json.departmentName != 'undefined'){
 					result = result + '			<div class="project_details_cta">';
 					result = result + '				 <strong>Department Name:</strong><span class="fix" title="'+json.departmentName+'">'+json.departmentName+'</span><div class="clearfix"></div>';
@@ -1434,6 +1441,90 @@ function getChangeRole(userId,userRoleId){
 	
 }
 </script>
+
+<script>
+ function getLineOfBusinessList(){
+	 var updatelob = $("#updatelob").val();
+	 var updatelobId = $("#updatelobId").val();
+	 $.ajax({
+	    	type: "POST",
+	    	url: atsUrl+"/getLobDTOList?"+tokenParamName+"="+tokenValue+"",
+	        success: function(data) {
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select LOB --</option>"; 
+	        	for (var i=0; i<data.length; i++)
+				{
+	        		var opt = data[i];
+	        		var name = '';
+	        		name = opt.lobName;
+	        		
+	        		if(updatelob != null && updatelob != 'undefined' && updatelob  != ''){
+	        			output = output + "<option "+ (opt.lobId == updatelobId ? 'selected' : '') +" value='" +opt.lobId+ "'>"+name+"</option>";
+	        		 }else{
+	        			 output = output + "<option value='" +opt.lobId+ "'>"+name+"</option>";
+	        		 }
+	        		
+	        		
+				}
+	        	$("#lobId").empty();
+		        $("#lobId").append(output);
+		        $('#lobId').trigger("chosen:updated");
+	        },
+	    });
+ }
+ 
+ </script>  
+ 
+ 
+  <script>
+function getLobDepartment(){
+	var lobId = $("#lobId").val();
+	 $.ajax({
+	    	type: "GET",
+	    	url : sourceleadUrl+ "/getLineOfBusinessById?${_csrf.parameterName}=${_csrf.token}&lobId="+lobId,
+	        success: function(data) {
+	        	 getLOBDepartmentsList(data.deptId);
+	        	 
+	        },
+	    });
+ }
+ </script>
+ 
+ <script>
+ function getLOBDepartmentsList(departmentId){
+	 $.ajax({
+	    	type: "POST",
+	    	url: atsUrl+"/getDepartmentsList?"+tokenParamName+"="+tokenValue+"",
+	        success: function(data) {
+	        	var json = JSON.parse(data);
+	        	var output = "";
+	        	output = output + "<option value=''>-- Select Department --</option>"; 
+	        	for (var i=0; i<json.length; i++)
+				{
+	        		var opt = json[i];
+	        		var name = '';
+	        		name = opt.departmentName;
+	        		
+	        		if(departmentId != null && departmentId != 'undefined' && departmentId != ''){
+	        			var selected = '';
+	        			if(departmentId == opt.id){
+	        				selected = 'selected';
+	        			}
+	        			output = output + "<option value='" +opt.id+ "' "+selected+">"+name+"</option>";
+	        		}else{
+	        			output = output + "<option value='" +opt.id+ "'>"+name+"</option>";
+	        		}
+	        		
+	        		
+				}
+	        	$("#department").empty();
+		        $("#department").append(output);
+		        $('#department').trigger("chosen:updated");
+	        },
+	    });
+ }
+ 
+ </script> 
 
 <script>
  function getDepartmentsList(){
@@ -2286,6 +2377,14 @@ $("#editRoleDetailsList").empty();
 			 	     	result = result+"</select>"; 
 						result = result + '</div>'; 
 						
+						
+					    result = result + ' <div class="user_summary_edit_cta">';
+					    result = result + ' <label>Line Of Business</label>';
+						result = result + '<select class="form-control chosen-select" id="lobId" name="lobId" onchange="getLobDepartment()";  data-validation-optional="true" field-name="Line Of Business" '+json.lineOfBusiness+'>';
+						result = result + '</select>';
+						result = result + '<input type="hidden" name="updatelob" id="updatelob" value="'+json.lineOfBusiness+'">';
+						result = result + '<input type="hidden" name="updatelobId" id="updatelobId" value="'+json.lobId+'">';	
+						result = result + '</div>'; 
 					
 					// moving date bottom to top
 					    result = result + ' <div class="user_summary_edit_cta">';
@@ -2542,6 +2641,7 @@ $("#editRoleDetailsList").empty();
 			      }
 			    getEmployeementType();
 			    getVendorsByOrgLocationId();
+			    getLineOfBusinessList();
 			    getDepartmentsList();
 			    maskme(); 
 			    calculateConfirmationDate();

@@ -73,6 +73,7 @@ import com.bis.sourcelead.entity.EmailAttachment;
 import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
+import com.bis.sourcelead.entity.LineOfBusiness;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgDocuments;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -814,6 +815,11 @@ public class UsersListRestController {
 				userRole.setDepartmentName(employee.getDepartmentId().getDepartmentName());
 			}
 			
+			if(null != employee.getLobId()){
+				userRole.setLobId(employee.getLobId().getId().toString());
+				userRole.setLineOfBusiness(employee.getLobId().getLobName());
+			}
+			
 			if(null != employee.getOrgRelationId()){
 				userRole.setVendorOrgRelationId(employee.getOrgRelationId().getId().toString());
 				if(employee.getOrgRelationId().getResponderLocationId().getId().longValue() == orgLocations.getId().longValue()){
@@ -949,6 +955,11 @@ public class UsersListRestController {
 			if(null != employee.getDepartmentId()){
 				userRole.setDepartment(employee.getDepartmentId().getId().toString());
 				userRole.setDepartmentName(employee.getDepartmentId().getDepartmentName());
+			}
+			
+			if(null != employee.getLobId()){
+				userRole.setLobId(employee.getLobId().getId().toString());
+				userRole.setLineOfBusiness(employee.getLobId().getLobName());
 			}
 			
 			if(null != employee.getOrgRelationId()){
@@ -2400,6 +2411,14 @@ public class UsersListRestController {
 			}
 			if(StringUtils.isNotBlank(addUserDTO.getDesignationOtherType())){
 				employees.setDesignationOtherType(addUserDTO.getDesignationOtherType());
+			}
+			
+			if(StringUtils.isNotBlank(addUserDTO.getLobId())){
+				LineOfBusiness lob = new LineOfBusiness();
+				lob.setId(Long.valueOf(addUserDTO.getLobId()));
+				employees.setLobId(lob);
+			}else {
+				employees.setLobId(null);
 			}
 			
 			if(StringUtils.isNotBlank(addUserDTO.getDepartment())){
