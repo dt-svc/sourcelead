@@ -461,6 +461,14 @@ public class UserRole implements Serializable {
 	@JsonProperty
 	private String probationStatus;
 	
+	@Transient
+	@JsonProperty
+	private String lobId;
+	
+	@Transient
+	@JsonProperty
+	private String lineOfBusiness;
+	
 	public BigInteger getUserRoleId() {
 		if(id != null) {
 			userRoleId = BigInteger.valueOf(id);
@@ -1391,6 +1399,22 @@ public class UserRole implements Serializable {
 
 	public void setIsSubscription(String isSubscription) {
 		this.isSubscription = isSubscription;
+	}
+
+	public String getLobId() {
+		return lobId;
+	}
+
+	public void setLobId(String lobId) {
+		this.lobId = lobId;
+	}
+
+	public String getLineOfBusiness() {
+		return lineOfBusiness;
+	}
+
+	public void setLineOfBusiness(String lineOfBusiness) {
+		this.lineOfBusiness = lineOfBusiness;
 	}
 
 }

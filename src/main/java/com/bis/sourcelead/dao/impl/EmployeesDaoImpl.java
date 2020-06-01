@@ -337,7 +337,7 @@ public class EmployeesDaoImpl implements EmployeesDao{
 	public Employees getEmployeeByUserIdAndOrgLocationsId(Long userId, Long orgLocationsId) {
 		logger.debug("In EmployeesDaoImpl class getEmployeeByUserIdAndOrgLocationsId method");
 		Session session = this.sessionFactory.getCurrentSession();
-		String query = "from Employees emp left join fetch emp.user left join fetch emp.departmentId where emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
+		String query = "from Employees emp left join fetch emp.user left join fetch emp.departmentId left join fetch emp.lobId where emp.user.id = :userId and emp.orgLocations = :orgLocationsId";
 		List<Employees> employeesList =  session.createQuery(query).setLong("userId", userId).setLong("orgLocationsId", orgLocationsId).list();
 		Employees employee = null;
 		if(employeesList != null && !employeesList.isEmpty())

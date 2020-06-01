@@ -76,6 +76,7 @@ import com.bis.sourcelead.entity.EmailMessage;
 import com.bis.sourcelead.entity.EmailScenario;
 import com.bis.sourcelead.entity.Employees;
 import com.bis.sourcelead.entity.LeaveType;
+import com.bis.sourcelead.entity.LineOfBusiness;
 import com.bis.sourcelead.entity.MasterCandidate;
 import com.bis.sourcelead.entity.Org;
 import com.bis.sourcelead.entity.OrgLocations;
@@ -1061,6 +1062,14 @@ public class UserServiceImpl implements UserService {
 			employees.setDepartmentId(department);
 		}else{
 			employees.setDepartmentId(null);
+		}
+		
+		if(StringUtils.isNotBlank(addUserDTO.getLobId())){
+			LineOfBusiness lob = new LineOfBusiness();
+			lob.setId(Long.valueOf(addUserDTO.getLobId()));
+			employees.setLobId(lob);
+		}else {
+			employees.setLobId(null);
 		}
 		
 		if(StringUtils.isNotBlank(addUserDTO.getVendors())){

@@ -116,6 +116,8 @@ import com.bis.sourcelead.entity.UserRole;
 		
 		private String department;
 		
+		private String lobId;
+		
 		private String vendors;
 		
 		private String vendorcontact;
@@ -1017,6 +1019,14 @@ import com.bis.sourcelead.entity.UserRole;
 
 		public void setProbationStatus(String probationStatus) {
 			this.probationStatus = probationStatus;
+		}
+
+		public String getLobId() {
+			return lobId;
+		}
+
+		public void setLobId(String lobId) {
+			this.lobId = lobId;
 		}
 		
 }

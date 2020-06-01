@@ -88,6 +88,9 @@ public class Employees implements Serializable{
     @JoinColumn(name="ORG_RELATION_ID", nullable=false )        
     private OrgRelations orgRelationId;
 	    
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="LOB_ID", nullable=false )        
+    private LineOfBusiness lobId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="DEPARTMENT_ID", nullable=false )        
@@ -462,5 +465,15 @@ public class Employees implements Serializable{
 	public void setEmpId(Long empId) {
 		this.empId = empId;
 	}
+
+	public LineOfBusiness getLobId() {
+		return lobId;
+	}
+
+	public void setLobId(LineOfBusiness lobId) {
+		this.lobId = lobId;
+	}
+	
+	
 
 }
