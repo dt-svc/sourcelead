@@ -123,6 +123,12 @@ public class SourceleadTicketsRestController {
 	 public  ResponseList<SourceleadTicketDTO> getSourceleadTicketList(SourceleadTicketDTO sourceleadTicketDTO,HttpServletRequest request) throws Exception {
 		 User user = (User) SourceLeadSessionManager.getSessionAttribute(request, "user");
 		 OrgLocations orgLocation = (OrgLocations) SourceLeadSessionManager.getSessionAttribute(request, "orgLocations");
+		 
+		 //02-April-2020 - vishnu
+		 //orgLocation.getTimezone().getId() is null which is causing a null pointer exception in custom filter dates in report issue.
+		 //declared a new variable and fetching timezoneid from session.
+		 Long timeZoneId = (Long)SourceLeadSessionManager.getSessionAttribute(request, "timeZoneId");
+
 		 String userRole = (String) SourceLeadSessionManager.getSessionAttribute(request, "loginUserRole");
 		 sourceleadTicketDTO.setLoginUserRole(userRole);
 		                                          
@@ -142,7 +148,16 @@ public class SourceleadTicketsRestController {
 				if(!sourceleadTicketDTO.getDateSelection().equalsIgnoreCase("custom")) {
 					searchDates = reportsUtil.getJobFilterDate(sourceleadTicketDTO.getDateSelection(),orgLocation);
 				}else {
-					Timezone timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+					
+					//02-april-2020 - vishnu
+					//timeZoneId is from session if orgloaction.getTImezone is null
+					Timezone timezone = null;
+					if(orgLocation.getTimezone() == null){
+						timezone = timeZoneService.getTimezone(timeZoneId);
+					}else{
+						timezone = timeZoneService.getTimezone(orgLocation.getTimezone().getId());
+					}
+					
 					DateFormat TZ_DF_TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					DateFormat TZ_DF_CSD = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00");
 					DateFormat TZ_DF_CED = new SimpleDateFormat("yyyy-MM-dd'T'23:59:59");

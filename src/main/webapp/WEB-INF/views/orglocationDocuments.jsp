@@ -176,10 +176,10 @@
 			      
 			      <div class="clearfix">
 			      		<div class="pull-right">
-						<input type="button" value="Cancel" class="btn btn-default" onClick="self.location='/app/settings'">
+						<input type="button" value="Cancel" class="btn btn-default tblminwidth-90" onClick="self.location='/app/settings'">
 						</div>
 						<div class="pull-right">
-						<input  type="button" onclick="saveDocuments();"  value="Save" id="save_documents_button" class="btn btn-primary mr">
+						<input  type="button" onclick="saveDocuments();"  value="Save" id="save_documents_button" class="btn btn-primary mr tblminwidth-90">
 						</div>
 					</div>
 			        

@@ -202,8 +202,8 @@ display: none;
         <div class="col-md-12 clearfix mt">
             <div class="pull-right"> 
               <!--<input type="button" value="Schedule" class="btn btn-sm btn-primary">-->
-              <button type="button" class="btn btn-sm btn-success" id="campaignSend" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
-              <button type="button" class="btn btn-sm btn-default" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/campaigns/hotcampaigns'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
+              <button type="button" class="btn tblminwidth-90 btn-primary mr" id="campaignSend" onclick="sendJobListCampaign();"><i class="fa fa-envelope-o"></i>&nbsp;Send</button>
+              <button type="button" class="btn tblminwidth-90 btn-default" onClick="javascript:window.location.href = '${SourceLeadWeb_sourceleadUrl}/campaigns/hotcampaigns'" ><i class="fa fa-times"></i>&nbsp;Cancel</button>
             </div>
         </div>
         <!-- Attachment button --> 

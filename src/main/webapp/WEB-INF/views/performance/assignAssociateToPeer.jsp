@@ -386,7 +386,7 @@ function savePeers(){
 			result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Select at least one peer</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='okPopUp();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='okPopUp();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelPopUp();'></b>";
 			result = result +"	</div>";
 			$("#peersChoicepopUp").append(result);
 			$("#remove_user_pop").slideDown(200);

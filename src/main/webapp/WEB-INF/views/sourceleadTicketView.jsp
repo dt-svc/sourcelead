@@ -104,8 +104,8 @@
 					<form role="form" id="sourceleadTicketComment_form" name="sourceleadTicketComment_form" method="post">    
 					<textarea rows="3" class="form-control clearfix mb10" placeholder="Comments here..." id="ticketComment" name="ticketComment" field-name="Comment" data-validation="required validate_length length1-5000"></textarea>  
 					  <span class="clearfix pull-right">     
-					   <input type="button" id="submit_comment" value="Add" class="btn btn-sm btn-success" onclick="addTicketComments('${sourceleadTicket.id}','${sourceleadTicket.ticketUUID}')">  
-					<input type="button" value="Cancel" class="btn btn-sm btn-default" onclick="closeTicketComment()">       
+					   <input type="button" id="submit_comment" value="Add" class="btn tblminwidth-90 btn-primary" onclick="addTicketComments('${sourceleadTicket.id}','${sourceleadTicket.ticketUUID}')">  
+					<input type="button" value="Cancel" class="btn tblminwidth-90 btn-default" onclick="closeTicketComment()">       
 					</span>	       
 					</form>
 					</div>

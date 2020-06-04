@@ -101,7 +101,7 @@ function maxAlertPopUp(){
 	result = result +"	<div class='mask'></div>";
 	result = result +"	   <div id='remove_user_pop' class='remove_user_pop remove_user_pop_a'>";
 	result = result +"		<p>You have reached maximum number of recipient List</p>";
-	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Ok' onclick='cancelMaxAlert();'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelMaxAlert();'></b>";
+	result = result +"		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Ok' onclick='cancelMaxAlert();'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelMaxAlert();'></b>";
 	result = result +"	</div>";
 	$("#popUp").append(result);
 	$("#remove_user_pop").slideDown(200);
