@@ -812,8 +812,8 @@ function editCancel(){
 			result = result	+ '       </form>';
 			result = result	+ '     </div>';
 			result = result	+ '   <div class="modal-footer">';
-			result = result	+ '     <button type="button" class="btn btn-primary btn-sm" id="save_task" onclick="saveTasks();" data-dismiss="modal">Add</button>';
-			result = result	+ '     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" onclick="cancelTask();">Cancel</button>';
+			result = result	+ '     <button type="button" class="btn btn-primary tblminwidth-90 mr" id="save_task" onclick="saveTasks();" data-dismiss="modal">Add</button>';
+			result = result	+ '     <button type="button" class="btn btn-default tblminwidth-90" data-dismiss="modal" onclick="cancelTask();">Cancel</button>';
 			result = result	+ '   </div>';
 			result = result	+ ' </div>';
 			
@@ -1225,8 +1225,8 @@ function openFilterTaskPop(){
 					</div>
 					<div class="clearfix advancedsearch-footer">
 						<div class="pull-right mr">
-							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTaskPop();projectTaskList();" class="btn btn-sm btn-success" />
-							<input type="button" value="Reset" id="clear_search" onclick="resetTaskFilter();" class="btn btn-sm btn-primary" />
+							<input type="button" value="Apply" id="search_requiremet" onclick="closeFilterTaskPop();projectTaskList();" class="btn tblminwidth-90 btn-primary mr" />
+							<input type="button" value="Reset" id="clear_search" onclick="resetTaskFilter();" class="btn tblminwidth-90 btn-default" />
 						</div>
 					</div>
 	  </div>

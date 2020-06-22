@@ -232,9 +232,9 @@ var pmsUrl ='${SourceLeadWeb_pmsUrl}';
 				+ "		<textarea id='reason' class='form-control' field-name='Reject Reason'  data-validation='required validate_Space validate_Description validate_length length2-250' name='reason' value='' placeholder='Reason' rows='2' onclick='validateReason();'></textarea>";
 		result = result + ' <div id="deleteLeaveTypeDiv"/>';
 		result = result
-				+ "		<b href='javascript:void(0)'><input id='confirm-id' type='button' value='Delete' onclick='deleteType(\""
+				+ "		<b href='javascript:void(0)'><input id='confirm-id' class='btnBg_blue' type='button' value='Delete' onclick='deleteType(\""
 				+ typeId
-				+ "\");'><input class='u_can_color' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
+				+ "\");'><input class='btnBg_white' type='button'  value='Cancel' onClick='cancelRejectPopup();'></b>";
 		result = result + "	</div>";
 		$("#popUp").append(result);
 		$("#remove_user_pop").slideDown(200);

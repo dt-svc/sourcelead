@@ -334,7 +334,7 @@ function exportToPdf(type){
 		result = result +"	   <div id='expensesListDiv' class='remove_user_pop remove_user_pop_a'>";
 		result = result +"		<p>Expenses List is Empty</p>";
 		result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-		result = result +"		<b href='javascript:void(0)'><input type='button' class='text-center width100percnt' value='Ok' onclick='expensesCancel();'></b>";
+		result = result +"		<b href='javascript:void(0)'><input type='button' class='text-center width100percnt' class='btnBg_white' value='Ok' onclick='expensesCancel();'></b>";
 		result = result +"	</div>";
 		$("#emptyPopup").append(result);
 		$("#expensesListDiv").slideDown(200);
