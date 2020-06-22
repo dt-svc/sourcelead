@@ -115,7 +115,7 @@ var atsUrl = '${SourceLeadWeb_atsUrl}';
         result = result + '</div>';
         result = result + '<div class="form-footer clearfix">';
         result = result + '<div class="pull-right mr">';
-        result = result + ' <input type="button" value="Cancel" onclick="cancelTemplate()" class="btn btn-default" >';
+        result = result + ' <input type="button" value="Cancel" onclick="cancelTemplate()" class="btn btn-default tblminwidth-90" >';
         result = result + '</div>';
         result = result + '</div>';
         $("#clientSubmissionTemplateList").empty();
@@ -214,8 +214,8 @@ function templatepagination(){
 		           result = result + '<div class="form-footer clearfix row mt">';
 		           
 		           result = result + '<div class="pull-right mr">';
-		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr">';
-		           result = result + ' <input type="button" value="Cancel" onclick="cancelTemplate()" class="btn btn-default" >';
+		           result = result + ' <input type="submit" value="Save" id="save_button" class="btn btn-primary mr tblminwidth-90">';
+		           result = result + ' <input type="button" value="Cancel" onclick="cancelTemplate()" class="btn btn-default tblminwidth-90" >';
 		           result = result + '</div>';
 
 		           result = result + '</div>';

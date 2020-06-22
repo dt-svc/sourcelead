@@ -1430,13 +1430,13 @@ function imageCancel(){
 										</div>
 						  </div>
 						  
-						  <div class="col-md-8 mt5">
+						  <!-- <div class="col-md-8 mt5">
 						  <label>Source</label>
 							<div class="clearfix">
 								<select class="chosen-select form-control input-sm" multiple data-placeholder="Source" id="candidateSource" name="candidateSource">
 								</select>
 							 </div>
-						 </div>
+						 </div> -->
 						  
 						   <!-- <div class="col-md-4">
 							  <label>Applicant Type</label>
@@ -1454,7 +1454,7 @@ function imageCancel(){
 				  </div>
 				  <div class="clearfix advancedsearch-footer">
 						  <div class="pull-right mr">
-							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn tblminwidth-90 btn-primary"/>
+							   <input type="button" value="Search" id="search_candidate" onclick="candidateList(); closePop();minMaxExperience();" class="btn tblminwidth-90 btn-primary mr"/>
                                <input type="button"  value="Reset"  onClick="clearCandidateSearchKeys();"class="btn tblminwidth-90 btn-default"/>
                                <!--  <input type="button" value="Cancel" onClick="closePop();clearCandidateSearchKeys();" class="btn btn-sm btn-danger"/> -->
 						  </div>
@@ -1981,7 +1981,7 @@ function exportToPdf(){
 			result = result +"	   <div id='candidate_user_pop' class='remove_user_pop remove_user_pop_a'>";
 			result = result +"		<p>Candidates List is Empty</p>";
 			result = result +"		<div>&nbsp;&nbsp;&nbsp;</div>";
-			result = result +"		<b href='javascript:void(0)'><input type='button' value='Ok' onclick='candidtaeCancel();'><input class='u_can_color' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
+			result = result +"		<b href='javascript:void(0)'><input type='button' class='btnBg_blue' value='Ok' onclick='candidtaeCancel();'><input class='btnBg_white' type='button'  value='Cancel' onClick='candidtaeCancel();'></b>";
 			result = result +"	</div>";
 			$("#emptyPopup").append(result);
 			$("#candidate_user_pop").slideDown(200);
@@ -3339,7 +3339,7 @@ function resetCandidateFilter(){
 					 </div> 
 		 </div> 
 		 
-		 <div class="col-md-3">
+		<%--  <div class="col-md-3">
 					<div class="clearfix dynamic_search filterDynamicsearch">
 						<input type="text" id="sourceInput" onkeyup="candSourceFunction()" placeholder="Source" title="Type in a Source">
 						<span class="cursorPointer" title="Search"><i class="fa fa-search"></i></span>
@@ -3351,13 +3351,13 @@ function resetCandidateFilter(){
 							</c:forEach>
 						</ul>
 					 </div> 
-		 </div> 
+		 </div>  --%>
 		
 		</div>
 		</div>
 		<div class="clearfix advancedsearch-footer">
 			<div class="pull-right mr">
-				<input type="button" value="Apply" id="search_requiremet" onclick="closeCandidateFilterPop();candidateList();" class="btn tblminwidth-90 btn-primary" />
+				<input type="button" value="Apply" id="search_requiremet" onclick="closeCandidateFilterPop();candidateList();" class="btn tblminwidth-90 btn-primary mr" />
 				<input type="button" value="Reset" id="clear_search" onclick="resetCandidateFilter();" class="btn tblminwidth-90 btn-default" />
 			</div>
 		</div>

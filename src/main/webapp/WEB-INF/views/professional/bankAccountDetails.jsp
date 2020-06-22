@@ -108,7 +108,7 @@
 				
 					 <div class="col-md-12 clearfix">
 							<div class="pull-right">
-							  <input type="submit" class="btn btn-primary mr" id="profile_submit" value="Save">
+							  <input type="submit" class="btn btn-primary mr tblminwidth-90" id="profile_submit" value="Save">
 							  
 							  <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
 							    <input type="button" class="btn btn-default" value="Cancel" onClick="self.location='${SourceLeadWeb_sourceleadUrl}/settings'" >

@@ -350,8 +350,8 @@ var atsUrl ='${SourceLeadWeb_atsUrl}';
 				<div class="col-lg-12">
 					<div class="pull-right">
 						<input type="button" value="Save" id="store_RequirementTemplate"
-							onclick="storeRequiremetTemplate();" class="btn btn-primary ml">
-						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/template'" class="btn btn-default ml">
+							onclick="storeRequiremetTemplate();" class="btn btn-primary ml tblminwidth-90">
+						<input type="button" value="Cancel" onClick="javascript:window.location.href = '${SourceLeadWeb_atsUrl}/template'" class="btn btn-default ml tblminwidth-90">
 					</div>
 				</div>
 			</div>
