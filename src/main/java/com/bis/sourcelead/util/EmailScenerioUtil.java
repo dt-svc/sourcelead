@@ -241,11 +241,15 @@ public void sendNotificationToClientOrVendorWhenOwnerChange(String actionLink,St
 	
 	}
 
-public void sendWithAttachmentEmail(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception{
-	emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,iAdressArray,attachmentList,submissionIds);
-	
-}
-
+	/*
+	 * public void sendWithAttachmentEmail(EmailMessage emailMessage, Long
+	 * locationsId, InternetAddress[] iAdressArray,List<EmailAttachment>
+	 * attachmentList, String[] submissionIds) throws Exception{
+	 * emailMessageService.sendEmailWithAttachment(emailMessage,locationsId,
+	 * iAdressArray,attachmentList,submissionIds);
+	 * 
+	 * }
+	 */
 
 
 

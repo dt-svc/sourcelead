@@ -482,7 +482,7 @@
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
-            <version>1.4</version>
+            <version>1.5.0-b01</version>
         </dependency>
 
         <!-- Apache Commons Upload -->
@@ -638,7 +638,7 @@
         <dependency>
             <groupId>com.sendgrid</groupId>
             <artifactId>sendgrid-java</artifactId>
-            <version>4.1.2</version>
+            <version>4.4.1</version>
         </dependency>
 
         <dependency>

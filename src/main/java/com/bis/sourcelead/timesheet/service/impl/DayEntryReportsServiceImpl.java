@@ -155,6 +155,9 @@ public class DayEntryReportsServiceImpl implements DayEntryReportsService{
 				if(hours != null && hours.length > 1) {
 					String nonbillableHrs = hours[0]+"."+Math.round((Integer.parseInt(hours[1])*5)/3);
 					getNonBillableHrs = nonbillableHrs;
+					if(nonbillableHrs.contains("-")) {
+					getNonBillableHrs = nonbillableHrs.substring(2,nonbillableHrs.length());
+					}
 				}
 		    }
 	

@@ -37,6 +37,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -66,6 +67,15 @@ import com.bis.sourcelead.service.SubmissionXlsService;
 import com.bis.sourcelead.service.UserMailUnsubscribeService;
 import com.bis.sourcelead.service.UserService;
 import com.bis.sourcelead.util.SourceLeadRandomCodeHelper;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Attachments;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+import com.sendgrid.helpers.mail.objects.Personalization;
 
 /**
  *
@@ -145,6 +155,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	@Value("${defaultFromEmailAddressPwdForProd}")
 	private String defaultFromEmailAddressPwdForProd;
+	
+	@Value("${sendgridKey}")
+	private String sendgridKey;;
 
 	@Override
 	@Async
@@ -198,9 +211,9 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 				emailMessage.setPassword(defaultFromEmailAddressPwd);
 				logger.info("######## if production email/password not correct then email sent from default email address ###########");
 			}
-			emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 			//sendMessage(emailMessage, iAdressArray, attachmentList);
 			sendMessageConfiguredMail(emailMessage, iAdressArray, attachmentList,locationsId);
+			emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
 		}
 		else {
 			if (sendMailForNonProd.equalsIgnoreCase("true")) {
@@ -219,135 +232,29 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 		
 	}
 	
-	private void sendMessage(EmailMessage emailMessage, InternetAddress[] iAdressArray,
-			List<EmailAttachment> attachmentList) throws Exception {
-
-		Properties props = new Properties();
-		final String username = emailMessage.getUserName(); // should be from email of the System. SRINIVAS SABBU 
-		final String password = emailMessage.getPassword();// should be password of from email of the System.
-
-		if (environment.equalsIgnoreCase("prod")) {
-			props.put("mail.smtp.host", "secure.emailsrvr.com");
-		} else {
-			props.put("mail.smtp.host", "smtp.sendgrid.net");
-		}
-		
-		props.put("mail.smtp.localhost", "localhost");
-		props.put("mail.stmp.user", username);
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.password", "password");
-		props.put("mail.smtp.socketFactory.port", "465");
-		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", "465");
-
-		Session session = Session.getDefaultInstance(props, new Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
-			}
-		});
-
-		try {
-
-			MimeMessage message = new MimeMessage(session);
-//			session.setDebug(true);
-			String UUID = null;
-			if (null != emailMessage.getEmailType()
-					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
-				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
-				message.setRecipients(Message.RecipientType.BCC, iAdressArray);
-			}
-			// here mail forward from custom user mail(not with default mail) by
-			// prasad salina
-			else if (null != emailMessage.getEmailType()
-					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.CUSTOM_USER_EMAIL)) {
-				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
-				message.setRecipients(Message.RecipientType.TO, iAdressArray);
-			} else {
-				if (null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional")
-						|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
-					message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromEmail()));
-				} else {
-					message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
-				}
-
-				message.setRecipients(Message.RecipientType.TO, iAdressArray);
-			}
-
-			message.setHeader("Content-Type", "text/html; charset=UTF-8");
-			message.setSubject(emailMessage.getSubject());
-			MimeMultipart mimeMultipart = new MimeMultipart();;
-			if(emailMessage.getSubmissionId()!=null&& emailMessage.getSubmissionId().length>0){
-				if (emailMessage != null && Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())) {
-					if (emailMessage.getSubmissionId().length >= 10) {
-						mimeMultipart = createResumeZipFile(emailMessage.getSubmissionId());
-					} else {
-						List<EmailAttachment> attachmentListNewlyAdded = createResumesWithoutZip(emailMessage.getSubmissionId());
-						attachmentList.addAll(attachmentListNewlyAdded);
-					}
-				}
-			}
-			BodyPart messageBodyPart = new MimeBodyPart();
-			
-			if (null != attachmentList && attachmentList.size() > 0) {
-				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-				mimeMultipart.addBodyPart(messageBodyPart);
-				for (EmailAttachment attachment : attachmentList) {
-
-					DataSource dataSource = null;
-					if (null != attachment.getUUID()) {
-						UUID = attachment.getUUID();
-					}
-
-					SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
-
-					if (null != xls) {
-						dataSource = new ByteArrayDataSource(xls.getDocFile(), "application/pdf");
-						MimeBodyPart xlsBodyPart = new MimeBodyPart();
-						xlsBodyPart.setDataHandler(new DataHandler(dataSource));
-						xlsBodyPart.setFileName(xls.getFileName());
-						mimeMultipart.addBodyPart(xlsBodyPart);
-					} else {
-						dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
-						MimeBodyPart bodyPart = new MimeBodyPart();
-						bodyPart.setDataHandler(new DataHandler(dataSource));
-						bodyPart.setFileName(attachment.getName());
-						mimeMultipart.addBodyPart(bodyPart);
-					}
-					message.setContent(mimeMultipart);
-				}
-			} else {
-				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-				mimeMultipart.addBodyPart(messageBodyPart);
-				message.setContent(mimeMultipart);
-			}
-
-			Transport.send(message);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void sendMessageConfiguredMail(EmailMessage emailMessage, InternetAddress[] iAdressArray,
 			List<EmailAttachment> attachmentList,Long orgLocations) throws Exception {
 		
+		logger.info("###### invoke sendMessageConfiguredMail() ");
 		Properties props = new Properties();
 		Session session=null;
 		
 		EmailScenarioConfiguration configuredMail=emailScenarioConfigurationService.getVerifiedConfMail(orgLocations);
 		if(configuredMail != null){
-			
+			logger.info("###### Sending Email from Configured Email===29042022");
 
 			final String username = configuredMail.getEmailId();
+			emailMessage.setFromEmail(username);
 			final String password = configuredMail.getEmailPassword();
 			
 			String serverName=configuredMail.getServerName();
 			String portNumber=configuredMail.getPortNumber().toString();
 
+			logger.info("ServerName is : {}{}", serverName);
+			logger.info("username : {}{}", username);
+			logger.info("From Email : {}{}", username);
+			logger.info("To Email : {}{}", emailMessage.getToEmail());
+			
 			props.put("mail.smtp.host", serverName);
 			props.put("mail.smtp.localhost", "localhost");
 			props.put("mail.stmp.user", username);
@@ -356,10 +263,11 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			props.put("mail.smtp.password", "password");
 			props.put("mail.smtp.socketFactory.port", portNumber);
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 			props.put("mail.smtp.auth", "true");
 			props.put("mail.smtp.port", portNumber);
 			
-			 session = Session.getDefaultInstance(props, new Authenticator() {
+			 session = Session.getInstance(props, new Authenticator() {
 				@Override
 				protected PasswordAuthentication getPasswordAuthentication() {
 					return new PasswordAuthentication(username, password);
@@ -369,7 +277,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 			try {
 
 				MimeMessage message = new MimeMessage(session);
-
+				session.setDebug(true);
 				String UUID = null;
 				if (null != emailMessage.getEmailType()
 						&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
@@ -387,7 +295,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 							|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
 						message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromEmail()));
 					} else {
-						message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
+						message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
 					}
 
 					message.setRecipients(Message.RecipientType.TO, iAdressArray);
@@ -441,60 +349,90 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					message.setContent(mimeMultipart);
 				}
 
-				Transport.send(message);
-			} catch (Exception e) {
-				logger.info("######## Exception occured inside sendMessageConfiguredMail()###########");
-				e.printStackTrace();
-				sendMessage(emailMessage,iAdressArray,attachmentList);
+//				Transport.send(message);
+			}catch (Exception e) {
+				logger.info("######## Exception occured inside SMTP while sending email from Configure Email Server ###########");
+				logger.info("Error is : {}{}", e.getMessage());
+//				sendMessage(emailMessage,iAdressArray,attachmentList);
+				sendFromSenGrid(emailMessage,iAdressArray,attachmentList);
 			}
 		} else{
-			sendMessage(emailMessage,iAdressArray,attachmentList);
+			logger.info("Sending Email from Send Grid");
+//			sendMessage(emailMessage,iAdressArray,attachmentList);
+			sendFromSenGrid(emailMessage,iAdressArray,attachmentList);
+			
 		}
 	}
 	
-	private Long storeEmailInfoInDB(EmailMessage emailMessage, InternetAddress[] iAdressArray) throws Exception {
+	private void sendFromSenGrid(EmailMessage emailMessage, InternetAddress[] iAdressArray,
+			List<EmailAttachment> attachmentList) {
+		 try {
+		   Email from = new Email(emailMessage.getFromEmail());
+	       Email to = new Email(emailMessage.getToEmail()); // use your own email address here
+	       
+	       Personalization p = new Personalization(); // to send email for multiple recipients
+	       if(iAdressArray != null && iAdressArray.length >0) {
+	    	   for(InternetAddress iaddr : iAdressArray) {
+	    		   p.addTo(new Email(iaddr.getAddress()));
+	    	   }
+	       }
+	       String subject = emailMessage.getSubject();
+	       Content content = new Content("text/html", emailMessage.getMessageBody());
 
-		EmailNotification emailNotification = new EmailNotification();
-		if (iAdressArray != null && iAdressArray.length > 0) {
-			StringBuilder recipients = new StringBuilder("");
-			recipients.append("[");
-			int count = 1;
-			for (InternetAddress address : iAdressArray) {
-				if (count > 1) {
-					recipients.append(",");
-				}
-				count++;
-				recipients.append(address.getAddress());
-			}
-			recipients.append("]");
-			emailNotification.setEmailTo(recipients.toString());
+	       Mail mail = new Mail(from, subject, to, content);
+	       
+	       if (null != attachmentList && attachmentList.size() > 0) {
+	    	   for (EmailAttachment attachment : attachmentList) {
+	    		     Attachments attachments = new Attachments();
+	    		    attachments.setContent(encodeToBase64(attachment.getFileUrl()));
+	    		    attachments.setType(attachment.getType());
+	    		    attachments.setFilename(attachment.getName());
+	    		    attachments.setDisposition("attachment");
+	    		    attachments.setContentId(attachment.getName());
+	    		    mail.addAttachments(attachments);
+	    		    logger.info("File Type : {}{}", attachment.getType());
+	    		    logger.info("File Name : {}{}", attachment.getName());
+	    	   }
+	       }
+
+	       SendGrid sg = new SendGrid(sendgridKey);
+	       Request request = new Request();
+
+	       request.setMethod(Method.POST);
+	       request.setEndpoint("mail/send");
+	      
+			request.setBody(mail.build());
+			 Response response = sg.api(request);
+			 logger.info("Send grid Status Code Type : {}{}", response.getStatusCode());
+			 logger.info("Send grid Headers : {}{}", response.getHeaders());
+			 logger.info("Send grid Body : {}{}", response.getBody());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		String url=null;
-		if(emailMessage != null && emailMessage.getMessageBody() != null ){
-			String title="email"+SourceLeadRandomCodeHelper.generateRandomOrgCode();
-			File f=new File(staticPath,"/"+"/"+"profile"+"/"+"test.html");
-			url=staticPath+"test.html";
-			try{
-				BufferedWriter bw=new BufferedWriter(new FileWriter(f));
-				bw.write(emailMessage.getMessageBody());
-				bw.close();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
 
-		emailNotification.setEmailFrom(emailMessage.getFromEmail());
-		emailNotification.setSubject(emailMessage.getSubject());
-		emailNotification.setBody(url);
-		emailNotification.setDeliveryStatus("N");
-		Date date = new Date();
-		emailNotification.setCreatedDate(new Timestamp(date.getTime()));
-		emailNotification.setCreatedBy(emailMessage.getCreatedBy());
-		emailNotificationService.save(emailNotification);
+	      
 
-		return emailNotification.getId();
+	      
 	}
-	
+	private static final int BYTE_BUFFER_SIZE = 4096;
+
+	public static String encodeToBase64(String fileUrl) throws FileNotFoundException {
+		   
+		   File initialFile = new File(fileUrl);
+		    InputStream content = new FileInputStream(initialFile);
+		      int read = 0;
+		      byte[] bytes = new byte[BYTE_BUFFER_SIZE];
+		      try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+		        while ((read = content.read(bytes)) != -1) {
+		          baos.write(bytes, 0, read);
+		        }
+
+		        return Base64.encodeBase64String(baos.toByteArray());
+		      } catch (IOException e) {
+		        throw new RuntimeException("Unable to convert content stream to base 64 encoded string", e);
+		      }
+		    }
+
 	private Long storeEmailInfoInDBTwo(EmailMessage emailMessage, InternetAddress[] iAdressArray,OrgLocations locaId) throws Exception {
 
 		EmailNotification emailNotification = new EmailNotification();
@@ -553,46 +491,42 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 
 	}
 
-	@Override
-	@Async
-	public void sendEmailWithAttachment(EmailMessage emailMessage, Long locationsId, InternetAddress[] iAdressArray,
-			List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception {
-
-		if (emailMessage != null) {
-			Long emailNotificationId = null;
-
-			// if non prod and send email in non prod is true then call or prod
-			if (environment.equalsIgnoreCase("prod")) {
-				OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-				if (orgLocations != null && orgLocations.getFromEmail() != null
-						&& orgLocations.getFromEmailPassword() != null) {
-					emailMessage.setUserName(defaultFromEmailAddressForProd);
-					emailMessage.setPassword(defaultFromEmailAddressPwdForProd);
-				} else {
-					emailMessage.setUserName(defaultFromEmailAddress);
-					emailMessage.setPassword(defaultFromEmailAddressPwd);
-					logger.info(
-							"######## if production email/password not correct then email sent from default email address ###########");
-				}
-				emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
-				sendMessageAttachment(emailMessage, iAdressArray, attachmentList, submissionIds);
-			} else {
-				if (sendMailForNonProd.equalsIgnoreCase("true")) {
-					OrgLocations orgLocations = orgLocationService.getOrgLocations(locationsId);
-					emailMessage.setUserName(defaultFromEmailAddress);
-					emailMessage.setPassword(defaultFromEmailAddressPwd);
-					emailNotificationId = storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
-					sendMessageAttachment(emailMessage, iAdressArray, attachmentList, submissionIds);
-				}
-			}
-
-			if(emailNotificationId != null) {
-				updateEmailInfoWithDeliveryStatus(emailNotificationId);
-			}
-			
-		}
-
-	}
+	/*
+	 * @Override
+	 * 
+	 * @Async public void sendEmailWithAttachment(EmailMessage emailMessage, Long
+	 * locationsId, InternetAddress[] iAdressArray, List<EmailAttachment>
+	 * attachmentList, String[] submissionIds) throws Exception {
+	 * 
+	 * if (emailMessage != null) { Long emailNotificationId = null;
+	 * 
+	 * // if non prod and send email in non prod is true then call or prod if
+	 * (environment.equalsIgnoreCase("prod")) { OrgLocations orgLocations =
+	 * orgLocationService.getOrgLocations(locationsId); if (orgLocations != null &&
+	 * orgLocations.getFromEmail() != null && orgLocations.getFromEmailPassword() !=
+	 * null) { emailMessage.setUserName(defaultFromEmailAddressForProd);
+	 * emailMessage.setPassword(defaultFromEmailAddressPwdForProd); } else {
+	 * emailMessage.setUserName(defaultFromEmailAddress);
+	 * emailMessage.setPassword(defaultFromEmailAddressPwd); logger.info(
+	 * "######## if production email/password not correct then email sent from default email address ###########"
+	 * ); } emailNotificationId = storeEmailInfoInDBTwo(emailMessage,
+	 * iAdressArray,orgLocations); sendMessageAttachment(emailMessage, iAdressArray,
+	 * attachmentList, submissionIds); } else { if
+	 * (sendMailForNonProd.equalsIgnoreCase("true")) { OrgLocations orgLocations =
+	 * orgLocationService.getOrgLocations(locationsId);
+	 * emailMessage.setUserName(defaultFromEmailAddress);
+	 * emailMessage.setPassword(defaultFromEmailAddressPwd); emailNotificationId =
+	 * storeEmailInfoInDBTwo(emailMessage, iAdressArray,orgLocations);
+	 * sendMessageAttachment(emailMessage, iAdressArray, attachmentList,
+	 * submissionIds); } }
+	 * 
+	 * if(emailNotificationId != null) {
+	 * updateEmailInfoWithDeliveryStatus(emailNotificationId); }
+	 * 
+	 * }
+	 * 
+	 * }
+	 */
 
 	/**
 	 * Send emails with attachment
@@ -603,109 +537,87 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 	 * @param submissionIds
 	 * @throws Exception
 	 */
-	private void sendMessageAttachment(EmailMessage emailMessage, InternetAddress[] iAdressArray,
-			List<EmailAttachment> attachmentList, String[] submissionIds) throws Exception {
-
-		Properties props = new Properties();
-		final String username = emailMessage.getUserName();
-		final String password = emailMessage.getPassword();
-		if (environment.equalsIgnoreCase("prod")) {
-			props.put("mail.smtp.host", "secure.emailsrvr.com");
-		} else {
-			props.put("mail.smtp.host", "smtp.sendgrid.net");
-		}
-		props.put("mail.smtp.localhost", "localhost");
-		props.put("mail.stmp.user", username);
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.password", "password");
-		props.put("mail.smtp.socketFactory.port", "465");
-		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", "465");
-
-		Session session = Session.getDefaultInstance(props, new Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(username, password);
-			}
-		});
-
-		try {
-
-			MimeMessage message = new MimeMessage(session);
-			String UUID = null;
-			if (null != emailMessage.getEmailType()
-					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
-				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
-				message.setRecipients(Message.RecipientType.BCC, iAdressArray);
-			}
-			// here mail forward from custom user mail(not with default mail) by
-			// prasad salina
-			else if (null != emailMessage.getEmailType()
-					&& emailMessage.getEmailType().equalsIgnoreCase(Constants.CUSTOM_USER_EMAIL)) {
-				message.setFrom(new InternetAddress(emailMessage.getFromEmail(), emailMessage.getFromName()));
-				message.setRecipients(Message.RecipientType.TO, iAdressArray);
-			} else {
-				if (null != emailMessage.getUserType() && (emailMessage.getUserType().equalsIgnoreCase("Professional")
-						|| emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
-					message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
-				} else {
-					message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
-				}
-
-				message.setRecipients(Message.RecipientType.TO, iAdressArray);
-			}
-			//message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
-
-			//String UUID = null;
-			message.addRecipients(Message.RecipientType.TO, iAdressArray);
-			message.setHeader("Content-Type", "text/html; charset=UTF-8");
-			message.setSubject(emailMessage.getSubject());
-			MimeMultipart mimeMultipart = new MimeMultipart();
-			BodyPart messageBodyPart = new MimeBodyPart();
-
-			// create resumes zip.
-			if (emailMessage != null && Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())) {
-				if (submissionIds.length >= 10) {
-					mimeMultipart = createResumeZipFile(submissionIds);
-				} else {
-					List<EmailAttachment> attachmentListNewlyAdded = createResumesWithoutZip(submissionIds);
-					attachmentList.addAll(attachmentListNewlyAdded);
-				}
-			}
-
-			if (attachmentList.size() > 0) {
-				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-				mimeMultipart.addBodyPart(messageBodyPart);
-
-				for (EmailAttachment attachment : attachmentList) {
-					UUID = attachment.getName();
-					SubmissionXls xls = submissionXlsService.getSubmissionXlsByUUID(UUID);
-					DataSource dataSource = new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
-					MimeBodyPart xlsBodyPart = new MimeBodyPart();
-					xlsBodyPart.setDataHandler(new DataHandler(dataSource));
-					xlsBodyPart.setFileName(attachment.getName());
-					mimeMultipart.addBodyPart(xlsBodyPart);
-					message.setContent(mimeMultipart);
-
-				}
-			} else {
-				messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
-				mimeMultipart.addBodyPart(messageBodyPart);
-				message.setContent(mimeMultipart);
-			}
-			// TODO remove this statement once the email issues is resolved
-			logger.info("################# Email: " + username + " Password: " + password);
-			logger.info("################# from Email: " + message.getFrom());
-			Transport.send(message);
-		} catch (MessagingException e) {
-			throw new RuntimeException(e);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-	}
+	/*
+	 * private void sendMessageAttachment(EmailMessage emailMessage,
+	 * InternetAddress[] iAdressArray, List<EmailAttachment> attachmentList,
+	 * String[] submissionIds) throws Exception {
+	 * 
+	 * Properties props = new Properties(); final String username =
+	 * emailMessage.getUserName(); final String password =
+	 * emailMessage.getPassword(); if (environment.equalsIgnoreCase("prod")) {
+	 * props.put("mail.smtp.host", "secure.emailsrvr.com"); } else {
+	 * props.put("mail.smtp.host", "smtp.sendgrid.net"); }
+	 * props.put("mail.smtp.localhost", "localhost"); props.put("mail.stmp.user",
+	 * username); props.put("mail.smtp.auth", "true");
+	 * props.put("mail.smtp.starttls.enable", "true");
+	 * props.put("mail.smtp.password", "password");
+	 * props.put("mail.smtp.socketFactory.port", "465");
+	 * props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+	 * props.put("mail.smtp.auth", "true"); props.put("mail.smtp.port", "465");
+	 * 
+	 * Session session = Session.getDefaultInstance(props, new Authenticator() {
+	 * 
+	 * @Override protected PasswordAuthentication getPasswordAuthentication() {
+	 * return new PasswordAuthentication(username, password); } });
+	 * 
+	 * try {
+	 * 
+	 * MimeMessage message = new MimeMessage(session); String UUID = null; if (null
+	 * != emailMessage.getEmailType() &&
+	 * emailMessage.getEmailType().equalsIgnoreCase(Constants.EMAIL_CAMPAIGN)) {
+	 * message.setFrom(new InternetAddress(emailMessage.getFromEmail(),
+	 * emailMessage.getFromName()));
+	 * message.setRecipients(Message.RecipientType.BCC, iAdressArray); } // here
+	 * mail forward from custom user mail(not with default mail) by // prasad salina
+	 * else if (null != emailMessage.getEmailType() &&
+	 * emailMessage.getEmailType().equalsIgnoreCase(Constants.CUSTOM_USER_EMAIL)) {
+	 * message.setFrom(new InternetAddress(emailMessage.getFromEmail(),
+	 * emailMessage.getFromName())); message.setRecipients(Message.RecipientType.TO,
+	 * iAdressArray); } else { if (null != emailMessage.getUserType() &&
+	 * (emailMessage.getUserType().equalsIgnoreCase("Professional") ||
+	 * emailMessage.getUserType().equalsIgnoreCase("Recruiter"))) {
+	 * message.setFrom(new InternetAddress(username, emailMessage.getFromEmail()));
+	 * } else { message.setFrom(new InternetAddress(username,
+	 * emailMessage.getFromName())); }
+	 * 
+	 * message.setRecipients(Message.RecipientType.TO, iAdressArray); }
+	 * //message.setFrom(new InternetAddress(username, emailMessage.getFromName()));
+	 * 
+	 * //String UUID = null; message.addRecipients(Message.RecipientType.TO,
+	 * iAdressArray); message.setHeader("Content-Type", "text/html; charset=UTF-8");
+	 * message.setSubject(emailMessage.getSubject()); MimeMultipart mimeMultipart =
+	 * new MimeMultipart(); BodyPart messageBodyPart = new MimeBodyPart();
+	 * 
+	 * // create resumes zip. if (emailMessage != null &&
+	 * Constants.YES.equalsIgnoreCase(emailMessage.getSendResumes())) { if
+	 * (submissionIds.length >= 10) { mimeMultipart =
+	 * createResumeZipFile(submissionIds); } else { List<EmailAttachment>
+	 * attachmentListNewlyAdded = createResumesWithoutZip(submissionIds);
+	 * attachmentList.addAll(attachmentListNewlyAdded); } }
+	 * 
+	 * if (attachmentList.size() > 0) {
+	 * messageBodyPart.setContent(emailMessage.getMessageBody(), "text/html");
+	 * mimeMultipart.addBodyPart(messageBodyPart);
+	 * 
+	 * for (EmailAttachment attachment : attachmentList) { UUID =
+	 * attachment.getName(); SubmissionXls xls =
+	 * submissionXlsService.getSubmissionXlsByUUID(UUID); DataSource dataSource =
+	 * new ByteArrayDataSource(attachment.getDocFile(), "application/pdf");
+	 * MimeBodyPart xlsBodyPart = new MimeBodyPart(); xlsBodyPart.setDataHandler(new
+	 * DataHandler(dataSource)); xlsBodyPart.setFileName(attachment.getName());
+	 * mimeMultipart.addBodyPart(xlsBodyPart); message.setContent(mimeMultipart);
+	 * 
+	 * } } else { messageBodyPart.setContent(emailMessage.getMessageBody(),
+	 * "text/html"); mimeMultipart.addBodyPart(messageBodyPart);
+	 * message.setContent(mimeMultipart); } // TODO remove this statement once the
+	 * email issues is resolved logger.info("################# Email: " + username +
+	 * " Password: " + password); logger.info("################# from Email: " +
+	 * message.getFrom()); Transport.send(message); } catch (MessagingException e) {
+	 * throw new RuntimeException(e); } catch (UnsupportedEncodingException e) {
+	 * e.printStackTrace(); }
+	 * 
+	 * }
+	 */
 
 	private List<EmailAttachment> createResumesWithoutZip(String[] submissionIds) throws Exception {
 		List<EmailAttachment> emailAttachmentList = new ArrayList<>();

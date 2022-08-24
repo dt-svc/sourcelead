@@ -436,8 +436,12 @@ public class LeaveDaoImpl implements LeaveDao{
 	public List<Leave> getLeavesListByTypeIdAndLocationIdAndUserId(String leaveTypeUUID,Long orgLocationId, Long userId) {
 		Session session = this.sessionFactory.getCurrentSession();
 		List<Leave> leaveList = null;
-		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.leaveTypeUUID = :leaveTypeUUID";
-		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("leaveTypeUUID", leaveTypeUUID).list();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		Date[] dates = commonUtil.getStartDateEndDateByYear(year);
+		java.sql.Date startDate = new java.sql.Date(dates[0].getTime());
+		java.sql.Date endDate = new java.sql.Date(dates[1].getTime());
+		String query = "from Leave leave left join fetch leave.leaveType lType left join fetch leave.user where leave.orgLocations.id = :orgLocationId and leave.user.id = :userId and lType.leaveTypeUUID = :leaveTypeUUID AND (leave.createdDate >= :startDate AND leave.createdDate <= :endDate)";
+		leaveList = session.createQuery(query).setLong("orgLocationId", orgLocationId).setLong("userId", userId).setString("leaveTypeUUID", leaveTypeUUID).setParameter("startDate", startDate).setParameter("endDate", endDate).list();
 		return leaveList;
 	}
 	

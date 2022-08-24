@@ -121,18 +121,36 @@ public class AppliedLeaveDateDaoImpl implements AppliedLeaveDateDao {
 			 hoursMap = new LinkedHashMap<String, Float>();
 			for(LeaveHolidayHoursDTO hrsDTO : reportList) {
 				if(StringUtils.isNotEmpty(hrsDTO.getBillableHrs())) {
-					float hours1 = Float.valueOf(hrsDTO.getBillableHrs().replace(":","."));
+					String billableHrs = hrsDTO.getBillableHrs();
+					logger.info("Billable Hours: {}", billableHrs);
+					if(billableHrs.contains("-")) {
+						billableHrs = billableHrs.substring(2,billableHrs.length());
+						logger.info("Billable Hours after removing - : {}", billableHrs);
+					}
+					float hours1 = Float.valueOf(billableHrs.replace(":","."));
 					billableHours = CommonUtil.getCombinedHours(hours1, billableHours);
 				}
 				
 				if(StringUtils.isNotEmpty(hrsDTO.getNonBillableHrs())) {
-					float hours1 = Float.valueOf(hrsDTO.getNonBillableHrs().replace(":","."));
+					String nonBillableHrs = hrsDTO.getNonBillableHrs();
+					logger.info("NON Billable Hours: {}", nonBillableHrs);
+					if(nonBillableHrs.contains("-")) {
+						nonBillableHrs = nonBillableHrs.substring(2,nonBillableHrs.length());
+						logger.info("NON-Billable Hours after removing - : {}", nonBillableHrs);
+					}
+					float hours1 = Float.valueOf(nonBillableHrs.replace(":","."));
 					nonBillableHours = CommonUtil.getCombinedHours(hours1, nonBillableHours);
 				}
 				
 				
 				if(StringUtils.isNotEmpty(hrsDTO.getTotalHrs())) {
-					float hours1 = Float.valueOf(hrsDTO.getTotalHrs().replace(":","."));
+					String tHrs = hrsDTO.getTotalHrs();
+					logger.info("Total Hours: {}", tHrs);
+					if(tHrs.contains("-")) {
+						tHrs = tHrs.substring(2,tHrs.length());
+						logger.info("Total Hours after removing - : {}", tHrs);
+					}
+					float hours1 = Float.valueOf(tHrs.replace(":","."));
 					totalHours = CommonUtil.getCombinedHours(hours1, totalHours);
 				}
 			}

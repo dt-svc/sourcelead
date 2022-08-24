@@ -621,8 +621,10 @@ public class LeaveTypeServiceImpl implements LeaveTypeService {
 			List<LeaveType> leaveTypeList = getLeaveTypeListByLocationIdAndStatus(String.valueOf(orgLocation.getId()));
 			if (leaveTypeList != null && !leaveTypeList.isEmpty()) {
 				for (LeaveType leaveType : leaveTypeList) {
+					System.out.println(leaveType.getName());
 					List<Leave> takenLeavesList = leaveService.getLeavesListByTypeIdAndLocationIdAndUserId(leaveType.getLeaveTypeUUID(), orgLocation.getId(), loginUser.getId());
 					List<Leave> pendingAndApprovedList = takenLeavesList.stream().filter(tl->Constants.PENDING.equalsIgnoreCase(tl.getStatus()) || Constants.APPROVED.equalsIgnoreCase(tl.getStatus())).collect(Collectors.toList());
+					System.out.println(leaveType.getAllowability());
 					if(StringUtils.isNotBlank(leaveType.getAllowability())){
 						if(StringUtils.isNotBlank(leaveType.getAllowability()) && pendingAndApprovedList.size() < Integer.parseInt(leaveType.getAllowability())){
 							boolean flag = leaveManagementUtil.checkGenderAndDepartmentAndRoleAndEmpType(leaveType,emp,userRole);
