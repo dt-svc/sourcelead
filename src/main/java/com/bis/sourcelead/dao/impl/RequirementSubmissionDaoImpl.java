@@ -149,7 +149,7 @@ public class RequirementSubmissionDaoImpl implements RequirementSubmissionDao{
 			//29-10-2019
 			 //checking isWorkflowConfigured to generate offer for applicant from any previous stage.
 			 if(!isWorkflowConfigured.equalsIgnoreCase(Constants.BOOLEAN_TRUE)){
-			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' ) "; 
+			 subQuery = " and (rs.submissionStatus = 'SHORTLIST' OR rs.submissionStatus = 'INTERVIEW' OR rs.submissionStatus = 'SELECTED_ON_INTERVIEW' OR rs.submissionStatus = 'SUBMISSION' OR rs.submissionStatus = 'L1_SELECTED' OR rs.submissionStatus = 'L2_SELECTED') "; 
 		 }else{
 			 subQuery = " and (rs.submissionStatus <> 'OFFERMADE' AND rs.submissionStatus <> 'NORESPONSE' AND rs.submissionStatus <> 'ONHOLD' AND rs.submissionStatus <> 'JOINED' AND rs.submissionStatus <> 'REJECTED' AND rs.submissionStatus <> 'BACKOUT') ";
 		 }

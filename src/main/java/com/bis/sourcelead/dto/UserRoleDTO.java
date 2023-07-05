@@ -36,7 +36,16 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	private BigInteger orgLocationId;
 	private String type;
 	private String clients;
+	private String designation;
+	private String createdDateStr;
 	
+	
+	public String getDesignation() {
+		return designation;
+	}
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -232,6 +241,12 @@ public class UserRoleDTO extends SearchDTO implements Serializable  {
 	public void setClients(String clients)
 	{
 		this.clients = clients;
+	}
+	public String getCreatedDateStr() {
+		return createdDateStr;
+	}
+	public void setCreatedDateStr(String createdDateStr) {
+		this.createdDateStr = createdDateStr;
 	}
 	
 	

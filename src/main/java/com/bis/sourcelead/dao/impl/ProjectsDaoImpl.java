@@ -901,14 +901,11 @@ public class ProjectsDaoImpl implements ProjectsDao{
 		private List<ProjectsDTO> getProjectClientAndManagerDetails(List<Projects> projectsList,Long orgLocationsId,String userRole,ProjectsDTO projectDTO) throws Exception {
 			OrgLocations orglo = orgLocationsDao.getOrgLocations(orgLocationsId);
 			
-			System.out.println("+++++++++++++++++++++++++++++++"+orgLocationsId);
 			List<ProjectsDTO> projectsDTOList = new ArrayList<>();
 			for (Projects projects :projectsList ){
 				ProjectClients projectClients = null;
 				if(projects.getSharedLocationId() !=null) {
-					System.out.println("++++++++++++++++++++++++++shared location "+projects.getSharedLocationId().getId());
 				}
-				System.out.println("++++++++++++++++++++++===== PNAME"+projects.getProjectName()+" ====client"+projects.getClient());
 				/*if(StringUtils.isNotBlank(projectDTO.getIsGlobalAccess()) && projectDTO.getIsGlobalAccess().equalsIgnoreCase(Constants.YES)) {*/
 					if(StringUtils.isNotBlank(projects.getIsProjectShared()) && projects.getIsProjectShared().equalsIgnoreCase(Constants.YES)) {
 						 projects = projectsService.getProjectById(projects.getId());

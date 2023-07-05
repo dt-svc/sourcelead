@@ -2978,9 +2978,9 @@ public class EMailJobScheduler {
 	 * cron runs every day at 9:00 AM to remind the approver about pending leaves
 	 * @throws Exception  
 	 */
-	@Scheduled(cron = "0 0 9 1/1 * ?")
+	//@Scheduled(cron = "0 0 9 1/1 * ?")
 //	@Scheduled(cron = "	0 0/1 * 1/1 * ?")
-	@Async
+	//@Async
 	public void appliedLeaveRemainder() throws Exception
 	{
 		
@@ -3075,7 +3075,7 @@ public class EMailJobScheduler {
 		
 	}
 	
-	
+	@Scheduled(cron = "0 0 9 1/1 * ?")
 	@Async
 	private void sendProbationPeriodMail() throws Exception {
 		
@@ -4628,8 +4628,8 @@ public class EMailJobScheduler {
 	/**
 	 * Reminder about approve pending leaes to the Mangers,Admin and reporting mangers etc.
 	 */
-	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
-	@Async
+//	@Scheduled(cron = "0 0 0/1 1/1 * ?") // Scheduled for every one hour
+	//@Async
     public void ReminderToSuperiorApprovePendingLeaves() {
 	try {
           String leaveStatus = Constants.APPROVE_PENDING_LEAVES;

@@ -653,6 +653,8 @@ public class DayEntryReportsDaoImpl implements DayEntryReportsDao {
 				+ "    AND HRD.DAY IS NOT NULL AND HRD.DAY BETWEEN '"+startDateSql+"' AND '"+endDateSql+"' AND HD.ID NOT IN(SELECT UDH.HOLIDAY_ID FROM USER_DROPPED_HOLIDAYS UDH WHERE UDH.USER_ID = U.ID AND UDH.STATUS = '1') group by CONCAT(U.ID,HRD.DAY)"
 				+ ") "
 				+ " )Q1 ORDER BY Q1.timesheetDate ASC  "; 
+                
+                System.out.println("******************====>>  "+query);
 		
 		Query result = session.createSQLQuery(query).setFirstResult(start).setMaxResults(length);
 		reportList  = result.setResultTransformer(Transformers.aliasToBean(DayWiseTimesheetReoprtsListDTO.class)).list();

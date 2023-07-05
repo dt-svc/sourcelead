@@ -349,7 +349,7 @@ public class EmailMessageServiceImpl implements EmailMessageService {
 					message.setContent(mimeMultipart);
 				}
 
-//				Transport.send(message);
+				Transport.send(message);
 			}catch (Exception e) {
 				logger.info("######## Exception occured inside SMTP while sending email from Configure Email Server ###########");
 				logger.info("Error is : {}{}", e.getMessage());
