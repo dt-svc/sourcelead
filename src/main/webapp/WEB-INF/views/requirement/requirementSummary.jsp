@@ -1118,7 +1118,6 @@ function rejectApplicant(submissionId,requirementId,submissionType){
    
     
     else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse" || selectBox == "L1 Selected" || selectBox == "L2 Selected" || selectBox == "L1 Rejected" || selectBox == "L2 Rejected"){
-    	alert("selected Box" + selectBox)
     	$.ajax({
     	      type : "POST",
     	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
