@@ -785,7 +785,7 @@ public class DashboardRestController {
 			DashboardCounts dc= new DashboardCounts();
 			Timezone timezone = null;
 
-			UserRole userRole = userRoleService.getUserByUserId(userId);
+			UserRole userRole = userRoleService.getUserDetailsByUserIdAndLocationId(userId,loginOrgLocations.getId());
 
 		if(userRole != null) {
 			try {
