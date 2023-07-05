@@ -72,6 +72,7 @@ function getClientList(){
 		result = result + "    <th>Location</th>";
 		result = result + "    <th>Tier</th>";
 		result = result + "    <th>Created By</th>";
+		result = result + "    <th>Created Date</th>";
 		result = result + "    <th>No.of Contacts</th>";
 		result = result + "  </tr>";
 		result = result + "</thead>";
@@ -100,6 +101,7 @@ function getClientList(){
 	            { "data": "location" },
 	            { "data": "responderLevel"},
 	            { "data": "createdBy" },
+	            { "data": "createdDate" },
 	            { "data": "noContacts" }
 	        ],
 	        "columnDefs": [ {
@@ -168,7 +170,7 @@ function getClientList(){
 	            }, {
 	                "targets": colIndex++,
 	                "data": "responderLevel",
-	                "sortable": false,
+	                "sortable": true,
 	                "render": function ( data, type, report, meta ) {
 	                	  var result = "";
 	                		result = result +' <td><div><span class="tbldata-dotdot-vsm" title="'+report.initiatorLevel+'">'+report.initiatorLevel+'</span>';
@@ -177,6 +179,7 @@ function getClientList(){
 	          },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "createdBy",
+		    	  	"sortable": true,
 		    	  	"render": function(data, type, report, meta) {
 		    	  		var result = "";
 		    	  		if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
@@ -187,6 +190,19 @@ function getClientList(){
 		    	  	   return result;
 		    	  	}
 		    	  },{
+			    	  	"targets": colIndex++,
+			    	  	"data": "createdDate",
+			    	  	"sortable": false,
+			    	  	"render": function(data, type, report, meta) {
+			    	  		var result = "";
+			    	  		if(null != report.createdDate && report.createdDate  != '' && report.createdDate  != 'undefined'){
+			    				result = result +' <td><div class="tbldata-dotdot">'+report.createdDate+'</div></td>';
+			    		   	}else{
+			    		   		result = result +'<td><div>---</div></td>';
+			    		   	}
+			    	  	   return result;
+			    	  	}
+			    	  },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "noContacts",
 		    	  	"render": function(data, type, report, meta) {

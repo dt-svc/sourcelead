@@ -81,6 +81,7 @@ function getVendorList(){
 	   	result = result +'<th>Location</th>';
 	   	result = result +'<th>Tier</th>';
 	 	result = result +'<th>Created By</th>';
+	 	result = result +'<th>Created Date</th>';
 	   	result = result +'<th>Released Jobs</th>';
 	   	result = result +'<th>No.of Contacts</th>';
 	   	result = result +'</tr>';
@@ -107,6 +108,7 @@ function getVendorList(){
 	            { "data": "initiatorCountry" },
 	            { "data": "initiatorLevel"},
 	            { "data": "createdBy" },
+	            { "data": "createdDate" },
 	            { "data": "releasedJobsCount" },
 	            { "data": "noContacts" }
 	        ],
@@ -203,6 +205,19 @@ function getVendorList(){
 		    	  		var result = "";
 		    	  		if(null != report.createdBy && report.createdBy  != '' && report.createdBy  != 'undefined'){
 							result = result +' <td><div class="tbldata-dotdot-vsm">'+report.createdBy+'</div></td>';
+					   	}else{
+					   		result = result +'<td><div>---</div></td>';
+					   	}
+		    	  	   return result;
+		    	  	}
+	                
+	          },{
+	        	  "targets": colIndex++,
+		    	  	"data": "createdDate",
+		    	  	"render": function(data, type, report, meta) {
+		    	  		var result = "";
+		    	  		if(null != report.createdDate && report.createdDate  != '' && report.createdDate  != 'undefined'){
+							result = result +' <td><div class="tbldata-dotdot-vsm">'+report.createdDate+'</div></td>';
 					   	}else{
 					   		result = result +'<td><div>---</div></td>';
 					   	}
