@@ -16,7 +16,6 @@ var vmsUrl ='${SourceLeadWeb_vmsUrl}';
 var atsUrl = '${SourceLeadWeb_atsUrl}';
 function getAddApplicant(requirementId,reqCoolingOffPeriod){
 	$('.action-pop').slideUp();
-	alert("Hi");
 	var sourceleadUrl ='${sourceleadUrl}';
 	var locationDate ='${SourceLeadWeb_orgLocations.dateFormat}'; 
 	  var finalDateFormatScript = '';
