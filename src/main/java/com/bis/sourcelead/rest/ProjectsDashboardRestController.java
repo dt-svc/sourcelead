@@ -700,7 +700,7 @@ public class ProjectsDashboardRestController {
 	  * @param projectId
 	  * @param json
 	  * @param request
-	  * @return String
+	  * @return StringUserAccountsDTO
 	  * @throws Exception
 	  */
 	 @PreAuthorize("hasAnyRole('ROLE_VIEW_EDIT_PROJECT')")

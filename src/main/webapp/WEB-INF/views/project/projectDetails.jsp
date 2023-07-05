@@ -319,7 +319,6 @@
 						result = result + '<div class="clearfix"></div>';
 
 						if((json.orgLocationId == '${SourceLeadWeb_orgLocations.id}') || ('${SourceLeadWeb_isGlobalAccess}' == 'Y') || (json.sharedProjectCreatedOrgLocId == '${SourceLeadWeb_orgLocations.id}')){
-						
 						result = result	+ '<div class="project_details_cta">';
 						result = result	+ '<strong>Team members:</strong><span>'+ json.projectMembersCount+ '</span><div class="clearfix"></div>';
 						result = result + '</div>';
