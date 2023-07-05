@@ -328,7 +328,7 @@ function validateTimeZone(){
 		<option value="Technical">Technical</option>
 		<option value="Screening">Screening</option>
 		<option value="Skype">Skype</option>
-		<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>
+		<option value="Webex/GoToMeeting">WebexADDINTERF/GoTo Meeting</option>
 		<option value="Other">Other</option>
 	</select>
 	<div id="REPLACEROWIDinterviewTypeCheck" style="display: none; "><input value=""  type="text" id="REPLACEROWIDinterviewTypeother" name="REPLACEROWIDinterviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation="required"></div>
@@ -611,6 +611,7 @@ function cancelExternalInterviewers(){
 		
 		$("#"+maxRowNum+"startTime").timepicker({
 			'showDuration': true,
+			  'step': '1',
 			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"endTime").timepicker('option', 'minTime', $(this).val());
@@ -618,7 +619,8 @@ function cancelExternalInterviewers(){
 		
 		$("#"+maxRowNum+"endTime").timepicker({
 			'showDuration': true,
-			 'maxTime': '23:30:00',
+			  'step': '1',
+			 'maxTime': '23:00:00',
 			'disableTextInput': true
 		}).on('changeTime', function() {
             $("#"+maxRowNum+"startTime").timepicker('option', 'maxTime', $(this).val());

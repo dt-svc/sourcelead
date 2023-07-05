@@ -1579,6 +1579,20 @@ public class SubmissionsRestController {
 		else if(status.equalsIgnoreCase("NoResponse")){
 			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.NORESPONSE.toString());
 		}
+		else if(status.equalsIgnoreCase("L1 Selected")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.L1_SELECTED.toString());
+		}
+		else if(status.equalsIgnoreCase("L2 Selected")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.L2_SELECTED.toString());
+		}
+		else if(status.equalsIgnoreCase("L1 Rejected")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.L1_REJECTED.toString());
+		}
+		else if(status.equalsIgnoreCase("L1 Rejected")){
+			requirementSubmissionHistory.setToStage(ApplicantSubmissionStatus.L2_REJECTED.toString());
+		}
+		
+		
 		else if(StringUtils.isNotBlank(status)){ // Added for custom work flow changes
 			requirementSubmissionHistory.setToStage(status);
 		}
@@ -1602,6 +1616,21 @@ public class SubmissionsRestController {
 				else if(status.equalsIgnoreCase("NoResponse")){
 					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.NORESPONSE.toString());
 				}
+				else if(status.equalsIgnoreCase("L1 Selected")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.L1_SELECTED.toString());
+				}
+				else if(status.equalsIgnoreCase("L2 Selected")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.L2_SELECTED.toString());
+				}
+				else if(status.equalsIgnoreCase("L1 Rejected")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT.toString());
+				}
+				else if(status.equalsIgnoreCase("L1 Rejected")){
+					requirementSubmission.setSubmissionStatus(ApplicantSubmissionStatus.BACKOUT.toString());
+				}
+				
+				
+				
 				else if(StringUtils.isNotBlank(status)){ // Added for custom work flow changes
 					requirementSubmission.setSubmissionStatus(status);
 				}

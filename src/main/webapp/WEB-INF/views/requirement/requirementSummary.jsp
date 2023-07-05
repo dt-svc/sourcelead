@@ -1117,7 +1117,8 @@ function rejectApplicant(submissionId,requirementId,submissionType){
     }
    
     
-    else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse"){
+    else if(selectBox == "On Hold" || selectBox == "Status" || selectBox == "Interview" || selectBox == "Selected on Interview" || selectBox == "Offer Made" || selectBox == "NoResponse" || selectBox == "L1 Selected" || selectBox == "L2 Selected" || selectBox == "L1 Rejected" || selectBox == "L2 Rejected"){
+    	alert("selected Box" + selectBox)
     	$.ajax({
     	      type : "POST",
     	      url: atsUrl+"/saveOnHoldStatusForApplicant?"+tokenParamName+"="+tokenValue+"&submissionId="+submissionId+"&status="+selectBox, 
@@ -3376,6 +3377,8 @@ return result;
 
 <jsp:include page="candidatesListForSubmission.jsp" />
 <jsp:include page="addApplicant.jsp" />
+<jsp:include page="addApplicantFromImport.jsp" />
+<jsp:include page="addApplicantFromCandidate.jsp" />
 <jsp:include page="addInterview.jsp" />
 <jsp:include page="submitToClient.jsp" />
 

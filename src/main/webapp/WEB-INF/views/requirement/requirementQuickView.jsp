@@ -778,6 +778,8 @@
 									<a href="javascript:void(0)"><i class="fa fa-plus"></i>&nbsp;Add Applicant</a>
 							    	<div class="immSubMenu immSubMenu-custome">
 										<a href="javascript:void(0)" title="" onclick="getAddApplicant('${requirement.id}');">Add Applicant (Form)</a>
+										<a href="javascript:void(0)" title="" onclick="getAddApplicantFromCandiate('${requirement.id}');">Add Applicant From Candidates</a>
+										<a href="javascript:void(0)" title="" onclick="getAddApplicantFromImport('${requirement.id}');">Import Candidate</a>
 									    <a href="javascript:void(0)" title="" onclick="submitCandidatesToJob();">Add Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="importApplicantsToJob('${requirement.id}');">Import Bulk Applicants</a>
 									    <a href="javascript:void(0)" title="" onclick="bulkResumeParsing('${requirement.requirementUUID}');">Bulk Resume Parsing</a>

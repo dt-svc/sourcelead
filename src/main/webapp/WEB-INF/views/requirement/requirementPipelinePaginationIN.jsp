@@ -280,10 +280,16 @@
 													} */
 													if (opt.submissionStatus != 'ONHOLD' && opt.submissionStatus != 'JOINED'){	
 														result = result + "<option value='On Hold'>On Hold</option>";
+														result = result + "<option value='L1 Selected'>L1 Selected</option>";
+														result = result + "<option value='L2 Selected'>L2 Selected</option>";
+														result = result + "<option value='L1 Rejected'>L1 Rejected</option>";
+														result = result + "<option value='L2 Rejected'>L2 Rejected</option>";
 														}
 													if (opt.submissionStatus != 'NORESPONSE' && opt.submissionStatus != 'JOINED'){	
 														result = result + "<option value='NoResponse'>NoResponse</option>";
 														}
+													
+													
 													result = result + "<option value='Reject'>Reject</option>";
 													if (opt.submissionStatus == 'OFFERMADE' || opt.submissionStatus == 'OFFERACCEPTED' || opt.submissionStatus == 'JOINED'
 														 || opt.submissionStatus == 'CLIENT_OFFERMADE' || opt.submissionStatus == 'CLIENT_OFFERACCEPTED') {

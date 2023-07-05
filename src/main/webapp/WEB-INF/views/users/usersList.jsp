@@ -1245,12 +1245,15 @@ function prepareDynamicUserList(url){
 		result = result + '<table id="dynamicUserListView" class="display" cellspacing="0" width="100%" >';
 		result = result + '<thead>';
 		result = result + '<tr>';
+		result = result + '<th>EmpId</th>';
 		result = result + '<th>Associate Name</th>';
 		result = result + '<th>Email Id</th>';
 		result = result + '<th>Phone No.</th>';
 		result = result + '<th>Role</th>';
+		result = result + '<th>Designation</th>';
 		result = result + '<th>Manager</th>';
 		result = result + '<th>Employment Type</th>';
+		result = result + '<th>Created Date</th>';
 		result = result + '<th>Status</th>';
 		result = result + '</tr>';
 		result = result + '</thead>';
@@ -1276,15 +1279,30 @@ function dynamicUserListPagination(url){
           pages: 10
         }),
         "columns": [
+        	{ "data": "empId" },
             { "data": "userName" },
             { "data": "email"},
             { "data": "mobilePhone"},
             { "data": "displayName"},
+            { "data": "designation"},
             { "data": "manager"},
             { "data": "userEmploymentType"},
+            { "data": "createdDateStr"},
             { "data": "status"}
         ],
 		 "columnDefs": [ {
+	    	  	"targets": colIndex++,
+	    	  	"data": "empId",
+	    	  	"render": function(data, type, userRole, meta) {
+	    	  		var result = "";
+	    	  		if(userRole.employeeid !=null && userRole.employeeid !='' && userRole.employeeid !='undefined'){
+	    	  		result = result + ' <td><div class="tbldata-dotdot-100">'+userRole.employeeid+'</div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+	    	  		}
+		            return result;
+	    	  	}
+	      },{
 		    	  	"targets": colIndex++,
 		    	  	"data": "userNme",
 		    	  	"render": function(data, type, userRole, meta) {
@@ -1340,6 +1358,19 @@ function dynamicUserListPagination(url){
 		        	  return result;
 		          }
 		        }, {
+		    	  	"targets": colIndex++,
+		    	  	"data": "designation",
+		    	  	"render": function(data, type, userRole, meta) {
+		    	  		var result = "";
+		    	  		if(userRole.designation !=null && userRole.designation !='' && userRole.designation !='undefined'){
+		    	  		result = result + ' <td><div class="tbldata-dotdot">'+userRole.designation+'</div></td>';
+		    	  		}else{
+		    	  			result = result + ' <td><div class="tbldata-dotdot">--</div></td>';
+		    	  		}
+			            return result;
+		    	  	}
+		      }
+		      , {
 		            "targets": colIndex++,
 		            "data": "manager",
 		            "sortable": false,
@@ -1366,7 +1397,19 @@ function dynamicUserListPagination(url){
 						}
 			              return result;
 		          }
-		    },
+		    },{
+	    	  	"targets": colIndex++,
+	    	  	"data": "createdDateStr",
+	    	  	"render": function(data, type, userRole, meta) {
+	    	  		var result = "";
+	    	  		if(userRole.createdDateStr !=null && userRole.createdDateStr !='' && userRole.createdDateStr !='undefined'){
+	    	  		result = result + ' <td><div class="tbldata-dotdot">'+userRole.createdDateStr+'</div></td>';
+	    	  		}else{
+	    	  			result = result + ' <td><div class="tbldata-dotdot">--</div></td>';	
+	    	  		}
+		            return result;
+	    	  	}
+	      },
 		    {
 		        "targets": colIndex++,
 		        "data": "status",

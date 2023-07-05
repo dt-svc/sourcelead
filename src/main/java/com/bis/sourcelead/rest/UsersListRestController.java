@@ -365,6 +365,7 @@ public class UsersListRestController {
 					userRoleDTO.setUserId(role.getUser().getId());
 					userRoleDTO.setUserCode(role.getUser().getUserCode());
 					userRoleDTO.setUserState(role.getUserState().toString());
+					userRoleDTO.setDesignation(role.getDesignation());
 					if(role.getUser() != null) {
 						if(role.getUser().getFileUrl() != null) {
 							userRoleDTO.setFileUrl(role.getUser().getFileUrl());
@@ -385,6 +386,10 @@ public class UsersListRestController {
 						if(emp.getUserEmploymentType()!=null && !"".equalsIgnoreCase(emp.getUserEmploymentType())){
 							userRoleDTO.setEmployeMentType(emp.getUserEmploymentType());
 						}
+						if(emp.getEmployeeId() != null) {
+							userRoleDTO.setEmployeeid(Long.parseLong(emp.getEmployeeId()));
+						}
+						userRoleDTO.setCreatedDateStr(commonUtil.dateStrFromOrgDateFormatter(orgLocations.getDateFormat(),role.getUser().getCreatedDate()));
 					}
 					userRolesList.add(userRoleDTO);
 				}

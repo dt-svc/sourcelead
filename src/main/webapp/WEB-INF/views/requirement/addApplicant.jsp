@@ -50,11 +50,11 @@ function getAddApplicant(requirementId){
 	result = result + '<div class="row">';
 	result = result + '<div class="venk clearfix">';
 	result = result + '<div class="col-md-7 radioInline">';
-	result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
+	//result = result + '<label class="mr"><input type="radio" checked="checked" value="N" name="candidateType" onClick="getCandidatesList('+requirementId+',\'N\');">Candidates</label>';
 
-		result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
-		result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
-	
+		//result = result + '<label class="mr"><input type="radio" value="New candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'New\');getCandidateSelectionType();">Add New Candidate</label>';
+		//result = result + '<label class="mr"><input type="radio" value="Parese candidate" name="candidateType" onClick="getCandidatesList('+requirementId+',\'parseCandidate\');getCandidateSelectionType();">Import Candidate</label>';
+	result = result + '<label class="mr">Add Candidate </label>';
 	result = result + '</div>';	
 	
 	result = result + '<div class="col-md-5 pull-right">';
@@ -68,14 +68,14 @@ function getAddApplicant(requirementId){
 	result = result + '</div>';	
 	result = result + '</div>';
 	
-	result = result + '<div class="clearfix"></div>';
+	/* result = result + '<div class="clearfix"></div>';
 	result = result + '<div class="col-md-6 mt10">';
 	result = result + '<div id="selectCandidateDiv" style="display: block;">';
 	result = result + '<select class="form-control chosen-select" onchange="getCandidateDetails(); getCandidateResumes();"  name="candidateId" id="candidateId" data-validation="required" field-name="Applicant" class="form-control  block mt10">';
 	result = result + '<option value="">-- Select Candidate --</option>';
 	result = result + '</select>';
 	result = result + '</div>';	
-	result = result + '</div>';	
+	result = result + '</div>';	 */
 	result = result + '<div class="panel-border_a col-md-5 mt10" id="resumesDiv"  style="display: none;">';
 	result = result + '<select id="candidateResumesList" name="candidateResume" data-validation-optional="true" field-name="Resume" class="form-control block">';
 	result = result + '</select>';
@@ -97,7 +97,7 @@ function getAddApplicant(requirementId){
 	
 	
 	result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: none;">';
+    result = result + '	<div class="col-md-6 upresume mb" id="skillsDiv" style="display: block;">';
 	result = result + '<label class="col-md-4">Skills</label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<select multiple data-placeholder="select Skills" class="chosen-select form-control" name="candidateSkills" id="candidateSkills"  data-validation-optional="true">';
@@ -110,7 +110,7 @@ function getAddApplicant(requirementId){
 	result = result + '	 </div>';
 	
     result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: none;">';
+    result = result + '	<div class="col-md-6 upresume mb" id="primarySkillDiv" style="display: block;">';
 	result = result + '<label class="col-md-4">Primary Skill</label>';
 	result = result + '<div class="col-md-8">';
 	result = result + '<input type="text" class="form-control" id="primarySkill" name="primarySkill"  field-name="Primary Skill">';
@@ -119,11 +119,19 @@ function getAddApplicant(requirementId){
 	result = result + '</div>'; 
 	
     result = result + '<div class="row">';
-    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: none;">';
+    result = result + '	<div class="col-md-6 upresume mb" id="employmentTypeDiv" style="display: block;">';
 	result = result + '<label class="col-md-4">Employment Type<span class="paddingLeft">*</span></label>';
 	result = result + '<div class="col-md-8">';
-	result = result + '<select class="form-control" id="designationType" name="designationType" onchange="getEmployementType();" field-name="Employment Type">';
+	result = result + '<select class="form-control" id="designationType" name="designationType" data-validation="required" field-name="Applicant" onchange="getEmployementType();" field-name="Employment Type">';
 	result = result + '<option value="">--Select--</option>';
+	result = result + "<option value='C2C'>C2C</option>"; 
+	result = result + "<option value='C2C-1099'>C2C-1099</option>"; 
+	result = result + "<option value='W-2'>W-2</option>"; 
+	result = result + "<option value='C2H'>C2H</option>"; 
+	result = result + "<option value='C2H-1099'>C2H-1099</option>"; 
+	result = result + "<option value='Part Time'>Part Time</option>"; 
+	result = result + "<option value='Full Time'>Full Time</option>"; 
+	result = result + "<option value='Other'>Other</option>";
 	result = result + '</select>';
 	result = result + '</div>';
 	result = result + '</div>';
