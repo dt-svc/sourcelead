@@ -805,7 +805,7 @@ jQueryFormUtils.validateDomain = function(val) {
                         '.sm', '.sn', '.so', '.sr', '.st', '.sv', '.sy', '.sz', '.tc', '.td', '.tf', '.tg', 
                         '.th', '.tj', '.tk', '.tm', '.tn', '.to', '.tp', '.tr', '.tt', '.tv', '.tw', '.tz', 
                         '.ua', '.ug', '.uk', '.um', '.us', '.uy', '.uz', '.va', '.vc', '.ve', '.vg', '.vi', 
-                        '.vn', '.vu', '.ws', '.wf', '.ye', '.yt', '.za', '.zm', '.zw', '.mobi', '.xxx', '.asia');
+                        '.vn', '.vu', '.ws', '.wf', '.ye', '.yt', '.za', '.zm', '.zw', '.mobi', '.xxx', '.asia','.tech');
     
     var dot = val.lastIndexOf('.');
     var domain = val.substring(0, dot);

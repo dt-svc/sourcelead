@@ -25,11 +25,24 @@ $(document).ready(function(){
         		<a class="pull-left" id="jobsLink" href="/ats/jobsList"/>Jobs
         			<a class="moreLink" href="${sourceleadUrl}/requirementApplicantsList?&tab=previous&orgLocationId=${SourceLeadWeb_orgLocationId}" title="View more"> View More..</a>
         		</a>
+        		 
+				          
+				  
 	            <ul class="nav nav-tabs pull-right">
 	              	<li class="active"><a data-toggle="tab" onclick="requirementSubmissionsCount('today');">Today</a></li>
-	              	<li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li>
+	              	<!-- <li><a data-toggle="tab" onclick="requirementSubmissionsCount('previous');">1 Month</a></li> -->
+	              	<li>  <select class="form-control repSelFiled" name="filterType" id="filterType" onchange="getJobCountsByfilter();">
+				            <option value='Last_7_days' selected>Last 7 days</option>
+				            <option value='Last_15_days'>Last 15 days</option>
+				            <option value='1_month'>1 month</option>
+				            <option value='3_months'>3 months</option>
+				            <option value='YTD'>YTD</option>
+				            <option value='Last_Year'>Last Year</option>
+				          </select> </li>
 	              	<input type="hidden" name="dateActiveTab" id="dateActiveTab" value="today"/>
 	            </ul>
+	            
+	            
         	</div>            
             
             <div class="db-widget-sm">
@@ -168,4 +181,11 @@ function requirementSubmissionsCount(daterange){
 		 
 	}
 
+</script>
+
+<script>
+function getJobCountsByfilter(){
+	var filterType = $("#filterType").val(); 
+	requirementSubmissionsCount(filterType);
+}
 </script>

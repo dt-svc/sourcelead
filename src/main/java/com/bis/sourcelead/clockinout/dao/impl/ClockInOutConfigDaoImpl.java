@@ -72,8 +72,9 @@ public class ClockInOutConfigDaoImpl implements ClockInOutConfigDao{
 	@Autowired
 	OrgLocationService orgLocationService;
 	
-	@Autowired
-	private ClockInOutUtil clockInOutUtil;
+	/*
+	 * @Autowired private ClockInOutUtil clockInOutUtil;
+	 */
 	
 	@Autowired
 	private CommonUtil commonUtil;

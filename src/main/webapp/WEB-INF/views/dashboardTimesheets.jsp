@@ -60,8 +60,8 @@ $(document).ready(function(){
 				        </div>    		
 		    		</li> 
 		    		 <c:if test="${bothTimesheets}">
-		               <li class="active"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" >Self</a></li>
-		               <li><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" >Employees</a></li>
+		               <li  data-interest="myTimesheets"class="active"><a  data-toggle="tab" onclick="timeSheetSubmissionStatusCount('myTimesheets');" >Self</a></li>
+		               <li  data-interest="employes"><a data-toggle="tab" onclick="timeSheetSubmissionStatusCount('employes');" >Employees</a></li>
 		               </c:if>
 		             </ul>
 	             
@@ -203,6 +203,7 @@ $(document).ready(function(){
 <script>
 function getCustomDates(){
 	 var dateSelection = $("#dateSelection").val(); 
+	 var timesheetType = $('body').find('li.active').attr('data-interest');
 	 if(dateSelection == 'custom'){
 		 removeErrMsg();
 		 removeErrMsgTo();
@@ -255,6 +256,7 @@ function getCustomDates(){
 		 document.getElementById("fromDateDiv").style.display="none";
 		 document.getElementById("toDateDiv").style.display="none";
 	 }
+	 timeSheetSubmissionStatusCount(timesheetType);
 }
 
 </script>

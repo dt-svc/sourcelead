@@ -394,6 +394,24 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                   <div class="clearfix text-center"><h4>Project Reports</h4></div> </a>
         </div>
            
+           <!-- added -->
+           	<div class="col-md-4 reportNewCta">
+                  <!-- DropDown -->
+			<div class="dropdown pull-right report-dropdown">
+				<span class="dropdown-toggle btn btn-sm btn-default repDropBtn" type="button" id="menu4" data-toggle="dropdown" aria-expanded="false"><span class="caret cursorPointer"></span></span>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu3">
+			     <li><a href="${SourceLeadWeb_sourceleadUrl}/customEmailConfigureReport">Custom Email Configure Report</a></li>
+					
+				</ul>
+			</div>
+                 <!-- Dropdown -->
+                  <a href="${SourceLeadWeb_sourceleadUrl}/emailConfigureReports" class="block">
+                  <div class="clearfix text-center mb10"><i class="proReport"></i></div>
+                  <div class="clearfix text-center"><h4>Email Configure Reports</h4></div> </a>
+        </div>
+           <!-- end -->
+           
+           
            
            <c:if test="${SourceLeadWeb_country == 'India'}">
            <div class="col-md-4 reportNewCta">
@@ -625,6 +643,7 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
             
+            
             <div class="clearfix mt mb"></div>
             
             <c:if test="${SourceLeadWeb_country == 'India'}">
@@ -698,9 +717,11 @@ var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
                     <li><a href="${SourceLeadWeb_vmsUrl}/petitionReport">Petition Report</a></li>
 					<li><a href="${SourceLeadWeb_vmsUrl}/petitionAttorneyReport">Petition Attorney Report</a></li>
 					<li><a href="${SourceLeadWeb_vmsUrl}/lcaReport">LCA Report</a></li>
+					<li><a href="${SourceLeadWeb_vmsUrl}/lcaRepoNNrt">LCA mmmm Report</a></li>
                 </ul>
                 <div class="noDate noDateSm" style="display: none;"></div>
             </div>
+           
             <div class="clearfix mt mb"></div>
                                    
         </div>

@@ -43,6 +43,23 @@
             <artifactId>geoip-api</artifactId>
             <version>1.2.14</version>
         </dependency>
+          <dependency>
+     <groupId>com.google.api-client</groupId>
+     <artifactId>google-api-client</artifactId>
+     <version>1.31.5</version>  <!-- Please check for the latest version -->
+   </dependency>
+   
+   <dependency>
+     <groupId>com.google.oauth-client</groupId>
+     <artifactId>google-oauth-client</artifactId>
+     <version>1.31.5</version>  <!-- Please check for the latest version -->
+   </dependency>
+   
+ <dependency>
+    <groupId>com.google.apis</groupId>
+    <artifactId>google-api-services-drive</artifactId>
+    <version>v3-rev20200609-1.30.9</version>
+</dependency>
 	</dependencies>
 	<build>
 		<finalName>admin</finalName>

@@ -208,7 +208,7 @@ var  noLeaveBalanceList=$("#noLeaveBalanceList").val(0);
 		leaveType.push($(this).val());
      });
 	var url = sourceleadUrl+"/getLeaveBalanceReportList?"+tokenParamName+"="+tokenValue+"&userRole="+userRole+"&orgDepartments="+orgDepartments+"&userleaveType="+userleaveType+"&leaveType="+leaveType+"&topleave="+topleave+"&MonthStartDate="+MonthStartDate+"&MonthEndDate="+MonthEndDate+"&searchValue="+searchValue;
-$("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
+    $("#loading").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:999;background-image:url("/resources/images/loading.gif"); background-position:center; background-repeat:no-repeat; background-size:75px;');
 		$.get(url,function(response) {
 							if (response.response === "AWKWARD") {
 								location.href = "/errorPage";

@@ -960,5 +960,21 @@ private static final Logger logger = LoggerFactory.getLogger(ReportsController.c
 		return model;
 
 	}
+	
+	/**
+	 * @author rajasekhar
+	 * @param request
+	 * @param response
+	 * @return ModelAndView
+	 * @throws Exception
+	 * @Date 28/07/2022
+	 */
+	 @RequestMapping(value = "/emailConfigureReports")
+		public ModelAndView emailConfigureReports(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		 ModelAndView model = new ModelAndView();
+		 model.addObject("sourceleadUrl", sourceleadUrl);
+		 model.setViewName("reports/customEmailConfigureReportsList");
+		 return model;
+	 }
 
 }

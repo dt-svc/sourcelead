@@ -536,7 +536,7 @@ function dashboardAddInterview(){
 		result = result + '			<option value="Screening">Screening</option>';
 		result = result + '			<option value="Skype">Skype</option>';
 		result = result + '			<option value="Webex/GoToMeeting">Webex/GoTo Meeting</option>';
-		result = result + '			<option value="Other">Other</option>';
+		result = result + '			<option value="Other">XXXOther</option>';
 		result = result + '		</select>';
 		result = result + '		<div id="1interviewTypeCheck" style="display: none;"><input value=""  type="text" id="1interviewTypeother" name="1interviewTypeother" class="form-control input-sm pavInp" placeholder="Interview type" field-name="Interview type" data-validation-optional="true"></div>';
 		result = result + '		</td>';

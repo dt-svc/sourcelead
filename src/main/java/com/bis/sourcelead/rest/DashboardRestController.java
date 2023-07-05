@@ -240,6 +240,8 @@ public class DashboardRestController {
 	 @Autowired
 	 private SubmissionTemplateService submissionTemplateService;
 	 
+	
+	 
 	 protected static boolean isNullOrEmpty(String str) {
 			return (str == null || "".equals(str.trim()));
 		}
@@ -796,33 +798,41 @@ public class DashboardRestController {
 				DateFormat TZ_DF_TS = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 				 DateTimeFormatter outputFormatter = DateTimeFormat.forPattern("yyyy-MM-dd 00:00:00");
 				 DateTimeFormatter outputFormatter1 = DateTimeFormat.forPattern("yyyy-MM-dd 23:59:59");
+				 Date[] dates = new Date[2];
 				if("today".equals(daterange)){
 					 DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
 					 String customStartTimeStr = outputFormatter.print(zoned);
-					 startUTCDate = TZ_DF_TS.parse(customStartTimeStr);
+					 dates[0] = TZ_DF_TS.parse(customStartTimeStr);
 					 String endDate = outputFormatter1.print(zoned);
 					 Date endDateString = TZ_DF_TS.parse(endDate);
-					 endUTCDate = endDateString;
+					 dates[1]  = endDateString;
 					  
-				}else{
-
-					DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
-					String startDate = outputFormatter.print(zoned);
-					Date startDateUTC = TZ_DF_TS.parse(startDate);
-					
-					DateTime oneMonthZoned = zoned.minusDays(30);
-					String oneMonthDate = outputFormatter.print(oneMonthZoned);
-					Date oneMonthDateUTC = TZ_DF_TS.parse(oneMonthDate);
-					
-					Date[] dates = new Date[2];
-					dates[0] = oneMonthDateUTC;
-					dates[1] = startDateUTC;
-					startUTCDate = dates[0]; 
-					endUTCDate = dates[1];
-
-					 
+				}else if("1_month".equals(daterange)){
+					dates = reportsUtil.getJobFilterDate(Constants.REPORT_FILTER_1_MONTH, loginOrgLocations);
+//					DateTime zoned = new DateTime(DateTimeZone.forID(timezone.getTimeZoneId()));
+//					String startDate = outputFormatter.print(zoned);
+//					Date startDateUTC = TZ_DF_TS.parse(startDate);
+//					
+//					DateTime oneMonthZoned = zoned.minusDays(30);
+//					String oneMonthDate = outputFormatter.print(oneMonthZoned);
+//					Date oneMonthDateUTC = TZ_DF_TS.parse(oneMonthDate);
+//					
+//					Date[] dates = new Date[2];
+//					dates[0] = oneMonthDateUTC;
+//					dates[1] = startDateUTC;
+				}else if("Last_7_days".equals(daterange)) {
+					dates = reportsUtil.getJobFilterDate(Constants.REPORT_FILTER_LAST_7_DAYS, loginOrgLocations);
+				}else if("Last_15_days".equals(daterange)) {
+					dates = reportsUtil.getJobFilterDate(Constants.REPORT_FILTER_LAST_15_DAYS, loginOrgLocations);
+				}else if("3_months".equals(daterange)) {
+					 dates = reportsUtil.getJobFilterDate(Constants.REPORT_FILTER_3_MONTHS, loginOrgLocations);
+				}else if("YTD".equals(daterange)) {
+					dates = reportsUtil.getJobFilterDate(Constants.REPORT_FILTER_YTD, loginOrgLocations);
+				}else if("Last_Year".equals(daterange)) {
+					dates = reportsUtil.getJobFilterDate(Constants.REPORT_FILTER_LAST_YEAR, loginOrgLocations);
 				}
-				
+				startUTCDate = dates[0]; 
+				endUTCDate = dates[1];
 				if(Constants.ROLE_ADMIN.equalsIgnoreCase(userRole.getUserType()) || Constants.SOURCELEAD_ADMIN.equalsIgnoreCase(userRole.getUserType())){
 					userType = Constants.ADMIN;
 				} 

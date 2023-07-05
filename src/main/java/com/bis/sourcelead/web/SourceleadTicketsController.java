@@ -102,4 +102,11 @@ public class SourceleadTicketsController {
    		return model;
        }
 
+	 @RequestMapping(value = "/sourceleadHelp")
+   	 public ModelAndView sourceleadHelp( HttpServletRequest request) throws Exception {
+   	    ModelAndView model = new ModelAndView();
+   		model.setViewName("sourceleadHelp");
+   		model.addObject("sourceleadUrl", sourceleadUrl);
+   		return model;
+       }
 }

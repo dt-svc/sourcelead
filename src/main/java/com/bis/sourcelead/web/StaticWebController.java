@@ -283,5 +283,66 @@ public class StaticWebController {
 		mav.setViewName("static-web/pricingDetails");
 		return mav;
 	}
+	
+	@RequestMapping("/quick_reference_guide_login.html")
+	public ModelAndView sourceleadHelpDoc() {
+		return setMetaProperties("quick_reference_guide_login");
+		
+	}
+	
+	
+	@RequestMapping("/quick_reference_guide_assetMgt.html")
+	public ModelAndView quick_reference_guide_assetMgt() {
+		return setMetaProperties("quick_reference_guide_assetMgt");
+	}
 
+	@RequestMapping("/quick_reference_guide_associates.html")
+	public ModelAndView uick_reference_guide_associates() {
+		return setMetaProperties("quick_reference_guide_associates");
+	}
+	
+	@RequestMapping("/quick_reference_guide_candidates.html")
+	public ModelAndView quick_reference_guide_candidates() {
+		return setMetaProperties("quick_reference_guide_candidates");
+	}
+	@RequestMapping("/quick_reference_guide_clients.html")
+	public ModelAndView quick_reference_guide_clients() {
+		return setMetaProperties("quick_reference_guide_clients");
+	}
+	@RequestMapping("/quick_reference_guide_companyOnboarding.html")
+	public ModelAndView quick_reference_guide_companyOnboarding() {
+		return setMetaProperties("quick_reference_guide_companyOnboarding");
+	}
+	@RequestMapping("/quick_reference_guide_expenses.html")
+	public ModelAndView quick_reference_guide_expenses() {
+		return setMetaProperties("quick_reference_guide_expenses");
+	}
+	@RequestMapping("/quick_reference_guide_jobs.html")
+	public ModelAndView quick_reference_guide_jobs() {
+		return setMetaProperties("quick_reference_guide_jobs");
+	}
+	@RequestMapping("/quick_reference_guide_onOffBoard.html")
+	public ModelAndView quick_reference_guide_onOffBoard() {
+		return setMetaProperties("quick_reference_guide_onOffBoard");
+	}
+	@RequestMapping("/quick_reference_guide_orgSettings.html")
+	public ModelAndView quick_reference_guide_orgSettings() {
+		return setMetaProperties("quick_reference_guide_orgSettings");
+	}
+	@RequestMapping("/quick_reference_guide_projects.html")
+	public ModelAndView quick_reference_guide_projects() {
+		return setMetaProperties("quick_reference_guide_projects");
+	}
+	@RequestMapping("/quick_reference_guide_signUp.html")
+	public ModelAndView quick_reference_guide_signUp() {
+		return setMetaProperties("quick_reference_guide_signUp");
+	}
+	@RequestMapping("/quick_reference_guide_timesheets.html")
+	public ModelAndView quick_reference_guide_timesheets() {
+		return setMetaProperties("quick_reference_guide_timesheets");
+	}
+	@RequestMapping("/quick_reference_guide_vendors.html")
+	public ModelAndView quick_reference_guide_vendors() {
+		return setMetaProperties("quick_reference_guide_vendors");
+	}
 }

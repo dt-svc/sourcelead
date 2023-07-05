@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-
 
  <c:if test="${staticTime == null || staticTime == 0 }">
     <c:set var='staticTime' value="<%=new java.util.Date().getTime() %>" scope="application"></c:set>
@@ -41,102 +38,90 @@ $(document).ready(function(){
 <meta http-equiv="Expires" content="0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/png" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/fav.png" />
+<link rel="icon" type="image/png" href="/resources/images/fav.png" />
 <title>Welcome to Source Lead</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/chosen.min.css?staticTime=${staticTime}">
-<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
+<link rel="stylesheet" href="/resources/reports/dashboard_3118.css?staticTime=${staticTime}" type="text/css" media="all" />
+<link rel="stylesheet" href="/resources/css/chosen.min.css?staticTime=${staticTime}">
+<link href="/resources/css/sourcelead-main.css?staticTime=${staticTime}" rel="stylesheet">
+<link rel="stylesheet" href="/resources/css/timesheet.css?staticTime=${staticTime}" type="text/css" >
  
 <c:set scope="request" var="viewPage" value='${pageContext.request.servletPath.toString().replaceFirst("/WEB-INF/views/","").replaceFirst(".jsp","")}'></c:set>
- <script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
+<script src="https://maps.google.com/maps/api/js?libraries=places&v=3&key=${SourceLeadWeb_googleMapsLocationApiKey}" type="text/javascript"></script>
 
 <jsp:include page="masterJs.jsp" />
 
 <!-- This requirement.css for only requirement.jsp  -->
 <c:if test='${viewPage == "requirement/requirement"}'>
-	<link href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
+	<link href="/resources/css/requirement.css?staticTime=${staticTime}" type="text/css" rel="stylesheet"/>
 </c:if>
 
 </head>
 
 
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery-ui.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/formvalidator.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/bootstrap-select.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/chosen.jquery.min.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.dataTables.min.js?staticTime=${staticTime}"></script>
 
-<c:if test='${viewPage != "reports/usersUsageReportList"
-            && viewPage != "reports/employeeTasksReportList"  && viewPage != "reports/overdueTaskReport"}'>
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
-</c:if>
-
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/sourcelead-app.js?staticTime=${staticTime}"></script>
+<script src="/resources/js/jquery.timepicker.js?staticTime=${staticTime}"></script>
  
 <!--  Amcharts -->
 <c:if test='${viewPage == "reports/reportsDashboard"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/amcharts/plugins/export/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/amcharts/plugins/export/export.css?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/amcharts/themes/light.js?staticTime=${staticTime}"></script>
  
  </c:if>
  
  <c:if test='${viewPage == "reports/applicantsReport"}'>
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/pie.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
+	 <script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.cs?staticTime=${staticTime}" type="text/css" media="all" />
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 </c:if>
 
 <c:if test='${viewPage == "reports/applicantsReceivedReport"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/highcharts.js"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/exporting.js"></script> 
+	<script src="/resources/reports/highcharts.js"></script>
+	<script src="/resources/reports/exporting.js"></script> 
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementStageReports" || viewPage == "reports/usersUsageReportList"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/piechart.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script>
-	<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/piechart.js?staticTime=${staticTime}"></script>
+	<script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script>
+	<link rel="stylesheet" href="/resources/reports/export.css?staticTime=${staticTime}" type="text/css" media="all" /> 
+	<script src="/resources/reports/light.js?staticTime=${staticTime}"></script>
 	
 </c:if>
 
 <c:if test='${viewPage == "reports/requirementAssignToReports" || viewPage == "reports/requirementAssignToReports" || viewPage == "reports/vendorsReport" || viewPage == "reports/paidBillReportGraph" || viewPage == "reports/receivedInvoiceReportGraph"}'>
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
-	 <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/pie.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/serial.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/reports/export.min.js?staticTime=${staticTime}"></script> 
+	 <script src="/resources/js/themes/light.js?staticTime=${staticTime}"></script> 
  </c:if>
 
 
 <c:if test='${viewPage == "professional/professionalDashboard" || viewPage == "recruiter/recruiterDashboard" || viewPage == "reports/perfomanceClientReports"}'>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/light.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/light.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
  <c:if test='${viewPage == "leavemanagement/applyLeave"}'>
-    <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/amcharts.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/serial.js?staticTime=${staticTime}"></script>
-	<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/pie.js?staticTime=${staticTime}"></script>
+    <script src="/resources/js/amcharts.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/serial.js?staticTime=${staticTime}"></script>
+	<script src="/resources/js/pie.js?staticTime=${staticTime}"></script>
  </c:if>
  
- <script type="text/javascript">
-	 var tabAccessArray = '${SourceLeadWeb_tabsList}';
-	 var roleActionsArray = '${SourceLeadWeb_actionsList}';
-	 var sourceleadUrl ='${SourceLeadWeb_sourceleadUrl}';
-	 var atsUrl = '${SourceLeadWeb_atsUrl}';
-	 var pmsUrl ='${SourceLeadWeb_pmsUrl}';
-	 var vmsUrl ='${SourceLeadWeb_vmsUrl}';
- </script>
  
 <style>
 .dashboard-widget.dashboard-widget-icons{
@@ -198,16 +183,12 @@ z-index: 1000000000 !important;
 .pac-container::after {
 	display:none;
 }
-
 </style>
 
 
 <script type="text/javascript">
 $(document).ready(function(){
-	'<sec:authorize access="hasRole(\'ROLE_VIEW_CART\')">' 
 	updateMarketplaceCartCountAndPrice();
-	'</sec:authorize>';
-// 	getExistedClockTime();
 });
 </script>
 <!-- notification related include jsp -->
@@ -294,21 +275,22 @@ function preventTabkey(e){
 
 <script>
 	function predefineOrgImage(imageId){
-		$(imageId).attr('src','${SourceLeadWeb_sourceleadDomainUrl}/resources/images/office-image.jpg');
+		$(imageId).attr('src','/resources/images/office-image.jpg');
 	}
 </script>
 
 <script>
 	function predefineProfileImage(imageId){
-		$(imageId).attr('src','${SourceLeadWeb_sourceleadDomainUrl}/resources/images/userprofile-img.png');
+		$(imageId).attr('src','/resources/images/userprofile-img.png');
 	}
 </script>
 
 <script>
 		function logoutFormSubmit() {
-			var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
-			var actionUUID = '${SourceLeadWeb_actionUUID}';
-			window.location.href = sourceleadUrl+"/getActionHistoryList/"+actionUUID;  
+		/* 	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+			var userSessionId = '${userLoginSession.id}';
+			window.location.href = sourceleadUrl+"/getActionHistoryList?&userSessionId="+userSessionId; */
+			document.getElementById("logoutForm").submit();
 		}
 </script>
 
@@ -320,10 +302,6 @@ function preventTabkey(e){
 </script>
 
 <body>
-
-
-
-
 <c:url var="logoutUrl" value="${SourceLeadWeb_sourceleadLogoutUrl}"/>
 <form action="${logoutUrl}" method="post" id="logoutForm">
   <input type="hidden" name="userSessionId" value="${userLoginSession.id}"/>
@@ -423,7 +401,7 @@ function preventTabkey(e){
 			</div>
 			
 			<div class="pull-left universalSrch">
-			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${searchValue}"/>
+			<input type="text" id="searchKey" name="searchKey" class="form-control input-sm" placeholder="Search" onkeypress="handle(event);" value="${serachValue}"/>
 			 <button type="button" class="srcbutton" value="searchValue" id="searchValue" onclick="universalSearch();" ></button>
 			</div>
 			</form:form>
@@ -433,12 +411,12 @@ function preventTabkey(e){
 
 
 <div class="headProfile">
-	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_loginUserFullName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_userImgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_loginUserFullName}"> ${SourceLeadWeb_loginUserFullName} </div>
+	<div class="headProfileIcon"><img class="img-circle" data-id= "userProfileImage" alt="${SourceLeadWeb_userType}" title="${SourceLeadWeb_loginUserFullName}" onerror="predefineProfileImage(this);"  src="${SourceLeadWeb_imgUrl}"> </span> <span class=" hidden pull-left login-user-xs tbldata-dotdot-vsm" title="${SourceLeadWeb_loginUserFullName}"> ${SourceLeadWeb_loginUserFullName} </div>
 	<div class="headPop" id="profilePop">
 		<div class="headPopInn">
 				<a href="<c:url value='${sourceleadUrl}/userProfile'/>" title="Profile">
 				<div class="headPopUser clearfix">
-					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_loginUserFullName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_userImgUrl}"></div>
+					<div class="pull-left"><img class="img-circle" data-id="userProfileImage" title="${SourceLeadWeb_loginUserFullName}" alt="${SourceLeadWeb_userType}" onerror="predefineProfileImage(this);" src="${SourceLeadWeb_imgUrl}"></div>
 					<div class="pull-right">
 						<p>${SourceLeadWeb_loginUserFullName}</p>
 		                 <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
@@ -477,15 +455,16 @@ function preventTabkey(e){
 				</sec:authorize>	
 				
  				<sec:authorize access="hasRole('ROLE_SUPPORT')"> 
-				<li><a href="${SourceLeadWeb_sourceleadUrl}/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
+				<li><a href="/app/sourceleadTicketList" title="Report Issue"><i class="reporttaskIC"></i>Report Issue</a></li>
+				<li><a href="/app/sourceleadHelp" title="Report Issue"><i class="helpTaskIC"></i>Help</a></li>
 				</sec:authorize>
 				
-	              <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-	              <li><a title="Profile" href="${SourceLeadWeb_atsUrl}/professionalProfile"><i class="contactsIC"></i>Profile</a></li>
+	             <%-- <c:if test="${SourceLeadWeb_loginUserRole == 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	              <li><a href="<c:url value='${appPath}/professionalProfile'/>" title="Profile">Profile</a></li>
 	              </c:if>
-	             <%--  <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
-	               <li><a title="Profile" href="<c:url value='${SourceLeadWeb_atsUrl}/userProfile'/>"><i class="Profile"></i>Profile</a></li>
-	              </c:if>  --%>				
+	              <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL'}">
+	              <li><a href="<c:url value='${appPath}/userProfile'/>" title="Profile">Profile</a></li>
+	              </c:if> --%>				
 				 <li><a class="logColor" href="javascript:logoutFormSubmit();" title="Log Out"><i class="logOutIC"></i>Log Out</a></li>
 			</ul>
 		</div>
@@ -496,9 +475,7 @@ function preventTabkey(e){
 <div class="headNav">
 	<ul>
 	
-	<li id="clPop">
-			<a href="javascript:void(0)" title="Clock In"><i class="clockAni"><div class="clockAniAct"></div></i></a>
-	</li>
+	
 <c:if test="${!empty SourceLeadWeb_userSpocRolesList}">
 
             <li><a id="orgPopId" href="javascript:void(0)" title="Locations"><i class="headNavIcon"></i></a>
@@ -510,43 +487,43 @@ function preventTabkey(e){
 					<ul>
 	              <c:forEach var="links" items="${SourceLeadWeb_userSpocRolesList}">
 		              <li>
-				              <c:if test="${links.displayName != 'Professional' && links.displayName != 'Independent Recruiter'}">
-					              <c:if test="${links.orgLocationId == SourceLeadWeb_orgLocationId}">
+				              <c:if test="${links.roles.displayName != 'Professional' && links.roles.displayName != 'Independent Recruiter'}">
+					              <c:if test="${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_switchUserType == null}">
 					              		<a class="sopcSwith noPad">
 					              </c:if>
-					              		<a onclick="checkAuth(${links.orgLocationId},${links.userRoleId},'${links.orgLocationLoginSecurity}','${links.userId}');" class="sopcSwith noPad">
-						                <div class="clearfix  ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_userId == links.userId ? 'orgAct' : ''}">
-						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
+					              		<a onclick="checkAuth(${links.orgLocations.id},${links.id},'${links.orgLocations.loginSecurity}','${links.user.id}');" class="sopcSwith noPad">
+						                <div class="clearfix  ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_user.id == links.user.id ? 'orgAct' : ''}">
+						                <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
 										<div class="orgDetails">
-											<h3>${links.orgLocationName}</h3>
-											<h4><i	class="fa fa fa-map-marker"></i>${!empty links.city ? links.city : ""} ${links.country}</h4>
-											<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : links.displayName}</h4>
+											<h3>${links.orgLocations.orgLocationName}</h3>
+											<h4><i	class="fa fa fa-map-marker"></i>${!empty links.orgLocations.city ? links.orgLocations.city : ""} ${links.orgLocations.country}</h4>
+											<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : links.roles.displayName}</h4>
 										</div>						                   
 						                </div>
 						                
 					                </a>
 				              </c:if>
 				              
-				              <c:if test="${links.displayName == 'Professional'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}/${links.userType}/${links.userId}'/>" class="sopcSwith noPad">
-						                <div class="clearfix ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'orgAct' : ''}">
+				              <c:if test="${links.roles.displayName == 'Professional'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Professional' ? 'orgAct' : ''}">
 						                   
-						                    <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
+						                    <div class="orgProfile"><img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
 											<div class="orgDetails">
-												<h3>${links.orgLocationName}</h3>
+												<h3>${links.orgLocations.orgLocationName}</h3>
 												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Job Seeker'}</h4>
 											</div>						                   
 						                </div>
 					                </a>
 				              </c:if>
 				              
-				              <c:if test="${links.displayName == 'Independent Recruiter'}">
-				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocationId}/${links.userType}/${links.userId}'/>" class="sopcSwith noPad">
-						                <div class="clearfix ${links.orgLocationId == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'orgAct' : ''}">
+				              <c:if test="${links.roles.displayName == 'Independent Recruiter'}">
+				              	<a href="<c:url value='${sourceleadUrl}/dashboard/${links.orgLocations.id}/${links.userType}/${links.user.id}'/>" class="sopcSwith noPad">
+						                <div class="clearfix ${links.orgLocations.id == SourceLeadWeb_orgLocationId && SourceLeadWeb_displayName == 'Independent Recruiter' ? 'orgAct' : ''}">
 						                   
-						                    <div class="orgProfile"> <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgImgUrl}"></div>
+						                    <div class="orgProfile"> <img onerror='predefineOrgImage(this);' data-id="orgLogoImage" src="${links.orgLocations.org.fileUrl}"></div>
 											<div class="orgDetails">
-												<h3>${links.orgLocationName}</h3>
+												<h3>${links.orgLocations.orgLocationName}</h3>
 												<h4><i	class="fa fa-user"></i>${!empty links.designation ? links.designation : 'Freelance Recruiter'}</h4>
 											</div>							                   
 						                </div>
@@ -560,14 +537,10 @@ function preventTabkey(e){
 	            </div>
 	            </div>
 	          </li>
-         </c:if>
-         
-         <sec:authorize access="hasAnyRole('ROLE_ADD_TICKET','ROLE_VIEW_TICKET')">
-			<li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/ticketManagementList'/>" title="Ticket Management"><i class="ticketMgIC"></i></a></li>
-		</sec:authorize>
+	          </c:if>
 		
         <c:if test="${SourceLeadWeb_reportsTabConfigured == 'Y'}"> 
-        	 <li><a title="Reports" href="${SourceLeadWeb_sourceleadUrl}/reportsDashboard"><i class="headNavIcon reporIcon"></i></a></li>
+        	 <li><a title="Reports" href="<c:url value='${appPath}/reportsDashboard'/>"><i class="headNavIcon reporIcon"></i></a></li>
          </c:if>
          
          <sec:authorize access="hasRole('ROLE_VIEW_CART')">
@@ -579,26 +552,24 @@ function preventTabkey(e){
         </sec:authorize>
         
          <sec:authorize access="hasAnyRole('ROLE_MAIL_BOX','ROLE_HOTLIST_CAMPAIGN')">
-         	<li><a href="${SourceLeadWeb_sourceleadUrl}/mailBox/mails" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
+         	<li><a href="<c:url value='${sourceleadUrl}/mailBox/mails'/>" title="Mailbox" id="mailbox"><i class="headNavIcon maiIcon"></i> <c:if test="${SourceLeadWeb_unReadMailsCount > 0}"><span class="label-success" id="unreadMailsCount">${SourceLeadWeb_unReadMailsCount}</span> </c:if></a></li>
          </sec:authorize>		
 		
-          <c:if test="${SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_PROFESSIONAL' && SourceLeadWeb_loginUserRole != 'ROLE_CROWDSOURCING_RECRUITER'}">
           <li> 
           <a id="notiPopId" href="#" title="Alerts" onclick="getNotificationsByuserId()"><i class="headNavIcon notiIcon"></i> <c:if test="${SourceLeadWeb_notificationCount > 0}"><span class="label-warning">${SourceLeadWeb_notificationCount}</span></c:if></a>
           <div class="headPop headPopnoti" id="notificationPopup"></div>
           </li>	
-          </c:if>
           
          <!--  Setting page 	 -->
          
-           <li><a href="<c:url value='${SourceLeadWeb_sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
+           <li><a href="<c:url value='${sourceleadUrl}/settings'/>" title="Settings" id=""><i class="headNavIcon setiIcon"></i></a></li>
 		
 	</ul>
 </div>    
 
 
 <ul class="responIcons clearfix">
-	<li><a><img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
+	<li><a><img src="/resources/images/${SourceLeadWeb_country}.gif" title="${SourceLeadWeb_country}"></a></li>
 	<li class="srch-btn-xs"> <a title="Search"><i class="fa fa-search"></i></a></li>
 </ul>
     
@@ -781,20 +752,9 @@ function preventTabkey(e){
 			          <div class="popupHead"><span>Add Task</span><i class="closePop pull-right"  onClick="taskwidget();"></i></div>
 
 			            <div class="row popupContent">
-			              <div class="col-md-6 reports-head" >
+			              <div class="col-md-6" >
 			                <label>Assign to<span class="text-danger">*</span></label>
-			                
-			                <!-- 21/jan/2020 - vishnu
-			                changed the name of html element select from 'assignTo' to 'assignToUserString' as assignTo datatype in the AddTaskDTO is Long
-			                and this value has to be sent as a String to save tasks for multiple users.
-			                 -->
-			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignToUserString" field-name="AssignTo"  data-validation="required">
-			              
-			                <!-- 21/jan/2020 - vishnu
-			                added assignTo input field as it is required for 'storeTasks' ajax call but the user ids will be sent as a String by 'assignToUserString' field. 
-			                 -->
-			                <input name  = "assignTo" value = "0" style="display: none;">
-			                
+			                <select class="chosen-select" multiple data-placeholder="Select User" id="assignTo" name="assignTo" field-name="AssignTo"  data-validation="required">
 				                <%--  <c:forEach var="user" items="${SourceLeadWeb_userRoleList}">
 					                     <option value="${user.userId}" >${user.userName}</option>
 				                </c:forEach> --%>
@@ -878,144 +838,12 @@ function preventTabkey(e){
 
 </sec:authorize>
 
-
-
-
-<!-- Clock In Popup -->
-
-<div class="popupWrap popupWrap2" id="clockPop" >
-<div class="popupHead clearfix"> Clock In
-	<i class="closePop pull-right clPopClose"></i>
-</div>
-<form id="clock_inout_form" name="clock_inout_form">
-<input type="hidden" id="clockInOutId" name="clockInOutId">
-<input type="hidden" id="ipAddressId" name="ipAddress">
-<input type="hidden" id="breakId" name="breakId">
-<div class="clockWrap">
-<div class="clockIn clearfix">
-<div class="clockTime pull-left">
-<!-- 	<div class="pull-left"><input type="button" value="Show Time" class="newAdBtn mr5" onclick="showWorkingTime();"></div> -->
-	<div class="pull-left"><span class="pull-left mr" id="">
-      		<a href="javascript:void(0)" class="refeIcon" id="" title="Refresh" onclick="showWorkingTime();"></a>
-      </span></div>
-	<b class="pull-left" id="stopwatchPop">00:00:00</b>
-</div>
-
-<div class="pull-right" id="withBreakDiv">
-<a id="start" onclick="obj.event('start');" class="CloIn" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
-<a id="pause" onclick="obj.event('pause');" class="braIn" href="javascript:void(0)"><img src="/resources/images/break.png">Start Break</a>
-<a id="play" onclick="obj.event('play');" class="braOut" href="javascript:void(0)"><img src="/resources/images/break.png">End Break</a>
-<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
-</div> 
-
-<div class="pull-right" id="withoutBreakDiv">
-<a id="start" onclick="obj.event('start');" class="CloIn cwob" href="javascript:void(0)"><img src="/resources/images/clock.png">Start</a>
-<a id="reset" onclick="obj.event('reset');" class="CloOut" href="javascript:void(0)"><img src="/resources/images/clock.png">Clock Out</a>
-</div> 
-
-<div class="clearfix"></div> 
-<!--<div>
-<input type="button" id="start" value="Start" onclick="obj.event('start');"/>
-<input type="button" id="pause" value="Start Break" onclick="obj.event('pause');"/>
-<input type="button" id="play" value="End Break" onclick="obj.event('play');"/>-->
-<!-- <input type="button" id="stop" value="Stop" onclick="obj.event('stop')"/> -->
-<!-- <input type="button" id="reset" value="Clock Out" onclick="obj.event('reset');"/>
-</div> --> 
-
-</div>
-<div class="subClock clearfix">
-<!-- <div class="subClockCta">
-<p>Current</p>
-<div class="sclock" id="curDiv">00 : 00</div>
-</div> -->
-<div class="subClockCta">
-<p>Day</p>
-<div class="sclock" id="dayDiv">00 : 00</div>
-</div>
-<div class="subClockCta">
-<p>Week</p>
-<div class="sclock" id="weekDiv">00 : 00</div>
-</div>
-<div class="subClockCta">
-<p>Month</p>
-<div class="sclock" id="monthDiv">00 : 00</div>
-</div> 
-</div>
-<div class="clockinn" id="clockFieldsId">
-<div class="clearfix mb" id="jobDIV">
-<label class="noPad">Jobs</label>
-<div class="clearfix addicon">
-<select class="form-control chosen-select" id="jobDropDownDiv" name="jobs" onchange="updateClockInOutTime();">
-</select>
-</div>
-</div> 
-<div id="projectTaskDIV">
-<div class="clearfix mb">
-<label class="noPad">Project</label>
-<div class="clearfix addicon">
-<select class="form-control chosen-select" id="projectDropDownDiv" name="projects" onchange="getProjectTasksByProject();updateClockInOutTime();">
-</select>
-</div>
-</div> 
-<div class="clearfix mb">
-<label class="noPad">Project Tasks</label>
-<div class="clearfix addicon">
-<select class="form-control chosen-select" id="projectTaskDropDownDiv" name="projectTasks" onchange="updateClockInOutTime();">
-</select>
-</div>
-</div> 
-</div> 
-<div class="clearfix mb" id="generalTaskDIV">
-<label class="noPad">General Tasks</label>
-<div class="clearfix addicon">
-<select class="form-control chosen-select" id="generalTaskDropDownDiv" name="generalTasks" onchange="updateClockInOutTime();">
-</select>
-</div>
-</div> 
-<div class="clearfix" id="commentsDIV">
-<label class="noPad">Comments</label>
-<div class="clearfix addicon">
-<textarea rows="3" class="form-control" id="comments" name="comments" onblur="updateClockInOutTime();"></textarea>
-</div>
-</div> 
-</div>
-<div class="popupHead popHeHight clearfix">
-
-	<ul class="clockDate col-md-12">
-		<li>
-			<span></span>
-			<span>Current</span>
-			<span>Previous</span>
-		</li>
-		<li>
-			<span>Clock In</span>
-			<span id="clockInTimeId"></span>
-			<span id="prevClockInTimeId"></span>
-		</li>
-		<li>
-			<span>Clock Out</span>
-			<span id="clockOutTimeId"></span>
-			<span id="prevClockOutTimeId"></span>
-		</li>
-	</ul>
-
-</div>
-
-<div><a class="timeEnt" href="${SourceLeadWeb_sourceleadUrl}/employeeInOutTime">Activity</a></div> 
-</div>
-
-<div>
-</div></form>
-</div>
-
-
-
 <!--  Theme Switcher div  Commented By Mahesh  -->
 <%--   <sec:authorize access="hasRole('ROLE_COLOUR_THEME')"> 
   <div class="theme-color">
       <span class="icon-theme theme-styels" title="click here">
           <figure class="rotate">
-            <img src="${SourceLeadWeb_sourceleadDomainUrl}/resources/images/theme-icon.png" class="img-responsive" title="Themes">
+            <img src="/resources/images/theme-icon.png" class="img-responsive" title="Themes">
           </figure>
       </span>
     <ul class="list-unstyled">
@@ -1147,6 +975,12 @@ function removevalidation(){
 </script>
 
 <script>
+//Collapse div
+$(document).ready(function() {
+$(".collpase-div").click(function(){
+	$(this).next().slideToggle();
+});
+});
 
 //Add Task Div
  $(".icon-addTask").click(function(){
@@ -1280,7 +1114,6 @@ function tasksList(status){
             	
        			result = result + ' <select id="myTaskState'+report.id+'" name="myTaskState" onChange="updateMyTaskStatus('+report.id+');">';
        			result = result  +' <option '+(report.taskStatus == "Open" ? "selected" : '') +'>Open</option>';
-       			result = result  +' <option '+(report.taskStatus == "In-Progress" ? "selected" : '') +'>In-Progress</option>';
 	            result = result  +'	<option '+(report.taskStatus == "Closed" ? "selected" : '') +'>Closed</option>';
                	result = result + ' </select>';
             		 
@@ -1509,20 +1342,12 @@ function universalSearch(){
 		 sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
 	 }
 	 if(searchType == "Candidate") {
-		 window.location.href = "${SourceLeadWeb_atsUrl}/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+		 window.location.href = sourceleadUrl + "/candidatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
+	 } else if(searchType == "Associate") {
+		 window.location.href = sourceleadUrl + "/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
 	 }
-	 
-	 // june-14-2019 -> added else if block for searchType = "Users".
-	 else if(searchType == "Users") {
-		 window.location.href = "${SourceLeadWeb_atsUrl}/usersList?&searchResult=universalUsersList&searchValue="+searchValue;
-	 }
-	 
-	 else if(searchType == "Associate") {
-		 window.location.href = "${SourceLeadWeb_atsUrl}/associatesList?&searchResult=universalCanddateList&searchValue="+searchValue;
-	 }
-	 
 	 else if(searchType == "Requirement") {
-		 window.location.href = "${SourceLeadWeb_atsUrl}/jobsList?searchResult=universalRequirementSearchList&searchValue="+searchValue;
+		 window.location.href = sourceleadUrl + "/jobs?searchResult=universalRequirementSearchList&searchValue="+searchValue;
 	 }
 	 else {
 		window.location.href = sourceleadUrl + "/universalSearchForm?&searchType="+searchType+"&searchValue="+searchValue;
@@ -1649,25 +1474,25 @@ $("#searchType").selectpicker('refresh');
         <div class="popupContent">
             <div class="clearfix mb">
                 <label class="noPad">Company Name <b class="valStar">*</b></label>
-                <div class="clearfix" id="companynames">
+                <div class="clearfix">
                     <input type="text" class="form-control" placeholder="Company Name" id="compnayName" name="companyName" field-name="Company Name" data-validation="required validate_Space validate_length length2-100">
                 </div>
             </div>
             <div class="clearfix mb">
                 <label class="noPad">Location </label>
-                <div class="clearfix" id="locations">
+                <div class="clearfix">
                     <input type="text" class="form-control" placeholder="Location" name="location" id="inviteLocation" onclick="initLocationAuto('inviteLocation');">
                 </div>
             </div>
             <div class="clearfix mb">
                 <label class="noPad">Name <b class="valStar">*</b></label>
-                <div class="clearfix" id="names">
+                <div class="clearfix">
                     <input type="text" class="form-control" placeholder="Name" id="name" name="name" field-name="Name" data-validation="required validate_Space validate_AlphaNumber validate_length length1-100">
                 </div>
             </div>
             <div class="clearfix mb">
             	<label class="noPad">Email <b class="valStar">*</b></label>
-                <div class="clearfix" id="emails">
+                <div class="clearfix">
                 <div class="input-group errorInptgroup">
                     <input type="text" class="form-control" placeholder="Email" id="inviteCompanyemail" name="email" field-name="Email"  onblur="verifyEmail2();"  data-validation="required validate_Space validate_length length2-100 validate_email">
                         <span id="emailStatusIconDiv" class="input-group-addon">
@@ -1678,8 +1503,8 @@ $("#searchType").selectpicker('refresh');
             </div>
 			<div class="clearfix mb">
                 <label class="noPad">Phone <b class="valStar">*</b></label>
-                <div class="clearfix" id="mobiles">
-                    <input type="text" class="form-control" placeholder="Phone" id="phone" name="phoneNumber" value=""  field-name="Phone number"data-validation="required validate_Space validate_phone validate_length length9-20">
+                <div class="clearfix">
+                    <input type="text" class="form-control" placeholder="Phone" id="phone" name="phoneNumber" value="" data-validation="validate_Space validate_phone validate_length length9-20" data-validation-optional="true">
                 </div>
             </div>
         </div>
@@ -1698,36 +1523,19 @@ $("#searchType").selectpicker('refresh');
   <script>
   
 $(document).ready(function(){
-	localStorage.setItem('pauseValue', null);
-	localStorage.setItem('pauseData', null);
-	localStorage.setItem('pause_sec',0);
-	localStorage.setItem('stopwatch_time', null);
-	localStorage.setItem('stopwatch_sec', 0);
-	localStorage.clear();
-	 $.getJSON("https://jsonip.com?callback=?", function(data) {
-	        $("#ipAddressId").val(data.ip);
-	      });
 	$("#subMenu").click(function(){
 		$(".subMenuView").slideToggle(100);
 	});
 	$("#campSubMenu").click(function(){
 		$(".campsubMenuView").slideToggle(100);
 	});	
-	
-	$('#reset,#play, #pause').attr("disabled",true);
-	$('#start').attr("disabled",false);
 });
 </script>
   
   <script>
   function flushInviteCompany(){
-	  $('#companynames').find('p.jquery_form_error_message').remove();
-		$('#locations').find('p.jquery_form_error_message').remove();
-		$('#names').find('p.jquery_form_error_message').remove();
-		$('#emails').find('p.jquery_form_error_message').remove();
-		$('#mobiles').find('p.jquery_form_error_message').remove();
 	  document.getElementById("inviteCompany_form").reset();
-	  //$("inviteCompany_form").validate().resetForm();
+	  $("inviteCompany_form").validate().resetForm();
   }
   </script> 
   <script>
@@ -1838,9 +1646,9 @@ function initialize(locationId,countryId,stateId,cityId,zipCodeId,type,addressId
     	 var input = (document.getElementById(locationId));
     	    var options = {
     	    		types: ['geocode'],
-    	        /* componentRestrictions: {
+    	        componentRestrictions: {
     	        	country: ["IN","US","AU","SG","GB","FR"]
-    	        } */
+    	        }
     	    };
     	    autocomplete = new google.maps.places.Autocomplete(input, options);
     }else{
@@ -1942,8 +1750,8 @@ function zipcodeMask(country,zipCodeId){
 </script>
 
 
-<script type="text/javascript" src='${SourceLeadWeb_sourceleadDomainUrl}/resources/js/slead-common.js?staticTime=${staticTime}'></script>
-<%-- <script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
+<script type="text/javascript" src='/resources/js/slead-common.js?staticTime=${staticTime}'></script>
+<%-- <script src="/resources/js/zipcodeMaskedinput-1.3.min.js?staticTime=${staticTime}"></script> --%>
 
 
 <script type="text/javascript">
@@ -2018,7 +1826,7 @@ $(document).ready(function(){
 <script>
 function updateMarketplaceCartCountAndPrice(){
 	var totalPriceInCurrency;
-	var sourceleadUrl = '${SourceLeadWeb_sourceleadUrl}';
+	var sourceleadUrl = '${sourceleadUrl}';
 	$.ajax({
 		 	url: sourceleadUrl + "/getMarketplaceCartCountAndPrice",
 	        type: 'GET',
@@ -2032,473 +1840,3 @@ function updateMarketplaceCartCountAndPrice(){
 	        });
 	}
 </script>
-
-<script>
-// clock in-Out jquery
-
-//clock sub
-$("#clSub").click(function(){
-  $(".clockSub").slideToggle(10);
-});
-
-
-$("#clPop").click(function() {
-	getClockInOutConfiguration();
-	getPreviousClockInData();
-	getTimeReports();
-	});
-$(".clPopClose").click(function() {
-	$(".mask, .popupWrap2").fadeOut();
-});
-
-</script>
-
-<script>
-function getClockInOutConfiguration(){
-	$.ajax({
-	url: sourceleadUrl + "/getClockInOutConfigData",
-	type: 'GET',
-	success: function (json) {
-	if(json != null){
-		if(json.isBreak == true){
-			$("#withBreakDiv").show();
-			$("#withoutBreakDiv").hide();
-		}else{
-			$("#withoutBreakDiv").show();
-			$("#withBreakDiv").hide();
-		}
-	
-	getExistedClockTime();
-	if(!json.isJobChecked){
-	$("#jobDIV").hide();
-	}else{
-	$("#jobDIV").show();
-	getAssignedJobTasks();
-	}
-	if(!json.isProjectTasksChecked){
-	$("#projectTaskDIV").hide();
-	}else{
-	$("#projectTaskDIV").show();
-	getAssignedProjects();
-	}
-	if(!json.isGeneralTaskChecked){
-	$("#generalTaskDIV").hide();
-	} else{
-	$("#generalTaskDIV").show();
-	getGeneralTasks();
-	}
-	if(!json.isClockInComment){
-	$("#commentsDIV").hide();
-	}else{
-	$("#commentsDIV").show();
-	}
-	}else{
-		$("#withoutBreakDiv").show();
-		$("#withBreakDiv").hide();
-	}
-	
-	$(".mask, #clockPop").fadeIn(0);
-	}
-	});
-
-}
-
-
-function getTimeReports(){
-	$.ajax({
-		url: sourceleadUrl + "/getTimeReports",
-		type: 'GET',
-		success: function (json) {
-			if(json.currentTotTime != null){
-				$("#dayDiv").text(json.currentTotTime);
-			}
-			
-			if(json.weekTotTime != null){
-				$("#weekDiv").text(json.weekTotTime);
-			}
-			
-			if(json.monthTotTime != null){
-				$("#monthDiv").text(json.monthTotTime);
-			}
-			
-		}
-	
-});
-}
-</script>
-
-<script>
-function getAssignedJobTasks(obj){
-	$.ajax({
-	url: sourceleadUrl + "/getAssignedJobs",
-	type: 'GET',
-	success: function (json) {
-	var output = "";
-	output = output + "<option value=''>Select Job</option>";
-	if(json.data != null){
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	if(obj != null && obj != '' && obj != 'undefined'){
-	if(obj.jobsTaskId == opt.id){
-	output = output + "<option value='" +opt.id+ "' selected>"+opt.jobTitle+"</option>";
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
-	}
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.jobTitle+"</option>";
-	}
-	}
-	}
-	$("#jobDropDownDiv").empty();
-	$("#jobDropDownDiv").append(output);
-	$('#jobDropDownDiv').trigger("chosen:updated");
-	}
-	});
-}
-</script>
-
-<script>
-function getAssignedProjects(obj){
-	$.ajax({
-	url: sourceleadUrl + "/getAllProjectsForClockInOut",
-	type: 'GET',
-	success: function (json) {
-	var output = "";
-	output = output + "<option value=''>Select Project</option>";
-	if(json.data != null){
-	for (var i=0; i<json.data.length; i++)
-	{
-	var opt = json.data[i];
-	if(obj != null && obj != '' && obj != 'undefined'){
-	if(obj.projectId == opt.id){
-	output = output + "<option value='" +opt.id+ "' selected>"+opt.projectName+"</option>";
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-	}
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.projectName+"</option>";
-	}
-	}
-	}
-	
-	$("#projectDropDownDiv").empty();
-	$("#projectDropDownDiv").append(output);
-	$('#projectDropDownDiv').trigger("chosen:updated"); 
-	getProjectTasksByProject(obj);
-	}
-	});
-// 	setTimeout(function(){ getProjectTasksByProject(obj); }, 500);
-}
-</script>
-
-
-<script>
-function getProjectTasksByProject(obj){
-	var projectId = $("#projectDropDownDiv").val();
-	if(projectId != null && projectId != "" && projectId != "undefined"){
-		$.ajax({
-			url: sourceleadUrl + "/getProjectsTasksByProjectId?&projectId="+projectId,
-			type: 'GET',
-			success: function (json) {
-			var output = "";
-			output = output + "<option value=''>Select Project Task</option>";
-			if(json != null){
-			for (var i=0; i<json.length; i++)
-			{
-			var opt = json[i];
-			if(obj != null && obj != '' && obj != 'undefined'){
-			if(obj.projectsTaskId == opt.id){
-			output = output + "<option value='" +opt.id+ "' selected>"+opt.taskName+"</option>";
-			}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-			}
-			}else{
-			output = output + "<option value='" +opt.id+ "'>"+opt.taskName+"</option>";
-			}
-			
-			}
-			}
-			$("#projectTaskDropDownDiv").empty();
-			$("#projectTaskDropDownDiv").append(output);
-			$('#projectTaskDropDownDiv').trigger("chosen:updated"); 
-			}
-			});
-	}
-}
-</script>
-
-<script>
-function getGeneralTasks(obj){
-
-	$.ajax({
-	url: sourceleadUrl + "/getGeneralTasks",
-	type: 'GET',
-	success: function (json) {
-	var output = "";
-	output = output + "<option value=''>Select Task</option>";
-	if(json != null){
-	for (var i=0; i<json.length; i++)
-	{
-	var opt = json[i];
-	if(obj != null && obj != '' && obj != 'undefined'){
-	if(obj.generalTaskId == opt.id){
-	output = output + "<option value='" +opt.id+ "' selected>"+opt.subject+"</option>";
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
-	}
-	}else{
-	output = output + "<option value='" +opt.id+ "'>"+opt.subject+"</option>";
-	}
-	
-	}
-	}
-	$("#generalTaskDropDownDiv").empty();
-	$("#generalTaskDropDownDiv").append(output);
-	$('#generalTaskDropDownDiv').trigger("chosen:updated"); 
-	}
-	});
-}
-</script>
-
-<script>
-function saveClockInOutTime(type){
-	var formData = getFormData("clock_inout_form");
-	$.ajax({
-	type : "POST",
-	data : formData,
-	url: sourceleadUrl+"/saveClockInOutTime?&type="+type, 
-	success :function(data) {
-	
-	$("#breakId").val('');
-	if(type == 'ClockIn'){
-	$("#clockInOutId").val(data.id);
-	$('#reset,#pause').attr("disabled",false);
-	$('#start,#play').attr("disabled",true);
-	
-	$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
-	$("#clockOutTimeId").text('');
-	}else{
-	$("#clockInOutId").val('');
-	$('#start').attr("disabled",false);
-	$('.cwob').attr("disabled",false);
-	$('#reset,#play,#pause').attr("disabled",true);
-	
-	$("#clockOutTimeId").text(' : '+data.clockOutDateStr +' '+data.clockOutTime);
-	}
-	},	
-	}); 
-	
-}
-</script>
-
-<script>
-function getExistedClockTime(){
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getExistedClockTime", 
-	success :function(data) {
-		if(data != null && data != '' && data != 'undefined'){
-		$("#clockInOutId").val(data.id);
-		getAssignedJobTasks(data);
-		getAssignedProjects(data);
-		getGeneralTasks(data);
-		$('#start,#play').attr("disabled",true);
-		$('#reset, #pause').attr("disabled",false);
-		$("#clockInTimeId").text(' : '+data.clockInDateStr +' '+data.clockInTime);
-		
-		$("#comments").val(data.comments);
-		
-		getExistedBreakTime(data.id);
-		}else{
-		$('#reset,#play, #pause').attr("disabled",true);
-		$('#start').attr("disabled",false);
-		
-		$("#clockInTimeId").text('');
-		$("#clockOutTimeId").text('');
-		
-		$("#jobDropDownDiv").val('');
-		$('#jobDropDownDiv').trigger("chosen:updated");
-		
-		$("#projectDropDownDiv").val('');
-		$('#projectDropDownDiv').trigger("chosen:updated");
-
-		$("#projectTaskDropDownDiv").val('');
-		$('#projectTaskDropDownDiv').trigger("chosen:updated");
-
-		$("#generalTaskDropDownDiv").val('');
-		$('#generalTaskDropDownDiv').trigger("chosen:updated");
-		
-		$("#comments").val('');
-		
-		}
-		
-	},	
-	}); 
-}
-</script>
-
-
-<script>
-function getExistedBreakTime(clockInOutId){
-	$.ajax({
-	type : "GET",
-	url: sourceleadUrl+"/getExistedBreakTime?&clockInOutId="+clockInOutId, 
-	success :function(data) {
-	$("#breakId").val(data.id);
-	$('#start,#pause').attr("disabled",true);
-	$('#reset,#play').attr("disabled",false);
-	},	
-	}); 
-}
-</script>
-
-
-<script type="text/javascript">
-$(".clockAniAct").hide();
-obj = {
-	element : '',
-	init: function () {
-	
-	obj.element = $('#stopwatchPop');
-	
-},
-event: function (type) {
-	switch(type) {
-	case 'start':
-	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
-	$(".clockAniAct").show();
-	obj.element.removeClass('blink');
-	saveClockInOutTime('ClockIn');
-	break;
-	case 'play':
-	$(".clockAni").css("background-image","url(/resources/images/clock-ani.gif)");
-	$(".clockAniAct").show();
-	saveBreakTime('play');
-	break;
-	case 'pause':
-	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
-	$(".clockAniAct").hide();
-	saveBreakTime('pause');
-	break;
-	case 'reset':
-	$(".clockAni").css("background-image","url(/resources/images/clock.jpg)");
-	$(".clockAniAct").hide();
-	obj.element.removeClass('blink');
-	
-	saveClockInOutTime('ClockOut');
-	
-	$("#jobDropDownDiv").val('');
-	$('#jobDropDownDiv').trigger("chosen:updated");
-	
-	$("#projectDropDownDiv").val('');
-	$('#projectDropDownDiv').trigger("chosen:updated");
-
-	$("#projectTaskDropDownDiv").val('');
-	$('#projectTaskDropDownDiv').trigger("chosen:updated");
-
-	$("#generalTaskDropDownDiv").val('');
-	$('#generalTaskDropDownDiv').trigger("chosen:updated");
-	
-	$("#comments").val('');
-	
-	window.setTimeout(function() {
-		getTimeReports();
-	}, 200);
-	break;
-	
-	}
-},
-
-}
-
-
-$('document').ready(function () {
-  obj.init();
-});
-
-
-</script>
-
-<script>
-
-function updateClockInOutTime(){
-		var formData = getFormData("clock_inout_form");
-		$.ajax({
-		type : "POST",
-		data : formData,
-		url: sourceleadUrl+"/updateClockInOutTime", 
-		success :function(data) {
-		},	
-		}); 
-}
-</script>
-
-<script>
-function saveBreakTime(type){
-		var formData = getFormData("clock_inout_form");
-		$.ajax({
-		type : "POST",
-		data : formData,
-		url: sourceleadUrl+"/saveBreakTime?&type="+type, 
-		success :function(data) {
-		if(type == 'pause'){
-		$("#breakId").val(data.id);
-		$('#start,#pause').attr("disabled",true);
-		$('#reset,#play').attr("disabled",false);
-		}else{
-		$("#breakId").val('');
-		$('#start,#play').attr("disabled",true);
-		$('#reset,#pause').attr("disabled",false);
-		}
-		},	
-		}); 
-}
-</script>
-
-
-
-<script>
-function showWorkingTime(){
-	
-	$.ajax({
-		type : "GET",
-		url: sourceleadUrl+"/getWorkingTime", 
-		success :function(data) {
-			if(data != null && data !="" && data != 'undefined'){
-				$("#stopwatchPop").text(data);
-			}else{
-				$("#stopwatchPop").text("00:00:00");
-			}
-			
-		},	
-		}); 
-	
-}
-</script>
-
-<script>
-function getPreviousClockInData(){
-	
-	$.ajax({
-		type : "GET",
-		url: sourceleadUrl+"/getPreviousClockInData", 
-		success :function(data) {
-			if(data != null && data !="" && data != 'undefined' && data.previousClockInStr != null){
-				$("#prevClockInTimeId").text(' : '+data.previousClockInStr +' '+data.previousClockInTime);
-				$("#prevClockOutTimeId").text(' : '+data.previousClockOutStr +' '+data.previousClockOutTime);
-			}else{
-				$("#prevClockInTimeId").text('');
-				$("#prevClockOutTimeId").text('');
-			}
-			
-		},	
-		}); 
-}
-</script>
-
-
-<script src="${SourceLeadWeb_sourceleadDomainUrl}/resources/js/cropper.min.js?staticTime=${staticTime}"></script>
-<link rel="stylesheet" href="${SourceLeadWeb_sourceleadDomainUrl}/resources/css/cropper.min.css" type="text/css" />
-<div id='imagecrop' class='post_popup'></div>
-<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>

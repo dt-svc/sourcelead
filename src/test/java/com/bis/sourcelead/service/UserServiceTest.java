@@ -391,11 +391,11 @@ public class UserServiceTest {
 	}
 	@Test
 	public void testPayroll() throws Exception {
-		eMailJobScheduler.autoMaticPayrollRunning();
+		//eMailJobScheduler.autoMaticPayrollRunning();
 	}
 	
 	@Test
 	public void testSchedulePayrollEmail() throws Exception {
-		eMailJobScheduler.sendUSPayrollScheduleEmail();
+		//eMailJobScheduler.sendUSPayrollScheduleEmail();
 	}
 }

@@ -158,7 +158,7 @@ function validateResourceTimeEntriesReport(){
 	
 	
 	   if ($('#timesheetExportForm').validate(false, validationSettings)){
-		  $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+		 // $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		  var formData = getFormData1("timesheetExportForm");
 		  $.ajax({
 	            url: sourceleadUrl+"/resourceTimeEntriesReportList",
@@ -171,7 +171,7 @@ function validateResourceTimeEntriesReport(){
 	            	 $("#expensesExportListDiv").show();
 	            	 $("#expensesExportListDiv").empty();
 	    			 $("#expensesExportListDiv").append(data);
-	    			 $("#loadingId").removeAttr('style');
+	    			// $("#loadingId").removeAttr('style');
 	    			 preparePaginationEmployee(1);
 	            }
 	        });
@@ -257,7 +257,7 @@ function getProjectListBasedOnStartAndEndDate(){
 		typeOfProject = projectType;
 	}
 	
-	$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	//$("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 		$.ajax({
             url: sourceleadUrl + "/getProjectListForResourceTimeEntriesReportBasedOnStartAndEndDate?startDate=" + startDate +"&endDate="+ endDate+"&typeOfProject="+typeOfProject,
             type: "POST",
@@ -273,7 +273,7 @@ function getProjectListBasedOnStartAndEndDate(){
 				}
             	$("#allProjectIds").val('');
             	$("#allProjectIds").val(allProjectId);
-            	$("#loadingId").removeAttr('style');
+            	//$("#loadingId").removeAttr('style');
             	getProjectMemberFromProjectId();
             	$("#projectList").empty();
                 $("#projectList").append(output);
@@ -303,7 +303,7 @@ function getProjectMemberFromProjectId(){
 		designationType = '';
 	}
 	var projectType = $('#projectType').val();
-	 $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
+	// $("#loadingId").attr('style','position:absolute; width:100%; height:100%; background-color:rgba(255,255,255,0.8); top:0px; left:0px; z-index:100;background-image:url("/resources/images/loading.gif"); background-position:60% center; background-repeat:no-repeat; background-size:75px;');
 	$.ajax({
         url: sourceleadUrl + "/getProjectMembersForResourceTimeEntriesBasedOnProjectId?&projectIds="+projectIds+"&startDate="+startDate+"&endDate="+endDate+"&employmentType="+designationType+"&typeOfProject="+projectType+"&associateStatus="+associateStatus,
         type: "POST",
@@ -319,7 +319,7 @@ function getProjectMemberFromProjectId(){
         	$("#projectMemberList").empty();
             $("#projectMemberList").append(output);
             $('#projectMemberList').trigger("chosen:updated");
-            $("#loadingId").removeAttr('style');
+          //  $("#loadingId").removeAttr('style');
         }
     });
 }

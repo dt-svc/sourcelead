@@ -34,7 +34,32 @@
 </section> 
 
 <section class="helpmessage-cotentarea clearfix">
-	<section class="clearfix">
+ <div class="container">
+        <div class="row">
+            <div class="col">
+                <ul class="list-group">
+             <li class="list-group-item"><a href="/quick_reference_guide_login.html" id="aboutusID">Quick Reference Guide Login</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_assetMgt.html" id="aboutusID">Quick Reference Guide - Asset Management</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_associates.html" id="aboutusID">Quick Reference Guide - Associates</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_candidates.html" id="aboutusID">Quick Reference Guide - Candidates</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_clients.html" id="aboutusID">Quick Reference Guide - Clients</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_companyOnboarding.html" id="aboutusID">Quick Reference Guide - Company Onboarding</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_expenses.html" id="aboutusID">Quick Reference Guide - Expenses</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_jobs.html" id="aboutusID">Quick Reference Guide - Jobs</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_onOffBoard.html" id="aboutusID">Quick Reference Guide - On Off Board</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_orgSettings.html" id="aboutusID">Quick Reference Guide - Org Settings</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_projects.html" id="aboutusID">Quick Reference Guide - Projects</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_signUp.html" id="aboutusID">Quick Reference Guide - Sign Up</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_timesheets.html" id="aboutusID">Quick Reference Guide - Timesheets</a></li>
+			<li class="list-group-item"><a href="/quick_reference_guide_vendors.html" id="aboutusID">Quick Reference Guide - Vendors</a></li>
+                    
+                </ul>
+            </div>
+         
+
+        </div>
+    </div>
+<%-- 	<section class="clearfix">
 <div class="clear"></div>
 		<div class="col-md-2">
 			<div class="helpmsg-sidebar accordion-toggle">
@@ -43,7 +68,26 @@
 				<div id="UserManualWebDivTwo" class="datatable_filter"></div>
 			</div>
 			</div>
-			
+			<ul>
+			<li><a href="/quick_reference_guide_login.html" id="aboutusID">Quick Reference Guide Login</a></li>
+			<li><a href="/quick_reference_guide_assetMgt.html" id="aboutusID">Quick Reference Guide - Asset Management</a></li>
+			<li><a href="/quick_reference_guide_associates.html" id="aboutusID">Quick Reference Guide - Associates</a></li>
+			<li><a href="/quick_reference_guide_candidates.html" id="aboutusID">Quick Reference Guide - Candidates</a></li>
+			<li><a href="/quick_reference_guide_clients.html" id="aboutusID">Quick Reference Guide - Clients</a></li>
+			<li><a href="/quick_reference_guide_companyOnboarding.html" id="aboutusID">Quick Reference Guide - Company Onboarding</a></li>
+			<li><a href="/quick_reference_guide_expenses.html" id="aboutusID">Quick Reference Guide - Expenses</a></li>
+			<li><a href="/quick_reference_guide_jobs.html" id="aboutusID">Quick Reference Guide - Jobs</a></li>
+			<li><a href="/quick_reference_guide_onOffBoard.html" id="aboutusID">Quick Reference Guide - On Off Board</a></li>
+			<li><a href="/quick_reference_guide_orgSettings.html" id="aboutusID">Quick Reference Guide - Org Settings</a></li>
+			<li><a href="/quick_reference_guide_projects.html" id="aboutusID">Quick Reference Guide - Projects</a></li>
+			<li><a href="/quick_reference_guide_signUp.html" id="aboutusID">Quick Reference Guide - Sign Up</a></li>
+			<li><a href="/quick_reference_guide_timesheets.html" id="aboutusID">Quick Reference Guide - Timesheets</a></li>
+			<li><a href="/quick_reference_guide_vendors.html" id="aboutusID">Quick Reference Guide - Vendors</a></li>
+			</ul>
+			<!-- <ul>
+			<li><a href="/quick_reference_guide_login.html" id="aboutusID">Quick Reference Guide Login</a></li>
+		
+			</ul> -->
 		</div>
 		
 
@@ -52,7 +96,7 @@
 	<div id="UserManualWebDivThree" class="datatable_filter"></div>
 	</div>
 </div>
-	</section>
+	</section> --%>
 </section>
 
 <script>
